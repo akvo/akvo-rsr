@@ -834,9 +834,18 @@ function removePartial(node) {
     setSectionCompletionPercentage(findAncestor(parentParent, "formStep"));
 }
 
-function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
+function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
     Typeahead = ReactTypeahead.Typeahead;
+
+    if (inputType === 'project'); {
+        typeaheadOptions.forEach(function(o) {
+            o.filterOption = o.id + ' ' + o.title;
+            o.displayOption = o.title + ' (ID: ' + o.id + ')';
+        });
+        filterOption = 'filterOption';
+        displayOption = 'displayOption';
+    }
 
     inputClass = selector + " form-control " + childClass;
 
@@ -1007,7 +1016,7 @@ function loadAsync(url, retryCount, retryLimit, callback) {
     }
 }
 
-function processResponse(response, selector, childClass, valueId, label, help, filterOption) {
+function processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType) {
     var typeaheadOptions = response.results;
     var typeaheadCallback = function(option) {
         var el;
@@ -1019,12 +1028,12 @@ function processResponse(response, selector, childClass, valueId, label, help, f
         return option[filterOption];
     };
 
-    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
+    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType);
 }
 
-function getCallback(selector, childClass, valueId, label, help, filterOption) {
+function getCallback(selector, childClass, valueId, label, help, filterOption, inputType) {
     var output = function(response) {
-        processResponse(response, selector, childClass, valueId, label, help, filterOption);
+        processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType);
     };
 
     return output;
@@ -1213,15 +1222,16 @@ function getOnClick(pName, parentElement) {
 }
 
 function updateTypeaheads() {
-    var els, filterOption, labelText, helpText, API;
+    var els, filterOption, labelText, helpText, API, inputType;
 
     els1 = document.querySelectorAll('.related-project-input');
     labelText = defaultValues.related_project_label;
     helpText = defaultValues.related_project_helptext;
     filterOption = 'title';
     API = projectsAPIUrl;
+    inputType = 'project';
 
-    updateTypeahead(els1, filterOption, labelText, helpText, API);
+    updateTypeahead(els1, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.reportingOrganisation-input');
     labelText = defaultValues.reporting_org_label;
@@ -1254,7 +1264,8 @@ function updateTypeaheads() {
     API = orgsAPIUrl;
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
-    function updateTypeahead(els, filterOption, labelText, helpText, API) {
+
+    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType) {
         for (var i = 0; i < els.length; i++) {
             var el = els[i];
 
@@ -1283,14 +1294,14 @@ function updateTypeaheads() {
                 valueId = el.getAttribute('data-value');
             }
 
-            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption);
+            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType);
             cb();
         }
     }
 
-    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption) {
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType) {
         var output = function() {
-            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType));
         };
 
         return output;
