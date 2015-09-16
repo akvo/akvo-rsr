@@ -1022,6 +1022,13 @@ h4.detailedInfo {
   .main-list.updates ul li:hover {
     background: rgba(0, 167, 157, 0.1);
     border: thin solid rgba(0, 167, 157, 0.35); }
+  .main-list.updates ul li .excerpt li {
+    background: none;
+    border: none;
+    transition: none;
+    list-style-type: initial;
+    margin: initial;
+    padding: initial; }
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1640,6 +1647,14 @@ dd.currencyAmount {
 /* Project update page */
 .updateText {
   white-space: pre-line; }
+  .updateText li {
+    padding: initial;
+    margin: initial;
+    white-space: initial; }
+  .updateText li p {
+    margin: 0;
+    padding: 0;
+    display: initial; }
 
 a.addUpdateBtn {
   margin-top: 10px;
