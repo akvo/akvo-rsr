@@ -9,7 +9,8 @@ from ..utils import add_log, get_or_create_organisation, get_text
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
-from django.db.models import get_model
+from django.conf import settings
+from django.db.models import get_model, ObjectDoesNotExist
 
 TYPE_TO_CODE = {
     'C': '2',
@@ -355,6 +356,23 @@ def budget_items(iati_import, activity, project, activities_globals):
                     (budget_type == '2' and revised_budgets_count == 1) or all_budget_count == 1:
                 label = get_model('rsr', 'budgetitemlabel').objects.get(label='Total')
                 other_extra = ''
+
+        if '{%s}type' % settings.AKVO_NS in budget.attrib.keys() or \
+                '{%s}label' % settings.AKVO_NS in budget.attrib.keys():
+            if '{%s}type' % settings.AKVO_NS in budget.attrib.keys():
+                try:
+                    label = get_model('rsr', 'budgetitemlabel').objects.get(
+                        pk=int(budget.attrib['{%s}type' % settings.AKVO_NS])
+                    )
+                except (ValueError, ObjectDoesNotExist) as e:
+                    add_log(iati_import, 'budget_item_label', str(e), project, 3)
+
+            if '{%s}label' % settings.AKVO_NS in budget.attrib.keys():
+                other_extra = budget.attrib['{%s}label' % settings.AKVO_NS]
+                if len(other_extra) > 30:
+                    add_log(iati_import, 'budget_item_label',
+                            'label too long (30 characters allowed)', project, 3)
+                    other_extra = other_extra[:30]
 
         period_start_element = budget.find('period-start')
         if not period_start_element is None and 'iso-date' in period_start_element.attrib.keys():
