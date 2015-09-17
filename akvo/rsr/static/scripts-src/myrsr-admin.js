@@ -847,10 +847,23 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         displayOption = 'displayOption';
     } else if (inputType === 'org') {
         typeaheadOptions.forEach(function(o) {
+            var newName = getDisplayOption(o.name, o.long_name);
+
             o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
         });        
         filterOption = 'filterOption';
-        console.dir(typeaheadOptions);
+        displayOption = 'displayOption';
+    }
+
+    function getDisplayOption(short, long) {
+        if (short === long) {
+            return short;
+        }
+        if (!long) {
+            return short
+        }
+        return short + ' (' + long + ')';
     }
 
     inputClass = selector + " form-control " + childClass;
