@@ -17,35 +17,10 @@
                             {% if budget_item.label.label == 'Other' and budget_item.other_extra %}
                                 <dt class="budgetItem">{{budget_item.other_extra}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="currencyAmount budgetItem"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:0|intcomma}}</dd>
                             {% else %}
-                                <dt class="budgetItem">{{budget_item.label.label}}
-                                    {% if budget_item.type %}
-                                        (
-                                        {% if budget_item.type == '1' %}
-                                            {% trans 'Original' %}
-                                        {% else %}
-                                            {% trans 'Revised' %}
-                                        {% endif %}){% endif %}:
-                                </dt>
-                                <dd class="budgetItem currencyAmount">
-                                    <span class="currency">
-                                        {{project.get_currency_display}}
-                                    </span>
-                                    {{budget_item.amount|floatformat:0|intcomma}}
-                                </dd>
+                                <dt class="budgetItem">{{budget_item.label.label}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="budgetItem currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:0|intcomma}}</dd>
                             {% endif %}
                             {% if budget_item.period_start or budget_item.period_end %}
-                                <dt class="budgetPeriod">{% trans "Budget period" %}</dt>
-                                <dd class="budgetPeriod currencyAmount">
-                                    {% if budget_item.period_start %}
-                                        {{budget_item.period_start|date:"d-M-Y"}}
-                                        {% if budget_item.period_end %}
-                                          -
-                                        {% endif %}  
-                                    {% endif %}
-                                    {% if budget_item.period_end %}
-                                        {{budget_item.period_end|date:"d-M-Y"}}
-                                    {% endif %}
-                                </dd>
+                                <dt class="budgetPeriod">{% trans "Budget period" %}</dt><dd class="budgetPeriod currencyAmount">{% if budget_item.period_start %}{{budget_item.period_start|date:"d-M-Y"}}{% if budget_item.period_end %} - {% endif %}{% endif %}{% if budget_item.period_end %}{{budget_item.period_end|date:"d-M-Y"}}{% endif %}</dd>
                             {% endif %}
                         {% endfor %}
                         <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:0|intcomma}}</dd>
