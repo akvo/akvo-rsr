@@ -94,7 +94,7 @@ class DefaultLanguageMiddleware(object):
 
 class HostDispatchMiddleware(object):
 
-    """Simple test for middleware testing."""
+    """RSR page dispath middleware."""
 
     # def process_request(self, request, cname_domain=False, rsr_page=None):
     def process_request(self, request):
