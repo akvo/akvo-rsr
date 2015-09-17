@@ -1646,6 +1646,7 @@ function setValidationListeners() {
     function getHideCharsListener(el) {
         var parent = el.parentNode;
         var output;
+        var outputTimeout;
 
         output = function() {
             var charsLeft = parent.querySelector('.charsLeft');
@@ -1654,7 +1655,11 @@ function setValidationListeners() {
             }
         };
 
-        return output;
+        outputTimeout = function() {
+            setTimeout(output, 250);
+        };
+
+        return outputTimeout;
     }
 
     // Mark mandatory fields with an asterisk
