@@ -1353,7 +1353,8 @@ div.textBlock {
   background: #ccc; }
 
 .projectFinancial .budgetItem {
-  margin-top: 12px; }
+  margin-top: 12px;
+  width: 60%; }
   .projectFinancial .budgetItem:nth-child(1), .projectFinancial .budgetItem:nth-child(2) {
     margin-top: 0; }
 
