@@ -1249,8 +1249,8 @@ function updateTypeaheads() {
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.partner-input');
-    labelText = defaultValues.reporting_org_label;
-    helpText = defaultValues.reporting_org_helptext;
+    labelText = defaultValues.partner_label;
+    helpText = defaultValues.partner_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
