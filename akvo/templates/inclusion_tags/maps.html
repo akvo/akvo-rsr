@@ -19,6 +19,7 @@
         load: function() {
             var map = new google.maps.Map(this.canvas, this.options);
             var bounds = new google.maps.LatLngBounds();
+            var infoWindows = [];
 
             var i;
 
@@ -53,6 +54,12 @@
                         infowindow = new google.maps.InfoWindow({
                             content: window['contentString' + i]
                         });
+                        infowindows.push(infowindow);
+                        infoWindows.forEach(function(entry) {
+
+                            // Close any existing windows
+                            entry.close();
+                        });                        
                         infowindow.open(map, marker);
                     });
                 })(marker, i);
@@ -65,6 +72,7 @@
             {% if update_locations %}
 
             var j;
+            var infoWindows = [];
 
             for (j = 0; j < this.update_locations.length; j++) {
                 var update_position = new google.maps.LatLng(this.update_locations[j][0], this.update_locations[j][1]);
@@ -94,6 +102,12 @@
                         infowindow = new google.maps.InfoWindow({
                             content: window['contentStringUpdate' + j]
                         });
+                        infoWindows.push(infowindow);
+                        infoWindows.forEach(function(entry) {
+
+                            // Close any existing windows
+                            entry.close();
+                        });                                         
                         infowindow.open(map, update_marker);
                     });
                 })(update_marker, j);

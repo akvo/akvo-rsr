@@ -119,6 +119,9 @@ $(document).ready(function() {
                 '<%= text %><br /><img src="<%= image %>" />' +
                 '</a></div>');
 
+        /* Keep track of infoWindows so we can close them as needed */
+        var infoWindows = [];
+
         _(this.locations).forEach(function( location ) {
           var position = new google.maps.LatLng( location.latitude,
                                                  location.longitude ),
@@ -138,8 +141,14 @@ $(document).ready(function() {
           infoWindow = new google.maps.InfoWindow({
             content: infoWinTempl(location)
           });
+          infoWindows.push(infoWindow);
           if (mapConfig.dynamic) {
             google.maps.event.addListener(marker, 'click', function() {
+              infoWindows.forEach(function(entry) {
+
+                // Close any existing windows
+                entry.close();
+              });
               infoWindow.open(map, marker);
             });
           }
