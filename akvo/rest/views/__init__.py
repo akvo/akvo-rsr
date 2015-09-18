@@ -59,6 +59,7 @@ from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .result import ResultViewSet
 from .sector import SectorViewSet
+from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
@@ -131,6 +132,7 @@ __all__ = [
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
+    'server_info',
     'set_group',
     'TransactionViewSet',
     'TransactionSectorViewSet',
