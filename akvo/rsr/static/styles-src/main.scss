@@ -1672,6 +1672,16 @@ div.textBlock {
     background: #ccc;
 }
 
+.projectFinancial {
+    .budgetItem {
+        margin-top: 12px;
+        width: 60%;
+
+        &:nth-child(1), &:nth-child(2) {
+            margin-top: 0;
+        }
+    }
+}
 /* Project hierarchy */
 .project-hierarchy-window {
     border: 0.1em solid #d3d3d3;
