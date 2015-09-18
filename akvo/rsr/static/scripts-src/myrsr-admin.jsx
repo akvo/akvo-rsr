@@ -913,7 +913,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 savedResult = typeaheadOptions[i];
 
-                typeaheadInput.value = savedResult[filterOption];
+                typeaheadInput.value = savedResult[displayOption];
                 typeaheadInput.setAttribute('value', savedResult.id);
                 typeaheadInput.setAttribute('saved-value', savedResult.id);
             }
