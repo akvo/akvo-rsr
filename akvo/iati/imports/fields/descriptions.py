@@ -7,16 +7,63 @@
 from ..utils import add_log, get_text
 
 from django.conf import settings
-from django.db.models import get_model
+from django.db.models import get_model, ObjectDoesNotExist
 
 START_WITH = {
+    'project_name': 'Project name: ',
     'subtitle': 'Subtitle: ',
-    'project_plan_summary': 'Project Summary: ',
+    'project_plan_summary': 'Project summary: ',
     'background': 'Background: ',
     'current_status': 'Baseline situation: ',
-    'project_plan': 'Project Plan: ',
+    'project_plan': 'Project plan: ',
     'sustainability': 'Sustainability: '
 }
+
+
+def _add_custom_field(project, name, text, section):
+    """
+    In case the text of a field is too long, we store the full text in a custom field. Or update
+    the field if the field already exists.
+
+    :param project: Project instance
+    :param name: String; field name
+    :param text: String; field text
+    :param section: Integer; field section
+    """
+    if project and name and section:
+        custom_field, _created = get_model('rsr', 'projectcustomfield').objects.get_or_create(
+            project=project,
+            name=name,
+            section=section,
+            max_characters=0,
+            help_text='',
+            mandatory=False,
+            order=0
+        )
+
+        if custom_field.value != text:
+            custom_field.value = text
+            custom_field.save(update_fields=['value'])
+
+
+def _delete_custom_field(project, name, section):
+    """
+    In case the text of a field is not too long, the custom field should be deleted if it exists.
+
+    :param project: Project instance
+    :param name: String; field name
+    :param section: Integer; field section
+    """
+    if project and name and section:
+        try:
+            custom_field = get_model('rsr', 'projectcustomfield').objects.get(
+                project=project,
+                name=name,
+                section=section
+            )
+            custom_field.delete()
+        except ObjectDoesNotExist:
+            pass
 
 
 def title(iati_import, activity, project, activities_globals):
@@ -37,7 +84,10 @@ def title(iati_import, activity, project, activities_globals):
         title_text = get_text(title_element, activities_globals['version'])
         if len(title_text) > 45:
             add_log(iati_import, 'title', 'title is too long (45 characters allowed)', project, 3)
+            _add_custom_field(project, 'title', title_text, 1)
             title_text = title_text[:45]
+        else:
+            _delete_custom_field(project, 'title', 1)
 
     if project.title != title_text:
         project.title = title_text
@@ -69,10 +119,9 @@ def subtitle(iati_import, activity, project, activities_globals):
             description_text = get_text(description, activities_globals['version'])
             if description_text.startswith(START_WITH['subtitle']):
                 subtitle_text = description_text[10:]
-                if len(subtitle_text) > 75:
-                    add_log(iati_import, 'subtitle', 'subtitle is too long (75 characters allowed)',
-                            project, 3)
-                    subtitle_text = subtitle_text[:75]
+                break
+            elif description_text.startswith(START_WITH['project_name']):
+                subtitle_text = description_text[14:]
                 break
 
     if not subtitle_text:
@@ -81,10 +130,13 @@ def subtitle(iati_import, activity, project, activities_globals):
 
         if not subtitle_element is None:
             subtitle_text = get_text(subtitle_element, activities_globals['version'])
-            if len(subtitle_text) > 75:
-                add_log(iati_import, 'subtitle', 'subtitle is too long (75 characters allowed)',
-                        project, 3)
-                subtitle_text = subtitle_text[:75]
+
+    if len(subtitle_text) > 75:
+        add_log(iati_import, 'subtitle', 'subtitle is too long (75 characters allowed)', project, 3)
+        _add_custom_field(project, 'subtitle', subtitle_text, 1)
+        subtitle_text = subtitle_text[:75]
+    else:
+        _delete_custom_field(project, 'subtitle', 1)
 
     if project.subtitle != subtitle_text:
         project.subtitle = subtitle_text
@@ -115,10 +167,6 @@ def project_plan_summary(iati_import, activity, project, activities_globals):
             description_text = get_text(description, activities_globals['version'])
             if description_text.startswith(START_WITH['project_plan_summary']):
                 pps_text = description_text[17:]
-                if len(pps_text) > 400:
-                    add_log(iati_import, 'project_plan_summary',
-                            'summary is too long (400 characters allowed)', project, 3)
-                pps_text = pps_text[:400]
                 break
 
     if not pps_text:
@@ -133,10 +181,14 @@ def project_plan_summary(iati_import, activity, project, activities_globals):
 
         if not pps_element is None:
             pps_text = get_text(pps_element, activities_globals['version'])
-            if len(pps_text) > 400:
-                add_log(iati_import, 'project_plan_summary',
-                        'summary is too long (400 characters allowed)', project, 3)
-                pps_text = pps_text[:400]
+
+    if len(pps_text) > 400:
+        add_log(iati_import, 'project_plan_summary', 'summary is too long (400 characters allowed)',
+                project, 3)
+        _add_custom_field(project, 'project_plan_summary', pps_text, 4)
+        pps_text = pps_text[:400]
+    else:
+        _delete_custom_field(project, 'project_plan_summary', 4)
 
     if project.project_plan_summary != pps_text:
         project.project_plan_summary = pps_text
@@ -167,15 +219,18 @@ def goals_overview(iati_import, activity, project, activities_globals):
 
     if not go_element is None:
         go_text = get_text(go_element, activities_globals['version'])
-        if len(go_text) > 600:
-            add_log(iati_import, 'goals_overview',
-                    'goals overview is too long (600 characters allowed)', project, 3)
-            go_text = go_text[:600]
 
     if not go_text:
         for result_title in activity.findall('result/title'):
             go_text += '- ' + get_text(result_title, activities_globals['version']) + '\n'
+
+    if len(go_text) > 600:
+        add_log(iati_import, 'goals_overview',
+                'goals overview is too long (600 characters allowed)', project, 3)
+        _add_custom_field(project, 'goals_overview', go_text, 4)
         go_text = go_text[:600]
+    else:
+        _delete_custom_field(project, 'goals_overview', 4)
 
     if project.goals_overview != go_text:
         project.goals_overview = go_text
@@ -216,9 +271,12 @@ def background(iati_import, activity, project, activities_globals):
     if not background_element is None:
         background_text = get_text(background_element, activities_globals['version'])
         if len(background_text) > 1000:
-            add_log(iati_import, 'goals_overview',
+            add_log(iati_import, 'background',
                     'background is too long (1000 characters allowed)', project, 3)
+            _add_custom_field(project, 'background', background_text, 4)
             background_text = background_text[:1000]
+        else:
+            _delete_custom_field(project, 'background', 4)
 
     if project.background != background_text:
         project.background = background_text
@@ -261,7 +319,10 @@ def current_status(iati_import, activity, project, activities_globals):
         if len(current_status_text) > 600:
             add_log(iati_import, 'current_status',
                     'current status is too long (600 characters allowed)', project, 3)
+            _add_custom_field(project, 'current_status', current_status_text, 4)
             current_status_text = current_status_text[:600]
+        else:
+            _delete_custom_field(project, 'current_status', 4)
 
     if project.current_status != current_status_text:
         project.current_status = current_status_text
@@ -294,7 +355,10 @@ def target_group(iati_import, activity, project, activities_globals):
         if len(target_group_text) > 600:
             add_log(iati_import, 'target_group',
                     'target group is too long (600 characters allowed)', project, 3)
+            _add_custom_field(project, 'target_group', target_group_text, 4)
             target_group_text = target_group_text[:600]
+        else:
+            _delete_custom_field(project, 'target_group', 4)
 
     if project.target_group != target_group_text:
         project.target_group = target_group_text
@@ -465,9 +529,12 @@ def custom_fields(iati_import, activity, project, activities_globals):
 
     for custom_field in project.custom_fields.all():
         if not custom_field in imported_fields:
-            changes.append(u'deleted custom field (id: %s): %s' %
-                           (str(custom_field.pk),
-                            custom_field.__unicode__()))
-            custom_field.delete()
+            if not custom_field.name in ['title', 'subtitle', 'project_plan_summary',
+                                         'goals_overview', 'background', 'current_status',
+                                         'target_group']:
+                changes.append(u'deleted custom field (id: %s): %s' %
+                               (str(custom_field.pk),
+                                custom_field.__unicode__()))
+                custom_field.delete()
 
     return changes
