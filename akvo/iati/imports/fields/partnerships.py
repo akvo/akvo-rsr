@@ -6,6 +6,7 @@
 
 from ..utils import add_log, get_or_create_organisation, get_text
 
+from django.conf import settings
 from django.db.models import get_model
 
 ROLE_TO_CODE = {
@@ -32,10 +33,12 @@ def partnerships(iati_import, activity, project, activities_globals):
     """
     imported_partnerships = []
     changes = []
+    funding_amount_present = False
 
     for partnership in activity.findall('participating-org'):
         org_ref = ''
         partner_role = None
+        funding_amount = None
 
         if 'ref' in partnership.attrib.keys():
             org_ref = partnership.attrib['ref']
@@ -54,6 +57,13 @@ def partnerships(iati_import, activity, project, activities_globals):
                 except ValueError as e:
                     add_log(iati_import, 'participating_org_role', str(e), project)
 
+        if '{%s}funding-amount' % settings.AKVO_NS in partnership.attrib.keys():
+            try:
+                funding_amount = int(partnership.attrib['{%s}funding-amount' % settings.AKVO_NS])
+                funding_amount_present = True
+            except ValueError as e:
+                add_log(iati_import, 'funding_amount', str(e), project, 2)
+
         if not (partner or partner_role):
             add_log(iati_import, 'participating_org', 'participating organisation or role missing',
                     project, 1)
@@ -62,7 +72,8 @@ def partnerships(iati_import, activity, project, activities_globals):
         ps, created = get_model('rsr', 'partnership').objects.get_or_create(
             project=project,
             organisation=partner,
-            iati_organisation_role=partner_role
+            iati_organisation_role=partner_role,
+            funding_amount=funding_amount
         )
 
         if created:
@@ -77,16 +88,17 @@ def partnerships(iati_import, activity, project, activities_globals):
                             partnership.__unicode__()))
             partnership.delete()
 
-    funding_partners = project.partnerships.filter(iati_organisation_role=1)
-    total_budget = project.budget
+    if not funding_amount_present:
+        funding_partners = project.partnerships.filter(iati_organisation_role=1)
+        total_budget = project.budget
 
-    if funding_partners.count() > 0 and total_budget > 0:
-        average_budget = total_budget / funding_partners.count()
-        for funding_partner in funding_partners:
-            if funding_partner.funding_amount != average_budget:
-                funding_partner.funding_amount = average_budget
-                funding_partner.save()
-                changes.append(u'updated funding amount for partnership (id: %s): %s' %
-                               (str(funding_partner.pk), funding_partner))
+        if funding_partners.count() > 0 and total_budget > 0:
+            average_budget = total_budget / funding_partners.count()
+            for funding_partner in funding_partners:
+                if funding_partner.funding_amount != average_budget:
+                    funding_partner.funding_amount = average_budget
+                    funding_partner.save()
+                    changes.append(u'updated funding amount for partnership (id: %s): %s' %
+                                   (str(funding_partner.pk), funding_partner))
 
     return changes
