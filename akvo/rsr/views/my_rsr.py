@@ -378,7 +378,9 @@ def user_management(request):
         for q_item in q_list:
             employments = employments.filter(user__username__icontains=q_item) | \
                 employments.filter(user__first_name__icontains=q_item) | \
-                employments.filter(user__last_name__icontains=q_item)
+                employments.filter(user__last_name__icontains=q_item) | \
+                employments.filter(organisation__name__icontains=q_item) | \
+                employments.filter(organisation__long_name__icontains=q_item)
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
