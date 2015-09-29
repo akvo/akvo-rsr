@@ -11,7 +11,7 @@ from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import get_model
+from django.db.models import get_model, ObjectDoesNotExist
 
 import datetime
 import fields
@@ -134,16 +134,39 @@ class IatiImportActivity(object):
         Check if the project can be edited by the current reporting organisation and set
         the sync_owner.
 
-        :return: Boolean; True if the project has the correct sync_owner and False otherwise
+        :return: Boolean; True if all checks are passed and False otherwise
         """
         sync_owner = self.project.sync_owner
-        if not self.created and sync_owner and sync_owner != self.organisation:
-            add_log(self.iati_import, 'sync_owner',
-                    'Project has a different sync_owner (%s).' % sync_owner.name, self.project, 1)
-            return False
-        self.project.sync_owner = self.organisation
-        self.project.save()
-        return True
+        reporting_org_element = self.activity.find('reporting-org')
+
+        if not reporting_org_element is None and 'ref' in reporting_org_element.attrib.keys():
+            iati_org_id = reporting_org_element.attrib['ref']
+            try:
+                organisation = get_model('rsr', 'organisation').objects.get(iati_org_id=iati_org_id)
+            except ObjectDoesNotExist:
+                add_log(self.iati_import, 'reporting_org',
+                        'Reporting organisation not present in RSR.', self.project, 1)
+                return False
+
+            if not organisation.can_become_reporting:
+                add_log(self.iati_import, 'reporting_org',
+                        'Reporting organisation not allowed to import projects in RSR.',
+                        self.project, 1)
+                return False
+
+            if not self.created and sync_owner and sync_owner != organisation:
+                add_log(self.iati_import, 'sync_owner',
+                        'Project has a different sync_owner (%s).' % sync_owner.name,
+                        self.project, 1)
+                return False
+
+            self.project.sync_owner = organisation
+            self.project.save()
+            return True
+
+        add_log(self.iati_import, 'reporting_org',
+                'Reporting organisation not correctly specified.', self.project, 1)
+        return False
 
     def get_or_create_project(self):
         """
@@ -175,19 +198,17 @@ class IatiImportActivity(object):
 
         return project, created
 
-    def __init__(self, iati_import, activity, reporting_organisation, user, activities_globals):
+    def __init__(self, iati_import, activity, user, activities_globals):
         """
         Initialize the IATI activity process.
 
         :param iati_import: IatiImport instance
         :param activity: ElementTree; the root node of the IATI activity
-        :param reporting_organisation: Organisation instance
         :param user: User instance
         :param activities_globals: Dictionary; contains all global variables
         """
         self.iati_import = iati_import
         self.activity = activity
-        self.organisation = reporting_organisation
         self.user = user
         self.globals = activities_globals
         self.changes = []

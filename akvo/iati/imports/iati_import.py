@@ -163,7 +163,6 @@ class IatiImportProcess(object):
         ]
 
         self.iati_import = iati_import
-        self.organisation = iati_import.reporting_organisation
         self.user = iati_import.user
 
         # Start initialize
@@ -181,8 +180,8 @@ class IatiImportProcess(object):
                 for activity in self.activities.findall('iati-activity'):
                     try:
                         with transaction.atomic():
-                            IatiImportActivity(self.iati_import, activity, self.organisation,
-                                               self.user, self.activities.attrib)
+                            IatiImportActivity(self.iati_import, activity, self.user,
+                                               self.activities.attrib)
                     except Exception as e:
                         add_log(self.iati_import, 'activity_error', str(e), None, 1)
 

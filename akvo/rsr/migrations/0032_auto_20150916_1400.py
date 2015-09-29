@@ -70,12 +70,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='iatiimport',
-            name='reporting_organisation',
-            field=models.ForeignKey(related_name='iati_imports', verbose_name='reporting organisation', to='rsr.Organisation'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='iatiimport',
             name='user',
             field=models.ForeignKey(related_name='iati_imports', verbose_name='user', to=settings.AUTH_USER_MODEL),
             preserve_default=True,

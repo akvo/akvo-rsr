@@ -12,7 +12,7 @@ from .iati_project_import import IatiProjectImport
 
 
 def file_path(self, filename):
-    return 'db/organisation/%s/iati_import/%s' % (str(self.reporting_organisation.pk), filename)
+    return 'db/iati_import/%s' % filename
 
 
 STATUS_CODE = {
@@ -25,9 +25,6 @@ STATUS_CODE = {
 
 
 class IatiImport(models.Model):
-    reporting_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), related_name='iati_imports'
-    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports'
     )
@@ -41,9 +38,17 @@ class IatiImport(models.Model):
     )
 
     def __unicode__(self):
-        return u'%s %s (%s)' % (_(u'IATI import for'),
-                                self.reporting_organisation,
-                                self.show_status())
+        if self.url:
+            return u'%s: %s (%s)' % (_(u'IATI import'),
+                                     self.url,
+                                     self.show_status())
+        elif self.local_file:
+            return u'%s: %s (%s)' % (_(u'IATI import'),
+                                     str(self.local_file).rsplit('/',1)[1],
+                                     self.show_status())
+        else:
+            return u'%s: %s' % (_(u'IATI import'),
+                                _(u'no file'))
 
     class Meta:
         app_label = 'rsr'

@@ -1136,9 +1136,9 @@ admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'reporting_organisation', 'status', 'start_date', 'end_date')
+    list_display = ('__unicode__', 'status', 'start_date', 'end_date')
     list_filter = ('status',)
-    search_fields = ('reporting_organisation__name', 'reporting_organisation__long_name',)
+    search_fields = ('user__username', )
     exclude = ('status', 'start_date', 'end_date')
 
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
