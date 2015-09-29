@@ -160,8 +160,14 @@ class IatiImportActivity(object):
                         self.project, 1)
                 return False
 
+            if 'secondary-reporter' in reporting_org_element.attrib.keys():
+                if reporting_org_element.attrib['secondary-reporter'] == '1':
+                    self.project.sync_owner_secondary_reporter = True
+                elif reporting_org_element.attrib['secondary-reporter'] == '0':
+                    self.project.sync_owner_secondary_reporter = False
+
             self.project.sync_owner = organisation
-            self.project.save()
+            self.project.save(update_fields=['sync_owner', 'sync_owner_secondary_reporter'])
             return True
 
         add_log(self.iati_import, 'reporting_org',
