@@ -112,10 +112,14 @@ def my_updates(request):
 def my_projects(request):
     """Directory of Projects connected to the user."""
     organisations = request.user.employers.approved().organisations()
-    projects = organisations.all_projects().distinct().select_related(
-        'publishingstatus',
-        'primary_location__country',
-    )
+
+    if request.user.is_superuser or request.user.is_admin:
+        projects = Project.objects.all()
+    else:
+        projects = organisations.all_projects().distinct().select_related(
+            'publishingstatus',
+            'primary_location__country',
+        )
 
     new_project_custom_fields = OrganisationCustomField.objects.filter(
         organisation__in=organisations
