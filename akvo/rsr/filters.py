@@ -67,6 +67,7 @@ def filter_m49(queryset, value):
 
 
 class ProjectFilter(django_filters.FilterSet):
+
     category = django_filters.ChoiceFilter(
         choices=([('', _('All'))] +
                  list(Category.objects.all().values_list('id', 'name',
@@ -77,8 +78,7 @@ class ProjectFilter(django_filters.FilterSet):
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label=_(u'location'),
-        action=filter_m49
-    )
+        action=filter_m49)
 
     sector = django_filters.ChoiceFilter(
         initial=_('All'),
@@ -96,8 +96,6 @@ class ProjectFilter(django_filters.FilterSet):
         label=_(u'Search'),
         name='title')
 
-
-
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
         label=_(u'organisation'),
@@ -107,6 +105,9 @@ class ProjectFilter(django_filters.FilterSet):
         model = Project
         fields = ['status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectFilter, self).__init__(*args, **kwargs)
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):

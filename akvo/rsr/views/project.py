@@ -17,8 +17,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import remove_empty_querydict_items, ProjectFilter
-from ..models import Invoice, Project, ProjectUpdate, Organisation
+from ..filters import remove_empty_querydict_items, ProjectFilter, filter_m49
+from ..m49 import M49_CODES, M49_HIERARCHY
+from ..models import Invoice, Project, ProjectLocation, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
 from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
@@ -61,6 +62,9 @@ def _project_directory_coll(request):
         return _all_projects()
     return _page_projects(page)
 
+def get_super(i):
+    return [k for k, v in M49_HIERARCHY.iteritems() if i in v].pop()
+
 
 def directory(request):
     """The project list view."""
@@ -81,6 +85,44 @@ def directory(request):
     # Yank project collection
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
+
+    # ------------------------------------------------------------------------
+    locations_qs = ProjectLocation.objects.filter(location_target__in=all_projects)
+
+    # Add the world
+    locations = [(unicode(""), unicode("World"))]
+
+    group_locations = []
+    # Add real countries
+    for location in locations_qs:
+        iso_code = location.country.iso_code.upper()
+        locations.append(
+            (
+                unicode([k for k, v in M49_HIERARCHY.iteritems() if iso_code in v].pop()),
+                unicode(location.country.name)
+            )
+        )
+        group_locations.append([k for k, v in M49_HIERARCHY.iteritems() if iso_code in v].pop())
+    # Add group locations
+    print group_locations
+
+    for group in group_locations:
+        print get_super(group)
+        # print [k for k, v in M49_HIERARCHY.iteritems() if group in v]
+
+
+    f.filters['location'].extra['choices'] = locations
+
+    # -----------------------
+    # print [k for k, v in M49_HIERARCHY.iteritems() if 'SE' in v]
+    # print f.filters['location'].extra['choices']
+    # f.filters['location'].extra['choices'] = (
+    #     (u'1', u'Uranus'),
+    #     (u'2', u'Mars')
+    # )
+
+    # ------------------------------------------------------------------------
+
     sorted_projects = f.qs.distinct().order_by(sorting)
 
     # Build page
