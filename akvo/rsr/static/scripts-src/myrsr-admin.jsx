@@ -861,7 +861,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
             return short;
         }
         if (!long) {
-            return short
+            return short;
         }
         return short + ' (' + long + ')';
     }
@@ -2099,6 +2099,148 @@ function setUnsavedChangesMessage() {
     };
 }
 
+/* Set each "add organisation" link to open the "add organisation"
+** modal dialog on click */
+
+function setModalOnClicks() {
+    var links = document.querySelectorAll('.add-organisation');
+
+    for (var i = 0; i < links.length; i++) {
+        var el = links[i];
+
+        el.removeEventListener('click');
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            addOrgModal();
+        });
+    }
+}
+
+/* Show the "add organisation" modal dialog */
+
+function addOrgModal() {
+
+    /* Remove the modal */
+    function cancelModal() {
+        var modal = document.querySelector('.modalParent');
+        modal.parentNode.removeChild(modal);
+    }
+
+    /* Submit the new org */
+    function submitModal() {
+        if (allInputsFilled()) {
+            console.log("Do something to create the new organisation");
+
+            /* We will need to populate the "Reporting organisation" typeahead
+            ** with the new org if creation is successful. We can't do this
+            ** until we get back the ID of the new org.
+            */
+            cancelModal();
+        } else {
+            // call to allInputsFilled() shows error message
+        }
+    }
+
+    function allInputsFilled() {
+        var allInputsFilled = true;
+        var shortName = document.querySelector('#newOrgName');
+        var shortNameHelp = document.querySelector('#newOrgName + label + .helpBlock'); 
+        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
+        var longName = document.querySelector('#newOrgLongName');
+        var longNameHelp = document.querySelector('#newOrgLongName + label + .helpBlock'); 
+        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
+
+        if (shortName.value === '') {
+            shortNameHelp.textContent = 'Organisation name can\'t be blank';
+            elAddClass(shortNameHelp, 'help-block-error');
+            elAddClass(shortNameContainer, 'has-error');
+            allInputsFilled = false;
+        } else {
+            shortNameHelp.textContent = '';
+            elRemoveClass(shortNameHelp, 'help-block-error');
+            elRemoveClass(shortNameContainer, 'has-error');
+        }
+
+        if (longName.value === '') {
+            longNameHelp.textContent = 'Long name can\'t be blank';
+            elAddClass(longNameHelp, 'help-block-error');
+            elAddClass(longNameContainer, 'has-error');
+            allInputsFilled = false;
+        } else {
+            longNameHelp.textContent = '';
+            elRemoveClass(longNameHelp, 'help-block-error');
+            elRemoveClass(longNameContainer, 'has-error');
+        }     
+
+        return allInputsFilled;        
+    }
+
+    Modal = React.createClass({
+        render: function() {
+            return (
+                    <div className="modalParent">
+                        <div className="modalBackground">
+                        </div>
+                        <div className="modalContainer">
+                            <div className="orgModal">
+                                <div className="modalContents">
+                                    <h4>Add new organisation</h4>
+                                    <form>
+                                        <div className="row">
+                                            <div className="inputContainer newOrgName col-md-4">
+                                                <input id="newOrgName" type="text" className="form-control" maxLength="25"/>
+                                                <label for="newOrgName" className="control-label">Name: </label>
+                                                <p className="helpBlock"></p>
+                                            </div>
+                                            <div className="inputContainer newOrgLongName col-md-4">
+                                                <input id="newOrgLongName" type="text"  className="form-control" maxLength="75"/>
+                                                <label for="newOrgLongName" className="control-label">Long name: </label>
+                                                <p className="helpBlock"></p>
+                                            </div>
+                                            <div className="IATIOrgTypeContainer inputContainer  col-md-4">
+                                                <select id="newOrgIATIType"  className="form-control">
+                                                    <option value="10" selected>10 - Government</option>
+                                                    <option value="15">15 - Other Public Sector</option>
+                                                    <option value="21">21 - International NGO</option>
+                                                    <option value="22">22 - National NGO</option>
+                                                    <option value="23">23 - Regional NGO</option>
+                                                    <option value="30">30 - Public Private Partnership</option>
+                                                    <option value="40">40 - Multilateral</option>
+                                                    <option value="60">60 - Foundation</option>
+                                                    <option value="70">70 - Private Sector</option>
+                                                    <option value="80">80 - Academic, Training and Research</option>
+                                                </select>
+                                                <label for="newOrgIATIType" className="control-label">IATI organisation type: </label>
+                                                <p className="helpBlock"></p>                                                
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div className="controls">
+                                        <button className="modal-cancel btn btn-danger"
+                                                onClick={cancelModal}>
+                                        <span className="glyphicon glyphicon-trash"></span> Cancel
+                                        </button>
+                                        <button className="modal-save btn btn-success"
+                                                onClick={submitModal}>
+                                            <span className="glyphicon glyphicon-plus"></span> Add new organisation
+                                        </button>
+                                    </div>   
+                                </div>
+                            </div>                   
+                        </div>
+                    </div>
+            );
+        }
+    });
+
+    React.render(
+        <Modal />,
+
+        // Use the footer to prevent page scroll on injection
+        document.querySelector('footer')
+    );    
+}
+
 /* General Helper Functions */
 
 function elHasClass(el, className) {
@@ -2168,4 +2310,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
+    setModalOnClicks();
 });

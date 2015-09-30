@@ -861,7 +861,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
             return short;
         }
         if (!long) {
-            return short
+            return short;
         }
         return short + ' (' + long + ')';
     }
@@ -2099,6 +2099,148 @@ function setUnsavedChangesMessage() {
     };
 }
 
+/* Set each "add organisation" link to open the "add organisation"
+** modal dialog on click */
+
+function setModalOnClicks() {
+    var links = document.querySelectorAll('.add-organisation');
+
+    for (var i = 0; i < links.length; i++) {
+        var el = links[i];
+
+        el.removeEventListener('click');
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            addOrgModal();
+        });
+    }
+}
+
+/* Show the "add organisation" modal dialog */
+
+function addOrgModal() {
+
+    /* Remove the modal */
+    function cancelModal() {
+        var modal = document.querySelector('.modalParent');
+        modal.parentNode.removeChild(modal);
+    }
+
+    /* Submit the new org */
+    function submitModal() {
+        if (allInputsFilled()) {
+            console.log("Do something to create the new organisation");
+
+            /* We will need to populate the "Reporting organisation" typeahead
+            ** with the new org if creation is successful. We can't do this
+            ** until we get back the ID of the new org.
+            */
+            cancelModal();
+        } else {
+            // call to allInputsFilled() shows error message
+        }
+    }
+
+    function allInputsFilled() {
+        var allInputsFilled = true;
+        var shortName = document.querySelector('#newOrgName');
+        var shortNameHelp = document.querySelector('#newOrgName + label + .helpBlock'); 
+        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
+        var longName = document.querySelector('#newOrgLongName');
+        var longNameHelp = document.querySelector('#newOrgLongName + label + .helpBlock'); 
+        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
+
+        if (shortName.value === '') {
+            shortNameHelp.textContent = 'Organisation name can\'t be blank';
+            elAddClass(shortNameHelp, 'help-block-error');
+            elAddClass(shortNameContainer, 'has-error');
+            allInputsFilled = false;
+        } else {
+            shortNameHelp.textContent = '';
+            elRemoveClass(shortNameHelp, 'help-block-error');
+            elRemoveClass(shortNameContainer, 'has-error');
+        }
+
+        if (longName.value === '') {
+            longNameHelp.textContent = 'Long name can\'t be blank';
+            elAddClass(longNameHelp, 'help-block-error');
+            elAddClass(longNameContainer, 'has-error');
+            allInputsFilled = false;
+        } else {
+            longNameHelp.textContent = '';
+            elRemoveClass(longNameHelp, 'help-block-error');
+            elRemoveClass(longNameContainer, 'has-error');
+        }     
+
+        return allInputsFilled;        
+    }
+
+    Modal = React.createClass({displayName: 'Modal',
+        render: function() {
+            return (
+                    React.DOM.div( {className:"modalParent"}, 
+                        React.DOM.div( {className:"modalBackground"}
+                        ),
+                        React.DOM.div( {className:"modalContainer"}, 
+                            React.DOM.div( {className:"orgModal"}, 
+                                React.DOM.div( {className:"modalContents"}, 
+                                    React.DOM.h4(null, "Add new organisation"),
+                                    React.DOM.form(null, 
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer newOrgName col-md-4"}, 
+                                                React.DOM.input( {id:"newOrgName", type:"text", className:"form-control", maxLength:"25"}),
+                                                React.DOM.label( {for:"newOrgName", className:"control-label"}, "Name: " ),
+                                                React.DOM.p( {className:"helpBlock"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgLongName col-md-4"}, 
+                                                React.DOM.input( {id:"newOrgLongName", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {for:"newOrgLongName", className:"control-label"}, "Long name: " ),
+                                                React.DOM.p( {className:"helpBlock"})
+                                            ),
+                                            React.DOM.div( {className:"IATIOrgTypeContainer inputContainer  col-md-4"}, 
+                                                React.DOM.select( {id:"newOrgIATIType",  className:"form-control"}, 
+                                                    React.DOM.option( {value:"10", selected:true}, "10 - Government"),
+                                                    React.DOM.option( {value:"15"}, "15 - Other Public Sector"),
+                                                    React.DOM.option( {value:"21"}, "21 - International NGO"),
+                                                    React.DOM.option( {value:"22"}, "22 - National NGO"),
+                                                    React.DOM.option( {value:"23"}, "23 - Regional NGO"),
+                                                    React.DOM.option( {value:"30"}, "30 - Public Private Partnership"),
+                                                    React.DOM.option( {value:"40"}, "40 - Multilateral"),
+                                                    React.DOM.option( {value:"60"}, "60 - Foundation"),
+                                                    React.DOM.option( {value:"70"}, "70 - Private Sector"),
+                                                    React.DOM.option( {value:"80"}, "80 - Academic, Training and Research")
+                                                ),
+                                                React.DOM.label( {for:"newOrgIATIType", className:"control-label"}, "IATI organisation type: " ),
+                                                React.DOM.p( {className:"helpBlock"})                                                
+                                            )
+                                        )
+                                    ),
+                                    React.DOM.div( {className:"controls"}, 
+                                        React.DOM.button( {className:"modal-cancel btn btn-danger",
+                                                onClick:cancelModal}, 
+                                        React.DOM.span( {className:"glyphicon glyphicon-trash"}), " Cancel"
+                                        ),
+                                        React.DOM.button( {className:"modal-save btn btn-success",
+                                                onClick:submitModal}, 
+                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " Add new organisation"
+                                        )
+                                    )   
+                                )
+                            )                   
+                        )
+                    )
+            );
+        }
+    });
+
+    React.render(
+        Modal(null ),
+
+        // Use the footer to prevent page scroll on injection
+        document.querySelector('footer')
+    );    
+}
+
 /* General Helper Functions */
 
 function elHasClass(el, className) {
@@ -2168,4 +2310,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
+    setModalOnClicks();
 });
