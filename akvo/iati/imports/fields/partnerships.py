@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_or_create_organisation, get_text
 
 from django.conf import settings
@@ -62,11 +63,11 @@ def partnerships(iati_import, activity, project, activities_globals):
                 funding_amount = int(partnership.attrib['{%s}funding-amount' % settings.AKVO_NS])
                 funding_amount_present = True
             except ValueError as e:
-                add_log(iati_import, 'funding_amount', str(e), project, 2)
+                add_log(iati_import, 'funding_amount', str(e), project)
 
         if not (partner or partner_role):
             add_log(iati_import, 'participating_org', 'participating organisation or role missing',
-                    project, 1)
+                    project)
             continue
 
         ps, created = get_model('rsr', 'partnership').objects.get_or_create(

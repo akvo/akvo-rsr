@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log
 
 from datetime import datetime
@@ -51,21 +52,24 @@ def legacy_data(iati_import, activity, project, activities_globals):
             name = legacy.attrib['name']
             if len(name) > 100:
                 add_log(iati_import, 'legacy_data_name',
-                        'name too long (100 characters allowed)', project, 3)
+                        'name too long (100 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 name = name[:100]
 
         if 'value' in legacy.attrib.keys():
             value = legacy.attrib['value']
             if len(value) > 100:
                 add_log(iati_import, 'legacy_data_value',
-                        'value too long (100 characters allowed)', project, 3)
+                        'value too long (100 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 value = value[:100]
 
         if 'iati-equivalent' in legacy.attrib.keys():
             iati_equivalent = legacy.attrib['iati-equivalent']
             if len(iati_equivalent) > 100:
                 add_log(iati_import, 'legacy_data_iati_equivalent',
-                        'iati equivalent too long (100 characters allowed)', project, 3)
+                        'iati equivalent too long (100 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 iati_equivalent = iati_equivalent[:100]
 
         ld, created = get_model('rsr', 'legacydata').objects.get_or_create(

@@ -4,11 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ...rsr.models.iati_import_log import IatiImportLog
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 
 
-def add_log(iati_import, field, error, project=None, severity=2):
+def add_log(iati_import, field, error, project=None, severity=IatiImportLog.VALUE_NOT_SAVED):
     """
     Add a log entry in the IatiImportLog model.
 

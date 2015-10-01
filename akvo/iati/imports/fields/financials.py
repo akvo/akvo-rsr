@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_or_create_organisation, get_text
 
 from decimal import Decimal, InvalidOperation
@@ -117,7 +118,8 @@ def transactions(iati_import, activity, project, activities_globals):
             transaction_description = get_text(description_element, activities_globals['version'])
             if len(transaction_description) > 255:
                 add_log(iati_import, 'transaction_description',
-                        'description too long (255 characters allowed)', project, 3)
+                        'description too long (255 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 transaction_description = transaction_description[:255]
 
         prov_org_element = transaction.find('provider-org')
@@ -294,7 +296,8 @@ def transaction_sectors(iati_import, transaction_element, transaction, activitie
         sector_description = get_text(sector, activities_globals['version'])
         if len(sector_description) > 100:
             add_log(iati_import, 'transaction_sector_description',
-                    'description too long (100 characters allowed)', transaction.project, 3)
+                    'description too long (100 characters allowed)', transaction.project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             sector_description = sector_description[:100]
 
         sec, created = get_model('rsr', 'transactionsector').objects.get_or_create(
@@ -365,13 +368,15 @@ def budget_items(iati_import, activity, project, activities_globals):
                         pk=int(budget.attrib['{%s}type' % settings.AKVO_NS])
                     )
                 except (ValueError, ObjectDoesNotExist) as e:
-                    add_log(iati_import, 'budget_item_label', str(e), project, 3)
+                    add_log(iati_import, 'budget_item_label', str(e), project,
+                            IatiImportLog.VALUE_PARTLY_SAVED)
 
             if '{%s}label' % settings.AKVO_NS in budget.attrib.keys():
                 other_extra = budget.attrib['{%s}label' % settings.AKVO_NS]
                 if len(other_extra) > 30:
                     add_log(iati_import, 'budget_item_label',
-                            'label too long (30 characters allowed)', project, 3)
+                            'label too long (30 characters allowed)', project,
+                            IatiImportLog.VALUE_PARTLY_SAVED)
                     other_extra = other_extra[:30]
 
         period_start_element = budget.find('period-start')
@@ -487,7 +492,8 @@ def country_budget_items(iati_import, activity, project, activities_globals):
                 description_text = get_text(description_element, activities_globals['version'])
                 if len(description_text) > 100:
                     add_log(iati_import, 'country_budget_item_description',
-                            'description is too long (100 characters allowed)', project, 3)
+                            'description is too long (100 characters allowed)', project,
+                            IatiImportLog.VALUE_PARTLY_SAVED)
                     description_text = description_text[:100]
 
             try:

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from django.db.models import get_model
@@ -56,7 +57,7 @@ def results(iati_import, activity, project, activities_globals):
             result_title_text = get_text(result_title_element, activities_globals['version'])
             if len(result_title_text) > 255:
                 add_log(iati_import, 'result_title', 'title too long (255 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 result_title_text = result_title_text[:255]
 
         result_desc_element = result.find('description')
@@ -64,7 +65,8 @@ def results(iati_import, activity, project, activities_globals):
             result_description_text = get_text(result_desc_element, activities_globals['version'])
             if len(result_description_text) > 2000:
                 add_log(iati_import, 'result_description',
-                        'description too long (2000 characters allowed)', project, 3)
+                        'description too long (2000 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 result_description_text = result_description_text[:2000]
 
         if 'aggregation-status' in result.attrib.keys():
@@ -145,7 +147,7 @@ def indicators(iati_import, result_element, result, activities_globals):
             indicator_title_text = get_text(indicator_title_element, activities_globals['version'])
             if len(indicator_title_text) > 255:
                 add_log(iati_import, 'indicator_title', 'title too long (255 characters allowed)',
-                        result.project, 3)
+                        result.project, IatiImportLog.VALUE_PARTLY_SAVED)
                 indicator_title_text = indicator_title_text[:255]
 
         indicator_desc_element = indicator.find('description')
@@ -153,7 +155,8 @@ def indicators(iati_import, result_element, result, activities_globals):
             indicator_desc_text = get_text(indicator_desc_element, activities_globals['version'])
             if len(indicator_desc_text) > 2000:
                 add_log(iati_import, 'indicator_description',
-                        'description too long (2000 characters allowed)', result.project, 3)
+                        'description too long (2000 characters allowed)', result.project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 indicator_desc_text = indicator_desc_text[:2000]
 
         baseline_element = indicator.find('baseline')
@@ -180,7 +183,8 @@ def indicators(iati_import, result_element, result, activities_globals):
                 baseline_comment_text = get_text(baseline_comment, activities_globals['version'])
                 if len(baseline_comment_text) > 2000:
                     add_log(iati_import, 'indicator_baseline_comment',
-                            'comment too long (2000 characters allowed)', result.project, 3)
+                            'comment too long (2000 characters allowed)', result.project,
+                            IatiImportLog.VALUE_PARTLY_SAVED)
                     baseline_comment_text = baseline_comment_text[:2000]
 
         ind, created = get_model('rsr', 'indicator').objects.get_or_create(
@@ -266,7 +270,7 @@ def indicator_periods(iati_import, indicator_element, indicator, activities_glob
                 if len(target_comment) > 2000:
                     add_log(iati_import, 'indicator_period_target_comment',
                             'comment too long (2000 characters allowed',
-                            indicator.result.project, 3)
+                            indicator.result.project, IatiImportLog.VALUE_PARTLY_SAVED)
                     target_comment = target_comment[:2000]
 
         actual_element = period.find('actual')
@@ -284,7 +288,7 @@ def indicator_periods(iati_import, indicator_element, indicator, activities_glob
                 if len(actual_comment) > 2000:
                     add_log(iati_import, 'indicator_period_actual_comment',
                             'comment too long (2000 characters allowed',
-                            indicator.result.project, 3)
+                            indicator.result.project, IatiImportLog.VALUE_PARTLY_SAVED)
                     actual_comment = actual_comment[:2000]
 
         per, created = get_model('rsr', 'indicatorperiod').objects.get_or_create(

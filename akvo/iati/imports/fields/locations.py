@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
@@ -77,7 +78,7 @@ def locations(iati_import, activity, project, activities_globals):
             name = get_text(name_element, activities_globals['version'])
             if len(name) > 100:
                 add_log(iati_import, 'location_name', 'name is too long (100 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 name = name[:100]
 
         description_element = location.find('description')
@@ -85,7 +86,8 @@ def locations(iati_import, activity, project, activities_globals):
             description = get_text(description_element, activities_globals['version'])
             if len(description) > 255:
                 add_log(iati_import, 'location_decription',
-                        'description is too long (255 characters allowed)', project, 3)
+                        'description is too long (255 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 description = description[:255]
 
         act_description_element = location.find('activity-description')
@@ -93,7 +95,8 @@ def locations(iati_import, activity, project, activities_globals):
             activity_description = get_text(act_description_element, activities_globals['version'])
             if len(activity_description) > 255:
                 add_log(iati_import, 'location_activity_decription',
-                        'description is too long (255 characters allowed)', project, 3)
+                        'description is too long (255 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 activity_description = activity_description[:255]
 
         try:
@@ -287,7 +290,8 @@ def recipient_countries(iati_import, activity, project, activities_globals):
         text = get_text(country, activities_globals['version'])
         if len(text) > 50:
             add_log(iati_import, 'recipient_country_description',
-                    'description is too long (50 characters allowed)', project, 3)
+                    'description is too long (50 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             text = text[:50]
 
         if 'code' in country.attrib.keys():
@@ -295,7 +299,8 @@ def recipient_countries(iati_import, activity, project, activities_globals):
                 code = country.attrib['code'].upper()
             else:
                 add_log(iati_import, 'recipient_country_code',
-                        'code is too long (2 characters allowed)', project, 3)
+                        'code is too long (2 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
 
         try:
             if 'percentage' in country.attrib.keys():
@@ -347,7 +352,8 @@ def recipient_regions(iati_import, activity, project, activities_globals):
         text = get_text(region, activities_globals['version'])
         if len(text) > 50:
             add_log(iati_import, 'recipient_region_description',
-                    'decription is too long (50 characters allowed)', project, 3)
+                    'decription is too long (50 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             text = text[:50]
 
         if 'code' in region.attrib.keys():

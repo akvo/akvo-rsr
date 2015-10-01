@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
@@ -59,7 +60,7 @@ def sectors(iati_import, activity, project, activities_globals):
         text = get_text(sector, activities_globals['version'])
         if len(text) > 100:
             add_log(iati_import, 'sector', 'description is too long (100 characters allowed)',
-                    project, 3)
+                    project, IatiImportLog.VALUE_PARTLY_SAVED)
             text = text[:100]
 
         if 'code' in sector.attrib.keys():
@@ -130,7 +131,8 @@ def policy_markers(iati_import, activity, project, activities_globals):
         text = get_text(marker, activities_globals['version'])
         if len(text) > 255:
             add_log(iati_import, 'policy_marker',
-                    'description is too long (255 characters allowed)', project, 3)
+                    'description is too long (255 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             text = text[:255]
 
         if 'code' in marker.attrib.keys():

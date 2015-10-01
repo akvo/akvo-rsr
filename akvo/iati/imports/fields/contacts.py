@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from django.db.models import get_model
@@ -45,7 +46,7 @@ def contacts(iati_import, activity, project, activities_globals):
             organisation_text = get_text(organisation_element, activities_globals['version'])
             if len(organisation_text) > 100:
                 add_log(iati_import, 'contact', 'organisation is too long (100 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 organisation_text = organisation_text[:100]
 
         department_element = contact.find('department')
@@ -53,7 +54,7 @@ def contacts(iati_import, activity, project, activities_globals):
             department_text = get_text(department_element, activities_globals['version'])
             if len(department_text) > 100:
                 add_log(iati_import, 'contact', 'department is too long (100 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 department_text = department_text[:100]
 
         person_name_element = contact.find('person-name')
@@ -61,7 +62,7 @@ def contacts(iati_import, activity, project, activities_globals):
             person_name_text = get_text(person_name_element, activities_globals['version'])
             if len(person_name_text) > 100:
                 add_log(iati_import, 'contact', 'person name is too long (100 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 person_name_text = person_name_text[:100]
 
         job_title_element = contact.find('job-title')
@@ -69,7 +70,7 @@ def contacts(iati_import, activity, project, activities_globals):
             job_title_text = get_text(job_title_element, activities_globals['version'])
             if len(job_title_text) > 100:
                 add_log(iati_import, 'contact', 'job title is too long (100 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 job_title_text = job_title_text[:100]
 
         telephone_element = contact.find('telephone')
@@ -77,7 +78,7 @@ def contacts(iati_import, activity, project, activities_globals):
             telephone_text = telephone_element.text
             if len(telephone_text) > 30:
                 add_log(iati_import, 'contact', 'telephone is too long (30 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 telephone_text = telephone_text[:30]
 
         email_element = contact.find('email')
@@ -91,10 +92,11 @@ def contacts(iati_import, activity, project, activities_globals):
         mail_addr_element = contact.find('mailing-address')
         if not mail_addr_element is None:
             mailing_address_text = get_text(mail_addr_element, activities_globals['version'])
-            if len(telephone_text) > 255:
+            if len(mailing_address_text) > 255:
                 add_log(iati_import, 'contact',
-                        'mailing address is too long (30 characters allowed)', project, 3)
-                telephone_text = telephone_text[:255]
+                        'mailing address is too long (30 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
+                mailing_address_text = mailing_address_text[:255]
 
         c, created = get_model('rsr', 'projectcontact').objects.get_or_create(
             project=project,

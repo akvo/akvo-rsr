@@ -9,20 +9,20 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLTextField
 
-INFORMATIONAL = 0
-CRITICAL_ERROR = 1
-VALUE_NOT_SAVED = 2
-VALUE_PARTLY_SAVED = 3
-
-SEVERITY_CODES = (
-    (INFORMATIONAL, _(u'information')),
-    (CRITICAL_ERROR, _(u'critical error')),
-    (VALUE_NOT_SAVED, _(u'value not saved')),
-    (VALUE_PARTLY_SAVED, _(u'value partly saved')),
-)
-
 
 class IatiImportLog(models.Model):
+    INFORMATIONAL = 0
+    CRITICAL_ERROR = 1
+    VALUE_NOT_SAVED = 2
+    VALUE_PARTLY_SAVED = 3
+
+    SEVERITY_CODES = (
+        (INFORMATIONAL, _(u'information')),
+        (CRITICAL_ERROR, _(u'critical error')),
+        (VALUE_NOT_SAVED, _(u'value not saved')),
+        (VALUE_PARTLY_SAVED, _(u'value partly saved')),
+    )
+
     iati_import = models.ForeignKey(
         'IatiImport', verbose_name=_(u'iati_import'), related_name='iati_import_logs'
     )
@@ -43,4 +43,4 @@ class IatiImportLog(models.Model):
         verbose_name_plural = _(u'IATI import logs')
 
     def show_severity(self):
-        return dict(map(lambda x: x, SEVERITY_CODES))[self.severity]
+        return dict(map(lambda x: x, self.SEVERITY_CODES))[self.severity]

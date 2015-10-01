@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from django.conf import settings
@@ -69,7 +70,8 @@ def current_image(iati_import, activity, project, activities_globals):
                     image_caption = get_text(title_element, activities_globals['version'])
                     if len(image_caption) > 50:
                         add_log(iati_import, 'image_caption',
-                                'caption too long (50 characters allowed)', project, 3)
+                                'caption too long (50 characters allowed)', project,
+                                IatiImportLog.VALUE_PARTLY_SAVED)
                         image_caption = image_caption[:50]
 
                 if project.current_image_caption != image_caption:
@@ -86,7 +88,8 @@ def current_image(iati_import, activity, project, activities_globals):
                     ]
                     if len(image_credit) > 50:
                         add_log(iati_import, 'image_credit',
-                                'credit too long (50 characters allowed)', project, 3)
+                                'credit too long (50 characters allowed)', project,
+                                IatiImportLog.VALUE_PARTLY_SAVED)
                         image_credit = image_credit[:50]
 
                 if project.current_image_credit != image_credit:
@@ -147,7 +150,7 @@ def links(iati_import, activity, project, activities_globals):
             caption = get_text(title_element, activities_globals['version'])
             if len(caption) > 50:
                 add_log(iati_import, 'link_caption', 'caption is too long (50 characters allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 caption = caption[:50]
 
         link, created = get_model('rsr', 'link').objects.get_or_create(
@@ -222,7 +225,8 @@ def documents(iati_import, activity, project, activities_globals):
             title = get_text(title_element, activities_globals['version'])
             if len(title) > 100:
                 add_log(iati_import, 'document_link_title',
-                        'title is too long (100 characters allowed)', project, 3)
+                        'title is too long (100 characters allowed)', project,
+                        IatiImportLog.VALUE_PARTLY_SAVED)
                 title = title[:100]
 
             if activities_globals['version'][0] == '1' and \

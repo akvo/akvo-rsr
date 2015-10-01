@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ...rsr.models.iati_import_log import IatiImportLog
+from ...rsr.models.iati_project_import import IatiProjectImport
 from .utils import add_log
 
 from django.conf import settings
@@ -108,7 +110,8 @@ class IatiImportActivity(object):
         except ValidationError as e:
             message = u'Project could not be published: '
             message += str(e).replace("{'__all__': [", '').replace("u'", "'").replace(']}', '')
-            add_log(self.iati_import, 'publish', message, self.project, 1)
+            add_log(self.iati_import, 'publish', message, self.project,
+                    IatiImportLog.CRITICAL_ERROR)
 
     def log_changes(self):
         """
@@ -144,19 +147,20 @@ class IatiImportActivity(object):
                 organisation = get_model('rsr', 'organisation').objects.get(iati_org_id=iati_org_id)
             except ObjectDoesNotExist:
                 add_log(self.iati_import, 'reporting_org',
-                        'Reporting organisation not present in RSR.', self.project, 1)
+                        'Reporting organisation not present in RSR.', self.project,
+                        IatiImportLog.CRITICAL_ERROR)
                 return False
 
             if not organisation.can_become_reporting:
                 add_log(self.iati_import, 'reporting_org',
                         'Reporting organisation not allowed to import projects in RSR.',
-                        self.project, 1)
+                        self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
 
             if not self.created and sync_owner and sync_owner != organisation:
                 add_log(self.iati_import, 'sync_owner',
                         'Project has a different sync_owner (%s).' % sync_owner.name,
-                        self.project, 1)
+                        self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
 
             if 'secondary-reporter' in reporting_org_element.attrib.keys():
@@ -170,7 +174,8 @@ class IatiImportActivity(object):
             return True
 
         add_log(self.iati_import, 'reporting_org',
-                'Reporting organisation not correctly specified.', self.project, 1)
+                'Reporting organisation not correctly specified.', self.project,
+                IatiImportLog.CRITICAL_ERROR)
         return False
 
     def get_or_create_project(self):
@@ -184,7 +189,8 @@ class IatiImportActivity(object):
         if not iati_identifier_element is None and iati_identifier_element.text:
             iati_identifier = iati_identifier_element.text
         else:
-            add_log(self.iati_import, 'iati_identifier', 'identifier not found', self.project, 1)
+            add_log(self.iati_import, 'iati_identifier', 'identifier not found', self.project,
+                    IatiImportLog.CRITICAL_ERROR)
             return None, None
 
         project, created = get_model('rsr', 'project').objects.get_or_create(
@@ -220,15 +226,16 @@ class IatiImportActivity(object):
 
         # Get or create project
         self.project, self.created = self.get_or_create_project()
+        act = IatiProjectImport.CREATE_ACTION if self.created else IatiProjectImport.UPDATE_ACTION
         if self.project:
             self.project_import_log = get_model('rsr', 'iatiprojectimport').objects.create(
                 iati_import=self.iati_import,
                 project=self.project,
-                action=1 if self.created else 2
+                action=act
             )
 
             # Start import process
-            self.set_status(2)
+            self.set_status(IatiProjectImport.IN_PROGRESS_STATUS)
             self.set_start_date()
             if self.set_sync_owner():
                 for field in FIELDS:
@@ -239,16 +246,17 @@ class IatiImportActivity(object):
                             )
                     except Exception as e:
                         changes = []
-                        add_log(self.iati_import, field, str(e), self.project, 1)
+                        add_log(self.iati_import, field, str(e), self.project,
+                                IatiImportLog.CRITICAL_ERROR)
 
                     for change in changes:
                         self.changes.append(change)
 
                 self.log_changes()
                 self.publish()
-                self.set_status(3)
+                self.set_status(IatiProjectImport.COMPLETED_STATUS)
 
         # Import process finished
-        if not self.iati_import.status == 3:
-            self.set_status(4)
+        if not self.iati_import.status == IatiProjectImport.COMPLETED_STATUS:
+            self.set_status(IatiProjectImport.CANCELLED_STATUS)
         self.set_end_date()

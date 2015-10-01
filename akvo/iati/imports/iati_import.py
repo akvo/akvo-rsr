@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ...rsr.models.iati_import_log import IatiImportLog
+from ...rsr.models.iati_project_import import IatiProjectImport
 from .iati_import_activity import IatiImportActivity
 from .utils import add_log
 from akvo.utils import rsr_send_mail
@@ -38,11 +40,19 @@ class IatiImportProcess(object):
             msg_context={
                 'iati_import': self.iati_import,
                 'project_count': self.iati_import.iati_project_imports.count(),
-                'projects_created': self.iati_import.iati_project_imports.filter(action=1).count(),
-                'projects_updated': self.iati_import.iati_project_imports.filter(action=2).count(),
+                'projects_created': self.iati_import.iati_project_imports.filter(
+                    action=IatiProjectImport.CREATE_ACTION
+                ).count(),
+                'projects_updated': self.iati_import.iati_project_imports.filter(
+                    action=IatiProjectImport.UPDATE_ACTION
+                ).count(),
                 'projects_published': self.iati_import.projects.published().count(),
-                'critical_errors_log': self.iati_import.iati_import_logs.filter(severity=1),
-                'warnings_log': self.iati_import.iati_import_logs.filter(severity__in=[2, 3]),
+                'critical_errors_log': self.iati_import.iati_import_logs.filter(
+                    severity=IatiImportLog.CRITICAL_ERROR
+                ),
+                'warnings_log': self.iati_import.iati_import_logs.filter(severity__in=[
+                    IatiImportLog.VALUE_PARTLY_SAVED, IatiImportLog.VALUE_NOT_SAVED
+                ]),
                 'projects_log': self.iati_import.iati_project_imports.all()
             },
         )
@@ -79,10 +89,12 @@ class IatiImportProcess(object):
             if version in self.SUPPORTED_VERSIONS:
                 return True
             else:
-                add_log(self.iati_import, 'general', 'Version %s not supported' % version, None, 1)
+                add_log(self.iati_import, 'general', 'Version %s not supported' % version, None,
+                        IatiImportLog.CRITICAL_ERROR)
                 return False
         else:
-            add_log(self.iati_import, 'general', 'No version specified', None, 1)
+            add_log(self.iati_import, 'general', 'No version specified', None,
+                    IatiImportLog.CRITICAL_ERROR)
             return False
 
     def get_activities(self):
@@ -95,19 +107,23 @@ class IatiImportProcess(object):
             try:
                 parsed_xml = ElementTree.parse(self.file)
             except ElementTree.ParseError:
-                add_log(self.iati_import, 'general', 'Not a valid XML file', None, 1)
+                add_log(self.iati_import, 'general', 'Not a valid XML file', None,
+                        IatiImportLog.CRITICAL_ERROR)
                 return False
             activities = parsed_xml.getroot()
             if activities.tag == 'iati-activities':
                 activities_count = len(activities.findall('iati-activity'))
                 add_log(self.iati_import, 'general',
-                        'Retrieved %s activities' % str(activities_count) or '0', None, 0)
+                        'Retrieved %s activities' % str(activities_count) or '0', None,
+                        IatiImportLog.INFORMATIONAL)
                 return activities
             else:
-                add_log(self.iati_import, 'general', 'Not a valid IATI XML file', None, 1)
+                add_log(self.iati_import, 'general', 'Not a valid IATI XML file', None,
+                        IatiImportLog.CRITICAL_ERROR)
                 return False
         else:
-            add_log(self.iati_import, 'general', 'No file found', None, 1)
+            add_log(self.iati_import, 'general', 'No file found', None,
+                    IatiImportLog.CRITICAL_ERROR)
             return False
 
     def download_file(self):
@@ -120,7 +136,7 @@ class IatiImportProcess(object):
         filename = u'iati_import_%s.xml' % str(self.iati_import.pk)
         self.iati_import.local_file.save(filename, File(tmp_file))
         add_log(self.iati_import, 'general', 'Downloaded file from %s' % str(self.iati_import.url),
-                None, 0)
+                None, IatiImportLog.INFORMATIONAL)
 
     def check_file(self):
         """
@@ -129,12 +145,13 @@ class IatiImportProcess(object):
         """
         if self.iati_import.local_file:
             # File already present.
-            add_log(self.iati_import, 'general', 'File found', None, 0)
+            add_log(self.iati_import, 'general', 'File found', None, IatiImportLog.INFORMATIONAL)
             return True
 
         elif self.iati_import.url:
             # No file, but URL specified. Download file from URL.
-            add_log(self.iati_import, 'general', 'No file found, URL specified', None, 0)
+            add_log(self.iati_import, 'general', 'No file found, URL specified', None,
+                    IatiImportLog.INFORMATIONAL)
             try:
                 self.download_file()
                 return True
@@ -144,7 +161,8 @@ class IatiImportProcess(object):
                 return False
 
         # No file or URL specified.
-        add_log(self.iati_import, 'general', 'No file or URL specified', None, 1)
+        add_log(self.iati_import, 'general', 'No file or URL specified', None,
+                IatiImportLog.CRITICAL_ERROR)
         return False
 
     def __init__(self, iati_import):
@@ -183,7 +201,8 @@ class IatiImportProcess(object):
                             IatiImportActivity(self.iati_import, activity, self.user,
                                                self.activities.attrib)
                     except Exception as e:
-                        add_log(self.iati_import, 'activity_error', str(e), None, 1)
+                        add_log(self.iati_import, 'activity_error', str(e), None,
+                                IatiImportLog.CRITICAL_ERROR)
 
                 # Import process complete
                 self.set_status(4)

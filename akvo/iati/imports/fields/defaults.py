@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from django.db.models import get_model
@@ -343,7 +344,7 @@ def conditions(iati_import, activity, project, activities_globals):
             condition_text = get_text(condition, activities_globals['version'])
             if len(condition_text) > 100:
                 add_log(iati_import, 'condition', 'condition is too long (100 character allowed)',
-                        project, 3)
+                        project, IatiImportLog.VALUE_PARTLY_SAVED)
                 condition_text = condition_text[:100]
 
             cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(

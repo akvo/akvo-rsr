@@ -7,28 +7,28 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-CREATE_ACTION = 1
-UPDATE_ACTION = 2
-
-ACTION_CODES = (
-    (CREATE_ACTION, _(u'create')),
-    (UPDATE_ACTION, _(u'update'))
-)
-
-PENDING_STATUS = 1
-IN_PROGRESS_STATUS = 2
-COMPLETED_STATUS = 3
-CANCELLED_STATUS = 4
-
-STATUS_CODES = (
-    (PENDING_STATUS, _(u'pending')),
-    (IN_PROGRESS_STATUS, _(u'import in progress')),
-    (COMPLETED_STATUS, _(u'completed')),
-    (CANCELLED_STATUS, _(u'cancelled'))
-)
-
 
 class IatiProjectImport(models.Model):
+    CREATE_ACTION = 1
+    UPDATE_ACTION = 2
+
+    ACTION_CODES = (
+        (CREATE_ACTION, _(u'create')),
+        (UPDATE_ACTION, _(u'update'))
+    )
+
+    PENDING_STATUS = 1
+    IN_PROGRESS_STATUS = 2
+    COMPLETED_STATUS = 3
+    CANCELLED_STATUS = 4
+
+    STATUS_CODES = (
+        (PENDING_STATUS, _(u'pending')),
+        (IN_PROGRESS_STATUS, _(u'import in progress')),
+        (COMPLETED_STATUS, _(u'completed')),
+        (CANCELLED_STATUS, _(u'cancelled'))
+    )
+
     iati_import = models.ForeignKey(
         'IatiImport', verbose_name=_(u'iati_import'), related_name='iati_project_imports'
     )
@@ -50,7 +50,7 @@ class IatiProjectImport(models.Model):
         verbose_name_plural = _(u'IATI project imports')
 
     def show_action(self):
-        return dict(map(lambda x: x, ACTION_CODES))[self.action]
+        return dict(map(lambda x: x, self.ACTION_CODES))[self.action]
 
     def show_status(self):
-        return dict(map(lambda x: x, STATUS_CODES))[self.status]
+        return dict(map(lambda x: x, self.STATUS_CODES))[self.status]

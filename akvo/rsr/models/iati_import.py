@@ -14,22 +14,22 @@ from .iati_project_import import IatiProjectImport
 def file_path(self, filename):
     return 'db/iati_import/%s' % filename
 
-PENDING_STATUS = 1
-RETRIEVING_STATUS = 2
-IN_PROGRESS_STATUS = 3
-COMPLETED_STATUS = 4
-CANCELLED_STATUS = 5
-
-STATUS_CODES = (
-    (PENDING_STATUS, _(u'pending')),
-    (RETRIEVING_STATUS, _(u'retrieving file')),
-    (IN_PROGRESS_STATUS, _(u'import in progress')),
-    (COMPLETED_STATUS, _(u'completed')),
-    (CANCELLED_STATUS, _(u'cancelled'))
-)
-
 
 class IatiImport(models.Model):
+    PENDING_STATUS = 1
+    RETRIEVING_STATUS = 2
+    IN_PROGRESS_STATUS = 3
+    COMPLETED_STATUS = 4
+    CANCELLED_STATUS = 5
+
+    STATUS_CODES = (
+        (PENDING_STATUS, _(u'pending')),
+        (RETRIEVING_STATUS, _(u'retrieving file')),
+        (IN_PROGRESS_STATUS, _(u'import in progress')),
+        (COMPLETED_STATUS, _(u'completed')),
+        (CANCELLED_STATUS, _(u'cancelled'))
+    )
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports'
     )
@@ -62,4 +62,4 @@ class IatiImport(models.Model):
         verbose_name_plural = _(u'IATI imports')
 
     def show_status(self):
-        return dict(map(lambda x: x, STATUS_CODES))[self.status]
+        return dict(map(lambda x: x, self.STATUS_CODES))[self.status]

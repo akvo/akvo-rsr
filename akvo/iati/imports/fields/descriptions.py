@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.iati_import_log import IatiImportLog
 from ..utils import add_log, get_text
 
 from django.conf import settings
@@ -83,7 +84,8 @@ def title(iati_import, activity, project, activities_globals):
     if title_element is not None:
         title_text = get_text(title_element, activities_globals['version'])
         if len(title_text) > 45:
-            add_log(iati_import, 'title', 'title is too long (45 characters allowed)', project, 3)
+            add_log(iati_import, 'title', 'title is too long (45 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             _add_custom_field(project, 'title', title_text, 1)
             title_text = title_text[:45]
         else:
@@ -132,7 +134,8 @@ def subtitle(iati_import, activity, project, activities_globals):
             subtitle_text = get_text(subtitle_element, activities_globals['version'])
 
     if len(subtitle_text) > 75:
-        add_log(iati_import, 'subtitle', 'subtitle is too long (75 characters allowed)', project, 3)
+        add_log(iati_import, 'subtitle', 'subtitle is too long (75 characters allowed)', project,
+                IatiImportLog.VALUE_PARTLY_SAVED)
         _add_custom_field(project, 'subtitle', subtitle_text, 1)
         subtitle_text = subtitle_text[:75]
     else:
@@ -184,7 +187,7 @@ def project_plan_summary(iati_import, activity, project, activities_globals):
 
     if len(pps_text) > 400:
         add_log(iati_import, 'project_plan_summary', 'summary is too long (400 characters allowed)',
-                project, 3)
+                project, IatiImportLog.VALUE_PARTLY_SAVED)
         _add_custom_field(project, 'project_plan_summary', pps_text, 4)
         pps_text = pps_text[:400]
     else:
@@ -226,7 +229,8 @@ def goals_overview(iati_import, activity, project, activities_globals):
 
     if len(go_text) > 600:
         add_log(iati_import, 'goals_overview',
-                'goals overview is too long (600 characters allowed)', project, 3)
+                'goals overview is too long (600 characters allowed)', project,
+                IatiImportLog.VALUE_PARTLY_SAVED)
         _add_custom_field(project, 'goals_overview', go_text, 4)
         go_text = go_text[:600]
     else:
@@ -272,7 +276,8 @@ def background(iati_import, activity, project, activities_globals):
         background_text = get_text(background_element, activities_globals['version'])
         if len(background_text) > 1000:
             add_log(iati_import, 'background',
-                    'background is too long (1000 characters allowed)', project, 3)
+                    'background is too long (1000 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             _add_custom_field(project, 'background', background_text, 4)
             background_text = background_text[:1000]
         else:
@@ -318,7 +323,8 @@ def current_status(iati_import, activity, project, activities_globals):
         current_status_text = get_text(current_status_element, activities_globals['version'])
         if len(current_status_text) > 600:
             add_log(iati_import, 'current_status',
-                    'current status is too long (600 characters allowed)', project, 3)
+                    'current status is too long (600 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             _add_custom_field(project, 'current_status', current_status_text, 4)
             current_status_text = current_status_text[:600]
         else:
@@ -354,7 +360,8 @@ def target_group(iati_import, activity, project, activities_globals):
         target_group_text = get_text(target_group_element, activities_globals['version'])
         if len(target_group_text) > 600:
             add_log(iati_import, 'target_group',
-                    'target group is too long (600 characters allowed)', project, 3)
+                    'target group is too long (600 characters allowed)', project,
+                    IatiImportLog.VALUE_PARTLY_SAVED)
             _add_custom_field(project, 'target_group', target_group_text, 4)
             target_group_text = target_group_text[:600]
         else:
