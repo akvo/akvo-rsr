@@ -35,7 +35,7 @@ def unique_iati_id(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0032_auto_20150916_1400'),
+        ('rsr', '0032_auto_20151001_0956'),
     ]
 
     operations = [

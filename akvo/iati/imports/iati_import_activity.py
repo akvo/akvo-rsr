@@ -115,10 +115,9 @@ class IatiImportActivity(object):
         Log the changes that have been made to the project in the LogEntry model.
         """
         if self.changes:
-            message = u'IATI import, changed: '
-            for change in self.changes:
-                message += u'%s, ' % change
-            message = message[:-2] + u'.'
+            message = u"IATI import, changed: {}.".format(
+                u", ".join([change for change in self.changes])
+            )
 
             LogEntry.objects.log_action(
                 user_id=self.user.pk,

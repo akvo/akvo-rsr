@@ -9,12 +9,17 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLTextField
 
-SEVERITY_CODE = {
-    0: _(u'information'),
-    1: _(u'critical error'),
-    2: _(u'value not saved'),
-    3: _(u'value partly saved'),
-}
+INFORMATIONAL = 0
+CRITICAL_ERROR = 1
+VALUE_NOT_SAVED = 2
+VALUE_PARTLY_SAVED = 3
+
+SEVERITY_CODES = (
+    (INFORMATIONAL, _(u'information')),
+    (CRITICAL_ERROR, _(u'critical error')),
+    (VALUE_NOT_SAVED, _(u'value not saved')),
+    (VALUE_PARTLY_SAVED, _(u'value partly saved')),
+)
 
 
 class IatiImportLog(models.Model):
@@ -25,7 +30,8 @@ class IatiImportLog(models.Model):
         'Project', verbose_name=_(u'project'), related_name='iati_project_import_logs',
         blank=True, null=True
     )
-    severity = models.IntegerField(_(u'severity'), default=1)
+    severity = models.PositiveSmallIntegerField(_(u'severity'), choices=SEVERITY_CODES,
+                                                default=CRITICAL_ERROR)
     text = ValidXMLTextField(_(u'text'))
 
     def __unicode__(self):
@@ -37,7 +43,4 @@ class IatiImportLog(models.Model):
         verbose_name_plural = _(u'IATI import logs')
 
     def show_severity(self):
-        if not self.severity in SEVERITY_CODE.keys():
-            return _(u'unknown severity')
-        else:
-            return SEVERITY_CODE[int(self.severity)]
+        return dict(map(lambda x: x, SEVERITY_CODES))[self.severity]

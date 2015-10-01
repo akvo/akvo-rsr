@@ -14,14 +14,19 @@ from .iati_project_import import IatiProjectImport
 def file_path(self, filename):
     return 'db/iati_import/%s' % filename
 
+PENDING_STATUS = 1
+RETRIEVING_STATUS = 2
+IN_PROGRESS_STATUS = 3
+COMPLETED_STATUS = 4
+CANCELLED_STATUS = 5
 
-STATUS_CODE = {
-    1: _(u'pending'),
-    2: _(u'retrieving file'),
-    3: _(u'import in progress'),
-    4: _(u'completed'),
-    5: _(u'cancelled')
-}
+STATUS_CODES = (
+    (PENDING_STATUS, _(u'pending')),
+    (RETRIEVING_STATUS, _(u'retrieving file')),
+    (IN_PROGRESS_STATUS, _(u'import in progress')),
+    (COMPLETED_STATUS, _(u'completed')),
+    (CANCELLED_STATUS, _(u'cancelled'))
+)
 
 
 class IatiImport(models.Model):
@@ -30,7 +35,8 @@ class IatiImport(models.Model):
     )
     url = models.URLField(_(u'url'), blank=True)
     local_file = models.FileField(_(u'local file'), blank=True, upload_to=file_path)
-    status = models.PositiveSmallIntegerField(_(u'status'), default=1)
+    status = models.PositiveSmallIntegerField(_(u'status'), choices=STATUS_CODES,
+                                              default=PENDING_STATUS)
     start_date = models.DateTimeField(_(u'start date'), null=True, blank=True)
     end_date = models.DateTimeField(_(u'end date'), null=True, blank=True)
     projects = models.ManyToManyField(
@@ -56,7 +62,4 @@ class IatiImport(models.Model):
         verbose_name_plural = _(u'IATI imports')
 
     def show_status(self):
-        if not self.status in STATUS_CODE.keys():
-            return _(u'unknown status')
-        else:
-            return STATUS_CODE[int(self.status)]
+        return dict(map(lambda x: x, STATUS_CODES))[self.status]

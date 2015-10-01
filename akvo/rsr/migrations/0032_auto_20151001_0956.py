@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
                 ('local_file', models.FileField(upload_to=akvo.rsr.models.iati_import.file_path, verbose_name='local file', blank=True)),
-                ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status')),
+                ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status', choices=[(1, 'pending'), (2, 'retrieving file'), (3, 'import in progress'), (4, 'completed'), (5, 'cancelled')])),
                 ('start_date', models.DateTimeField(null=True, verbose_name='start date', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),
             ],
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             name='IatiImportLog',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('severity', models.IntegerField(default=1, verbose_name='severity')),
+                ('severity', models.PositiveSmallIntegerField(default=1, verbose_name='severity', choices=[(0, 'information'), (1, 'critical error'), (2, 'value not saved'), (3, 'value partly saved')])),
                 ('text', akvo.rsr.fields.ValidXMLTextField(verbose_name='text')),
                 ('iati_import', models.ForeignKey(related_name='iati_import_logs', verbose_name='iati_import', to='rsr.IatiImport')),
                 ('project', models.ForeignKey(related_name='iati_project_import_logs', verbose_name='project', blank=True, to='rsr.Project', null=True)),
@@ -49,8 +49,8 @@ class Migration(migrations.Migration):
             name='IatiProjectImport',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('action', models.PositiveSmallIntegerField(verbose_name='action')),
-                ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status')),
+                ('action', models.PositiveSmallIntegerField(verbose_name='action', choices=[(1, 'create'), (2, 'update')])),
+                ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status', choices=[(1, 'pending'), (2, 'import in progress'), (3, 'completed'), (4, 'cancelled')])),
                 ('start_date', models.DateTimeField(null=True, verbose_name='start date', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),
                 ('iati_import', models.ForeignKey(related_name='iati_project_imports', verbose_name='iati_import', to='rsr.IatiImport')),
@@ -108,12 +108,6 @@ class Migration(migrations.Migration):
             model_name='project',
             name='funds_needed',
             field=models.DecimalField(decimal_places=2, default=0, max_digits=14, blank=True, null=True, db_index=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='project',
-            name='iati_activity_id',
-            field=akvo.rsr.fields.ValidXMLCharField(max_length=100, blank=True, help_text='This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br>Note that \'projects\' in this form are the same as \'activities\' in IATI.<br><a href="http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier" target="_blank">How to create</a>', null=True, verbose_name='IATI Project Identifier', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
