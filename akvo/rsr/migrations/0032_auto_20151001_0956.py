@@ -116,4 +116,10 @@ class Migration(migrations.Migration):
             field=models.DecimalField(decimal_places=2, max_digits=14, blank=True, help_text='Enter the transaction amount.', null=True, verbose_name='value'),
             preserve_default=True,
         ),
+        migrations.AlterField(
+            model_name='project',
+            name='iati_activity_id',
+            field=akvo.rsr.fields.ValidXMLCharField(null=True, max_length=100, blank=True, help_text='This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br>Note that \'projects\' in this form are the same as \'activities\' in IATI.<br><a href="http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier" target="_blank">How to create</a>', verbose_name='IATI Project Identifier', db_index=True),
+            preserve_default=True,
+        ),
     ]
