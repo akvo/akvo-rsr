@@ -306,6 +306,15 @@ def main(request, project_id):
         reporting_org_info = None
     partners = _get_project_partners(project)
 
+    # Project update stuff:
+
+    """The list of updates for a single project."""
+    updates = ProjectUpdate.objects.select_related('project', 'user').filter(project=project)
+
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, updates, 10)
+
+
     context = {
         'accordion_data': json.dumps(accordion_data),
         'carousel_data': json.dumps(carousel_data),
@@ -314,6 +323,10 @@ def main(request, project_id):
         'updates': updates,
         'reporting_org': reporting_org_info,
         'partners': partners,
+        'updates': updates,
+        'page': page,
+        'page_range': page_range,
+        'paginator': paginator,        
     }
 
     return render(request, 'project_main.html', context)
