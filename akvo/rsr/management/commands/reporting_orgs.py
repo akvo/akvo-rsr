@@ -32,7 +32,7 @@ class Command(BaseCommand):
         fix_list = []
         i = 1
 
-        for project in Project.objects.all().prefetch_related(
+        for project in Project.objects.published().prefetch_related(
                 'partnerships', 'partnerships__organisation'
         ):
             if not i % 100:
