@@ -91,7 +91,7 @@ class Partnership(models.Model):
     iati_organisation_role = models.PositiveSmallIntegerField(
         u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
     funding_amount = models.DecimalField(
-        _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
+        _(u'funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
                     u'Note that it\'s only possible to indicate a funding amount for funding '
                     u'partners.')
