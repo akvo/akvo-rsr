@@ -62,8 +62,40 @@ def _project_directory_coll(request):
         return _all_projects()
     return _page_projects(page)
 
-def get_super(i):
-    return [k for k, v in M49_HIERARCHY.iteritems() if i in v].pop()
+def get_id_for_iso(i):
+    """From an iso_code e.g. 'SE' get the identifier."""
+    i = [k for k, v in M49_HIERARCHY.iteritems() if i in v]
+    if not i:
+        return None
+    else:
+        return i.pop()
+
+def get_locations(location, locations):
+    """Based on one location (country or group as Europe) get all the"""
+    l = get_id_for_iso(location)
+    if isinstance(l, basestring):
+        return locations
+    elif l is 1:
+        return locations
+    elif l is None:
+        return locations
+    else:
+        locations.append(l)
+        return get_locations(l, locations)
+
+def location_choices(qs):
+    """From a queryset get possible location filter choices"""
+    locations_qs = ProjectLocation.objects.filter(
+        location_target__in=qs).order_by('country__id').distinct('country__id')
+
+    locations = []
+    for location in locations_qs:
+        country = get_id_for_iso(location.country.iso_code.upper())
+        locations.append(country)
+        locations.extend(get_locations(country, []))
+
+    choices = [tup for tup in M49_CODES if any(unicode(i) in tup for i in locations)]
+    return  [M49_CODES[0]] + choices # Add the world to the choices
 
 
 def directory(request):
@@ -86,42 +118,8 @@ def directory(request):
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
 
-    # ------------------------------------------------------------------------
-    locations_qs = ProjectLocation.objects.filter(location_target__in=all_projects)
-
-    # Add the world
-    locations = [(unicode(""), unicode("World"))]
-
-    group_locations = []
-    # Add real countries
-    for location in locations_qs:
-        iso_code = location.country.iso_code.upper()
-        locations.append(
-            (
-                unicode([k for k, v in M49_HIERARCHY.iteritems() if iso_code in v].pop()),
-                unicode(location.country.name)
-            )
-        )
-        group_locations.append([k for k, v in M49_HIERARCHY.iteritems() if iso_code in v].pop())
-    # Add group locations
-    print group_locations
-
-    for group in group_locations:
-        print get_super(group)
-        # print [k for k, v in M49_HIERARCHY.iteritems() if group in v]
-
-
-    f.filters['location'].extra['choices'] = locations
-
-    # -----------------------
-    # print [k for k, v in M49_HIERARCHY.iteritems() if 'SE' in v]
-    # print f.filters['location'].extra['choices']
-    # f.filters['location'].extra['choices'] = (
-    #     (u'1', u'Uranus'),
-    #     (u'2', u'Mars')
-    # )
-
-    # ------------------------------------------------------------------------
+    # Swap default filter to a filtered one
+    f.filters['location'].extra['choices'] = location_choices(all_projects)
 
     sorted_projects = f.qs.distinct().order_by(sorting)
 

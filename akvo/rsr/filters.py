@@ -106,9 +106,6 @@ class ProjectFilter(django_filters.FilterSet):
         fields = ['status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
 
-    def __init__(self, *args, **kwargs):
-        super(ProjectFilter, self).__init__(*args, **kwargs)
-
 
 class ProjectUpdateFilter(django_filters.FilterSet):
 
