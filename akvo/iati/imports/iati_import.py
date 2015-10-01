@@ -33,7 +33,7 @@ class IatiImportProcess(object):
         rsr_send_mail(
             email_addresses,
             subject='iati_import/import_done_subject.txt',
-            message='iati_import/import_done_message.html',
+            message='iati_import/import_done_message.txt',
             subject_context={
                 'iati_import': self.iati_import
             },
@@ -55,6 +55,7 @@ class IatiImportProcess(object):
                 ]),
                 'projects_log': self.iati_import.iati_project_imports.all()
             },
+            html_message='iati_import/import_done_message.html'
         )
 
     def set_start_date(self):
