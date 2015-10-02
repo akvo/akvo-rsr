@@ -365,10 +365,12 @@ def user_management(request):
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
     else:
-        organisations = user.employers.approved().organisations().content_owned_organisations()
-        allowed_orgs = [org for org in organisations if user.has_perm('rsr.user_management', org)]
-        # TODO: need QS
-        employments = allowed_orgs.employments().exclude(user=user).select_related().\
+        organisations_list = user.employers.approved().organisations().content_owned_organisations()
+        for count, org in enumerate(organisations_list):
+            if not user.has_perm('rsr.user_management', org):
+                organisations_list.pop(count)
+        organisations = Organisation.objects.filter(pk__in=[org.pk for org in organisations_list])
+        employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
 
     q = request.GET.get('q')

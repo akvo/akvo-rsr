@@ -244,15 +244,16 @@ class Organisation(TimestampsMixin, models.Model):
 
         def content_owned_organisations(self):
             """
-            Return a list of Organisation objects of which these organisations are the
-            content owner.
+            Returns a list of Organisations of which these organisations are the content owner.
             Includes self, is recursive.
             """
-            organisations = set()
+            org_set = set()
+
             for org in self:
-                for co_orgs in org.content_owned_organisations():
-                    organisations.add(co_orgs)
-            return list(organisations)
+                for co_org in org.content_owned_organisations():
+                    org_set.add(co_org)
+
+            return list(org_set)
 
     def __unicode__(self):
         return self.name
@@ -306,18 +307,19 @@ class Organisation(TimestampsMixin, models.Model):
 
     def content_owned_organisations(self):
         """
-        Return a list of Organisation objects of which this organisation is the content owner.
-        Includes self, is recursive.
+        Returns a list of Organisations of which this organisation is the content owner.
+        Includes self and is recursive.
         """
         org_set = set()
         org_set.add(self)
-        self_content_owned = list(Organisation.objects.filter(content_owner=self))
 
-        while self_content_owned:
-            org = self_content_owned.pop()
+        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
+
+        while self_content_owned_list:
+            org = self_content_owned_list.pop()
             org_set.add(org)
-            for add_org in org.content_owned_organisations():
-                org_set.add(add_org)
+            for co_org in org.content_owned_organisations():
+                org_set.add(co_org)
 
         return list(org_set)
 
