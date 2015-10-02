@@ -14,7 +14,7 @@ from ..viewsets import BaseRSRViewSet
 class ProjectViewSet(BaseRSRViewSet):
 
     """
-    Viewset providing extra Project data.
+    Viewset providing Project data.
 
     Allowed parameters are:
     __limit__ (default 30, max 100),
