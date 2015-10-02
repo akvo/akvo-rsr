@@ -2133,7 +2133,9 @@ function addOrgModal() {
             // TODO: Check if name or long_name already exist
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
+
             form_data = serialize(form);
+            form_data = form_data.replace('iati_org_id=&', 'iati_org_id=null&');
 
             api_url = '/rest/v1/organisation/?format=json';
 
@@ -2143,10 +2145,13 @@ function addOrgModal() {
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
             request.onload = function() {
-                if (request.status >= 200 && request.status < 400) {
-                    var response;
+                if (request.status === 201) {
+                    var response, organisation_id;
                     response = JSON.parse(request.responseText);
+                    organisation_id = response.id;
+
                     // TODO: Add organisation to all organisation typeaheads
+
 
                     return false;
                 } else {
@@ -2156,9 +2161,7 @@ function addOrgModal() {
 
             request.onerror = function() {
                 // There was a connection error of some sort
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
 
-                finishSave(step, message);
                 return false;
             };
 
