@@ -2552,7 +2552,7 @@ body {
     position: fixed;
     top: 20%;
     right: 100px;
-    bottom: 30%;
+    bottom: 20%;
     left: 100px;
     z-index: 1032;
 
@@ -2564,13 +2564,22 @@ body {
         right: 5px;
         left: 5px;        
     }
+    @media only screen and (max-height: 900px) {
+        top: 10%;
+        bottom: 10%;
+    }
+    @media only screen and (max-height: 700px) {
+        top: 5%;
+        bottom: 5%;
+    }
 
     .orgModal {
         width: 100%;
         max-width: 800px;
+        max-height: 100%;
         margin: auto;
         background-color: white;    
-        overflow-y: auto;
+        overflow-y: scroll;
         position: relative;
         @include border-radius(5px);        
 

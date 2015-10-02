@@ -1978,7 +1978,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   position: fixed;
   top: 20%;
   right: 100px;
-  bottom: 30%;
+  bottom: 20%;
   left: 100px;
   z-index: 1032; }
   @media only screen and (max-width: 768px) {
@@ -1989,12 +1989,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     .modalContainer {
       right: 5px;
       left: 5px; } }
+  @media only screen and (max-height: 900px) {
+    .modalContainer {
+      top: 10%;
+      bottom: 10%; } }
+  @media only screen and (max-height: 700px) {
+    .modalContainer {
+      top: 5%;
+      bottom: 5%; } }
   .modalContainer .orgModal {
     width: 100%;
     max-width: 800px;
+    max-height: 100%;
     margin: auto;
     background-color: white;
-    overflow-y: auto;
+    overflow-y: scroll;
     position: relative;
     -moz-border-radius: 5px;
     -o-border-radius: 5px;
