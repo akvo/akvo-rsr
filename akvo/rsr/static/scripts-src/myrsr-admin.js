@@ -950,17 +950,17 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     setPageCompletionPercentage();
 }
 
-function loadAsync(url, retryCount, retryLimit, callback) {
+function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
     var xmlHttp;
 
     // If we already have the response cached, don't fetch it again
-    if (responses[url] !== null) {
+    if (responses[url] !== null && !forceReloadOrg) {
         callback(responses[url]);
         return;
     }
 
     // If the response is in localStorage, don't fetch it again
-    if (localStorageResponses !== null && localStorageResponses !== '') {
+    if (localStorageResponses !== null && localStorageResponses !== '' && !forceReloadOrg) {
         if (localStorageResponses[url] !== undefined) {
             var response = localStorageResponses[url];
 
@@ -1240,7 +1240,7 @@ function getOnClick(pName, parentElement) {
     return onclick;
 }
 
-function updateTypeaheads() {
+function updateTypeaheads(forceReloadOrg) {
     var els, filterOption, labelText, helpText, API, inputType;
 
     els1 = document.querySelectorAll('.related-project-input');
@@ -1269,7 +1269,7 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-provider-org-input');
     labelText = defaultValues.provider_org_label;
@@ -1279,7 +1279,7 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-receiver-org-input');
     labelText = defaultValues.recipient_org_label;
@@ -1289,16 +1289,26 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
-    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType) {
+    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
         for (var i = 0; i < els.length; i++) {
             var el = els[i];
 
             // Check if we've already rendered this typeahead
             if (elHasClass(el, 'has-typeahead')) {
+                if (forceReloadOrg) {
 
-                continue;
+                    // Remove the existing typeahead, then build a new
+                    // one with the reloaded API response
+                    var child = el.querySelector('div');
+                    el.removeChild(child);
+                } else {
+
+                    // Typeahead exists and we don't need to reload the API response.
+                    // Do nothing.
+                    continue;                    
+                }
             }
 
             var childSelector = el.getAttribute('data-child-id');
@@ -1320,14 +1330,14 @@ function updateTypeaheads() {
                 valueId = el.getAttribute('data-value');
             }
 
-            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType);
+            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
             cb();
         }
     }
 
-    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType) {
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
         var output = function() {
-            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType));
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
         };
 
         return output;
@@ -2145,8 +2155,11 @@ function addOrgModal() {
 
             request.onload = function() {
                 if (request.status === 201) {
-                    // TODO: Add organisation to all organisation typeaheads
-                    updateTypeaheads();
+
+                    // This flag forces the fetching of a fresh API response
+                    var forceReloadOrg = true;
+
+                    updateTypeaheads(forceReloadOrg);
                     cancelModal();
                 } else if (request.status === 400) {
                     var response;
