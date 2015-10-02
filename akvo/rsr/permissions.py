@@ -27,9 +27,7 @@ def is_org_admin(user, obj):
             if not obj:
                 return True
             elif isinstance(obj, Organisation):
-                if obj == employment.organisation:
-                    return True
-                elif obj in employment.organisation.partners():
+                if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
@@ -112,9 +110,7 @@ def is_org_project_editor(user, obj):
             if not obj:
                 return True
             elif isinstance(obj, Organisation):
-                if obj == employment.organisation:
-                    return True
-                elif obj in employment.organisation.partners():
+                if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
