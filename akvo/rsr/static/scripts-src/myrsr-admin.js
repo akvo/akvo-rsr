@@ -2127,7 +2127,6 @@ function setModalOnClicks() {
 }
 
 /* Show the "add organisation" modal dialog */
-
 function addOrgModal() {
 
     /* Remove the modal */
@@ -2139,12 +2138,15 @@ function addOrgModal() {
     /* Submit the new org */
     function submitModal() {
         if (allInputsFilled()) {
-            var api_url, request, form, form_data;
+            var api_url, request, form, form_data, reporting_org_id;
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
 
             form_data = serialize(form);
             form_data = form_data.replace('iati_org_id=&', '');
+
+            reporting_org_id = document.querySelector('#reportingOrganisation').getAttributeNode("value").value;
+            form_data += '&content_owner=' + reporting_org_id;
 
             api_url = '/rest/v1/organisation/?format=json';
 
