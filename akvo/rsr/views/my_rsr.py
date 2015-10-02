@@ -361,15 +361,14 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    if user.is_support and user.is_admin:
+    if user.is_admin or user.is_superuser:
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
     else:
-        organisations = user.employers.approved().organisations()
-        for org in organisations:
-            if not user.has_perm('rsr.user_management', org):
-                organisations = organisations.exclude(pk=org.pk)
-        employments = organisations.employments().exclude(user=user).select_related().\
+        organisations = user.employers.approved().organisations().content_owned_organisations()
+        allowed_orgs = [org for org in organisations if user.has_perm('rsr.user_management', org)]
+        # TODO: need QS
+        employments = allowed_orgs.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
 
     q = request.GET.get('q')

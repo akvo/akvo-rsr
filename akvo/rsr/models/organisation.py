@@ -242,6 +242,18 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
+        def content_owned_organisations(self):
+            """
+            Return a list of Organisation objects of which these organisations are the
+            content owner.
+            Includes self, is recursive.
+            """
+            organisations = set()
+            for org in self:
+                for co_orgs in org.content_owned_organisations():
+                    organisations.add(co_orgs)
+            return list(organisations)
+
     def __unicode__(self):
         return self.name
 
