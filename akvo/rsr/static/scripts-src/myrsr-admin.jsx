@@ -2128,9 +2128,9 @@ function addOrgModal() {
 
     /* Submit the new org */
     function submitModal() {
-        if (allInputsFilled()) {
-            var api_url, request, message, form, form_data;
-            // TODO: Check if name or long_name already exist
+        if (allInputsFilled() && checkExistingNames(document.querySelector('#newOrgName'),
+                                                    document.querySelector('#newOrgLongName'))) {
+            var api_url, request, form, form_data;
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
 
@@ -2146,12 +2146,8 @@ function addOrgModal() {
 
             request.onload = function() {
                 if (request.status === 201) {
-                    var response, organisation_id;
-                    response = JSON.parse(request.responseText);
-                    organisation_id = response.id;
-
                     // TODO: Add organisation to all organisation typeaheads
-
+                    updateTypeaheads();
 
                     return false;
                 } else {
@@ -2168,25 +2164,64 @@ function addOrgModal() {
             request.send(form_data);
 
             cancelModal();
-        } else {
-            // call to allInputsFilled() shows error message
         }
     }
 
+    function checkExistingNames(name, long_name) {
+        // TODO: this also doesn't work yet
+
+        var org_json, response;
+        var nameContainer = document.querySelector('.inputContainer.newOrgName');
+        var nameHelp = document.querySelector('#newOrgName + label + .help-block');
+        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
+        var longNameHelp = document.querySelector('#newOrgLongName + label + .help-block');
+
+        org_json = '';
+
+        if (responses[orgsAPIUrl] !== null) {
+            org_json = responses[orgsAPIUrl]
+        } else if (localStorageResponses !== null && localStorageResponses !== '') {
+            if (localStorageResponses[orgsAPIUrl] !== undefined) {
+                response = localStorageResponses[url];
+                org_json = response.json
+            }
+        }
+
+        if (org_json !== '') {
+            org_json = JSON.parse(org_json);
+            org_json.forEach(function(o) {
+                if (name == o.name) {
+                    nameHelp.textContent = 'Organisation name already exists';
+                    elAddClass(nameHelp, 'help-block-error');
+                    elAddClass(nameContainer, 'has-error');
+                    return false;
+                }
+                if (long_name == o.long_name) {
+                    longNameHelp.textContent = 'Organisation long name already exists';
+                    elAddClass(longNameHelp, 'help-block-error');
+                    elAddClass(longNameContainer, 'has-error');
+                    return false;
+                }
+            });
+        }
+
+        return true;
+    }
+
     function allInputsFilled() {
-        var allInputsFilled = true;
+        var allInputsFilledBoolean = true;
         var shortName = document.querySelector('#newOrgName');
-        var shortNameHelp = document.querySelector('#newOrgName + label + .helpBlock'); 
+        var shortNameHelp = document.querySelector('#newOrgName + label + .help-block');
         var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
         var longName = document.querySelector('#newOrgLongName');
-        var longNameHelp = document.querySelector('#newOrgLongName + label + .helpBlock'); 
+        var longNameHelp = document.querySelector('#newOrgLongName + label + .help-block');
         var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
         if (shortName.value === '') {
             shortNameHelp.textContent = 'Organisation name can\'t be blank';
             elAddClass(shortNameHelp, 'help-block-error');
             elAddClass(shortNameContainer, 'has-error');
-            allInputsFilled = false;
+            allInputsFilledBoolean = false;
         } else {
             shortNameHelp.textContent = '';
             elRemoveClass(shortNameHelp, 'help-block-error');
@@ -2197,14 +2232,14 @@ function addOrgModal() {
             longNameHelp.textContent = 'Long name can\'t be blank';
             elAddClass(longNameHelp, 'help-block-error');
             elAddClass(longNameContainer, 'has-error');
-            allInputsFilled = false;
+            allInputsFilledBoolean = false;
         } else {
             longNameHelp.textContent = '';
             elRemoveClass(longNameHelp, 'help-block-error');
             elRemoveClass(longNameContainer, 'has-error');
         }     
 
-        return allInputsFilled;        
+        return allInputsFilledBoolean;
     }
 
     Modal = React.createClass({
@@ -2215,33 +2250,33 @@ function addOrgModal() {
                         </div>
                         <div className="modalContainer">
                             <div className="orgModal">
-                                <div className="modalContents">
+                                <div className="modalContents projectEdit">
                                     <h4>Add new organisation</h4>
                                     <form id="addOrganisation">
                                         <div className="row">
                                             <div className="inputContainer newOrgName col-md-6">
                                                 <input name="name" id="newOrgName" type="text" className="form-control" maxLength="25"/>
-                                                <label htmlFor="newOrgName" className="control-label">Name: </label>
-                                                <p className="helpBlock"></p>
+                                                <label htmlFor="newOrgName" className="control-label">Name<span className="mandatory">*</span></label>
+                                                <p className="help-block">Max 25 characters</p>
                                             </div>
                                             <div className="inputContainer newOrgLongName col-md-6">
                                                 <input name="long_name" id="newOrgLongName" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgLongName" className="control-label">Long name: </label>
-                                                <p className="helpBlock"></p>
+                                                <label htmlFor="newOrgLongName" className="control-label">Long name<span className="mandatory">*</span></label>
+                                                <p className="help-block">Max 75 characters</p>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div className="inputContainer newOrgIatiId col-md-6">
                                                 <input name="iati_org_id" id="newOrgIatiId" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgIatiId" className="control-label">Organisation IATI identifier: </label>
-                                                <p className="helpBlock"></p>
+                                                <label htmlFor="newOrgIatiId" className="control-label">Organisation IATI identifier</label>
+                                                <p className="help-block">Max 75 characters</p>
                                             </div>
                                             <div className="IATIOrgTypeContainer inputContainer col-md-6">
                                                 <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
-                                                    <option value="10">10 - Government</option>
+                                                    <option value="10" selected>10 - Government</option>
                                                     <option value="15">15 - Other Public Sector</option>
                                                     <option value="21">21 - International NGO</option>
-                                                    <option value="22" selected>22 - National NGO</option>
+                                                    <option value="22">22 - National NGO</option>
                                                     <option value="23">23 - Regional NGO</option>
                                                     <option value="30">30 - Public Private Partnership</option>
                                                     <option value="40">40 - Multilateral</option>
@@ -2249,8 +2284,15 @@ function addOrgModal() {
                                                     <option value="70">70 - Private Sector</option>
                                                     <option value="80">80 - Academic, Training and Research</option>
                                                 </select>
-                                                <label for="newOrgIATIType" className="control-label">Organisation type: </label>
-                                                <p className="helpBlock"></p>                                                
+                                                <label htmlFor="newOrgIATIType" className="control-label">Organisation type<span className="mandatory">*</span></label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="descriptionContainer inputContainer col-md-12">
+                                                <label className="control-label" htmlFor="description">Description</label>
+                                                <textarea id="description" className="form-control" name="description" rows="3"></textarea>
+                                                <p className="help-block"></p>
                                             </div>
                                         </div>
                                     </form>
