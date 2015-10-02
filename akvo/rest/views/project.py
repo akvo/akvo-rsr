@@ -13,8 +13,39 @@ from ..viewsets import BaseRSRViewSet
 
 class ProjectViewSet(BaseRSRViewSet):
 
-    """The project resource."""
+    """
+    Viewset providing extra Project data.
 
+    Allowed parameters are:
+    __limit__ (default 30, max 100),
+    __title__ (exact or icontains),
+    __subtitle__ (exact or icontains),
+    __status__,
+    __language__,
+    __currency__,
+    __date_start_planned__ (exact, gt, gte, lt or lte),
+    __date_start_actual__ (exact, gt, gte, lt or lte),
+    __date_end_planned__ (exact, gt, gte, lt or lte),
+    __date_end_actual__ (exact, gt, gte, lt or lte),
+    __created_at__ (exact, gt, gte, lt or lte),
+    __last_modified_at__ (exact, gt, gte, lt or lte),
+    __sync_owner__,
+    __iati_activity_id__ (exact or icontains),
+    __hierarchy__,
+    __project_scope__,
+    __collaboration_type__,
+    __default_aid_type__,
+    __default_finance_type__,
+    __default_flow_type__,
+    __default_tied_status__,
+    __budget__ (exact, gt, gte, lt or lte),
+    __funds__ (exact, gt, gte, lt or lte),
+    __funds_needed__ (exact, gt, gte, lt or lte),
+    __categories__ (exact, in),
+    __partners__ (exact, in),
+    __keywords__ (exact, in), and
+    __publishingstatus\__status__.
+    """
     queryset = Project.objects.select_related(
         'publishingstatus'
         ).prefetch_related(
@@ -50,39 +81,39 @@ class ProjectViewSet(BaseRSRViewSet):
         'categories': ['exact', 'in', ],
         'partners': ['exact', 'in', ],
         'keywords': ['exact', 'in', ],
+        'publishingstatus__status': ['exact', ],
     }
 
 
 class ProjectExtraViewSet(ProjectViewSet):
 
-    """Viewset providing extra data and limited filtering for Up in one go."""
+    """
+    Viewset providing extra Project data.
+
+    Allowed parameters are:
+    __limit__ (default 30, max 100),
+    __partnerships\__organisation__ (filter on organisation ID), and
+    __publishingstatus\__status__ (filter on publishing status)
+    """
 
     queryset = Project.objects.select_related(
         'publishing_status').prefetch_related(
             'sectors', 'partnerships')
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
-
-    def get_queryset(self):
-        """Allow simple filtering on selected fields.
-
-        Note that the query string keys "mimic" the django ORM filtering syntax,
-        but in reality are totally arbitrary. Some day we might get full filtering
-        using the Django ORM and then it'd nice if those custom filters continue to work.
-        """
-        queryset = self.queryset
-        organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
-        if organisation is not None:
-            queryset = queryset.filter(partnerships__organisation=organisation).distinct()
-        published = self.request.QUERY_PARAMS.get('publishingstatus__status', None)
-        if published in [PublishingStatus.STATUS_PUBLISHED, PublishingStatus.STATUS_UNPUBLISHED]:
-            queryset = queryset.filter(publishingstatus__status=published)
-        return queryset
+    filter_fields = ('partnerships__organisation', 'publishingstatus__status')
 
 
 class ProjectUpViewSet(ProjectViewSet):
 
-    """Viewset providing extra data and limited filtering for Up in one go."""
+    """
+    Viewset providing extra data and limited filtering for Up in one go.
+
+    Allowed parameters are:
+    __limit__ (default 30, max 100),
+    __partnerships\__organisation__ (filter on organisation ID), and
+    __publishingstatus\__status__ (filter on publishing status)
+    """
 
     queryset = Project.objects.select_related(
         'primary_location',
@@ -95,19 +126,4 @@ class ProjectUpViewSet(ProjectViewSet):
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 100
-
-    def get_queryset(self):
-        """Allow simple filtering on selected fields.
-
-        Note that the query string keys "mimic" the django ORM filtering syntax,
-        but in reality are totally arbitrary. Some day we might get full filtering
-        using the Django ORM and then it'd nice if those custom filters continue to work.
-        """
-        queryset = self.queryset
-        organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
-        if organisation is not None:
-            queryset = queryset.filter(partnerships__organisation=organisation).distinct()
-        published = self.request.QUERY_PARAMS.get('publishingstatus__status', None)
-        if published in [PublishingStatus.STATUS_PUBLISHED, PublishingStatus.STATUS_UNPUBLISHED]:
-            queryset = queryset.filter(publishingstatus__status=published)
-        return queryset
+    filter_fields = ('partnerships__organisation', 'publishingstatus__status')
