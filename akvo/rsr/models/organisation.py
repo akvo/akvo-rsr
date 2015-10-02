@@ -292,6 +292,23 @@ class Organisation(TimestampsMixin, models.Model):
                 partner_types.append(ps.iati_organisation_role_label())
         return partner_types
 
+    def content_owned_organisations(self):
+        """
+        Return a list of Organisation objects of which this organisation is the content owner.
+        Includes self, is recursive.
+        """
+        org_set = set()
+        org_set.add(self)
+        self_content_owned = list(Organisation.objects.filter(content_owner=self))
+
+        while self_content_owned:
+            org = self_content_owned.pop()
+            org_set.add(org)
+            for add_org in org.content_owned_organisations():
+                org_set.add(add_org)
+
+        return list(org_set)
+
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
         published projects."""
