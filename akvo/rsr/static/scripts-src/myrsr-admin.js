@@ -2128,14 +2128,13 @@ function addOrgModal() {
 
     /* Submit the new org */
     function submitModal() {
-        if (allInputsFilled() && checkExistingNames(document.querySelector('#newOrgName'),
-                                                    document.querySelector('#newOrgLongName'))) {
+        if (allInputsFilled()) {
             var api_url, request, form, form_data;
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
 
             form_data = serialize(form);
-            form_data = form_data.replace('iati_org_id=&', 'iati_org_id=null&');
+            form_data = form_data.replace('iati_org_id=&', '');
 
             api_url = '/rest/v1/organisation/?format=json';
 
@@ -2148,77 +2147,45 @@ function addOrgModal() {
                 if (request.status === 201) {
                     // TODO: Add organisation to all organisation typeaheads
                     updateTypeaheads();
+                    cancelModal();
+                } else if (request.status === 400) {
+                    var response;
+                    response = JSON.parse(request.responseText);
 
+                    for (var key in response) {
+                        if (response.hasOwnProperty(key)) {
+                            var input = form.querySelector('#' + key);
+                            var inputParent = input.parentNode;
+                            var inputHelp = inputParent.querySelector('.help-block');
+                            inputHelp.textContent = response[key];
+                            elAddClass(inputHelp, 'help-block-error');
+                            elAddClass(inputParent, 'has-error');
+                        }
+                    }
                     return false;
                 } else {
-                    // We reached our target server, but it returned an error
+                    elAddClass(form, 'has-error');
+                    return false;
                 }
             };
 
             request.onerror = function() {
                 // There was a connection error of some sort
-
+                elAddClass(form, 'has-error');
                 return false;
             };
 
             request.send(form_data);
-
-            cancelModal();
         }
-    }
-
-    function checkExistingNames(name, long_name) {
-        // TODO: this also doesn't work yet
-
-        var org_json, response;
-        var nameContainer = document.querySelector('.inputContainer.newOrgName');
-        var nameHelp = document.querySelector('#newOrgName + label + .help-block');
-        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
-        var longNameHelp = document.querySelector('#newOrgLongName + label + .help-block');
-
-        org_json = '';
-
-        if (responses[orgsAPIUrl] !== null) {
-            org_json = responses[orgsAPIUrl]
-        } else if (localStorageResponses !== null && localStorageResponses !== '') {
-            if (localStorageResponses[orgsAPIUrl] !== undefined) {
-                response = localStorageResponses[url];
-                org_json = response.json
-            }
-        }
-
-        if (org_json !== '') {
-            try {
-                org_json = JSON.parse(org_json);
-            } catch (err) {
-                // org_json is already JSON
-            }
-            org_json.results.forEach(function(o) {
-                if (name == o.name) {
-                    nameHelp.textContent = 'Organisation name already exists';
-                    elAddClass(nameHelp, 'help-block-error');
-                    elAddClass(nameContainer, 'has-error');
-                    return false;
-                }
-                if (long_name == o.long_name) {
-                    longNameHelp.textContent = 'Organisation long name already exists';
-                    elAddClass(longNameHelp, 'help-block-error');
-                    elAddClass(longNameContainer, 'has-error');
-                    return false;
-                }
-            });
-        }
-
-        return true;
     }
 
     function allInputsFilled() {
         var allInputsFilledBoolean = true;
-        var shortName = document.querySelector('#newOrgName');
-        var shortNameHelp = document.querySelector('#newOrgName + label + .help-block');
+        var shortName = document.querySelector('#name');
+        var shortNameHelp = document.querySelector('#name + label + .help-block');
         var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
-        var longName = document.querySelector('#newOrgLongName');
-        var longNameHelp = document.querySelector('#newOrgLongName + label + .help-block');
+        var longName = document.querySelector('#long_name');
+        var longNameHelp = document.querySelector('#long_name + label + .help-block');
         var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
         if (shortName.value === '') {
@@ -2258,20 +2225,23 @@ function addOrgModal() {
                                     React.DOM.h4(null, "Add new organisation"),
                                     React.DOM.form( {id:"addOrganisation"}, 
                                         React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {id:"addOrgGeneralError", className:"col-md-12"})
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"inputContainer newOrgName col-md-6"}, 
-                                                React.DOM.input( {name:"name", id:"newOrgName", type:"text", className:"form-control", maxLength:"25"}),
+                                                React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
                                                 React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, "Name",React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"}, "Max 25 characters")
                                             ),
                                             React.DOM.div( {className:"inputContainer newOrgLongName col-md-6"}, 
-                                                React.DOM.input( {name:"long_name", id:"newOrgLongName", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
                                                 React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, "Long name",React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"}, "Max 75 characters")
                                             )
                                         ),
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"inputContainer newOrgIatiId col-md-6"}, 
-                                                React.DOM.input( {name:"iati_org_id", id:"newOrgIatiId", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
                                                 React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, "Organisation IATI identifier"),
                                                 React.DOM.p( {className:"help-block"}, "Max 75 characters")
                                             ),

@@ -80,7 +80,7 @@ class Organisation(TimestampsMixin, models.Model):
                     u'(25 characters).')
     )
     long_name = ValidXMLCharField(
-        _(u'long name'), blank=True, max_length=75, unique=True,
+        _(u'long name'), max_length=75, db_index=True, unique=True,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
@@ -88,8 +88,8 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(
-        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, null=True,
-        blank=True
+        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
+        null=True
     )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,
@@ -98,7 +98,8 @@ class Organisation(TimestampsMixin, models.Model):
                                 u'matches your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
+        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
+        unique=True, default=None
     )
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False,
