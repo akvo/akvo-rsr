@@ -31,7 +31,8 @@ def is_org_admin(user, obj):
                     return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif isinstance(obj, Employment) and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
@@ -93,7 +94,8 @@ def is_org_user_manager(user, obj):
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif type(obj) == Employment and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif type(obj) == Project and obj in employment.organisation.all_projects():
                 return True
