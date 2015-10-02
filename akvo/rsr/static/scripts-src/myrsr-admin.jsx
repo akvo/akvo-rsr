@@ -2188,8 +2188,12 @@ function addOrgModal() {
         }
 
         if (org_json !== '') {
-            org_json = JSON.parse(org_json);
-            org_json.forEach(function(o) {
+            try {
+                org_json = JSON.parse(org_json);
+            } catch (err) {
+                // org_json is already JSON
+            }
+            org_json.results.forEach(function(o) {
                 if (name == o.name) {
                     nameHelp.textContent = 'Organisation name already exists';
                     elAddClass(nameHelp, 'help-block-error');
