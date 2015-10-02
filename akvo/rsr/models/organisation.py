@@ -88,7 +88,8 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(
-        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
+        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, null=True,
+        blank=True
     )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,

@@ -2129,12 +2129,41 @@ function addOrgModal() {
     /* Submit the new org */
     function submitModal() {
         if (allInputsFilled()) {
-            console.log("Do something to create the new organisation");
+            var api_url, request, message, form, form_data;
+            // TODO: Check if name or long_name already exist
+            // Add organisation to DB
+            form = document.querySelector('#addOrganisation');
+            form_data = serialize(form);
 
-            /* We will need to populate the "Reporting organisation" typeahead
-            ** with the new org if creation is successful. We can't do this
-            ** until we get back the ID of the new org.
-            */
+            api_url = '/rest/v1/organisation/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var response;
+                    response = JSON.parse(request.responseText);
+                    // TODO: Add organisation to all organisation typeaheads
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
+
+                finishSave(step, message);
+                return false;
+            };
+
+            request.send(form_data);
+
             cancelModal();
         } else {
             // call to allInputsFilled() shows error message
@@ -2185,24 +2214,31 @@ function addOrgModal() {
                             <div className="orgModal">
                                 <div className="modalContents">
                                     <h4>Add new organisation</h4>
-                                    <form>
+                                    <form id="addOrganisation">
                                         <div className="row">
-                                            <div className="inputContainer newOrgName col-md-4">
-                                                <input id="newOrgName" type="text" className="form-control" maxLength="25"/>
-                                                <label for="newOrgName" className="control-label">Name: </label>
+                                            <div className="inputContainer newOrgName col-md-6">
+                                                <input name="name" id="newOrgName" type="text" className="form-control" maxLength="25"/>
+                                                <label htmlFor="newOrgName" className="control-label">Name: </label>
                                                 <p className="helpBlock"></p>
                                             </div>
-                                            <div className="inputContainer newOrgLongName col-md-4">
-                                                <input id="newOrgLongName" type="text"  className="form-control" maxLength="75"/>
-                                                <label for="newOrgLongName" className="control-label">Long name: </label>
+                                            <div className="inputContainer newOrgLongName col-md-6">
+                                                <input name="long_name" id="newOrgLongName" type="text"  className="form-control" maxLength="75"/>
+                                                <label htmlFor="newOrgLongName" className="control-label">Long name: </label>
                                                 <p className="helpBlock"></p>
                                             </div>
-                                            <div className="IATIOrgTypeContainer inputContainer  col-md-4">
-                                                <select id="newOrgIATIType"  className="form-control">
-                                                    <option value="10" selected>10 - Government</option>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer newOrgIatiId col-md-6">
+                                                <input name="iati_org_id" id="newOrgIatiId" type="text"  className="form-control" maxLength="75"/>
+                                                <label htmlFor="newOrgIatiId" className="control-label">Organisation IATI identifier: </label>
+                                                <p className="helpBlock"></p>
+                                            </div>
+                                            <div className="IATIOrgTypeContainer inputContainer col-md-6">
+                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
+                                                    <option value="10">10 - Government</option>
                                                     <option value="15">15 - Other Public Sector</option>
                                                     <option value="21">21 - International NGO</option>
-                                                    <option value="22">22 - National NGO</option>
+                                                    <option value="22" selected>22 - National NGO</option>
                                                     <option value="23">23 - Regional NGO</option>
                                                     <option value="30">30 - Public Private Partnership</option>
                                                     <option value="40">40 - Multilateral</option>
@@ -2210,7 +2246,7 @@ function addOrgModal() {
                                                     <option value="70">70 - Private Sector</option>
                                                     <option value="80">80 - Academic, Training and Research</option>
                                                 </select>
-                                                <label for="newOrgIATIType" className="control-label">IATI organisation type: </label>
+                                                <label for="newOrgIATIType" className="control-label">Organisation type: </label>
                                                 <p className="helpBlock"></p>                                                
                                             </div>
                                         </div>
