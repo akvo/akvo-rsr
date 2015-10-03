@@ -8,21 +8,24 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 import json
+import django_filters
 
 from sorl.thumbnail import get_thumbnail
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import remove_empty_querydict_items, ProjectFilter, filter_m49
+from ..filters import remove_empty_querydict_items, ProjectFilter, filter_m49, get_orgs
 from ..m49 import M49_CODES, M49_HIERARCHY
 from ..models import Invoice, Project, ProjectLocation, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
 from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
+from .organisation import _page_organisations
 
 
 ###############################################################################
@@ -97,6 +100,8 @@ def location_choices(qs):
     choices = [tup for tup in M49_CODES if any(unicode(i) in tup for i in locations)]
     return  [M49_CODES[0]] + choices # Add the world to the choices
 
+def org_choices(qs):
+    return [('', _('All'))] + list(qs.values_list('id', 'name', flat=False))
 
 def directory(request):
     """The project list view."""
@@ -118,8 +123,14 @@ def directory(request):
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
 
-    # Swap default filter to a filtered one
+    # Filter location filter list to only populated locations
     f.filters['location'].extra['choices'] = location_choices(all_projects)
+    # Swap to choice filter for RSR pages
+    if request.rsr_page:
+        f.filters['organisation'] = django_filters.MultipleChoiceFilter(
+            choices=org_choices(_page_organisations(request.rsr_page)),
+            label=_(u'organisation'),
+            name='partners__id')
 
     sorted_projects = f.qs.distinct().order_by(sorting)
 
