@@ -103,9 +103,10 @@ def location_choices(qs):
 
     locations = []
     for location in locations_qs:
-        country = get_id_for_iso(location.country.iso_code.upper())
-        locations.append(country)
-        locations.extend(get_locations(country, []))
+        if location.country:
+            country = get_id_for_iso(location.country.iso_code.upper())
+            locations.append(country)
+            locations.extend(get_locations(country, []))
 
     choices = [tup for tup in M49_CODES if any(
         unicode(i) in tup for i in locations)]
@@ -189,7 +190,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
 class OrganisationFilter(django_filters.FilterSet):
 
-    location = django_filters.ChoiceFilter(
+    location = django_filters.MultipleChoiceFilter(
         choices=M49_CODES,
         label=_(u'location'),
         action=filter_m49)
