@@ -19,9 +19,9 @@ from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import remove_empty_querydict_items, ProjectFilter, filter_m49, get_orgs
-from ..m49 import M49_CODES, M49_HIERARCHY
-from ..models import Invoice, Project, ProjectLocation, ProjectUpdate, Organisation
+from ..filters import (build_choices, location_choices, ProjectFilter,
+                       remove_empty_querydict_items)
+from ..models import Invoice, Project, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
 from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
@@ -65,43 +65,6 @@ def _project_directory_coll(request):
         return _all_projects()
     return _page_projects(page)
 
-def get_id_for_iso(i):
-    """From an iso_code e.g. 'SE' get the identifier."""
-    i = [k for k, v in M49_HIERARCHY.iteritems() if i in v]
-    if not i:
-        return None
-    else:
-        return i.pop()
-
-def get_locations(location, locations):
-    """Based on one location (country or group as Europe) get all the"""
-    l = get_id_for_iso(location)
-    if isinstance(l, basestring):
-        return locations
-    elif l is 1:
-        return locations
-    elif l is None:
-        return locations
-    else:
-        locations.append(l)
-        return get_locations(l, locations)
-
-def location_choices(qs):
-    """From a queryset get possible location filter choices"""
-    locations_qs = ProjectLocation.objects.filter(
-        location_target__in=qs).order_by('country__id').distinct('country__id')
-
-    locations = []
-    for location in locations_qs:
-        country = get_id_for_iso(location.country.iso_code.upper())
-        locations.append(country)
-        locations.extend(get_locations(country, []))
-
-    choices = [tup for tup in M49_CODES if any(unicode(i) in tup for i in locations)]
-    return  [M49_CODES[0]] + choices # Add the world to the choices
-
-def org_choices(qs):
-    return [('', _('All'))] + list(qs.values_list('id', 'name', flat=False))
 
 def directory(request):
     """The project list view."""
@@ -128,7 +91,7 @@ def directory(request):
     # Swap to choice filter for RSR pages
     if request.rsr_page:
         f.filters['organisation'] = django_filters.MultipleChoiceFilter(
-            choices=org_choices(_page_organisations(request.rsr_page)),
+            choices=build_choices(_page_organisations(request.rsr_page)),
             label=_(u'organisation'),
             name='partners__id')
 
