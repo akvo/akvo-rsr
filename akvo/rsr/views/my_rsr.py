@@ -139,6 +139,13 @@ def my_projects(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
+    # User's organisations that are reportable
+    approved_employments = request.user.approved_employments()
+    reportable_organisations = []
+    for employment in approved_employments:
+        if employment.organisation.can_become_reporting:
+            reportable_organisations.append(employment.organisation.id)
+
     context = {
         'organisations': organisations,
         'new_project_custom_fields': new_project_custom_fields,
@@ -147,6 +154,7 @@ def my_projects(request):
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
+        'reportable_organisations': reportable_organisations
     }
     return render(request, 'myrsr/my_projects.html', context)
 
