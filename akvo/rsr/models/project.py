@@ -29,7 +29,7 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLA
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
-from ...iati.mandatory_fields import check_export_fields
+from ...iati.checks.mandatory_fields import check_export_fields
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -242,7 +242,8 @@ class Project(TimestampsMixin, models.Model):
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True,
+        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True, null=True,
+        unique=True,
         help_text=_(u'This should be the official unique IATI Identifier for the project. '
                     u'The identifier consists of the IATI organisation identifier and the '
                     u'(organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. '
@@ -284,14 +285,14 @@ class Project(TimestampsMixin, models.Model):
     # denormalized data
     # =================
     budget = models.DecimalField(
-        _(u'project budget'), max_digits=10, decimal_places=2, blank=True, null=True,
+        _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0
     )
     funds = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     funds_needed = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     last_update = models.ForeignKey(
         ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL

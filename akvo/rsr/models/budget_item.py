@@ -46,7 +46,7 @@ class BudgetItem(models.Model):
     )
     # Translators: This is the amount of an budget item in a currency (€ or $)
     amount = models.DecimalField(
-        _(u'amount'), max_digits=10, decimal_places=2, null=True, blank=True
+        _(u'amount'), max_digits=14, decimal_places=2, null=True, blank=True
     )
 
     # Extra IATI fields

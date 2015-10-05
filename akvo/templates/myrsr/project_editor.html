@@ -97,7 +97,7 @@
                 <div class="col-md-10">
                     <div class="progress overview">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only"></span>
+                            <span class="sr-only"></span><span class="progress-percentage"></span>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
         {% else %}
             <div class="progress overview">
                 <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <span class="sr-only"></span>
+                    <span class="sr-only"></span><span class="progress-percentage"></span>
                 </div>
             </div>
         {% endif %}
@@ -484,8 +484,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
-                            <p class="help-block hidden" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href="mailto:support@akvo.org">support@akvo.org</a> to request to add it to the database.' %}</p>
+                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
+                            <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
+                            <button class="add-organisation btn btn-success">
+                                <span class="glyphicon glyphicon-plus"></span> {% trans 'Add a new organisation' %}
+                            </button>
                             <div class="partner-container" id="partner-container">
                                 {% for partnership in project.partnerships.all %}
                                     {% include "myrsr/project_editor_partials/partner_input.html" with key=partnership.pk %}
@@ -1099,7 +1102,7 @@
                 <div class="myPanel borderBottom" id="panel10">
                     <div class="formStep stepTen">
                         <div class="toggleSection">
-                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}{% if user.is_superuser or user.is_rsr_admin %} {% trans 'and keywords' %}{% endif %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
+                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments and keywords' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTen">
                         <div class="progress">
@@ -1115,21 +1118,19 @@
                                 <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
                                 <p class="help-block hidden">{% trans 'The project comments are only for internal use and will not be displayed anywhere on the project page.' %}</p>
                             </div>
-                            {% if user.is_superuser or user.is_rsr_admin %}
-                                <h5>{% trans 'Keywords' %}</h5>
-                                <div class="keyword-container" id="keyword-container">
-                                    {% for keyword in project.keywords.all %}
-                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key=keyword.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key='add-0' %}
-                                    {% endfor %}
+                            <h5>{% trans 'Keywords' %}</h5>
+                            <div class="keyword-container" id="keyword-container">
+                                {% for keyword in project.keywords.all %}
+                                    {% include "myrsr/project_editor_partials/keyword_input.html" with key=keyword.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/keyword_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-keyword" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-keyword" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
-                                    </div>
-                                </div>
-                            {% endif %}
+                            </div>
                             {% for customfield in custom_fields_section_10 %}
                                 <div id="custom_field-{{ customfield.pk }}">
                                     {% if customfield.type == 'text' %}
@@ -1184,8 +1185,6 @@
 
 {% block js %}
     {{ block.super }}
-
-    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js"></script>
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
     <script type="text/template" id="related-project-input">{% include "myrsr/project_editor_partials/related_project_input.html" %}</script>
@@ -1229,7 +1228,28 @@
             "provider_org_label": "{% trans 'Provider organisation' %}",
             "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
             "recipient_org_label": "{% trans 'Recipient organisation' %}",
-            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}"
+            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}",
+            "add_new_organisation": "{% trans 'Add new organisation' %}",
+            "name": "{% trans 'Name' %}",
+            "long_name": "{% trans 'Long name' %}",
+            "iati_org_id": "{% trans 'Organisation IATI identifier' %}",
+            "org_type": "{% trans 'Organisation type' %}",
+            "description": "{% trans 'Description' %}",
+            "cancel": "{% trans 'Cancel' %}",
+            "max": "{% trans 'Max' %}",
+            "characters": "{% trans 'characters' %}",
+            "blank_name": "{% trans 'Organisation name can not be blank' %}",
+            "blank_long_name": "{% trans 'Organisation long name can not be blank' %}",
+            "government": "{% trans 'Government' %}",
+            "other_public_sector": "{% trans 'Other Public Sector' %}",
+            "international_ngo": "{% trans 'International NGO' %}",
+            "national_ngo": "{% trans 'National NGO' %}",
+            "regional_ngo": "{% trans 'Regional NGO' %}",
+            "public_private_partnership": "{% trans 'Public Private Partnership' %}",
+            "multilateral": "{% trans 'Multilateral' %}",
+            "foundation": "{% trans 'Foundation' %}",
+            "private_sector": "{% trans 'Private Sector' %}",
+            "academic_training_research": "{% trans 'Academic, Training and Research' %}"
         }
     </script>
 

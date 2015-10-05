@@ -51,7 +51,7 @@ def typeahead_reporting_organisation(request):
 
 @api_view(['GET'])
 def typeahead_project(request):
-    projects = Project.objects.published()
+    projects = Project.objects.all().exclude(title='')
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )

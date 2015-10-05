@@ -30,7 +30,7 @@ class TypeaheadOrganisationSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            # 'long_name',
+            'long_name',
         )
 
 

@@ -80,7 +80,7 @@ class Organisation(TimestampsMixin, models.Model):
                     u'(25 characters).')
     )
     long_name = ValidXMLCharField(
-        _(u'long name'), blank=True, max_length=75, unique=True,
+        _(u'long name'), max_length=75, db_index=True, unique=True,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
@@ -88,7 +88,8 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(
-        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
+        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
+        null=True
     )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,
@@ -97,7 +98,8 @@ class Organisation(TimestampsMixin, models.Model):
                                 u'matches your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
+        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
+        unique=True, default=None
     )
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False,
@@ -242,6 +244,19 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
+        def content_owned_organisations(self):
+            """
+            Returns a list of Organisations of which these organisations are the content owner.
+            Includes self, is recursive.
+            """
+            org_set = set()
+
+            for org in self:
+                for co_org in org.content_owned_organisations():
+                    org_set.add(co_org)
+
+            return list(org_set)
+
     def __unicode__(self):
         return self.name
 
@@ -291,6 +306,24 @@ class Organisation(TimestampsMixin, models.Model):
             if ps.iati_organisation_role:
                 partner_types.append(ps.iati_organisation_role_label())
         return partner_types
+
+    def content_owned_organisations(self):
+        """
+        Returns a list of Organisations of which this organisation is the content owner.
+        Includes self and is recursive.
+        """
+        org_set = set()
+        org_set.add(self)
+
+        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
+
+        while self_content_owned_list:
+            org = self_content_owned_list.pop()
+            org_set.add(org)
+            for co_org in org.content_owned_organisations():
+                org_set.add(co_org)
+
+        return list(org_set)
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

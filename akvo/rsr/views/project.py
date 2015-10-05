@@ -20,7 +20,7 @@ from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
-from ...iati.iati_export import IatiXML
+from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 
 
