@@ -773,6 +773,23 @@ h4.detailedInfo {
     #map {
       display: none; } }
 
+#map-warning {
+  margin-top: -30px;
+  z-index: 99;
+  opacity: 0.8;
+  background: white;
+  margin-right: 15%;
+  margin-left: 15%;
+  padding: 5px;
+  border: solid 1px;
+  border-color: rgba(44, 42, 116, 0.2);
+  border-bottom: 0px;
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px; }
+  @media only screen and (max-width: 568px) {
+    #map-warning {
+      display: none; } }
+
 .searchContainer {
   position: relative; }
   .searchContainer #search .showFilters {
