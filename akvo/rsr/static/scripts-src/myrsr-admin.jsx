@@ -2204,7 +2204,7 @@ function addOrgModal() {
         var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
         if (shortName.value === '') {
-            shortNameHelp.textContent = 'Organisation name can\'t be blank';
+            shortNameHelp.textContent = defaultValues.blank_name;
             elAddClass(shortNameHelp, 'help-block-error');
             elAddClass(shortNameContainer, 'has-error');
             allInputsFilledBoolean = false;
@@ -2215,7 +2215,7 @@ function addOrgModal() {
         }
 
         if (longName.value === '') {
-            longNameHelp.textContent = 'Long name can\'t be blank';
+            longNameHelp.textContent = defaultValues.blank_long_name;
             elAddClass(longNameHelp, 'help-block-error');
             elAddClass(longNameContainer, 'has-error');
             allInputsFilledBoolean = false;
@@ -2237,7 +2237,7 @@ function addOrgModal() {
                         <div className="modalContainer">
                             <div className="orgModal">
                                 <div className="modalContents projectEdit">
-                                    <h4>Add new organisation</h4>
+                                    <h4>{defaultValues.add_new_organisation}</h4>
                                     <form id="addOrganisation">
                                         <div className="row">
                                             <div id="addOrgGeneralError" className="col-md-12"></div>
@@ -2245,41 +2245,41 @@ function addOrgModal() {
                                         <div className="row">
                                             <div className="inputContainer newOrgName col-md-6">
                                                 <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
-                                                <label htmlFor="newOrgName" className="control-label">Name<span className="mandatory">*</span></label>
-                                                <p className="help-block">Max 25 characters</p>
+                                                <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
+                                                <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
                                             </div>
                                             <div className="inputContainer newOrgLongName col-md-6">
                                                 <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgLongName" className="control-label">Long name<span className="mandatory">*</span></label>
-                                                <p className="help-block">Max 75 characters</p>
+                                                <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
+                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div className="inputContainer newOrgIatiId col-md-6">
                                                 <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgIatiId" className="control-label">Organisation IATI identifier</label>
-                                                <p className="help-block">Max 75 characters</p>
+                                                <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
+                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
                                             <div className="IATIOrgTypeContainer inputContainer col-md-6">
-                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
-                                                    <option value="10" selected>10 - Government</option>
-                                                    <option value="15">15 - Other Public Sector</option>
-                                                    <option value="21">21 - International NGO</option>
-                                                    <option value="22">22 - National NGO</option>
-                                                    <option value="23">23 - Regional NGO</option>
-                                                    <option value="30">30 - Public Private Partnership</option>
-                                                    <option value="40">40 - Multilateral</option>
-                                                    <option value="60">60 - Foundation</option>
-                                                    <option value="70">70 - Private Sector</option>
-                                                    <option value="80">80 - Academic, Training and Research</option>
+                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control" value="22">
+                                                    <option value="10">10 - {defaultValues.government}</option>
+                                                    <option value="15">15 - {defaultValues.other_public_sector}</option>
+                                                    <option value="21">21 - {defaultValues.international_ngo}</option>
+                                                    <option value="22">22 - {defaultValues.national_ngo}</option>
+                                                    <option value="23">23 - {defaultValues.regional_ngo}</option>
+                                                    <option value="30">30 - {defaultValues.public_private_partnership}</option>
+                                                    <option value="40">40 - {defaultValues.multilateral}</option>
+                                                    <option value="60">60 - {defaultValues.foundation}</option>
+                                                    <option value="70">70 - {defaultValues.private_sector}</option>
+                                                    <option value="80">80 - {defaultValues.academic_training_research}</option>
                                                 </select>
-                                                <label htmlFor="newOrgIATIType" className="control-label">Organisation type<span className="mandatory">*</span></label>
+                                                <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div className="descriptionContainer inputContainer col-md-12">
-                                                <label className="control-label" htmlFor="description">Description</label>
+                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
                                                 <textarea id="description" className="form-control" name="description" rows="3"></textarea>
                                                 <p className="help-block"></p>
                                             </div>
@@ -2288,11 +2288,11 @@ function addOrgModal() {
                                     <div className="controls">
                                         <button className="modal-cancel btn btn-danger"
                                                 onClick={cancelModal}>
-                                        <span className="glyphicon glyphicon-trash"></span> Cancel
+                                        <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
                                         </button>
                                         <button className="modal-save btn btn-success"
                                                 onClick={submitModal}>
-                                            <span className="glyphicon glyphicon-plus"></span> Add new organisation
+                                            <span className="glyphicon glyphicon-plus"></span> {defaultValues.add_new_organisation}
                                         </button>
                                     </div>   
                                 </div>

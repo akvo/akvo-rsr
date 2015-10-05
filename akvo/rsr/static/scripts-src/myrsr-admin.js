@@ -2204,7 +2204,7 @@ function addOrgModal() {
         var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
         if (shortName.value === '') {
-            shortNameHelp.textContent = 'Organisation name can\'t be blank';
+            shortNameHelp.textContent = defaultValues.blank_name;
             elAddClass(shortNameHelp, 'help-block-error');
             elAddClass(shortNameContainer, 'has-error');
             allInputsFilledBoolean = false;
@@ -2215,7 +2215,7 @@ function addOrgModal() {
         }
 
         if (longName.value === '') {
-            longNameHelp.textContent = 'Long name can\'t be blank';
+            longNameHelp.textContent = defaultValues.blank_long_name;
             elAddClass(longNameHelp, 'help-block-error');
             elAddClass(longNameContainer, 'has-error');
             allInputsFilledBoolean = false;
@@ -2237,7 +2237,7 @@ function addOrgModal() {
                         React.DOM.div( {className:"modalContainer"}, 
                             React.DOM.div( {className:"orgModal"}, 
                                 React.DOM.div( {className:"modalContents projectEdit"}, 
-                                    React.DOM.h4(null, "Add new organisation"),
+                                    React.DOM.h4(null, defaultValues.add_new_organisation),
                                     React.DOM.form( {id:"addOrganisation"}, 
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {id:"addOrgGeneralError", className:"col-md-12"})
@@ -2245,41 +2245,41 @@ function addOrgModal() {
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"inputContainer newOrgName col-md-6"}, 
                                                 React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
-                                                React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, "Name",React.DOM.span( {className:"mandatory"}, "*")),
-                                                React.DOM.p( {className:"help-block"}, "Max 25 characters")
+                                                React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 25 ", defaultValues.characters)
                                             ),
                                             React.DOM.div( {className:"inputContainer newOrgLongName col-md-6"}, 
                                                 React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
-                                                React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, "Long name",React.DOM.span( {className:"mandatory"}, "*")),
-                                                React.DOM.p( {className:"help-block"}, "Max 75 characters")
+                                                React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
                                             )
                                         ),
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"inputContainer newOrgIatiId col-md-6"}, 
                                                 React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
-                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, "Organisation IATI identifier"),
-                                                React.DOM.p( {className:"help-block"}, "Max 75 characters")
+                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, defaultValues.iati_org_id),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
                                             ),
                                             React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6"}, 
-                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
-                                                    React.DOM.option( {value:"10", selected:true}, "10 - Government"),
-                                                    React.DOM.option( {value:"15"}, "15 - Other Public Sector"),
-                                                    React.DOM.option( {value:"21"}, "21 - International NGO"),
-                                                    React.DOM.option( {value:"22"}, "22 - National NGO"),
-                                                    React.DOM.option( {value:"23"}, "23 - Regional NGO"),
-                                                    React.DOM.option( {value:"30"}, "30 - Public Private Partnership"),
-                                                    React.DOM.option( {value:"40"}, "40 - Multilateral"),
-                                                    React.DOM.option( {value:"60"}, "60 - Foundation"),
-                                                    React.DOM.option( {value:"70"}, "70 - Private Sector"),
-                                                    React.DOM.option( {value:"80"}, "80 - Academic, Training and Research")
+                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control", value:"22"}, 
+                                                    React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
+                                                    React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
+                                                    React.DOM.option( {value:"21"}, "21 - ", defaultValues.international_ngo),
+                                                    React.DOM.option( {value:"22"}, "22 - ", defaultValues.national_ngo),
+                                                    React.DOM.option( {value:"23"}, "23 - ", defaultValues.regional_ngo),
+                                                    React.DOM.option( {value:"30"}, "30 - ", defaultValues.public_private_partnership),
+                                                    React.DOM.option( {value:"40"}, "40 - ", defaultValues.multilateral),
+                                                    React.DOM.option( {value:"60"}, "60 - ", defaultValues.foundation),
+                                                    React.DOM.option( {value:"70"}, "70 - ", defaultValues.private_sector),
+                                                    React.DOM.option( {value:"80"}, "80 - ", defaultValues.academic_training_research)
                                                 ),
-                                                React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, "Organisation type",React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"})
                                             )
                                         ),
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"descriptionContainer inputContainer col-md-12"}, 
-                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, "Description"),
+                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, defaultValues.description),
                                                 React.DOM.textarea( {id:"description", className:"form-control", name:"description", rows:"3"}),
                                                 React.DOM.p( {className:"help-block"})
                                             )
@@ -2288,11 +2288,11 @@ function addOrgModal() {
                                     React.DOM.div( {className:"controls"}, 
                                         React.DOM.button( {className:"modal-cancel btn btn-danger",
                                                 onClick:cancelModal}, 
-                                        React.DOM.span( {className:"glyphicon glyphicon-trash"}), " Cancel"
+                                        React.DOM.span( {className:"glyphicon glyphicon-trash"}), " ", defaultValues.cancel
                                         ),
                                         React.DOM.button( {className:"modal-save btn btn-success",
                                                 onClick:submitModal}, 
-                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " Add new organisation"
+                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " ", defaultValues.add_new_organisation
                                         )
                                     )   
                                 )
