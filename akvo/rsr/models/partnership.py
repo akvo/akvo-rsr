@@ -37,11 +37,12 @@ class Partnership(models.Model):
     IATI_EXTENDING_PARTNER = 3
     IATI_IMPLEMENTING_PARTNER = 4
     AKVO_SPONSOR_PARTNER = 100   # not part of the IATI OrganisationRole codelist!
+    IATI_REPORTING_ORGANISATION = 101
 
     # make sure the AKVO_SPONSOR_PARTNER is last in the list
     IATI_ROLE_LIST = [
         IATI_FUNDING_PARTNER, IATI_ACCOUNTABLE_PARTNER, IATI_EXTENDING_PARTNER,
-        IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER,
+        IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER, IATI_REPORTING_ORGANISATION
     ]
     IATI_ROLE_LABELS = [
         _(u'Funding partner'),
@@ -49,6 +50,7 @@ class Partnership(models.Model):
         _(u'Extending partner'),
         _(u'Implementing partner'),
         _(u'Sponsor partner'),
+        _(u'Reporting organisation'),
     ]
     IATI_ROLES = zip(IATI_ROLE_LIST, IATI_ROLE_LABELS)
 
@@ -90,6 +92,15 @@ class Partnership(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
         u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
+    # is_secondary_reporter is only used when the iati_organisation_role is set to
+    # IATI_REPORTING_ORGANISATION, thus the use of NullBooleanField
+    is_secondary_reporter = models.NullBooleanField(
+        _(u'secondary reporter'),
+        help_text=_(
+            u'This indicates whether the reporting organisation is a secondary publisher: '
+            u'publishing data for which it is not directly responsible.'
+        )
+    )
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
