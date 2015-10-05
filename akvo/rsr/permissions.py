@@ -27,13 +27,12 @@ def is_org_admin(user, obj):
             if not obj:
                 return True
             elif isinstance(obj, Organisation):
-                if obj == employment.organisation:
-                    return True
-                elif obj in employment.organisation.partners():
+                if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif isinstance(obj, Employment) and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
@@ -95,11 +94,13 @@ def is_org_user_manager(user, obj):
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif type(obj) == Employment and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif type(obj) == Project and obj in employment.organisation.all_projects():
                 return True
-            elif type(obj) == Organisation and obj == employment.organisation:
+            elif type(obj) == Organisation and \
+                    obj in employment.organisation.content_owned_organisations():
                 return True
     return False
 
@@ -112,9 +113,7 @@ def is_org_project_editor(user, obj):
             if not obj:
                 return True
             elif isinstance(obj, Organisation):
-                if obj == employment.organisation:
-                    return True
-                elif obj in employment.organisation.partners():
+                if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True

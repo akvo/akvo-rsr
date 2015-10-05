@@ -244,6 +244,19 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
+        def content_owned_organisations(self):
+            """
+            Returns a list of Organisations of which these organisations are the content owner.
+            Includes self, is recursive.
+            """
+            org_set = set()
+
+            for org in self:
+                for co_org in org.content_owned_organisations():
+                    org_set.add(co_org)
+
+            return list(org_set)
+
     def __unicode__(self):
         return self.name
 
@@ -293,6 +306,24 @@ class Organisation(TimestampsMixin, models.Model):
             if ps.iati_organisation_role:
                 partner_types.append(ps.iati_organisation_role_label())
         return partner_types
+
+    def content_owned_organisations(self):
+        """
+        Returns a list of Organisations of which this organisation is the content owner.
+        Includes self and is recursive.
+        """
+        org_set = set()
+        org_set.add(self)
+
+        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
+
+        while self_content_owned_list:
+            org = self_content_owned_list.pop()
+            org_set.add(org)
+            for co_org in org.content_owned_organisations():
+                org_set.add(co_org)
+
+        return list(org_set)
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
