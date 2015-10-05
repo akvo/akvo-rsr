@@ -484,8 +484,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
-                            <p class="help-block hidden" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href="mailto:support@akvo.org">support@akvo.org</a> to request to add it to the database.' %}</p>
+                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
+                            <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
+                            <button class="add-organisation btn btn-success">
+                                <span class="glyphicon glyphicon-plus"></span> {% trans 'Add a new organisation' %}
+                            </button>
                             <div class="partner-container" id="partner-container">
                                 {% for partnership in project.partnerships.all %}
                                     {% include "myrsr/project_editor_partials/partner_input.html" with key=partnership.pk %}
@@ -1225,7 +1228,28 @@
             "provider_org_label": "{% trans 'Provider organisation' %}",
             "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
             "recipient_org_label": "{% trans 'Recipient organisation' %}",
-            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}"
+            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}",
+            "add_new_organisation": "{% trans 'Add new organisation' %}",
+            "name": "{% trans 'Name' %}",
+            "long_name": "{% trans 'Long name' %}",
+            "iati_org_id": "{% trans 'Organisation IATI identifier' %}",
+            "org_type": "{% trans 'Organisation type' %}",
+            "description": "{% trans 'Description' %}",
+            "cancel": "{% trans 'Cancel' %}",
+            "max": "{% trans 'Max' %}",
+            "characters": "{% trans 'characters' %}",
+            "blank_name": "{% trans 'Organisation name can not be blank' %}",
+            "blank_long_name": "{% trans 'Organisation long name can not be blank' %}",
+            "government": "{% trans 'Government' %}",
+            "other_public_sector": "{% trans 'Other Public Sector' %}",
+            "international_ngo": "{% trans 'International NGO' %}",
+            "national_ngo": "{% trans 'National NGO' %}",
+            "regional_ngo": "{% trans 'Regional NGO' %}",
+            "public_private_partnership": "{% trans 'Public Private Partnership' %}",
+            "multilateral": "{% trans 'Multilateral' %}",
+            "foundation": "{% trans 'Foundation' %}",
+            "private_sector": "{% trans 'Private Sector' %}",
+            "academic_training_research": "{% trans 'Academic, Training and Research' %}"
         }
     </script>
 

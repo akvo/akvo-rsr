@@ -2531,3 +2531,103 @@ body {
         }
     }
 }
+
+/* Modal dialog stuff for the Project Editor */
+
+.btn.add-organisation {
+    margin-top: 10px;
+}
+
+.modalBackground {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1031;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modalContainer {
+    position: fixed;
+    top: 20%;
+    right: 100px;
+    bottom: 20%;
+    left: 100px;
+    z-index: 1032;
+
+    @media only screen and (max-width: $width-small) {
+        right: 25px;
+        left: 25px;
+    }
+    @media only screen and (max-width: $xtra-small) {
+        right: 5px;
+        left: 5px;        
+    }
+    @media only screen and (max-height: 900px) {
+        top: 10%;
+        bottom: 10%;
+    }
+    @media only screen and (max-height: 700px) {
+        top: 5%;
+        bottom: 5%;
+    }
+
+    .orgModal {
+        width: 100%;
+        max-width: 800px;
+        max-height: 100%;
+        margin: auto;
+        background-color: white;    
+        overflow-y: scroll;
+        position: relative;
+        @include border-radius(5px);        
+
+        .modalContents {
+            min-width: 100px;
+            position: relative;
+            padding: 1em 2em 5em 2em;
+
+            .inputContainer {
+                margin-top: 2.75em;
+                margin-bottom: 1em;
+
+                input, select {
+                    & + label {
+                        position: absolute;
+                        top: -25px;
+                        transition: top 0.7s ease, opacity 0.7s ease;
+                        opacity: 0;
+                        font-size: 13px;
+                        font-weight: 600;
+                    }
+                    &:valid + label {
+                        opacity: 1;
+                    }
+                    &:focus + label {
+                        color: $rsrBlue;
+                    }
+                }                
+            }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3.5em;
+            text-align: right;
+
+            button {
+                margin: 0 0.5em;
+                &.modal-cancel {
+                    margin-right: 1em;
+                }
+                &.modal-save {
+                    margin-right: 1.5em;
+                }
+            }
+        }
+    }
+}

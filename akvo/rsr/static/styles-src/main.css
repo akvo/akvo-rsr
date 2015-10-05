@@ -1960,3 +1960,83 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     @media only screen and (min-width: 992px) {
       #publishProject.btn {
         margin-left: -1.25em; } } }
+
+/* Modal dialog stuff for the Project Editor */
+.btn.add-organisation {
+  margin-top: 10px; }
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1031;
+  background-color: rgba(0, 0, 0, 0.7); }
+
+.modalContainer {
+  position: fixed;
+  top: 20%;
+  right: 100px;
+  bottom: 20%;
+  left: 100px;
+  z-index: 1032; }
+  @media only screen and (max-width: 768px) {
+    .modalContainer {
+      right: 25px;
+      left: 25px; } }
+  @media only screen and (max-width: 568px) {
+    .modalContainer {
+      right: 5px;
+      left: 5px; } }
+  @media only screen and (max-height: 900px) {
+    .modalContainer {
+      top: 10%;
+      bottom: 10%; } }
+  @media only screen and (max-height: 700px) {
+    .modalContainer {
+      top: 5%;
+      bottom: 5%; } }
+  .modalContainer .orgModal {
+    width: 100%;
+    max-width: 800px;
+    max-height: 100%;
+    margin: auto;
+    background-color: white;
+    overflow-y: scroll;
+    position: relative;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+    .modalContainer .orgModal .modalContents {
+      min-width: 100px;
+      position: relative;
+      padding: 1em 2em 5em 2em; }
+      .modalContainer .orgModal .modalContents .inputContainer {
+        margin-top: 2.75em;
+        margin-bottom: 1em; }
+        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label {
+          position: absolute;
+          top: -25px;
+          transition: top 0.7s ease, opacity 0.7s ease;
+          opacity: 0;
+          font-size: 13px;
+          font-weight: 600; }
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label {
+          opacity: 1; }
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label {
+          color: #2c2a74; }
+    .modalContainer .orgModal .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3.5em;
+      text-align: right; }
+      .modalContainer .orgModal .controls button {
+        margin: 0 0.5em; }
+        .modalContainer .orgModal .controls button.modal-cancel {
+          margin-right: 1em; }
+        .modalContainer .orgModal .controls button.modal-save {
+          margin-right: 1.5em; }
