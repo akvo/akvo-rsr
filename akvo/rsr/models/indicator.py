@@ -117,6 +117,10 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
+    @property
+    def percent_accomplishment(self):
+        return round(float(self.actual_value) / float(self.target_value) * 100, 1)
+
     def clean(self):
         # Don't allow a start date before an end date
         if self.period_start and self.period_end and (self.period_start > self.period_end):
