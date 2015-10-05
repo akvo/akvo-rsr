@@ -64,7 +64,7 @@ def directory(request):
     f.filters['location'].extra['choices'] = location_choices(all_updates)
     # Swap to choice filter for RSR pages
     if request.rsr_page:
-        f.filters['partner'] = django_filters.MultipleChoiceFilter(
+        f.filters['partner'] = django_filters.ChoiceFilter(
             choices=build_choices(_page_organisations(request.rsr_page)),
             label=_(u'organisation'),
             name='project__partners__id')

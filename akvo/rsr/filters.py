@@ -149,8 +149,7 @@ class ProjectFilter(django_filters.FilterSet):
         name='title')
 
     organisation = django_filters.ChoiceFilter(
-        # choices=get_orgs(),
-        choices=(('', 'None')),
+        choices=get_orgs(),
         label=_(u'organisation'),
         name='partners__id')
 
@@ -190,7 +189,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
 class OrganisationFilter(django_filters.FilterSet):
 
-    location = django_filters.MultipleChoiceFilter(
+    location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label=_(u'location'),
         action=filter_m49)
