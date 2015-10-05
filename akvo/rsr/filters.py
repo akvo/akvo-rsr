@@ -169,7 +169,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
         label=_(u'organisation'),
-        name='project__partners__id')
+        name='user__organisations__id')
 
     sector = django_filters.ChoiceFilter(
         initial=_('All'),
