@@ -926,7 +926,7 @@
           </div>
           <div class="result-nav-full">
             {% for indicator in result.indicators.all %}
-              <div class="indicator-nav">
+              <div class="indicator-nav" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
                 <h4>
                   {{indicator.title}}
                 </h4>
@@ -939,25 +939,25 @@
           </div>
         </div>  
       {% endfor %}
-    </div>
-      <div class="indicator-container">
-        {% for result in project.results.all %}
-          <div class="result-{{result.id}}-indicators indicator-group">
-            {% for indicator in result.indicators.all %} 
-              <div class="indicator-{{indicator.id}} indicator">
-                <h4>Indicator</h4>
-                {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
-                <dl>
-                  <dt>{% trans "Baseline Year" %}</dt>
-                  <dd>{{indicator.baseline_year}}</dd>
+    </div><div class="indicator-container">
+      {% for result in project.results.all %}
+        <div class="result-{{result.id}} indicator-group">
+          {% for indicator in result.indicators.all %} 
+            <div class="indicator-{{indicator.id}} indicator">
+              <h4>Indicator</h4>
+              {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
+              <dl>
+                <dt>{% trans "Baseline Year" %}</dt>
+                <dd>{{indicator.baseline_year}}</dd>
 
-                  <dt>{% trans "Baseline Value" %}</dt>
-                  <dd>{{indicator.baseline_value}}</dd>
-                </dl>
+                <dt>{% trans "Baseline Value" %}</dt>
+                <dd>{{indicator.baseline_value}}</dd>
+              </dl>
 
-                <h4>{% trans "Indicator periods" %}</h4>
+              <h4>{% trans "Indicator periods" %}</h4>
 
-                <table>
+              <table class="table table-border table-responsive">
+                <thead>
                   <tr>
                     <td>{% trans "Start" %}</td>
                     <td>{% trans "End" %}</td>
@@ -965,6 +965,8 @@
                     <td>{% trans "Actual value" %}</td>
                     <td>{% trans "Accomplishment" %}</td>
                   </tr>
+                </thead>
+                <tbody>
                   {% for period in indicator.periods.all %}
                     <tr>
                       <td>{{period.period_start}}</td>
@@ -974,13 +976,73 @@
                       <td>{{period.percent_accomplishment}}%</td>
                     </tr>
                   {% endfor %}
-                </table>
-              </div>
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </div>    
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>   
+    <div class="clearfix"></div>
   </article>
+  <script>
+  /* Obviously this script shouldn't live here permanently.
+  ** But it's handy to leave it here for developent.
+  */
+
+  /* Set the click listeners that expand or hide the full
+  ** "Results" entries in the sidebar.
+  */
+  function setIndicatorExpandOnClicks() {
+    var els = document.querySelectorAll('.sidebar .result-expand');
+    var el;
+
+    for (var i = 0; i < els.length; i++) {
+      el = els[i];
+
+      el.addEventListener('click', function() {
+        this.parentNode.parentNode.classList.toggle('expanded');
+      });
+    }
+  }
+
+  /* Set the listeners to show the appropriate indicator in
+  ** the main panel when the sidebar link is clicked.
+  */
+  function setIndicatorLinkOnClicks() {
+    var els = document.querySelectorAll('.indicator-nav');
+
+    for (var i = 0; i < els.length; i++) {
+      el = els[i];
+
+      el.addEventListener('click', function() {
+
+        /* Hide all the indicator elements */
+        var hideElements = document.querySelectorAll('.indicator-group, .indicator');
+
+        for (var i = 0; i < hideElements.length; i++) {
+          var el = hideElements[i];
+
+          el.style.display = 'none';
+        }
+
+        /* Now show the indicator group and indicator that
+        ** matches the element that's been clicked.
+        */
+        var indicatorSelector = '.indicator-' + this.getAttribute('data-indicator-id');
+        var indicatorGroupSelector = '.result-' + this.getAttribute('data-result-id');
+
+        document.querySelector(indicatorGroupSelector).style.display = 'block';
+        document.querySelector(indicatorSelector).style.display = 'block';
+
+      });
+    }
+  }
+
+  /* Do stuff */
+  setIndicatorExpandOnClicks();
+  setIndicatorLinkOnClicks();
+  </script>
 </div>
 <div class="project-tab blog">
   <article>

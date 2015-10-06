@@ -1960,3 +1960,38 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     @media only screen and (min-width: 992px) {
       #publishProject.btn {
         margin-left: -1.25em; } } }
+
+/* Results framework display */
+.results-indicators {
+  position: relative;
+  min-height: 100%; }
+  .results-indicators * {
+    box-sizing: border-box; }
+  .results-indicators .sidebar {
+    height: 800px;
+    min-height: 100%;
+    width: 20%;
+    display: inline-block;
+    min-width: 200px;
+    overflow-y: scroll;
+    background-color: whitesmoke;
+    vertical-align: top; }
+    .results-indicators .sidebar .result-nav {
+      padding: 0.5em; }
+      .results-indicators .sidebar .result-nav .result-nav-full {
+        display: none; }
+      .results-indicators .sidebar .result-nav.expanded .result-nav-full {
+        display: block;
+        cursor: pointer; }
+  .results-indicators .indicator-container {
+    height: 800px;
+    min-height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    width: 80%;
+    overflow-y: scroll; }
+    .results-indicators .indicator-container .indicator-group {
+      padding: 1em;
+      display: none; }
+      .results-indicators .indicator-container .indicator-group .indicator {
+        display: none; }

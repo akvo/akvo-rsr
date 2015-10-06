@@ -2531,3 +2531,55 @@ body {
         }
     }
 }
+
+/* Results framework display */
+
+.results-indicators {
+    * {
+        box-sizing: border-box;
+    }
+    position: relative;
+    min-height: 100%;
+    .sidebar {
+        height: 800px;
+        min-height: 100%;
+        width: 20%;
+        display: inline-block;
+        min-width: 200px;
+        overflow-y: scroll;
+        background-color: whitesmoke;
+        vertical-align: top;
+
+        .result-nav {
+            padding: 0.5em;
+
+            .result-nav-full {
+                display: none;
+            }
+
+            &.expanded {
+                .result-nav-full {
+                    display: block;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .indicator-container {
+        height: 800px;
+        min-height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: 80%;
+        overflow-y: scroll;
+
+        .indicator-group {
+            padding: 1em;
+            display: none;
+
+            .indicator {
+                display: none;
+            }
+        }
+    }
+}
