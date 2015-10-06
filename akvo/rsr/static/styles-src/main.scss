@@ -2592,7 +2592,7 @@ body {
                 margin-top: 2.75em;
                 margin-bottom: 1em;
 
-                input, select {
+                input, select, textarea {
                     & + label {
                         position: absolute;
                         top: -25px;

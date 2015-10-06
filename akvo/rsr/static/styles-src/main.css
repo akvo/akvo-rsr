@@ -2016,16 +2016,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .modalContainer .orgModal .modalContents .inputContainer {
         margin-top: 2.75em;
         margin-bottom: 1em; }
-        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label {
+        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label, .modalContainer .orgModal .modalContents .inputContainer textarea + label {
           position: absolute;
           top: -25px;
           transition: top 0.7s ease, opacity 0.7s ease;
           opacity: 0;
           font-size: 13px;
           font-weight: 600; }
-        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label {
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label, .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
           opacity: 1; }
-        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label {
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label, .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
           color: #2c2a74; }
     .modalContainer .orgModal .controls {
       position: absolute;

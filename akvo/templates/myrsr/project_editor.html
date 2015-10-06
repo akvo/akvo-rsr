@@ -1249,8 +1249,22 @@
             "multilateral": "{% trans 'Multilateral' %}",
             "foundation": "{% trans 'Foundation' %}",
             "private_sector": "{% trans 'Private Sector' %}",
-            "academic_training_research": "{% trans 'Academic, Training and Research' %}"
+            "academic_training_research": "{% trans 'Academic, Training and Research' %}",
+            "website": "{% trans 'Website' %}",
+            "start_http": "{% trans 'The URL of the website must begin with http://' %}",
+            "contact_person": "{% trans 'Contact name' %}",
+            "contact_email": "{% trans 'Contact email' %}",
+            "longitude": "{% trans 'Longitude' %}",
+            "latitude": "{% trans 'Latitude' %}",
+            "country": "{% trans 'Country' %}",
+            "use_link": "{% trans 'Use the link to' %}",
+            "coordinates": "{% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}",
+            "org_logo": "{% trans 'Organisation logo' %}"
         }
+    </script>
+
+    <script type="application/json" id="country-values">
+        [{% for country in countries %}{"pk": "{{ country.pk }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
     <script type="application/json" id="sector-values">

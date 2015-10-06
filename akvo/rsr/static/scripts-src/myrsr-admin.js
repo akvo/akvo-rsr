@@ -7,6 +7,7 @@
 
 // DEFAULT VALUES
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -2138,15 +2139,14 @@ function addOrgModal() {
     /* Submit the new org */
     function submitModal() {
         if (allInputsFilled()) {
-            var api_url, request, form, form_data, reporting_org_id;
+            var api_url, request, form, form_data;
+
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
-
             form_data = serialize(form);
-            form_data = form_data.replace('iati_org_id=&', '');
 
-            reporting_org_id = document.querySelector('#reportingOrganisation').getAttributeNode("value").value;
-            form_data += '&content_owner=' + reporting_org_id;
+            // Remove empty IATI organistion id
+            form_data = form_data.replace('iati_org_id=&', '');
 
             api_url = '/rest/v1/organisation/?format=json';
 
@@ -2157,6 +2157,33 @@ function addOrgModal() {
 
             request.onload = function() {
                 if (request.status === 201) {
+                    var organisation_id;
+
+                    // Get organisation ID
+                    response = JSON.parse(request.responseText);
+                    organisation_id = response.id;
+
+                    // Add location (fails silently)
+                    var request_loc;
+                    api_url = '/rest/v1/organisation_location/?format=json';
+                    request_loc = new XMLHttpRequest();
+                    request_loc.open('POST', api_url, true);
+                    request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+                    request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    request_loc.send(form_data + '&location_target=' + organisation_id);
+
+                    // Add logo (fails silently)
+                    var logo_request, logo_data, org_logo_files;
+                    org_logo_files = document.getElementById("org-logo").files;
+                    if (org_logo_files !== undefined) {
+                        api_url = '/rest/v1/organisation/' + organisation_id + '/add_logo/?format=json';
+                        logo_data = new FormData();
+                        logo_data.append("logo", org_logo_files[0]);
+                        logo_request = new XMLHttpRequest();
+                        logo_request.open("POST", api_url);
+                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+                        logo_request.send(logo_data);
+                    }
 
                     // This flag forces the fetching of a fresh API response
                     var forceReloadOrg = true;
@@ -2230,6 +2257,12 @@ function addOrgModal() {
 
     Modal = React.createClass({displayName: 'Modal',
         render: function() {
+            var country_option_list = countryValues.map(function(country) {
+              return (
+                  React.DOM.option( {value:country.pk}, country.name)
+              );
+            });
+
             return (
                     React.DOM.div( {className:"modalParent"}, 
                         React.DOM.div( {className:"modalBackground"}
@@ -2243,25 +2276,31 @@ function addOrgModal() {
                                             React.DOM.div( {id:"addOrgGeneralError", className:"col-md-12"})
                                         ),
                                         React.DOM.div( {className:"row"}, 
-                                            React.DOM.div( {className:"inputContainer newOrgName col-md-6"}, 
+                                            React.DOM.div( {className:"inputContainer newOrgName col-md-4"}, 
                                                 React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
                                                 React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"}, defaultValues.max, " 25 ", defaultValues.characters)
                                             ),
-                                            React.DOM.div( {className:"inputContainer newOrgLongName col-md-6"}, 
+                                            React.DOM.div( {className:"inputContainer newOrgLongName col-md-4"}, 
                                                 React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
                                                 React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgIatiId col-md-4"}, 
+                                                React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, defaultValues.iati_org_id),
                                                 React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
                                             )
                                         ),
                                         React.DOM.div( {className:"row"}, 
-                                            React.DOM.div( {className:"inputContainer newOrgIatiId col-md-6"}, 
-                                                React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
-                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, defaultValues.iati_org_id),
-                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
-                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
+                                                React.DOM.input( {type:"file", className:"form-control", id:"org-logo", name:"org-logo", accept:"image/*"}),
+                                                React.DOM.label( {className:"control-label", for:"org-logo"}, defaultValues.org_logo)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6"}, 
-                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control", value:"22"}, 
+                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
                                                     React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
                                                     React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
                                                     React.DOM.option( {value:"21"}, "21 - ", defaultValues.international_ngo),
@@ -2275,23 +2314,61 @@ function addOrgModal() {
                                                 ),
                                                 React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"url", id:"url", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"url", className:"control-label"}, defaultValues.website),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.start_http)
                                             )
                                         ),
                                         React.DOM.div( {className:"row"}, 
-                                            React.DOM.div( {className:"descriptionContainer inputContainer col-md-12"}, 
-                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, defaultValues.description),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"latitude", id:"latitude", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"longitude", id:"longitude", type:"text",  className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
+                                                    React.DOM.option( {value:""}, defaultValues.country,":"),
+                                                    country_option_list
+                                                ),
+                                                React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://mygeoposition.com/", target:"_blank"}, "http://mygeoposition.com/"), " ", defaultValues.coordinates)
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_person", id:"contact_person", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_person", className:"control-label"}, defaultValues.contact_person),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_email", id:"contact_email", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_email", className:"control-label"}, defaultValues.contact_email),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
                                                 React.DOM.textarea( {id:"description", className:"form-control", name:"description", rows:"3"}),
+                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, defaultValues.description),
                                                 React.DOM.p( {className:"help-block"})
                                             )
                                         )
                                     ),
                                     React.DOM.div( {className:"controls"}, 
-                                        React.DOM.button( {className:"modal-cancel btn btn-danger",
-                                                onClick:cancelModal}, 
+                                        React.DOM.button( {className:"modal-cancel btn btn-danger", onClick:cancelModal}, 
                                         React.DOM.span( {className:"glyphicon glyphicon-trash"}), " ", defaultValues.cancel
                                         ),
-                                        React.DOM.button( {className:"modal-save btn btn-success",
-                                                onClick:submitModal}, 
+                                        React.DOM.button( {className:"modal-save btn btn-success", onClick:submitModal}, 
                                             React.DOM.span( {className:"glyphicon glyphicon-plus"}), " ", defaultValues.add_new_organisation
                                         )
                                     )   

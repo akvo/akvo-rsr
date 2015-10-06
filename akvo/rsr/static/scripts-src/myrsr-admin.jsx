@@ -7,6 +7,7 @@
 
 // DEFAULT VALUES
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -2138,15 +2139,14 @@ function addOrgModal() {
     /* Submit the new org */
     function submitModal() {
         if (allInputsFilled()) {
-            var api_url, request, form, form_data, reporting_org_id;
+            var api_url, request, form, form_data;
+
             // Add organisation to DB
             form = document.querySelector('#addOrganisation');
-
             form_data = serialize(form);
-            form_data = form_data.replace('iati_org_id=&', '');
 
-            reporting_org_id = document.querySelector('#reportingOrganisation').getAttributeNode("value").value;
-            form_data += '&content_owner=' + reporting_org_id;
+            // Remove empty IATI organistion id
+            form_data = form_data.replace('iati_org_id=&', '');
 
             api_url = '/rest/v1/organisation/?format=json';
 
@@ -2157,6 +2157,34 @@ function addOrgModal() {
 
             request.onload = function() {
                 if (request.status === 201) {
+                    var organisation_id;
+
+                    // Get organisation ID
+                    response = JSON.parse(request.responseText);
+                    organisation_id = response.id;
+
+                    // Add location (fails silently)
+                    // TODO: Check if location has all fields
+                    var request_loc;
+                    api_url = '/rest/v1/organisation_location/?format=json';
+                    request_loc = new XMLHttpRequest();
+                    request_loc.open('POST', api_url, true);
+                    request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+                    request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    request_loc.send(form_data + '&location_target=' + organisation_id);
+
+                    // Add logo (fails silently)
+                    var logo_request, logo_data, org_logo_files;
+                    org_logo_files = document.getElementById("org-logo").files;
+                    if (org_logo_files !== undefined) {
+                        api_url = '/rest/v1/organisation/' + organisation_id + '/add_logo/?format=json';
+                        logo_data = new FormData();
+                        logo_data.append("logo", org_logo_files[0]);
+                        logo_request = new XMLHttpRequest();
+                        logo_request.open("POST", api_url);
+                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+                        logo_request.send(logo_data);
+                    }
 
                     // This flag forces the fetching of a fresh API response
                     var forceReloadOrg = true;
@@ -2166,6 +2194,8 @@ function addOrgModal() {
                 } else if (request.status === 400) {
                     var response;
                     response = JSON.parse(request.responseText);
+
+                    // TODO: Scroll to top of modal
 
                     for (var key in response) {
                         if (response.hasOwnProperty(key)) {
@@ -2186,6 +2216,7 @@ function addOrgModal() {
 
             request.onerror = function() {
                 // There was a connection error of some sort
+                // TODO: Add better message on top of the modal
                 elAddClass(form, 'has-error');
                 return false;
             };
@@ -2230,6 +2261,12 @@ function addOrgModal() {
 
     Modal = React.createClass({
         render: function() {
+            var country_option_list = countryValues.map(function(country) {
+              return (
+                  <option value={country.pk}>{country.name}</option>
+              );
+            });
+
             return (
                     <div className="modalParent">
                         <div className="modalBackground">
@@ -2243,25 +2280,31 @@ function addOrgModal() {
                                             <div id="addOrgGeneralError" className="col-md-12"></div>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer newOrgName col-md-6">
+                                            <div className="inputContainer newOrgName col-md-4">
                                                 <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
                                                 <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
                                                 <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
                                             </div>
-                                            <div className="inputContainer newOrgLongName col-md-6">
+                                            <div className="inputContainer newOrgLongName col-md-4">
                                                 <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
                                                 <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
                                                 <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer newOrgIatiId col-md-6">
+                                            <div className="inputContainer newOrgIatiId col-md-4">
                                                 <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
                                                 <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
                                                 <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-12">
+                                                <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
+                                                <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
+                                            </div>
+                                        </div>
+                                        <div className="row">
                                             <div className="IATIOrgTypeContainer inputContainer col-md-6">
-                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control" value="22">
+                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
                                                     <option value="10">10 - {defaultValues.government}</option>
                                                     <option value="15">15 - {defaultValues.other_public_sector}</option>
                                                     <option value="21">21 - {defaultValues.international_ngo}</option>
@@ -2276,22 +2319,60 @@ function addOrgModal() {
                                                 <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
+                                            <div className="inputContainer col-md-6">
+                                                <input name="url" id="url" type="text" className="form-control"/>
+                                                <label htmlFor="url" className="control-label">{defaultValues.website}</label>
+                                                <p className="help-block">{defaultValues.start_http}</p>
+                                            </div>
                                         </div>
                                         <div className="row">
-                                            <div className="descriptionContainer inputContainer col-md-12">
-                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
+                                            <div className="inputContainer col-md-4">
+                                                <input name="latitude" id="latitude" type="text" className="form-control"/>
+                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-4">
+                                                <input name="longitude" id="longitude" type="text"  className="form-control"/>
+                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-4">
+                                                <select name="country" id="country" className="form-control">
+                                                    <option value="">{defaultValues.country}:</option>
+                                                    {country_option_list}
+                                                </select>
+                                                <label htmlFor="country" className="control-label">{defaultValues.country}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-6">
+                                                <input name="contact_person" id="contact_person" type="text" className="form-control"/>
+                                                <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-6">
+                                                <input name="contact_email" id="contact_email" type="text" className="form-control"/>
+                                                <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-12">
                                                 <textarea id="description" className="form-control" name="description" rows="3"></textarea>
+                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
                                                 <p className="help-block"></p>
                                             </div>
                                         </div>
                                     </form>
                                     <div className="controls">
-                                        <button className="modal-cancel btn btn-danger"
-                                                onClick={cancelModal}>
+                                        <button className="modal-cancel btn btn-danger" onClick={cancelModal}>
                                         <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
                                         </button>
-                                        <button className="modal-save btn btn-success"
-                                                onClick={submitModal}>
+                                        <button className="modal-save btn btn-success" onClick={submitModal}>
                                             <span className="glyphicon glyphicon-plus"></span> {defaultValues.add_new_organisation}
                                         </button>
                                     </div>   
