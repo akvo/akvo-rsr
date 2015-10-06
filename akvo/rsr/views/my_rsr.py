@@ -377,11 +377,10 @@ def user_management(request):
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
     else:
-        organisations_list = user.employers.approved().organisations().content_owned_organisations()
-        for count, org in enumerate(organisations_list):
-            if not user.has_perm('rsr.user_management', org):
-                organisations_list.pop(count)
-        organisations = Organisation.objects.filter(pk__in=[org.pk for org in organisations_list])
+        connected_orgs = user.employers.approved().organisations().content_owned_organisations()
+        connected_orgs_list = [
+                org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
+        organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
 
