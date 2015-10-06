@@ -872,9 +872,21 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorClass = document.querySelector('.' + selector);
 
     TypeaheadContainer = React.createClass({
+
+        getInitialState: function() {
+            return ({focusClass: 'inactive'});
+        },
+        onKeyUp: function() {
+            if (inputType === 'org') {
+                this.setState({focusClass: 'active'});
+            }
+        },
+        onBlur: function() {
+            this.setState({focusClass: 'inactive'});
+        },
         render: function() {
             return (
-                    <div>
+                    <div className={this.state.focusClass}>
                         <Typeahead
                             placeholder=''
                             options={typeaheadOptions}
@@ -883,6 +895,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             displayOption={displayOption}
                             filterOption={filterOption}
                             childID={selector}
+                            onKeyUp={this.onKeyUp}
+                            onBlur={this.onBlur}
                             customClasses={{
                               typeahead: "",
                               input: inputClass,
@@ -895,6 +909,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                                 name: selector,
                                 id: selector
                             }} />
+                        <div className="addOrg" onMouseDown={addOrgModal}>+Add organisation</div>
                     </div>
             );
         }
@@ -2110,23 +2125,6 @@ function setUnsavedChangesMessage() {
     };
 }
 
-/* Set each "add organisation" link to open the "add organisation"
-** modal dialog on click */
-
-function setModalOnClicks() {
-    var links = document.querySelectorAll('.add-organisation');
-
-    for (var i = 0; i < links.length; i++) {
-        var el = links[i];
-
-        el.removeEventListener('click');
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            addOrgModal();
-        });
-    }
-}
-
 /* Show the "add organisation" modal dialog */
 function addOrgModal() {
 
@@ -2461,5 +2459,4 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
-    setModalOnClicks();
 });

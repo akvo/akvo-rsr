@@ -872,9 +872,21 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorClass = document.querySelector('.' + selector);
 
     TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
+
+        getInitialState: function() {
+            return ({focusClass: 'inactive'});
+        },
+        onKeyUp: function() {
+            if (inputType === 'org') {
+                this.setState({focusClass: 'active'});
+            }
+        },
+        onBlur: function() {
+            this.setState({focusClass: 'inactive'});
+        },
         render: function() {
             return (
-                    React.DOM.div(null, 
+                    React.DOM.div( {className:this.state.focusClass}, 
                         Typeahead(
                             {placeholder:"",
                             options:typeaheadOptions,
@@ -883,6 +895,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             displayOption:displayOption,
                             filterOption:filterOption,
                             childID:selector,
+                            onKeyUp:this.onKeyUp,
+                            onBlur:this.onBlur,
                             customClasses:{
                               typeahead: "",
                               input: inputClass,
@@ -894,7 +908,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             inputProps:{
                                 name: selector,
                                 id: selector
-                            }} )
+                            }} ),
+                        React.DOM.div( {className:"addOrg", onMouseDown:addOrgModal}, "+Add organisation")
                     )
             );
         }
@@ -2110,23 +2125,6 @@ function setUnsavedChangesMessage() {
     };
 }
 
-/* Set each "add organisation" link to open the "add organisation"
-** modal dialog on click */
-
-function setModalOnClicks() {
-    var links = document.querySelectorAll('.add-organisation');
-
-    for (var i = 0; i < links.length; i++) {
-        var el = links[i];
-
-        el.removeEventListener('click');
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            addOrgModal();
-        });
-    }
-}
-
 /* Show the "add organisation" modal dialog */
 function addOrgModal() {
 
@@ -2164,6 +2162,7 @@ function addOrgModal() {
                     organisation_id = response.id;
 
                     // Add location (fails silently)
+                    // TODO: Check if location has all fields
                     var request_loc;
                     api_url = '/rest/v1/organisation_location/?format=json';
                     request_loc = new XMLHttpRequest();
@@ -2194,6 +2193,8 @@ function addOrgModal() {
                     var response;
                     response = JSON.parse(request.responseText);
 
+                    // TODO: Scroll to top of modal
+
                     for (var key in response) {
                         if (response.hasOwnProperty(key)) {
                             var input = form.querySelector('#' + key);
@@ -2213,6 +2214,7 @@ function addOrgModal() {
 
             request.onerror = function() {
                 // There was a connection error of some sort
+                // TODO: Add better message on top of the modal
                 elAddClass(form, 'has-error');
                 return false;
             };
@@ -2457,5 +2459,4 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
-    setModalOnClicks();
 });
