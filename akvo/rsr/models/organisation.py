@@ -4,10 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.utils.translation import ugettext_lazy as _
 
@@ -173,7 +173,40 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation-main', (), {'organisation_id': self.pk})
+        return 'organisation-main', (), {'organisation_id': self.pk}
+
+    def clean(self):
+        """Organisations can only be saved when we're sure that they do not exist already."""
+        validation_errors = {}
+
+        name = self.name.strip()
+        other_names = Organisation.objects.filter(name__iexact=name)
+        if name:
+            if other_names.exists():
+                validation_errors['name'] = _('Organisation name already exists: %s.' %
+                                              other_names[0].name)
+        else:
+            validation_errors['name'] = _('Organisation name can not be blank')
+
+        long_name = self.long_name.strip()
+        other_long_names = Organisation.objects.filter(long_name__iexact=long_name)
+        if long_name:
+            if other_long_names.exists():
+                validation_errors['long_name'] = _('Organisation long name already exists: %s.' %
+                                                   other_long_names[0].long_name)
+        else:
+            validation_errors['long_name'] = _('Organisation long name can not be blank')
+
+        if self.iati_org_id:
+            iati_org_id = self.iati_org_id.strip()
+            other_iati_ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id)
+            if iati_org_id and other_iati_ids.exists():
+                validation_errors['iati_org_id'] = _('IATI organisation identifier already exists '
+                                                     'for this organisation: %s.' %
+                                                     other_iati_ids[0].name)
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
 
     class QuerySet(DjangoQuerySet):
         def has_location(self):
@@ -249,13 +282,14 @@ class Organisation(TimestampsMixin, models.Model):
             Returns a list of Organisations of which these organisations are the content owner.
             Includes self, is recursive.
             """
-            org_set = set()
 
-            for org in self:
-                for co_org in org.content_owned_organisations():
-                    org_set.add(co_org)
-
-            return list(org_set)
+            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
+            if kids:
+                return Organisation.objects.filter(
+                    Q(pk__in=self.values_list('pk', flat=True)) | Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
+                )
+            else:
+                return self
 
     def __unicode__(self):
         return self.name
@@ -312,18 +346,7 @@ class Organisation(TimestampsMixin, models.Model):
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        org_set = set()
-        org_set.add(self)
-
-        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
-
-        while self_content_owned_list:
-            org = self_content_owned_list.pop()
-            org_set.add(org)
-            for co_org in org.content_owned_organisations():
-                org_set.add(co_org)
-
-        return list(org_set)
+        return Organisation.objects.filter(content_owner=self).content_owned_organisations()
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
