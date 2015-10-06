@@ -7,7 +7,7 @@
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.utils.translation import ugettext_lazy as _
 
@@ -249,13 +249,14 @@ class Organisation(TimestampsMixin, models.Model):
             Returns a list of Organisations of which these organisations are the content owner.
             Includes self, is recursive.
             """
-            org_set = set()
 
-            for org in self:
-                for co_org in org.content_owned_organisations():
-                    org_set.add(co_org)
-
-            return list(org_set)
+            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
+            if kids:
+                return Organisation.objects.filter(
+                    Q(pk__in=self.values_list('pk', flat=True)) | Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
+                )
+            else:
+                return self
 
     def __unicode__(self):
         return self.name
@@ -312,18 +313,7 @@ class Organisation(TimestampsMixin, models.Model):
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        org_set = set()
-        org_set.add(self)
-
-        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
-
-        while self_content_owned_list:
-            org = self_content_owned_list.pop()
-            org_set.add(org)
-            for co_org in org.content_owned_organisations():
-                org_set.add(co_org)
-
-        return list(org_set)
+        return Organisation.objects.filter(content_owner=self).content_owned_organisations()
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
