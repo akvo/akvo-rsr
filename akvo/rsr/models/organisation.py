@@ -315,7 +315,9 @@ class Organisation(TimestampsMixin, models.Model):
         org_set = set()
         org_set.add(self)
 
-        self_content_owned_list = list(Organisation.objects.filter(content_owner=self))
+        self_content_owned_list = list(
+            Organisation.objects.filter(content_owner=self).exclude(pk=self.pk)
+        )
 
         while self_content_owned_list:
             org = self_content_owned_list.pop()
