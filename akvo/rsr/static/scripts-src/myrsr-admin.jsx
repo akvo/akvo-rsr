@@ -2263,36 +2263,50 @@ function addOrgModal() {
     }
 
     function checkLocationFilled() {
-        var latitudeNode, longitudeNode, countryNode, result;
+        var latitudeNode, longitudeNode, countryNode, latitudeHelp, longitudeHelp, countryHelp, result;
 
         latitudeNode = document.querySelector('#latitude');
+        latitudeHelp = document.querySelector('#latitude + label + .help-block');
         longitudeNode = document.querySelector('#longitude');
+        longitudeHelp = document.querySelector('#longitude + label + .help-block');
         countryNode = document.querySelector('#country');
+        countryHelp = document.querySelector('#country + label + .help-block');
+
+        result = true;
 
         if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
-            result = true;
+            return result;
         } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
             if (latitudeNode.value === '') {
-                var latitudeHelp = document.querySelector('#latitude + label + .help-block');
                 latitudeHelp.textContent = defaultValues.location_check;
                 elAddClass(latitudeHelp, 'help-block-error');
                 elAddClass(latitudeHelp.parentNode, 'has-error');
             }
             if (longitudeNode.value === '') {
-                var longitudeHelp = document.querySelector('#longitude + label + .help-block');
                 longitudeHelp.textContent = defaultValues.location_check;
                 elAddClass(longitudeHelp, 'help-block-error');
                 elAddClass(longitudeHelp.parentNode, 'has-error');
             }
             if (countryNode.value === '') {
-                var countryHelp = document.querySelector('#country + label + .help-block');
                 countryHelp.textContent = defaultValues.location_check;
                 elAddClass(countryHelp, 'help-block-error');
                 elAddClass(countryHelp.parentNode, 'has-error');
             }
             result = false;
         } else {
-            result = true;
+            // TODO: Add good text for lat long error
+            if (latitudeNode.value.indexOf(',') > 0) {
+                latitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
+            if (longitudeNode.value.indexOf(',') > 0) {
+                longitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
         }
         return result;
     }
