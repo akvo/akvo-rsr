@@ -2138,7 +2138,7 @@ function addOrgModal() {
 
     /* Submit the new org */
     function submitModal() {
-        if (allInputsFilled()) {
+        if (allInputsFilled() && checkLocationFilled()) {
             var api_url, request, form, form_data;
 
             // Add organisation to DB
@@ -2164,14 +2164,15 @@ function addOrgModal() {
                     organisation_id = response.id;
 
                     // Add location (fails silently)
-                    // TODO: Check if location has all fields
-                    var request_loc;
-                    api_url = '/rest/v1/organisation_location/?format=json';
-                    request_loc = new XMLHttpRequest();
-                    request_loc.open('POST', api_url, true);
-                    request_loc.setRequestHeader("X-CSRFToken", csrftoken);
-                    request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    request_loc.send(form_data + '&location_target=' + organisation_id);
+                    if (form.querySelector('#latitude').value !== '') {
+                        var request_loc;
+                        api_url = '/rest/v1/organisation_location/?format=json';
+                        request_loc = new XMLHttpRequest();
+                        request_loc.open('POST', api_url, true);
+                        request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+                        request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        request_loc.send(form_data + '&location_target=' + organisation_id);
+                    }
 
                     // Add logo (fails silently)
                     var logo_request, logo_data, org_logo_files;
@@ -2195,7 +2196,7 @@ function addOrgModal() {
                     var response;
                     response = JSON.parse(request.responseText);
 
-                    // TODO: Scroll to top of modal
+                    document.querySelector('.orgModal').scrollTop = 0;
 
                     for (var key in response) {
                         if (response.hasOwnProperty(key)) {
@@ -2217,11 +2218,14 @@ function addOrgModal() {
             request.onerror = function() {
                 // There was a connection error of some sort
                 // TODO: Add better message on top of the modal
+                document.querySelector('.orgModal').scrollTop = 0;
                 elAddClass(form, 'has-error');
                 return false;
             };
 
             request.send(form_data);
+        } else {
+            document.querySelector('.orgModal').scrollTop = 0;
         }
     }
 
@@ -2254,9 +2258,44 @@ function addOrgModal() {
             longNameHelp.textContent = '';
             elRemoveClass(longNameHelp, 'help-block-error');
             elRemoveClass(longNameContainer, 'has-error');
-        }     
+        }
 
         return allInputsFilledBoolean;
+    }
+
+    function checkLocationFilled() {
+        var latitudeNode, longitudeNode, countryNode, result;
+
+        latitudeNode = document.querySelector('#latitude');
+        longitudeNode = document.querySelector('#longitude');
+        countryNode = document.querySelector('#country');
+
+        if (latitudeNode.value == '' && longitudeNode.value == '' && countryNode.value == '') {
+            result = true;
+        } else if (latitudeNode.value == '' || longitudeNode.value == '' || countryNode.value == '') {
+            if (latitudeNode.value == '') {
+                var latitudeHelp = document.querySelector('#latitude + label + .help-block');
+                latitudeHelp.textContent = defaultValues.blank_name;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+            }
+            if (longitudeNode.value == '') {
+                var longitudeHelp = document.querySelector('#longitude + label + .help-block');
+                longitudeHelp.textContent = defaultValues.blank_name;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+            }
+            if (countryNode.value == '') {
+                var countryHelp = document.querySelector('#country + label + .help-block');
+                countryHelp.textContent = defaultValues.blank_name;
+                elAddClass(countryHelp, 'help-block-error');
+                elAddClass(countryHelp.parentNode, 'has-error');
+            }
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
     }
 
     Modal = React.createClass({
