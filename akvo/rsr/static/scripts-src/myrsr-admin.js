@@ -866,7 +866,6 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         }
         return short + ' (' + long + ')';
     }
-
     inputClass = selector + " form-control " + childClass;
 
     selectorClass = document.querySelector('.' + selector);
@@ -877,7 +876,10 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
             return ({focusClass: 'inactive'});
         },
         onKeyUp: function() {
-            if (inputType === 'org') {
+
+            /* Only activate the "add org" button for typeaheads that i) are for organisations,
+            ** and ii) are not for reporting organisations. */
+            if (inputType === 'org' && selector.indexOf('reportingOrganisation') === -1) {
                 this.setState({focusClass: 'active'});
             }
         },
