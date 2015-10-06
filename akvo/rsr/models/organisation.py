@@ -4,8 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum, Q
 from django.db.models.query import QuerySet as DjangoQuerySet
@@ -173,7 +173,40 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation-main', (), {'organisation_id': self.pk})
+        return 'organisation-main', (), {'organisation_id': self.pk}
+
+    def clean(self):
+        """Organisations can only be saved when we're sure that they do not exist already."""
+        validation_errors = {}
+
+        name = self.name.strip()
+        other_names = Organisation.objects.filter(name__iexact=name)
+        if name:
+            if other_names.exists():
+                validation_errors['name'] = _('Organisation name already exists: %s.' %
+                                              other_names[0].name)
+        else:
+            validation_errors['name'] = _('Organisation name can not be blank')
+
+        long_name = self.long_name.strip()
+        other_long_names = Organisation.objects.filter(long_name__iexact=long_name)
+        if long_name:
+            if other_long_names.exists():
+                validation_errors['long_name'] = _('Organisation long name already exists: %s.' %
+                                                   other_long_names[0].long_name)
+        else:
+            validation_errors['long_name'] = _('Organisation long name can not be blank')
+
+        if self.iati_org_id:
+            iati_org_id = self.iati_org_id.strip()
+            other_iati_ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id)
+            if iati_org_id and other_iati_ids.exists():
+                validation_errors['iati_org_id'] = _('IATI organisation identifier already exists '
+                                                     'for this organisation: %s.' %
+                                                     other_iati_ids[0].name)
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
 
     class QuerySet(DjangoQuerySet):
         def has_location(self):
