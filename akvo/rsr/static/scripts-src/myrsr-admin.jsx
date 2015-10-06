@@ -866,15 +866,29 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         }
         return short + ' (' + long + ')';
     }
-
     inputClass = selector + " form-control " + childClass;
 
     selectorClass = document.querySelector('.' + selector);
 
     TypeaheadContainer = React.createClass({
+
+        getInitialState: function() {
+            return ({focusClass: 'inactive'});
+        },
+        onKeyUp: function() {
+
+            /* Only activate the "add org" button for typeaheads that i) are for organisations,
+            ** and ii) are not for reporting organisations. */
+            if (inputType === 'org' && selector.indexOf('reportingOrganisation') === -1) {
+                this.setState({focusClass: 'active'});
+            }
+        },
+        onBlur: function() {
+            this.setState({focusClass: 'inactive'});
+        },
         render: function() {
             return (
-                    <div>
+                    <div className={this.state.focusClass}>
                         <Typeahead
                             placeholder=''
                             options={typeaheadOptions}
@@ -883,6 +897,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             displayOption={displayOption}
                             filterOption={filterOption}
                             childID={selector}
+                            onKeyUp={this.onKeyUp}
+                            onBlur={this.onBlur}
                             customClasses={{
                               typeahead: "",
                               input: inputClass,
@@ -895,6 +911,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                                 name: selector,
                                 id: selector
                             }} />
+                        <div className="addOrg" onMouseDown={addOrgModal}>+ {defaultValues.add_new_organisation}</div>
                     </div>
             );
         }
@@ -2110,23 +2127,6 @@ function setUnsavedChangesMessage() {
     };
 }
 
-/* Set each "add organisation" link to open the "add organisation"
-** modal dialog on click */
-
-function setModalOnClicks() {
-    var links = document.querySelectorAll('.add-organisation');
-
-    for (var i = 0; i < links.length; i++) {
-        var el = links[i];
-
-        el.removeEventListener('click');
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            addOrgModal();
-        });
-    }
-}
-
 /* Show the "add organisation" modal dialog */
 function addOrgModal() {
 
@@ -2217,9 +2217,8 @@ function addOrgModal() {
 
             request.onerror = function() {
                 // There was a connection error of some sort
-                // TODO: Add better message on top of the modal
+                document.querySelector('#addOrgGeneralError').textContent = defaultValues.general_error;
                 document.querySelector('.orgModal').scrollTop = 0;
-                elAddClass(form, 'has-error');
                 return false;
             };
 
@@ -2270,24 +2269,24 @@ function addOrgModal() {
         longitudeNode = document.querySelector('#longitude');
         countryNode = document.querySelector('#country');
 
-        if (latitudeNode.value == '' && longitudeNode.value == '' && countryNode.value == '') {
+        if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
             result = true;
-        } else if (latitudeNode.value == '' || longitudeNode.value == '' || countryNode.value == '') {
-            if (latitudeNode.value == '') {
+        } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
+            if (latitudeNode.value === '') {
                 var latitudeHelp = document.querySelector('#latitude + label + .help-block');
-                latitudeHelp.textContent = defaultValues.blank_name;
+                latitudeHelp.textContent = defaultValues.location_check;
                 elAddClass(latitudeHelp, 'help-block-error');
                 elAddClass(latitudeHelp.parentNode, 'has-error');
             }
-            if (longitudeNode.value == '') {
+            if (longitudeNode.value === '') {
                 var longitudeHelp = document.querySelector('#longitude + label + .help-block');
-                longitudeHelp.textContent = defaultValues.blank_name;
+                longitudeHelp.textContent = defaultValues.location_check;
                 elAddClass(longitudeHelp, 'help-block-error');
                 elAddClass(longitudeHelp.parentNode, 'has-error');
             }
-            if (countryNode.value == '') {
+            if (countryNode.value === '') {
                 var countryHelp = document.querySelector('#country + label + .help-block');
-                countryHelp.textContent = defaultValues.blank_name;
+                countryHelp.textContent = defaultValues.location_check;
                 elAddClass(countryHelp, 'help-block-error');
                 elAddClass(countryHelp.parentNode, 'has-error');
             }
@@ -2316,7 +2315,7 @@ function addOrgModal() {
                                     <h4>{defaultValues.add_new_organisation}</h4>
                                     <form id="addOrganisation">
                                         <div className="row">
-                                            <div id="addOrgGeneralError" className="col-md-12"></div>
+                                            <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
                                         </div>
                                         <div className="row">
                                             <div className="inputContainer newOrgName col-md-4">
@@ -2500,5 +2499,4 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
-    setModalOnClicks();
 });

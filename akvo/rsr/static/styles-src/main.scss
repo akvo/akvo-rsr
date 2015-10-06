@@ -2534,8 +2534,30 @@ body {
 
 /* Modal dialog stuff for the Project Editor */
 
-.btn.add-organisation {
-    margin-top: 10px;
+div.inactive {
+    .addOrg {
+        display: none;
+    }
+}
+
+div.active {
+    .addOrg {
+        display: block;
+        padding: 0.5em;
+        background-color: white;
+        border: 1px solid rgb(200,200,200);
+        border-radius: 0 0 4px 4px;
+        margin-top: -3px;
+        cursor: pointer;
+        color: rgba($progressSuccess, 1);
+
+        &:hover {
+            font-weight: bold;
+        }
+        &:active {
+            opacity: 0.8;
+        }
+    }
 }
 
 .modalBackground {
