@@ -6,6 +6,101 @@ Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rs
 Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
+# Akvo RSR version 3.7 Khartoum
+Wednesday 7th of October 2015, [@KasperBrandt](https://github.com/KasperBrandt)
+
+## New & Noteworthy
+
+### Project editor improvements
+The project editor, as introduced in RSR v3.6, has seen several improvements:
+
+- It is now possible to add a new organisation without leaving the project editor. (Github issue: [#1746](https://github.com/akvo/akvo-rsr/issues/1746))
+- It is possible to look up a project by the project ID and look up an organisation by the long and short name. (Github issues: [#1751](https://github.com/akvo/akvo-rsr/issues/1751) and [#1752](https://github.com/akvo/akvo-rsr/issues/1752))
+- Any Admin or Project editor is now allowed to add or delete keywords from a project. Previously, this feature was only enabled for Akvo staff members. (Github issue: [#1832](https://github.com/akvo/akvo-rsr/issues/1832))
+- Users connected to multiple organisations would not be able to edit a newly created project, which was a bug with permissions. This has now been resolved. (Github issue: [#1817](https://github.com/akvo/akvo-rsr/issues/1817))
+- It seemed like the 'Save' button had to be clicked twice sometimes, before a section would actually save. However, this was due to an 'amusing' UI issue that caused the button to evade the user's click. This has now been resolved. (Github issue: [#1791](https://github.com/akvo/akvo-rsr/issues/1791))
+- All scripts now use either pure Javascript or React.js, any reference to jQuery and Zepto.js has been removed. (Github issue: [#1765](https://github.com/akvo/akvo-rsr/issues/1765))
+
+### IATI import
+We have created a general IATI import functionality, which is able to import all information from any IATI file into RSR, given that the reporting organisation of the IATI file is already in RSR.
+
+Github issue: [#1770](https://github.com/akvo/akvo-rsr/issues/1770).
+
+### Show all projects for superusers and RSR Admins
+Currently, even for superusers and RSR Admins, only the projects of their organisation are being displayed in the My Projects overview on MyRSR. Since superusers and RSR Admins have the rights to edit any project, we now show all projects for these users.
+
+Github issue: [#1799](https://github.com/akvo/akvo-rsr/issues/1799).
+
+### Additional permissions for Admins and User managers
+On the MyRSR user management page, organisation Admins and User managers are now able to see not only the users from their own organisation, but also the users of the organisations that their own organisation is ```content owner``` of.
+
+For example, if Akvo and Akvo Kenya would be two organisations in RSR, with Akvo being the ```content owner``` of Akvo Kenya, then Admins and User managers of Akvo are now able to also see, approve and decline users from Akvo Kenya on the MyRSR user management page.
+
+Github issues: [#795](https://github.com/akvo/akvo-rsr/issues/795) and [#1843](https://github.com/akvo/akvo-rsr/issues/1843).
+
+### Search for organisation on the MyRSR user management page
+It is now also possible to search on an organisation's name or long name on the MyRSR user management page, in addition to the user's email, first and last name.
+
+Github issue: [#1777](https://github.com/akvo/akvo-rsr/issues/1777).
+
+### Google translate bar placeholder for Akvo Pages
+For Akvo Pages it is possible to activate the Google translate functionality, and when a language is selected through this feature, a new bar will be shown on top of the page. Since this bar overlaps with our navigation, we had previously decided to lower the rest of the page by default, so that the bar wouldn't overlap our navigation.
+
+However, this resulted in an empty bar always sitting on top of the page. We have now changed this so that the page is only lowered when the Google translate bar is clicked.
+
+Github issue: [#1796](https://github.com/akvo/akvo-rsr/issues/1796).
+
+### Filter on publishing status in the API
+We have added the ability for all Project resources in the REST API to filter on publishing status by adding the ```publishing_status__status``` optional parameter.
+
+Github issue: [#1827](https://github.com/akvo/akvo-rsr/issues/1827).
+
+### Show budget periods on the project finance page
+Since we've incorporated the IATI standard, it is possible to define budgets per period in RSR. However, thus far this would not be shown on the finance page of a project. We have now added these budget periods there.
+
+Github issue: [#1771](https://github.com/akvo/akvo-rsr/issues/1771).
+
+## Bug fixes
+
+### '+ More' partners link not always showing
+When a project has one participating organisation and a different reporting organisation, the '+ more' partners link would not show on the project main page. This has now been resolved.
+
+Github issue: [#1793](https://github.com/akvo/akvo-rsr/issues/1793).
+
+### Lists in updates
+The layout of an update preview on the update listing page used to show boxes when a list was used in the update content. This has now been fixed so that the lists show as they should in the preview.
+
+Github issue: [#1722](https://github.com/akvo/akvo-rsr/issues/1722).
+
+### Maps showing only one info window
+Previously, after clicking on a pin on the maps and then clicking on another pin, the info windows of both pins would stay open and often overlap each other. This has now been fixed, so that the info window that is open will be dismissed when another is clicked.
+
+Github issue: [#1251](https://github.com/akvo/akvo-rsr/issues/1251).
+
+## Under the hood
+
+### Clean up keywords
+We are in the process of removing the 'Sponsor' partner type for participating organisations, and had to make some changes to the way several Akvo Pages have been setup. Therefore new keywords were created, but also some duplicates. We have now created a management command to merge the duplicate keywords.
+
+Github issue: [#1825](https://github.com/akvo/akvo-rsr/issues/1825).
+
+### Server info added to API
+We have created a new API endpoint for gathering server information. It is available at ```/rest/v1/server_info/``` and contains information about the hostname, deployment and the project update timeout settings.
+
+Github issue: [#1798](https://github.com/akvo/akvo-rsr/issues/1798).
+
+### Clean up middleware
+We have cleaned up existing middleware and removed old middleware that hadn't been used since we moved to RSR v3.
+
+Github issue: [#1795](https://github.com/akvo/akvo-rsr/issues/1795).
+
+## Documentation
+
+### Wiki page update
+We have updated the IATI part of the wiki pages by including a short manual on the IATI import [here](https://github.com/akvo/akvo-rsr/wiki/IATI-Import) and the full IATI to RSR field mapping that is used during the import [here](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
+
+Github issue: [#1612](https://github.com/akvo/akvo-rsr/issues/1795).
+
 # Akvo RSR version 3.6.1 Jakarta (Hotfix)
 Wednesday 2nd of September 2015, kasperbrandt
 
