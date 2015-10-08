@@ -23,7 +23,7 @@ from ..mixins import TimestampsMixin
 
 
 def image_path(instance, file_name):
-    "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
+    """Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"""
     path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
     return rsr_image_path(instance, file_name, path)
 
@@ -36,51 +36,42 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('M', _(u'mobile')),
     )
 
-    project = models.ForeignKey(
-        'Project', related_name='project_updates', verbose_name=_(u'project')
-    )
+    project = models.ForeignKey('Project', related_name='project_updates',
+                                verbose_name=_(u'project'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
-    title = ValidXMLCharField(_(u'title'), max_length=80, db_index=True, help_text=_(u'80 characters'))
+    title = ValidXMLCharField(_(u'title'), max_length=80, db_index=True,
+                              help_text=_(u'80 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
-    language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en',
-        help_text=_(u'The language of the update')
-    )
-    primary_location = models.ForeignKey(
-        'ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL
-    )
-    photo = ImageField(_(u'photo'),
-                       blank=True,
-                       upload_to=image_path,
-                       help_text=_(u'The image should have 4:3 height:width ratio for '
-                                   u'best displaying result'),
-    )
-    photo_caption = ValidXMLCharField(
-        _(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters')
-    )
-    photo_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=75, help_text=_(u'75 characters')
-    )
-    video = EmbedVideoField(
-        _(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo')
-    )
-    video_caption = ValidXMLCharField(
-        _(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters')
-    )
-    video_credit = ValidXMLCharField(
-        _(u'video credit'), blank=True, max_length=75, help_text=_(u'75 characters')
-    )
-    update_method = ValidXMLCharField(
-        _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True,
-        default='W'
-    )
-    user_agent = ValidXMLCharField(
-        _(u'user agent'), blank=True, max_length=200, default=''
-    )
+    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en',
+                                 help_text=_(u'The language of the update'))
+    primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True,
+                                         on_delete=models.SET_NULL)
+    photo = ImageField(_(u'photo'), blank=True, upload_to=image_path,
+                       help_text=_(u'The image should have 4:3 height:width ratio for best '
+                                   u'displaying result'))
+    photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75,
+                                      help_text=_(u'75 characters'))
+    photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=75,
+                                     help_text=_(u'75 characters'))
+    video = EmbedVideoField(_(u'video URL'), blank=True,
+                            help_text=_(u'Supported providers: YouTube and Vimeo'))
+    video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75,
+                                      help_text=_(u'75 characters'))
+    video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=75,
+                                     help_text=_(u'75 characters'))
+    update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
+                                      choices=UPDATE_METHODS, db_index=True, default='W')
+    user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
                              help_text=_(u'Universally unique ID set by creating user agent'))
-
     notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
+
+    # Indicator updates
+    period = models.ForeignKey('IndicatorPeriod', related_name='period_updates',
+                               verbose_name=_(u'indicator period'), blank=True, null=True)
+    change = models.IntegerField(_(u'change'), blank=True, null=True)
+    approved = models.BooleanField(_(u'approved'), default=False)
+    processed = models.BooleanField(_(u'processed'), default=False)
 
     class Meta:
         app_label = 'rsr'
@@ -88,6 +79,30 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
         ordering = ['-id', ]
+
+    def save(self, *args, **kwargs):
+        if self.period and self.change and self.approved:
+            if not self.processed:
+                # Update approved, but not yet processed.
+                # So the actual value of the indicator period should be adjusted.
+                self.period.actual_value = str(int(self.period.actual_value) + int(self.change))
+                self.period.save()
+                self.processed = True
+            elif self.pk:
+                # Update approved, but already processed.
+                # The 'changed' field might have been updated, so we should check if that happened.
+                orig_update = ProjectUpdate.objects.get(pk=self.pk)
+                if orig_update.change != self.change:
+                    self.period.actual_value = str(int(self.period.actual_value) -
+                                                   int(orig_update.change) + int(self.change))
+                    self.period.save()
+            else:
+                # Update has no pk so it doesn't exist yet, but it is already processed.
+                # Should not occur and if it does, we assume that the actual value of the indicator
+                # period does not have to be adjusted.
+                pass
+
+        super(ProjectUpdate, self).save(*args, **kwargs)
 
     def img(self, value=''):
         try:
@@ -131,7 +146,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('update-main', (), {'project_id': self.project.pk, 'update_id': self.pk})
+        return 'update-main', (), {'project_id': self.project.pk, 'update_id': self.pk}
 
     def __unicode__(self):
         return _(u'Project update for %(project_name)s') % {'project_name': self.project.title}
