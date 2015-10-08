@@ -2570,7 +2570,13 @@ body {
     .indicator-container {
         vertical-align: top;
         overflow-y: scroll;
+        padding: 1em;
         @include flex(1);
+
+        .result-summary {
+            padding: 1em;
+            display: none;
+        }
 
         .indicator-group {
             padding: 1em;

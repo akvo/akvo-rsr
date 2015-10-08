@@ -912,7 +912,7 @@
       <div class="sidebar">
         {% for result in project.results.all %}
           <div class="result-nav">
-            <div class="result-nav-summary result-expand">
+            <div class="result-nav-summary result-expand" data-result-id="{{result.id}}">
               <h3 class="result-title">
                 {{result.title}}
               </h3>
@@ -925,7 +925,7 @@
                     {{indicator.title}}
                   </h4>
                   <div class="last-update">
-                    <!- This is the wrong date, but use it as placeholder for now until the model is changed ->
+                    <!-- This is the wrong date, but use it as placeholder for now until the model is changed -->
                     {% trans 'Last update' %} {{project.last_update.time_last_updated_gmt}}
                   </div>
                 </div>
@@ -933,12 +933,51 @@
             </div>
           </div>  
         {% endfor %}
-      </div><div class="indicator-container">
+      </div>
+      <div class="indicator-container">
         {% for result in project.results.all %}
+          <div class="result-{{result.id}} result-summary">
+            <h4 class="item-type">{% trans 'Result' %}</h4>
+            <div class="title-container">
+              <h3>{{result.title}}</h3>
+              <div class="result-parent">
+                {% trans "Parent project:" %} {{result.project.title}}
+              </div>
+            </div>
+            {% if result.description %}
+              <div class="result-description">
+                <h4>{% trans "Description" %}</h4>
+                <div>
+                  {{result.description}}
+                </div>
+              </div>
+            {% endif %}
+            <!-- Do we actually want this here?
+            {% if result.project.partners.all %}
+              <div class="result-partners">
+                <h4> {% trans "Responsible Partners" %} ({{result.project.partners.all.count}})</h4>
+                <ul>
+                  {% for partner in result.project.partners.all %}
+                    <li>{{partner.name}}{% if partner.primary_location.city %},{{partner.primary_location.city}}{% endif %}
+                      {% if partner.primary_location.country %},{{partner.primary_location.country}}{% endif %}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            -->
+            <div class="result-indicators">
+              <h4>{% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
+              <ul>
+                {% for indicator in result.indicators.all %}
+                  <li>{{indicator.title}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
           <div class="result-{{result.id}} indicator-group">
             {% for indicator in result.indicators.all %} 
               <div class="indicator-{{indicator.id}} indicator">
-                <h4>Indicator</h4>
+                <h4 class="item-type">{% trans "Indicator" %}</h4>
                 {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
                 <dl>
                   <dt>{% trans "Baseline Year" %}</dt>
@@ -987,17 +1026,54 @@
   /* Set the click listeners that expand or hide the full
   ** "Results" entries in the sidebar.
   */
-  function setIndicatorExpandOnClicks() {
+  function setResultExpandOnClicks() {
     var els = document.querySelectorAll('.sidebar .result-expand');
-    var el;
+    var el = null;
+    var resultID = null;
 
     for (var i = 0; i < els.length; i++) {
       el = els[i];
 
       el.addEventListener('click', function() {
-        this.parentNode.classList.toggle('expanded');
+        if (!this.parentNode.classList.contains('expanded')) {
+
+          // Expand the result in the sidebar
+          this.parentNode.classList.add('expanded');          
+
+          // Expand the appropriate result in the main panel
+          resultID = this.getAttribute('data-result-id');
+          showResultsSummary(resultID);
+        } else {
+          var els = document.querySelectorAll('.result-nav');
+          var el = null;
+
+          // Collapse all result entries in the sidebar
+          for (var i = 0; i < els.length; i++) {
+            el = els[i];
+            el.classList.remove('expanded');
+          }
+
+          // Hide all result summaries in the main panel
+          hideAllResultsSummaries();
+        }
       });
     }
+  }
+
+  /* Show the results summary in the main panel when the
+  ** appropriate side bar link is activated.
+  */
+  function showResultsSummary(id) {
+    var selector = '.result-' + id + '.result-summary';
+    var resultSummary = document.querySelector(selector);
+
+    hideAllResultsSummaries();
+    resultSummary.style.display = 'initial';
+  }
+
+  /* Hide all results summaries. */
+  function hideAllResultsSummaries() {
+    hideAll('.result-summary');
   }
 
   /* Set the listeners to show the appropriate indicator in
@@ -1011,7 +1087,7 @@
 
       el.addEventListener('click', function() {
 
-        /* Hide all the indicator elements */
+        /* Hide all the indicator and result summary elements */
         var hideElements = document.querySelectorAll('.indicator-group, .indicator');
 
         for (var i = 0; i < hideElements.length; i++) {
@@ -1020,11 +1096,13 @@
           el.style.display = 'none';
         }
 
+        hideAllResultsSummaries();
+
         /* Now show the indicator group and indicator that
         ** matches the element that's been clicked.
         */
         var indicatorSelector = '.indicator-' + this.getAttribute('data-indicator-id');
-        var indicatorGroupSelector = '.result-' + this.getAttribute('data-result-id');
+        var indicatorGroupSelector = '.indicator-group.result-' + this.getAttribute('data-result-id');
 
         document.querySelector(indicatorGroupSelector).style.display = 'block';
         document.querySelector(indicatorSelector).style.display = 'block';
@@ -1033,8 +1111,21 @@
     }
   }
 
+  /* GENERAL HELPER FUNCTIONS */
+
+  /* Hide all elements for a given selector */
+  function hideAll(selector) {
+    var els = document.querySelectorAll(selector);
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+
+      el.style.display = 'none';
+    }
+  }
+
   /* Do stuff */
-  setIndicatorExpandOnClicks();
+  setResultExpandOnClicks();
   setIndicatorLinkOnClicks();
   </script>
 </div>
