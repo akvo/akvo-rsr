@@ -2538,13 +2538,14 @@ body {
     * {
         box-sizing: border-box;
     }
+
     position: relative;
-    min-height: 100%;
+
+    .results-indicators-container {
+        @include display-flex();
+    }
     .sidebar {
-        height: 800px;
-        min-height: 100%;
         width: 20%;
-        display: inline-block;
         min-width: 200px;
         overflow-y: scroll;
         background-color: whitesmoke;
@@ -2567,12 +2568,9 @@ body {
         }
     }
     .indicator-container {
-        height: 800px;
-        min-height: 100%;
-        display: inline-block;
         vertical-align: top;
-        width: 80%;
         overflow-y: scroll;
+        @include flex(1);
 
         .indicator-group {
             padding: 1em;

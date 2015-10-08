@@ -1963,15 +1963,17 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 
 /* Results framework display */
 .results-indicators {
-  position: relative;
-  min-height: 100%; }
+  position: relative; }
   .results-indicators * {
     box-sizing: border-box; }
+  .results-indicators .results-indicators-container {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex; }
   .results-indicators .sidebar {
-    height: 800px;
-    min-height: 100%;
     width: 20%;
-    display: inline-block;
     min-width: 200px;
     overflow-y: scroll;
     background-color: whitesmoke;
@@ -1985,12 +1987,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         display: block;
         cursor: pointer; }
   .results-indicators .indicator-container {
-    height: 800px;
-    min-height: 100%;
-    display: inline-block;
     vertical-align: top;
-    width: 80%;
-    overflow-y: scroll; }
+    overflow-y: scroll;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1; }
     .results-indicators .indicator-container .indicator-group {
       padding: 1em;
       display: none; }

@@ -71,6 +71,20 @@ $bodyFont: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, 
 $scriptFont: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
 $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 
+@mixin flex($value) {
+  -webkit-box-flex: $value;
+  -moz-box-flex:  $value;
+  -webkit-flex:  $value;
+  -ms-flex:  $value;
+  flex:  $value;
+}
+@mixin display-flex() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
 @mixin border-radius($property) {
     -moz-border-radius: $property;
     -o-border-radius: $property;

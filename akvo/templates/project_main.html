@@ -908,75 +908,76 @@
 </div>  
 <div class="project-tab results-indicators">
   <article>
-    <div class="sidebar">
-      {% for result in project.results.all %}
-        <div class="result-nav">
-          <div class="result-nav-summary result-expand">
-            <h3 class="result-title">
-              {{result.title}}
-            </h3>
-            <span class="result-indicator-count">{{result.indicators.all.count}}</span>
-          </div>
-          <div class="result-nav-full">
-            {% for indicator in result.indicators.all %}
-              <div class="indicator-nav" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
-                <h4>
-                  {{indicator.title}}
-                </h4>
-                <div class="last-update">
-                  <!- This is the wrong date, but use it as placeholder for now until the model is changed ->
-                  {% trans 'Last update' %} {{project.last_update.time_last_updated_gmt}}
+    <div class="results-indicators-container">
+      <div class="sidebar">
+        {% for result in project.results.all %}
+          <div class="result-nav">
+            <div class="result-nav-summary result-expand">
+              <h3 class="result-title">
+                {{result.title}}
+              </h3>
+              <span class="result-indicator-count">{{result.indicators.all.count}}</span>
+            </div>
+            <div class="result-nav-full">
+              {% for indicator in result.indicators.all %}
+                <div class="indicator-nav" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                  <h4>
+                    {{indicator.title}}
+                  </h4>
+                  <div class="last-update">
+                    <!- This is the wrong date, but use it as placeholder for now until the model is changed ->
+                    {% trans 'Last update' %} {{project.last_update.time_last_updated_gmt}}
+                  </div>
                 </div>
+              {% endfor %}
+            </div>
+          </div>  
+        {% endfor %}
+      </div><div class="indicator-container">
+        {% for result in project.results.all %}
+          <div class="result-{{result.id}} indicator-group">
+            {% for indicator in result.indicators.all %} 
+              <div class="indicator-{{indicator.id}} indicator">
+                <h4>Indicator</h4>
+                {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
+                <dl>
+                  <dt>{% trans "Baseline Year" %}</dt>
+                  <dd>{{indicator.baseline_year}}</dd>
+
+                  <dt>{% trans "Baseline Value" %}</dt>
+                  <dd>{{indicator.baseline_value}}</dd>
+                </dl>
+
+                <h4>{% trans "Indicator periods" %}</h4>
+
+                <table class="table table-border table-responsive">
+                  <thead>
+                    <tr>
+                      <td>{% trans "Start" %}</td>
+                      <td>{% trans "End" %}</td>
+                      <td>{% trans "Target value" %}</td>
+                      <td>{% trans "Actual value" %}</td>
+                      <td>{% trans "Accomplishment" %}</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for period in indicator.periods.all %}
+                      <tr>
+                        <td>{{period.period_start}}</td>
+                        <td>{{period.period_end}}</td>
+                        <td>{{period.target_value}}</td>
+                        <td>{{period.actual_value}}</td>
+                        <td>{{period.percent_accomplishment}}%</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             {% endfor %}
           </div>
-        </div>  
-      {% endfor %}
-    </div><div class="indicator-container">
-      {% for result in project.results.all %}
-        <div class="result-{{result.id}} indicator-group">
-          {% for indicator in result.indicators.all %} 
-            <div class="indicator-{{indicator.id}} indicator">
-              <h4>Indicator</h4>
-              {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
-              <dl>
-                <dt>{% trans "Baseline Year" %}</dt>
-                <dd>{{indicator.baseline_year}}</dd>
-
-                <dt>{% trans "Baseline Value" %}</dt>
-                <dd>{{indicator.baseline_value}}</dd>
-              </dl>
-
-              <h4>{% trans "Indicator periods" %}</h4>
-
-              <table class="table table-border table-responsive">
-                <thead>
-                  <tr>
-                    <td>{% trans "Start" %}</td>
-                    <td>{% trans "End" %}</td>
-                    <td>{% trans "Target value" %}</td>
-                    <td>{% trans "Actual value" %}</td>
-                    <td>{% trans "Accomplishment" %}</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for period in indicator.periods.all %}
-                    <tr>
-                      <td>{{period.period_start}}</td>
-                      <td>{{period.period_end}}</td>
-                      <td>{{period.target_value}}</td>
-                      <td>{{period.actual_value}}</td>
-                      <td>{{period.percent_accomplishment}}%</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          {% endfor %}
-        </div>
-      {% endfor %}
-    </div>   
-    <div class="clearfix"></div>
+        {% endfor %}
+      </div> 
+    </div>  
   </article>
   <script>
   /* Obviously this script shouldn't live here permanently.
