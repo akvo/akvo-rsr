@@ -6,6 +6,7 @@
 
 
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
@@ -67,11 +68,10 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
 
     # Indicator updates
-    period = models.ForeignKey('IndicatorPeriod', related_name='period_updates',
-                               verbose_name=_(u'indicator period'), blank=True, null=True)
-    change = models.IntegerField(_(u'change'), blank=True, null=True)
-    approved = models.BooleanField(_(u'approved'), default=False)
-    processed = models.BooleanField(_(u'processed'), default=False)
+    indicator_period = models.ForeignKey('IndicatorPeriod', related_name='updates',
+                                         verbose_name=_(u'indicator period'), blank=True, null=True)
+    period_update = models.DecimalField(_(u'period update'), blank=True, null=True, max_digits=14,
+                                        decimal_places=2)
 
     class Meta:
         app_label = 'rsr'
@@ -81,26 +81,36 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ordering = ['-id', ]
 
     def save(self, *args, **kwargs):
-        if self.period and self.change and self.approved:
-            if not self.processed:
-                # Update approved, but not yet processed.
-                # So the actual value of the indicator period should be adjusted.
-                self.period.actual_value = str(int(self.period.actual_value) + int(self.change))
-                self.period.save()
-                self.processed = True
-            elif self.pk:
-                # Update approved, but already processed.
-                # The 'changed' field might have been updated, so we should check if that happened.
-                orig_update = ProjectUpdate.objects.get(pk=self.pk)
-                if orig_update.change != self.change:
-                    self.period.actual_value = str(int(self.period.actual_value) -
-                                                   int(orig_update.change) + int(self.change))
-                    self.period.save()
+        if self.indicator_period and self.period_update:
+            if not self.pk:
+                # Newly created update to indicator period.
+                # Update the indicator period's actual value.
+                self.indicator_period.actual_value = str(Decimal(self.period.actual_value) +
+                                                         Decimal(self.period_update))
+                self.indicator_period.save()
             else:
-                # Update has no pk so it doesn't exist yet, but it is already processed.
-                # Should not occur and if it does, we assume that the actual value of the indicator
-                # period does not have to be adjusted.
-                pass
+                # Update to already existing indicator period.
+                # Check if values have been changed.
+                orig_update = ProjectUpdate.objects.get(pk=self.pk)
+                if orig_update.indicator_period != self.indicator_period:
+                    # Indicator period has changed.
+                    # Substract value from old period, and add new value to new period.
+                    orig_update.indicator_period.actual_value = str(
+                        Decimal(orig_update.indicator_period.actual_value) -
+                        Decimal(orig_update.indicator_period.period_update)
+                    )
+                    orig_update.save()
+
+                    self.indicator_period.actual_value = str(Decimal(self.period.actual_value) +
+                                                             Decimal(self.period_update))
+                    self.indicator_period.save()
+
+                elif orig_update.period_update != self.period_update:
+                    # Indicator value has changed.
+                    # Substract old value from period, and add new value to it.
+                    self.indicator_period.actual_value = str(Decimal(self.period.actual_value) -
+                                                             Decimal(orig_update.period_update) +
+                                                             Decimal(self.period_update))
 
         super(ProjectUpdate, self).save(*args, **kwargs)
 
