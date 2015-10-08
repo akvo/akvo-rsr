@@ -132,7 +132,7 @@ function getCreateProject(createProjectNode) {
         // Set reporting partner by default
         partners = defaultValues.employments;
 
-        if (partners.length === 1) {
+        if (partners.length > 0) {
             request.send('{"sync_owner": ' + partners[0] + '}');
         } else {
             request.send('{}');

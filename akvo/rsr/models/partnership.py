@@ -102,7 +102,7 @@ class Partnership(models.Model):
         )
     )
     funding_amount = models.DecimalField(
-        _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
+        _(u'funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
                     u'Note that it\'s only possible to indicate a funding amount for funding '
                     u'partners.')

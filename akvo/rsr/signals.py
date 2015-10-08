@@ -17,13 +17,16 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import transaction
 from django.db.models import get_model
 from django.db.models.signals import post_save
 
 from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
-from akvo.iati.iati_export import IatiXML
+from akvo.iati.exports.iati_export import IatiXML
+from akvo.iati.imports.iati_import import IatiImportProcess
+from akvo.iati.imports.utils import add_log
 
 
 def create_publishing_status(sender, **kwargs):
@@ -308,3 +311,21 @@ def create_iati_file(sender, **kwargs):
             iati_export.status = 4
             iati_export.save()
         post_save.connect(create_iati_file, sender=sender)
+
+
+def import_iati_file(sender, **kwargs):
+    """
+    Import an IATI XML file when an entry in the iati_import table is saved.
+
+    :param sender: IatiImport model
+    """
+    iati_import = kwargs.get("instance", None)
+
+    if iati_import and iati_import.status == 1:
+        post_save.disconnect(import_iati_file, sender=sender)
+        try:
+            with transaction.atomic():
+                IatiImportProcess(iati_import)
+        except Exception as e:
+            add_log(iati_import, 'general', str(e), None, 1)
+        post_save.connect(import_iati_file, sender=sender)

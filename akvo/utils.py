@@ -66,13 +66,16 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt',
                   subject_context=None,
-                  msg_context=None):
+                  msg_context=None,
+                  html_message=None):
     """
     Send template driven email.
         to_list is a list of email addresses
         subject and message are templates for use as email subject and message body
         subject_context and msg_context are dicts used when renedering the respective templates
-    settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
+        html_message is the HTML template for use as message body
+    settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org'
+    if undefined
     """
     if not subject_context:
         subject_context = {}
@@ -85,9 +88,16 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     subject = ''.join(subject.splitlines())
     msg_context.update({'site': current_site})
     message = loader.render_to_string(message, msg_context)
-    send_mail(
-        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
-    )
+    if html_message:
+        html_message = loader.render_to_string(html_message, msg_context)
+        send_mail(
+            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
+            html_message=html_message
+        )
+    else:
+        send_mail(
+            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
+        )
 
 
 def rsr_send_mail_to_users(users,

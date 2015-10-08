@@ -41,9 +41,15 @@
                   </div>
                 </div>
             <div>
+              {% if rsr_page %}
+                <div class="btn-group">
+                  {% bootstrap_field filter.form.organisation %}
+                </div>
+              {% else %}
                 <div class="btn-group" id="org-filter-container">
                 </div>
                 <input type="hidden" name="organisation" id="org-filter-input" type="text">
+              {% endif %}
             </div>
             <div>
               <div class="btn-group">

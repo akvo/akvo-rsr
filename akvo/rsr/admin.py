@@ -134,8 +134,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         from .models import Organisation
         org_set = set()
         for employment in request.user.employers.approved():
-            if employment.group == Group.objects.get(name='Admins'):
-                org_set.add(employment.organisation.pk)
+            if employment.group in [Group.objects.get(name='Admins'),
+                                    Group.objects.get(name='Project Editors')]:
+                for co_org in employment.organisation.content_owned_organisations():
+                    org_set.add(co_org.pk)
         return Organisation.objects.filter(pk__in=org_set).distinct()
 
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
@@ -1132,3 +1134,13 @@ class EmploymentAdmin(admin.ModelAdmin):
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
+
+
+class IatiImportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiImport')
+    list_display = ('__unicode__', 'status', 'start_date', 'end_date')
+    list_filter = ('status',)
+    search_fields = ('user__username', )
+    exclude = ('status', 'start_date', 'end_date')
+
+admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)

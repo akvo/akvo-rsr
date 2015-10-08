@@ -7,6 +7,7 @@
 
 // DEFAULT VALUES
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -834,18 +835,60 @@ function removePartial(node) {
     setSectionCompletionPercentage(findAncestor(parentParent, "formStep"));
 }
 
-function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
+function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
     Typeahead = ReactTypeahead.Typeahead;
 
+    if (inputType === 'project') {
+        typeaheadOptions.forEach(function(o) {
+            o.filterOption = o.id + ' ' + o.title;
+            o.displayOption = o.title + ' (ID: ' + o.id + ')';
+        });
+        filterOption = 'filterOption';
+        displayOption = 'displayOption';
+    } else if (inputType === 'org') {
+        typeaheadOptions.forEach(function(o) {
+            var newName = getDisplayOption(o.name, o.long_name);
+
+            o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
+        });        
+        filterOption = 'filterOption';
+        displayOption = 'displayOption';
+    }
+
+    function getDisplayOption(short, long) {
+        if (short === long) {
+            return short;
+        }
+        if (!long) {
+            return short;
+        }
+        return short + ' (' + long + ')';
+    }
     inputClass = selector + " form-control " + childClass;
 
     selectorClass = document.querySelector('.' + selector);
 
     TypeaheadContainer = React.createClass({
+
+        getInitialState: function() {
+            return ({focusClass: 'inactive'});
+        },
+        onKeyUp: function() {
+
+            /* Only activate the "add org" button for typeaheads that i) are for organisations,
+            ** and ii) are not for reporting organisations. */
+            if (inputType === 'org' && selector.indexOf('reportingOrganisation') === -1) {
+                this.setState({focusClass: 'active'});
+            }
+        },
+        onBlur: function() {
+            this.setState({focusClass: 'inactive'});
+        },
         render: function() {
             return (
-                    <div>
+                    <div className={this.state.focusClass}>
                         <Typeahead
                             placeholder=''
                             options={typeaheadOptions}
@@ -854,6 +897,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             displayOption={displayOption}
                             filterOption={filterOption}
                             childID={selector}
+                            onKeyUp={this.onKeyUp}
+                            onBlur={this.onBlur}
                             customClasses={{
                               typeahead: "",
                               input: inputClass,
@@ -866,6 +911,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                                 name: selector,
                                 id: selector
                             }} />
+                        <div className="addOrg" onMouseDown={addOrgModal}>+ {defaultValues.add_new_organisation}</div>
                     </div>
             );
         }
@@ -885,7 +931,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 savedResult = typeaheadOptions[i];
 
-                typeaheadInput.value = savedResult[filterOption];
+                typeaheadInput.value = savedResult[displayOption];
                 typeaheadInput.setAttribute('value', savedResult.id);
                 typeaheadInput.setAttribute('saved-value', savedResult.id);
             }
@@ -922,17 +968,17 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     setPageCompletionPercentage();
 }
 
-function loadAsync(url, retryCount, retryLimit, callback) {
+function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
     var xmlHttp;
 
     // If we already have the response cached, don't fetch it again
-    if (responses[url] !== null) {
+    if (responses[url] !== null && !forceReloadOrg) {
         callback(responses[url]);
         return;
     }
 
     // If the response is in localStorage, don't fetch it again
-    if (localStorageResponses !== null && localStorageResponses !== '') {
+    if (localStorageResponses !== null && localStorageResponses !== '' && !forceReloadOrg) {
         if (localStorageResponses[url] !== undefined) {
             var response = localStorageResponses[url];
 
@@ -1007,7 +1053,7 @@ function loadAsync(url, retryCount, retryLimit, callback) {
     }
 }
 
-function processResponse(response, selector, childClass, valueId, label, help, filterOption) {
+function processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType) {
     var typeaheadOptions = response.results;
     var typeaheadCallback = function(option) {
         var el;
@@ -1019,12 +1065,12 @@ function processResponse(response, selector, childClass, valueId, label, help, f
         return option[filterOption];
     };
 
-    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
+    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType);
 }
 
-function getCallback(selector, childClass, valueId, label, help, filterOption) {
+function getCallback(selector, childClass, valueId, label, help, filterOption, inputType) {
     var output = function(response) {
-        processResponse(response, selector, childClass, valueId, label, help, filterOption);
+        processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType);
     };
 
     return output;
@@ -1212,56 +1258,75 @@ function getOnClick(pName, parentElement) {
     return onclick;
 }
 
-function updateTypeaheads() {
-    var els, filterOption, labelText, helpText, API;
+function updateTypeaheads(forceReloadOrg) {
+    var els, filterOption, labelText, helpText, API, inputType;
 
     els1 = document.querySelectorAll('.related-project-input');
     labelText = defaultValues.related_project_label;
     helpText = defaultValues.related_project_helptext;
     filterOption = 'title';
     API = projectsAPIUrl;
+    inputType = 'project';
 
-    updateTypeahead(els1, filterOption, labelText, helpText, API);
+    updateTypeahead(els1, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.reportingOrganisation-input');
     labelText = defaultValues.reporting_org_label;
     helpText = defaultValues.reporting_org_helptext;
     filterOption = 'name';
     API = reportingOrgsAPIUrl;
+    inputType = 'org';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.partner-input');
-    labelText = defaultValues.reporting_org_label;
-    helpText = defaultValues.reporting_org_helptext;
+    labelText = defaultValues.partner_label;
+    helpText = defaultValues.partner_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-provider-org-input');
     labelText = defaultValues.provider_org_label;
     helpText = defaultValues.provider_org_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-receiver-org-input');
     labelText = defaultValues.recipient_org_label;
     helpText = defaultValues.recipient_org_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
-    function updateTypeahead(els, filterOption, labelText, helpText, API) {
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
         for (var i = 0; i < els.length; i++) {
             var el = els[i];
 
             // Check if we've already rendered this typeahead
             if (elHasClass(el, 'has-typeahead')) {
+                if (forceReloadOrg) {
 
-                continue;
+                    // Remove the existing typeahead, then build a new
+                    // one with the reloaded API response
+                    var child = el.querySelector('div');
+                    el.removeChild(child);
+                } else {
+
+                    // Typeahead exists and we don't need to reload the API response.
+                    // Do nothing.
+                    continue;                    
+                }
             }
 
             var childSelector = el.getAttribute('data-child-id');
@@ -1283,14 +1348,14 @@ function updateTypeaheads() {
                 valueId = el.getAttribute('data-value');
             }
 
-            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption);
+            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
             cb();
         }
     }
 
-    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption) {
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
         var output = function() {
-            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
         };
 
         return output;
@@ -2060,6 +2125,322 @@ function setUnsavedChangesMessage() {
             return message;
         }
     };
+}
+
+/* Show the "add organisation" modal dialog */
+function addOrgModal() {
+
+    /* Remove the modal */
+    function cancelModal() {
+        var modal = document.querySelector('.modalParent');
+        modal.parentNode.removeChild(modal);
+    }
+
+    /* Submit the new org */
+    function submitModal() {
+        if (allInputsFilled() && checkLocationFilled()) {
+            var api_url, request, form, form_data;
+
+            // Add organisation to DB
+            form = document.querySelector('#addOrganisation');
+            form_data = serialize(form);
+
+            // Remove empty IATI organistion id
+            form_data = form_data.replace('iati_org_id=&', '');
+
+            api_url = '/rest/v1/organisation/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status === 201) {
+                    var organisation_id;
+
+                    // Get organisation ID
+                    response = JSON.parse(request.responseText);
+                    organisation_id = response.id;
+
+                    // Add location (fails silently)
+                    if (form.querySelector('#latitude').value !== '') {
+                        var request_loc;
+                        api_url = '/rest/v1/organisation_location/?format=json';
+                        request_loc = new XMLHttpRequest();
+                        request_loc.open('POST', api_url, true);
+                        request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+                        request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        request_loc.send(form_data + '&location_target=' + organisation_id);
+                    }
+
+                    // Add logo (fails silently)
+                    var logo_request, logo_data, org_logo_files;
+                    org_logo_files = document.getElementById("org-logo").files;
+                    if (org_logo_files !== undefined) {
+                        api_url = '/rest/v1/organisation/' + organisation_id + '/add_logo/?format=json';
+                        logo_data = new FormData();
+                        logo_data.append("logo", org_logo_files[0]);
+                        logo_request = new XMLHttpRequest();
+                        logo_request.open("POST", api_url);
+                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+                        logo_request.send(logo_data);
+                    }
+
+                    // This flag forces the fetching of a fresh API response
+                    var forceReloadOrg = true;
+
+                    updateTypeaheads(forceReloadOrg);
+                    cancelModal();
+                } else if (request.status === 400) {
+                    var response;
+                    response = JSON.parse(request.responseText);
+
+                    document.querySelector('.orgModal').scrollTop = 0;
+
+                    for (var key in response) {
+                        if (response.hasOwnProperty(key)) {
+                            var input = form.querySelector('#' + key);
+                            var inputParent = input.parentNode;
+                            var inputHelp = inputParent.querySelector('.help-block');
+                            inputHelp.textContent = response[key];
+                            elAddClass(inputHelp, 'help-block-error');
+                            elAddClass(inputParent, 'has-error');
+                        }
+                    }
+                    return false;
+                } else {
+                    elAddClass(form, 'has-error');
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                document.querySelector('#addOrgGeneralError').textContent = defaultValues.general_error;
+                document.querySelector('.orgModal').scrollTop = 0;
+                return false;
+            };
+
+            request.send(form_data);
+        } else {
+            document.querySelector('.orgModal').scrollTop = 0;
+        }
+    }
+
+    function allInputsFilled() {
+        var allInputsFilledBoolean = true;
+        var shortName = document.querySelector('#name');
+        var shortNameHelp = document.querySelector('#name + label + .help-block');
+        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
+        var longName = document.querySelector('#long_name');
+        var longNameHelp = document.querySelector('#long_name + label + .help-block');
+        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
+
+        if (shortName.value === '') {
+            shortNameHelp.textContent = defaultValues.blank_name;
+            elAddClass(shortNameHelp, 'help-block-error');
+            elAddClass(shortNameContainer, 'has-error');
+            allInputsFilledBoolean = false;
+        } else {
+            shortNameHelp.textContent = '';
+            elRemoveClass(shortNameHelp, 'help-block-error');
+            elRemoveClass(shortNameContainer, 'has-error');
+        }
+
+        if (longName.value === '') {
+            longNameHelp.textContent = defaultValues.blank_long_name;
+            elAddClass(longNameHelp, 'help-block-error');
+            elAddClass(longNameContainer, 'has-error');
+            allInputsFilledBoolean = false;
+        } else {
+            longNameHelp.textContent = '';
+            elRemoveClass(longNameHelp, 'help-block-error');
+            elRemoveClass(longNameContainer, 'has-error');
+        }
+
+        return allInputsFilledBoolean;
+    }
+
+    function checkLocationFilled() {
+        var latitudeNode, longitudeNode, countryNode, latitudeHelp, longitudeHelp, countryHelp, result;
+
+        latitudeNode = document.querySelector('#latitude');
+        latitudeHelp = document.querySelector('#latitude + label + .help-block');
+        longitudeNode = document.querySelector('#longitude');
+        longitudeHelp = document.querySelector('#longitude + label + .help-block');
+        countryNode = document.querySelector('#country');
+        countryHelp = document.querySelector('#country + label + .help-block');
+
+        result = true;
+
+        if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
+            return result;
+        } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
+            if (latitudeNode.value === '') {
+                latitudeHelp.textContent = defaultValues.location_check;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+            }
+            if (longitudeNode.value === '') {
+                longitudeHelp.textContent = defaultValues.location_check;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+            }
+            if (countryNode.value === '') {
+                countryHelp.textContent = defaultValues.location_check;
+                elAddClass(countryHelp, 'help-block-error');
+                elAddClass(countryHelp.parentNode, 'has-error');
+            }
+            result = false;
+        } else {
+            if (latitudeNode.value.indexOf(',') > 0) {
+                latitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
+            if (longitudeNode.value.indexOf(',') > 0) {
+                longitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    Modal = React.createClass({
+        render: function() {
+            var country_option_list = countryValues.map(function(country) {
+              return (
+                  <option value={country.pk}>{country.name}</option>
+              );
+            });
+
+            return (
+                    <div className="modalParent">
+                        <div className="modalBackground">
+                        </div>
+                        <div className="modalContainer">
+                            <div className="orgModal">
+                                <div className="modalContents projectEdit">
+                                    <h4>{defaultValues.add_new_organisation}</h4>
+                                    <form id="addOrganisation">
+                                        <div className="row">
+                                            <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer newOrgName col-md-4">
+                                                <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
+                                                <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
+                                                <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
+                                            </div>
+                                            <div className="inputContainer newOrgLongName col-md-4">
+                                                <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
+                                                <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
+                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
+                                            </div>
+                                            <div className="inputContainer newOrgIatiId col-md-4">
+                                                <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
+                                                <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
+                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-12">
+                                                <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
+                                                <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="IATIOrgTypeContainer inputContainer col-md-6">
+                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
+                                                    <option value="10">10 - {defaultValues.government}</option>
+                                                    <option value="15">15 - {defaultValues.other_public_sector}</option>
+                                                    <option value="21">21 - {defaultValues.international_ngo}</option>
+                                                    <option value="22">22 - {defaultValues.national_ngo}</option>
+                                                    <option value="23">23 - {defaultValues.regional_ngo}</option>
+                                                    <option value="30">30 - {defaultValues.public_private_partnership}</option>
+                                                    <option value="40">40 - {defaultValues.multilateral}</option>
+                                                    <option value="60">60 - {defaultValues.foundation}</option>
+                                                    <option value="70">70 - {defaultValues.private_sector}</option>
+                                                    <option value="80">80 - {defaultValues.academic_training_research}</option>
+                                                </select>
+                                                <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-6">
+                                                <input name="url" id="url" type="text" className="form-control"/>
+                                                <label htmlFor="url" className="control-label">{defaultValues.website}</label>
+                                                <p className="help-block">{defaultValues.start_http}</p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-4">
+                                                <input name="latitude" id="latitude" type="text" className="form-control"/>
+                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-4">
+                                                <input name="longitude" id="longitude" type="text"  className="form-control"/>
+                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-4">
+                                                <select name="country" id="country" className="form-control">
+                                                    <option value="">{defaultValues.country}:</option>
+                                                    {country_option_list}
+                                                </select>
+                                                <label htmlFor="country" className="control-label">{defaultValues.country}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-6">
+                                                <input name="contact_person" id="contact_person" type="text" className="form-control"/>
+                                                <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                            <div className="inputContainer col-md-6">
+                                                <input name="contact_email" id="contact_email" type="text" className="form-control"/>
+                                                <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="inputContainer col-md-12">
+                                                <textarea id="description" className="form-control" name="description" rows="3"></textarea>
+                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
+                                                <p className="help-block"></p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div className="controls">
+                                        <button className="modal-cancel btn btn-danger" onClick={cancelModal}>
+                                        <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
+                                        </button>
+                                        <button className="modal-save btn btn-success" onClick={submitModal}>
+                                            <span className="glyphicon glyphicon-plus"></span> {defaultValues.add_new_organisation}
+                                        </button>
+                                    </div>   
+                                </div>
+                            </div>                   
+                        </div>
+                    </div>
+            );
+        }
+    });
+
+    React.render(
+        <Modal />,
+
+        // Use the footer to prevent page scroll on injection
+        document.querySelector('footer')
+    );    
 }
 
 /* General Helper Functions */
