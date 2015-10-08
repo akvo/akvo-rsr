@@ -1977,7 +1977,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     background-color: whitesmoke;
     vertical-align: top; }
     .results-indicators .sidebar .result-nav {
-      padding: 0.5em; }
+      padding: 0.5em;
+      cursor: pointer; }
       .results-indicators .sidebar .result-nav .result-nav-full {
         display: none; }
       .results-indicators .sidebar .result-nav.expanded .result-nav-full {

@@ -911,13 +911,11 @@
     <div class="sidebar">
       {% for result in project.results.all %}
         <div class="result-nav">
-          <div class="result-nav-summary">
+          <div class="result-nav-summary result-expand">
             <h3 class="result-title">
               {{result.title}}
             </h3>
-            <button class="result-expand">
-              +
-            </button>
+            <span class="result-indicator-count">{{result.indicators.all.count}}</span>
           </div>
           <div class="result-nav-full">
             {% for indicator in result.indicators.all %}
@@ -996,7 +994,7 @@
       el = els[i];
 
       el.addEventListener('click', function() {
-        this.parentNode.parentNode.classList.toggle('expanded');
+        this.parentNode.classList.toggle('expanded');
       });
     }
   }
