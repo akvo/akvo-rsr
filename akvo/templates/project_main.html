@@ -977,14 +977,18 @@
           <div class="result-{{result.id}} indicator-group">
             {% for indicator in result.indicators.all %} 
               <div class="indicator-{{indicator.id}} indicator">
-                <h4 class="item-type">{% trans "Indicator" %}</h4>
-                {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})
-                <dl>
-                  <dt>{% trans "Baseline Year" %}</dt>
-                  <dd>{{indicator.baseline_year}}</dd>
+                <h4>{{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})</h4>
 
-                  <dt>{% trans "Baseline Value" %}</dt>
-                  <dd>{{indicator.baseline_value}}</dd>
+                <dl>
+                  {% if indicator.baseline_year %}
+                    <dt>{% trans "Baseline Year" %}</dt>
+                    <dd>{{indicator.baseline_year}}</dd>
+                  {% endif %}
+
+                  {% if indicator.baseline_value %}
+                    <dt>{% trans "Baseline Value" %}</dt>
+                    <dd>{{indicator.baseline_value}}</dd>
+                  {% endif %}
                 </dl>
 
                 <h4>{% trans "Indicator periods" %}</h4>
@@ -994,9 +998,7 @@
                     <tr>
                       <td>{% trans "Start" %}</td>
                       <td>{% trans "End" %}</td>
-                      <td>{% trans "Target value" %}</td>
-                      <td>{% trans "Actual value" %}</td>
-                      <td>{% trans "Accomplishment" %}</td>
+                      <td>{% trans "Target" %}</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -1004,9 +1006,19 @@
                       <tr>
                         <td>{{period.period_start}}</td>
                         <td>{{period.period_end}}</td>
-                        <td>{{period.target_value}}</td>
-                        <td>{{period.actual_value}}</td>
-                        <td>{{period.percent_accomplishment}}%</td>
+                        <td class="indicator-bar-td">
+                          <div class="indicator-bar-display-container">
+                            <div class="indicator-bar">
+                            </div>
+                            <div class="indicator-bar-progress-container">
+                              <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment}}%; z-index: {{period.percent_accomplishment}}" data-progress="{{period.percent_accomplishment}}">
+                                <span class="indicator-bar-progress-text">{{period.actual_value}}</span>
+                              </div>
+                            </div>
+                          </div><div class="indicator-bar-progress-complete-container">
+                            <span class="indicator-bar-progress-complete">{{period.target_value}}</span>
+                          </div>
+                        </td>
                       </tr>
                     {% endfor %}
                   </tbody>

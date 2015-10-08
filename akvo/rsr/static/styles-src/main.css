@@ -1963,7 +1963,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 
 /* Results framework display */
 .results-indicators {
-  position: relative; }
+  position: relative;
+  /* Styling for the indicator period progress bar */ }
   .results-indicators * {
     box-sizing: border-box; }
   .results-indicators .results-indicators-container {
@@ -2003,3 +2004,60 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       display: none; }
       .results-indicators .indicator-container .indicator-group .indicator {
         display: none; }
+  .results-indicators .indicator-bar-td {
+    height: 48px;
+    padding: 0;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex; }
+  .results-indicators .indicator-bar-display-container {
+    position: relative;
+    height: 100%;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1; }
+    .results-indicators .indicator-bar-display-container .indicator-bar {
+      position: absolute;
+      top: 23px;
+      bottom: 23px;
+      left: 0px;
+      right: 0px;
+      height: 2px;
+      background-color: black; }
+    .results-indicators .indicator-bar-display-container .indicator-bar-progress-container {
+      /* The progress box has non-zero width, so add some
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
+      margin: 0 15px 0 15px;
+      position: relative;
+      height: 100%; }
+      .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+        position: absolute;
+        width: 30px;
+        height: 26px;
+        top: 12px;
+        margin-left: -15px;
+        padding: 0.2em;
+        background-color: blue;
+        text-align: center; }
+        .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress[data-progress="100.0"] {
+          margin-left: 15px;
+          z-index: 2; }
+  .results-indicators .indicator-bar-progress-complete-container {
+    height: 100%;
+    position: relative;
+    width: 30px; }
+    .results-indicators .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+      position: absolute;
+      width: 30px;
+      height: 26px;
+      top: 12px;
+      padding: 0.2em;
+      background-color: green;
+      text-align: center;
+      z-index: 1; }
