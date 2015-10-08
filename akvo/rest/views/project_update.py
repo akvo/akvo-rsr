@@ -21,8 +21,12 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     serializer_class = ProjectUpdateSerializer
     filter_fields = {
         'project': ['exact', ],
+        'period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
+        'change': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        'approved': ['exact', ],
+        'processed': ['exact', ],
         # These filters only accept a date, not a datetime
         # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
@@ -91,8 +95,12 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
     serializer_class = ProjectUpdateExtraSerializer
     filter_fields = {
         'project': ['exact', ],
+        'period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
+        'change': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        'approved': ['exact', ],
+        'processed': ['exact', ],
         # These filters only accept a date, not a datetime
         # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],

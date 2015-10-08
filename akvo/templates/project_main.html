@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 {% load compressed i18n rsr_utils rsr_tags %}
 {% load rsr_filters humanize markup_tags %}
-{% block title %}{{project.title}}{% endblock title%}
-{% block head_js %}
-<link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
-<style>
-</style>
-{% endblock head_js %}
+{% block title %}{{ project.title }}{% endblock title %}
 {% block maincontent %}
 <div class="header-container">
   {% include "partials/project_header.html" %}
@@ -1193,23 +1188,9 @@
   setTabOnClicks();
   readTabFromFragment();
 </script>
-<script src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
 {% compressed_js 'project_main' %}
 {% endblock js %}
 {% block jq %}
   {{ block.super }}
   $('.logoImg > img').css('margin','inherit');
-
-  {% comment %}
-  {# Timeline #}
-  var timeline_data = {{ timeline_data|safe }};
-  createStoryJS({
-    type: 'timeline',
-    width: '100%',
-    height: '400',
-    source: timeline_data,
-    embed_id: 'timeline'
-  });
-  {% endcomment %}
-
 {% endblock jq %}
