@@ -41,10 +41,17 @@ def typeahead_organisation(request):
                                                              many=True))
     )
 
+@api_view(['GET'])
+def typeahead_reporting_organisation(request):
+    organisations = Organisation.objects.filter(can_become_reporting=True)
+    return Response(
+        rejig(organisations, TypeaheadOrganisationSerializer(organisations,
+                                                             many=True))
+    )
 
 @api_view(['GET'])
 def typeahead_project(request):
-    projects = Project.objects.published()
+    projects = Project.objects.all().exclude(title='')
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )

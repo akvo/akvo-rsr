@@ -1,15 +1,26 @@
-{% load i18n maps %}
+{% load i18n maps rsr_utils %}
 
 <header class="projectHeader">
     <div class="container">
         <div class="row">
+            {% if not rsr_page and project.keyword_logos or rsr_page and rsr_page.show_keyword_logos and project.keyword_logos %}
+            <div class="col-sm-6">
+            {% else %}
             <div class="col-sm-8">
+            {% endif %}
                 <h1><a href="{% url 'project-main' project.pk %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
                 <p>{{project.subtitle}}</p>
                 <div class="projectLocation">
                     <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">{% trans 'Show map' %} +</a></p>
                 </div>
             </div>
+            {% if not rsr_page and project.keyword_logos or rsr_page and rsr_page.show_keyword_logos and project.keyword_logos %}
+            <div class="col-sm-2 shareBlock">
+                {% for keyword in project.keyword_logos|slice:":2" %}
+                    {% img keyword 125 60 keyword.label %}
+                {% endfor %}
+            </div>
+            {% endif %}
             <div class="col-sm-4 shareBlock">
                 <div class="row">
                     <nav>
@@ -59,10 +70,10 @@
        googleMap.load();
        $( "#project-map" ).removeClass('initial');
      }
-     $('.map-toggle').html('HIDE MAP -');
+     $('.map-toggle').html('{% trans 'Hide map' %} -');
    } else {
      $( "#project-map" ).slideToggle('slow');
-     $('.map-toggle').html('SHOW MAP +');
+     $('.map-toggle').html('{% trans 'Show map' %} +');
    }
  };
 </script>

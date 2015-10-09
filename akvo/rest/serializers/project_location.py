@@ -5,7 +5,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from rest_framework import serializers
-from akvo.rsr.models import ProjectLocation
+from akvo.rsr.models import ProjectLocation, AdministrativeLocation
 from ..fields import Base64ImageField
 from .country import CountrySerializer
 from .rsr_serializer import BaseRSRSerializer
@@ -15,6 +15,12 @@ class ProjectLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectLocation
+
+
+class AdministrativeLocationSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = AdministrativeLocation
 
 
 class ProjectLocationExtraSerializer(ProjectLocationSerializer):

@@ -17,6 +17,19 @@ from django.utils.translation import ugettext as _
 register = template.Library()
 
 
+@register.inclusion_tag('inclusion_tags/more_partners.html',
+                        takes_context=True)
+def more_link(context, project):
+    """Generate the more links."""
+    partners = {}
+    for partner in project.all_partners():
+        if partner != project.reporting_org():
+            partners[partner] = partner.has_partner_types(project)
+    return {
+        'project': project,
+        'partners': partners
+    }
+
 @register.inclusion_tag('inclusion_tags/counter_badge.html',
                         takes_context=True)
 def counter_badge(context, object):

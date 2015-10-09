@@ -36,12 +36,13 @@ function loadAsync(url, retryCount, retryLimit, label) {
 }
 
 function processResponse(label, response) {
-    var label_content, checks, all_checks_passed, span;
+    var label_content, checks, all_checks_passed, span, checks_response;
 
-    label_content = label.innerHTML;
+    label_content = label.innerHTML.replace("noCheck", "");
     checks = JSON.parse(response);
 
     all_checks_passed = checks.all_checks_passed;
+    checks_response = checks.checks;
 
     if (all_checks_passed === "True") {
         span = document.createElement("span");
@@ -51,9 +52,15 @@ function processResponse(label, response) {
         label.innerHTML = '';
         label.appendChild(span);
 
-    } else if (all_checks_passed === "False") {
+    } else {
         span = document.createElement("span");
         span.className = "error";
+        label_content += "<br/>";
+        for (var i = 0; i < checks_response.length; i++) {
+            if (checks_response[i][0] === "error") {
+                label_content += "- " + checks_response[i][1] + "<br/>";
+            }
+        }
         span.innerHTML = label_content;
 
         label.innerHTML = '';
@@ -109,4 +116,6 @@ function loadComponent(component_id) {
 }
 
 i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
-loadComponent('react_iati_checks');
+if (document.getElementById('react_iati_checks')) {
+    loadComponent('react_iati_checks');
+}

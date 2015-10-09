@@ -19,13 +19,20 @@ class Link(models.Model):
         (LINK_EXTRNAL, _(u'External link')),
     )
 
-    kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
-    url = models.URLField(_(u'URL'))
-    caption = ValidXMLCharField(_(u'caption'), max_length=50)
+    kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS, default='E')
+    url = models.URLField(_(u'URL'), blank=True)
+    caption = ValidXMLCharField(_(u'caption'), max_length=50, blank=True)
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='links')
 
     def __unicode__(self):
-        return self.url
+        if self.url and self.caption:
+            return self.show_link()
+        elif self.url:
+            return u'<a href="%s">%s</a>' % (self.url, self.url,)
+        elif self.caption:
+            return self.caption
+        else:
+            return u'%s' % _(u'No link specified')
 
     def show_link(self):
         return u'<a href="%s">%s</a>' % (self.url, self.caption,)

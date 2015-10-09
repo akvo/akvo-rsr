@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load compressed i18n rsr_utils %}
-{% load rsr_filters %}
+{% load compressed i18n rsr_utils rsr_tags %}
+{% load rsr_filters humanize %}
 {% block title %}{{project.title}}{% endblock title%}
 {% block head_js %}
 <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
@@ -24,11 +24,48 @@
         <div class="col-sm-4">
           <aside class="projectSideInfo">
             <ul>
-              <li><span class="detailedInfo">{% trans 'Project summary' %}</span><p>{{project.project_plan_summary}}</p></li>
+              <li>
+                <span class="detailedInfo">{% trans 'Project summary' %}</span>
+                <p>{{project.project_plan_summary}}</p>
+              </li>
               {% if project.iati_activity_id %}
-                <li><span class="detailedInfo">{% trans 'IATI ID' %}</span> {{project.iati_activity_id}}</li>
+                <li>
+                  <span class="detailedInfo">{% trans 'IATI ID' %}</span>
+                  {{project.iati_activity_id}}
+                </li>
               {% endif %}
-              <li><span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}</li>
+              <li>
+                <span class="detailedInfo">{% trans 'Status' %}</span>
+                <span class="detailedPoint">{{project.get_status_display}}</span>
+                <br/>
+                {% if project.date_start_planned %}
+                  <span class="detailedInfo">{% trans 'Start date (planned)' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_start_planned|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_start_actual %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'Start date' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_end_planned %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'End date (planned)' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_end_actual %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'End date' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+              </li>
               {% if project.has_relations %}
                 <li>
                   <span class="detailedInfo">{% trans 'Hierarchy' %}</span>
@@ -43,6 +80,7 @@
                 {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
                 </li>
               {% endif %}
+              {% if reporting_org %}
               <li class="projectPartners">
                 <span class="detailedInfo">{% trans "Reporting organisation" %}</span>
                 <div class="row">
@@ -52,9 +90,7 @@
                     </a>
                     <div class="media-body">
                       <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                      <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
-                        title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
-                        data-placement="right" data-container="article" data-class="foo">{% blocktrans with partners_count=partners|length %}+ {{partners_count}} partners{% endblocktrans %}</a>
+                      {% more_link project %}
                       {% if project.reporting_org.primary_location.country %}
                         <div class="projectLocation">
                           <i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}
@@ -64,6 +100,7 @@
                   </div>
                 </div>
               </li>
+              {% endif %}
               <li class="financeBlock">
                 <span class="detailedInfo">{% trans "financial info" %}</span>
                 <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i>{% trans 'See all financial info' %}</a>
@@ -71,7 +108,8 @@
               {% if project.accepts_donations %}
                 <li class="donateSection text-center topMargin">
                   <dl class="dl-horizontal">
-                    <dt class="totalBudgetLabel">{% trans 'Budget Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
+                    <dt class="totalBudgetLabel">{% trans 'Total Budget' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
+                    <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed|floatformat|intcomma}}</dd>
                   </dl>
                   <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
                 </li>
@@ -137,12 +175,12 @@
             "actual_text": "{% trans 'actual' %}",
             "target_text": "{% trans 'target' %}",
             "background_text": "{% trans 'Background' %}",
-            "current_situation_text": "{% trans 'Current situation' %}",
+            "current_situation_text": "{% trans 'Situation at start of project' %}",
             "goals_overview_text": "{% trans 'Goals overview' %}",
             "project_plan_text": "{% trans 'Project plan' %}",
             "sustainability_text": "{% trans 'Sustainability' %}",
             "target_group_text": "{% trans 'Target group' %}",
-            "results_text": "{% trans 'Results' %}"
+            "results_text": "{% trans 'Results and indicators' %}"
         }
     </script>
 
@@ -150,30 +188,19 @@
 {% compressed_js 'project_main' %}
 {% endblock js %}
 {% block jq %}
-{{ block.super }}
-{# Tooltip #}
-$(function () {
-$('[data-toggle="tooltip"]').tooltip(
-{
-html: true,
-delay: {
-"show": 0,
-"hide": 1000
-}
-}
-)
-});
-{% comment %}
-{# Timeline #}
-var timeline_data = {{ timeline_data|safe }};
-createStoryJS({
-type: 'timeline',
-width: '100%',
-height: '400',
-source: timeline_data,
-embed_id: 'timeline'
-});
-{% endcomment %}
+  {{ block.super }}
+  $('.logoImg > img').css('margin','inherit');
 
-$('.logoImg > img').css('margin','inherit');
+  {% comment %}
+  {# Timeline #}
+  var timeline_data = {{ timeline_data|safe }};
+  createStoryJS({
+    type: 'timeline',
+    width: '100%',
+    height: '400',
+    source: timeline_data,
+    embed_id: 'timeline'
+  });
+  {% endcomment %}
+
 {% endblock jq %}

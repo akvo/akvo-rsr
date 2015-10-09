@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import BudgetItem
+from akvo.rsr.models import BudgetItem, CountryBudgetItem
 
-from ..serializers import BudgetItemSerializer
+from ..serializers import BudgetItemSerializer, CountryBudgetItemSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -17,3 +17,11 @@ class BudgetItemViewSet(BaseRSRViewSet):
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
     filter_fields = ('project', 'label', 'type', )
+
+
+class CountryBudgetItemViewSet(BaseRSRViewSet):
+    """
+    """
+    queryset = CountryBudgetItem.objects.all()
+    serializer_class = CountryBudgetItemSerializer
+    filter_fields = ('project', 'code', )

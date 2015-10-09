@@ -26,11 +26,13 @@ def is_org_admin(user, obj):
         if employment.group == Group.objects.get(name='Admins'):
             if not obj:
                 return True
-            if isinstance(obj, Organisation) and obj == employment.organisation:
-                return True
+            elif isinstance(obj, Organisation):
+                if obj in employment.organisation.content_owned_organisations():
+                    return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif isinstance(obj, Employment) and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
@@ -41,6 +43,30 @@ def is_org_admin(user, obj):
             else:
                 try:
                     if obj.project and obj.project in employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.result.project and obj.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.indicator.result.project and obj.indicator.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.location.location_target and obj.location.location_target in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.transaction.project and obj.transaction.project in \
+                            employment.organisation.all_projects():
                         return True
                 except:
                     pass
@@ -68,11 +94,13 @@ def is_org_user_manager(user, obj):
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif type(obj) == Employment and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and \
+                    obj.organisation in employment.organisation.content_owned_organisations():
                 return True
             elif type(obj) == Project and obj in employment.organisation.all_projects():
                 return True
-            elif type(obj) == Organisation and obj == employment.organisation:
+            elif type(obj) == Organisation and \
+                    obj in employment.organisation.content_owned_organisations():
                 return True
     return False
 
@@ -84,11 +112,38 @@ def is_org_project_editor(user, obj):
         if employment.group == Group.objects.get(name='Project Editors'):
             if not obj:
                 return True
+            elif isinstance(obj, Organisation):
+                if obj in employment.organisation.content_owned_organisations():
+                    return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
             else:
                 try:
                     if obj.project and obj.project in employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.result.project and obj.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.indicator.result.project and obj.indicator.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.location.location_target and obj.location.location_target in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.transaction.project and obj.transaction.project in \
+                            employment.organisation.all_projects():
                         return True
                 except:
                     pass

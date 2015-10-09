@@ -40,7 +40,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         'Project', related_name='project_updates', verbose_name=_(u'project')
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
-    title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
+    title = ValidXMLCharField(_(u'title'), max_length=80, db_index=True, help_text=_(u'80 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(
         max_length=2, choices=settings.LANGUAGES, default='en',
@@ -59,7 +59,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         _(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     photo_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+        _(u'photo credit'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     video = EmbedVideoField(
         _(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo')
@@ -68,7 +68,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         _(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     video_credit = ValidXMLCharField(
-        _(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+        _(u'video credit'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     update_method = ValidXMLCharField(
         _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True,

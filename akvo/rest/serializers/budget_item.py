@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import BudgetItem
+from akvo.rsr.models import BudgetItem, CountryBudgetItem
 
 from .rsr_serializer import BaseRSRSerializer
 
@@ -14,3 +14,9 @@ class BudgetItemSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItem
+
+
+class CountryBudgetItemSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = CountryBudgetItem

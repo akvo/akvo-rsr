@@ -22,6 +22,9 @@ class ProjectCondition(models.Model):
     type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1,
                              choices=codelist_choices(CONDITION_TYPE))
 
+    def __unicode__(self):
+        return self.text if self.text else _(u'No condition specified')
+
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')
 

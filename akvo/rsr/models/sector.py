@@ -6,8 +6,6 @@
 
 
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
@@ -43,7 +41,19 @@ class Sector(models.Model):
     )
 
     def __unicode__(self):
-        return self.sector_code
+        if self.sector_code:
+            try:
+                sector_unicode = self.iati_sector().name.capitalize()
+            except Exception as e:
+                sector_unicode = u'%s' % _(u'Sector code not found')
+        else:
+            sector_unicode = u'%s' % _(u'No sector code specified')
+
+        if self.percentage:
+            sector_unicode += u' (%s%%)' % str(self.percentage)
+
+        return sector_unicode
+
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
@@ -70,14 +80,3 @@ class Sector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'sector')
         verbose_name_plural = _(u'sectors')
-
-@receiver(post_save, sender=Sector)
-def update_vocabulary(sender, **kwargs):
-    "Updates the vocabulary if not specified."
-    sector = kwargs['instance']
-    if not sector.vocabulary and sector.sector_code:
-        if len(sector.sector_code) == 3:
-            sector.vocabulary = 'DAC-3'
-        elif len(sector.sector_code) == 5:
-            sector.vocabulary = 'DAC'
-        sector.save()

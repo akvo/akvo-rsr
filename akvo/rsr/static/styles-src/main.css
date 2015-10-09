@@ -91,6 +91,9 @@ img {
   .noStyleUl li {
     padding: 0; }
 
+time {
+  color: #de8929; }
+
 em {
   font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
@@ -240,18 +243,21 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+  dl.dl-horizontal dt.funders {
+    margin-top: 5px; }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal dd.funders {
+  margin-top: 5px; }
+  dl.dl-horizontal dd.funders span.iati-activity-id {
+    font-style: italic; }
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
 label {
   color: #00a79d;
-  font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
+  font-weight: normal; }
 
 /****************************************************************************
                                 HEADER + NAVIGATION
@@ -417,6 +423,50 @@ nav.navbar-fixed-top {
         color: #ff5500; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
       margin-top: 10px; }
+      @media only screen and (max-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
+          padding-left: 15px;
+          padding-right: 15px; } }
+      @media only screen and (max-width: 1024px) and (min-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
+          position: initial;
+          float: none; } }
+      @media only screen and (max-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
+          background-color: #FFF;
+          border: 1px solid rgba(0, 0, 0, 0.14902);
+          box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+          -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
+            color: #00aaff;
+            font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            border: thin solid transparent; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
+              color: #ff5500; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+              color: #72742a;
+              font-weight: bold;
+              background: rgba(255, 85, 0, 0.1);
+              -moz-border-radius: 3px;
+              -o-border-radius: 3px;
+              -webkit-border-radius: 3px;
+              border-radius: 3px; }
+              @media only screen and (max-width: 1024px) {
+                nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+                  background: rgba(255, 85, 0, 0.1); } } }
+
+.navbar .container {
+  /* nav menu overflows to two lines in spanish and french unless container width
+        is increased slightly just above the threshold for switching to dropdown */ }
+  @media only screen and (max-width: 1200px) and (min-width: 1024px) {
+    .navbar .container {
+      min-width: 1000px; } }
+  .navbar .container .navbar-collapse.in {
+    /*  Allow language dropdown menu to extend the height of the nav container.
+                    Otherwise, we get a scrollbar in the nav area on small screens */ }
+    @media only screen and (max-width: 768px) {
+      .navbar .container .navbar-collapse.in {
+        overflow-y: initial; } }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {
@@ -489,6 +539,43 @@ nav.navbar-fixed-top {
   background: rgba(32, 32, 36, 0.1) !important; }
   .myProjectList tbody tr.isPublished {
     background: white !important; }
+@media only screen and (min-width: 1200px) {
+  .myProjectList div.twoColumns.clearfix {
+    min-width: 170px; } }
+.myProjectList div.twoColumns.clearfix > a {
+  min-width: 70px; }
+.myProjectList a.addUpdate.disabled {
+  background-color: #AB9F9F;
+  color: #E9E9E9;
+  pointer-events: initial;
+  cursor: not-allowed;
+  border: none; }
+  .myProjectList a.addUpdate.disabled:hover {
+    text-decoration: none; }
+
+div.paginationWrap {
+  clear: both; }
+
+.help-block, .help-block-error, .charsLeft, .save-success {
+  font-size: 0.9em;
+  color: rgba(44, 42, 116, 0.5); }
+
+.help-block-error {
+  color: #a94442; }
+
+.save-success {
+  color: #5cb85c; }
+
+.editDate {
+  font-style: italic;
+  padding: 10px 0 10px 15px;
+  margin-bottom: 15px; }
+  .editDate span {
+    color: rgba(32, 32, 36, 0.3); }
+  .editDate span.published {
+    color: #5cb85c; }
+  .editDate span.notPublished {
+    color: #e31b23; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -665,6 +752,12 @@ footer .navbar {
   text-transform: uppercase;
   font-weight: bold;
   color: #202024; }
+
+.detailedPoint {
+  float: right; }
+  @media only screen and (max-width: 992px) and (min-width: 768px) {
+    .detailedPoint .fa-calendar-o {
+      display: none; } }
 
 h4.detailedInfo {
   margin-bottom: 0.25em;
@@ -929,6 +1022,13 @@ h4.detailedInfo {
   .main-list.updates ul li:hover {
     background: rgba(0, 167, 157, 0.1);
     border: thin solid rgba(0, 167, 157, 0.35); }
+  .main-list.updates ul li .excerpt li {
+    background: none;
+    border: none;
+    transition: none;
+    list-style-type: initial;
+    margin: initial;
+    padding: initial; }
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1252,6 +1352,12 @@ div.textBlock {
   height: 300px;
   background: #ccc; }
 
+.projectFinancial .budgetItem {
+  margin-top: 12px;
+  width: 60%; }
+  .projectFinancial .budgetItem:nth-child(1), .projectFinancial .budgetItem:nth-child(2) {
+    margin-top: 0; }
+
 /* Project hierarchy */
 .project-hierarchy-window {
   border: 0.1em solid #d3d3d3;
@@ -1312,9 +1418,9 @@ div.textBlock {
     .tooltip .tooltip-inner a {
       font-weight: bold; }
 
-/* Project Directory Typeahead Styling */
-#filterForm #org-filter-container ul.typeahead-selector {
-  margin: -15px 0 0 0;
+/* Typeahead Styling */
+ul.typeahead-selector {
+  margin: 0;
   padding: 0.25em;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
@@ -1325,21 +1431,24 @@ div.textBlock {
   -o-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px; }
-  #filterForm #org-filter-container ul.typeahead-selector li {
+  ul.typeahead-selector li {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    #filterForm #org-filter-container ul.typeahead-selector li:hover, #filterForm #org-filter-container ul.typeahead-selector li.hover {
+    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
-    #filterForm #org-filter-container ul.typeahead-selector li a {
+    ul.typeahead-selector li a {
       color: #555555; }
+
+#filterForm #org-filter-container ul.typeahead-container {
+  margin: -15px 0 0 0; }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
 .organisationDetail .orgDescr {
-  background-color: rgba(244, 116, 107, 0.1); }
+  background-color: rgba(244, 116, 107, 0); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
 .organisationDetail h1 {
@@ -1445,6 +1554,10 @@ div.textBlock {
       margin-bottom: 1em; } }
 
 /* Financial details page */
+section.projectFinancial .currentFunders dl > dd {
+  text-align: right; }
+section.projectFinancial .donationBreak {
+  display: none; }
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;
@@ -1456,7 +1569,14 @@ div.textBlock {
 @media only screen and (max-width: 992px) {
   @media only screen and (min-width: 768px) {
     section.projectFinancial .dl-horizontal dt {
-      width: initial; } } }
+      width: initial; }
+    section.projectFinancial .donationBreak {
+      display: initial;
+      clear: both; }
+    section.projectFinancial .currentFunders dd.donation {
+      float: right; }
+    section.projectFinancial .currentFunders dt.donation {
+      clear: both; } } }
 
 /* Project Partners details page */
 section.projectPartners .title {
@@ -1512,6 +1632,55 @@ section.projectPartners .row {
 dd.currencyAmount {
   margin-left: auto; }
 
+/* Project report page */
+@media only screen and (max-width: 768px) {
+  .projectReport {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto; } }
+@media only screen and (min-width: 992px) {
+  .projectReport table {
+    table-layout: fixed; }
+    .projectReport table th {
+      word-break: break-word; }
+      @media only screen and (max-width: 1200px) {
+        .projectReport table th {
+          width: 90px; } }
+      @media only screen and (min-width: 1200px) {
+        .projectReport table th {
+          width: 120px; } } }
+
+/* Project update page */
+.updateText {
+  white-space: pre-line; }
+  .updateText li {
+    padding: initial;
+    margin: initial;
+    white-space: initial; }
+  .updateText li p {
+    margin: 0;
+    padding: 0;
+    display: initial; }
+
+a.addUpdateBtn {
+  margin-top: 10px;
+  color: white;
+  background-color: #00a79d;
+  border-color: #00a79d; }
+  a.addUpdateBtn:hover {
+    background-color: #ff5500;
+    border-color: #ff5500; }
+
+/* Google translation bar styles */
+body.translationBarActive .nav {
+  padding-top: 39px; }
+body.translationBarActive .navbar-brand {
+  margin-top: 39px; }
+body.translationBarActive article, body.translationBarActive .updateMain, body.translationBarActive .organisationDetail, body.translationBarActive #map {
+  padding-top: 39px; }
+body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
+  padding-top: 0px; }
+
 /* Cookie */
 #cookie-law {
   position: fixed;
@@ -1531,3 +1700,357 @@ dd.currencyAmount {
     font-size: 1.1em; }
     #cookie-law p a {
       font-weight: bold; }
+
+/* Project Admin */
+.progress .progress-bar[data-completion='empty'] {
+  background: #d9534f; }
+.progress .progress-bar[data-completion='incomplete'] {
+  background: #f0ad4e; }
+.progress .progress-bar[data-completion='complete'] {
+  background: #5cb85c; }
+.progress .progress-bar .progress-percentage {
+  display: none; }
+
+.formOverviewInfo .progress .progress-bar .progress-percentage {
+  display: initial; }
+.formOverviewInfo .info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand;
+  color: #2c2a74; }
+  .formOverviewInfo .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
+
+.formOverviewInfo {
+  border: 1px solid rgba(52, 52, 56, 0.1);
+  padding: 20px;
+  margin-bottom: 15px;
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+
+.projectEdit h2 {
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: 1.5em;
+  display: block; }
+.projectEdit .myPanel {
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 25px;
+  position: relative; }
+  .projectEdit .myPanel .formBlock {
+    width: 99%;
+    height: 0;
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: all .5s linear;
+    padding: 5px 15px;
+    margin: 0 auto;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+  .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
+    height: auto;
+    overflow: auto;
+    background: rgba(253, 242, 232, 0);
+    box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
+.projectEdit input[type='radio'] {
+  display: none; }
+.projectEdit .formStep {
+  position: relative; }
+  .projectEdit .formStep > div > label {
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    top: initial;
+    padding: 5px 5px 5px 15px;
+    transition: background 0.1s linear;
+    background: rgba(44, 42, 116, 0.1); }
+    .projectEdit .formStep > div > label:hover {
+      background: rgba(32, 32, 36, 0.05); }
+    .projectEdit .formStep > div > label .info-icon {
+      padding-left: 0.5em;
+      cursor: pointer;
+      cursor: hand;
+      font-size: 90%; }
+      .projectEdit .formStep > div > label .info-icon.activated {
+        color: rgba(44, 42, 116, 0.3); }
+  .projectEdit .formStep .progress {
+    position: absolute;
+    width: 30%;
+    top: 15px;
+    right: 5px; }
+  .projectEdit .formStep form {
+    padding-top: 10px; }
+  .projectEdit .formStep span.tab {
+    padding-left: 5em; }
+.projectEdit .borderBottom {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(44, 42, 116, 0); }
+.projectEdit *, .projectEdit *:before, .projectEdit *:after {
+  box-sizing: border-box; }
+.projectEdit .control {
+  position: relative;
+  padding-top: 23px;
+  padding-bottom: 10px; }
+  .projectEdit .control.small {
+    width: 30%; }
+  .projectEdit .control.medium {
+    width: 70%;
+    padding-left: 10px; }
+  .projectEdit .control:last-child {
+    border: 0; }
+.projectEdit .control-label {
+  min-width: 90%; }
+.projectEdit a.btn {
+  margin-top: 23px; }
+  .projectEdit a.btn.btn-link {
+    margin-top: 0; }
+.projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
+  margin-top: 23px; }
+.projectEdit .add-object-link {
+  top: 8px; }
+.projectEdit hr {
+  border: none;
+  height: 1px;
+  color: rgba(44, 42, 116, 0.3);
+  /* old IE */
+  background-color: rgba(44, 42, 116, 0.3);
+  /* Modern Browsers */ }
+.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
+  position: absolute;
+  top: 10px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 600; }
+.projectEdit input:valid + label, .projectEdit input:valid + span + label, .projectEdit input:valid + ul + label, .projectEdit textarea:valid + label, .projectEdit textarea:valid + span + label, .projectEdit textarea:valid + ul + label, .projectEdit select:valid + label, .projectEdit select:valid + span + label, .projectEdit select:valid + ul + label {
+  opacity: 1;
+  top: 0px; }
+.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
+  color: #2c2a74; }
+.projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+  position: absolute;
+  top: 0px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 1;
+  font-size: 13px;
+  font-weight: 600; }
+.projectEdit .delete-object-button {
+  color: #d9534f; }
+.projectEdit .delete-photo-button {
+  color: #d9534f; }
+.projectEdit .delete-document-button {
+  color: #d9534f; }
+.projectEdit .info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand;
+  font-size: 120%; }
+  .projectEdit .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
+.projectEdit .mandatory {
+  color: #d9534f;
+  font-size: 125%;
+  margin-left: 4px;
+  margin-right: -4px; }
+.projectEdit label.progress-bar[aria-valuenow="0"] {
+  background: #d9534f;
+  color: #d9534f; }
+.projectEdit label.progress-bar[aria-valuenow="10"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="20"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="30"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="40"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="50"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="60"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="70"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="80"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="90"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="100"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit div.parent {
+  background: rgba(240, 173, 78, 0.15);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  top: initial;
+  padding: 5px 15px 5px 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: background 0.1s linear; }
+.projectEdit div.partial-header {
+  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #2c2a74;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.legenda {
+  border: 1px solid rgba(44, 42, 116, 0.5);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px;
+  margin: 15px 15px 15px 15px; }
+  .legenda .redLegenda {
+    background: #d9534f;
+    color: #d9534f; }
+  .legenda .orangeLegenda {
+    background: #f0ad4e;
+    color: #f0ad4e; }
+  .legenda .greenLegenda {
+    background: #5cb85c;
+    color: #5cb85c; }
+  .legenda .mandatory {
+    color: #d9534f; }
+
+.info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand; }
+  .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
+
+#editor-feedback a {
+  display: block;
+  position: fixed;
+  top: 400px;
+  right: -60px;
+  padding: 10px 10px;
+  border: 1px solid rgba(44, 42, 116, 0.5);
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg); }
+
+#publishProject.btn {
+  margin-top: -6px; }
+  @media only screen and (max-width: 1200px) {
+    @media only screen and (min-width: 992px) {
+      #publishProject.btn {
+        margin-left: -1.25em; } } }
+
+/* Modal dialog stuff for the Project Editor */
+div.inactive .addOrg {
+  display: none; }
+
+div.active .addOrg {
+  display: block;
+  padding: 0.5em;
+  background-color: white;
+  border: 1px solid #c8c8c8;
+  border-radius: 0 0 4px 4px;
+  margin-top: -3px;
+  cursor: pointer;
+  color: #5cb85c; }
+  div.active .addOrg:hover {
+    font-weight: bold; }
+  div.active .addOrg:active {
+    opacity: 0.8; }
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1031;
+  background-color: rgba(0, 0, 0, 0.7); }
+
+.modalContainer {
+  position: fixed;
+  top: 20%;
+  right: 100px;
+  bottom: 20%;
+  left: 100px;
+  z-index: 1032; }
+  @media only screen and (max-width: 768px) {
+    .modalContainer {
+      right: 25px;
+      left: 25px; } }
+  @media only screen and (max-width: 568px) {
+    .modalContainer {
+      right: 5px;
+      left: 5px; } }
+  @media only screen and (max-height: 900px) {
+    .modalContainer {
+      top: 10%;
+      bottom: 10%; } }
+  @media only screen and (max-height: 700px) {
+    .modalContainer {
+      top: 5%;
+      bottom: 5%; } }
+  .modalContainer .orgModal {
+    width: 100%;
+    max-width: 800px;
+    max-height: 100%;
+    margin: auto;
+    background-color: white;
+    overflow-y: scroll;
+    position: relative;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+    .modalContainer .orgModal .modalContents {
+      min-width: 100px;
+      position: relative;
+      padding: 1em 2em 5em 2em; }
+      .modalContainer .orgModal .modalContents .inputContainer {
+        margin-top: 2.75em;
+        margin-bottom: 1em; }
+        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label, .modalContainer .orgModal .modalContents .inputContainer textarea + label {
+          position: absolute;
+          top: -25px;
+          transition: top 0.7s ease, opacity 0.7s ease;
+          opacity: 0;
+          font-size: 13px;
+          font-weight: 600; }
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label, .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
+          opacity: 1; }
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label, .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
+          color: #2c2a74; }
+    .modalContainer .orgModal .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3.5em;
+      text-align: right; }
+      .modalContainer .orgModal .controls button {
+        margin: 0 0.5em; }
+        .modalContainer .orgModal .controls button.modal-cancel {
+          margin-right: 1em; }
+        .modalContainer .orgModal .controls button.modal-save {
+          margin-right: 1.5em; }

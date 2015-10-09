@@ -19,11 +19,12 @@ from ..signals import (
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding, create_iati_file)
+    update_project_funding, create_iati_file, import_iati_file)
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
+from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
@@ -31,6 +32,9 @@ from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
 from .iati_export import IatiExport
+from .iati_import import IatiImport
+from .iati_import_log import IatiImportLog
+from .iati_project_import import IatiProjectImport
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
@@ -42,7 +46,6 @@ from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocat
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
-from .partner_type import PartnerType
 from .partnership import Partnership
 from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
 from .planned_disbursement import PlannedDisbursement
@@ -78,6 +81,9 @@ __all__ = [
     'FssForecast',
     'Goal',
     'IatiExport',
+    'IatiImport',
+    'IatiImportLog',
+    'IatiProjectImport',
     'Indicator',
     'IndicatorPeriod',
     'Invoice',
@@ -91,8 +97,8 @@ __all__ = [
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCustomField',
     'PartnerSite',
-    'PartnerType',
     'Partnership',
     'PayPalGateway',
     'MollieGateway',
@@ -103,6 +109,7 @@ __all__ = [
     'ProjectComment',
     'ProjectCondition',
     'ProjectContact',
+    'ProjectCustomField',
     'ProjectDocument',
     'ProjectUpdate',
     'PublishingStatus',
@@ -137,17 +144,19 @@ rules.add_perm('rsr.change_category', is_rsr_admin)
 rules.add_perm('rsr.add_focusarea', is_rsr_admin)
 rules.add_perm('rsr.change_focusarea', is_rsr_admin)
 
-rules.add_perm('rsr.add_indicator', is_rsr_admin)
-rules.add_perm('rsr.change_indicator', is_rsr_admin)
+rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
 
 rules.add_perm('rsr.add_partnersite', is_rsr_admin)
 rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
-
-rules.add_perm('rsr.add_partnertype', is_rsr_admin)
-rules.add_perm('rsr.change_partnertype', is_rsr_admin)
 
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
@@ -177,6 +186,16 @@ rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_projectcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
 
 rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
@@ -240,14 +259,15 @@ rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_organisation', is_rsr_admin)
-rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_organisation', is_rsr_admin)
 
 rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
@@ -260,6 +280,7 @@ rules.add_perm('tastypie.change_apikey', is_rsr_admin | is_org_admin | is_org_us
 
 rules.add_perm('rsr.add_employment', is_rsr_admin)
 rules.add_perm('rsr.change_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
+rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
 
 rules.add_perm('rsr.iati_management', is_rsr_admin | is_org_admin | is_org_project_editor)
 
@@ -301,3 +322,4 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(create_iati_file, sender=IatiExport)
+post_save.connect(import_iati_file, sender=IatiImport)

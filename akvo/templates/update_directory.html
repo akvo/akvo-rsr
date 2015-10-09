@@ -16,7 +16,7 @@
             <div class="input-group">
               {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
               <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+                <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
               </span>
             </div>
             <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
@@ -45,6 +45,7 @@
         <div>
           <nav>
             <ul class="nav nav-pills nav-stacked">
+              <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
               <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
             </ul>
           </nav>
@@ -84,7 +85,7 @@
           <div class="col-sm-4 col-md-4 col-xs-8">
             <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
             <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+            <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                 {% if u.user.approved_organisations %}
                   {% with org=u.user.approved_organisations.0 %}
                     <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>

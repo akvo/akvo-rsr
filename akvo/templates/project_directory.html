@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n maps rsr_utils thumbnail humanize bootstrap3 compressed %}
+{% load bootstrap3 compressed humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -15,7 +15,7 @@
               <div class="input-group">
                 {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
                 <span class="input-group-btn">
-                   <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+                   <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
                 </span>
               </div>
               <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
@@ -41,9 +41,15 @@
                   </div>
                 </div>
             <div>
+              {% if rsr_page %}
+                <div class="btn-group">
+                  {% bootstrap_field filter.form.organisation %}
+                </div>
+              {% else %}
                 <div class="btn-group" id="org-filter-container">
                 </div>
                 <input type="hidden" name="organisation" id="org-filter-input" type="text">
+              {% endif %}
             </div>
             <div>
               <div class="btn-group">
@@ -90,8 +96,14 @@
             {% if p.primary_location.country %}
               <p class="projectLocation"><i class="fa fa-map-marker"></i> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
             {% endif %}
+            <a href="{% url 'organisation-main' p.reporting_org.pk %}">{{p.reporting_org}}</a>
+            {% more_link p %}
+
+            {% comment %}
             {% if p.reporting_org %}
               <p><a href="{% url 'organisation-main' p.reporting_org.id %}"><i class="fa fa-users"></i> {{p.reporting_org}}</a>
+              {% more_link p %}
+
               {% if p.partners.distinct.count > 1 %}
                 <a href="{% url 'project-partners' p.id %}" class="small moreLink  " data-toggle="tooltip"
                   title="{% for partner in p.partners.all.distinct %}
@@ -103,6 +115,8 @@
               {% endif %}
               </p>
             {% endif %}
+            {% endcomment %}
+
             <div class="visible-xs-block hidden-sm">
               <p>
               {% if p.sector_categories %}
@@ -113,7 +127,7 @@
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' p.pk p.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{p.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat:0|intcomma}}
               {% if p.accepts_donations %}
               <br>
               <span class="donateButton">
@@ -133,7 +147,7 @@
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' p.pk p.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{p.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat:0|intcomma}}
               {% if p.accepts_donations %}
               <br>
               <span class="donateButton">
@@ -191,7 +205,9 @@
     {
         "projects_text": "{% trans 'Projects' %}",
         "organisations_text": "{% trans 'Organisations' %}",
-        "locations_text": "{% trans 'Locations' %}"
+        "locations_text": "{% trans 'Locations' %}",
+        "organisation_text": "{% trans 'organisation' %}",
+        "all_text": "{% trans 'All' %}"
     }
     </script>
 

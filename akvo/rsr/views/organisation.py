@@ -9,8 +9,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.shortcuts import get_object_or_404, render
 
-from ..filters import remove_empty_querydict_items, OrganisationFilter
-from ..models import Organisation
+from ..filters import (build_choices, location_choices, OrganisationFilter,
+                       remove_empty_querydict_items)
+# from ..filters import remove_empty_querydict_items, OrganisationFilter
+from ..models import Organisation, Project
 from ...utils import pagination, filter_query_string
 from .utils import apply_keywords, org_projects, show_filter_class
 
@@ -28,18 +30,20 @@ def _all_organisations():
     )
 
 
+def _all_projects():
+    """Return all active projects."""
+    return Project.objects.published().select_related('partners').order_by('-id')
+
+
 def _page_organisations(page):
     """Dig out the list or organisations to use."""
-    org = page.organisation
-    if page.partner_projects:
-        projects = apply_keywords(page, org_projects(org))
-        return projects.all_partners().select_related(
-            'locations',
-            'primary_location',
-            'published_projects',
-        )
-    else:
-        return _all_organisations()
+    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    keyword_projects = apply_keywords(page, projects)
+    return keyword_projects.all_partners().select_related(
+        'locations',
+        'primary_location',
+        'primary_location__country',
+    )
 
 
 def _organisation_directory_coll(request):
@@ -66,6 +70,9 @@ def directory(request):
         all_organisations = all_organisations.filter(can_become_reporting=True)
 
     f = OrganisationFilter(qs, queryset=all_organisations)
+
+    # Filter location filter list to only populated locations
+    f.filters['location'].extra['choices'] = location_choices(all_organisations)
 
     # Build page
     page = request.GET.get('page')

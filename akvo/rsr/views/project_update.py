@@ -7,12 +7,16 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import django_filters
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import ugettext_lazy as _
 
-from ..filters import remove_empty_querydict_items, ProjectUpdateFilter
+from ..filters import (build_choices, location_choices, ProjectUpdateFilter,
+                       remove_empty_querydict_items)
 from ..models import ProjectUpdate, Project
 from ...utils import pagination, filter_query_string
 from .utils import apply_keywords, org_projects, show_filter_class
+from .organisation import _page_organisations
 
 
 ###############################################################################
@@ -25,14 +29,16 @@ def _all_updates():
     return ProjectUpdate.objects.select_related().order_by('-id')
 
 
+def _all_projects():
+    """Return all active projects."""
+    return Project.objects.published().select_related('project_updates').order_by('-id')
+
+
 def _page_updates(page):
     """Dig out the list or project updates to use."""
-    org = page.organisation
-    if page.partner_projects:
-        projects = apply_keywords(page, org_projects(org))
-        return projects.all_updates().order_by('-id')
-    else:
-        return _all_updates()
+    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    keyword_projects = apply_keywords(page, projects)
+    return keyword_projects.all_updates().select_related()
 
 
 def _update_directory_coll(request):
@@ -53,6 +59,15 @@ def directory(request):
     # Yank projectupdate collection
     all_updates = _update_directory_coll(request)
     f = ProjectUpdateFilter(qs, queryset=all_updates)
+
+    # Filter location filter list to only populated locations
+    f.filters['location'].extra['choices'] = location_choices(all_updates)
+    # Swap to choice filter for RSR pages
+    if request.rsr_page:
+        f.filters['partner'] = django_filters.ChoiceFilter(
+            choices=build_choices(_page_organisations(request.rsr_page)),
+            label=_(u'organisation'),
+            name='project__partners__id')
 
     # Build page
     page = request.GET.get('page')

@@ -12,12 +12,14 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 
+router.register(r'administrative_location', views.AdministrativeLocationViewSet)
 router.register(r'benchmark', views.BenchmarkViewSet)
 router.register(r'benchmark_name', views.BenchmarknameViewSet)
 router.register(r'budget_item', views.BudgetItemViewSet)
 router.register(r'budget_item_label', views.BudgetItemLabelViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'country', views.CountryViewSet)
+router.register(r'country_budget_item', views.CountryBudgetItemViewSet)
 router.register(r'employment', views.EmploymentViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
@@ -30,10 +32,10 @@ router.register(r'keyword', views.KeywordViewSet)
 router.register(r'legacy_data', views.LegacyDataViewSet)
 router.register(r'link', views.LinkViewSet)
 router.register(r'organisation', views.OrganisationViewSet)
+router.register(r'organisation_custom_field', views.OrganisationCustomFieldViewSet)
 router.register(r'organisation_location', views.OrganisationLocationViewSet)
 router.register(r'organisation_map_location', views.MapOrganisationLocationViewSet)
 router.register(r'partner_site', views.PartnerSiteViewSet)
-router.register(r'partner_type', views.PartnerTypeViewSet)
 router.register(r'partnership', views.PartnershipViewSet)
 router.register(r'planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'policy_marker', views.PolicyMarkerViewSet)
@@ -45,6 +47,7 @@ router.register(r'project_up', views.ProjectUpViewSet,
 router.register(r'project_comment', views.ProjectCommentViewSet)
 router.register(r'project_condition', views.ProjectConditionViewSet)
 router.register(r'project_contact', views.ProjectContactViewSet)
+router.register(r'project_custom_field', views.ProjectCustomFieldViewSet)
 router.register(r'project_document', views.ProjectDocumentViewSet)
 router.register(r'project_location', views.ProjectLocationViewSet)
 router.register(r'project_map_location', views.MapProjectLocationViewSet)
@@ -63,6 +66,7 @@ router.register(r'related_project', views.RelatedProjectViewSet)
 router.register(r'result', views.ResultViewSet)
 router.register(r'sector', views.SectorViewSet)
 router.register(r'transaction', views.TransactionViewSet)
+router.register(r'transaction_sector', views.TransactionSectorViewSet)
 router.register(r'user', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
@@ -89,6 +93,54 @@ urlpatterns = patterns(
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+    url(r'^server_info/$', views.server_info, name='server_info'),
+)
+
+# Project editor
+urlpatterns += patterns(
+    '',
+    url(r'^project/(?P<project_pk>[0-9]+)/delete_document/(?P<document_pk>[0-9]+)/$',
+        views.project_editor_delete_document,
+        name='project_editor_delete_document'),
+    url(r'^project/(?P<pk>[0-9]+)/delete_photo/$',
+        views.project_editor_delete_photo,
+        name='project_editor_delete_photo'),
+    url(r'^project/(?P<project_pk>[0-9]+)/remove_keyword/(?P<keyword_pk>[0-9]+)/$',
+        views.project_editor_remove_keyword,
+        name='project_editor_remove_keyword'),
+    url(r'^project/(?P<pk>[0-9]+)/step_1/$',
+        views.project_editor_step1,
+        name='project_editor_step1'),
+    url(r'^project/(?P<pk>[0-9]+)/step_2/$',
+        views.project_editor_step2,
+        name='project_editor_step2'),
+    url(r'^project/(?P<pk>[0-9]+)/step_3/$',
+        views.project_editor_step3,
+        name='project_editor_step3'),
+    url(r'^project/(?P<pk>[0-9]+)/step_4/$',
+        views.project_editor_step4,
+        name='project_editor_step4'),
+    url(r'^project/(?P<pk>[0-9]+)/step_5/$',
+        views.project_editor_step5,
+        name='project_editor_step5'),
+    url(r'^project/(?P<pk>[0-9]+)/step_6/$',
+        views.project_editor_step6,
+        name='project_editor_step6'),
+    url(r'^project/(?P<pk>[0-9]+)/step_7/$',
+        views.project_editor_step7,
+        name='project_editor_step7'),
+    url(r'^project/(?P<pk>[0-9]+)/step_8/$',
+        views.project_editor_step8,
+        name='project_editor_step8'),
+    url(r'^project/(?P<pk>[0-9]+)/step_9/$',
+        views.project_editor_step9,
+        name='project_editor_step9'),
+    url(r'^project/(?P<pk>[0-9]+)/step_10/$',
+        views.project_editor_step10,
+        name='project_editor_step10'),
+    url(r'^organisation/(?P<pk>[0-9]+)/add_logo/$',
+        views.project_editor_organisation_logo,
+        name='project_editor_add_org_logo'),
 )
 
 # Typeahead
@@ -100,14 +152,13 @@ urlpatterns += patterns(
     url(r'typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
+    url(r'typeaheads/reporting_organisations$',
+        views.typeahead_reporting_organisation,
+        name='reporting_organisation_typeahead'),
     url(r'typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
-
-    # url(r'typeaheads/sectors$',
-    #     views.typeahead_sector,
-    #     name='sector_typeahead'),
 )

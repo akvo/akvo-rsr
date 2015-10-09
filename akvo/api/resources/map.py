@@ -136,7 +136,10 @@ class ProjectMapResource(CachedMapResource):
         """ add thumbnails inline info for Project.current_image
         """
         bundle = super(ProjectMapResource, self).dehydrate(bundle)
-        ignored_fields = ('goals_overview', 'current_status', 'project_plan', 'sustainability', 'background', 'project_rating', 'notes',)
+        ignored_fields = (
+            'goals_overview', 'current_status', 'project_plan', 'sustainability', 'background',
+            'notes',
+        )
         for field in ignored_fields:
             del bundle.data[field]
         bundle.data['current_image'] = {

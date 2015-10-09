@@ -1,0 +1,24 @@
+{% load compressed i18n %}
+
+{% if partners|length > 0 %}
+<a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
+  title="
+  <div class='extra-partner-tooltip'>
+    {% for partner, types in partners.items %}
+      <div class='extra-partner-entry'>
+      {% if partner.logo %}
+        <a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}
+      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
+      ({{ types|join:", "|capfirst }})
+    {% if not forloop.last %}<hr>{% endif %}</div>
+  {% endfor %}
+  </div>
+  "
+  data-placement="right"> +
+  {% blocktrans count num_partners=partners|length %}
+    {{ num_partners }} partner
+  {% plural %}
+    {{ num_partners }} partners
+  {% endblocktrans %}
+  </a>
+{% endif %}  

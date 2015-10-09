@@ -11,9 +11,12 @@ import logging
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
+from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
 from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
+from django.utils import translation
+from django.http import HttpResponseRedirect
 
 
 def _is_rsr_host(hostname):
@@ -36,9 +39,62 @@ def _partner_site(netloc):
     )
 
 
+class DefaultLanguageMiddleware(object):
+
+    """A non working (BROKEN) default language middleware.
+
+    A try in supporting default languages, but since this will redirect all url_patterns and
+    not only i18n ones it's broken.
+    """
+
+    def __init__(self):
+        """."""
+        self._is_language_prefix_patterns_used = False
+        for url_pattern in get_resolver(None).url_patterns:
+            if isinstance(url_pattern, LocaleRegexURLResolver):
+                self._is_language_prefix_patterns_used = True
+                break
+
+    def is_language_prefix_patterns_used(self):
+        """."""
+        return self._is_language_prefix_patterns_used
+
+    def is_i18n_path(self, path):
+        """."""
+        from akvo.urls import localised_patterns
+        print "=> {}".format(localised_patterns)
+        from django.core.urlresolvers import resolve, Resolver404
+        try:
+            resolve(path, localised_patterns)
+            return True
+        except Resolver404:
+            return False
+        except TypeError, e:
+            return False
+        return False
+
+    def process_request(self, request):
+        """Redirect to selected language."""
+        if not request.rsr_page:
+            return None
+
+        if self.is_i18n_path(request.path):
+            print "{} was i18n path".format(request.path)
+        else:
+            print "{} was not 18n path".format(request.path)
+
+        language_from_path = translation.get_language_from_path(request.path_info)
+        if not language_from_path:
+            if request.rsr_page.default_language:
+                lang = request.rsr_page.default_language
+                return HttpResponseRedirect('/{}{}'.format(lang, request.path))
+            return HttpResponseRedirect('/en{}'.format(request.path))
+        return None
+
+
 class HostDispatchMiddleware(object):
 
-    """Simple test for middleware testing."""
+    """RSR page dispath middleware."""
 
     # def process_request(self, request, cname_domain=False, rsr_page=None):
     def process_request(self, request):

@@ -223,7 +223,7 @@ class ProjectUpdateForm(forms.ModelForm):
     title = forms.CharField(label='', widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
-        'maxlength': '50',
+        'maxlength': '80',
         'placeholder': _(u'Title'),
         }))
     text = forms.CharField(label='', required=False, widget=forms.Textarea(attrs={
@@ -244,7 +244,7 @@ class ProjectUpdateForm(forms.ModelForm):
     photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
-        'maxlength': '25',
+        'maxlength': '75',
         'placeholder': _(u'Photo credit'),
         }))
     video = forms.CharField(required=False, widget=forms.TextInput(attrs={
@@ -262,7 +262,7 @@ class ProjectUpdateForm(forms.ModelForm):
     video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
-        'maxlength': '25',
+        'maxlength': '75',
         'placeholder': _(u'Video credit'),
         }))
     latitude = forms.FloatField(widget=forms.HiddenInput())
@@ -394,10 +394,18 @@ class SelectOrgForm(forms.Form):
         )
 
 
+class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        if obj.is_published():
+            return mark_safe(u'<span class="noCheck">%s</span>' % obj.__unicode__())
+        else:
+            return mark_safe(u'<span class="noCheck">%s (not published)</span>' % obj.__unicode__())
+
+
 class IatiExportForm(forms.ModelForm):
     """Form for adding an entry to the IATI export model."""
     is_public = forms.BooleanField(required=False, label=_(u"Show IATI file on organisation page"))
-    projects = forms.ModelMultipleChoiceField(
+    projects = CustomLabelModelChoiceField(
         widget=forms.CheckboxSelectMultiple,
         queryset=Project.objects.all(),
         label=_(u"Select the projects included in the export:")

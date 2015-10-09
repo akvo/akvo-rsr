@@ -61,7 +61,7 @@ class ProjectDocument(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        return self.show_link()
 
     def clean(self):
         # Check if the user has at least uploaded a document or indicated an URL.
@@ -73,11 +73,13 @@ class ProjectDocument(models.Model):
             self.document.name = self.document.name.encode('ascii','ignore')
 
     def show_link(self):
-        title = self.title if self.title else _(u'Untitled document')
+        title = self.title if self.title else u'%s' % _(u'Untitled document')
         if self.url:
             return u'<a href="%s">%s</a>' % (self.url, title,)
-        else:
+        elif self.document:
             return u'<a href="%s">%s</a>' % (self.document.url, title,)
+        else:
+            return title
 
     def iati_category(self):
         return codelist_value(DocumentCategory, self, 'category')

@@ -66,6 +66,17 @@ class OrganisationLocationInline(admin.StackedInline):
             return 1
 
 
+class OrganisationCustomFieldInline(admin.StackedInline):
+    model = get_model('rsr', 'organisationcustomfield')
+    fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.custom_fields.count() == 0 else 0
+        else:
+            return 1
+
+
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
     list_display = (u'identifier', u'recording_org', u'referenced_org',)
     search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
@@ -88,16 +99,15 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     fieldsets = (
         (_(u'General information'), {'fields': (
-            'name', 'long_name', 'partner_types', 'organisation_type',
-            'new_organisation_type', 'can_become_reporting', 'logo', 'url', 'facebook',
-            'twitter', 'linkedin', 'iati_org_id', 'public_iati_file', 'language', 'content_owner',
-            'allow_edit',)}),
+            'name', 'long_name', 'organisation_type', 'new_organisation_type',
+            'can_become_reporting', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
+            'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline,)
+    inlines = (OrganisationLocationInline, OrganisationCustomFieldInline)
     exclude = ('internal_org_ids',)
     # note that readonly_fields is changed by get_readonly_fields()
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
@@ -109,16 +119,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
-
-    def allowed_partner_types(self, obj):
-        return ', '.join([pt.label for pt in obj.partner_types.all()])
-
-    def get_list_display(self, request):
-        # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change',
-                                                                                     self.opts)):
-            return list(self.list_display) + ['allowed_partner_types']
-        return super(OrganisationAdmin, self).get_list_display(request)
 
     def get_readonly_fields(self, request, obj=None):
         """Make sure only super users can set the ability to become a reporting org"""
@@ -134,8 +134,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         from .models import Organisation
         org_set = set()
         for employment in request.user.employers.approved():
-            if employment.group == Group.objects.get(name='Admins'):
-                org_set.add(employment.organisation.pk)
+            if employment.group in [Group.objects.get(name='Admins'),
+                                    Group.objects.get(name='Project Editors')]:
+                for co_org in employment.organisation.content_owned_organisations():
+                    org_set.add(co_org.pk)
         return Organisation.objects.filter(pk__in=org_set).distinct()
 
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
@@ -285,49 +287,30 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         if not my_org_found:
             errors += [_(u'Your organisation should be somewhere here.')]
 
-        # now check that the same org isn't assigned the same partner_type more than once
-        partner_types = {}
+        # now check that the same org isn't assigned the same iati_organisation_role more than once
+        iati_organisation_roles = {}
         for form in self.forms:
-            # populate a dict with org names as keys and a list of partner_types as values
+            # populate a dict with org names as keys and a list of iati_organisation_roles as values
             try:
                 if not form.cleaned_data.get('DELETE', False):
-                    partner_types.setdefault(
+                    iati_organisation_roles.setdefault(
                         form.cleaned_data['organisation'], []
-                    ).append(form.cleaned_data['partner_type'])
+                    ).append(form.cleaned_data['iati_organisation_role'])
             except:
                 pass
-        for org, types in partner_types.items():
-            # are there duplicates in the list of partner_types?
-            if duplicates_in_list(types):
-                errors += [_(u'{} has duplicate partner types of the same kind.'.format(org))]
+        for org, roles in iati_organisation_roles.items():
+            # are there duplicates in the list of organisation roles?
+            if duplicates_in_list(roles):
+                errors += [_(u'{} has duplicate organisation roles of the same kind.'.format(org))]
 
         self._non_form_errors = ErrorList(errors)
-
-
-class RSR_PartnershipInlineForm(forms.ModelForm):
-
-    def clean_partner_type(self):
-        partner_types = get_model('rsr', 'PartnerType').objects.all()
-        partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
-        allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
-        # always allow field and funding partnerships
-        allowed.extend([u'field', u'funding'])
-        allowed = list(set(allowed))
-        data = self.cleaned_data['partner_type']
-        if data not in allowed:
-            raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
-                org=self.cleaned_data['organisation'],
-                partner_type_label=partner_types_dict[data]
-            ))
-        return data
 
 
 class PartnershipInline(NestedTabularInline):
 
     model = get_model('rsr', 'Partnership')
-    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
+    fields = ('organisation', 'iati_organisation_role', 'funding_amount', 'internal_id')
     extra = 0
-    form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {
         ValidXMLCharField: {'widget': TextInput(attrs={'size': '20'})},
@@ -1035,15 +1018,17 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
+
+    """Defines the RSR Pages admin."""
+
     fieldsets = (
         (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
                                'piwik_id',))),
         (u'Style and content',
             dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
-                         'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation',
-                                                    'google_translation',))),
+                         'custom_favicon', 'show_keyword_logos',))),
+        (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
@@ -1051,15 +1036,15 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'Select the projects to be shown on your Site.'
                 u'</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'The default setting selects all projects associated with the organisation of the Site. '
-                u'</p>'
+                u'The default setting selects all projects associated with the organisation of '
+                u'the Site.</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'De-selecting the "Show only projects of partner" check-box shows all projects in RSR. '
-                u'This is meant to be used with the keywords below, '
+                u'De-selecting the "Show only projects of partner" check-box shows all projects '
+                u'in RSR. This is meant to be used with the keywords below, '
                 u'thus selecting only projects associated with the selected keywords. '
                 u'<br/>If keywords are added to a Site showing only projects of a partner, '
-                u'the selection will be further filtered by only showing associated projects with those keywords.'
-                u'</p>'
+                u'the selection will be further filtered by only showing associated projects '
+                u'with those keywords.</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
                 u'When "Exclude projects with selected keyword is checked" '
                 u'projects with the chosen keywords are instead excluded from the list.'
@@ -1075,9 +1060,11 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'last_modified_at',)
 
     def get_fieldsets(self, request, obj=None):
-        # don't show the notes field unless you are superuser or admin
+        """Don't show the notes field unless you are superuser or admin.
+
         # note that this is somewhat fragile as it relies on adding/removing from the _first_
         # fieldset
+        """
         if request.user.is_superuser or request.user.is_admin:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
         else:
@@ -1091,7 +1078,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         )
 
     def get_list_display(self, request):
-        # see the notes fields in the change list if you are superuser or admin
+        """"See the notes fields in the change list if you are superuser or admin."""
         if request.user.is_superuser or request.user.is_admin:
             return list(self.list_display) + ['notes']
         return super(PartnerSiteAdmin, self).get_list_display(request)
@@ -1116,7 +1103,7 @@ admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
 class KeywordAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Keyword')
-    list_display = ('label',)
+    list_display = ('label', 'logo')
 
 admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 
@@ -1147,3 +1134,13 @@ class EmploymentAdmin(admin.ModelAdmin):
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
+
+
+class IatiImportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiImport')
+    list_display = ('__unicode__', 'status', 'start_date', 'end_date')
+    list_filter = ('status',)
+    search_fields = ('user__username', )
+    exclude = ('status', 'start_date', 'end_date')
+
+admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)

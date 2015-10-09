@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import math
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
@@ -28,12 +29,11 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLA
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
-from ...iati.mandatory_fields import check_export_fields
+from ...iati.checks.mandatory_fields import check_export_fields
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .budget_item import BudgetItem, BudgetItemLabel
 from .country import Country
 from .invoice import Invoice
 from .link import Link
@@ -58,6 +58,15 @@ class Project(TimestampsMixin, models.Model):
         (1, _(u'Core Activity')),
         (2, _(u'Sub Activity')),
         (3, _(u'Lower Sub Activity'))
+    )
+
+    LANGUAGE_OPTIONS = (
+        ('de', _(u'German')),
+        ('en', _(u'English')),
+        ('es', _(u'Spanish')),
+        ('fr', _(u'French')),
+        ('nl', _(u'Dutch')),
+        ('ru', _(u'Russian'))
     )
 
     STATUS_NONE = 'N'
@@ -85,12 +94,12 @@ class Project(TimestampsMixin, models.Model):
     }
 
     title = ValidXMLCharField(
-        _(u'title'), max_length=45, db_index=True,
+        _(u'title'), max_length=45, db_index=True, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (45 characters)')
     )
     subtitle = ValidXMLCharField(
-        _(u'subtitle'), max_length=75,
+        _(u'subtitle'), max_length=75, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (75 characters)')
     )
@@ -107,9 +116,10 @@ class Project(TimestampsMixin, models.Model):
     )
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
+        blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
-        _(u'summary of project plan'), max_length=400,
+        _(u'summary of project plan'), max_length=400, blank=True,
         help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
@@ -136,7 +146,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     goals_overview = ProjectLimitedTextField(
-        _(u'goals overview'), max_length=600,
+        _(u'goals overview'), max_length=600, blank=True,
         help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
     )
     current_status = ProjectLimitedTextField(
@@ -153,7 +163,7 @@ class Project(TimestampsMixin, models.Model):
         )
     )
     sustainability = ValidXMLTextField(
-        _(u'sustainability'),
+        _(u'sustainability'), blank=True,
         help_text=_(u'Describe plans for sustaining/maintaining results after '
                     u'implementation is complete. (unlimited)')
     )
@@ -174,10 +184,9 @@ class Project(TimestampsMixin, models.Model):
 
     # project meta info
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en',
+        max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
         help_text=_(u'The main language of the project.')
     )
-    project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(
         _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
     )
@@ -212,7 +221,7 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(
-        _(u'donate button'), default=True,
+        _(u'donate button'), default=False,
         help_text=_(u'Show donate button for this project. If not selected, it is not possible '
                     u'to donate to this project and the donate button will not be shown.')
     )
@@ -233,7 +242,8 @@ class Project(TimestampsMixin, models.Model):
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True,
+        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True, null=True,
+        unique=True,
         help_text=_(u'This should be the official unique IATI Identifier for the project. '
                     u'The identifier consists of the IATI organisation identifier and the '
                     u'(organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. '
@@ -275,17 +285,17 @@ class Project(TimestampsMixin, models.Model):
     # denormalized data
     # =================
     budget = models.DecimalField(
-        _(u'project budget'), max_digits=10, decimal_places=2, blank=True, null=True,
+        _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0
     )
     funds = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     funds_needed = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     last_update = models.ForeignKey(
-        ProjectUpdate, related_name='the_project',null=True, on_delete=models.SET_NULL
+        ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL
     )
 
     # Custom manager
@@ -293,6 +303,25 @@ class Project(TimestampsMixin, models.Model):
     # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.date_start_planned and self.date_end_planned and \
+                (self.date_start_planned > self.date_end_planned):
+            raise ValidationError(
+                {'date_start_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                                 u'time than end date (planned).'),
+                 'date_end_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                               u'time than end date (planned).')}
+            )
+        if self.date_start_actual and self.date_end_actual and \
+                (self.date_start_actual > self.date_end_actual):
+            raise ValidationError(
+                {'date_start_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                                u'time than end date (actual).'),
+                 'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                              u'time than end date (actual).')}
+            )
 
     @models.permalink
     def get_absolute_url(self):
@@ -351,16 +380,32 @@ class Project(TimestampsMixin, models.Model):
         return amount or 0
 
     # New API, de-normalized fields support
-
     def get_budget(self):
-        if 'total' in BudgetItemLabel.objects.filter(budgetitem__project__exact=self):
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).filter(label__label='total')[0].amount
+        budgets = self.budget_items.filter(amount__gt=0)
+        total_budgets = budgets.filter(label__label='Total')
+
+        if total_budgets.exists():
+            revised_total_budgets = total_budgets.filter(type='2')
+
+            if revised_total_budgets.exists():
+                return revised_total_budgets.order_by('-pk')[0].amount
+            else:
+                return total_budgets.order_by('-pk')[0].amount
+
+        elif budgets.exists():
+            summed_up_budget = 0
+
+            for budget in budgets:
+                if budgets.filter(label=budget.label, type='2').exists():
+                    if budget == budgets.filter(label=budget.label, type='2').order_by('-pk')[0]:
+                        summed_up_budget += budget.amount
+                else:
+                    summed_up_budget += budget.amount
+
+            return summed_up_budget
+
         else:
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            return 0
 
     def update_budget(self):
         "Update de-normalized field"
@@ -382,7 +427,7 @@ class Project(TimestampsMixin, models.Model):
     def get_pledged(self):
         """ How much is pledges by funding organisations"""
         return Partnership.objects.filter(project__exact=self).filter(
-            partner_type__exact=Partnership.FUNDING_PARTNER
+            iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):
@@ -563,23 +608,26 @@ class Project(TimestampsMixin, models.Model):
             return qs
 
         #the following 6 methods return organisation querysets!
-        def _partners(self, partner_type=None):
+        def _partners(self, role=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
-            if partner_type:
-                orgs = orgs.filter(partnerships__partner_type=partner_type)
+            if role:
+                orgs = orgs.filter(partnerships__iati_organisation_role=role)
             return orgs.distinct()
 
         def field_partners(self):
-            return self._partners(Partnership.FIELD_PARTNER)
+            return self._partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
         def funding_partners(self):
-            return self._partners(Partnership.FUNDING_PARTNER)
+            return self._partners(Partnership.IATI_FUNDING_PARTNER)
 
         def sponsor_partners(self):
-            return self._partners(Partnership.SPONSOR_PARTNER)
+            return self._partners(Partnership.AKVO_SPONSOR_PARTNER)
 
         def support_partners(self):
-            return self._partners(Partnership.SUPPORT_PARTNER)
+            return self._partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+        def extending_partners(self):
+            return self._partners(Partnership.IATI_EXTENDING_PARTNER)
 
         def all_partners(self):
             return self._partners()
@@ -729,14 +777,14 @@ class Project(TimestampsMixin, models.Model):
         return areas
 
     #shortcuts to linked orgs for a single project
-    def _partners(self, partner_type=None):
+    def _partners(self, role=None):
         """
         Return the partner organisations to the project.
-        If partner_type is specified only organisations having that role are returned
+        If role is specified only organisations having that role are returned
         """
         orgs = self.partners.all()
-        if partner_type:
-            return orgs.filter(partnerships__partner_type=partner_type).distinct()
+        if role:
+            return orgs.filter(partnerships__iati_organisation_role=role).distinct()
         else:
             return orgs.distinct()
 
@@ -751,16 +799,19 @@ class Project(TimestampsMixin, models.Model):
             return None
 
     def field_partners(self):
-        return self._partners(Partnership.FIELD_PARTNER)
+        return self._partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
     def funding_partners(self):
-        return self._partners(Partnership.FUNDING_PARTNER)
+        return self._partners(Partnership.IATI_FUNDING_PARTNER)
 
     def sponsor_partners(self):
-        return self._partners(Partnership.SPONSOR_PARTNER)
+        return self._partners(Partnership.AKVO_SPONSOR_PARTNER)
 
     def support_partners(self):
-        return self._partners(Partnership.SUPPORT_PARTNER)
+        return self._partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+    def extending_partners(self):
+        return self._partners(Partnership.IATI_EXTENDING_PARTNER)
 
     def all_partners(self):
         return self._partners()
@@ -788,7 +839,7 @@ class Project(TimestampsMixin, models.Model):
 
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
+        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -879,6 +930,10 @@ class Project(TimestampsMixin, models.Model):
 
     def check_mandatory_fields(self, version='2.01'):
         return check_export_fields(self, version)
+
+    def keyword_logos(self):
+        """Return the keywords of the project which have a logo."""
+        return self.keywords.exclude(logo='')
 
     class Meta:
         app_label = 'rsr'

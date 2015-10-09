@@ -8,20 +8,24 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 import json
+import django_filters
 
 from sorl.thumbnail import get_thumbnail
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import remove_empty_querydict_items, ProjectFilter
-from ..models import Invoice, Project, ProjectUpdate
+from ..filters import (build_choices, location_choices, ProjectFilter,
+                       remove_empty_querydict_items)
+from ..models import Invoice, Project, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
-from ...iati.iati_export import IatiXML
+from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
+from .organisation import _page_organisations
 
 
 ###############################################################################
@@ -31,9 +35,6 @@ from .utils import apply_keywords, org_projects
 
 def _all_projects():
     """Return all active projects."""
-    # return Project.objects.published().select_related().prefetch_related(
-    #     'partners').order_by('-id')
-
     return Project.objects.published().select_related(
         'publishingstatus__status',
         'sync_owner',
@@ -46,14 +47,14 @@ def _all_projects():
         'partners',
     ).order_by('-id')
 
+
 def _page_projects(page):
     """Dig out the list of projects to use.
 
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """
-    org = page.organisation
-    projects = org_projects(org) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
     return apply_keywords(page, projects)
 
 
@@ -67,7 +68,6 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
-
     qs = remove_empty_querydict_items(request.GET)
 
     # Set show_filters to "in" if any filter is selected
@@ -85,6 +85,16 @@ def directory(request):
     # Yank project collection
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
+
+    # Filter location filter list to only populated locations
+    f.filters['location'].extra['choices'] = location_choices(all_projects)
+    # Swap to choice filter for RSR pages
+    if request.rsr_page:
+        f.filters['organisation'] = django_filters.ChoiceFilter(
+            choices=build_choices(_page_organisations(request.rsr_page)),
+            label=_(u'organisation'),
+            name='partners__id')
+
     sorted_projects = f.qs.distinct().order_by(sorting)
 
     # Build page
@@ -133,7 +143,7 @@ def _get_accordion_data(project):
             result_data['title'] = result.title
             indicators_data = []
             for indicator in result.indicators.all():
-                for period in indicator.periods.all():
+                for period in indicator.periods.all().order_by('period_start'):
                     indicator_data = dict()
                     indicator_data['id'] = str(period.pk)
                     indicator_data['title'] = indicator.title
@@ -304,7 +314,10 @@ def main(request, project_id):
     # timeline_data = _get_timeline_data(project)
 
     reporting_org = project.reporting_org()
-    reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    if reporting_org:
+        reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    else:
+        reporting_org_info = None
     partners = _get_project_partners(project)
 
     context = {
@@ -458,13 +471,19 @@ def search(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
 
+
 def partners(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
-    partners = _get_project_partners(project)
+    partners = project.all_partners().values()
+    for partner in partners:
+        id_key = "id".decode('unicode-escape')
+        p = Organisation.objects.get(pk=partner[id_key])
+        partner['partner_types'] = p.has_partner_types(project)
+        partner['organisation_obj'] = p
     context = {
         'project': project,
-        'partners': partners
+        'partners': partners,
     }
     return render(request, 'project_partners.html', context)
 
@@ -472,8 +491,10 @@ def partners(request, project_id):
 def finance(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
+    pledged = project.get_pledged()
     context = {
-        'project': project
+        'project': project,
+        'pledged': pledged,
     }
     return render(request, 'project_finance.html', context)
 
