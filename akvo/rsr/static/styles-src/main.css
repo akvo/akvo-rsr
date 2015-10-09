@@ -1987,6 +1987,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results-indicators .sidebar .result-nav.expanded .result-nav-full {
         display: block;
         cursor: pointer; }
+    .results-indicators .sidebar .indicator-nav.active {
+      border-left: 4px solid red; }
   .results-indicators .indicator-container {
     vertical-align: top;
     overflow-y: scroll;
@@ -1999,6 +2001,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     .results-indicators .indicator-container .result-summary {
       padding: 1em;
       display: none; }
+      .results-indicators .indicator-container .result-summary .indicator-link {
+        cursor: pointer; }
+        .results-indicators .indicator-container .result-summary .indicator-link:hover {
+          opacity: 0.8; }
+        .results-indicators .indicator-container .result-summary .indicator-link:active {
+          opacity: 0.6; }
     .results-indicators .indicator-container .indicator-group {
       padding: 1em;
       display: none; }

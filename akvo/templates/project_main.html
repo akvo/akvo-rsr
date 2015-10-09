@@ -969,7 +969,9 @@
               <h4>{% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
               <ul>
                 {% for indicator in result.indicators.all %}
-                  <li>{{indicator.title}}</li>
+                  <li class="indicator-link" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                    {{indicator.title}}
+                  </li>
                 {% endfor %}
               </ul>
             </div>
@@ -1048,25 +1050,33 @@
 
       el.addEventListener('click', function() {
         if (!this.parentNode.classList.contains('expanded')) {
+          // Expand this result!
 
-          // Expand the result in the sidebar
-          this.parentNode.classList.add('expanded');          
+          // Collapse any expanded results in the sidebar
+          removeClassFromAll('.result-nav', 'expanded');
+
+          // Expand this result in the sidebar
+          this.parentNode.classList.add('expanded');  
+
+          // Hide all indicators in the main panel
+          hideAll('.indicator');        
 
           // Expand the appropriate result in the main panel
           resultID = this.getAttribute('data-result-id');
           showResultsSummary(resultID);
         } else {
-          var els = document.querySelectorAll('.result-nav');
-          var el = null;
 
           // Collapse all result entries in the sidebar
-          for (var i = 0; i < els.length; i++) {
-            el = els[i];
-            el.classList.remove('expanded');
-          }
+          removeClassFromAll('.result-nav', 'expanded');
 
           // Hide all result summaries in the main panel
           hideAllResultsSummaries();
+
+          // Hide all indicators in the main panel
+          hideAll('.indicator-group, .indicator');
+
+          // Remove the "active" status of any indicators in main panel
+          removeClassFromAll('.indicator-nav.active', 'active');
         }
       });
     }
@@ -1092,7 +1102,7 @@
   ** the main panel when the sidebar link is clicked.
   */
   function setIndicatorLinkOnClicks() {
-    var els = document.querySelectorAll('.indicator-nav');
+    var els = document.querySelectorAll('.indicator-nav, .indicator-link');
 
     for (var i = 0; i < els.length; i++) {
       el = els[i];
@@ -1100,24 +1110,23 @@
       el.addEventListener('click', function() {
 
         /* Hide all the indicator and result summary elements */
-        var hideElements = document.querySelectorAll('.indicator-group, .indicator');
-
-        for (var i = 0; i < hideElements.length; i++) {
-          var el = hideElements[i];
-
-          el.style.display = 'none';
-        }
+        hideAll('.indicator-group, .indicator');
 
         hideAllResultsSummaries();
 
         /* Now show the indicator group and indicator that
         ** matches the element that's been clicked.
         */
-        var indicatorSelector = '.indicator-' + this.getAttribute('data-indicator-id');
+        var indicatorID = this.getAttribute('data-indicator-id');
+        var indicatorSelector = '.indicator-' + indicatorID;
         var indicatorGroupSelector = '.indicator-group.result-' + this.getAttribute('data-result-id');
 
         document.querySelector(indicatorGroupSelector).style.display = 'block';
         document.querySelector(indicatorSelector).style.display = 'block';
+
+        /* Add an "active" class to this indicator in the sidebar for styling purposes */
+        removeClassFromAll('.indicator-nav.active', 'active');
+        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"').classList.add('active');
 
       });
     }
@@ -1133,6 +1142,18 @@
       var el = els[i];
 
       el.style.display = 'none';
+    }
+  }
+
+  /* Remove a class from all elements for a given selector */
+  function removeClassFromAll(selector, className) {
+    var els = document.querySelectorAll(selector);
+    var el = null;
+
+    for (var i = 0; i < els.length; i++) {
+      el = els[i];
+
+      el.classList.remove(className);
     }
   }
 

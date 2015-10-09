@@ -2566,6 +2566,11 @@ body {
                 }
             }
         }
+        .indicator-nav {
+            &.active {
+                border-left: 4px solid red;
+            }
+        }
     }
     .indicator-container {
         vertical-align: top;
@@ -2576,6 +2581,18 @@ body {
         .result-summary {
             padding: 1em;
             display: none;
+
+            .indicator-link {
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+
+                &:active {
+                    opacity: 0.6;
+                }
+            }
         }
 
         .indicator-group {
