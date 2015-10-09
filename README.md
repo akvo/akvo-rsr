@@ -46,6 +46,15 @@ $ git push origin \#<issue number>-<short-description>
 ```
 Now create a PR and assign an eagle eyed Akvo developer.
 
+
+### Tagging a release
+Pull the latest master branch to your local machine git checkout master
+Merge the current release from the release/candidate branch git pull --no-ff origin release/candidate
+Add the tag with the release number and name git tag -a v2.3.6 -m "Akvo RSR release v2.3.6 (Voavanga)"
+Push the branch and tags git push && git push --tags
+Update all the remotes git remote update
+
+
 ### Django development server
 We'll pick up where the quick example ended. Let's stop the rsr service and start the Django development web server, this will enable console output for things like logs & email. in scripts/devhelpers there are two scripts manage.sh & supervisord.sh that proxy to the vagrant box versions of the Django manage.py and supervisord via the SSH.
 
@@ -105,9 +114,20 @@ notice that provisioning will not work if the debug toolbar is enabled & it's ve
 that it's enabled!
 
 ### Python style guide
-Try and follow PEP8 & keep within 100 chars!
+
+- PEP8 
+- line-length (Settled on 100 chars https://github.com/akvo/akvo-rsr/issues/1369)
+- landscape
+
 
 ### Translations
+- transifex
+- languages
+  - English (default)
+  - French
+  - Spanish
+https://github.com/akvo/akvo-rsr/wiki/Notes-on-translation
+
 
 
 ## Links
@@ -117,8 +137,8 @@ Try and follow PEP8 & keep within 100 chars!
 
 
 
-
-------------------------------------------------------------------------------
+# old stuff 
+-----------------------------------------------------
 
 README.md v1.3, 9 April 2014 [ogl, adriancollier]
 
