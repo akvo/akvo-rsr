@@ -321,11 +321,15 @@ def import_iati_file(sender, **kwargs):
     """
     iati_import = kwargs.get("instance", None)
 
-    if iati_import and iati_import.status == 1:
+    if iati_import and iati_import.status == get_model('rsr', 'IatiImport').PENDING_STATUS:
         post_save.disconnect(import_iati_file, sender=sender)
+        iati_import.save()
         try:
             with transaction.atomic():
                 IatiImportProcess(iati_import)
         except Exception as e:
-            add_log(iati_import, 'general', str(e), None, 1)
+            add_log(iati_import, 'general', str(e), None,
+                    get_model('rsr', 'IatiImportLog').CRITICAL_ERROR)
+            iati_import.status = get_model('rsr', 'IatiImport').CANCELLED_STATUS
+            iati_import.save()
         post_save.connect(import_iati_file, sender=sender)
