@@ -912,7 +912,7 @@
       <div class="sidebar">
         {% for result in project.results.all %}
           <div class="result-nav">
-            <div class="result-nav-summary result-expand" data-result-id="{{result.id}}">
+            <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
               <h3 class="result-title">
                 {{result.title}}
               </h3>
@@ -920,7 +920,7 @@
             </div>
             <div class="result-nav-full">
               {% for indicator in result.indicators.all %}
-                <div class="indicator-nav" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
                   <h4>
                     {{indicator.title}}
                   </h4>
@@ -969,7 +969,7 @@
               <h4>{% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
               <ul>
                 {% for indicator in result.indicators.all %}
-                  <li class="indicator-link" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                  <li class="indicator-link clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
                     {{indicator.title}}
                   </li>
                 {% endfor %}
@@ -1000,6 +1000,7 @@
                     <tr>
                       <td>{% trans "Start" %}</td>
                       <td>{% trans "End" %}</td>
+                      <td>{% trans "Progress" %}</td>
                       <td>{% trans "Target" %}</td>
                     </tr>
                   </thead>
@@ -1017,9 +1018,15 @@
                                 <span class="indicator-bar-progress-text">{{period.actual_value}}</span>
                               </div>
                             </div>
-                          </div><div class="indicator-bar-progress-complete-container">
+                          </div>
+                        </td>
+                        <td class="target-td">
+                          <div class="indicator-bar-progress-complete-container">
                             <span class="indicator-bar-progress-complete">{{period.target_value}}</span>
                           </div>
+                        </td>
+                        <td class="expand-td">
+                          <span class="expand-indicator-period clickable" data-indicator-id="{{indicator.id}}">+</span>
                         </td>
                       </tr>
                     {% endfor %}
@@ -1131,6 +1138,15 @@
       });
     }
   }
+  /* Set the onClicks to expand a given indicator period and show the "Add update" dialog */
+  function setExpandIndicatorPeriodOnClicks() {
+    var els = document.querySelectorAll('.expand-indicator-period');
+    var el = null;
+
+    for (var i = 0; i < els.length; i++) {
+      el = els[i];
+    }
+  }
 
   /* GENERAL HELPER FUNCTIONS */
 
@@ -1160,6 +1176,7 @@
   /* Do stuff */
   setResultExpandOnClicks();
   setIndicatorLinkOnClicks();
+  setExpandIndicatorPeriodOnClicks();
   </script>
 </div>
 <div class="project-tab blog">

@@ -1967,6 +1967,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   /* Styling for the indicator period progress bar */ }
   .results-indicators * {
     box-sizing: border-box; }
+  .results-indicators .clickable {
+    cursor: pointer; }
+    .results-indicators .clickable:hover {
+      opacity: 0.8; }
+    .results-indicators .clickable:active {
+      opacity: 0.6; }
   .results-indicators .results-indicators-container {
     display: -webkit-box;
     display: -moz-box;
@@ -2012,22 +2018,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       display: none; }
       .results-indicators .indicator-container .indicator-group .indicator {
         display: none; }
-  .results-indicators .indicator-bar-td {
+  .results-indicators .indicator-bar-td, .results-indicators .target-td {
     height: 48px;
-    padding: 0;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex; }
+    padding: 0; }
   .results-indicators .indicator-bar-display-container {
     position: relative;
-    height: 100%;
-    -webkit-box-flex: 1;
-    -moz-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1; }
+    height: 100%; }
     .results-indicators .indicator-bar-display-container .indicator-bar {
       position: absolute;
       top: 23px;
@@ -2053,9 +2049,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         padding: 0.2em;
         background-color: blue;
         text-align: center; }
-        .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress[data-progress="100.0"] {
-          margin-left: 15px;
-          z-index: 2; }
   .results-indicators .indicator-bar-progress-complete-container {
     height: 100%;
     position: relative;

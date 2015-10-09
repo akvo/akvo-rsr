@@ -2535,11 +2535,23 @@ body {
 /* Results framework display */
 
 .results-indicators {
+    position: relative;
+
     * {
         box-sizing: border-box;
     }
 
-    position: relative;
+    .clickable {
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
 
     .results-indicators-container {
         @include display-flex();
@@ -2605,15 +2617,14 @@ body {
         }
     }
     /* Styling for the indicator period progress bar */
-    .indicator-bar-td {
+    .indicator-bar-td,
+    .target-td {
         height: 48px;
         padding: 0;
-        @include display-flex();
     }
     .indicator-bar-display-container {
         position: relative;
         height: 100%;
-        @include flex(1);
         .indicator-bar {
             position: absolute;
             top: 23px;
@@ -2640,12 +2651,7 @@ body {
                 margin-left: -15px;
                 padding: 0.2em;
                 background-color: blue;
-                text-align: center;
-
-                &[data-progress="100.0"] {
-                    margin-left: 15px;
-                    z-index: 2;
-                }                
+                text-align: center;               
             }            
         } 
     }
