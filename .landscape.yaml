@@ -1,4 +1,3 @@
-# doc-warnings: yes
 test-warnings: no
 strictness: verylow
 max-line-length: 100
