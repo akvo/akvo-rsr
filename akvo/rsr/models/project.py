@@ -323,6 +323,16 @@ class Project(TimestampsMixin, models.Model):
                                               u'time than end date (actual).')}
             )
 
+    def save(self, *args, **kwargs):
+        """Strip the title and subtitle from any leading or trailing spaces."""
+        if self.title:
+            self.title = self.title.strip()
+
+        if self.subtitle:
+            self.subtitle = self.subtitle.strip()
+
+        super(Project, self).save(*args, **kwargs)
+
     @models.permalink
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
