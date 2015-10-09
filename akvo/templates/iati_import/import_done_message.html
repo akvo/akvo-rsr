@@ -30,7 +30,6 @@
     <b>Import id:</b> {{ iati_import.pk }}<br/>
     <b>Site:</b> {{ site }}<br/>
     {% if iati_import.url %}<b>IATI file:</b> <a href="{{ iati_import.url }}">{{ iati_import.url }}</a><br/>{% endif %}
-    <b>Organisation:</b> {{ iati_import.reporting_organisation.name }} ({{ iati_import.reporting_organisation.iati_org_id }})<br/>
     <b>Start date:</b> {{ iati_import.start_date }}<br/>
     <b>End date:</b> {{ iati_import.end_date }}<br/>
     <b>Number of projects processed:</b> {{ project_count }} ({{ projects_created }} created, {{ projects_updated }} updated)<br/>

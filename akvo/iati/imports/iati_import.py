@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ...rsr.models.iati_import import IatiImport
 from ...rsr.models.iati_import_log import IatiImportLog
 from ...rsr.models.iati_project_import import IatiProjectImport
 from .iati_import_activity import IatiImportActivity
@@ -188,11 +189,11 @@ class IatiImportProcess(object):
         self.set_start_date()
 
         # Check or download file
-        self.set_status(2)
+        self.set_status(IatiImport.RETRIEVING_STATUS)
         if self.check_file():
 
             # Start import process
-            self.set_status(3)
+            self.set_status(IatiImport.IN_PROGRESS_STATUS)
             self.file = self.iati_import.local_file
             self.activities = self.get_activities()
             if self.activities and self.check_version():
@@ -206,10 +207,10 @@ class IatiImportProcess(object):
                                 IatiImportLog.CRITICAL_ERROR)
 
                 # Import process complete
-                self.set_status(4)
+                self.set_status(IatiImport.COMPLETED_STATUS)
 
         # Finish import
-        if not self.iati_import.status == 4:
-            self.set_status(5)
+        if not self.iati_import.status == IatiImport.COMPLETED_STATUS:
+            self.set_status(IatiImport.CANCELLED_STATUS)
         self.set_end_date()
         self.send_mail()
