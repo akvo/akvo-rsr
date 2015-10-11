@@ -108,7 +108,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                 elif orig_update.period_update != self.period_update:
                     # Indicator value has changed.
                     # Substract old value from period, and add new value to it.
-                    self.indicator_period.actual_value = str(Decimal(self.period.actual_value) -
+                    self.indicator_period.actual_value = str(Decimal(self.indicator_period.actual_value) -
                                                              Decimal(orig_update.period_update) +
                                                              Decimal(self.period_update))
 

@@ -2532,6 +2532,26 @@ body {
     }
 }
 
+/* New concatenated project page */
+
+.tab-menu {
+    padding: 0.5em 1em 2em 1em;
+
+    a {
+        padding: 0.5em;
+        margin: 0 1em;
+        font-weight: bold;
+        color: $secondary6;
+
+        &:hover, &.selected {
+            border-bottom: 3px solid;
+        }
+        &:active {
+            opacity: 0.6;
+        }
+    }
+}
+
 /* Results framework display */
 
 .results-indicators {
@@ -2539,6 +2559,12 @@ body {
 
     * {
         box-sizing: border-box;
+    }
+
+    article {
+        margin: 0 1em;
+        @include border-radius(3px);
+        overflow: hidden;
     }
 
     .clickable {
@@ -2557,30 +2583,121 @@ body {
         @include display-flex();
     }
     .sidebar {
-        width: 20%;
+        width: 25%;
         min-width: 200px;
-        overflow-y: scroll;
-        background-color: whitesmoke;
+        overflow-y: auto;
+        background-color: rgb(235,234,222);
         vertical-align: top;
+        border: 1px solid rgb(224,225,226);
+
+        .result-nav-header, .result-nav {
+            padding: 0.75em 0.75em 0 0.75em;
+            &:after {
+                height: 1px;
+                background-color: rgb(224,225,226);
+                width: 100%;
+                display: block;
+                margin: 1.75em auto 0 auto;
+                content: '';
+            }
+        }
 
         .result-nav {
-            padding: 0.5em;
+            &:last-child {
+                padding-bottom: 1em;
+                &:after {
+                    display: none;
+                }
+            }
+        }
+
+        .result-nav-header {
+            h3 {
+                color: rgb(62,101,255);
+                font-size: 1.2em;
+            }
+        }
+
+        .result-nav {
             cursor: pointer;
+
+            .glyphicon-chevron-up {
+                display: none;
+            }
+
+            h3 {
+                font-size: 1.2em;
+                color: $secondary6;
+            }
+
+            .result-title {
+                .glyphicon {
+                    float: right;
+                    font-size: 1.3em;
+                    margin-right: 6px;
+                }
+            }
+
+            .result-indicator-count {
+                color: rgb(188,188,166);
+            }
 
             .result-nav-full {
                 display: none;
             }
 
+            .indicator-text {
+                display: none;
+            }
+
             &.expanded {
+                .glyphicon-chevron-down {
+                    display: none;
+                }
+                .glyphicon-chevron-up {
+                    display: block;
+                }  
+                .indicator-text {
+                    display: initial;
+                }
+                .indicator-count {
+                    display: none;
+                }                                         
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
+                    padding: 0.5em;
+                    background-color: white;
+                    border: 1px solid rgb(224,225,226);
+                    margin-top: 1em;
+
+                    .indicator-nav {
+                        padding: 0.5em 1.5em;
+                        /* Transparent border means text doesn't shift when
+                        ** we add a colored border to active elements.
+                        */
+                        border-left: 4px solid rgba(0,0,0,0);
+
+                        &.active {
+                            background-color: rgb(236,236,236);
+                            border-left: 4px solid rgb(174,9,34);
+                        }
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                    }
+
+                    h4 {
+                        font-size: 1.1em;
+                        color: rgb(100,100,100);
+                    }
+
+                    .last-update {
+                        font-size: 0.9em;
+                        color: rgb(170,170,170);
+                    }
                 }
-            }
-        }
-        .indicator-nav {
-            &.active {
-                border-left: 4px solid red;
             }
         }
     }
@@ -2588,11 +2705,30 @@ body {
         vertical-align: top;
         overflow-y: scroll;
         padding: 1em;
+        background-color: rgb(242,242,235);
         @include flex(1);
 
         .result-summary {
             padding: 1em;
             display: none;
+
+            h4 {
+                font-size: 0.8em;
+                color: #aaaaaa;
+                font-variant: small-caps;
+                text-transform: lowercase;
+            }
+
+            h3 {
+                font-size: 1.2em;
+                color: #424c2b;
+                margin-bottom: 4px;
+            }
+
+            .result-parent {
+                font-size: 0.8em;
+                color: #aaaaaa;
+            }
 
             .indicator-link {
                 cursor: pointer;
@@ -2611,6 +2747,78 @@ body {
             padding: 1em;
             display: none;
 
+            h4.indicator-title {
+                color: rgb(174,9,34);
+                font-size: 1em;
+                .glyphicon {
+                    float: left;
+                    margin-right: 4px;
+                }
+            }            
+
+            .baseline {
+                padding: 2em 0;
+                .baseline-value, .baseline-year {
+                    width: 30%;
+                    display: inline-block;
+                    padding: 0 0 0 5%;
+
+                    dt {
+                        color: rgb(129,131,134);
+                    }
+                    dd {
+                        font-size: 1.5em;
+                        font-weight: bold;
+                        color: rgb(81,80,80);
+                    }
+                }
+            }
+
+            .indicator-periods-title {
+                font-size: 1em;
+                color: rgb(81,80,80);
+            }
+
+            .table {
+                padding: 0.5em;
+                background-color: rgb(235,235,231);
+                border: 1px solid rgb(224,225,226);
+
+                thead {
+                    font-weight: bold;
+                }
+
+                tr, td {
+                    border: none;
+                }
+
+                tr {
+                    border-bottom: 1px solid rgb(224,225,226);
+                    min-height: 100px;
+                }
+
+                td {
+                    vertical-align: middle;
+                }
+
+                .expand-indicator-period {
+                    .glyphicon-chevron-up {
+                        display: none;
+                    }
+                    .glyphicon-chevron-down {
+                        display: initial;
+                    }
+                    &.expanded {
+                        .glyphicon-chevron-up {
+                            display: initial;
+                        }
+                        .glyphicon-chevron-down {
+                            display: none;
+                        }  
+                    }
+                }
+            }
+
             .indicator {
                 display: none;
             }
@@ -2619,27 +2827,34 @@ body {
     /* Styling for the indicator period progress bar */
     .indicator-bar-td,
     .target-td {
-        height: 48px;
+        height: 80px;
         padding: 0;
     }
     .indicator-bar-display-container {
         position: relative;
         height: 100%;
-        .indicator-bar {
+        margin-left: 15px;
+        margin-right: 15px;
+        .indicator-bar, .indicator-bar-progress-amount {
             position: absolute;
-            top: 23px;
-            bottom: 23px;
+            top: 44px;
+            bottom: 24px;
             left: 0px;
-            right: 0px;
-            height: 2px;
-            background-color: black;
+            height: 12px;
+            @include border-radius(4px);
         }      
+        .indicator-bar {
+            background-color: rgb(188,188,166);
+            right: 0px;
+        }
+        .indicator-bar-progress-amount {
+            background-color: rgb(81,80,80);
+        }
         .indicator-bar-progress-container {
             /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
             ** container.
             */
-            margin: 0 15px 0 15px;
             position: relative;
             height: 100%;
 
@@ -2647,29 +2862,171 @@ body {
                 position: absolute;
                 width: 30px;
                 height: 26px;
-                top: 12px;
+                top: 13px;
                 margin-left: -15px;
                 padding: 0.2em;
-                background-color: blue;
-                text-align: center;               
+                background-color: rgb(81,80,80);
+                text-align: center;   
+
+                .indicator-bar-progress-text {
+                    color: white;
+                    font-weight: bold;
+                }
+
+                .indicator-bar-progress-triangle {
+                    height: 5px;
+                    width: 10px;
+                    position: absolute;
+                    bottom: -5px;
+                    left: 10px;
+                    right: 10px;
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                    border-top: 5px solid rgb(81,80,80);                    
+                }            
             }            
         } 
     }
+    .target-td {
+        vertical-align: middle;
+    }
     .indicator-bar-progress-complete-container {
-        height: 100%;
-        position: relative;
-        width: 30px;
-
         .indicator-bar-progress-complete {
-            position: absolute;
-            width: 30px;
-            height: 26px;
-            top: 12px;
-            padding: 0.2em;
-            background-color: green;
-            text-align: center;
-            z-index: 1;
-
+            padding-left: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: rgb(81,80,80);
+            vertical-align: bottom;
         }
     }     
+
+    .indicator-container .indicator-group .table tbody tr.expanded {
+        background-color: white;
+        border-bottom: none !important;      
+
+        .indicator-bar-td * {
+            display: none;
+        }
+    }
+
+    .update-dialog-container {
+        td {
+            background-color: white;
+
+            .update-entry-container {
+                padding: 1em;
+                border: 1px solid rgb(200,200,200);
+                margin-bottom: 2em;
+                position: relative;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .edit-button {
+                    position: absolute;
+                    height:20px;
+                    width: 20px;
+                    top: 5px;
+                    right: 5px;
+                    color: rgb(150,150,150);
+                    font-size: 1.5em;
+                }
+
+                .update-date {
+                    display: inline-block;
+                    text-align: left;
+                    width: 50%;
+                }
+                .update-name {
+                    display: inline-block;
+                    text-align: right;
+                    width: 40%;
+                    margin-right: 10%;
+                }
+                .update-timeline {
+                    display: inline-block;
+                    width: 75%;
+                    height: 80px;
+                    padding-top: 1em;
+                }
+                .update-target {
+                    display: inline-block;
+                    width: 25%;
+                    height: 80px;
+                    text-align: center;
+
+                    div {
+                        font-size: 1.5em;
+                        font-weight: bold;
+                        color: rgb(81,80,80);
+                        vertical-align: bottom;
+                    }
+                }
+                .update-description {
+                    padding: 0.5em;
+
+                    &.editable {
+                        background: whitesmoke;
+                    }
+                    .update-photo {
+                        float: right;
+                        width: 150px;
+                        height: 100px;
+                        background-size: cover;
+                    }
+                }
+                .save-button {
+                    display: none;
+                    &.active {
+                        display: block;
+                        width: 150px;
+                        padding: 0.5em;
+                        color: white;
+                        font-weight: bold;
+                        background-color: #3e65ff;
+                        margin-top: 1em;
+                        margin-left: auto;
+                        @include border-radius(4px);
+                        text-align: center;
+                    }
+                }
+                .edit-slider {
+                    .noUi-base, &.noUi-horizontal {
+                        height: 12px;
+                        border: 0;
+                        background-color: #515050;
+                        margin-top: -22px;
+                        @include border-radius(4px);
+
+                        .noUi-origin {
+                            background-color: #bcbca6;;
+                            @include border-radius(4px);
+                        }
+                        .noUi-handle {
+                            z-index: 9999;
+                            background-color: white;
+                            border: 2px solid #515050;
+                            cursor: pointer;
+                            width: 28px;
+                            left: -14px;
+
+                            &:after {
+                                display: none;
+                            }
+                            &:before {
+                                display: none;
+                            }
+
+                            @include border-radius(99em);
+                        }
+                    }
+
+                    &.active {
+                        display: initial;
+                    }
+                }
+            }
+        }
+    }
 }

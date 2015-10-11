@@ -7,12 +7,12 @@
   {% include "partials/project_header.html" %}
 </div>
 <div class="tab-menu">
-  <a href="#summary" class="tab-link btn btn-primary">{% trans 'Summary' %}</a>
-  <a href="#full-report" class="tab-link btn btn-primary">{% trans 'Full report' %}</a>
-  <a href="#partners" class="tab-link btn btn-primary">{% trans 'Project partners' %}</a>
-  <a href="#finance" class="tab-link btn btn-primary">{% trans 'Finances' %}</a>
-  <a href="#results-indicators" class="tab-link btn btn-primary">{% trans 'Results & indicators' %}</a>
-  <a href="#blog" class="tab-link btn btn-primary">{% trans 'Blog' %}</a>
+  <a href="#summary" class="tab-link">{% trans 'Summary' %}</a>
+  <a href="#full-report" class="tab-link">{% trans 'Full report' %}</a>
+  <a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>
+  <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
+  <a href="#results-indicators" class="tab-link">{% trans 'Results & indicators' %}</a>
+  <a href="#blog" class="tab-link">{% trans 'Blog' %}</a>
 </div>
 <div class="project-tab summary">
   <article class="touch-navbar project-container">
@@ -910,13 +910,18 @@
   <article>
     <div class="results-indicators-container">
       <div class="sidebar">
+        <div class="result-nav-header">
+          <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
+        </div>
         {% for result in project.results.all %}
           <div class="result-nav">
             <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
               <h3 class="result-title">
-                {{result.title}}
+                <span class="glyphicon glyphicon-chevron-down"></span>
+                <span class="glyphicon glyphicon-chevron-up"></span>                  
+                {{result.title}}              
               </h3>
-              <span class="result-indicator-count">{{result.indicators.all.count}}</span>
+              <span class="result-indicator-count"><span class="glyphicon glyphicon-dashboard"></span> <span class="indicator-count">{{result.indicators.all.count}}</span><span class="indicator-text">{% trans "Indicators:" %}</span></span>
             </div>
             <div class="result-nav-full">
               {% for indicator in result.indicators.all %}
@@ -966,7 +971,7 @@
             {% endif %}
             -->
             <div class="result-indicators">
-              <h4>{% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
+              <h4><span class="glyphicon glyphicon-dashboard"></span> {% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
               <ul>
                 {% for indicator in result.indicators.all %}
                   <li class="indicator-link clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
@@ -979,43 +984,51 @@
           <div class="result-{{result.id}} indicator-group">
             {% for indicator in result.indicators.all %} 
               <div class="indicator-{{indicator.id}} indicator">
-                <h4>{{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})</h4>
+                <h4 class="indicator-title"><span class="glyphicon glyphicon-dashboard"></span> {{indicator.title}} ({% if indicator.measure == "1" %}{% trans "Unit" %}{% else %}{% trans "Percentage" %}{% endif %})</h4>
 
-                <dl>
+                <dl class="baseline">
                   {% if indicator.baseline_year %}
-                    <dt>{% trans "Baseline Year" %}</dt>
-                    <dd>{{indicator.baseline_year}}</dd>
+                    <div class="baseline-year">
+                      <dt>{% trans "Baseline Year" %}</dt>
+                      <dd>{{indicator.baseline_year}}</dd>
+                    </div>
                   {% endif %}
 
                   {% if indicator.baseline_value %}
-                    <dt>{% trans "Baseline Value" %}</dt>
-                    <dd>{{indicator.baseline_value}}</dd>
+                    <div class="baseline-value">
+                      <dt>{% trans "Baseline Value" %}</dt>
+                      <dd>{{indicator.baseline_value}}</dd>
+                    </div>
                   {% endif %}
                 </dl>
 
-                <h4>{% trans "Indicator periods" %}</h4>
+                <h4 class="indicator-periods-title">{% trans "Indicator periods" %}</h4>
 
-                <table class="table table-border table-responsive">
+                <table class="table table-responsive">
                   <thead>
                     <tr>
                       <td>{% trans "Start" %}</td>
                       <td>{% trans "End" %}</td>
                       <td>{% trans "Progress" %}</td>
                       <td>{% trans "Target" %}</td>
+                      <td></td>
                     </tr>
                   </thead>
                   <tbody>
                     {% for period in indicator.periods.all %}
-                      <tr>
+                      <tr class="indicator-period-{{period.id}}-tr">
                         <td>{{period.period_start}}</td>
                         <td>{{period.period_end}}</td>
                         <td class="indicator-bar-td">
                           <div class="indicator-bar-display-container">
                             <div class="indicator-bar">
                             </div>
+                            <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment}}%;">
+                            </div>
                             <div class="indicator-bar-progress-container">
                               <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment}}%; z-index: {{period.percent_accomplishment}}" data-progress="{{period.percent_accomplishment}}">
                                 <span class="indicator-bar-progress-text">{{period.actual_value}}</span>
+                                <span class="indicator-bar-progress-triangle"></span>
                               </div>
                             </div>
                           </div>
@@ -1026,7 +1039,10 @@
                           </div>
                         </td>
                         <td class="expand-td">
-                          <span class="expand-indicator-period clickable" data-indicator-id="{{indicator.id}}">+</span>
+                          <span class="expand-indicator-period clickable " data-indicator-period-id="{{period.id}}" data-indicator-period-value="{{period.actual_value}}" data-target="{{period.target_value}}">
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                            <span class="glyphicon glyphicon-chevron-up"></span>
+                          </span>
                         </td>
                       </tr>
                     {% endfor %}
@@ -1039,9 +1055,32 @@
       </div> 
     </div>  
   </article>
+  <!-- I couldn't work out how to get rid of the trailing comma below so did a quick hack
+  to get the JSON to validate. Consider this a TODO: remove the "ignore" object -->
+  <script type="text/html" id="update-json">
+    {
+      {% for update in project.project_updates.all %}
+        {% if update.indicator_period %}
+          "{{update.id}}": {
+            "id": "{{update.id}}",
+            "indicator_period": "{{update.indicator_period.id}}",
+            "change": "{{update.period_update}}",
+            "date": "{{update.time_gmt}}",
+            "user": "{{update.user.first_name}} {{update.user.last_name}}",
+            "text": "{{update.text}}",
+            "photo": "{{update.photo}}",
+            "target": "{{update.indicator_period.target}}"
+          },
+        {% endif %}
+      {% endfor %}
+      "ignore": {}
+    }
+  </script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css" type="text/css">
   <script>
   /* Obviously this script shouldn't live here permanently.
-  ** But it's handy to leave it here for developent.
+  ** But it's handy to leave it here for development.
   */
 
   /* Set the click listeners that expand or hide the full
@@ -1145,6 +1184,99 @@
 
     for (var i = 0; i < els.length; i++) {
       el = els[i];
+
+      el.addEventListener('click', function() {
+        var indicatorPeriodID = this.getAttribute('data-indicator-period-id');
+        var parentElement = document.querySelector('.indicator-period-' + indicatorPeriodID + '-tr');
+        var periodValue = this.getAttribute('data-indicator-period-value');
+        var target = this.getAttribute('data-target');
+
+        if (this.classList.contains('expanded')) {
+
+          /* This is period already expanded. Collapse it and remove all update dialogs. */
+          removeAll('tr.update-dialog-container');
+          removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded');
+        } else {
+          parentElement.insertAdjacentHTML('afterend', getUpdateDialog(indicatorPeriodID, periodValue, target).outerHTML);
+          this.parentNode.parentNode.classList.add('expanded');
+          this.classList.add('expanded');
+          addEditOnClicks();
+          addSaveOnClicks();
+        }       
+      })
+    }
+  }
+
+  function addSaveOnClicks() {
+    var els = document.querySelectorAll('.save-button');
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+
+      el.addEventListener('click', function() {
+        var updateContainer = this.parentNode;
+
+        var newValue = updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value');
+
+        var newDescription = updateContainer.querySelector('.update-description').textContent;
+
+        (console.log(newValue + ' ' + newDescription));
+
+        // Do some kind of saving step here
+      });
+    }
+  }
+
+  function addEditOnClicks() {
+    var els = document.querySelectorAll('.edit-button');
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+
+      el.addEventListener('click', function() {
+        var updateContainer = this.parentNode;
+
+        if (this.classList.contains('activated')) {
+          var editables = updateContainer.querySelectorAll('.editable');
+
+          for (var j = 0; j < editables.length; j++) {
+            editables[j].classList.remove('editable');
+            editables[j].removeAttribute('contenteditable');
+          }
+          this.classList.remove('activated');
+          updateContainer.querySelector('.save-button').classList.remove('active');
+          updateContainer.querySelector('.edit-slider').noUiSlider.destroy();
+        } else {
+          updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
+          updateContainer.querySelector('.update-description').classList.add('editable');
+          this.classList.add('activated');
+          updateContainer.querySelector('.save-button').classList.add('active');
+          
+          var sliderEl = updateContainer.querySelector('.edit-slider');
+          var startVal = sliderEl.getAttribute('data-start');
+          var maxVal = parseFloat(sliderEl.getAttribute('data-max'));
+
+          noUiSlider.create(sliderEl, {
+            start: startVal,
+            step: 1,
+            range: {
+              'min': 0,
+              'max': maxVal
+            }
+          });
+
+          var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:first-child');
+          var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
+
+          sliderEl.noUiSlider.on('update', function(value) {
+            updateMarker.style.left = value + '%';
+            updateMarker.setAttribute('data-value', value); 
+
+            updateMarker.querySelector('.indicator-bar-progress-text').textContent = Math.round(value);
+            updateProgress.style.width = value + '%';
+          });
+        }
+      });
     }
   }
 
@@ -1161,6 +1293,17 @@
     }
   }
 
+  /* Remove all elements for a given selector from the DOM */
+  function removeAll(selector) {
+    var els = document.querySelectorAll(selector);
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+
+      el.parentNode.removeChild(el);
+    }
+  }
+
   /* Remove a class from all elements for a given selector */
   function removeClassFromAll(selector, className) {
     var els = document.querySelectorAll(selector);
@@ -1173,10 +1316,245 @@
     }
   }
 
+  var updatesByIndicatorPeriod = {};
+
+  /* Get the grab the update data from the script we use to print
+  ** the template tags, then format that data into an object sorted
+  ** by indicator period, to make life easier for us later.
+  */
+
+  function buildUpdateJSON() {
+    var updateJSON = document.querySelector('#update-json').innerHTML;
+    var updateData = JSON.parse(updateJSON);
+
+    for (var updateID in updateData) {
+      if (updateData.hasOwnProperty(updateID)) {
+        var update = updateData[updateID];
+
+        if (!update.indicator_period) {
+
+          // Something has gone wrong. Ignore this entry
+          continue;
+        }
+
+        if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period])) {
+          updatesByIndicatorPeriod[update.indicator_period] = {};
+        }
+
+        updatesByIndicatorPeriod[update.indicator_period][updateID] = update;
+
+      }
+    }
+  }
+
+  /* This function takes an object representing an update (in the same format as the
+  ** "update-data" script we use to print template tags) and adds that update to the
+  ** updatesByIndicatorPeriod object.
+  */
+  function addUpdateToStore(update, updateID) {
+    if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period])) {
+      updatesByIndicatorPeriod[update.indicator_period] = {};
+    }
+    updatesByIndicatorPeriod[update.indicator_period][update][updateID] = update;
+  }
+
+  /* Returns a node representing the "Add update" dialog, ready to be injected at
+  ** the appropriate point in the DOM.
+  */
+  function getUpdateDialog(indicatorPeriodID, periodValue, target) {
+    var container = document.createElement('tr');
+    var containerCell = document.createElement('td');
+    var currentUpdate = null;
+    var childElements = [];
+    container.classList.add('update-dialog-container');
+    containerCell.setAttribute('colspan', '5');
+
+    if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
+      container.classList.add('empty');
+      container.textContent = 'No updates for this indicator period.';
+    } else {
+      for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
+        if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
+          currentUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
+          childElements.push(getUpdateEntry(currentUpdate, indicatorPeriodID, periodValue, target));
+        }
+      }
+
+      /* Child elements will be sorted oldest-last, so work backwards to add them in
+      ** the correct order.
+      */
+      for (var i = childElements.length - 1; i >= 0; i--) {
+        containerCell.appendChild(childElements[i]);
+      }
+    }
+    container.appendChild(containerCell);
+    return container;
+  }
+
+  /* Returns a node representing a single "update" entry for the "Add update" dialog.
+  ** E.G if an indicator period has 7 updates, this function should be called once
+  ** for each and return the appropriate markup each time.
+  */
+
+  /* TODO: refactor this */
+
+  function getUpdateEntry(update, indicatorPeriodID, periodValue, target) {
+    var updateContainer = document.createElement('div');
+    var editEl, dateEl, userNameEl, timelineEl, targetEl, photoEl, descriptionEl;
+
+    updateContainer.classList.add('update-entry-container');
+
+      var editEl = document.createElement('span');
+      editEl.classList.add('glyphicon-pencil');
+      editEl.classList.add('glyphicon');
+      editEl.classList.add('edit-button');
+      editEl.classList.add('clickable');
+
+      updateContainer.appendChild(editEl);
+
+
+      if (update.date) {
+        dateEl = document.createElement('div');
+        dateEl.classList.add('update-date');
+        dateEl.textContent = update.date;
+        updateContainer.appendChild(dateEl);
+      }
+      if (update.user) {
+        userNameEl = document.createElement('div');
+        userNameEl.classList.add('update-name');
+        userNameEl.textContent = update.user;
+        updateContainer.appendChild(userNameEl);
+      }
+      timeLineEl = document.createElement('div');
+      timeLineEl.classList.add('update-timeline');
+
+      var progressContainer = document.createElement('div');
+
+      progressContainer.classList.add('indicator-bar-display-container');       
+      var markerContainer = document.createElement('div');
+      markerContainer.classList.add('indicator-bar-progress-container');
+
+      var previousUpdates = [];
+      /* Now we need to loop through every update with an ID lower than the id of *this* update,
+      ** and store its change amount so we can build the timeline.
+      */
+      for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
+        var previousUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
+
+        /* If the change amount is "None", changes this to zero */
+        if (previousUpdate.change === 'None') {
+          previousUpdate.change = "0";
+        }
+
+        previousUpdates.push(previousUpdate);
+      }
+
+      previousUpdates.sort(function(a,b) {
+        return a.id > b.id;
+      });
+
+      var highestValue = 0;
+
+      for (var i = previousUpdates.length - 1; i >= 0; i--) {
+        var entry = previousUpdates[i];
+
+        if (entry.id > update.id) {
+
+          /* This update is *newer* thatn the one we're building the dialog
+          ** for. We don't need to add a marker for it, but we do need to
+          ** use it's "change" value to calculate the end value for thie
+          ** timeline for this particular update.
+          */
+          periodValue = periodValue - parseFloat(entry.change);
+        } else {
+
+          /* This update is *older* (or the same) as the update we're 
+          ** building the dialog for. We need to make a marker for it.
+          */
+          if (periodValue > highestValue) {
+            highestValue = periodValue
+          }
+          var updateMarker = document.createElement('div');
+          var textSpan = document.createElement('span');
+          var triangleSpan = document.createElement('span');
+
+          updateMarker.classList.add('update-dialog-timeline-marker');
+          updateMarker.classList.add('indicator-bar-progress');
+          updateMarker.style.left = (parseFloat(periodValue) / parseFloat(target)) * 100 + '%';
+          updateMarker.style['z-index'] = periodValue;
+          updateMarker.style.border = '1px solid white'
+
+          triangleSpan.classList.add('indicator-bar-progress-triangle'); 
+          textSpan.classList.add('indicator-bar-progress-text');    
+          textSpan.textContent = periodValue;     
+
+          updateMarker.appendChild(textSpan);
+          updateMarker.appendChild(triangleSpan);
+
+          markerContainer.appendChild(updateMarker);
+          periodValue = periodValue - parseFloat(entry.change);
+        }
+      }
+      var indicatorBar = document.createElement('div');
+      indicatorBar.classList.add('indicator-bar');
+      progressContainer.appendChild(indicatorBar);
+
+      var indicatorBarProgressAmount = document.createElement('div');
+      indicatorBarProgressAmount.classList.add('indicator-bar-progress-amount');
+      indicatorBarProgressAmount.style.width = (parseFloat(highestValue) / parseFloat(target)) * 100 + '%';  
+
+      progressContainer.appendChild(indicatorBarProgressAmount); 
+      progressContainer.appendChild(markerContainer);
+
+      var sliderEl = document.createElement('div');
+      sliderEl.classList.add('edit-slider');
+      sliderEl.setAttribute('data-start', highestValue);
+      sliderEl.setAttribute('data-max', target);
+
+      progressContainer.appendChild(sliderEl);      
+
+      timeLineEl.appendChild(progressContainer);
+
+      updateContainer.appendChild(timeLineEl);
+
+      var targetEl = document.createElement('div');
+      targetEl.classList.add('update-target')
+      var targetText = document.createElement('div');
+      targetText.textContent = target;
+
+      targetEl.appendChild(targetText);
+      updateContainer.appendChild(targetEl);
+
+      if (update.text) {        
+        descriptionEl = document.createElement('div');
+        descriptionEl.classList.add('update-description');
+        descriptionEl.textContent = update.text;
+
+        if (update.photo) {
+          photoEl = document.createElement('div');
+          photoEl.classList.add('update-photo');
+          photoEl.style['background-image'] = 'url("' + update.photo + '")';
+          descriptionEl.appendChild(photoEl);
+        }
+
+        updateContainer.appendChild(descriptionEl);
+      }
+
+      var saveEl = document.createElement('div');
+      saveEl.classList.add('save-button');
+      saveEl.textContent = 'Save changes';
+      saveEl.classList.add('clickable');
+
+      updateContainer.appendChild(saveEl);
+
+    return updateContainer;
+  }
+
   /* Do stuff */
   setResultExpandOnClicks();
   setIndicatorLinkOnClicks();
   setExpandIndicatorPeriodOnClicks();
+  buildUpdateJSON();
   </script>
 </div>
 <div class="project-tab blog">
@@ -1278,15 +1656,23 @@
 <script>
   function showTab(tabClass) {
     var allTabs = document.querySelectorAll('.project-tab');
+    var allTabLinks = document.querySelectorAll('.tab-link.selected');
     var activeTab = document.querySelector('.' + tabClass);
+    var activeTabLink = document.querySelector('.tab-link[href="#' + tabClass + '"]');
 
     for (var i = 0; i < allTabs.length; i++) {
       var tab = allTabs[i];
 
       tab.style.display = 'none';
     }
+    for (var i = 0; i < allTabLinks.length; i++) {
+      var tabLink = allTabLinks[i];
+
+      tabLink.classList.remove('selected');
+    }
 
     activeTab.style.display = 'block';
+    activeTabLink.classList.add('selected');
   }
 
   function setTabOnClicks() {
