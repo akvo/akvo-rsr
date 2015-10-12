@@ -1251,32 +1251,6 @@ div.projectTopRow {
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
 
-ul.results {
-  padding: 5px 0 5px 10px; }
-  ul.results span li {
-    display: inline-block;
-    font-weight: normal; }
-  ul.results dl.indicators {
-    display: inline-block;
-    padding: 0 0 0 35px;
-    width: 100%;
-    overflow: hidden; }
-    ul.results dl.indicators dd {
-      width: 30%;
-      float: left;
-      text-align: right; }
-    ul.results dl.indicators dt {
-      width: 70%;
-      color: rgba(32, 32, 36, 0.4);
-      font-weight: normal;
-      float: left; }
-
-div.timelineBlock {
-  margin: 15px auto 25px;
-  display: none; }
-  div.timelineBlock #timeline {
-    height: 200px; }
-
 div.textBlock {
   margin: 10px auto; }
   div.textBlock .panel {
@@ -1975,103 +1949,103 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       opacity: 0.6; }
 
 /* Results framework display */
-.results-indicators {
+.results {
   position: relative;
   /* Styling for the indicator period progress bar */ }
-  .results-indicators * {
+  .results * {
     box-sizing: border-box; }
-  .results-indicators article {
+  .results article {
     margin: 0 1em;
     -moz-border-radius: 3px;
     -o-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
     overflow: hidden; }
-  .results-indicators .clickable {
+  .results .clickable {
     cursor: pointer; }
-    .results-indicators .clickable:hover {
+    .results .clickable:hover {
       opacity: 0.8; }
-    .results-indicators .clickable:active {
+    .results .clickable:active {
       opacity: 0.6; }
-  .results-indicators .results-indicators-container {
+  .results .results-container {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex; }
-  .results-indicators .sidebar {
+  .results .sidebar {
     width: 25%;
     min-width: 200px;
     overflow-y: auto;
     background-color: #ebeade;
     vertical-align: top;
     border: 1px solid #e0e1e2; }
-    .results-indicators .sidebar .result-nav-header, .results-indicators .sidebar .result-nav {
+    .results .sidebar .result-nav-header, .results .sidebar .result-nav {
       padding: 0.75em 0.75em 0 0.75em; }
-      .results-indicators .sidebar .result-nav-header:after, .results-indicators .sidebar .result-nav:after {
+      .results .sidebar .result-nav-header:after, .results .sidebar .result-nav:after {
         height: 1px;
         background-color: #e0e1e2;
         width: 100%;
         display: block;
         margin: 1.75em auto 0 auto;
         content: ''; }
-    .results-indicators .sidebar .result-nav:last-child {
+    .results .sidebar .result-nav:last-child {
       padding-bottom: 1em; }
-      .results-indicators .sidebar .result-nav:last-child:after {
+      .results .sidebar .result-nav:last-child:after {
         display: none; }
-    .results-indicators .sidebar .result-nav-header h3 {
+    .results .sidebar .result-nav-header h3 {
       color: #3e65ff;
       font-size: 1.2em; }
-    .results-indicators .sidebar .result-nav {
+    .results .sidebar .result-nav {
       cursor: pointer; }
-      .results-indicators .sidebar .result-nav .glyphicon-chevron-up {
+      .results .sidebar .result-nav .glyphicon-chevron-up {
         display: none; }
-      .results-indicators .sidebar .result-nav h3 {
+      .results .sidebar .result-nav h3 {
         font-size: 1.2em;
         color: #424c2b; }
-      .results-indicators .sidebar .result-nav .result-title .glyphicon {
+      .results .sidebar .result-nav .result-title .glyphicon {
         float: right;
         font-size: 1.3em;
         margin-right: 6px; }
-      .results-indicators .sidebar .result-nav .result-indicator-count {
+      .results .sidebar .result-nav .result-indicator-count {
         color: #bcbca6; }
-      .results-indicators .sidebar .result-nav .result-nav-full {
+      .results .sidebar .result-nav .result-nav-full {
         display: none; }
-      .results-indicators .sidebar .result-nav .indicator-text {
+      .results .sidebar .result-nav .indicator-text {
         display: none; }
-      .results-indicators .sidebar .result-nav.expanded .glyphicon-chevron-down {
+      .results .sidebar .result-nav.expanded .glyphicon-chevron-down {
         display: none; }
-      .results-indicators .sidebar .result-nav.expanded .glyphicon-chevron-up {
+      .results .sidebar .result-nav.expanded .glyphicon-chevron-up {
         display: block; }
-      .results-indicators .sidebar .result-nav.expanded .indicator-text {
+      .results .sidebar .result-nav.expanded .indicator-text {
         display: initial; }
-      .results-indicators .sidebar .result-nav.expanded .indicator-count {
+      .results .sidebar .result-nav.expanded .indicator-count {
         display: none; }
-      .results-indicators .sidebar .result-nav.expanded .result-nav-full {
+      .results .sidebar .result-nav.expanded .result-nav-full {
         display: block;
         cursor: pointer;
         padding: 0.5em;
         background-color: white;
         border: 1px solid #e0e1e2;
         margin-top: 1em; }
-        .results-indicators .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
+        .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
           padding: 0.5em 1.5em;
           /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
           border-left: 4px solid transparent; }
-          .results-indicators .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
+          .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
             background-color: #ececec;
             border-left: 4px solid #ae0922; }
-          .results-indicators .sidebar .result-nav.expanded .result-nav-full .indicator-nav:last-child {
+          .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav:last-child {
             margin-bottom: 0; }
-        .results-indicators .sidebar .result-nav.expanded .result-nav-full h4 {
+        .results .sidebar .result-nav.expanded .result-nav-full h4 {
           font-size: 1.1em;
           color: #646464; }
-        .results-indicators .sidebar .result-nav.expanded .result-nav-full .last-update {
+        .results .sidebar .result-nav.expanded .result-nav-full .last-update {
           font-size: 0.9em;
           color: #aaaaaa; }
-  .results-indicators .indicator-container {
+  .results .indicator-container {
     vertical-align: top;
     overflow-y: scroll;
     padding: 1em;
@@ -2081,83 +2055,83 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1; }
-    .results-indicators .indicator-container .result-summary {
+    .results .indicator-container .result-summary {
       padding: 1em;
       display: none; }
-      .results-indicators .indicator-container .result-summary h4 {
+      .results .indicator-container .result-summary h4 {
         font-size: 0.8em;
         color: #aaaaaa;
         font-variant: small-caps;
         text-transform: lowercase; }
-      .results-indicators .indicator-container .result-summary h3 {
+      .results .indicator-container .result-summary h3 {
         font-size: 1.2em;
         color: #424c2b;
         margin-bottom: 4px; }
-      .results-indicators .indicator-container .result-summary .result-parent {
+      .results .indicator-container .result-summary .result-parent {
         font-size: 0.8em;
         color: #aaaaaa; }
-      .results-indicators .indicator-container .result-summary .indicator-link {
+      .results .indicator-container .result-summary .indicator-link {
         cursor: pointer; }
-        .results-indicators .indicator-container .result-summary .indicator-link:hover {
+        .results .indicator-container .result-summary .indicator-link:hover {
           opacity: 0.8; }
-        .results-indicators .indicator-container .result-summary .indicator-link:active {
+        .results .indicator-container .result-summary .indicator-link:active {
           opacity: 0.6; }
-    .results-indicators .indicator-container .indicator-group {
+    .results .indicator-container .indicator-group {
       padding: 1em;
       display: none; }
-      .results-indicators .indicator-container .indicator-group h4.indicator-title {
+      .results .indicator-container .indicator-group h4.indicator-title {
         color: #ae0922;
         font-size: 1em; }
-        .results-indicators .indicator-container .indicator-group h4.indicator-title .glyphicon {
+        .results .indicator-container .indicator-group h4.indicator-title .glyphicon {
           float: left;
           margin-right: 4px; }
-      .results-indicators .indicator-container .indicator-group .baseline {
+      .results .indicator-container .indicator-group .baseline {
         padding: 2em 0; }
-        .results-indicators .indicator-container .indicator-group .baseline .baseline-value, .results-indicators .indicator-container .indicator-group .baseline .baseline-year {
+        .results .indicator-container .indicator-group .baseline .baseline-value, .results .indicator-container .indicator-group .baseline .baseline-year {
           width: 30%;
           display: inline-block;
           padding: 0 0 0 5%; }
-          .results-indicators .indicator-container .indicator-group .baseline .baseline-value dt, .results-indicators .indicator-container .indicator-group .baseline .baseline-year dt {
+          .results .indicator-container .indicator-group .baseline .baseline-value dt, .results .indicator-container .indicator-group .baseline .baseline-year dt {
             color: #818386; }
-          .results-indicators .indicator-container .indicator-group .baseline .baseline-value dd, .results-indicators .indicator-container .indicator-group .baseline .baseline-year dd {
+          .results .indicator-container .indicator-group .baseline .baseline-value dd, .results .indicator-container .indicator-group .baseline .baseline-year dd {
             font-size: 1.5em;
             font-weight: bold;
             color: #515050; }
-      .results-indicators .indicator-container .indicator-group .indicator-periods-title {
+      .results .indicator-container .indicator-group .indicator-periods-title {
         font-size: 1em;
         color: #515050; }
-      .results-indicators .indicator-container .indicator-group .table {
+      .results .indicator-container .indicator-group .table {
         padding: 0.5em;
         background-color: #ebebe7;
         border: 1px solid #e0e1e2; }
-        .results-indicators .indicator-container .indicator-group .table thead {
+        .results .indicator-container .indicator-group .table thead {
           font-weight: bold; }
-        .results-indicators .indicator-container .indicator-group .table tr, .results-indicators .indicator-container .indicator-group .table td {
+        .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
           border: none; }
-        .results-indicators .indicator-container .indicator-group .table tr {
+        .results .indicator-container .indicator-group .table tr {
           border-bottom: 1px solid #e0e1e2;
           min-height: 100px; }
-        .results-indicators .indicator-container .indicator-group .table td {
+        .results .indicator-container .indicator-group .table td {
           vertical-align: middle; }
-        .results-indicators .indicator-container .indicator-group .table .expand-indicator-period .glyphicon-chevron-up {
+        .results .indicator-container .indicator-group .table .expand-indicator-period .glyphicon-chevron-up {
           display: none; }
-        .results-indicators .indicator-container .indicator-group .table .expand-indicator-period .glyphicon-chevron-down {
+        .results .indicator-container .indicator-group .table .expand-indicator-period .glyphicon-chevron-down {
           display: initial; }
-        .results-indicators .indicator-container .indicator-group .table .expand-indicator-period.expanded .glyphicon-chevron-up {
+        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .glyphicon-chevron-up {
           display: initial; }
-        .results-indicators .indicator-container .indicator-group .table .expand-indicator-period.expanded .glyphicon-chevron-down {
+        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .glyphicon-chevron-down {
           display: none; }
-      .results-indicators .indicator-container .indicator-group .indicator {
+      .results .indicator-container .indicator-group .indicator {
         display: none; }
-  .results-indicators .indicator-bar-td, .results-indicators .target-td {
+  .results .indicator-bar-td, .results .target-td {
     height: 80px;
     padding: 0; }
-  .results-indicators .indicator-bar-display-container {
+  .results .indicator-bar-display-container {
     position: relative;
     height: 100%;
     margin-left: 15px;
     margin-right: 15px; }
-    .results-indicators .indicator-bar-display-container .indicator-bar, .results-indicators .indicator-bar-display-container .indicator-bar-progress-amount {
+    .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
       position: absolute;
       top: 44px;
       bottom: 24px;
@@ -2167,19 +2141,19 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       -o-border-radius: 4px;
       -webkit-border-radius: 4px;
       border-radius: 4px; }
-    .results-indicators .indicator-bar-display-container .indicator-bar {
+    .results .indicator-bar-display-container .indicator-bar {
       background-color: #bcbca6;
       right: 0px; }
-    .results-indicators .indicator-bar-display-container .indicator-bar-progress-amount {
+    .results .indicator-bar-display-container .indicator-bar-progress-amount {
       background-color: #515050; }
-    .results-indicators .indicator-bar-display-container .indicator-bar-progress-container {
+    .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
             ** container.
             */
       position: relative;
       height: 100%; }
-      .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+      .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
         position: absolute;
         width: 30px;
         height: 26px;
@@ -2188,10 +2162,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         padding: 0.2em;
         background-color: #515050;
         text-align: center; }
-        .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-text {
+        .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-text {
           color: white;
           font-weight: bold; }
-        .results-indicators .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-triangle {
+        .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-triangle {
           height: 5px;
           width: 10px;
           position: absolute;
@@ -2201,29 +2175,29 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           border-left: 5px solid transparent;
           border-right: 5px solid transparent;
           border-top: 5px solid #515050; }
-  .results-indicators .target-td {
+  .results .target-td {
     vertical-align: middle; }
-  .results-indicators .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+  .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
     padding-left: 15px;
     font-size: 1.5em;
     font-weight: bold;
     color: #515050;
     vertical-align: bottom; }
-  .results-indicators .indicator-container .indicator-group .table tbody tr.expanded {
+  .results .indicator-container .indicator-group .table tbody tr.expanded {
     background-color: white;
     border-bottom: none !important; }
-    .results-indicators .indicator-container .indicator-group .table tbody tr.expanded .indicator-bar-td * {
+    .results .indicator-container .indicator-group .table tbody tr.expanded .indicator-bar-td * {
       display: none; }
-  .results-indicators .update-dialog-container td {
+  .results .update-dialog-container td {
     background-color: white; }
-    .results-indicators .update-dialog-container td .update-entry-container {
+    .results .update-dialog-container td .update-entry-container {
       padding: 1em;
       border: 1px solid #c8c8c8;
       margin-bottom: 2em;
       position: relative; }
-      .results-indicators .update-dialog-container td .update-entry-container:last-child {
+      .results .update-dialog-container td .update-entry-container:last-child {
         margin-bottom: 0; }
-      .results-indicators .update-dialog-container td .update-entry-container .edit-button {
+      .results .update-dialog-container td .update-entry-container .edit-button {
         position: absolute;
         height: 20px;
         width: 20px;
@@ -2231,42 +2205,42 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 5px;
         color: #969696;
         font-size: 1.5em; }
-      .results-indicators .update-dialog-container td .update-entry-container .update-date {
+      .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
         width: 50%; }
-      .results-indicators .update-dialog-container td .update-entry-container .update-name {
+      .results .update-dialog-container td .update-entry-container .update-name {
         display: inline-block;
         text-align: right;
         width: 40%;
         margin-right: 10%; }
-      .results-indicators .update-dialog-container td .update-entry-container .update-timeline {
+      .results .update-dialog-container td .update-entry-container .update-timeline {
         display: inline-block;
         width: 75%;
         height: 80px;
         padding-top: 1em; }
-      .results-indicators .update-dialog-container td .update-entry-container .update-target {
+      .results .update-dialog-container td .update-entry-container .update-target {
         display: inline-block;
         width: 25%;
         height: 80px;
         text-align: center; }
-        .results-indicators .update-dialog-container td .update-entry-container .update-target div {
+        .results .update-dialog-container td .update-entry-container .update-target div {
           font-size: 1.5em;
           font-weight: bold;
           color: #515050;
           vertical-align: bottom; }
-      .results-indicators .update-dialog-container td .update-entry-container .update-description {
+      .results .update-dialog-container td .update-entry-container .update-description {
         padding: 0.5em; }
-        .results-indicators .update-dialog-container td .update-entry-container .update-description.editable {
+        .results .update-dialog-container td .update-entry-container .update-description.editable {
           background: whitesmoke; }
-        .results-indicators .update-dialog-container td .update-entry-container .update-description .update-photo {
+        .results .update-dialog-container td .update-entry-container .update-description .update-photo {
           float: right;
           width: 150px;
           height: 100px;
           background-size: cover; }
-      .results-indicators .update-dialog-container td .update-entry-container .save-button {
+      .results .update-dialog-container td .update-entry-container .save-button {
         display: none; }
-        .results-indicators .update-dialog-container td .update-entry-container .save-button.active {
+        .results .update-dialog-container td .update-entry-container .save-button.active {
           display: block;
           width: 150px;
           padding: 0.5em;
@@ -2280,7 +2254,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -webkit-border-radius: 4px;
           border-radius: 4px;
           text-align: center; }
-      .results-indicators .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results-indicators .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
+      .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
         height: 12px;
         border: 0;
         background-color: #515050;
@@ -2289,13 +2263,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         -o-border-radius: 4px;
         -webkit-border-radius: 4px;
         border-radius: 4px; }
-        .results-indicators .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results-indicators .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
+        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
           background-color: #bcbca6;
           -moz-border-radius: 4px;
           -o-border-radius: 4px;
           -webkit-border-radius: 4px;
           border-radius: 4px; }
-        .results-indicators .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results-indicators .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
           z-index: 9999;
           background-color: white;
           border: 2px solid #515050;
@@ -2306,9 +2280,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -o-border-radius: 99em;
           -webkit-border-radius: 99em;
           border-radius: 99em; }
-          .results-indicators .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results-indicators .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
             display: none; }
-          .results-indicators .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results-indicators .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
             display: none; }
-      .results-indicators .update-dialog-container td .update-entry-container .edit-slider.active {
+      .results .update-dialog-container td .update-entry-container .edit-slider.active {
         display: initial; }

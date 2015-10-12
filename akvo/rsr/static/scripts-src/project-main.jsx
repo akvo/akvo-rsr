@@ -13,78 +13,6 @@ var Accordion = ReactBootstrap.Accordion,
     Panel = ReactBootstrap.Panel,
     i18n;
 
-Indicator = React.createClass({
-  render: function () {
-    var period_start = this.props.indicator.period_start;
-    var period_end = this.props.indicator.period_end;
-    var periods;
-    if (period_start !== undefined) {
-        if (period_end !== undefined) {
-            periods = "(" + period_start + " - " + period_end + ")";
-        } else {
-            periods = "(" + period_start + " - " + i18n.end_date_unknown_text + ")";
-        }
-    } else if (period_end !== undefined) {
-        periods = "(" + i18n.start_date_unknown_text + " - " + period_end + ")";
-    } else {
-        periods = "";
-    }
-
-    var target_value = this.props.indicator.target_value;
-    var actual_value = this.props.indicator.actual_value;
-    var value = "";
-    if (actual_value !== "") {
-        value += actual_value + " (" + i18n.actual_text + ")";
-        if (target_value !== "") {
-            value += " / ";
-        }
-    }
-    if (target_value !== "") {
-        value += target_value + " (" + i18n.target_text + ")";
-    }
-
-    return (
-      <div>
-        <dt>
-            {this.props.indicator.title} {periods}
-        </dt>
-        <dd>
-            {value}
-        </dd>
-      </div>
-    );
-  }
-});
-
-Result = React.createClass({
-  render: function () {
-    var indicators = this.props.result.indicators.map(function(indicator) {
-      return (
-        <Indicator key={indicator.id} indicator={indicator} />
-      );
-    });
-    return (
-      <span>
-        <li><i className="fa fa-check"></i> {this.props.result.title}</li>
-        <dl className="indicators">{indicators}</dl>
-      </span>
-    );
-  }
-});
-
-ResultList = React.createClass({
-  render: function () {
-    var results = this.props.results.map(function(result) {
-      return (
-        <Result key={result.id} result={result} />
-      );
-    });
-    return (
-      <ul className="results list-unstyled">{results}</ul>
-    );
-  }
-});
-
 
 AccordionInstance = React.createClass({
 
@@ -99,39 +27,6 @@ AccordionInstance = React.createClass({
     return lines;
   },
 
-  getIndicators: function(indicators) {
-      var i = 0;
-      var result_list = indicators.map(function(indicator) {
-          i = i + 1;
-          return (
-              <dl className="indicators">
-                  <dt>
-                      <i className="fa fa-check"></i> {result.title}
-                  </dt>
-                  <dd></dd>
-              </dl>
-          );
-      });
-      return result_list;
-  },
-
-  getResults: function(results) {
-      var i = 0;
-      var result_list = results.map(function(result) {
-          i = i + 1;
-          return (
-              <dl className="results">
-                  <dt>
-                      <i className="fa fa-check"></i> {result.title}
-                  </dt>
-                  <dd></dd>
-                    {this.getIndicators(result.indicators)}
-              </dl>
-          );
-      });
-      return result_list;
-  },
-
   render: function() {
     var background = this.props.source.background || null,
         current_status = this.props.source.current_status || null,
@@ -139,7 +34,6 @@ AccordionInstance = React.createClass({
         project_plan = this.props.source.project_plan || null,
         sustainability = this.props.source.sustainability || null,
         target_group = this.props.source.target_group || null,
-        results = this.props.source.results || null,
         panel_id = 0;
 
     if (background !== null) {
@@ -178,12 +72,6 @@ AccordionInstance = React.createClass({
       </Panel>;
     }
 
-    if (results !== null) {
-      results = <Panel key={panel_id++} className="result" header={i18n.results_text} eventKey={'results'}>
-        <ResultList key={0} results={results} />
-      </Panel>;
-    }
-
     return (
         <Accordion>
         {background}
@@ -192,7 +80,6 @@ AccordionInstance = React.createClass({
         {target_group}
         {sustainability}
         {goals_overview}
-        {results}
       </Accordion>
     );
   }

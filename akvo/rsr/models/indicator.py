@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -57,6 +58,12 @@ class Indicator(models.Model):
 
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
+
+    @property
+    def last_updated(self):
+        from akvo.rsr.models import ProjectUpdate
+        period_updates = ProjectUpdate.objects.filter(indicator_period__indicator=self)
+        return period_updates.order_by('-created_at')[0].time_gmt if period_updates else None
 
     class Meta:
         app_label = 'rsr'
@@ -118,30 +125,33 @@ class IndicatorPeriod(models.Model):
         return period_unicode
 
     def clean(self):
+        validation_errors = {}
+
         # Don't allow an actual value to be changed when there are updates to the period
         if self.pk and self.updates.all():
             org_period = IndicatorPeriod.objects.get(pk=self.pk)
             if self.actual_value != org_period.actual_value:
-                raise ValidationError(
-                    {'actual_value': u'%s' % _(u'It is not possible to update the actual value of '
-                                               u'this indicator period, because it has updates. '
-                                               u'Please update the actual value through a new '
-                                               u'update.')}
-                )
+                validation_errors['actual_value'] = u'%s' % \
+                    _(u'It is not possible to update the actual value of this indicator period, '
+                      u'because it has updates. Please update the actual value through a new '
+                      u'update.')
+
+        # Don't allow a start date before an end date
+        if self.period_start and self.period_end and (self.period_start > self.period_end):
+            validation_errors['period_start'] = u'%s' % _(u'Period start cannot be at a later time '
+                                                          u'than period end.')
+            validation_errors['period_end'] = u'%s' % _(u'Period start cannot be at a later time '
+                                                        u'than period end.')
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
 
     @property
     def percent_accomplishment(self):
-        return round(float(self.actual_value) / float(self.target_value) * 100, 1)
-
-    def clean(self):
-        # Don't allow a start date before an end date
-        if self.period_start and self.period_end and (self.period_start > self.period_end):
-            raise ValidationError(
-                {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.'),
-                 'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.')}
-            )
+        try:
+            return round(Decimal(self.actual_value) / Decimal(self.target_value) * 100, 1)
+        except (InvalidOperation, TypeError):
+            return 0
 
     class Meta:
         app_label = 'rsr'
