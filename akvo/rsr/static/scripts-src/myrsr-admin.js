@@ -7,6 +7,7 @@
 
 // DEFAULT VALUES
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -514,7 +515,7 @@ function submitStep(step, level) {
             }
 
             var section = findAncestor(form, 'formStep');
-            setSectionCompletionPercentage($(section));
+            setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
 
             finishSave(step, message);
@@ -599,7 +600,6 @@ function deleteItem(itemId, itemType, parentDiv) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             parentDiv.parentNode.removeChild(parentDiv);
-
 
             // Update the budget in case of removed budget
             if (itemType === 'budget_item') {
@@ -832,22 +832,63 @@ function removePartial(node) {
     }
 
     // Update the progress bars to account for the removed inputs
-    setSectionCompletionPercentage($(findAncestor(parentParent, "formStep")));
+    setSectionCompletionPercentage(findAncestor(parentParent, "formStep"));
 }
 
-function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
+function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
+    Typeahead = ReactTypeahead.Typeahead;
 
-    Typeahead = ReactTypeahead.Typeahead;   
+    if (inputType === 'project') {
+        typeaheadOptions.forEach(function(o) {
+            o.filterOption = o.id + ' ' + o.title;
+            o.displayOption = o.title + ' (ID: ' + o.id + ')';
+        });
+        filterOption = 'filterOption';
+        displayOption = 'displayOption';
+    } else if (inputType === 'org') {
+        typeaheadOptions.forEach(function(o) {
+            var newName = getDisplayOption(o.name, o.long_name);
 
+            o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
+        });        
+        filterOption = 'filterOption';
+        displayOption = 'displayOption';
+    }
+
+    function getDisplayOption(short, long) {
+        if (short === long) {
+            return short;
+        }
+        if (!long) {
+            return short;
+        }
+        return short + ' (' + long + ')';
+    }
     inputClass = selector + " form-control " + childClass;
 
-    selectorClass = $('.' + selector);
+    selectorClass = document.querySelector('.' + selector);
 
     TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
+
+        getInitialState: function() {
+            return ({focusClass: 'inactive'});
+        },
+        onKeyUp: function() {
+
+            /* Only activate the "add org" button for typeaheads that i) are for organisations,
+            ** and ii) are not for reporting organisations. */
+            if (inputType === 'org' && selector.indexOf('reportingOrganisation') === -1) {
+                this.setState({focusClass: 'active'});
+            }
+        },
+        onBlur: function() {
+            this.setState({focusClass: 'inactive'});
+        },
         render: function() {
             return (
-                    React.DOM.div(null, 
+                    React.DOM.div( {className:this.state.focusClass}, 
                         Typeahead(
                             {placeholder:"",
                             options:typeaheadOptions,
@@ -856,6 +897,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                             displayOption:displayOption,
                             filterOption:filterOption,
                             childID:selector,
+                            onKeyUp:this.onKeyUp,
+                            onBlur:this.onBlur,
                             customClasses:{
                               typeahead: "",
                               input: inputClass,
@@ -865,9 +908,10 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                               customAdd: ""
                             },
                             inputProps:{
-                                name: selector, 
+                                name: selector,
                                 id: selector
-                            }} )
+                            }} ),
+                        React.DOM.div( {className:"addOrg", onMouseDown:addOrgModal}, "+ ", defaultValues.add_new_organisation)
                     )
             );
         }
@@ -878,7 +922,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         document.querySelector('.' + selector)
     );
 
-    typeaheadInput = $('.' + selector + ' .typeahead' + ' input');
+    typeaheadInput = document.querySelector('.' + selector + ' .typeahead' + ' input');
+
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
             if (parseInt(typeaheadOptions[i].id, 10) == parseInt(valueId, 10)) {
@@ -886,50 +931,54 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 savedResult = typeaheadOptions[i];
 
-                typeaheadInput.attr('value', savedResult.id);
-                typeaheadInput.prop('value', savedResult[filterOption]);
-
-                typeaheadInput.attr('saved-value', savedResult.id);
+                typeaheadInput.value = savedResult[displayOption];
+                typeaheadInput.setAttribute('value', savedResult.id);
+                typeaheadInput.setAttribute('saved-value', savedResult.id);
             }
         }
     } else {
-        typeaheadInput.attr('saved-value', '');
+        typeaheadInput.setAttribute('saved-value', '');
     }
 
-    selectorTypeahead = selectorClass.find('.typeahead');
-    selectorTypeahead.append(label);
-    selectorTypeahead.append(help);
-    selectorClass.addClass('has-typeahead');
+    selectorTypeahead = selectorClass.querySelector('.typeahead');
+    selectorTypeahead.appendChild(label);
+    selectorTypeahead.appendChild(help);
+    elAddClass(selectorClass, 'has-typeahead');
 
     // Set mandatory markers before help icons
-    selectorClass.find('.mandatory').remove();
+    var mandatoryMarkers = selectorClass.querySelectorAll('.mandatory');
 
-    selectorClass.find('.priority1 ~ label').each(function() {
-        var markContainer = '<span class="mandatory">*</span>';
+    for (var i = 0; i < mandatoryMarkers.length; i++) {
+        mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
+    }
 
-        $(markContainer).appendTo($(this));
-    });
+    var mandatoryLabels = selectorClass.querySelectorAll('.priority1 ~ label');
+    var markerSpan = document.createElement('span');
+
+    elAddClass(markerSpan, 'mandatory');
+    markerSpan.textContent = '*';
+
+    for (var i = 0; i < mandatoryLabels.length; i++) {
+        mandatoryLabels[i].appendChild(markerSpan);
+    }
 
     updateHelpIcons('.' + selector);
-
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
 }
 
-
-
-function loadAsync(url, retryCount, retryLimit, callback) {
+function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
     var xmlHttp;
 
     // If we already have the response cached, don't fetch it again
-    if (responses[url] !== null) {
+    if (responses[url] !== null && !forceReloadOrg) {
         callback(responses[url]);
         return;
     }
 
     // If the response is in localStorage, don't fetch it again
-    if (localStorageResponses !== null && localStorageResponses !== '') {
+    if (localStorageResponses !== null && localStorageResponses !== '' && !forceReloadOrg) {
         if (localStorageResponses[url] !== undefined) {
             var response = localStorageResponses[url];
 
@@ -1004,24 +1053,24 @@ function loadAsync(url, retryCount, retryLimit, callback) {
     }
 }
 
-function processResponse(response, selector, childClass, valueId, label, help, filterOption) {
+function processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType) {
     var typeaheadOptions = response.results;
     var typeaheadCallback = function(option) {
         var el;
 
-        el = $("input." + this.childID);
-        el.attr('value', option.id);
+        el = document.querySelector('input.' + this.childID);
+        el.setAttribute('value', option.id);
     };
     var displayOption = function(option, index) {
         return option[filterOption];
     };
 
-    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
+    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType);
 }
 
-function getCallback(selector, childClass, valueId, label, help, filterOption) {
+function getCallback(selector, childClass, valueId, label, help, filterOption, inputType) {
     var output = function(response) {
-        processResponse(response, selector, childClass, valueId, label, help, filterOption);
+        processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType);
     };
 
     return output;
@@ -1055,21 +1104,22 @@ function setPartialOnClicks() {
     for (var i=0; i < partials.length; i++) {
         var pName = partials[i];
         var buttonSelector = '.add-' + pName;
+        var buttons = document.querySelectorAll(buttonSelector);
 
-        $(buttonSelector).each(function() {
+        for (var j = 0; j < buttons.length; j++) {
+            var el = buttons[j];
             var callback;
 
-            if ($(this).hasClass('has-onclick')) {
+            if (elHasClass(el, 'has-onclick')) {
+
                 // already set the onclick, do nothing
-                return;
+                continue;
             }
 
-            $(this).addClass('has-onclick');
-            callback = getOnClick(pName, $(this).parent().parent().parent()[0]);
-            $(this).click(function(e) {
-                callback(e);
-            });
-        });
+            elAddClass(el, 'has-onclick');
+            callback = getOnClick(pName, el.parentNode.parentNode.parentNode);
+            el.addEventListener('click', callback);
+        }
     }
 
     var removeLinks;
@@ -1124,62 +1174,70 @@ function getOnClick(pName, parentElement) {
         var partial = document.createElement('div');
         partial.innerHTML = markup;
 
-        $(partial).find('div.parent').each( function() {
-            var oldID = $(this).attr('id');
+        var parents = partial.querySelectorAll('div.parent');
+
+        for (var i = 0; i < parents.length; i++) {
+            var parent = parents[i];
+            var oldID = parent.getAttribute('id');
             var newID = oldID + '-add-' + partialsCount[pName];
+            parent.setAttribute('id', newID);
+        }
 
-            $(this).attr('id', newID);
-        });
+        var longSelector = 'input, select, textarea';
 
-        $(partial).find('input').each( function() {
-            addCountToName($(this));
-        });
+        var elements = partial.querySelectorAll(longSelector);
 
-        $(partial).find('select').each( function() {
-            addCountToName($(this));
-        });
+        for (var i = 0; i < elements.length; i++) {
+            var el = elements[i];
 
-        $(partial).find('textarea').each( function() {
-            addCountToName($(this));
-        });
+            addCountToName(el);
+        }
 
-        $(partial).find('.datepicker-container').each( function() {
-            addCountToDate($(this));
-        });
+        var datePickerContainers = partial.querySelectorAll('.datepicker-container');
 
-        $(partial).find('.typeahead-container').each( function() {
-            addCountToClass($(this));
-        });
+        for (var i = 0; i < datePickerContainers.length; i++) {
+            var el = datePickerContainers[i];
+
+            addCountToDate(el);
+        }
+
+        var typeaheadContainers = partial.querySelectorAll('.typeahead-container');
+
+        for (var i = 0; i < typeaheadContainers.length; i++) {
+            var el = typeaheadContainers[i];
+
+            addCountToClass(el);
+        }
 
         function addCountToName(el) {
-            var oldName = el.attr('name');
+            var oldName = el.getAttribute('name');
             var newName = oldName + '-add-' + partialsCount[pName];
 
-            el.attr('name', newName);
+            el.setAttribute('name', newName);
 
-            var oldID = el.attr('id');
+            var oldID = el.getAttribute('id');
             var newID = oldID + '-add-' + partialsCount[pName];
 
-            el.attr('id', newID);
+            el.setAttribute('id', newID);
         }
 
         function addCountToDate(el) {
-            var oldID = el.attr('data-id');
+            var oldID = el.getAttribute('data-id');
             var newID = oldID + '-add-' + partialsCount[pName];
 
-            el.attr('data-id', newID);
+            el.setAttribute('data-id', newID);
         }
 
         // The typeahead containers need to have the unique identifying appended
         // to the class rather than the id, so handle that separately
         function addCountToClass(el) {
-            var oldClass = el.data('count-class');
+            var oldClass = el.getAttribute('data-count-class');
             var newClass = oldClass + '-add-' + partialsCount[pName];
 
-            el.removeClass(oldClass);
-            el.addClass(newClass);
+            elRemoveClass(el, oldClass);
+            elAddClass(el, newClass);
 
-            el.data('child-id', newClass);
+            el.setAttribute('data-child-id', newClass);
         }
 
         container.appendChild(partial);
@@ -1189,8 +1247,8 @@ function getOnClick(pName, parentElement) {
         setDatepickers();
         updateTypeaheads();
         updateHelpIcons('.' + containerSelector);
-        setSectionChangeListener($(findAncestor(container, 'formStep')));
-        setSectionCompletionPercentage($(findAncestor(container, 'formStep')));
+        setSectionChangeListener(findAncestor(container, 'formStep'));
+        setSectionCompletionPercentage(findAncestor(container, 'formStep'));
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
@@ -1200,212 +1258,202 @@ function getOnClick(pName, parentElement) {
     return onclick;
 }
 
-function updateTypeaheads() {
-    $('.related-project-input').each( function() {
+function updateTypeaheads(forceReloadOrg) {
+    var els, filterOption, labelText, helpText, API, inputType;
 
-        // Check if we've already rendered this typeahead
-        if ($(this).hasClass('has-typeahead')) {
-            return;
+    els1 = document.querySelectorAll('.related-project-input');
+    labelText = defaultValues.related_project_label;
+    helpText = defaultValues.related_project_helptext;
+    filterOption = 'title';
+    API = projectsAPIUrl;
+    inputType = 'project';
+
+    updateTypeahead(els1, filterOption, labelText, helpText, API, inputType);
+
+    els = document.querySelectorAll('.reportingOrganisation-input');
+    labelText = defaultValues.reporting_org_label;
+    helpText = defaultValues.reporting_org_helptext;
+    filterOption = 'name';
+    API = reportingOrgsAPIUrl;
+    inputType = 'org';
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+
+    els = document.querySelectorAll('.partner-input');
+    labelText = defaultValues.partner_label;
+    helpText = defaultValues.partner_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.transaction-provider-org-input');
+    labelText = defaultValues.provider_org_label;
+    helpText = defaultValues.provider_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.transaction-receiver-org-input');
+    labelText = defaultValues.recipient_org_label;
+    helpText = defaultValues.recipient_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+
+
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
+        for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+
+            // Check if we've already rendered this typeahead
+            if (elHasClass(el, 'has-typeahead')) {
+                if (forceReloadOrg) {
+
+                    // Remove the existing typeahead, then build a new
+                    // one with the reloaded API response
+                    var child = el.querySelector('div');
+                    el.removeChild(child);
+                } else {
+
+                    // Typeahead exists and we don't need to reload the API response.
+                    // Do nothing.
+                    continue;                    
+                }
+            }
+
+            var childSelector = el.getAttribute('data-child-id');
+            var childClass = el.getAttribute('data-child-class');
+            var valueId = null;
+            var label = document.createElement('label');
+            var help = document.createElement('p');
+
+            label.setAttribute('for', childSelector);
+            elAddClass(label, 'control-label');
+            elAddClass(label, 'typeahead-label');
+            label.textContent = labelText;
+
+            elAddClass(help, 'help-block');
+            elAddClass(help, 'hidden');
+            help.textContent = helpText;
+
+            if (el.getAttribute('data-value') !== "") {
+                valueId = el.getAttribute('data-value');
+            }
+
+            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
+            cb();
         }
+    }
 
-        // The name of the property holding the text value we want to display in the typeahead
-        var filterOption = 'title';
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
+        var output = function() {
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
+        };
 
-        // The id we'll give the input once it's been rendered
-        var childSelector = $(this).data('child-id');
-        var childClass = $(this).data('child-class');
-        var valueId = null;
-        var labelText = defaultValues.related_project_label;
-        var helpText = defaultValues.related_project_helptext;
-        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
-                    labelText + '</label>';
-        var help = '<p class="help-block hidden">' + helpText + '</p>';
-
-        if ($(this).data('value') !== "") {
-            valueId = $(this).data('value');
-        }
-
-        loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-    });
-
-    $('.reportingOrganisation-input').each( function() {
-
-        // Check if we've already rendered this typeahead
-        if ($(this).hasClass('has-typeahead')) {
-            return;
-        }
-
-        // The name of the property holding the text value we want to display in the typeahead
-        var filterOption = 'name';
-
-        // The id we'll give the input once it's been rendered
-        var childSelector = $(this).data('child-id');
-        var childClass = $(this).data('child-class');
-        var valueId = null;
-        var labelText = defaultValues.reporting_org_label;
-        var helpText = defaultValues.reporting_org_helptext;
-        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
-                    labelText + '</label>';
-        var help = '<p class="help-block hidden">' + helpText + '</p>';
-
-        if ($(this).data('value') !== "") {
-            valueId = $(this).data('value');
-        }
-
-        loadAsync(reportingOrgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-    });
-
-    $('.partner-input').each( function() {
-
-        // Check if we've already rendered this typeahead
-        if ($(this).hasClass('has-typeahead')) {
-            return;
-        }
-
-        // The name of the property holding the text value we want to display in the typeahead
-        var filterOption = 'name';
-
-        // The id we'll give the input once it's been rendered
-        var childSelector = $(this).data('child-id');
-        var childClass = $(this).data('child-class');
-        var valueId = null;
-        var labelText = defaultValues.partner_label;
-        var helpText = defaultValues.partner_helptext;
-        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
-                    labelText + '</label>';
-        var help = '<p class="help-block hidden">' + helpText + '</p>';
-
-        if ($(this).data('value') !== "") {
-            valueId = $(this).data('value');
-        }
-
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-    });
-
-    $('.transaction-provider-org-input').each( function() {
-
-        // Check if we've already rendered this typeahead
-        if ($(this).hasClass('has-typeahead')) {
-            return;
-        }
-
-        // The name of the property holding the text value we want to display in the typeahead
-        var filterOption = 'name';
-
-        // The id we'll give the input once it's been rendered
-        var childSelector = $(this).data('child-id');
-        var childClass = $(this).data('child-class');
-        var valueId = null;
-        var labelText = defaultValues.provider_org_label;
-        var helpText = defaultValues.provider_org_helptext;
-        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
-                    labelText + '</label>';
-        var help = '<p class="help-block hidden">' + helpText + '</p>';
-
-        if ($(this).data('value') !== "") {
-            valueId = $(this).data('value');
-        }
-
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-    });
-
-    $('.transaction-receiver-org-input').each( function() {
-
-        // Check if we've already rendered this typeahead
-        if ($(this).hasClass('has-typeahead')) {
-            return;
-        }
-
-        // The name of the property holding the text value we want to display in the typeahead
-        var filterOption = 'name';
-
-        // The id we'll give the input once it's been rendered
-        var childSelector = $(this).data('child-id');
-        var childClass = $(this).data('child-class');
-        var valueId = null;
-        var labelText = defaultValues.recipient_org_label;
-        var helpText = defaultValues.recipient_org_helptext;
-        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
-                    labelText + '</label>';
-        var help = '<p class="help-block hidden">' + helpText + '</p>';
-
-        if ($(this).data('value') !== "") {
-            valueId = $(this).data('value');
-        }
-
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-    });
+        return output;
+    }
 }
 
 function updateHelpIcons(container) {
     // Add an "info" glyphicon to each label
     // Clicking the glyphicon shows the help text
-    $(container + ' label.control-label').each( function() {
+    var labels = document.querySelectorAll(container + ' label.control-label');
+
+    for (var i = 0; i < labels.length; i++) {
+        var label = labels[i];
         var output, helpBlockIsLabelSibling, iconClasses, helpBlockFromLabel;
 
-        if ($(this).hasClass('has-icon')) {
+        if (elHasClass(label, 'has-icon')) {
 
             // We've already processed this label. Do nothing.
-            return;
+            continue;
         }
 
         // Assume that the help block is a sibling of the label element
         helpBlockIsLabelSibling = true;
+        var numHelpBlocks = label.parentNode.querySelectorAll('.help-block').length;
+        var numParentHelpBlocks = label.parentNode.parentNode.querySelectorAll('.help-block').length;
 
-        if ($(this).parent().find('.help-block').length === 0) {
-            if ($(this).parent().parent().find('.help-block').length === 1) {
+        if (numHelpBlocks === 0) {
+            if (numParentHelpBlocks === 1) {
                 helpBlockIsLabelSibling = false;
             } else {
 
-                // There is no help block for this label
-                return;
+            // There is no help block for this label
+            continue;
             }
         }
 
         if (helpBlockIsLabelSibling) {
-            helpBlockFromLabel = $(this).parent().find('.help-block');
+            helpBlockFromLabel = label.parentNode.querySelector('.help-block');
         } else {
-            helpBlockFromLabel = $(this).parent().parent().find('.help-block');
+            helpBlockFromLabel = label.parentNode.parentNode.querySelector('.help-block');
         }
 
-        iconClasses = 'glyphicon glyphicon-info-sign info-icon';
+        iconClasses = ['glyphicon', 'glyphicon-info-sign', 'info-icon'];
 
-        if (helpBlockFromLabel.is(':visible')) {
-            iconClasses += ' activated';
+        if (elIsVisible(helpBlockFromLabel)) {
+            iconClasses.push('activated');
         }
 
-        output = '<span class="' + iconClasses + '"></span>';
+        output = document.createElement('span');
 
-        $(this).append(output);
-
-        $(this).find('.info-icon').on('click', '', function(e) {
-            var helpBlock;
-
-            e.preventDefault();
-            
-            if (helpBlockIsLabelSibling) {
-                helpBlock = $(this).parent().parent().find('.help-block');
-            } else {
-                helpBlock = $(this).parent().parent().parent().find('.help-block');
-            }
-
-            if ($(this).hasClass('activated')) {
-                helpBlock.fadeOut(400, function() {
-                    helpBlock.addClass('hidden');
-                });
-                $(this).removeClass('activated');
-            } else {
-                helpBlock.hide();
-                helpBlock.removeClass('hidden');
-                helpBlock.fadeIn();
-                $(this).addClass('activated');
-            }
+        iconClasses.forEach(function(el) {
+            elAddClass(output, el);
         });
 
-        // Mark the label as processed to avoid adding extra help icons to it later
+        label.appendChild(output);
 
-        $(this).addClass('has-icon');
-    });
+        var infoIcons = label.querySelectorAll('.info-icon');
+
+        for (var i = 0; i < infoIcons.length; i++) {
+            var el = infoIcons[i];
+            var listener = getInfoIconListener(el, helpBlockIsLabelSibling);
+            el.onclick = listener;
+        }
+
+        // Mark the label as processed to avoid adding extra help icons to it later
+        elAddClass(label, 'has-icon');
+    }
+}
+
+function getInfoIconListener(el, helpBlockIsLabelSibling) {
+    var output = function(e) {
+        var helpBlock;
+
+        e.preventDefault();
+
+        if (helpBlockIsLabelSibling) {
+            helpBlock = el.parentNode.parentNode.querySelector('.help-block');
+        } else {
+            helpBlock = el.parentNode.parentNode.parentNode.querySelector('.help-block');
+        }
+
+        if (elHasClass(el, 'activated')) {
+
+            // Hide the helpblock
+            elRemoveClass(el, 'activated');
+            helpBlock.style.display = 'none';
+        } else {
+
+            // Show the helpblock
+            elAddClass(el, 'activated');
+            if (elHasClass(helpBlock, 'hidden')) {
+                elRemoveClass(helpBlock, 'hidden');
+            }
+            helpBlock.style.display = 'block';
+        }
+    };
+
+    return output;
 }
 
 function updateAllHelpIcons() {
@@ -1421,7 +1469,7 @@ function setSectionCompletionPercentage(section) {
     var numInputsCompleted = inputResults[1];
 
     if (numInputs === 0) {
-        if (section.hasClass('stepEight')) {
+        if (elHasClass(section, 'stepEight')) {
             // Section 8 without mandatory fields (no sectors) should still display empty
             renderCompletionPercentage(0, 1, section);
             return;
@@ -1438,11 +1486,12 @@ function setSectionCompletionPercentage(section) {
 function setPageCompletionPercentage() {
     var inputResults, numInputs, numInputsCompleted, completionPercentage, publishButton;
 
-    inputResults = getInputResults($('.projectEdit'));
+    inputResults = getInputResults(document.querySelector('.projectEdit'));
     numInputs = inputResults[0];
     numInputsCompleted = inputResults[1];
 
-    completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+    completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs,
+                                            document.querySelector('.formOverviewInfo'));
 
     // Enable publishing when all is filled in
     if (completionPercentage === 100) {
@@ -1469,36 +1518,37 @@ function getInputResults(section) {
     var numInputsCompleted = 0;
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var selector;
+        var selector, sectionResults;
 
         selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+        sectionResults = section.querySelectorAll(selector);
 
-        section.find(selector).each( function() {
+        for (var j = 0; j < sectionResults.length; j++ ) {
+            var result = sectionResults[j];
 
-            if ($(this).attr('name') === 'step') {
+            if (result.getAttribute('name') === 'step') {
                 // This is a progress bar input, ignore it
-                return true;
+                continue;
             }
 
-            if (this.hasAttribute("disabled")) {
+            if (result.getAttribute('disabled') !== null) {
                 // This is a disabled input, ignore it
-                return true;
+                continue;
             }
 
             numInputs += 1;
 
-            if ($(this).attr('name') == 'projectStatus' && $(this).val() === 'N') {
+            if (result.getAttribute('name') === 'projectStatus' && result.value === 'N') {
                 // Ignore project status 'None'
-                return true;
-            } else if ($(this).val() !== '') {
+                continue;
+            } else if (result.value !== '') {
                 numInputsCompleted += 1;
-            } else if ($(this).attr('name') === 'photo' && $(this).attr('default') !== '') {
+            } else if (result.getAttribute('name') === 'photo' && result.getAttribute('default') !== '' && result.getAttribute('default') !== null) {
                 // Custom code for project photo
                 numInputsCompleted += 1;
             }
-        });
+        }
     }
-
     return [numInputs, numInputsCompleted];
 }
 
@@ -1510,10 +1560,10 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         // Never show an empty bar
         completionPercentage = 1;
     }
-    section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
-    section.find('.progress .sr-only').text(completionPercentage + '% Complete');
-    section.find('.progress .progress-percentage').text(completionPercentage + '%');
-    section.find('div.progress-bar').width(completionPercentage + '%');
+
+    section.querySelector('.progress-bar').setAttribute('aria-valuenow', completionPercentage);
+    section.querySelector('.progress .sr-only').textContent = completionPercentage + '% Complete';
+    section.querySelector('div.progress-bar').style.width = completionPercentage + '%';
 
     if (completionPercentage < 10) {
         completionClass = 'empty';
@@ -1523,7 +1573,7 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         completionClass = 'complete';
     }
 
-    section.find('div.progress-bar').attr('data-completion', completionClass);
+    section.querySelector('div.progress-bar').setAttribute('data-completion', completionClass);
 
     return completionPercentage;
 }
@@ -1531,23 +1581,25 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
 function setSectionChangeListener(section) {
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var selector;
+        var elements;
 
         selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+        elements = section.querySelectorAll(selector);
 
-        section.find(selector).each( function() {
+        for (var y = 0; y < elements.length; y++) {
             var listener;
+            var el = elements[y];
 
-            if ($(this).hasClass('has-listener')) {
+            if (elHasClass(el, 'has-listener')) {
+
                 // We have already added a class for this listener
                 // do nothing
-
-                return;
+                continue;
             }
 
-            listener = getChangeListener(section, $(this));
-
-            $(this).on('change', listener);
-        });
+            listener = getChangeListener(section, this);
+            el.addEventListener('change', listener);
+        }
     }
 }
 
@@ -1559,80 +1611,88 @@ function getChangeListener(section, el) {
         currentSection = section;
 
         setSectionCompletionPercentage(currentSection);
-        el.addClass('has-listener');
+        elAddClass(el, 'has-listener');
         setPageCompletionPercentage();
     };
     return listener;
 }
 
 function setAllSectionsCompletionPercentage() {
-    $('.formStep').each( function() {
-        setSectionCompletionPercentage($(this));
-    });
+    var formSteps = document.querySelectorAll('.formStep');
+
+    for (var i = 0; i < formSteps.length; i++) {
+        setSectionCompletionPercentage(formSteps[i]);
+    }
 }
 
 function setAllSectionsChangeListerner() {
-    $('.formStep').each( function() {
-        setSectionChangeListener($(this));
-    });
+    var formSteps = document.querySelectorAll('.formStep');
+
+    for (var i = 0; i < formSteps.length; i++) {
+        setSectionChangeListener(formSteps[i]);
+    }
 }
 
 // Validate all inputs with the given class
 // Display validation status to the user in real time
 function setValidationListeners() {
-    $('input').each( function() {
-        var listener;
+    var inputs = document.querySelectorAll('input');
+    var textareas = document.querySelectorAll('textarea');
 
-        if ($(this).hasClass('validation-listener')) {
+    for (var i = 0; i < inputs.length; i++) {
+        var input = inputs[i];
+        var inputListener;
+        var focusOutListener;
+
+        if (elHasClass(input, 'validation-listener')) {
 
             // We've already set the listener for this element, do nothing
-            return;
+            continue;
         }
 
         // Max character counts for text inputs
-        if ($(this).attr('type') === 'text' && $(this).attr('maxlength')) {
-            listener = getLengthListener($(this));
-            $(this).on('input', function() {
-                listener();
-            });
-            $(this).on('focusout', function() {
-                $(this).parent().find('.charsLeft').hide();
-            });
+        if (input.getAttribute('type') === 'text' && input.hasAttribute('maxlength')) {
+            inputListener = getLengthListener(input);
+            focusOutListener = getHideCharsListener(input);
+            input.addEventListener('input', inputListener);
+            input.addEventListener('focusout', focusOutListener);
         }
-    });
 
-    $('textarea').each( function() {
-        var listener;
+    }
 
-        if ($(this).hasClass('validation-listener')) {
+    for (var i = 0; i < textareas.length; i++) {
+        var textarea = textareas[i];
+        var inputListener;
+        var focusOutListener;
+
+        if (elHasClass(textarea, 'validation-listener')) {
 
             // We've already set the listener for this element, do nothing
-            return;
+            continue;
         }
 
-        // Max character counts for text inputs
-        if ($(this).attr('maxlength')) {
-            listener = getLengthListener($(this));
-            $(this).on('input', function() {
-                listener();
-            });
-            $(this).on('focusout', function() {
-                $(this).parent().find('.charsLeft').hide();
-            });
+        // Max character counts for textareas
+        if (textarea.hasAttribute('maxlength')) {
+            inputListener = getLengthListener(textarea);
+            focusOutListener = getHideCharsListener(textarea);
+            textarea.addEventListener('input', inputListener);
+            textarea.addEventListener('focusout', focusOutListener);
         }
-    });
+    }
 
     function getLengthListener(el) {
-        var output = function() {
+            var output = function() {
             var maxLength, currentLength, charsLeft, charMessage;
 
-            maxLength = parseInt(el.attr('maxlength'), 10);
-            currentLength = el.val().length;
+            maxLength = parseInt(el.getAttribute('maxlength'), 10);
+            currentLength = el.value.length;
             charsLeft = maxLength - currentLength;
             charMessage = '';
 
-            if (el.parent().find('.charsLeft').length === 0) {
-                el.parent().append('<span class="charsLeft"></span>');
+            if (el.parentNode.querySelectorAll('.charsLeft').length === 0) {
+                var child = document.createElement('span');
+                elAddClass(child, 'charsLeft');
+                el.parentNode.appendChild(child);
             }
 
             if (charsLeft === 1) {
@@ -1641,23 +1701,53 @@ function setValidationListeners() {
                 charMessage = ' characters remaining';
             }
 
-            el.parent().find('.charsLeft').show().text(charsLeft + charMessage);
+            el.parentNode.querySelector('.charsLeft').style.display = '';
+            el.parentNode.querySelector('.charsLeft').textContent = charsLeft + charMessage;
         };
 
         return output;
     }
 
+    function getHideCharsListener(el) {
+        var parent = el.parentNode;
+        var output;
+        var outputTimeout;
+
+        output = function() {
+            var charsLeft = parent.querySelector('.charsLeft');
+            if (charsLeft) {
+                charsLeft.style.display = 'none';
+            }
+        };
+
+        outputTimeout = function() {
+            setTimeout(output, 250);
+        };
+
+        return outputTimeout;
+    }
+
     // Mark mandatory fields with an asterisk
     function markMandatoryFields() {
+        var existingMarkers = document.querySelectorAll('.mandatory');
+        var elementsToMark = document.querySelectorAll('.priority1 ~ label');
 
         // Clear any existing markers
-        $('.mandatory').remove();
+        for (var i = 0; i < existingMarkers.length; i++) {
+            var el = existingMarkers[i];
 
-        $('.priority1 ~ label').each(function() {
-            var markContainer = '<span class="mandatory">*</span>';
+            el.parentNode.removeChild(el);
+        }
 
-            $(markContainer).appendTo($(this));
-        });
+        for (var i = 0; i < elementsToMark.length; i++) {
+            var el = elementsToMark[i];
+            var markContainer = document.createElement('span');
+
+            elAddClass(markContainer, 'mandatory');
+            markContainer.textContent = '*';
+
+            el.appendChild(markContainer);
+        }
     }
 
     markMandatoryFields();
@@ -2037,8 +2127,362 @@ function setUnsavedChangesMessage() {
     };
 }
 
+/* Show the "add organisation" modal dialog */
+function addOrgModal() {
 
-$(document).ready(function() {
+    /* Remove the modal */
+    function cancelModal() {
+        var modal = document.querySelector('.modalParent');
+        modal.parentNode.removeChild(modal);
+    }
+
+    /* Submit the new org */
+    function submitModal() {
+        if (allInputsFilled() && checkLocationFilled()) {
+            var api_url, request, form, form_data;
+
+            // Add organisation to DB
+            form = document.querySelector('#addOrganisation');
+            form_data = serialize(form);
+
+            // Remove empty IATI organistion id
+            form_data = form_data.replace('iati_org_id=&', '');
+
+            api_url = '/rest/v1/organisation/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status === 201) {
+                    var organisation_id;
+
+                    // Get organisation ID
+                    response = JSON.parse(request.responseText);
+                    organisation_id = response.id;
+
+                    // Add location (fails silently)
+                    if (form.querySelector('#latitude').value !== '') {
+                        var request_loc;
+                        api_url = '/rest/v1/organisation_location/?format=json';
+                        request_loc = new XMLHttpRequest();
+                        request_loc.open('POST', api_url, true);
+                        request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+                        request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        request_loc.send(form_data + '&location_target=' + organisation_id);
+                    }
+
+                    // Add logo (fails silently)
+                    var logo_request, logo_data, org_logo_files;
+                    org_logo_files = document.getElementById("org-logo").files;
+                    if (org_logo_files !== undefined) {
+                        api_url = '/rest/v1/organisation/' + organisation_id + '/add_logo/?format=json';
+                        logo_data = new FormData();
+                        logo_data.append("logo", org_logo_files[0]);
+                        logo_request = new XMLHttpRequest();
+                        logo_request.open("POST", api_url);
+                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+                        logo_request.send(logo_data);
+                    }
+
+                    // This flag forces the fetching of a fresh API response
+                    var forceReloadOrg = true;
+
+                    updateTypeaheads(forceReloadOrg);
+                    cancelModal();
+                } else if (request.status === 400) {
+                    var response;
+                    response = JSON.parse(request.responseText);
+
+                    document.querySelector('.orgModal').scrollTop = 0;
+
+                    for (var key in response) {
+                        if (response.hasOwnProperty(key)) {
+                            var input = form.querySelector('#' + key);
+                            var inputParent = input.parentNode;
+                            var inputHelp = inputParent.querySelector('.help-block');
+                            inputHelp.textContent = response[key];
+                            elAddClass(inputHelp, 'help-block-error');
+                            elAddClass(inputParent, 'has-error');
+                        }
+                    }
+                    return false;
+                } else {
+                    elAddClass(form, 'has-error');
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                document.querySelector('#addOrgGeneralError').textContent = defaultValues.general_error;
+                document.querySelector('.orgModal').scrollTop = 0;
+                return false;
+            };
+
+            request.send(form_data);
+        } else {
+            document.querySelector('.orgModal').scrollTop = 0;
+        }
+    }
+
+    function allInputsFilled() {
+        var allInputsFilledBoolean = true;
+        var shortName = document.querySelector('#name');
+        var shortNameHelp = document.querySelector('#name + label + .help-block');
+        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
+        var longName = document.querySelector('#long_name');
+        var longNameHelp = document.querySelector('#long_name + label + .help-block');
+        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
+
+        if (shortName.value === '') {
+            shortNameHelp.textContent = defaultValues.blank_name;
+            elAddClass(shortNameHelp, 'help-block-error');
+            elAddClass(shortNameContainer, 'has-error');
+            allInputsFilledBoolean = false;
+        } else {
+            shortNameHelp.textContent = '';
+            elRemoveClass(shortNameHelp, 'help-block-error');
+            elRemoveClass(shortNameContainer, 'has-error');
+        }
+
+        if (longName.value === '') {
+            longNameHelp.textContent = defaultValues.blank_long_name;
+            elAddClass(longNameHelp, 'help-block-error');
+            elAddClass(longNameContainer, 'has-error');
+            allInputsFilledBoolean = false;
+        } else {
+            longNameHelp.textContent = '';
+            elRemoveClass(longNameHelp, 'help-block-error');
+            elRemoveClass(longNameContainer, 'has-error');
+        }
+
+        return allInputsFilledBoolean;
+    }
+
+    function checkLocationFilled() {
+        var latitudeNode, longitudeNode, countryNode, latitudeHelp, longitudeHelp, countryHelp, result;
+
+        latitudeNode = document.querySelector('#latitude');
+        latitudeHelp = document.querySelector('#latitude + label + .help-block');
+        longitudeNode = document.querySelector('#longitude');
+        longitudeHelp = document.querySelector('#longitude + label + .help-block');
+        countryNode = document.querySelector('#country');
+        countryHelp = document.querySelector('#country + label + .help-block');
+
+        result = true;
+
+        if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
+            return result;
+        } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
+            if (latitudeNode.value === '') {
+                latitudeHelp.textContent = defaultValues.location_check;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+            }
+            if (longitudeNode.value === '') {
+                longitudeHelp.textContent = defaultValues.location_check;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+            }
+            if (countryNode.value === '') {
+                countryHelp.textContent = defaultValues.location_check;
+                elAddClass(countryHelp, 'help-block-error');
+                elAddClass(countryHelp.parentNode, 'has-error');
+            }
+            result = false;
+        } else {
+            // TODO: Add good text for lat long error
+            if (latitudeNode.value.indexOf(',') > 0) {
+                latitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(latitudeHelp, 'help-block-error');
+                elAddClass(latitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
+            if (longitudeNode.value.indexOf(',') > 0) {
+                longitudeHelp.textContent = defaultValues.comma_value;
+                elAddClass(longitudeHelp, 'help-block-error');
+                elAddClass(longitudeHelp.parentNode, 'has-error');
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    Modal = React.createClass({displayName: 'Modal',
+        render: function() {
+            var country_option_list = countryValues.map(function(country) {
+              return (
+                  React.DOM.option( {value:country.pk}, country.name)
+              );
+            });
+
+            return (
+                    React.DOM.div( {className:"modalParent"}, 
+                        React.DOM.div( {className:"modalBackground"}
+                        ),
+                        React.DOM.div( {className:"modalContainer"}, 
+                            React.DOM.div( {className:"orgModal"}, 
+                                React.DOM.div( {className:"modalContents projectEdit"}, 
+                                    React.DOM.h4(null, defaultValues.add_new_organisation),
+                                    React.DOM.form( {id:"addOrganisation"}, 
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {id:"addOrgGeneralError", className:"col-md-12 help-block-error"})
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer newOrgName col-md-4"}, 
+                                                React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
+                                                React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 25 ", defaultValues.characters)
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgLongName col-md-4"}, 
+                                                React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgIatiId col-md-4"}, 
+                                                React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, defaultValues.iati_org_id),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
+                                                React.DOM.input( {type:"file", className:"form-control", id:"org-logo", name:"org-logo", accept:"image/*"}),
+                                                React.DOM.label( {className:"control-label", for:"org-logo"}, defaultValues.org_logo)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6"}, 
+                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
+                                                    React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
+                                                    React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
+                                                    React.DOM.option( {value:"21"}, "21 - ", defaultValues.international_ngo),
+                                                    React.DOM.option( {value:"22"}, "22 - ", defaultValues.national_ngo),
+                                                    React.DOM.option( {value:"23"}, "23 - ", defaultValues.regional_ngo),
+                                                    React.DOM.option( {value:"30"}, "30 - ", defaultValues.public_private_partnership),
+                                                    React.DOM.option( {value:"40"}, "40 - ", defaultValues.multilateral),
+                                                    React.DOM.option( {value:"60"}, "60 - ", defaultValues.foundation),
+                                                    React.DOM.option( {value:"70"}, "70 - ", defaultValues.private_sector),
+                                                    React.DOM.option( {value:"80"}, "80 - ", defaultValues.academic_training_research)
+                                                ),
+                                                React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"url", id:"url", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"url", className:"control-label"}, defaultValues.website),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.start_http)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"latitude", id:"latitude", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"longitude", id:"longitude", type:"text",  className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
+                                                    React.DOM.option( {value:""}, defaultValues.country,":"),
+                                                    country_option_list
+                                                ),
+                                                React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://mygeoposition.com/", target:"_blank"}, "http://mygeoposition.com/"), " ", defaultValues.coordinates)
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_person", id:"contact_person", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_person", className:"control-label"}, defaultValues.contact_person),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_email", id:"contact_email", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_email", className:"control-label"}, defaultValues.contact_email),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
+                                                React.DOM.textarea( {id:"description", className:"form-control", name:"description", rows:"3"}),
+                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, defaultValues.description),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        )
+                                    ),
+                                    React.DOM.div( {className:"controls"}, 
+                                        React.DOM.button( {className:"modal-cancel btn btn-danger", onClick:cancelModal}, 
+                                        React.DOM.span( {className:"glyphicon glyphicon-trash"}), " ", defaultValues.cancel
+                                        ),
+                                        React.DOM.button( {className:"modal-save btn btn-success", onClick:submitModal}, 
+                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " ", defaultValues.add_new_organisation
+                                        )
+                                    )   
+                                )
+                            )                   
+                        )
+                    )
+            );
+        }
+    });
+
+    React.render(
+        Modal(null ),
+
+        // Use the footer to prevent page scroll on injection
+        document.querySelector('footer')
+    );    
+}
+
+/* General Helper Functions */
+
+function elHasClass(el, className) {
+    if (el.classList && el.classList.forEach) {
+        var result = false;
+        el.classList.forEach( function(entry) {
+            if (entry.toString() === className.toString()) {
+                result = true;
+                return;
+            }
+        });
+        return result;
+    } else {
+        return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+    }
+}
+
+function elAddClass(el, className) {
+    if (el.classList) {
+        el.classList.add(className);
+    } else {
+      el.className += ' ' + className;
+    }
+}
+
+function elRemoveClass(el, className) {
+    if (el.classList) {
+        el.classList.remove(className);
+    }
+    else {
+      el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+  }
+}
+
+function elIsVisible(el) {
+    return el.offsetWidth > 0 && el.offsetHeight > 0;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();

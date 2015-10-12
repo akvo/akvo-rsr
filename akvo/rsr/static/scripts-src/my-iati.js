@@ -116,4 +116,6 @@ function loadComponent(component_id) {
 }
 
 i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
-loadComponent('react_iati_checks');
+if (document.getElementById('react_iati_checks')) {
+    loadComponent('react_iati_checks');
+}

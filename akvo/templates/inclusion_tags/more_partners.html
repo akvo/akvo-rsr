@@ -1,6 +1,6 @@
 {% load compressed i18n %}
 
-{% if partners|length > 1 %}
+{% if partners|length > 0 %}
 <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
   title="
   <div class='extra-partner-tooltip'>
@@ -14,9 +14,11 @@
   {% endfor %}
   </div>
   "
-  data-placement="right" data-container="article" data-class="foo">
-  {% blocktrans with partners_count=partners|length|add:"-1" %}
-    + {{partners_count}} partners
-    {% endblocktrans %}
+  data-placement="right"> +
+  {% blocktrans count num_partners=partners|length %}
+    {{ num_partners }} partner
+  {% plural %}
+    {{ num_partners }} partners
+  {% endblocktrans %}
   </a>
-{% endif %}
+{% endif %}  

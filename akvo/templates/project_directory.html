@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n maps rsr_utils thumbnail humanize bootstrap3 compressed %}
+{% load bootstrap3 compressed humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -41,9 +41,15 @@
                   </div>
                 </div>
             <div>
+              {% if rsr_page %}
+                <div class="btn-group">
+                  {% bootstrap_field filter.form.organisation %}
+                </div>
+              {% else %}
                 <div class="btn-group" id="org-filter-container">
                 </div>
                 <input type="hidden" name="organisation" id="org-filter-input" type="text">
+              {% endif %}
             </div>
             <div>
               <div class="btn-group">
@@ -90,8 +96,14 @@
             {% if p.primary_location.country %}
               <p class="projectLocation"><i class="fa fa-map-marker"></i> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
             {% endif %}
+            <a href="{% url 'organisation-main' p.reporting_org.pk %}">{{p.reporting_org}}</a>
+            {% more_link p %}
+
+            {% comment %}
             {% if p.reporting_org %}
               <p><a href="{% url 'organisation-main' p.reporting_org.id %}"><i class="fa fa-users"></i> {{p.reporting_org}}</a>
+              {% more_link p %}
+
               {% if p.partners.distinct.count > 1 %}
                 <a href="{% url 'project-partners' p.id %}" class="small moreLink  " data-toggle="tooltip"
                   title="{% for partner in p.partners.all.distinct %}
@@ -103,6 +115,8 @@
               {% endif %}
               </p>
             {% endif %}
+            {% endcomment %}
+
             <div class="visible-xs-block hidden-sm">
               <p>
               {% if p.sector_categories %}

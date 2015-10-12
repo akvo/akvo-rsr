@@ -93,6 +93,7 @@ urlpatterns = patterns(
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+    url(r'^server_info/$', views.server_info, name='server_info'),
 )
 
 # Project editor
@@ -137,6 +138,9 @@ urlpatterns += patterns(
     url(r'^project/(?P<pk>[0-9]+)/step_10/$',
         views.project_editor_step10,
         name='project_editor_step10'),
+    url(r'^organisation/(?P<pk>[0-9]+)/add_logo/$',
+        views.project_editor_organisation_logo,
+        name='project_editor_add_org_logo'),
 )
 
 # Typeahead

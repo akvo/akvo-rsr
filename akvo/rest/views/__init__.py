@@ -42,7 +42,8 @@ from .project_editor import (project_editor_delete_document,
                              project_editor_step7,
                              project_editor_step8,
                              project_editor_step9,
-                             project_editor_step10)
+                             project_editor_step10,
+                             project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
@@ -59,6 +60,7 @@ from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .result import ResultViewSet
 from .sector import SectorViewSet
+from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
@@ -124,6 +126,7 @@ __all__ = [
     'project_editor_step8',
     'project_editor_step9',
     'project_editor_step10',
+    'project_editor_organisation_logo',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
@@ -131,6 +134,7 @@ __all__ = [
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
+    'server_info',
     'set_group',
     'TransactionViewSet',
     'TransactionSectorViewSet',

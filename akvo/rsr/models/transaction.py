@@ -56,7 +56,7 @@ class Transaction(models.Model):
         help_text=_(u'Select the type of transaction from the list.')
     )
     value = models.DecimalField(
-        _(u'value'), blank=True, null=True, max_digits=11, decimal_places=2,
+        _(u'value'), blank=True, null=True, max_digits=14, decimal_places=2,
         help_text=_(u'Enter the transaction amount.')
     )
     value_date = models.DateField(_(u'value date'), blank=True, null=True)
@@ -136,8 +136,12 @@ class TransactionSector(models.Model):
     )
 
     def __unicode__(self):
-        if self.code:
+        if self.code and self.vocabulary in ['1', '2', 'DAC', 'DAC-3']:
             return u'%s' % self.iati_sector().name.capitalize()
+        elif self.code and self.text:
+            return u'%s - %s' % (self.code, self.text)
+        elif self.code:
+            return u'%s' % self.code
         else:
             return u'%s' % _(u'No sector code specified')
 

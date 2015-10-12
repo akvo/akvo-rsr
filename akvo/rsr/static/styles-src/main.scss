@@ -624,13 +624,12 @@ nav.navbar-fixed-top {
                 pointer-events: initial;
                 cursor: not-allowed;
                 border: none;
-
                 &:hover {
                     text-decoration: none;
                 }
             }
         }
-    }    
+    }
 }
 
 div.paginationWrap {
@@ -877,7 +876,6 @@ footer {
 
 .detailedPoint {
     float: right;
-
     @media only screen and (max-width: $width-medium) and (min-width: $width-small) {
         .fa-calendar-o {
             display: none;
@@ -1239,8 +1237,16 @@ h4.detailedInfo {
                     background: darken(rgba($rsrGreen, 0.1), 0%);
                     border: thin solid rgba($rsrGreen, 0.35);
                 }
-                .excerpt {}
-                .excerpt {}
+                .excerpt {
+                    li {
+                        background: none;
+                        border: none;
+                        transition: none;
+                        list-style-type: initial;
+                        margin: initial;
+                        padding: initial;
+                    }
+                }
             }
         }
     }
@@ -1666,6 +1672,16 @@ div.textBlock {
     background: #ccc;
 }
 
+.projectFinancial {
+    .budgetItem {
+        margin-top: 12px;
+        width: 60%;
+
+        &:nth-child(1), &:nth-child(2) {
+            margin-top: 0;
+        }
+    }
+}
 /* Project hierarchy */
 .project-hierarchy-window {
     border: 0.1em solid #d3d3d3;
@@ -2091,17 +2107,27 @@ dd {
 
 .updateText {
     white-space: pre-line;
+    li {
+        padding: initial;
+        margin: initial;
+        white-space: initial;
+    }
+    li p {
+        margin: 0;
+        padding: 0;
+        display: initial;
+    }
 }
 
 a.addUpdateBtn {
-  margin-top: 10px;
-  color: white;
-  background-color: $rsrGreen;
-  border-color: $rsrGreen;
-  &:hover {
-    background-color: $anchorLinkHover;
-    border-color: $anchorLinkHover;
-  }
+    margin-top: 10px;
+    color: white;
+    background-color: $rsrGreen;
+    border-color: $rsrGreen;
+    &:hover {
+        background-color: $anchorLinkHover;
+        border-color: $anchorLinkHover;
+    }
 }
 
 /* Google translation bar styles */
@@ -2162,12 +2188,13 @@ body {
         }
         &[data-completion='complete'] {
             background: rgba($progressSuccess, 1);
-        }        
+        }
         .progress-percentage {
             display: none;
         }
     }
 }
+
 .formOverviewInfo {
     .progress {
         .progress-bar {
@@ -2181,12 +2208,12 @@ body {
         cursor: pointer;
         cursor: hand;
         color: $akvoPurple;
-
         &.activated {
             color: rgba(44, 42, 116, 0.3);
         }
     }
 }
+
 .formOverviewInfo {
     border: 1px solid rgba(52, 52, 56, 0.1);
     padding: 20px;
@@ -2246,7 +2273,6 @@ body {
                 cursor: pointer;
                 cursor: hand;
                 font-size: 90%;
-
                 &.activated {
                     color: rgba(44, 42, 116, 0.3);
                 }
@@ -2262,7 +2288,7 @@ body {
             padding-top: 10px;
         }
         span.tab {
-            padding-left:5em;
+            padding-left: 5em;
         }
     }
     .borderBottom {
@@ -2313,8 +2339,10 @@ body {
     hr {
         border: none;
         height: 1px;
-        color: rgba($akvoPurple, 0.3); /* old IE */
-        background-color: rgba($akvoPurple, 0.3); /* Modern Browsers */
+        color: rgba($akvoPurple, 0.3);
+        /* old IE */
+        background-color: rgba($akvoPurple, 0.3);
+        /* Modern Browsers */
     }
     input, textarea, select {
         & + label,
@@ -2367,7 +2395,6 @@ body {
         cursor: pointer;
         cursor: hand;
         font-size: 120%;
-
         &.activated {
             color: rgba(44, 42, 116, 0.3);
         }
@@ -2379,51 +2406,51 @@ body {
         margin-right: -4px;
     }
     label.progress-bar {
-            &[aria-valuenow="0"] {
-                background: rgba($progressWarning, 1);
-                color: $progressWarning;
-            }
-            &[aria-valuenow="10"] {
-                background: rgba($progressWarning, 1);
-                color: white;
-            }
-            &[aria-valuenow="20"] {
-                background: rgba($progressWarning, 1);
-                color: white;
-            }
-            &[aria-valuenow="30"] {
-                background: rgba($progressWarning, 1);
-                color: white;
-            }
-            &[aria-valuenow="40"] {
-                background: rgba($progressNot, 1);
-                color: white;
-            }
-            &[aria-valuenow="50"] {
-                background: rgba($progressNot, 1);
-                color: white;
-            }
-            &[aria-valuenow="60"] {
-                background: rgba($progressNot, 1);
-                color: white;
-            }
-            &[aria-valuenow="70"] {
-                background: rgba($progressSuccess, 1);
-                color: white;
-            }
-            &[aria-valuenow="80"] {
-                background: rgba($progressSuccess, 1);
-                color: white;
-            }
-            &[aria-valuenow="90"] {
-                background: rgba($progressSuccess, 1);
-                color: white;
-            }
-            &[aria-valuenow="100"] {
-                background: rgba($progressSuccess, 1);
-                color: white;
-            }
+        &[aria-valuenow="0"] {
+            background: rgba($progressWarning, 1);
+            color: $progressWarning;
         }
+        &[aria-valuenow="10"] {
+            background: rgba($progressWarning, 1);
+            color: white;
+        }
+        &[aria-valuenow="20"] {
+            background: rgba($progressWarning, 1);
+            color: white;
+        }
+        &[aria-valuenow="30"] {
+            background: rgba($progressWarning, 1);
+            color: white;
+        }
+        &[aria-valuenow="40"] {
+            background: rgba($progressNot, 1);
+            color: white;
+        }
+        &[aria-valuenow="50"] {
+            background: rgba($progressNot, 1);
+            color: white;
+        }
+        &[aria-valuenow="60"] {
+            background: rgba($progressNot, 1);
+            color: white;
+        }
+        &[aria-valuenow="70"] {
+            background: rgba($progressSuccess, 1);
+            color: white;
+        }
+        &[aria-valuenow="80"] {
+            background: rgba($progressSuccess, 1);
+            color: white;
+        }
+        &[aria-valuenow="90"] {
+            background: rgba($progressSuccess, 1);
+            color: white;
+        }
+        &[aria-valuenow="100"] {
+            background: rgba($progressSuccess, 1);
+            color: white;
+        }
+    }
     div.parent {
         background: rgba($progressNot, 0.15);
         -webkit-border-radius: 10px;
@@ -2453,7 +2480,6 @@ body {
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
     margin: 15px 15px 15px 15px;
-
     .redLegenda {
         background: $progressWarning;
         color: $progressWarning;
@@ -2475,7 +2501,6 @@ body {
     padding-left: 0.5em;
     cursor: pointer;
     cursor: hand;
-
     &.activated {
         color: rgba(44, 42, 116, 0.3);
     }
@@ -2503,6 +2528,128 @@ body {
     @media only screen and (max-width: $width-large) {
         @media only screen and (min-width: $width-medium) {
             margin-left: -1.25em;
+        }
+    }
+}
+
+/* Modal dialog stuff for the Project Editor */
+
+div.inactive {
+    .addOrg {
+        display: none;
+    }
+}
+
+div.active {
+    .addOrg {
+        display: block;
+        padding: 0.5em;
+        background-color: white;
+        border: 1px solid rgb(200,200,200);
+        border-radius: 0 0 4px 4px;
+        margin-top: -3px;
+        cursor: pointer;
+        color: rgba($progressSuccess, 1);
+
+        &:hover {
+            font-weight: bold;
+        }
+        &:active {
+            opacity: 0.8;
+        }
+    }
+}
+
+.modalBackground {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1031;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modalContainer {
+    position: fixed;
+    top: 20%;
+    right: 100px;
+    bottom: 20%;
+    left: 100px;
+    z-index: 1032;
+
+    @media only screen and (max-width: $width-small) {
+        right: 25px;
+        left: 25px;
+    }
+    @media only screen and (max-width: $xtra-small) {
+        right: 5px;
+        left: 5px;        
+    }
+    @media only screen and (max-height: 900px) {
+        top: 10%;
+        bottom: 10%;
+    }
+    @media only screen and (max-height: 700px) {
+        top: 5%;
+        bottom: 5%;
+    }
+
+    .orgModal {
+        width: 100%;
+        max-width: 800px;
+        max-height: 100%;
+        margin: auto;
+        background-color: white;    
+        overflow-y: scroll;
+        position: relative;
+        @include border-radius(5px);        
+
+        .modalContents {
+            min-width: 100px;
+            position: relative;
+            padding: 1em 2em 5em 2em;
+
+            .inputContainer {
+                margin-top: 2.75em;
+                margin-bottom: 1em;
+
+                input, select, textarea {
+                    & + label {
+                        position: absolute;
+                        top: -25px;
+                        transition: top 0.7s ease, opacity 0.7s ease;
+                        opacity: 0;
+                        font-size: 13px;
+                        font-weight: 600;
+                    }
+                    &:valid + label {
+                        opacity: 1;
+                    }
+                    &:focus + label {
+                        color: $rsrBlue;
+                    }
+                }                
+            }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3.5em;
+            text-align: right;
+
+            button {
+                margin: 0 0.5em;
+                &.modal-cancel {
+                    margin-right: 1em;
+                }
+                &.modal-save {
+                    margin-right: 1.5em;
+                }
+            }
         }
     }
 }

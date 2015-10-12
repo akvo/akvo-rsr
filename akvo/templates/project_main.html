@@ -30,7 +30,7 @@
               </li>
               {% if project.iati_activity_id %}
                 <li>
-                  <span class="detailedInfo">{% trans 'IATI ID' %}</span> 
+                  <span class="detailedInfo">{% trans 'IATI ID' %}</span>
                   {{project.iati_activity_id}}
                 </li>
               {% endif %}
@@ -188,30 +188,19 @@
 {% compressed_js 'project_main' %}
 {% endblock js %}
 {% block jq %}
-{{ block.super }}
-{# Tooltip #}
-$(function () {
-$('[data-toggle="tooltip"]').tooltip(
-{
-html: true,
-delay: {
-"show": 0,
-"hide": 1000
-}
-}
-)
-});
-{% comment %}
-{# Timeline #}
-var timeline_data = {{ timeline_data|safe }};
-createStoryJS({
-type: 'timeline',
-width: '100%',
-height: '400',
-source: timeline_data,
-embed_id: 'timeline'
-});
-{% endcomment %}
+  {{ block.super }}
+  $('.logoImg > img').css('margin','inherit');
 
-$('.logoImg > img').css('margin','inherit');
+  {% comment %}
+  {# Timeline #}
+  var timeline_data = {{ timeline_data|safe }};
+  createStoryJS({
+    type: 'timeline',
+    width: '100%',
+    height: '400',
+    source: timeline_data,
+    embed_id: 'timeline'
+  });
+  {% endcomment %}
+
 {% endblock jq %}

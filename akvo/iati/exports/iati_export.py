@@ -8,7 +8,6 @@ import elements
 import os
 
 from datetime import datetime
-from io import BytesIO
 from lxml import etree
 
 ELEMENTS = [
