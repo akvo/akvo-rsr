@@ -150,6 +150,11 @@ class Organisation(TimestampsMixin, models.Model):
     primary_location = models.ForeignKey(
         'OrganisationLocation', null=True, on_delete=models.SET_NULL
     )
+    can_create_projects = models.BooleanField(
+        default=False,
+        help_text=_(u'Partner editors of this organisation can create new projects, and publish '
+                    u'projects it is a partner of.')
+    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')
