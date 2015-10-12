@@ -134,6 +134,18 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
         super(ProjectUpdate, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.indicator_period and self.period_update:
+            try:
+                self.indicator_period.actual_value = str(
+                    Decimal(self.indicator_period.actual_value) -
+                    Decimal(self.period_update)
+                )
+                self.indicator_period.save()
+            except (InvalidOperation, TypeError):
+                pass
+        super(ProjectUpdate, self).delete(*args, **kwargs)
+
     def clean(self):
         # Don't allow an indicator period that belongs to a different project
         if self.project and self.indicator_period:
