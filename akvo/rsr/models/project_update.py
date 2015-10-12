@@ -6,9 +6,10 @@
 
 
 from datetime import datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -85,9 +86,14 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             if not self.pk:
                 # Newly created update to indicator period.
                 # Update the indicator period's actual value.
-                self.indicator_period.actual_value = str(Decimal(self.period.actual_value) +
-                                                         Decimal(self.period_update))
-                self.indicator_period.save()
+                try:
+                    self.indicator_period.actual_value = str(
+                        Decimal(self.indicator_period.actual_value) +
+                        Decimal(self.period_update)
+                    )
+                except (InvalidOperation, TypeError):
+                    self.indicator_period.actual_value = self.period_update
+                self.indicator_period.save(update_fields=['actual_value'])
             else:
                 # Update to already existing indicator period.
                 # Check if values have been changed.
@@ -95,24 +101,47 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                 if orig_update.indicator_period != self.indicator_period:
                     # Indicator period has changed.
                     # Substract value from old period, and add new value to new period.
-                    orig_update.indicator_period.actual_value = str(
-                        Decimal(orig_update.indicator_period.actual_value) -
-                        Decimal(orig_update.indicator_period.period_update)
-                    )
-                    orig_update.save()
+                    try:
+                        orig_update.indicator_period.actual_value = str(
+                            Decimal(orig_update.indicator_period.actual_value) -
+                            Decimal(orig_update.period_update)
+                        )
+                        orig_update.save()
+                    except (InvalidOperation, TypeError):
+                        pass
 
-                    self.indicator_period.actual_value = str(Decimal(self.period.actual_value) +
-                                                             Decimal(self.period_update))
-                    self.indicator_period.save()
+                    try:
+                        self.indicator_period.actual_value = str(
+                            Decimal(self.indicator_period.actual_value) +
+                            Decimal(self.period_update)
+                        )
+                    except (InvalidOperation, TypeError):
+                        self.indicator_period.actual_value = self.period_update
+                    self.indicator_period.save(update_fields=['actual_value'])
 
                 elif orig_update.period_update != self.period_update:
                     # Indicator value has changed.
                     # Substract old value from period, and add new value to it.
-                    self.indicator_period.actual_value = str(Decimal(self.indicator_period.actual_value) -
-                                                             Decimal(orig_update.period_update) +
-                                                             Decimal(self.period_update))
+                    try:
+                        self.indicator_period.actual_value = str(
+                            Decimal(self.indicator_period.actual_value) -
+                            Decimal(orig_update.period_update) +
+                            Decimal(self.period_update)
+                        )
+                    except (InvalidOperation, TypeError):
+                        self.indicator_period.actual_value = self.period_update
+                    self.indicator_period.save(update_fields=['actual_value'])
 
         super(ProjectUpdate, self).save(*args, **kwargs)
+
+    def clean(self):
+        # Don't allow an indicator period that belongs to a different project
+        if self.project and self.indicator_period:
+            if not self.indicator_period.indicator.result.project == self.project:
+                raise ValidationError(
+                    {'indicator_period': u'%s' % _(u'Indicator period must be part of the same '
+                                                   u'project.')}
+                )
 
     def img(self, value=''):
         try:

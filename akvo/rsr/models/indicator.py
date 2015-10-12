@@ -117,6 +117,18 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
+    def clean(self):
+        # Don't allow an actual value to be changed when there are updates to the period
+        if self.pk and self.updates.all():
+            org_period = IndicatorPeriod.objects.get(pk=self.pk)
+            if self.actual_value != org_period.actual_value:
+                raise ValidationError(
+                    {'actual_value': u'%s' % _(u'It is not possible to update the actual value of '
+                                               u'this indicator period, because it has updates. '
+                                               u'Please update the actual value through a new '
+                                               u'update.')}
+                )
+
     @property
     def percent_accomplishment(self):
         return round(float(self.actual_value) / float(self.target_value) * 100, 1)

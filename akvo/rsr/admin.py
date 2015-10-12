@@ -952,6 +952,9 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
             'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
                        'video_credit',),
         }),
+        (_(u'Results'), {
+            'fields': ('indicator_period', 'period_update',),
+        }),
     )
     # Methods overridden from ModelAdmin (django/contrib/admin/options.py)
 
