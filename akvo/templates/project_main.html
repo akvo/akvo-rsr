@@ -929,11 +929,13 @@
                   <h4>
                     {{indicator.title}}
                   </h4>
-                  {% if indicator.last_updated %}
                   <div class="last-update">
-                    {% trans 'Last update' %} {{ indicator.last_updated }}
+                    {% if indicator.last_updated %}
+                      {% trans 'Last update' %} {{ indicator.last_updated }}
+                    {% else %}
+                      {% trans 'No updates yet' %}
+                    {% endif %}
                   </div>
-                  {% endif %}
                 </div>
               {% endfor %}
             </div>
@@ -1030,7 +1032,7 @@
                             </div>
                             <div class="indicator-bar-progress-container">
                               <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment}}%; z-index: {{period.percent_accomplishment}}" data-progress="{{period.percent_accomplishment}}">
-                                <span class="indicator-bar-progress-text">{{period.actual_value}}</span>
+                                <span class="indicator-bar-progress-text">{{period.actual_value|floatformat:"0"}}</span>
                                 <span class="indicator-bar-progress-triangle"></span>
                               </div>
                             </div>
@@ -1042,7 +1044,7 @@
                           </div>
                         </td>
                         <td class="expand-td">
-                          <span class="expand-indicator-period clickable " data-indicator-period-id="{{period.id}}" data-indicator-period-value="{{period.actual_value}}" data-target="{{period.target_value}}">
+                          <span class="expand-indicator-period clickable " data-indicator-period-id="{{period.id}}" data-indicator-period-value="{{period.actual_value|floatformat:"0"}}" data-target="{{period.target_value}}">
                             <span class="glyphicon glyphicon-chevron-down"></span>
                             <span class="glyphicon glyphicon-chevron-up"></span>
                           </span>
@@ -1200,17 +1202,17 @@
 
       el.addEventListener('click', function() {
         var updateContainer = this.parentNode;
+        var timelineNodes = updateContainer.querySelectorAll('.indicator-bar-progress-text');
 
         var newValue = updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value');
-
+        var olderValue = timelineNodes.length > 1 ? timelineNodes[1].textContent : '0';
+        var value = parseInt(newValue) - parseInt(olderValue);
         var newDescription = updateContainer.querySelector('.update-description').textContent;
 
-        (console.log(newValue + ' ' + newDescription));
-
         // Save
-        var updateJson = saveUpdate(updateContainer.getAttribute('id'), newValue, newDescription);
+        var updateJson = saveUpdate(updateContainer.getAttribute('id'), value, newDescription);
         if (updateJson) {
-            // Display 'Save success' on page
+          // Display 'Save success' on page
         }
       });
     }
@@ -1292,17 +1294,14 @@
 
   /* Save update */
   function saveUpdate(updateId, value, text) {
-    var api_url, request, requestData;
+    var api_url, request;
 
     // Create request
-    api_url = '/rest/v1/project_update/' + updateId + '?format=json';
+    api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
     request = new XMLHttpRequest();
     request.open('PATCH', api_url, true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-    // Request data
-    requestData = '{"text": "' + text + '", "period_update": "' + value +'"}';
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
@@ -1319,7 +1318,7 @@
         return false;
     };
 
-    request.send(requestData);
+    request.send(JSON.stringify({text: text, period_update: value}));
   }
 
   /* Hide all elements for a given selector */
