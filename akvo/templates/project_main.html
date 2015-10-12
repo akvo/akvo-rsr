@@ -1207,7 +1207,11 @@
 
         (console.log(newValue + ' ' + newDescription));
 
-        // Do some kind of saving step here
+        // Save
+        var updateJson = saveUpdate(updateContainer.getAttribute('id'), newValue, newDescription);
+        if (updateJson) {
+            // Display 'Save success' on page
+        }
       });
     }
   }
@@ -1267,6 +1271,57 @@
 
   /* GENERAL HELPER FUNCTIONS */
 
+    // CSRF TOKEN (this should really be added in base.html, we use it everywhere)
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+  /* Save update */
+  function saveUpdate(updateId, value, text) {
+    var api_url, request, requestData;
+
+    // Create request
+    api_url = '/rest/v1/project_update/' + updateId + '?format=json';
+    request = new XMLHttpRequest();
+    request.open('PATCH', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // Request data
+    requestData = '{"text": "' + text + '", "period_update": "' + value +'"}';
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Object successfully saved
+            return true;
+        } else {
+            // We reached our target server, but it returned an error
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send(requestData);
+  }
+
   /* Hide all elements for a given selector */
   function hideAll(selector) {
     var els = document.querySelectorAll(selector);
@@ -1313,23 +1368,13 @@
     var updateData = JSON.parse(updateJSON);
 
     for (var i=0; i<updateData.length; i++) {
-//    for (var updateID in updateData) {
       var updateID = updateData[i].id;
-        var update = updateData[i];
+      var update = updateData[i];
 
-        if (!update.indicator_period) {
-
-          // Something has gone wrong. Ignore this entry
-          continue;
-        }
-
-        if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period])) {
-          updatesByIndicatorPeriod[update.indicator_period] = {};
-        }
-
-        updatesByIndicatorPeriod[update.indicator_period][updateID] = update;
-
+      if (update.indicator_period) {
+        addUpdateToStore(update, updateID);
       }
+    }
   }
 
   /* This function takes an object representing an update (in the same format as the
@@ -1337,10 +1382,10 @@
   ** updatesByIndicatorPeriod object.
   */
   function addUpdateToStore(update, updateID) {
-    if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period])) {
-      updatesByIndicatorPeriod[update.indicator_period] = {};
+    if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period.id])) {
+      updatesByIndicatorPeriod[update.indicator_period.id] = {};
     }
-    updatesByIndicatorPeriod[update.indicator_period][update][updateID] = update;
+    updatesByIndicatorPeriod[update.indicator_period.id][updateID] = update;
   }
 
   /* Returns a node representing the "Add update" dialog, ready to be injected at
@@ -1387,6 +1432,7 @@
     var updateContainer = document.createElement('div');
     var editEl, dateEl, userNameEl, timelineEl, targetEl, photoEl, descriptionEl;
 
+    updateContainer.setAttribute("id", update.id);
     updateContainer.classList.add('update-entry-container');
 
       var editEl = document.createElement('span');
@@ -1397,17 +1443,16 @@
 
       updateContainer.appendChild(editEl);
 
-
-      if (update.date) {
+      if (update.created_at) {
         dateEl = document.createElement('div');
         dateEl.classList.add('update-date');
-        dateEl.textContent = update.date;
+        dateEl.textContent = update.created_at;
         updateContainer.appendChild(dateEl);
       }
       if (update.user) {
         userNameEl = document.createElement('div');
         userNameEl.classList.add('update-name');
-        userNameEl.textContent = update.user;
+        userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
         updateContainer.appendChild(userNameEl);
       }
       timeLineEl = document.createElement('div');
@@ -1427,8 +1472,8 @@
         var previousUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
 
         /* If the change amount is "None", changes this to zero */
-        if (previousUpdate.change === 'None') {
-          previousUpdate.change = "0";
+        if (previousUpdate.period_update === 'None') {
+          previousUpdate.period_update = "0";
         }
 
         previousUpdates.push(previousUpdate);
@@ -1445,12 +1490,12 @@
 
         if (entry.id > update.id) {
 
-          /* This update is *newer* thatn the one we're building the dialog
+          /* This update is *newer* than the one we're building the dialog
           ** for. We don't need to add a marker for it, but we do need to
           ** use it's "change" value to calculate the end value for thie
           ** timeline for this particular update.
           */
-          periodValue = periodValue - parseFloat(entry.change);
+          periodValue = periodValue - parseFloat(entry.period_update);
         } else {
 
           /* This update is *older* (or the same) as the update we're 
@@ -1467,7 +1512,7 @@
           updateMarker.classList.add('indicator-bar-progress');
           updateMarker.style.left = (parseFloat(periodValue) / parseFloat(target)) * 100 + '%';
           updateMarker.style['z-index'] = periodValue;
-          updateMarker.style.border = '1px solid white'
+          updateMarker.style.border = '1px solid white';
 
           triangleSpan.classList.add('indicator-bar-progress-triangle'); 
           textSpan.classList.add('indicator-bar-progress-text');    
@@ -1477,7 +1522,7 @@
           updateMarker.appendChild(triangleSpan);
 
           markerContainer.appendChild(updateMarker);
-          periodValue = periodValue - parseFloat(entry.change);
+          periodValue = periodValue - parseFloat(entry.period_update);
         }
       }
       var indicatorBar = document.createElement('div');
@@ -1503,7 +1548,7 @@
       updateContainer.appendChild(timeLineEl);
 
       var targetEl = document.createElement('div');
-      targetEl.classList.add('update-target')
+      targetEl.classList.add('update-target');
       var targetText = document.createElement('div');
       targetText.textContent = target;
 
@@ -1544,23 +1589,8 @@
 </div>
 <div class="project-tab blog">
   <article>
-    {% blocktrans %}Updates for {{project}}{% endblocktrans %}
-
     {% load rsr_filters %}
-
-    <div class="touch-navbar">
-        <div class="container">
-            <div class="row">
-                {% include 'navigation/pagination.html' %}
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <h1>{% trans 'Project updates' %}</h1>
-                </div>
-            </div>
-        </div>
+         <div class="touch-navbar">
             <section class="main-list updates">
               <ul class="container">
                 {% for u in page %}

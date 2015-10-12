@@ -218,13 +218,19 @@ def _get_indicator_updates_data(updates):
     for update in updates.filter(indicator_period__gt=0):
         updates_list.append({
             "id": update.pk,
-            "indicator_period": update.indicator_period.pk,
-            "change": str(update.period_update),
-            "date": str(update.time_gmt),
-            "user": update.user.get_full_name(),
+            "indicator_period": {
+                "id": update.indicator_period.pk,
+                "target_value": str(update.indicator_period.target_value)
+            },
+            "period_update": str(update.period_update),
+            "created_at": str(update.created_at),
+            "user": {
+                "id": update.user.id,
+                "first_name": update.user.first_name,
+                "last_name": update.user.last_name,
+            },
             "text": update.text,
             "photo": update.photo.url if update.photo else '',
-            "target": str(update.indicator_period.target_value) or ''
         })
     return updates_list
 
