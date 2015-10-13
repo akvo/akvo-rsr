@@ -1179,7 +1179,6 @@
         var target = this.getAttribute('data-target');
 
         if (this.classList.contains('expanded')) {
-
           /* This is period already expanded. Collapse it and remove all update dialogs. */
           removeAll('tr.update-dialog-container');
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded');
@@ -1187,10 +1186,31 @@
           parentElement.insertAdjacentHTML('afterend', getUpdateDialog(indicatorPeriodID, periodValue, target).outerHTML);
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
+          addAddOnClicks();
           addEditOnClicks();
           addSaveOnClicks();
         }       
       })
+    }
+  }
+
+  function addAddOnClicks() {
+    var els = document.querySelectorAll('.add-button');
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      el.addEventListener('click', function() {
+        var update = JSON.parse('{"text": "Testing add", "created_at": "New update", "user": {"first_name": "Kasper", "last_name": "Brandt"}, "photo": "", "indicator_period": {"id": 57, "target_value": "300"}, "period_update": "50.00", "id": "add"}');
+        addUpdateToStore(update);
+        var addUpdateContainer = getUpdateDialog(57, 0, 300);
+        if (this.parentNode.parentNode.nextSibling) {
+          this.parentNode.parentNode.parentNode.insertBefore(addUpdateContainer, this.parentNode.parentNode.nextSibling);
+        } else {
+          this.parentNode.parentNode.parentNode.appendChild(addUpdateContainer);
+        }
+        addEditOnClicks();
+        addSaveOnClicks();
+      });
     }
   }
 
@@ -1209,10 +1229,13 @@
         var value = parseInt(newValue) - parseInt(olderValue);
         var newDescription = updateContainer.querySelector('.update-description').textContent;
 
-        // Save
-        var updateJson = saveUpdate(updateContainer.getAttribute('id'), value, newDescription);
-        if (updateJson) {
-          // Display 'Save success' on page
+        var updateId = updateContainer.getAttribute('id');
+        if (updateId === 'add') {
+          // Add new update
+          addNewUpdate(1170, 4, 'testing add', 57, 10);
+        } else if (updateId !== undefined) {
+          // Edit update
+          editUpdate(updateId, newDescription, value)
         }
       });
     }
@@ -1220,7 +1243,7 @@
 
   function addEditOnClicks() {
     var els = document.querySelectorAll('.edit-button');
-
+    console.log(els.length);
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
 
@@ -1292,8 +1315,37 @@
 
     var csrftoken = getCookie('csrftoken');
 
-  /* Save update */
-  function saveUpdate(updateId, value, text) {
+  /* Add new update */
+  function addNewUpdate(project, user, text, periodId, value) {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/project_update/?format=json';
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    request.onload = function() {
+        if (request.status === 201) {
+            // Object successfully created
+            return true;
+        } else {
+            // We reached our target server, but it returned an error
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send(JSON.stringify({project: project, user: user, title: 'Indicator update', text: text, indicator_period: periodId, period_update: value}));
+  }
+
+  /* Edit existing update */
+  function editUpdate(updateId, text, value) {
     var api_url, request;
 
     // Create request
@@ -1367,11 +1419,10 @@
     var updateData = JSON.parse(updateJSON);
 
     for (var i=0; i<updateData.length; i++) {
-      var updateID = updateData[i].id;
       var update = updateData[i];
 
       if (update.indicator_period) {
-        addUpdateToStore(update, updateID);
+        addUpdateToStore(update);
       }
     }
   }
@@ -1380,11 +1431,11 @@
   ** "update-data" script we use to print template tags) and adds that update to the
   ** updatesByIndicatorPeriod object.
   */
-  function addUpdateToStore(update, updateID) {
+  function addUpdateToStore(update) {
     if (!updatesByIndicatorPeriod.hasOwnProperty([update.indicator_period.id])) {
       updatesByIndicatorPeriod[update.indicator_period.id] = {};
     }
-    updatesByIndicatorPeriod[update.indicator_period.id][updateID] = update;
+    updatesByIndicatorPeriod[update.indicator_period.id][update.id] = update;
   }
 
   /* Returns a node representing the "Add update" dialog, ready to be injected at
@@ -1400,7 +1451,11 @@
 
     if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
       container.classList.add('empty');
-      container.textContent = 'No updates for this indicator period.';
+      containerCell.textContent = 'No updates for this indicator period. ';
+      var addUpdateNode = document.createElement('button');
+      addUpdateNode.classList.add('add-button');
+      addUpdateNode.textContent = 'Add a new update';
+      containerCell.appendChild(addUpdateNode);
     } else {
       for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
         if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
