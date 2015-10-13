@@ -1065,10 +1065,20 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css" type="text/css">
+  {# Default values #}
+  <script type="application/json" id="default-values">
+    {
+      "project_id": {{ project.pk }},
+      "user_id": {{ user.pk }}
+    }
+  </script>
   <script>
   /* Obviously this script shouldn't live here permanently.
   ** But it's handy to leave it here for development.
   */
+
+  // DEFAULT VALUES
+  var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 
   /* Set the click listeners that expand or hide the full
   ** "Results" entries in the sidebar.
@@ -1183,7 +1193,27 @@
           removeAll('tr.update-dialog-container');
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded');
         } else {
+          var container = document.createElement('tr');
+          var containerCell = document.createElement('td');
+          container.classList.add('add-new-update-container');
+          container.classList.add('expanded');
+          container.setAttribute('period-id', indicatorPeriodID);
+          container.setAttribute('period-target', target);
+
+          if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
+            container.classList.add('empty');
+            containerCell.textContent = 'No updates for this indicator period. ';
+          }
+
+          var addUpdateNode = document.createElement('button');
+          addUpdateNode.classList.add('add-button');
+          addUpdateNode.textContent = 'Add a new update';
+
+          containerCell.appendChild(addUpdateNode);
+          container.appendChild(containerCell);
+
           parentElement.insertAdjacentHTML('afterend', getUpdateDialog(indicatorPeriodID, periodValue, target).outerHTML);
+          parentElement.insertAdjacentHTML('afterend', container.outerHTML);
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
           addAddOnClicks();
@@ -1200,13 +1230,39 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       el.addEventListener('click', function() {
-        var update = JSON.parse('{"text": "Testing add", "created_at": "New update", "user": {"first_name": "Kasper", "last_name": "Brandt"}, "photo": "", "indicator_period": {"id": 57, "target_value": "300"}, "period_update": "50.00", "id": "add"}');
-        addUpdateToStore(update);
-        var addUpdateContainer = getUpdateDialog(57, 0, 300);
+        var newUpdate, periodId, periodTarget;
+
+        periodId = parseInt(this.parentNode.parentNode.getAttribute('period-id'));
+        periodTarget = parseInt(this.parentNode.parentNode.getAttribute('period-target'));
+
+        newUpdate = {
+          id: 'add',
+          indicator_period: {
+            id: periodId,
+            target_value: periodTarget
+          },
+          period_update: 0,
+          created_at: 'New update',
+          user: {
+            id: defaultValues.user_id,
+            first_name: 'To', // To do (current user's name?)
+            last_name: 'Do' // To do
+          },
+          text: '',
+          photo: ''
+        };
+        addUpdateToStore(newUpdate);
+
+        var container = document.createElement('tr');
+        container.classList.add('update-dialog-container');
+        var containerCell = document.createElement('td');
+        var addUpdateContainer = getUpdateEntry(newUpdate, periodId, 0, periodTarget);
+        containerCell.appendChild(addUpdateContainer);
+        container.appendChild(containerCell);
         if (this.parentNode.parentNode.nextSibling) {
-          this.parentNode.parentNode.parentNode.insertBefore(addUpdateContainer, this.parentNode.parentNode.nextSibling);
+          this.parentNode.parentNode.parentNode.insertBefore(container, this.parentNode.parentNode.nextSibling);
         } else {
-          this.parentNode.parentNode.parentNode.appendChild(addUpdateContainer);
+          this.parentNode.parentNode.parentNode.appendChild(container);
         }
         addEditOnClicks();
         addSaveOnClicks();
@@ -1221,21 +1277,24 @@
       var el = els[i];
 
       el.addEventListener('click', function() {
-        var updateContainer = this.parentNode;
-        var timelineNodes = updateContainer.querySelectorAll('.indicator-bar-progress-text');
+        var description, olderValue, periodId, newValue, timelineNodes, updateContainer, updateId, value;
 
-        var newValue = updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value');
-        var olderValue = timelineNodes.length > 1 ? timelineNodes[1].textContent : '0';
-        var value = parseInt(newValue) - parseInt(olderValue);
-        var newDescription = updateContainer.querySelector('.update-description').textContent;
+        updateContainer = this.parentNode;
+        timelineNodes = updateContainer.querySelectorAll('.indicator-bar-progress-text');
 
-        var updateId = updateContainer.getAttribute('id');
+        newValue = updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value');
+        olderValue = timelineNodes.length > 1 ? timelineNodes[1].textContent : '0';
+        value = parseInt(newValue) - parseInt(olderValue);
+        description = updateContainer.querySelector('.update-description').textContent;
+        updateId = updateContainer.getAttribute('id');
+        periodId = updateContainer.parentNode.parentNode.getAttribute('period-id');
+
         if (updateId === 'add') {
           // Add new update
-          addNewUpdate(1170, 4, 'testing add', 57, 10);
+          addNewUpdate(description, periodId, value);
         } else if (updateId !== undefined) {
           // Edit update
-          editUpdate(updateId, newDescription, value)
+          editUpdate(updateId, description, value)
         }
       });
     }
@@ -1316,8 +1375,8 @@
     var csrftoken = getCookie('csrftoken');
 
   /* Add new update */
-  function addNewUpdate(project, user, text, periodId, value) {
-    var api_url, request;
+  function addNewUpdate(text, periodId, value) {
+    var api_url, request, requestData;
 
     // Create request
     api_url = '/rest/v1/project_update/?format=json';
@@ -1329,6 +1388,7 @@
     request.onload = function() {
         if (request.status === 201) {
             // Object successfully created
+            addUpdateToStore(JSON.parse(request.response));
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1341,7 +1401,17 @@
         return false;
     };
 
-    request.send(JSON.stringify({project: project, user: user, title: 'Indicator update', text: text, indicator_period: periodId, period_update: value}));
+    requestData = {
+      project: defaultValues.project_id,
+      user: defaultValues.user_id,
+      title: 'Indicator update',
+      text: text,
+      // indicator_period: null
+      indicator_period: periodId,
+      period_update: value
+    };
+
+    request.send(JSON.stringify(requestData));
   }
 
   /* Edit existing update */
@@ -1447,16 +1517,11 @@
     var currentUpdate = null;
     var childElements = [];
     container.classList.add('update-dialog-container');
+    container.setAttribute('period-id', indicatorPeriodID);
+    container.setAttribute('period-target', target);
     containerCell.setAttribute('colspan', '5');
 
-    if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
-      container.classList.add('empty');
-      containerCell.textContent = 'No updates for this indicator period. ';
-      var addUpdateNode = document.createElement('button');
-      addUpdateNode.classList.add('add-button');
-      addUpdateNode.textContent = 'Add a new update';
-      containerCell.appendChild(addUpdateNode);
-    } else {
+    if (updatesByIndicatorPeriod[indicatorPeriodID]) {
       for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
         if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
           currentUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
@@ -1480,39 +1545,38 @@
   ** for each and return the appropriate markup each time.
   */
 
-  /* TODO: refactor this */
+  /* TODO: refactor this (all information is already in 'update' now) */
 
   function getUpdateEntry(update, indicatorPeriodID, periodValue, target) {
     var updateContainer = document.createElement('div');
-    var editEl, dateEl, userNameEl, timelineEl, targetEl, photoEl, descriptionEl;
+    var editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
 
     updateContainer.setAttribute("id", update.id);
     updateContainer.classList.add('update-entry-container');
 
-      var editEl = document.createElement('span');
-      editEl.classList.add('glyphicon-pencil');
-      editEl.classList.add('glyphicon');
-      editEl.classList.add('edit-button');
-      editEl.classList.add('clickable');
+    editEl = document.createElement('span');
+    editEl.classList.add('glyphicon-pencil');
+    editEl.classList.add('glyphicon');
+    editEl.classList.add('edit-button');
+    editEl.classList.add('clickable');
+    updateContainer.appendChild(editEl);
 
-      updateContainer.appendChild(editEl);
+    if (update.created_at) {
+      dateEl = document.createElement('div');
+      dateEl.classList.add('update-date');
+      dateEl.textContent = update.created_at;
+      updateContainer.appendChild(dateEl);
+    }
+    if (update.user) {
+      userNameEl = document.createElement('div');
+      userNameEl.classList.add('update-name');
+      userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
+      updateContainer.appendChild(userNameEl);
+    }
+    timeLineEl = document.createElement('div');
+    timeLineEl.classList.add('update-timeline');
 
-      if (update.created_at) {
-        dateEl = document.createElement('div');
-        dateEl.classList.add('update-date');
-        dateEl.textContent = update.created_at;
-        updateContainer.appendChild(dateEl);
-      }
-      if (update.user) {
-        userNameEl = document.createElement('div');
-        userNameEl.classList.add('update-name');
-        userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
-        updateContainer.appendChild(userNameEl);
-      }
-      timeLineEl = document.createElement('div');
-      timeLineEl.classList.add('update-timeline');
-
-      var progressContainer = document.createElement('div');
+    var progressContainer = document.createElement('div');
 
       progressContainer.classList.add('indicator-bar-display-container');       
       var markerContainer = document.createElement('div');
@@ -1523,14 +1587,16 @@
       ** and store its change amount so we can build the timeline.
       */
       for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
-        var previousUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
+        if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
+          var previousUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
 
-        /* If the change amount is "None", changes this to zero */
-        if (previousUpdate.period_update === 'None') {
-          previousUpdate.period_update = "0";
+          /* If the change amount is "None", changes this to zero */
+          if (previousUpdate.period_update === 'None') {
+            previousUpdate.period_update = "0";
+          }
+
+          previousUpdates.push(previousUpdate);
         }
-
-        previousUpdates.push(previousUpdate);
       }
 
       previousUpdates.sort(function(a,b) {
@@ -1601,28 +1667,26 @@
 
       updateContainer.appendChild(timeLineEl);
 
-      var targetEl = document.createElement('div');
+      targetEl = document.createElement('div');
       targetEl.classList.add('update-target');
-      var targetText = document.createElement('div');
+      targetText = document.createElement('div');
       targetText.textContent = target;
 
       targetEl.appendChild(targetText);
       updateContainer.appendChild(targetEl);
 
-      if (update.text) {        
-        descriptionEl = document.createElement('div');
-        descriptionEl.classList.add('update-description');
-        descriptionEl.textContent = update.text;
+      descriptionEl = document.createElement('div');
+      descriptionEl.classList.add('update-description');
+      descriptionEl.textContent = update.text;
 
-        if (update.photo) {
-          photoEl = document.createElement('div');
-          photoEl.classList.add('update-photo');
-          photoEl.style['background-image'] = 'url("' + update.photo + '")';
-          descriptionEl.appendChild(photoEl);
-        }
-
-        updateContainer.appendChild(descriptionEl);
+      if (update.photo) {
+        photoEl = document.createElement('div');
+        photoEl.classList.add('update-photo');
+        photoEl.style['background-image'] = 'url("' + update.photo + '")';
+        descriptionEl.appendChild(photoEl);
       }
+
+      updateContainer.appendChild(descriptionEl);
 
       var saveEl = document.createElement('div');
       saveEl.classList.add('save-button');
@@ -1705,7 +1769,6 @@
 <script type="application/json" id="akvo-rsr-carousel">
 {{ carousel_data|safe }}
 </script>
-
     {# Translation strings #}
     <script type="application/json" id="project-main-text">
         {
@@ -1722,6 +1785,7 @@
             "results_text": "{% trans 'Results and indicators' %}"
         }
     </script>
+
 <script>
   function showTab(tabClass) {
     var allTabs = document.querySelectorAll('.project-tab');
