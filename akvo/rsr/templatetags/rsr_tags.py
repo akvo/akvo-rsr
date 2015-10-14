@@ -17,14 +17,12 @@ from django.utils.translation import ugettext as _
 register = template.Library()
 
 
-@register.inclusion_tag('inclusion_tags/more_partners.html',
-                        takes_context=True)
+@register.inclusion_tag('inclusion_tags/more_partners.html', takes_context=True)
 def more_link(context, project):
-    """Generate the more links."""
+    """Return all partners except primary_organisation"""
     partners = {}
-    for partner in project.all_partners():
-        if partner != project.reporting_org():
-            partners[partner] = partner.has_partner_types(project)
+    for partner in project.all_partners().exclude(pk=project.primary_organisation.pk):
+        partners[partner] = partner.has_partner_types(project)
     return {
         'project': project,
         'partners': partners
