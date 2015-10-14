@@ -173,7 +173,7 @@ class IATIPartnershipResource(ModelResource):
             bundle.data[FIELD_ORGANISATION] = organisation
             if (
                 organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG] or
-                bundle.data[FIELD_PARTNER_TYPE] != Partnership.IATI_ACCOUNTABLE_PARTNER
+                bundle.data[FIELD_PARTNER_TYPE] != Partnership.IATI_REPORTING_ORGANISATION
             ):
                 bundle.data[FIELD_IATI_ACTIVITY_ID] = None
                 bundle.data[FIELD_INTERNAL_ID] = None
