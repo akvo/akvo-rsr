@@ -193,24 +193,23 @@ class Organisation(TimestampsMixin, models.Model):
             ids = ids.exclude(pk=self.pk) if ids else None
 
         if name and names.exists():
-            validation_errors['name'] = u'%s: %s' % (_('Organisation name already exists'),
-                                                     names[0].name)
+            validation_errors['name'] = u'{}: {}'.format(
+                    _('An Organisation with this name already exists'), name)
         elif not name:
             # This prevents organisation names with only spaces
-            validation_errors['name'] = u'%s' % _('Organisation name can not be blank')
+            validation_errors['name'] = _(u'Organisation name may not be blank')
         
         if long_name and long_names.exists():
-            validation_errors['long_name'] = u'%s: %s' % (
-                _('Organisation long name already exists'),
-                long_names[0].long_name)
+            validation_errors['long_name'] = u'{}: {}'.format(
+                _('An Organisation with this long name already exists'), long_name)
+
         elif not long_name:
             # This prevents organisation long names with only spaces
-            validation_errors['long_name'] = u'%s' % _('Organisation long name can not be blank')
+            validation_errors['long_name'] = _(u'Organisation long name may not be blank')
 
         if iati_org_id and ids.exists():
-            validation_errors['iati_org_id'] = u'%s: %s' % (
-                _('IATI organisation identifier already exists for this organisation'),
-                ids[0].name)
+            validation_errors['iati_org_id'] = u'{}: {}'.format(
+                _('An Organisation with this IATI organisation identifier already exists'), ids[0].name)
 
         if validation_errors:
             raise ValidationError(validation_errors)
