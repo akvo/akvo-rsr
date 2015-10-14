@@ -269,8 +269,7 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return (Project.objects.filter(partnerships__organisation__in=self) |
-                    Project.objects.filter(sync_owner__in=self)).distinct()
+            return Project.objects.filter(partnerships__organisation__in=self).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -340,11 +339,14 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
-        partner_types = []
-        for ps in Partnership.objects.filter(project=project, organisation=self):
-            if ps.iati_organisation_role:
-                partner_types.append(ps.iati_organisation_role_label())
-        return partner_types
+        return [
+            dict(Partnership.IATI_ROLES)[role] for role in Partnership.objects.filter(
+                project=project,
+                organisation=self,
+                iati_organisation_role__isnull=False).values_list(
+                'iati_organisation_role', flat=True
+            )
+        ]
 
     def content_owned_organisations(self):
         """

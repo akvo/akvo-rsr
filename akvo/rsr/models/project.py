@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import math
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
@@ -46,6 +46,10 @@ from .publishing_status import PublishingStatus
 
 def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
+
+
+class MultipleReportingOrgs(Exception):
+    pass
 
 
 class Project(TimestampsMixin, models.Model):
@@ -227,6 +231,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     # synced projects
+    # TODO: remove sync_owner and sync_owner_secondary_reporter when data is migrated
     sync_owner = models.ForeignKey(
         'Organisation',
         limit_choices_to={'can_become_reporting': True},
@@ -456,6 +461,37 @@ class Project(TimestampsMixin, models.Model):
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
+
+    @property
+    def reporting_partner(self):
+        """ In some cases we need the partnership object instead of the organisation to be able to
+            access is_secondary_reporter
+        """
+        try:
+            return self.partnerships.get(
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
+        except ObjectDoesNotExist:
+            return None
+
+    @property
+    def reporting_org(self):
+        """ Returns the organisation of the partnership that is the reporting-org, if there is one
+        """
+        return self.reporting_partner.organisation if self.reporting_partner else None
+
+    def set_reporting_org(self, organisation):
+        """ Set the reporting-org for the project.
+            Currently protests if you try to set another organisation when one is already set.
+        """
+        if self.reporting_org is not None:
+            # TODO: should we allow overwriting the existing reporting-org here?
+            if self.reporting_org != organisation:
+                raise MultipleReportingOrgs
+        else:
+            self.partnerships.add(Partnership.object.create(
+                    project=self,
+                    organisation=organisation,
+                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION))
 
 
     class QuerySet(DjangoQuerySet):
@@ -788,13 +824,20 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
-    def reporting_org(self):
-        if self.sync_owner:
-            return self.sync_owner
+    @property
+    def primary_organisation(self):
+        """ This method tries to return the "managing" partner organisation.
+        """
+        # If we have a reporting-org then we choose that
+        if self.reporting_org:
+            return self.reporting_org
+        # otherwise grab the first accountable partner we find
         elif self.support_partners():
             return self.support_partners()[0]
+        # panic mode: grab the first partner we find
         elif self.all_partners():
             return self.all_partners()[0]
+        # Uh-oh...
         else:
             return None
 
