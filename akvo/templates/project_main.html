@@ -1019,8 +1019,8 @@
                       <td></td>
                     </tr>
                   </thead>
-                  <tbody>
-                    {% for period in indicator.periods.all %}
+                  {% for period in indicator.periods.all %}
+                    <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target_value }}" period-value="{{ period.actual_value }}">
                       <tr class="indicator-period-{{period.id}}-tr">
                         <td>{{period.period_start}}</td>
                         <td>{{period.period_end}}</td>
@@ -1050,8 +1050,8 @@
                           </span>
                         </td>
                       </tr>
-                    {% endfor %}
-                  </tbody>
+                    </tbody>
+                  {% endfor %}
                 </table>
               </div>
             {% endfor %}
@@ -1069,7 +1069,9 @@
   <script type="application/json" id="default-values">
     {
       "project_id": {{ project.pk }},
-      "user_id": {{ user.pk }}
+      "user_id": {{ user.pk }},
+      "user_first_name": "{{ user.first_name }}",
+      "user_last_name": "{{ user.last_name }}"
     }
   </script>
   <script>
@@ -1077,7 +1079,7 @@
   ** But it's handy to leave it here for development.
   */
 
-  // DEFAULT VALUES
+  // Default values
   var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 
   /* Set the click listeners that expand or hide the full
@@ -1099,10 +1101,10 @@
           removeClassFromAll('.result-nav', 'expanded');
 
           // Expand this result in the sidebar
-          this.parentNode.classList.add('expanded');  
+          this.parentNode.classList.add('expanded');
 
           // Hide all indicators in the main panel
-          hideAll('.indicator');        
+          hideAll('.indicator');
 
           // Expand the appropriate result in the main panel
           resultID = this.getAttribute('data-result-id');
@@ -1191,35 +1193,37 @@
         if (this.classList.contains('expanded')) {
           /* This is period already expanded. Collapse it and remove all update dialogs. */
           removeAll('tr.update-dialog-container');
+          removeAll('tr.add-new-update-container');
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded');
         } else {
-          var container = document.createElement('tr');
-          var containerCell = document.createElement('td');
-          container.classList.add('add-new-update-container');
-          container.classList.add('expanded');
-          container.setAttribute('period-id', indicatorPeriodID);
-          container.setAttribute('period-target', target);
+          var addRow, container, rowCells;
+
+          addRow = document.createElement('tr');
+          addRow.classList.add('add-new-update-container');
+          addRow.classList.add('expanded');
+
+          rowCells = document.createElement('td');
+          rowCells.setAttribute('colspan', '5');
 
           if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
-            container.classList.add('empty');
-            containerCell.textContent = 'No updates for this indicator period. ';
+            rowCells.textContent = 'No updates for this indicator period. ';
           }
 
           var addUpdateNode = document.createElement('button');
           addUpdateNode.classList.add('add-button');
           addUpdateNode.textContent = 'Add a new update';
 
-          containerCell.appendChild(addUpdateNode);
-          container.appendChild(containerCell);
+          rowCells.appendChild(addUpdateNode);
+          addRow.appendChild(rowCells);
+          parentElement.parentNode.appendChild(addRow);
+          parentElement.parentNode.appendChild(getUpdateDialog(indicatorPeriodID, periodValue, target));
 
-          parentElement.insertAdjacentHTML('afterend', getUpdateDialog(indicatorPeriodID, periodValue, target).outerHTML);
-          parentElement.insertAdjacentHTML('afterend', container.outerHTML);
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
           addAddOnClicks();
           addEditOnClicks();
           addSaveOnClicks();
-        }       
+        }
       })
     }
   }
@@ -1232,8 +1236,8 @@
       el.addEventListener('click', function() {
         var newUpdate, periodId, periodTarget;
 
-        periodId = parseInt(this.parentNode.parentNode.getAttribute('period-id'));
-        periodTarget = parseInt(this.parentNode.parentNode.getAttribute('period-target'));
+        periodId = this.closest('tbody').getAttribute('period-id');
+        periodTarget = this.closest('tbody').getAttribute('period-target');
 
         newUpdate = {
           id: 'add',
@@ -1241,12 +1245,12 @@
             id: periodId,
             target_value: periodTarget
           },
-          period_update: 0,
+          period_update: "0",
           created_at: 'New update',
           user: {
             id: defaultValues.user_id,
-            first_name: 'To', // To do (current user's name?)
-            last_name: 'Do' // To do
+            first_name: defaultValues.user_first_name,
+            last_name: defaultValues.user_last_name
           },
           text: '',
           photo: ''
@@ -1256,7 +1260,9 @@
         var container = document.createElement('tr');
         container.classList.add('update-dialog-container');
         var containerCell = document.createElement('td');
-        var addUpdateContainer = getUpdateEntry(newUpdate, periodId, 0, periodTarget);
+        containerCell.setAttribute('colspan', '5');
+        var periodValue = this.closest('tbody').getAttribute('period-value');
+        var addUpdateContainer = getUpdateEntry(newUpdate, periodId, periodValue, periodTarget);
         containerCell.appendChild(addUpdateContainer);
         container.appendChild(containerCell);
         if (this.parentNode.parentNode.nextSibling) {
@@ -1266,6 +1272,7 @@
         }
         addEditOnClicks();
         addSaveOnClicks();
+        container.querySelector('.edit-button').click();
       });
     }
   }
@@ -1287,7 +1294,7 @@
         value = parseInt(newValue) - parseInt(olderValue);
         description = updateContainer.querySelector('.update-description').textContent;
         updateId = updateContainer.getAttribute('id');
-        periodId = updateContainer.parentNode.parentNode.getAttribute('period-id');
+        periodId = parseInt(this.closest('tbody').getAttribute('period-id'));
 
         if (updateId === 'add') {
           // Add new update
@@ -1302,7 +1309,7 @@
 
   function addEditOnClicks() {
     var els = document.querySelectorAll('.edit-button');
-    console.log(els.length);
+
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
 
@@ -1324,7 +1331,7 @@
           updateContainer.querySelector('.update-description').classList.add('editable');
           this.classList.add('activated');
           updateContainer.querySelector('.save-button').classList.add('active');
-          
+
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = sliderEl.getAttribute('data-start');
           var maxVal = parseFloat(sliderEl.getAttribute('data-max'));
@@ -1342,11 +1349,11 @@
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
 
           sliderEl.noUiSlider.on('update', function(value) {
-            updateMarker.style.left = value + '%';
-            updateMarker.setAttribute('data-value', value); 
+            updateMarker.style.left = (value / maxVal) * 100 + '%';
+            updateMarker.setAttribute('data-value', value);
 
             updateMarker.querySelector('.indicator-bar-progress-text').textContent = Math.round(value);
-            updateProgress.style.width = value + '%';
+            updateProgress.style.width = (value / maxVal) * 100 + '%';
           });
         }
       });
@@ -1355,24 +1362,22 @@
 
   /* GENERAL HELPER FUNCTIONS */
 
-    // CSRF TOKEN (this should really be added in base.html, we use it everywhere)
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+  /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-        return cookieValue;
+      }
     }
-
-    var csrftoken = getCookie('csrftoken');
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
 
   /* Add new update */
   function addNewUpdate(text, periodId, value) {
@@ -1388,7 +1393,12 @@
     request.onload = function() {
         if (request.status === 201) {
             // Object successfully created
-            addUpdateToStore(JSON.parse(request.response));
+            var completeUpdate, response, updateId;
+            response = JSON.parse(request.response);
+            updateId = response.id;
+            removeUpdatefromStore(periodId, 'add');
+            addAdditionalUpdateData(updateId);
+            // TODO: Reload expanded section (which will include new update)
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1406,7 +1416,6 @@
       user: defaultValues.user_id,
       title: 'Indicator update',
       text: text,
-      // indicator_period: null
       indicator_period: periodId,
       period_update: value
     };
@@ -1441,6 +1450,34 @@
     };
 
     request.send(JSON.stringify({text: text, period_update: value}));
+  }
+
+  /* Get additional data of update */
+  function addAdditionalUpdateData(updateId) {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/project_update_extra/' + updateId + '/?format=json';
+    request = new XMLHttpRequest();
+    request.open('GET', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Object successfully retrieved
+          addUpdateToStore(JSON.parse(request.response));
+        } else {
+          return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send();
   }
 
   /* Hide all elements for a given selector */
@@ -1506,6 +1543,14 @@
       updatesByIndicatorPeriod[update.indicator_period.id] = {};
     }
     updatesByIndicatorPeriod[update.indicator_period.id][update.id] = update;
+  }
+
+  function removeUpdatefromStore(periodId, updateId) {
+    if (updatesByIndicatorPeriod.hasOwnProperty([periodId])) {
+      if (updatesByIndicatorPeriod[periodId].hasOwnProperty([updateId])) {
+        delete updatesByIndicatorPeriod[periodId][updateId];
+      }
+    }
   }
 
   /* Returns a node representing the "Add update" dialog, ready to be injected at
@@ -1578,7 +1623,7 @@
 
     var progressContainer = document.createElement('div');
 
-      progressContainer.classList.add('indicator-bar-display-container');       
+      progressContainer.classList.add('indicator-bar-display-container');
       var markerContainer = document.createElement('div');
       markerContainer.classList.add('indicator-bar-progress-container');
 
@@ -1600,7 +1645,7 @@
       }
 
       previousUpdates.sort(function(a,b) {
-        return a.id > b.id;
+          return a.id > b.id;
       });
 
       var highestValue = 0;
@@ -1608,17 +1653,15 @@
       for (var i = previousUpdates.length - 1; i >= 0; i--) {
         var entry = previousUpdates[i];
 
-        if (entry.id > update.id) {
-
+        if (entry.id > update.id && update.id !== 'add') {
           /* This update is *newer* than the one we're building the dialog
           ** for. We don't need to add a marker for it, but we do need to
-          ** use it's "change" value to calculate the end value for thie
+          ** use it's "change" value to calculate the end value for the
           ** timeline for this particular update.
           */
           periodValue = periodValue - parseFloat(entry.period_update);
         } else {
-
-          /* This update is *older* (or the same) as the update we're 
+          /* This update is *older* (or the same) as the update we're
           ** building the dialog for. We need to make a marker for it.
           */
           if (periodValue > highestValue) {
@@ -1634,9 +1677,9 @@
           updateMarker.style['z-index'] = periodValue;
           updateMarker.style.border = '1px solid white';
 
-          triangleSpan.classList.add('indicator-bar-progress-triangle'); 
-          textSpan.classList.add('indicator-bar-progress-text');    
-          textSpan.textContent = periodValue;     
+          triangleSpan.classList.add('indicator-bar-progress-triangle');
+          textSpan.classList.add('indicator-bar-progress-text');
+          textSpan.textContent = periodValue;
 
           updateMarker.appendChild(textSpan);
           updateMarker.appendChild(triangleSpan);
@@ -1651,9 +1694,9 @@
 
       var indicatorBarProgressAmount = document.createElement('div');
       indicatorBarProgressAmount.classList.add('indicator-bar-progress-amount');
-      indicatorBarProgressAmount.style.width = (parseFloat(highestValue) / parseFloat(target)) * 100 + '%';  
+      indicatorBarProgressAmount.style.width = (parseFloat(highestValue) / parseFloat(target)) * 100 + '%';
 
-      progressContainer.appendChild(indicatorBarProgressAmount); 
+      progressContainer.appendChild(indicatorBarProgressAmount);
       progressContainer.appendChild(markerContainer);
 
       var sliderEl = document.createElement('div');
@@ -1661,7 +1704,7 @@
       sliderEl.setAttribute('data-start', highestValue);
       sliderEl.setAttribute('data-max', target);
 
-      progressContainer.appendChild(sliderEl);      
+      progressContainer.appendChild(sliderEl);
 
       timeLineEl.appendChild(progressContainer);
 
