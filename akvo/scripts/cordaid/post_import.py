@@ -103,8 +103,7 @@ def fix_funding(budgets):
             project = Project.objects.get(
                 partnerships__internal_id=internal_id, partnerships__organisation=cordaid
             )
-            # Set sync_owner of project to Cordaid
-            project.sync_owner = cordaid
+            project.set_reporting_org(cordaid)
             project.save()
             cordaid_funding = budget.get('cordaid_funding', 0)
             others_funding = budget.get('others_funding', 0)

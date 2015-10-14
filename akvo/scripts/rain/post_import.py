@@ -149,9 +149,8 @@ class ProjectSaver():
         except:
             print "Cat is not in the bag!"
 
-    def _sync_owner(self):
-        rain = Organisation.objects.get(id=RAIN_ORG_ID)
-        self.project.sync_owner = rain
+    def _reporting_org(self):
+        self.project.set_reporting_org(Organisation.objects.get(id=RAIN_ORG_ID))
 
     def _publish(self):
         has_image = self.project.current_image != ''
@@ -185,7 +184,7 @@ class ProjectSaver():
         self._current_image_caption()
         self._current_image_credit()
         self._category()
-        self._sync_owner()
+        self._reporting_org()
         self._publish()
         try:
             self.project.full_clean()
