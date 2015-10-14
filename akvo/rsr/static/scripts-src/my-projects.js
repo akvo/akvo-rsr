@@ -130,6 +130,7 @@ function getCreateProject(createProjectNode) {
         };
 
         // Set reporting partner by default
+        // TODO: needs refactoring to not use sync_owner
         partners = defaultValues.employments;
 
         if (partners.length > 0) {
