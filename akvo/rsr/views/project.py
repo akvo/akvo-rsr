@@ -37,7 +37,8 @@ def _all_projects():
     """Return all active projects."""
     return Project.objects.published().select_related(
         'publishingstatus__status',
-        'sync_owner',
+        # TODO: remove
+        # 'sync_owner',
         'primary_location',
         'primary_location__country'
         'locations',
@@ -313,21 +314,12 @@ def main(request, project_id):
     accordion_data = _get_accordion_data(project)
     # timeline_data = _get_timeline_data(project)
 
-    reporting_org = project.reporting_org()
-    if reporting_org:
-        reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
-    else:
-        reporting_org_info = None
-    partners = _get_project_partners(project)
-
     context = {
         'accordion_data': json.dumps(accordion_data),
         'carousel_data': json.dumps(carousel_data),
         'project': project,
         # 'timeline_data': json.dumps(timeline_data),
         'updates': updates,
-        'reporting_org': reporting_org_info,
-        'partners': partners,
     }
 
     return render(request, 'project_main.html', context)

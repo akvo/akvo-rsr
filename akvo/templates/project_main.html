@@ -80,20 +80,20 @@
                 {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
                 </li>
               {% endif %}
-              {% if reporting_org %}
+              {% if project.primary_organisation %}
               <li class="projectPartners">
-                <span class="detailedInfo">{% trans "Reporting organisation" %}</span>
+                <span class="detailedInfo">{% trans "Primary organisation" %}</span>
                 <div class="row">
                   <div class="col-xs-12">
-                    <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
-                      {% img project.reporting_org 80 60 project.reporting_org.name %}
+                    <a href="{% url 'organisation-main' project.primary_organisation.pk %}" class="pull-left logoImg">
+                      {% img project.primary_organisation 80 60 project.primary_organisation.name %}
                     </a>
                     <div class="media-body">
-                      <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
+                      <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
                       {% more_link project %}
-                      {% if project.reporting_org.primary_location.country %}
+                      {% if project.primary_organisation.primary_location.country %}
                         <div class="projectLocation">
-                          <i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}
+                          <i class="fa fa-map-marker"></i> {{project.primary_organisation.primary_location.country}}, {{project.primary_organisation.primary_location.country.continent}}
                         </div>
                       {% endif %}
                     </div>
