@@ -66,7 +66,7 @@ class ProjectViewSet(BaseRSRViewSet):
         'date_end_actual': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'sync_owner': ['exact', ],
+        # 'sync_owner': ['exact', ],
         'iati_activity_id': ['exact', 'icontains', ],
         'hierarchy': ['exact', ],
         'project_scope': ['exact', ],

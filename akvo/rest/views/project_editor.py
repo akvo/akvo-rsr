@@ -72,6 +72,7 @@ PROJECT_CONTACT_FIELDS = (
 )
 
 ## Section 3 ##
+#TODO: replace with reporting-org?
 
 SECTION_THREE_FIELDS = (
     ('sync_owner', 'value-reportingOrganisation', 'related-object'),
@@ -745,6 +746,7 @@ def project_editor_step3(request, pk=None):
     rel_objects = []
 
     # Project fields
+    #TODO: change to reporting-org
     for field in SECTION_THREE_FIELDS:
         if field[0] == 'sync_owner':
             errors, changes = process_field(project, data, field, errors, changes, '', Organisation)
