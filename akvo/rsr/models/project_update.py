@@ -88,7 +88,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                 # Update the indicator period's actual value.
                 try:
                     self.indicator_period.actual_value = str(
-                        Decimal(self.indicator_period.actual_value) +
+                        Decimal(self.indicator_period.actual) +
                         Decimal(self.period_update)
                     )
                 except (InvalidOperation, TypeError):
@@ -103,7 +103,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                     # Substract value from old period, and add new value to new period.
                     try:
                         orig_update.indicator_period.actual_value = str(
-                            Decimal(orig_update.indicator_period.actual_value) -
+                            Decimal(orig_update.indicator_period.actual) -
                             Decimal(orig_update.period_update)
                         )
                         orig_update.save()
@@ -112,7 +112,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
                     try:
                         self.indicator_period.actual_value = str(
-                            Decimal(self.indicator_period.actual_value) +
+                            Decimal(self.indicator_period.actual) +
                             Decimal(self.period_update)
                         )
                     except (InvalidOperation, TypeError):
@@ -124,7 +124,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                     # Substract old value from period, and add new value to it.
                     try:
                         self.indicator_period.actual_value = str(
-                            Decimal(self.indicator_period.actual_value) -
+                            Decimal(self.indicator_period.actual) -
                             Decimal(orig_update.period_update) +
                             Decimal(self.period_update)
                         )
@@ -138,7 +138,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         if self.indicator_period and self.period_update:
             try:
                 self.indicator_period.actual_value = str(
-                    Decimal(self.indicator_period.actual_value) -
+                    Decimal(self.indicator_period.actual) -
                     Decimal(self.period_update)
                 )
                 self.indicator_period.save()

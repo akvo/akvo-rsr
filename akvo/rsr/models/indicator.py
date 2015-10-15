@@ -148,10 +148,65 @@ class IndicatorPeriod(models.Model):
 
     @property
     def percent_accomplishment(self):
+        """
+        Return the percentage completed for this indicator period. If not possible to convert the
+        values to numbers, return 0.
+        """
+        if not self.target_value:
+            return 0
+
+        actual_value = self.actual_value if self.actual_value else self.baseline
+        baseline = self.baseline
         try:
-            return round(Decimal(self.actual_value) / Decimal(self.target_value) * 100, 1)
+            return round(
+                (Decimal(actual_value) - Decimal(baseline)) /
+                (Decimal(self.target_value) - Decimal(baseline)) *
+                100, 1
+            )
         except (InvalidOperation, TypeError):
             return 0
+
+    @property
+    def percent_accomplishment_100(self):
+        """
+        Similar to the percent_accomplishment property. However, it won't return any number bigger
+        than 100.
+        """
+        return 100 if self.percent_accomplishment > 100 else self.percent_accomplishment
+
+    @property
+    def actual(self):
+        """
+        Returns the actual value of the indicator period, if it can be converted to a number.
+        Otherwise it'll return 0.
+        """
+        try:
+            return Decimal(self.actual_value)
+        except (InvalidOperation, TypeError):
+            return Decimal(self.baseline)
+
+    @property
+    def target(self):
+        """
+        Returns the target value of the indicator period, if it can be converted to a number.
+        Otherwise it'll return 0.
+        """
+        try:
+            return Decimal(self.target_value)
+        except (InvalidOperation, TypeError):
+            return Decimal(self.baseline)
+
+    @property
+    def baseline(self):
+        """
+        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
+        it'll return 0.
+        """
+        baseline = self.indicator.baseline_value
+        try:
+            return Decimal(baseline)
+        except (InvalidOperation, TypeError):
+            return Decimal(0)
 
     class Meta:
         app_label = 'rsr'
