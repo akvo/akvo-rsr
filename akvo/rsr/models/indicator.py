@@ -202,7 +202,20 @@ class IndicatorPeriod(models.Model):
         Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
         it'll return 0.
         """
-        baseline = self.indicator.baseline_value
+        baseline = 0
+
+        ordered_periods = self.indicator.periods.exclude(period_start=None).order_by('period_start')
+        if ordered_periods.exists() and self == ordered_periods[0]:
+            baseline = self.indicator.baseline_value
+        elif self in ordered_periods:
+            prev_period = None
+            for period in ordered_periods:
+                if not self == period:
+                    prev_period = period
+                else:
+                    baseline = prev_period.actual
+                    break
+
         try:
             return Decimal(baseline)
         except (InvalidOperation, TypeError):
@@ -212,3 +225,4 @@ class IndicatorPeriod(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period')
         verbose_name_plural = _(u'indicator periods')
+        ordering = ['period_start']

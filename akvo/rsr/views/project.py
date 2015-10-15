@@ -243,12 +243,16 @@ def main(request, project_id):
     if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
+    # Updates
     updates = project.project_updates.select_related('user').order_by('-created_at')
-    #indicator_updates = serializers.serialize('json', updates, fields=('id', 'text'))
-    carousel_data = _get_carousel_data(project)
-    accordion_data = _get_accordion_data(project)
+    narrative_updates = updates.exclude(indicator_period__gt=0)
+    indicator_updates = updates.filter(indicator_period__gt=0)
+
+    # JSON data
+    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates))
+    carousel_data = json.dumps(_get_carousel_data(project))
+    accordion_data = json.dumps(_get_accordion_data(project))
     partner_types = _get_partners_with_types(project)
-    indicator_updates = json.dumps(_get_indicator_updates_data(updates))
 
     # Reporting org
     rep_org = project.reporting_org()
@@ -256,15 +260,15 @@ def main(request, project_id):
 
     # Updates pagination
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
+    page, paginator, page_range = pagination(page, narrative_updates, 10)
 
     context = {
         'project': project,
-        'accordion_data': json.dumps(accordion_data),
-        'carousel_data': json.dumps(carousel_data),
+        'accordion_data': accordion_data,
+        'carousel_data': carousel_data,
         'partners': partner_types,
-        'updates': updates,
-        'indicator_updates': indicator_updates,
+        'updates': narrative_updates,
+        'indicator_updates': indicator_updates_data,
         'pledged': project.get_pledged(),
         'reporting_org': rep_org_info,
         'page': page,
