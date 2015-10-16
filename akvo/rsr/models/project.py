@@ -488,10 +488,11 @@ class Project(TimestampsMixin, models.Model):
             if self.reporting_org != organisation:
                 raise MultipleReportingOrgs
         else:
-            self.partnerships.add(Partnership.object.create(
-                    project=self,
-                    organisation=organisation,
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION))
+            Partnership.objects.create(
+                project=self,
+                organisation=organisation,
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+            )
 
 
     class QuerySet(DjangoQuerySet):
