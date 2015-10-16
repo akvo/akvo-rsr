@@ -1186,42 +1186,28 @@
 
       el.addEventListener('click', function() {
         var periodNode = this.closest('tbody');
-        var indicatorPeriodID = periodNode.getAttribute('period-id');
+        var periodId = periodNode.getAttribute('period-id');
         var periodValue = periodNode.getAttribute('period-actual');
         var target = periodNode.getAttribute('period-target');
         var baseline = periodNode.getAttribute('period-start');
-        var parentElement = document.querySelector('.indicator-period-' + indicatorPeriodID + '-tr');
+        var parentElement = document.querySelector('.indicator-period-' + periodId + '-tr');
 
         if (this.classList.contains('expanded')) {
           /* This is period already expanded. Collapse it and remove all update dialogs. */
-          removeAll('tr.update-dialog-container');
-          removeAll('tr.add-new-update-container');
-          removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded');
+          removeFromPeriod(periodId, 'tr.update-dialog-container');
+          removeFromPeriod(periodId, 'tr.add-new-update-container');
+          removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded', periodId);
+          /* Remove the 'add' update in the store, in case the 'add Update' button was clicked */
+          removeUpdatefromStore(periodId, 'add');
         } else {
-          var addRow, container, rowCells;
+          var container;
 
-          addRow = document.createElement('tr');
-          addRow.classList.add('add-new-update-container');
-          addRow.classList.add('expanded');
-
-          rowCells = document.createElement('td');
-          rowCells.setAttribute('colspan', '5');
-
-          if (!updatesByIndicatorPeriod[indicatorPeriodID]) {
-            rowCells.textContent = 'No updates for this indicator period. ';
-          }
-
-          var addUpdateNode = document.createElement('button');
-          addUpdateNode.classList.add('add-button');
-          addUpdateNode.textContent = 'Add a new update';
-
-          rowCells.appendChild(addUpdateNode);
-          addRow.appendChild(rowCells);
-          parentElement.parentNode.appendChild(addRow);
-          parentElement.parentNode.appendChild(getUpdateDialog(indicatorPeriodID, periodValue, target, baseline));
+          insertAddRow(periodId);
+          parentElement.parentNode.appendChild(getUpdateDialog(periodId, periodValue, target, baseline));
 
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
+
           addAddOnClicks();
           addEditOnClicks();
           addSaveOnClicks();
@@ -1277,6 +1263,7 @@
         addEditOnClicks();
         addSaveOnClicks();
         container.querySelector('.edit-button').click();
+        periodNode.removeChild(this.closest('.add-new-update-container'));
       });
     }
   }
@@ -1409,6 +1396,7 @@
             addAdditionalUpdateData(updateId);
             updateActualValue(periodId, value);
             updateUpdateValues(periodId, 'add', updateId, value);
+            insertAddRow(periodId);
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1470,6 +1458,37 @@
     };
 
     request.send(JSON.stringify({text: text, period_update: value}));
+  }
+
+  /* Return the add row top node */
+  function insertAddRow(periodId) {
+    var addUpdateButton, periodNode, row, rowCells;
+
+    periodNode = findPeriod(periodId);
+
+    row = document.createElement('tr');
+    row.classList.add('add-new-update-container');
+    row.classList.add('expanded');
+
+    rowCells = document.createElement('td');
+    rowCells.setAttribute('colspan', '5');
+
+    if (!updatesByIndicatorPeriod[periodId]) {
+      rowCells.textContent = 'No updates for this indicator period. ';
+    }
+
+    addUpdateButton = document.createElement('button');
+    addUpdateButton.classList.add('add-button');
+    addUpdateButton.textContent = 'Add a new update';
+
+    rowCells.appendChild(addUpdateButton);
+    row.appendChild(rowCells);
+    console.log(periodNode.getElementsByTagName('tr').length);
+    if (periodNode.getElementsByTagName('tr').length > 1) {
+      periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
+    } else {
+      periodNode.appendChild(row);
+    }
   }
 
   /* Get additional data of update */
@@ -1561,8 +1580,11 @@
   }
 
   /* Remove all elements for a given selector from the DOM */
-  function removeAll(selector) {
-    var els = document.querySelectorAll(selector);
+  function removeFromPeriod(periodId, selector) {
+    var periodNode, els;
+
+    periodNode = findPeriod(periodId);
+    els = periodNode.querySelectorAll(selector);
 
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
@@ -1572,14 +1594,18 @@
   }
 
   /* Remove a class from all elements for a given selector */
-  function removeClassFromAll(selector, className) {
-    var els = document.querySelectorAll(selector);
-    var el = null;
+  function removeClassFromAll(selector, className, periodId) {
+    var els, periodNode;
+
+    if (periodId === undefined) {
+      els = document.querySelectorAll(selector);
+    } else {
+      periodNode = findPeriod(periodId);
+      els = periodNode.querySelectorAll(selector);
+    }
 
     for (var i = 0; i < els.length; i++) {
-      el = els[i];
-
-      el.classList.remove(className);
+      els[i].classList.remove(className);
     }
   }
 
