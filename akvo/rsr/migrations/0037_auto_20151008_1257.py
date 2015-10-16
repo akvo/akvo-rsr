@@ -42,7 +42,7 @@ def add_projects_creators(apps, schema_editor):
             org.save()
             print(u'{}, "{}"'.format(org.pk, org.name))
         except Exception as e:
-            print(u'Error trying to set project creator for Organisation wiht ID {}, '
+            print(u'Error trying to set project creator for Organisation with ID {}, '
                   u'error message: \n{}'.format(creator_pk, e.message))
 
 
