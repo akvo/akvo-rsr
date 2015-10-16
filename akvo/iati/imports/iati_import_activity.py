@@ -145,7 +145,7 @@ class IatiImportActivity(object):
                         IatiImportLog.CRITICAL_ERROR)
                 return False
 
-            if not organisation.can_become_reporting:
+            if not organisation.can_create_projects:
                 add_log(self.iati_import, 'reporting_org',
                         'Reporting organisation not allowed to import projects in RSR.',
                         self.project, IatiImportLog.CRITICAL_ERROR)

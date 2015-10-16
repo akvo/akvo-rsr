@@ -70,6 +70,8 @@ class Partnership(models.Model):
         IATI_EXTENDING_PARTNER: EXTENDING_PARTNER,
         IATI_IMPLEMENTING_PARTNER: FIELD_PARTNER,
         AKVO_SPONSOR_PARTNER: SPONSOR_PARTNER,
+        # TODO: not backwards compatible
+        IATI_REPORTING_ORGANISATION: u''
     }
 
     ALLIANCE_PARTNER = u'alliance'

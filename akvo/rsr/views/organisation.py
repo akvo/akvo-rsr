@@ -65,9 +65,9 @@ def directory(request):
     all_organisations = _organisation_directory_coll(request)
 
     # Easter egg feature
-    show_reporting = request.GET.get('reporting', False)
+    show_reporting = request.GET.get('creator', False)
     if show_reporting:
-        all_organisations = all_organisations.filter(can_become_reporting=True)
+        all_organisations = all_organisations.filter(can_create_projects=True)
 
     f = OrganisationFilter(qs, queryset=all_organisations)
 

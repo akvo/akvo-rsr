@@ -143,7 +143,7 @@ def my_projects(request):
     approved_employments = request.user.approved_employments()
     reportable_organisations = []
     for employment in approved_employments:
-        if employment.organisation.can_become_reporting:
+        if employment.organisation.can_create_projects:
             reportable_organisations.append(employment.organisation.id)
 
     context = {

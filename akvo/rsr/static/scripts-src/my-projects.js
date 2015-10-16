@@ -25,6 +25,24 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
+function setReportingOrg(projectId, partnerId) {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/partnership/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/json");
+
+    request.onload = function() {
+        return false;
+    };
+
+    request.send('{"project": ' + projectId + ', "organisation": ' + partnerId + ', "iati_organisation_role": 101}');
+}
+
 function addCustomFieldToProject(customField, projectId) {
     var api_url, request;
 
@@ -109,6 +127,12 @@ function getCreateProject(createProjectNode) {
                     response = JSON.parse(request.response);
                     projectId = response.id;
 
+                    // Set reporting partner by default
+                    partners = defaultValues.employments;
+                    if (partners.length > 0) {
+                        setReportingOrg(projectId, partners[0]);
+                    }
+
                     addCustomFieldsToProject(projectId);
                 } catch (error) {
                     // Something went wrong while parsing the response
@@ -129,16 +153,7 @@ function getCreateProject(createProjectNode) {
             return false;
         };
 
-        // Set reporting partner by default
-        // TODO: needs refactoring to not use sync_owner
-        partners = defaultValues.employments;
-
-        if (partners.length > 0) {
-            request.send('{"sync_owner": ' + partners[0] + '}');
-        } else {
-            request.send('{}');
-        }
-
+        request.send();
     };
 }
 

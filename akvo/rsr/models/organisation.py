@@ -168,6 +168,7 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    # TODO: Should be removed
     can_become_reporting = models.BooleanField(
         _(u'Reportable'),
         help_text=_(u'Organisation is allowed to become a reporting organisation. '

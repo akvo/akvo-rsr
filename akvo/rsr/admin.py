@@ -100,7 +100,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     fieldsets = (
         (_(u'General information'), {'fields': (
             'name', 'long_name', 'organisation_type', 'new_organisation_type',
-            'can_become_reporting', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
+            'can_create_projects', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
             'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
@@ -125,7 +125,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         if request.user.is_superuser:
             return ['created_at', 'last_modified_at']
         else:
-            return ['created_at', 'last_modified_at', 'can_become_reporting']
+            return ['created_at', 'last_modified_at', 'can_create_projects']
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
