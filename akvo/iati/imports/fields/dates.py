@@ -75,7 +75,7 @@ def actual_start_date(iati_import, activity, project, activities_globals):
         try:
             asd_date = datetime.strptime(asd_date_text, '%Y-%m-%d').date()
         except ValueError as e:
-            add_log(iati_import, 'planned_start_date', str(e), project)
+            add_log(iati_import, 'actual_start_date', str(e), project)
 
     if project.date_start_actual != asd_date:
         project.date_start_actual = asd_date
@@ -113,7 +113,7 @@ def planned_end_date(iati_import, activity, project, activities_globals):
         try:
             ped_date = datetime.strptime(ped_date_text, '%Y-%m-%d').date()
         except ValueError as e:
-            add_log(iati_import, 'planned_start_date', str(e), project)
+            add_log(iati_import, 'planned_end_date', str(e), project)
 
     if project.date_end_planned != ped_date:
         project.date_end_planned = ped_date
@@ -151,7 +151,7 @@ def actual_end_date(iati_import, activity, project, activities_globals):
         try:
             aed_date = datetime.strptime(aed_date_text, '%Y-%m-%d').date()
         except ValueError as e:
-            add_log(iati_import, 'planned_start_date', str(e), project)
+            add_log(iati_import, 'actual_end_date', str(e), project)
 
     if project.date_end_actual != aed_date:
         project.date_end_actual = aed_date

@@ -21,7 +21,7 @@ def reporting_org(project):
         if org.iati_org_id:
             element.attrib['ref'] = org.iati_org_id
 
-        if project.reporting_org.is_secondary_reporter:
+        if project.reporting_partner.is_secondary_reporter:
             element.attrib['secondary-reporter'] = '1'
         else:
             element.attrib['secondary-reporter'] = '0'

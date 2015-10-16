@@ -83,7 +83,8 @@ def partnerships(iati_import, activity, project, activities_globals):
         imported_partnerships.append(ps)
 
     for partnership in project.partnerships.all():
-        if not partnership in imported_partnerships:
+        if not partnership in imported_partnerships and \
+                not partnership.iati_organisation_role == partnership.IATI_REPORTING_ORGANISATION:
             changes.append(u'deleted partnership (id: %s): %s' %
                            (str(partnership.pk),
                             partnership.__unicode__()))

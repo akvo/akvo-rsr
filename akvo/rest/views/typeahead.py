@@ -42,14 +42,6 @@ def typeahead_organisation(request):
     )
 
 @api_view(['GET'])
-def typeahead_reporting_organisation(request):
-    organisations = Organisation.objects.filter(can_become_reporting=True)
-    return Response(
-        rejig(organisations, TypeaheadOrganisationSerializer(organisations,
-                                                             many=True))
-    )
-
-@api_view(['GET'])
 def typeahead_project(request):
     projects = Project.objects.all().exclude(title='')
     return Response(
@@ -63,25 +55,3 @@ def typeahead_projectupdate(request):
     return Response(
         rejig(updates, TypeaheadProjectUpdateSerializer(updates, many=True))
     )
-
-
-# @api_view(['GET'])
-# def typeahead_sector(request):
-#     """
-#     """
-
-#     sectors = Sector.objects.all()
-
-#     return Response(
-#         rejig(sectors, TypeaheadSectorSerializer(sectors, many=True))
-#     )
-
-
-# @api_view(['GET'])
-# def typeahead_sector(request):
-#     """
-#     """
-#     sectors = SectorCategory.objects.all()
-#     return Response(
-#         rejig(sectors, TypeaheadSectorSerializer(sectors, many=True))
-#     )
