@@ -458,39 +458,6 @@
                                 {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
                             </p>
                             <form role="form" id="admin-step-3">
-                            <h5>{% trans 'Reporting organisation' %}</h5>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="form-group control">
-                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container priority1"
-                                        data-child-id="reportingOrganisation"
-                                        data-child-class="priority1"
-                                        data-value="{% if project.reporting_org %}{{project.reporting_org.id}}{% endif %}"
-                                        data-count-class="reportingOrganisation">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="form-group control hidden hide-default">
-                                    <div class="checkbox">
-                                      <label for="secondaryReporter" class="control-label">
-                                        <input id="secondaryReporter" type="checkbox"
-                                            name="secondaryReporter" class="priority3"
-                                            {% if project.reporting_org.is_secondary_reporter %}
-                                              checked saved-value="True"
-                                            {% else %}
-                                              saved-value="False"
-                                            {% endif %}
-                                        />
-                                        {% trans 'Secondary reporter' %}
-                                      </label>
-                                    </div>
-                                    <p class="help-block hidden">
-                                      {% trans 'Indicate whether the reporting organisation is a secondary publisher, publishing data for which it is not directly responsible. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
-                                    </p>
-                                  </div>
-                                </div>
-                            </div>
                             <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
                             <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
                             <div class="partner-container" id="partner-container">

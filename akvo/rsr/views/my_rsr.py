@@ -164,8 +164,6 @@ def project_editor(request, project_id):
     try:
         project = Project.objects.select_related(
             'publishingstatus__status',
-            # TODO: remove
-            # 'sync_owner',
             'primary_location',
             'primary_location__country'
             'locations',

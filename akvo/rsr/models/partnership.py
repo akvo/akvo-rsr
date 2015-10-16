@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -162,3 +163,15 @@ class Partnership(models.Model):
                 unicode(dict(self.IATI_ROLES)[self.iati_organisation_role])
             )
         return organisation_unicode
+
+    def clean(self):
+        # Don't allow multiple reporting organisations
+        reporting_orgs = self.project.partnerships.filter(
+            iati_organisation_role=self.IATI_REPORTING_ORGANISATION
+        )
+
+        if reporting_orgs:
+            raise ValidationError(
+                {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
+                                                     u'organisation')}
+            )
