@@ -341,10 +341,11 @@ def my_iati(request):
 
     if selected_org:
         iati_exports = selected_org.iati_exports.all().order_by('-last_modified_at')
-        project_count = selected_org.reporting_projects.all().count()
+        projects = selected_org.reporting_on_projects()
+        project_count = projects.count()
         initial = {
             'is_public': True,
-            'projects': [p.pk for p in selected_org.reporting_projects.all()]
+            'projects': [p.pk for p in projects]
         }
         iati_export_form = IatiExportForm(initial=initial, org=selected_org)
 
@@ -360,7 +361,7 @@ def my_iati(request):
         'selected_org': selected_org,
         'exports': iati_exports,
         'export_added': export_added,
-        'project_count': project_count,
+        'project_count': project_count
     }
 
     return render(request, 'myrsr/my_iati.html', context)
