@@ -33,6 +33,9 @@ class Result(models.Model):
         _(u'description'), blank=True, max_length=2000,
         help_text=_(u'You can provide further information of the result here. (2000 characters)')
     )
+    parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
+                                      help_text=_(u'The parent result of this result.'),
+                                      related_name='child_results')
 
     def __unicode__(self):
         result_unicode = self.title if self.title else u'%s' % _(u'No result title')
@@ -52,6 +55,9 @@ class Result(models.Model):
         if self.title or self.type or self.aggregation_status or self.description:
             return True
         return False
+
+    def is_calculated(self):
+        return self.project.is_impact_project
 
     class Meta:
         app_label = 'rsr'

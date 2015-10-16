@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Max, Sum
+from django.db.models import get_model, Max, Sum
 from django.db.models.signals import post_save
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
@@ -181,6 +181,11 @@ class Project(TimestampsMixin, models.Model):
             u'are being impacted by this project. (600 characters)'
         )
     )
+
+    # RSR Impact
+    is_impact_project = models.BooleanField(_(u'is rsr impact project'), default=False,
+                                            help_text=_(u'Determines whether this project is an '
+                                                        u'RSR Impact project.'))
 
     # project meta info
     language = ValidXMLCharField(
@@ -915,6 +920,62 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__relation=3
             )
         ).distinct()
+
+    def import_results(self):
+        """Import results from the parent project(s)."""
+        status = {
+            0: 'No parent projects',
+            1: 'Results added',
+            2: 'Results updated'
+        }
+
+        already_imported = []
+
+        for result in self.results.all():
+            if result.parent_result:
+                already_imported.append(result.parent_result)
+
+        for parent in self.parents():
+            for result in parent.results.all():
+                # TODO
+                # if result not in already_imported:
+                #     add_result(result)
+                # else:
+                #     update_result(result)
+
+                self_result = get_model('rsr', 'Result').objects.create(
+                    project=self,
+                    title=result.title,
+                    type=result.type,
+                    aggregation_status=result.aggregation_status,
+                    description=result.description
+                )
+
+                for indicator in result.indicators.all():
+                    self_indicator = get_model('rsr', 'Indicator').objects.create(
+                        result=self_result,
+                        title=indicator.title,
+                        measure=indicator.measure,
+                        ascending=indicator.ascending,
+                        description=indicator.description,
+                        baseline_year=indicator.baseline_year,
+                        baseline_value=indicator.baseline_value,
+                        baseline_comment=indicator.baseline_comment
+                    )
+
+                    for period in indicator.periods.all():
+                        get_model('rsr', 'IndicatorPeriod').objects.create(
+                            indicator=self_indicator,
+                            period_end=period.period_end,
+                            target_value=period.target_value,
+                            target_comment=period.target_comment,
+                            actual_value=period.actual_value,
+                            actual_comment=period.actual_comment
+                        )
+
+        if not self.parents():
+            return 0, status[0]
+        return 1, status[1] if already_imported else 2, status[2]
 
     def has_results(self):
         for result in self.results.all():

@@ -59,6 +59,9 @@ class Indicator(models.Model):
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
 
+    def is_calculated(self):
+        return self.result.project.is_impact_project
+
     @property
     def last_updated(self):
         from akvo.rsr.models import ProjectUpdate
@@ -145,6 +148,9 @@ class IndicatorPeriod(models.Model):
 
         if validation_errors:
             raise ValidationError(validation_errors)
+
+    def is_calculated(self):
+        return self.indicator.result.project.is_impact_project
 
     @property
     def percent_accomplishment(self):
