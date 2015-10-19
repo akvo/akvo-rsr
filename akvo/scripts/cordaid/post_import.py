@@ -5,16 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import datetime
+import django
+import os
+import sys
+
 from decimal import Decimal
 from lxml import etree
-from os.path import splitext
+from os.path import join, pardir, splitext
 
-import os
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+sys.path.append(project_root)
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
-
-import django
-import sys
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile

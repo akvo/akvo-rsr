@@ -171,9 +171,12 @@ class IATIPartnershipResource(ModelResource):
         organisation = get_organisation(bundle)
         if organisation:
             bundle.data[FIELD_ORGANISATION] = organisation
+            # note that checking against the Partnership.IATI_ACCOUNTABLE_PARTNER only sorta right,
+            # it should be the reporting org, but since we know there's only one accountable,
+            # Cordaid, it's OK
             if (
                 organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG] or
-                bundle.data[FIELD_PARTNER_TYPE] != Partnership.IATI_REPORTING_ORGANISATION
+                bundle.data[FIELD_PARTNER_TYPE] != str(Partnership.IATI_ACCOUNTABLE_PARTNER)
             ):
                 bundle.data[FIELD_IATI_ACTIVITY_ID] = None
                 bundle.data[FIELD_INTERNAL_ID] = None
