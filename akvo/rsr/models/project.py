@@ -6,6 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import math
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -308,6 +309,18 @@ class Project(TimestampsMixin, models.Model):
     # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    def save(self, last_updated=False, *args, **kwargs):
+        # Check if the project is converted to an RSR Impact project
+        if not last_updated:
+            if self.pk:
+                orig = get_model('rsr', 'project').objects.get(pk=self.pk)
+                if self.is_impact_project and not orig.is_impact_project:
+                    self.convert_to_impact_project()
+            elif self.is_impact_project:
+                self.convert_to_impact_project()
+
+        super(Project, self).save(*args, **kwargs)
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -921,6 +934,37 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
+    # RSR Impact project
+    def convert_to_impact_project(self):
+        """
+        When a project is converted to an RSR Impact project, it is not possible to edit the actual
+        values of the indicators and the actual values should be converted to updates.
+        """
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                for period in indicator.periods.all():
+                    if period.actual_value:
+                        try:
+                            update_value = Decimal(period.actual_value) - period.baseline
+                        except (InvalidOperation, TypeError):
+                            continue
+
+                        period.actual_value = str(period.baseline)
+                        period.save(update_fields=['actual_value'])
+
+                        get_model('rsr', 'ProjectUpdate').objects.create(
+                            project=self,
+                            # TODO: What user should we link to a 'system' update?
+                            # We could make sure that the 1st user in the database is a 'system'
+                            # user.
+                            user=get_model('rsr', 'user').objects.all()[0],
+                            title=u'Initial value of indicator period',
+                            text=u'Initial value of indicator period, added by system while '
+                                 u'calculating the actual value of this indicator period.',
+                            indicator_period=period,
+                            period_update=update_value,
+                        )
+
     def import_results(self):
         """Import results from the parent project(s)."""
         status = {
@@ -1012,4 +1056,4 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
-    project.save()
+    project.save(last_updated=True)

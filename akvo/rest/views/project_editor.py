@@ -98,6 +98,10 @@ SECTION_FOUR_FIELDS = (
 
 ## Section 5 ##
 
+SECTION_FIVE_FIELDS = (
+    ('is_impact_project', 'impactProject', 'boolean'),
+)
+
 RESULT_FIELDS = (
     ('title', 'result-title-', 'text'),
     ('type', 'result-type-', 'text'),
@@ -866,6 +870,10 @@ def project_editor_step5(request, pk=None):
     rel_objects = []
 
     if data['level'] == '1':
+
+        # Project fields
+        for field in SECTION_FIVE_FIELDS:
+            errors, changes = process_field(project, data, field, errors, changes)
 
         # Related objects
         for key in data.keys():

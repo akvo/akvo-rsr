@@ -644,6 +644,21 @@
                             </div>
                             <form role="form" id="admin-step-5">
                             <h5>{% trans 'Results' %}</h5>
+                            <div class="row {% if not user.is_superuser %}hidden{% endif %}">
+                                <div class="col-md-12">
+                                    <div class="form-group control">
+                                        <div class="checkbox">
+                                            <label for="impactProject" class="control-label">
+                                                <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                    {% trans 'RSR Impact project' %}
+                                            </label>
+                                        </div>
+                                        <p class="help-block hidden">
+                                            {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="result-container" id="result-container">
                                 {% for result in project.results.all %}
                                     {% include "myrsr/project_editor_partials/result_input.html" with key=result.pk %}
