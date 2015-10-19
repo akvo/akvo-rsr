@@ -614,7 +614,7 @@
                             <div class="row form-group">
                                 <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep4"></div>
                                 <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                             </div>
                             </form>
@@ -645,7 +645,7 @@
                             <form role="form" id="admin-step-5">
                             <h5>{% trans 'Results' %}</h5>
                             <div class="row {% if not user.is_superuser %}hidden{% endif %}">
-                                <div class="col-md-12">
+                                <div class="col-xs-6 col-sm-8">
                                     <div class="form-group control">
                                         <div class="checkbox">
                                             <label for="impactProject" class="control-label">
@@ -658,6 +658,11 @@
                                         </p>
                                     </div>
                                 </div>
+                                {% if project.parents.count == 1 and project.is_impact_project %}
+                                    <div class="col-xs-6 col-sm-4" style="text-align: right;">
+                                        <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="result-container" id="result-container">
                                 {% for result in project.results.all %}

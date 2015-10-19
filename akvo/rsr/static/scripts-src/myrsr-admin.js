@@ -1811,6 +1811,60 @@ function setRemovePartial(node) {
     };
 }
 
+function setImportResults() {
+    try {
+        var importButton;
+
+        importButton = document.getElementById('import-results');
+        importButton.onclick = getImportResults(importButton);
+
+    } catch (error) {
+        // No import results button
+        return false;
+    }
+}
+
+function getImportResults(importButton) {
+    return function(e) {
+        var api_url, parentNode, request;
+
+        e.preventDefault();
+
+        importButton.setAttribute('disabled', '');
+        parentNode = importButton.parentNode;
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/import_results/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            var response, divNode;
+            response = JSON.parse(request.responseText);
+            divNode = document.createElement('div');
+
+            if (response.code === 1) {
+                parentNode.removeChild(importButton);
+
+                divNode.classList.add('save-success');
+                divNode.innerHTML = 'Import successful. Please refresh the page to see (and edit) the imported results.';
+                parentNode.appendChild(divNode);
+            } else {
+                importButton.removeAttribute('disabled');
+
+                divNode.classList.add('help-block-error');
+                divNode.innerHTML = response.message;
+                parentNode.appendChild(divNode);
+            }
+        };
+
+        request.send();
+    }
+}
+
 function setPublishOnClick() {
     try {
         var publishButton;
@@ -2146,6 +2200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setPartialOnClicks();
     setCurrencyOnChange();
     setDeletePhoto();
+    setImportResults();
 
     setValidationListeners();
     updateAllHelpIcons();

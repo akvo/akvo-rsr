@@ -32,6 +32,7 @@ from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_editor import (project_editor_delete_document,
                              project_editor_delete_photo,
+                             project_editor_import_results,
                              project_editor_remove_keyword,
                              project_editor_step1,
                              project_editor_step2,
@@ -115,6 +116,7 @@ __all__ = [
     'ProjectViewSet',
     'project_editor_delete_document',
     'project_editor_delete_photo',
+    'project_editor_import_results',
     'project_editor_step1',
     'project_editor_step2',
     'project_editor_step3',

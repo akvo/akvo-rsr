@@ -310,6 +310,15 @@ class Project(TimestampsMixin, models.Model):
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
 
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'project')
+        verbose_name_plural = _(u'projects')
+        ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )
+
     def save(self, last_updated=False, *args, **kwargs):
         # Check if the project is converted to an RSR Impact project
         if not last_updated:
@@ -934,7 +943,17 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
-    # RSR Impact project
+    def check_mandatory_fields(self, version='2.01'):
+        return check_export_fields(self, version)
+
+    def keyword_logos(self):
+        """Return the keywords of the project which have a logo."""
+        return self.keywords.exclude(logo='')
+
+    ###################################
+    ####### RSR Impact projects #######
+    ###################################
+
     def convert_to_impact_project(self):
         """
         When a project is converted to an RSR Impact project, it is not possible to edit the actual
@@ -966,60 +985,61 @@ class Project(TimestampsMixin, models.Model):
                         )
 
     def import_results(self):
-        """Import results from the parent project(s)."""
-        status = {
-            0: 'No parent projects',
-            1: 'Results added',
-            2: 'Results updated'
-        }
+        """Import results from the parent project."""
+        import_failed = 0
+        import_success = 1
 
-        already_imported = []
+        if self.parents().count() == 1:
+            parent_project = self.parents()[0]
+        elif self.parents().count() == 0:
+            return import_failed, 'Project does not have a parent project'
+        else:
+            return import_failed, 'Project has multiple parent projects'
 
-        for result in self.results.all():
-            if result.parent_result:
-                already_imported.append(result.parent_result)
+        for result in parent_project.results.all():
+            # Only import results that have not been imported before
+            if not self.results.filter(parent_result=result).exists():
+                self.add_result(result)
 
-        for parent in self.parents():
-            for result in parent.results.all():
-                # TODO
-                # if result not in already_imported:
-                #     add_result(result)
-                # else:
-                #     update_result(result)
+        return import_success, 'Results imported'
 
-                self_result = get_model('rsr', 'Result').objects.create(
-                    project=self,
-                    title=result.title,
-                    type=result.type,
-                    aggregation_status=result.aggregation_status,
-                    description=result.description
-                )
+    def add_result(self, result):
+        self_result = get_model('rsr', 'Result').objects.create(
+            project=self,
+            title=result.title,
+            type=result.type,
+            aggregation_status=result.aggregation_status,
+            description=result.description,
+            parent_result=result
+        )
 
-                for indicator in result.indicators.all():
-                    self_indicator = get_model('rsr', 'Indicator').objects.create(
-                        result=self_result,
-                        title=indicator.title,
-                        measure=indicator.measure,
-                        ascending=indicator.ascending,
-                        description=indicator.description,
-                        baseline_year=indicator.baseline_year,
-                        baseline_value=indicator.baseline_value,
-                        baseline_comment=indicator.baseline_comment
-                    )
+        for indicator in result.indicators.all():
+            self.add_indicator(self_result, indicator)
 
-                    for period in indicator.periods.all():
-                        get_model('rsr', 'IndicatorPeriod').objects.create(
-                            indicator=self_indicator,
-                            period_end=period.period_end,
-                            target_value=period.target_value,
-                            target_comment=period.target_comment,
-                            actual_value=period.actual_value,
-                            actual_comment=period.actual_comment
-                        )
+    def add_indicator(self, result, indicator):
+        self_indicator = get_model('rsr', 'Indicator').objects.create(
+            result=result,
+            title=indicator.title,
+            measure=indicator.measure,
+            ascending=indicator.ascending,
+            description=indicator.description,
+            baseline_year=indicator.baseline_year,
+            baseline_value=indicator.baseline_value,
+            baseline_comment=indicator.baseline_comment
+        )
 
-        if not self.parents():
-            return 0, status[0]
-        return 1, status[1] if already_imported else 2, status[2]
+        for period in indicator.periods.all():
+            self.add_period(self_indicator, period)
+
+    def add_period(self, indicator, period):
+        get_model('rsr', 'IndicatorPeriod').objects.create(
+            indicator=indicator,
+            period_start=period.period_start,
+            period_end=period.period_end,
+            target_value=period.target_value,
+            target_comment=period.target_comment,
+            actual_comment=period.actual_comment
+        )
 
     def has_results(self):
         for result in self.results.all():
@@ -1032,22 +1052,6 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
-
-    def check_mandatory_fields(self, version='2.01'):
-        return check_export_fields(self, version)
-
-    def keyword_logos(self):
-        """Return the keywords of the project which have a logo."""
-        return self.keywords.exclude(logo='')
-
-    class Meta:
-        app_label = 'rsr'
-        verbose_name = _(u'project')
-        verbose_name_plural = _(u'projects')
-        ordering = ['-id', ]
-        permissions = (
-            ('post_updates', u'Can post updates'),
-        )
 
 
 @receiver(post_save, sender=ProjectUpdate)

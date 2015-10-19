@@ -56,11 +56,45 @@ class Indicator(models.Model):
 
         return indicator_unicode
 
+    def clean(self):
+        validation_errors = {}
+
+        if self.pk and self.is_child_indicator():
+            orig_indicator = Indicator.objects.get(pk=self.pk)
+
+            # Don't allow some values to be changed when it is a child indicator
+            if self.result != orig_indicator.result:
+                validation_errors['result'] = u'%s' % \
+                    _(u'It is not possible to update the result of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.title != orig_indicator.title:
+                validation_errors['title'] = u'%s' % \
+                    _(u'It is not possible to update the title of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.measure != orig_indicator.measure:
+                validation_errors['measure'] = u'%s' % \
+                    _(u'It is not possible to update the measure of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.ascending != orig_indicator.ascending:
+                validation_errors['ascending'] = u'%s' % \
+                    _(u'It is not possible to update the ascending value of this indicator, '
+                      u'because it is linked to a parent result.')
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
+
+
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
 
     def is_calculated(self):
         return self.result.project.is_impact_project
+
+    def is_child_indicator(self):
+        """
+        Indicates whether this result is linked to a parent result.
+        """
+        return True if self.result.parent_result else False
 
     @property
     def last_updated(self):
@@ -130,14 +164,30 @@ class IndicatorPeriod(models.Model):
     def clean(self):
         validation_errors = {}
 
-        # Don't allow an actual value to be changed when the indicator period is calculated
-        if self.pk and self.is_calculated():
-            org_period = IndicatorPeriod.objects.get(pk=self.pk)
-            if self.actual_value != org_period.actual_value:
+        if self.pk:
+            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+
+            # Don't allow an actual value to be changed when the indicator period is calculated
+            if self.is_calculated() and self.actual_value != orig_period.actual_value:
                 validation_errors['actual_value'] = u'%s' % \
                     _(u'It is not possible to update the actual value of this indicator period, '
                       u'because it is a calculated value. Please update the actual value through '
                       u'a new update.')
+
+            # Don't allow some values to be changed when it is a child period
+            if self.is_child_period():
+                if self.indicator != orig_period.indicator:
+                    validation_errors['indicator'] = u'%s' % \
+                        _(u'It is not possible to update the indicator of this indicator period, '
+                          u'because it is linked to a parent result.')
+                if self.period_start != orig_period.period_start:
+                    validation_errors['period_start'] = u'%s' % \
+                        _(u'It is not possible to update the start period of this indicator, '
+                          u'because it is linked to a parent result.')
+                if self.period_end != orig_period.period_end:
+                    validation_errors['period_end'] = u'%s' % \
+                        _(u'It is not possible to update the end period of this indicator, '
+                          u'because it is linked to a parent result.')
 
         # Don't allow a start date before an end date
         if self.period_start and self.period_end and (self.period_start > self.period_end):
@@ -155,6 +205,12 @@ class IndicatorPeriod(models.Model):
         periods are calculated through updates.
         """
         return self.indicator.result.project.is_impact_project
+
+    def is_child_period(self):
+        """
+        Indicates whether this result is linked to a parent result.
+        """
+        return True if self.indicator.result.parent_result else False
 
     @property
     def percent_accomplishment(self):

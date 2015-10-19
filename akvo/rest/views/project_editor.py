@@ -494,6 +494,19 @@ def log_addition(obj, user):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor_import_results(request, project_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    user = request.user
+
+    if not user.is_superuser:
+        return HttpResponseForbidden()
+
+    status_code, message = project.import_results()
+
+    return Response({'code': status_code, 'message': message})
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def project_editor_delete_document(request, project_pk=None, document_pk=None):
     project = Project.objects.get(pk=project_pk)
     document = ProjectDocument.objects.get(pk=document_pk)

@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -47,6 +47,33 @@ class Result(models.Model):
             result_unicode += _(u' - %s indicators') % (unicode(self.indicators.count()))
 
         return result_unicode
+
+    def clean(self):
+        validation_errors = {}
+
+        if self.pk and self.parent_result:
+            orig_result = Result.objects.get(pk=self.pk)
+
+            # Don't allow some values to be changed when it is a child result
+            if self.project != orig_result.project:
+                validation_errors['project'] = u'%s' % \
+                    _(u'It is not possible to update the project of this result, '
+                      u'because it is linked to a parent result.')
+            if self.title != orig_result.title:
+                validation_errors['title'] = u'%s' % \
+                    _(u'It is not possible to update the title of this result, '
+                      u'because it is linked to a parent result.')
+            if self.type != orig_result.type:
+                validation_errors['type'] = u'%s' % \
+                    _(u'It is not possible to update the type of this result, '
+                      u'because it is linked to a parent result.')
+            if self.aggregation_status != orig_result.aggregation_status:
+                validation_errors['aggregation_status'] = u'%s' % \
+                    _(u'It is not possible to update the aggregation status of this result, '
+                      u'because it is linked to a parent result.')
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
 
     def iati_type(self):
         return codelist_value(ResultType, self, 'type')

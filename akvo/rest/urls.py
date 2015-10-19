@@ -99,6 +99,9 @@ urlpatterns = patterns(
 # Project editor
 urlpatterns += patterns(
     '',
+    url(r'^project/(?P<project_pk>[0-9]+)/import_results/$',
+        views.project_editor_import_results,
+        name='project_editor_import_results'),
     url(r'^project/(?P<project_pk>[0-9]+)/delete_document/(?P<document_pk>[0-9]+)/$',
         views.project_editor_delete_document,
         name='project_editor_delete_document'),

@@ -948,9 +948,11 @@
             <h4 class="item-type">{% trans 'Result' %}</h4>
             <div class="title-container">
               <h3>{{result.title}}</h3>
-              <div class="result-parent">
-                {% trans "Parent project:" %} {{result.project.title}}
-              </div>
+              {% if result.parent_result %}
+                <div class="result-parent">
+                  {% trans "Parent project:" %} <a href="{% url 'project-main' result.parent_result.project.pk %}#results">{{ result.parent_result.project.title }}</a>
+                </div>
+              {% endif %}
             </div>
             {% if result.description %}
               <div class="result-description">
