@@ -4,6 +4,8 @@ These BIRT templates are intended to be installed on a ReportServer.
 
 They were developed using the BIRT Report Designer plugin for Eclipse, version 4.4.
 
+The RSR projects used as models were 2849 and its parent project 2081.
+
 During development I found it convenient to:
 
 ## Set up a readonly account for the database
@@ -34,8 +36,6 @@ Database URL: jdbc:postgresql://localhost:1234/rsr
 User Name: rsr_readonly
 Password: ***********
 ```
-
-
 
 
 
