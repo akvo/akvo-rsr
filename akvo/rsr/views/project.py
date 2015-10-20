@@ -213,14 +213,19 @@ def _get_partners_with_types(project):
     return partners_dict
 
 
-def _get_indicator_updates_data(updates):
+def _get_indicator_updates_data(updates, child_projects, child=True):
     updates_list = []
-    for update in updates.filter(indicator_period__gt=0):
+    for update in updates:
+        if child:
+            indicator_period = update.indicator_period
+        else:
+            indicator_period = update.indicator_period.parent_period()
+
         updates_list.append({
             "id": update.pk,
             "indicator_period": {
-                "id": update.indicator_period.pk,
-                "target_value": str(update.indicator_period.target_value)
+                "id": indicator_period.pk if indicator_period else '',
+                "target_value": str(indicator_period.target_value) if indicator_period else ''
             },
             "period_update": str(update.period_update),
             "created_at": str(update.created_at),
@@ -232,6 +237,13 @@ def _get_indicator_updates_data(updates):
             "text": update.text,
             "photo": update.photo.url if update.photo else '',
         })
+
+    for child_project in child_projects:
+        updates = child_project.project_updates.select_related('user').order_by('-created_at').\
+            filter(indicator_period__gt=0)
+        child_updates_list = _get_indicator_updates_data(updates, child_project.children(), False)
+        updates_list += child_updates_list
+
     return updates_list
 
 
@@ -249,7 +261,8 @@ def main(request, project_id):
     indicator_updates = updates.filter(indicator_period__gt=0)
 
     # JSON data
-    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates))
+    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
+                                                                    project.children()))
     carousel_data = json.dumps(_get_carousel_data(project))
     accordion_data = json.dumps(_get_accordion_data(project))
     partner_types = _get_partners_with_types(project)
@@ -279,9 +292,9 @@ def main(request, project_id):
     return render(request, 'project_main.html', context)
 
 
-###############################################################################
-# Project hierarchy
-###############################################################################
+#####################
+# Project hierarchy #
+#####################
 
 
 def hierarchy(request, project_id):
@@ -305,9 +318,9 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
-###############################################################################
-# Old links, now incorporated in tabs of the project main page
-###############################################################################
+###############################################################################################
+# Old links, now incorporated in tabs of the project main page, will redirect to project main #
+###############################################################################################
 
 
 def report(request, project_id):

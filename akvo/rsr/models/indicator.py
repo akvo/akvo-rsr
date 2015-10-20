@@ -58,11 +58,11 @@ class Indicator(models.Model):
 
     def save(self, *args, **kwargs):
         """Update the values of child indicators, if a parent indicator is updated."""
+        # Update the values for an existing indicator
         if self.pk:
             orig_indicator = Indicator.objects.get(pk=self.pk)
-            child_results = self.result.child_results.all()
             child_indicators = Indicator.objects.filter(
-                result__in=child_results,
+                result__in=self.result.child_results.all(),
                 title=orig_indicator.title,
                 measure=orig_indicator.measure,
                 ascending=orig_indicator.ascending
@@ -73,6 +73,11 @@ class Indicator(models.Model):
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
                 child_indicator.save()
+
+        # Create a new indicator when it's added
+        else:
+            for child_result in self.result.child_results.all():
+                child_result.project.add_indicator(child_result, self)
 
         super(Indicator, self).save(*args, **kwargs)
 
@@ -111,9 +116,42 @@ class Indicator(models.Model):
 
     def is_child_indicator(self):
         """
-        Indicates whether this result is linked to a parent result.
+        Indicates whether this indicator is linked to a parent result.
         """
         return True if self.result.parent_result else False
+
+    def parent_indicator(self):
+        """
+        Returns the parent indicator or None.
+        """
+        if self.is_child_indicator():
+            matching_indicators = Indicator.objects.filter(
+                result=self.result.parent_result,
+                title=self.title,
+                measure=self.measure,
+                ascending=self.ascending
+            )
+            if matching_indicators:
+                return matching_indicators.first()
+        return None
+
+    def is_parent_indicator(self):
+        """
+        Indicates whether this indicator has children.
+        """
+        return True if self.child_indicators() else False
+
+    def child_indicators(self):
+        """
+        Returns the child indicators of this indicator.
+        """
+        child_results = self.result.child_results.all()
+        return Indicator.objects.filter(
+            result__in=child_results,
+            title=self.title,
+            measure=self.measure,
+            ascending=self.ascending
+        )
 
     @property
     def last_updated(self):
@@ -182,6 +220,7 @@ class IndicatorPeriod(models.Model):
 
     def save(self, *args, **kwargs):
         """Update the values of child periods, if a parent period is updated."""
+        # Update period when it's edited
         if self.pk:
             orig_period = IndicatorPeriod.objects.get(pk=self.pk)
             child_results = self.indicator.result.child_results.all()
@@ -195,6 +234,11 @@ class IndicatorPeriod(models.Model):
                 child_period.period_start = self.period_start
                 child_period.period_end = self.period_end
                 child_period.save()
+
+        # Create a new period when it's added
+        else:
+            for child_indicator in self.indicator.child_indicators():
+                child_indicator.result.project.add_period(child_indicator, self)
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
 
@@ -262,6 +306,23 @@ class IndicatorPeriod(models.Model):
             if matching_periods.exists():
                 return matching_periods.first()
         return None
+
+    def is_parent_period(self):
+        """
+        Indicates whether this result has child periods linked to it.
+        """
+        return True if self.child_periods() else False
+
+    def child_periods(self):
+        """
+        Returns the child indicator periods, in case this period is a parent period.
+        """
+        child_results = self.indicator.result.child_results.all()
+        return IndicatorPeriod.objects.filter(
+            indicator__result__in=child_results,
+            period_start=self.period_start,
+            period_end=self.period_end
+        )
 
     def update_actual_value(self, update_value):
         """
