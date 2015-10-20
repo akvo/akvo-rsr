@@ -6,13 +6,15 @@
 <div class="header-container">
   {% include "partials/project_header.html" %}
 </div>
-<div class="tab-menu">
-  <a href="#summary" class="tab-link">{% trans 'Summary' %}</a>
-  <a href="#report" class="tab-link">{% trans 'Full report' %}</a>
-  <a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>
-  <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
-  <a href="#results" class="tab-link">{% trans 'Results & indicators' %}</a>
-  <a href="#blog" class="tab-link">{% trans 'Blog' %}</a>
+<div class="tab-menu container">
+  <div class="row">
+    <a href="#summary" class="tab-link">{% trans 'Summary' %}</a>
+    <a href="#report" class="tab-link">{% trans 'Full report' %}</a>
+    <a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>
+    <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
+    <a href="#results" class="tab-link">{% trans 'Results & indicators' %}</a>
+    <a href="#blog" class="tab-link">{% trans 'Blog' %}</a>
+  </div>
 </div>
 <div class="project-tab summary">
   <article class="touch-navbar project-container">
@@ -908,159 +910,157 @@
 </div>  
 <div class="project-tab results">
   <article>
-    <div class="results-container">
-      <div class="sidebar">
-        <div class="result-nav-header">
-          <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
-        </div>
-        {% for result in project.results.all %}
-          <div class="result-nav">
-            <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
-              <h3 class="result-title">
-                <span class="glyphicon glyphicon-chevron-down"></span>
-                <span class="glyphicon glyphicon-chevron-up"></span>                  
-                {{result.title}}              
-              </h3>
-              <span class="result-indicator-count"><span class="glyphicon glyphicon-dashboard"></span> <span class="indicator-count">{{result.indicators.all.count}}</span><span class="indicator-text">{% trans "Indicators:" %}</span></span>
-            </div>
-            <div class="result-nav-full">
-              {% for indicator in result.indicators.all %}
-                <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
-                  <h4>
-                    {{indicator.title}}
-                  </h4>
-                  <div class="last-update">
-                    {% if indicator.last_updated %}
-                      {% trans 'Last update' %} {{ indicator.last_updated }}
-                    {% else %}
-                      {% trans 'No updates yet' %}
-                    {% endif %}
+    <div class="results-container container">
+        <div class="sidebar">
+          <div class="result-nav-header">
+            <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
+          </div>
+          {% for result in project.results.all %}
+            <div class="result-nav">
+              <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
+                <h3 class="result-title">
+                  <i class="fa fa-chevron-down"></i>
+                  <i class="fa fa-chevron-up"></i>                  
+                  {{result.title}}              
+                </h3>
+                <span class="result-indicator-count"><i class="fa fa-tachometer"></i> <span class="indicator-count">{{result.indicators.all.count}}</span><span class="indicator-text">{% trans "Indicators:" %}</span></span>
+              </div>
+              <div class="result-nav-full">
+                {% for indicator in result.indicators.all %}
+                  <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                    <h4>
+                      {{indicator.title}}
+                    </h4>
+                    <div class="last-update">
+                      {% if indicator.last_updated %}
+                        {% trans 'Last update' %} {{ indicator.last_updated }}
+                      {% else %}
+                        {% trans 'No updates yet' %}
+                      {% endif %}
+                    </div>
                   </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>  
-        {% endfor %}
-      </div>
-      <div class="indicator-container">
-        {% for result in project.results.all %}
-          <div class="result-{{result.id}} result-summary">
-            <h4 class="item-type">{% trans 'Result' %}</h4>
-            <div class="title-container">
-              <h3>{{result.title}}</h3>
-              {% if result.parent_result %}
+                {% endfor %}
+              </div>
+            </div>  
+          {% endfor %}
+        </div>
+        <div class="indicator-container">
+          {% for result in project.results.all %}
+            <div class="result-{{result.id}} result-summary">
+              <h4 class="item-type">{% trans 'Result' %}</h4>
+              <div class="title-container">
+                <h3>{{result.title}}</h3>
                 <div class="result-parent">
-                  {% trans "Parent project:" %} <a href="{% url 'project-main' result.parent_result.project.pk %}#results">{{ result.parent_result.project.title }}</a>
-                </div>
-              {% endif %}
-            </div>
-            {% if result.description %}
-              <div class="result-description">
-                <h4>{% trans "Description" %}</h4>
-                <div>
-                  {{result.description}}
+                  {% trans "Parent project:" %} {{result.project.title}}
                 </div>
               </div>
-            {% endif %}
-            <!-- Do we actually want this here?
-            {% if result.project.partners.all %}
-              <div class="result-partners">
-                <h4> {% trans "Responsible Partners" %} ({{result.project.partners.all.count}})</h4>
+              {% if result.description %}
+                <div class="result-description">
+                  <h4>{% trans "Description" %}</h4>
+                  <div>
+                    {{result.description}}
+                  </div>
+                </div>
+              {% endif %}
+              <!-- Do we actually want this here?
+              {% if result.project.partners.all %}
+                <div class="result-partners">
+                  <h4> {% trans "Responsible Partners" %} ({{result.project.partners.all.count}})</h4>
+                  <ul>
+                    {% for partner in result.project.partners.all %}
+                      <li>{{partner.name}}{% if partner.primary_location.city %},{{partner.primary_location.city}}{% endif %}
+                        {% if partner.primary_location.country %},{{partner.primary_location.country}}{% endif %}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+              -->
+              <div class="result-indicators">
+                <h4><i class="fa fa-tachometer"></i> {% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
                 <ul>
-                  {% for partner in result.project.partners.all %}
-                    <li>{{partner.name}}{% if partner.primary_location.city %},{{partner.primary_location.city}}{% endif %}
-                      {% if partner.primary_location.country %},{{partner.primary_location.country}}{% endif %}</li>
+                  {% for indicator in result.indicators.all %}
+                    <li class="indicator-link clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                      {{indicator.title}}
+                    </li>
                   {% endfor %}
                 </ul>
               </div>
-            {% endif %}
-            -->
-            <div class="result-indicators">
-              <h4><span class="glyphicon glyphicon-dashboard"></span> {% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
-              <ul>
-                {% for indicator in result.indicators.all %}
-                  <li class="indicator-link clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
-                    {{indicator.title}}
-                  </li>
-                {% endfor %}
-              </ul>
             </div>
-          </div>
-          <div class="result-{{result.id}} indicator-group">
-            {% for indicator in result.indicators.all %} 
-              <div class="indicator-{{indicator.id}} indicator">
-                <h4 class="indicator-title"><span class="glyphicon glyphicon-dashboard"></span> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>
+            <div class="result-{{result.id}} indicator-group">
+              {% for indicator in result.indicators.all %} 
+                <div class="indicator-{{indicator.id}} indicator">
+                  <h4 class="indicator-title"><i class="fa fa-tachometer"></i> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>
 
-                {% if indicator.baseline_year or indicator.baseline_value %}
-                <dl class="baseline">
-                  {% if indicator.baseline_year %}
-                    <div class="baseline-year">
-                      <dt>{% trans "Baseline Year" %}</dt>
-                      <dd>{{indicator.baseline_year}}</dd>
-                    </div>
+                  {% if indicator.baseline_year or indicator.baseline_value %}
+                  <dl class="baseline">
+                    {% if indicator.baseline_year %}
+                      <div class="baseline-year">
+                        <dt>{% trans "Baseline Year" %}</dt>
+                        <dd>{{indicator.baseline_year}}</dd>
+                      </div>
+                    {% endif %}
+
+                    {% if indicator.baseline_value %}
+                      <div class="baseline-value">
+                        <dt>{% trans "Baseline Value" %}</dt>
+                        <dd>{{indicator.baseline_value}}</dd>
+                      </div>
+                    {% endif %}
+                  </dl>
                   {% endif %}
 
-                  {% if indicator.baseline_value %}
-                    <div class="baseline-value">
-                      <dt>{% trans "Baseline Value" %}</dt>
-                      <dd>{{indicator.baseline_value}}</dd>
-                    </div>
-                  {% endif %}
-                </dl>
-                {% endif %}
+                  <h4 class="indicator-periods-title">{% trans "Indicator periods" %}</h4>
 
-                <h4 class="indicator-periods-title">{% trans "Indicator periods" %}</h4>
-
-                <table class="table table-responsive">
-                  <thead>
-                    <tr>
-                      <td>{% trans "Start" %}</td>
-                      <td>{% trans "End" %}</td>
-                      <td>{% trans "Progress" %}</td>
-                      <td>{% trans "Target" %}</td>
-                      <td></td>
-                    </tr>
-                  </thead>
-                  {% for period in indicator.periods.all %}
-                    <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
-                      <tr class="indicator-period-{{period.id}}-tr">
-                        <td>{{period.period_start}}</td>
-                        <td>{{period.period_end}}</td>
-                        <td class="indicator-bar-td">
-                          <div class="indicator-bar-display-container">
-                            <div class="indicator-bar">
-                            </div>
-                            <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment_100}}%;">
-                            </div>
-                            <div class="indicator-bar-progress-container">
-                              <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment_100}}%; z-index: {{period.percent_accomplishment_100}}" data-progress="{{period.percent_accomplishment_100}}">
-                                <span class="indicator-bar-progress-text">{{period.actual|floatformat:"0"}}</span>
-                                <span class="indicator-bar-progress-triangle"></span>
+                  <table class="table table-responsive">
+                    <thead>
+                      <tr>
+                        <td>{% trans "Start" %}</td>
+                        <td>{% trans "End" %}</td>
+                        <td>{% trans "Progress" %}</td>
+                        <td>{% trans "Target" %}</td>
+                        <td></td>
+                      </tr>
+                    </thead>
+                    {% for period in indicator.periods.all %}
+                      <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
+                        <tr class="indicator-period-{{period.id}}-tr">
+                          <td>{{period.period_start}}</td>
+                          <td>{{period.period_end}}</td>
+                          <td class="indicator-bar-td">
+                            <div class="indicator-bar-display-container">
+                              <div class="indicator-bar">
+                              </div>
+                              <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment_100}}%;">
+                              </div>
+                              <div class="indicator-bar-progress-container">
+                                <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment_100}}%; z-index: {{period.percent_accomplishment_100}}" data-progress="{{period.percent_accomplishment_100}}">
+                                  <span class="indicator-bar-progress-triangle"></span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td class="target-td">
-                          <div class="indicator-bar-progress-complete-container">
-                            <span class="indicator-bar-progress-complete">{{period.target_value}}</span>
-                          </div>
-                        </td>
-                        <td class="expand-td">
-                          <span class="expand-indicator-period clickable">
-                            <span class="glyphicon glyphicon-chevron-down"></span>
-                            <span class="glyphicon glyphicon-chevron-up"></span>
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  {% endfor %}
-                </table>
-              </div>
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </div> 
-    </div>  
+                          </td>
+                          <td class="target-td">
+                            <div class="indicator-bar-progress-complete-container">
+                              <span class="indicator-bar-progress-text">{{period.actual|floatformat:"0"}}</span>
+                              <span class="indicator-bar-progress-complete">  / {{period.target_value}}</span>
+                            </div>
+                          </td>
+                          <td class="expand-td">
+                            <span class="expand-indicator-period clickable">
+                              <i class="fa fa-chevron-down"></i>
+                              <i class="fa fa-chevron-up"></i>
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    {% endfor %}
+                  </table>
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+    </div>
   </article>
   <script type="text/html" id="update-json">
     {{ indicator_updates|safe }}
