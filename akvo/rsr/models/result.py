@@ -48,6 +48,15 @@ class Result(models.Model):
 
         return result_unicode
 
+    def save(self, *args, **kwargs):
+        """Update the values of child results, if a parent result is updated."""
+        for child_result in self.child_results.all():
+            child_result.title = self.title
+            child_result.type = self.type
+            child_result.aggregation_status = self.aggregation_status
+            child_result.save()
+        super(Result, self).save(*args, **kwargs)
+
     def clean(self):
         validation_errors = {}
 
