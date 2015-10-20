@@ -249,6 +249,38 @@ class IndicatorPeriod(models.Model):
         """
         return True if self.indicator.result.parent_result else False
 
+    def parent_period(self):
+        """
+        Returns the parent indicator period, in case this period is a child period.
+        """
+        if self.is_child_period():
+            matching_periods = IndicatorPeriod.objects.filter(
+                indicator__result=self.indicator.result.parent_result,
+                period_start=self.period_start,
+                period_end=self.period_end
+            )
+            if matching_periods.exists():
+                return matching_periods.first()
+        return None
+
+    def update_actual_value(self, update_value):
+        """
+        :param update_value; String or Integer that should be castable to Decimal
+
+        Updates the actual value of the period.
+        """
+        try:
+            self.actual_value = str(Decimal(self.actual) + Decimal(update_value))
+        except (InvalidOperation, TypeError):
+            self.actual_value = update_value
+
+        self.save(update_fields=['actual_value'])
+
+        # Update parent period
+        parent = self.parent_period()
+        if parent:
+            parent.update_actual_value(update_value)
+
     @property
     def percent_accomplishment(self):
         """
