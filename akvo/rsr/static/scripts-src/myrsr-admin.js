@@ -1980,7 +1980,7 @@ function setDatepickers() {
     datepickerContainers = document.getElementsByClassName('datepicker-container');
 
     for (var i=0; i < datepickerContainers.length; i++) {
-        var datepickerId, DatePickerComponent, datepickerContainer, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
+        var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
 
         datepickerContainer = datepickerContainers[i];
 
@@ -1990,6 +1990,8 @@ function setDatepickers() {
 
             // Set initial value of datepicker
             inputValue = datepickerContainer.getAttribute('data-child');
+            disableInput = datepickerContainer.getAttribute('data-disabled');
+
             if (inputValue !== "") {
                 initialDate = moment(inputValue, "DD-MM-YYYY");
             } else {
@@ -2001,7 +2003,8 @@ function setDatepickers() {
 
                 getInitialState: function () {
                     return {
-                        initialDate: initialDate
+                        initialDate: initialDate,
+                        disableInput: disableInput
                     };
                 },
 
@@ -2012,17 +2015,29 @@ function setDatepickers() {
                 },
 
                 render: function () {
-                    return React.DOM.div(null, 
-                        DatePicker(
-                        {locale:  "en",
-                        placeholderText:  "",
-                        dateFormat:  "DD/MM/YYYY",
-                        selected:  this.state.initialDate,
-                        onChange:  this.handleDateChange}
-                        )
-                    );
+                    if (disableInput !== 'true') {
+                        return React.DOM.div(null, 
+                            DatePicker(
+                            {locale:  "en",
+                            placeholderText:  "",
+                            dateFormat:  "DD/MM/YYYY",
+                            selected:  this.state.initialDate,
+                            onChange:  this.handleDateChange}
+                            )
+                        );
+                    } else {
+                        return React.DOM.div(null, 
+                            DatePicker(
+                            {locale:  "en",
+                            placeholderText:  "",
+                            dateFormat:  "DD/MM/YYYY",
+                            selected:  this.state.initialDate}
+                            )
+                        );
+                    }
                 }
             });
+
 
             React.render(DatePickerComponent( {key:datepickerId} ), datepickerContainer);
 
@@ -2031,6 +2046,9 @@ function setDatepickers() {
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
             inputNode.setAttribute("saved-value", inputValue);
+            if (disableInput === 'true') {
+                inputNode.setAttribute("disabled", '');
+            }
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');

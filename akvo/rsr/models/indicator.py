@@ -56,6 +56,26 @@ class Indicator(models.Model):
 
         return indicator_unicode
 
+    def save(self, *args, **kwargs):
+        """Update the values of child indicators, if a parent indicator is updated."""
+        if self.pk:
+            orig_indicator = Indicator.objects.get(pk=self.pk)
+            child_results = self.result.child_results.all()
+            child_indicators = Indicator.objects.filter(
+                result__in=child_results,
+                title=orig_indicator.title,
+                measure=orig_indicator.measure,
+                ascending=orig_indicator.ascending
+            )
+
+            for child_indicator in child_indicators:
+                child_indicator.title = self.title
+                child_indicator.measure = self.measure
+                child_indicator.ascending = self.ascending
+                child_indicator.save()
+
+        super(Indicator, self).save(*args, **kwargs)
+
     def clean(self):
         validation_errors = {}
 
@@ -82,7 +102,6 @@ class Indicator(models.Model):
 
         if validation_errors:
             raise ValidationError(validation_errors)
-
 
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
@@ -160,6 +179,24 @@ class IndicatorPeriod(models.Model):
                 period_unicode += u'target: %s)' % unicode(self.target_value)
 
         return period_unicode
+
+    def save(self, *args, **kwargs):
+        """Update the values of child periods, if a parent period is updated."""
+        if self.pk:
+            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+            child_results = self.indicator.result.child_results.all()
+            child_periods = IndicatorPeriod.objects.filter(
+                indicator__result__in=child_results,
+                period_start=orig_period.period_start,
+                period_end=orig_period.period_end
+            )
+
+            for child_period in child_periods:
+                child_period.period_start = self.period_start
+                child_period.period_end = self.period_end
+                child_period.save()
+
+        super(IndicatorPeriod, self).save(*args, **kwargs)
 
     def clean(self):
         validation_errors = {}
