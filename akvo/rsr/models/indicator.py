@@ -233,6 +233,12 @@ class IndicatorPeriod(models.Model):
             for child_period in child_periods:
                 child_period.period_start = self.period_start
                 child_period.period_end = self.period_end
+                if not child_period.target_value and self.target_value:
+                    child_period.target_value = self.target_value
+                if not child_period.target_comment and self.target_comment:
+                    child_period.target_comment = self.target_comment
+                if not child_period.target_value and self.target_value:
+                    child_period.target_value = self.target_value
                 child_period.save()
 
         # Create a new period when it's added
