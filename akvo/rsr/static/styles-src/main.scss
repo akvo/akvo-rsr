@@ -2507,7 +2507,7 @@ body {
         padding: 0.5em;
         margin: 0 1em;
         font-weight: bold;
-        color: $secondary6;
+        color: $newResultColor;
 
         &:hover, &.selected {
             border-bottom: 3px solid;
@@ -2552,12 +2552,12 @@ body {
         width: 25%;
         min-width: 200px;
         overflow-y: auto;
-        background-color: rgb(235,234,222);
+        background-color: rgb(239,239,229);
         vertical-align: top;
         border: 1px solid rgb(224,225,226);
 
-        .result-nav-header, .result-nav {
-            padding: 0.75em 0.75em 0 0.75em;
+        .result-nav {
+            padding: 0.25em 0.75em 0 0.75em;
             &:after {
                 height: 1px;
                 background-color: rgb(224,225,226);
@@ -2578,34 +2578,47 @@ body {
         }
 
         .result-nav-header {
+            padding: 0.25em 0.75em 0 0.75em;
             h3 {
-                color: rgb(62,101,255);
-                font-size: 1.2em;
+                color: rgba($akvoBlack,0.4);
+                font-size: 0.9em;
+                text-transform: uppercase;
+                margin-top: 5px;
             }
         }
 
         .result-nav {
             cursor: pointer;
-
-            .glyphicon-chevron-up {
+            .fa-chevron-up {
                 display: none;
             }
 
             h3 {
-                font-size: 1.2em;
+                font-size: 1.1em;
                 color: $secondary6;
+                @include noWrapTxt;
             }
-
+            &.expanded {
+                &:after {
+                    background-color: transparent;
+                }
+                h3 {
+                    color: $akvoBlack;
+                }
+            }
             .result-title {
-                .glyphicon {
+                .fa {
                     float: right;
                     font-size: 1.3em;
                     margin-right: 6px;
+                    text-shadow: 0 1px 0 rgb(255,255,255);
                 }
             }
 
             .result-indicator-count {
                 color: rgb(188,188,166);
+                margin-top: -10px;
+                display: block;            
             }
 
             .result-nav-full {
@@ -2617,10 +2630,11 @@ body {
             }
 
             &.expanded {
-                .glyphicon-chevron-down {
+                background: white;
+                .fa-chevron-down {
                     display: none;
                 }
-                .glyphicon-chevron-up {
+                .fa-chevron-up {
                     display: block;
                 }  
                 .indicator-text {
@@ -2634,11 +2648,10 @@ body {
                     cursor: pointer;
                     padding: 0.5em;
                     background-color: white;
-                    border: 1px solid rgb(224,225,226);
                     margin-top: 1em;
 
                     .indicator-nav {
-                        padding: 0.5em 1.5em;
+                        padding: 0.25em 0.5em;
                         /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
@@ -2657,6 +2670,8 @@ body {
                     h4 {
                         font-size: 1.1em;
                         color: rgb(100,100,100);
+                        margin-bottom: 1px;
+                        @include noWrapTxt;
                     }
 
                     .last-update {
@@ -2670,16 +2685,16 @@ body {
     .indicator-container {
         vertical-align: top;
         overflow-y: scroll;
-        padding: 1em;
-        background-color: rgb(242,242,235);
+        padding:0.25em 1em;
+        background-color: rgb(255,255,255);
+        border:1px solid rgb(241,241,242);
         @include flex(1);
 
         .result-summary {
-            padding: 1em;
             display: none;
 
             h4 {
-                font-size: 0.8em;
+                font-size: 0.9em;
                 color: #aaaaaa;
                 font-variant: small-caps;
                 text-transform: lowercase;
@@ -2707,10 +2722,20 @@ body {
                     opacity: 0.6;
                 }
             }
+            .result-indicators {
+                margin-top: 20px;
+                ul {
+                    list-style-type: none;
+                    padding-left: 5px;
+                    li {
+                        color: $anchorLink;
+                    }
+                }
+            }
         }
 
         .indicator-group {
-            padding: 1em;
+            padding:0;
             display: none;
 
             h4.indicator-title {
@@ -2746,12 +2771,16 @@ body {
             }
 
             .table {
-                padding: 0.5em;
-                background-color: rgb(235,235,231);
+                padding: 0.5em 0.25em;
+                /*background-color: rgb(235,235,231);*/
                 border: 1px solid rgb(224,225,226);
 
                 thead {
-                    font-weight: bold;
+                    font-weight: normal;
+                    color: rgb(192, 192, 192);
+                    tr {
+                        background-color: rgb(232,232,232);
+                    }
                 }
 
                 tr, td {
@@ -2760,7 +2789,7 @@ body {
 
                 tr {
                     border-bottom: 1px solid rgb(224,225,226);
-                    min-height: 100px;
+                    min-height: 125px;
                 }
 
                 td {
@@ -2768,17 +2797,17 @@ body {
                 }
 
                 .expand-indicator-period {
-                    .glyphicon-chevron-up {
+                    .fa-chevron-up {
                         display: none;
                     }
-                    .glyphicon-chevron-down {
+                    .fa-chevron-down {
                         display: initial;
                     }
                     &.expanded {
-                        .glyphicon-chevron-up {
+                        .fa-chevron-up {
                             display: initial;
                         }
-                        .glyphicon-chevron-down {
+                        .fa-chevron-down {
                             display: none;
                         }  
                     }
