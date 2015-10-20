@@ -1034,7 +1034,6 @@
                               </div>
                               <div class="indicator-bar-progress-container">
                                 <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment_100}}%; z-index: {{period.percent_accomplishment_100}}" data-progress="{{period.percent_accomplishment_100}}">
-                                  <span class="indicator-bar-progress-text">{{period.actual|floatformat:"0"}}</span>
                                   <span class="indicator-bar-progress-triangle"></span>
                                 </div>
                               </div>
@@ -1042,7 +1041,8 @@
                           </td>
                           <td class="target-td">
                             <div class="indicator-bar-progress-complete-container">
-                              <span class="indicator-bar-progress-complete">{{period.target_value}}</span>
+                              <span class="indicator-bar-progress-text">{{period.actual|floatformat:"0"}}</span>
+                              <span class="indicator-bar-progress-complete">  / {{period.target_value}}</span>
                             </div>
                           </td>
                           <td class="expand-td">

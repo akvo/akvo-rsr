@@ -1091,9 +1091,9 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #f0f0fa;
-  border-bottom: 1px solid #f8f8f8;
-  margin-bottom: 15px;
+  background: #F6FBFB;
+  border-bottom: 1px solid rgba(0, 167, 157, 0.15);
+  margin: -10px 0 15px 0;
   -moz-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   -o-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   -webkit-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
@@ -2049,7 +2049,7 @@ body.translationBarActive div.skiptranslate ~ #map {
     font-weight: bold;
     color: #646363; }
     .tab-menu a:hover, .tab-menu a.selected {
-      border-bottom: 3px solid; }
+      border-bottom: 3px solid #00aaff; }
     .tab-menu a:active {
       opacity: 0.6; }
 
@@ -2233,15 +2233,15 @@ body.translationBarActive div.skiptranslate ~ #map {
         color: #515050; }
       .results .indicator-container .indicator-group .table {
         padding: 0.5em 0.25em;
-        /*background-color: rgb(235,235,231);*/
-        border: 1px solid #e0e1e2; }
+        /*background-color: rgb(235,235,231);*/ }
         .results .indicator-container .indicator-group .table thead {
           font-weight: normal;
           color: silver; }
           .results .indicator-container .indicator-group .table thead tr {
             background-color: #e8e8e8; }
         .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
-          border: none; }
+          border: none;
+          color: #acacac; }
         .results .indicator-container .indicator-group .table tr {
           border-bottom: 1px solid #e0e1e2;
           min-height: 125px; }
@@ -2268,19 +2268,20 @@ body.translationBarActive div.skiptranslate ~ #map {
     margin-right: 15px; }
     .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
       position: absolute;
-      top: 44px;
+      top: 38px;
       bottom: 24px;
       left: 0px;
-      height: 12px;
-      -moz-border-radius: 4px;
-      -o-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px; }
+      height: 5px;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      border: 1px solid #CDDFEF; }
     .results .indicator-bar-display-container .indicator-bar {
-      background-color: #bcbca6;
+      background-color: #E2EBF5;
       right: 0px; }
     .results .indicator-bar-display-container .indicator-bar-progress-amount {
-      background-color: #515050; }
+      background-color: #E2EBF5; }
     .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
@@ -2290,33 +2291,35 @@ body.translationBarActive div.skiptranslate ~ #map {
       height: 100%; }
       .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
         position: absolute;
-        width: 30px;
-        height: 26px;
-        top: 13px;
-        margin-left: -15px;
-        padding: 0.2em;
-        background-color: #515050;
-        text-align: center; }
-        .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-text {
-          color: white;
-          font-weight: bold; }
-        .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress .indicator-bar-progress-triangle {
-          height: 5px;
-          width: 10px;
-          position: absolute;
-          bottom: -5px;
-          left: 10px;
-          right: 10px;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 5px solid #515050; }
+        width: 3px;
+        height: 20px;
+        top: 30px;
+        background-color: #A3C7E3;
+        text-align: center;
+        /*.indicator-bar-progress-triangle {
+                    height: 5px;
+                    width: 10px;
+                    position: absolute;
+                    bottom: -5px;
+                    left: 10px;
+                    right: 10px;
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                    border-top: 5px solid rgb(81,80,80);                    
+                }  */ }
   .results .target-td {
     vertical-align: middle; }
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
     padding-left: 15px;
     font-size: 1.5em;
-    font-weight: bold;
+    font-weight: normal;
     color: #515050;
+    vertical-align: bottom; }
+  .results .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+    padding-left: 15px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #A3C7E3;
     vertical-align: bottom; }
   .results .indicator-container .indicator-group .table tbody tr.expanded {
     background-color: white;
