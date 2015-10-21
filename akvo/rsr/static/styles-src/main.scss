@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------
 
             Title:   Akvo RSR v3
-            Author:  Loic Sans, loic@akvo.org
+            Author:  Loic Sans & Gabriel Brady, akvo.org
 
 /*---------------------------------------------------------------------------------*/
 
@@ -2665,14 +2665,19 @@ body {
                             margin-bottom: 0;
                         }
                     }
-
-                    h4 {
-                        font-size: 1.1em;
-                        color: rgb(100,100,100);
-                        margin-bottom: 1px;
-                        @include noWrapTxt;
+                    a {
+                        h4 {
+                            font-size: 1.1em;
+                            color: rgb(100,100,100);
+                            margin-bottom: 1px;
+                            @include noWrapTxt;
+                        }
+                        &.active {
+                            h4 {
+                                color:#ae0922;
+                            }
+                        }
                     }
-
                     .last-update {
                         font-size: 0.9em;
                         color: rgb(170,170,170);
@@ -2859,21 +2864,7 @@ body {
                 height: 20px;
                 top: 30px;
                 background-color: #A3C7E3;
-                text-align: center;   
-
-
-
-                /*.indicator-bar-progress-triangle {
-                    height: 5px;
-                    width: 10px;
-                    position: absolute;
-                    bottom: -5px;
-                    left: 10px;
-                    right: 10px;
-                    border-left: 5px solid transparent;
-                    border-right: 5px solid transparent;
-                    border-top: 5px solid rgb(81,80,80);                    
-                }  */          
+                text-align: center;     
             }            
         } 
     }

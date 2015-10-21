@@ -928,9 +928,11 @@
               <div class="result-nav-full">
                 {% for indicator in result.indicators.all %}
                   <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
-                    <h4>
-                      {{indicator.title}}
-                    </h4>
+                    <a onclick="addClassActive(this)" class="">
+                      <h4>
+                          {{indicator.title}}
+                      </h4>
+                    </a>
                     <div class="last-update">
                       {% if indicator.last_updated %}
                         {% trans 'Last update' %} {{ indicator.last_updated }}
@@ -1158,7 +1160,6 @@
 
         /* Hide all the indicator and result summary elements */
         hideAll('.indicator-group, .indicator');
-
         hideAllResultsSummaries();
 
         /* Now show the indicator group and indicator that
@@ -1610,7 +1611,17 @@
       els[i].classList.remove(className);
     }
   }
-
+  function addClassActive(elem) {
+      // get all 'a' elements
+      var a = document.getElementsByTagName('a');
+      // loop through all 'a' elements
+      for (i = 0; i < a.length; i++) {
+          // Remove the class 'active' if it exists
+          a[i].classList.remove('active')
+      }
+      // add 'active' classs to the element that was clicked
+      elem.classList.add('active');
+  }
   var updatesByIndicatorPeriod = {};
 
   /* Get the grab the update data from the script we use to print
