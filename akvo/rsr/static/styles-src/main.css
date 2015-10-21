@@ -1,14 +1,12 @@
-@charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
             Title:   Akvo RSR v3
-            Author:  Loic Sans, loic@akvo.org
+            Author:  Loic Sans & Gabriel Brady, akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------
 
         Title:          RSR v3 functions and library
-        Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /* Colours
@@ -2159,13 +2157,15 @@ body.translationBarActive div.skiptranslate ~ #map {
               border-left: 4px solid #ae0922; }
             .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav:last-child {
               margin-bottom: 0; }
-          .results .sidebar .result-nav.expanded .result-nav-full h4 {
+          .results .sidebar .result-nav.expanded .result-nav-full a h4 {
             font-size: 1.1em;
             color: #646464;
             margin-bottom: 1px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap; }
+          .results .sidebar .result-nav.expanded .result-nav-full a.active h4 {
+            color: #ae0922; }
           .results .sidebar .result-nav.expanded .result-nav-full .last-update {
             font-size: 0.9em;
             color: #aaaaaa; }
@@ -2295,18 +2295,7 @@ body.translationBarActive div.skiptranslate ~ #map {
         height: 20px;
         top: 30px;
         background-color: #A3C7E3;
-        text-align: center;
-        /*.indicator-bar-progress-triangle {
-                    height: 5px;
-                    width: 10px;
-                    position: absolute;
-                    bottom: -5px;
-                    left: 10px;
-                    right: 10px;
-                    border-left: 5px solid transparent;
-                    border-right: 5px solid transparent;
-                    border-top: 5px solid rgb(81,80,80);                    
-                }  */ }
+        text-align: center; }
   .results .target-td {
     vertical-align: middle; }
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
