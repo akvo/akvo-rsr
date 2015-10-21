@@ -116,13 +116,41 @@ def directory(request):
 
 
 def _get_accordion_data(project):
+    results_data = []
+    if project.results.all() and not project.is_impact_project:
+        for result in project.results.all():
+            result_data = dict()
+            result_data['id'] = str(result.pk)
+            result_data['title'] = result.title
+            indicators_data = []
+            for indicator in result.indicators.all():
+                for period in indicator.periods.all().order_by('period_start'):
+                    indicator_data = dict()
+                    indicator_data['id'] = str(period.pk)
+                    indicator_data['title'] = indicator.title
+                    if period.period_start:
+                        indicator_data['period_start'] = period.period_start.strftime("%d-%m-%Y")
+                    if period.period_end:
+                        indicator_data['period_end'] = period.period_end.strftime("%d-%m-%Y")
+                    indicator_data['target_value'] = period.target_value
+                    indicator_data['actual_value'] = period.actual_value
+                    indicators_data.append(indicator_data)
+                if not indicator.periods.all():
+                    indicator_data = dict()
+                    indicator_data['id'] = str(indicator.pk)
+                    indicator_data['title'] = indicator.title
+                    indicators_data.append(indicator_data)
+            result_data['indicators'] = indicators_data
+            results_data.append(result_data)
+
     return dict(
         background=project.background,
         current_status=project.current_status,
         project_plan=project.project_plan,
         target_group=project.target_group,
         sustainability=project.sustainability,
-        goals_overview=project.goals_overview
+        goals_overview=project.goals_overview,
+        results=results_data if results_data else ''
     )
 
 
