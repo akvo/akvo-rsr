@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -381,7 +381,7 @@ class IndicatorPeriod(models.Model):
                 (Decimal(self.target_value) - Decimal(baseline)) *
                 100, 1
             )
-        except (InvalidOperation, TypeError):
+        except (InvalidOperation, TypeError, DivisionByZero):
             return 0
 
     @property
