@@ -51,9 +51,15 @@ class Result(models.Model):
     def save(self, *args, **kwargs):
         """Update the values of child results, if a parent result is updated."""
         for child_result in self.child_results.all():
+            # Always copy title, type and aggregation status. They should be the same as the parent.
             child_result.title = self.title
             child_result.type = self.type
             child_result.aggregation_status = self.aggregation_status
+
+            # Only copy the description if the child has none (e.g. new)
+            if not child_result.description and self.description:
+                child_result.description = self.description
+
             child_result.save()
         super(Result, self).save(*args, **kwargs)
 

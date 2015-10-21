@@ -69,9 +69,21 @@ class Indicator(models.Model):
             )
 
             for child_indicator in child_indicators:
+                # Always copy title, measure and ascending. They should be the same as the parent.
                 child_indicator.title = self.title
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
+
+                # Only copy the description and baseline if the child has none (e.g. new)
+                if not child_indicator.description and self.description:
+                    child_indicator.description = self.description
+                if not child_indicator.baseline_year and self.baseline_year:
+                    child_indicator.baseline_year = self.baseline_year
+                if not child_indicator.baseline_value and self.baseline_value:
+                    child_indicator.baseline_value = self.baseline_value
+                if not child_indicator.baseline_comment and self.baseline_comment:
+                    child_indicator.baseline_comment = self.baseline_comment
+
                 child_indicator.save()
 
         # Create a new indicator when it's added
@@ -231,14 +243,18 @@ class IndicatorPeriod(models.Model):
             )
 
             for child_period in child_periods:
+                # Always copy period start and end. They should be the same as the parent.
                 child_period.period_start = self.period_start
                 child_period.period_end = self.period_end
+
+                # Only copy the target value and comments if the child has no values (e.g. new)
                 if not child_period.target_value and self.target_value:
                     child_period.target_value = self.target_value
                 if not child_period.target_comment and self.target_comment:
                     child_period.target_comment = self.target_comment
                 if not child_period.target_value and self.target_value:
                     child_period.target_value = self.target_value
+
                 child_period.save()
 
         # Create a new period when it's added

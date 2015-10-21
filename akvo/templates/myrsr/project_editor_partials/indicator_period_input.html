@@ -40,7 +40,7 @@
                 <div class="col-md-6 control">
                     <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}"
                     value="{{ period.actual_value }}" saved-value="{{ period.actual_value }}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="50"
-                    {% if period.is_calculated %}disabled{% endif %}>
+                    {% if project.is_impact_project %}disabled placeholder="{% trans 'The actual value will be calculated based on updates' %}"{% endif %}>
                     <label class="control-label" for="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value' %}</label>
                     <p class="help-block hidden">{% trans 'A record of the achieved result for this period.' %}</p>
                 </div>
