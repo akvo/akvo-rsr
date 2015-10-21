@@ -1,7 +1,9 @@
 {% load compressed i18n %}
 
+{% url 'project-main' project.pk as project_url %}
+
 {% if partners|length > 0 %}
-<a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
+<a href="{% if not project_page %}{{ project_url }}{% endif %}#partners" class="small moreLink tab-link" data-toggle="tooltip"
   title="
   <div class='extra-partner-tooltip'>
     {% for partner, types in partners.items %}
@@ -21,4 +23,4 @@
     {{ num_partners }} partners
   {% endblocktrans %}
   </a>
-{% endif %}  
+{% endif %}
