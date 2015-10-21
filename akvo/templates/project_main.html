@@ -1189,12 +1189,11 @@
       el = els[i];
 
       el.addEventListener('click', function() {
-        var periodNode = this.closest('tbody');
-        var periodId = periodNode.getAttribute('period-id');
-        var periodValue = periodNode.getAttribute('period-actual');
-        var target = periodNode.getAttribute('period-target');
-        var baseline = periodNode.getAttribute('period-start');
-        var parentElement = document.querySelector('.indicator-period-' + periodId + '-tr');
+        var parentElement, periodId, periodNode;
+
+        periodNode = this.closest('tbody');
+        periodId = periodNode.getAttribute('period-id');
+        parentElement = document.querySelector('.indicator-period-' + periodId + '-tr');
 
         if (this.classList.contains('expanded')) {
           /* This is period already expanded. Collapse it and remove all update dialogs. */
@@ -1207,7 +1206,7 @@
           var container;
 
           insertAddRow(periodId);
-          parentElement.parentNode.appendChild(getUpdateDialog(periodId, periodValue, target, baseline));
+          parentElement.parentNode.appendChild(getUpdateDialog(periodId));
 
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
@@ -1226,10 +1225,11 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       el.addEventListener('click', function() {
-        var newUpdate, periodId, periodTarget;
+        var addUpdateContainer, container, containerCell, newUpdate, periodId, periodNode, periodTarget;
 
-        periodId = this.closest('tbody').getAttribute('period-id');
-        periodTarget = this.closest('tbody').getAttribute('period-target');
+        periodNode = this.closest('tbody');
+        periodId = periodNode.getAttribute('period-id');
+        periodTarget = periodNode.getAttribute('period-target');
 
         newUpdate = {
           id: 'add',
@@ -1249,16 +1249,16 @@
         };
         addUpdateToStore(newUpdate);
 
-        var container = document.createElement('tr');
+        container = document.createElement('tr');
         container.classList.add('update-dialog-container');
-        var containerCell = document.createElement('td');
+
+        containerCell = document.createElement('td');
         containerCell.setAttribute('colspan', '5');
-        var periodNode = this.closest('tbody');
-        var periodValue = periodNode.getAttribute('period-actual');
-        var periodBaseline = periodNode.getAttribute('period-start');
-        var addUpdateContainer = getUpdateEntry(newUpdate, periodId, periodValue, periodTarget, periodBaseline);
+
+        addUpdateContainer = getUpdateEntry(newUpdate);
         containerCell.appendChild(addUpdateContainer);
         container.appendChild(containerCell);
+
         if (this.parentNode.parentNode.nextSibling) {
           this.parentNode.parentNode.parentNode.insertBefore(container, this.parentNode.parentNode.nextSibling);
         } else {
@@ -1280,12 +1280,21 @@
 
       el.addEventListener('click', function() {
         this.closest('td').querySelector('.edit-button').click();
-        var actualValue, currentChange, description, periodId, periodNode, newValue, updateContainer, updateId, value;
+        var actualValue, currentChange, description, periodId, periodNode, newValue, updateContainer, updateId, value, targetValue;
 
         updateContainer = this.parentNode;
         updateId = updateContainer.getAttribute('update-id');
         periodNode = this.closest('tbody');
         newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value'));
+        targetValue = parseInt(periodNode.getAttribute('period-target'));
+
+        // Check for exceeding values, but only when bar is full
+        if (newValue == targetValue) {
+            var exceedValue = parseInt(updateContainer.querySelector('.exceed-value').value);
+            if (exceedValue > newValue) {
+                newValue = exceedValue;
+            }
+        }
 
         if (updateId !== 'add') {
           actualValue = parseInt(updateContainer.getAttribute('current-actual'));
@@ -1322,6 +1331,14 @@
           this.classList.remove('activated');
           updateContainer.querySelector('.save-button').classList.remove('active');
           updateContainer.querySelector('.edit-slider').noUiSlider.destroy();
+
+          var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
+          exceedTargetNode.querySelector('.update-exceed-target-checkbox').setAttribute('disabled', '');
+          exceedTargetNode.querySelector('.exceed-value').setAttribute('disabled', '');
+
+          if (!exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
+            exceedTargetNode.style.display = 'none';
+          }
         } else {
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
@@ -1331,7 +1348,7 @@
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
           var minVal = parseInt(this.closest('.indicator-period').getAttribute('period-start'));
-          var maxVal = parseFloat(sliderEl.getAttribute('data-max'));
+          var maxVal = parseInt(sliderEl.getAttribute('data-max'));
 
           noUiSlider.create(sliderEl, {
             start: startVal,
@@ -1354,6 +1371,19 @@
 
             updateMarker.querySelector('.indicator-bar-progress-text').textContent = Math.round(value);
             updateProgress.style.width = percentage + '%';
+
+            var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
+            if (value == maxVal) {
+              // Display the 'Exceed target' div when bar is full
+              exceedTargetNode.querySelector('.update-exceed-target-checkbox').removeAttribute('disabled');
+              exceedTargetNode.style.display = '';
+              if (exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
+                exceedTargetNode.querySelector('.exceed-value').removeAttribute('disabled');
+              }
+            } else {
+              exceedTargetNode.querySelector('.update-exceed-target-checkbox').setAttribute('disabled', '');
+              exceedTargetNode.style.display = 'none';
+            }
           });
         }
       });
@@ -1487,7 +1517,7 @@
 
     rowCells.appendChild(addUpdateButton);
     row.appendChild(rowCells);
-    console.log(periodNode.getElementsByTagName('tr').length);
+
     if (periodNode.getElementsByTagName('tr').length > 1) {
       periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
     } else {
@@ -1539,7 +1569,7 @@
     periodNode.querySelector('.indicator-bar-progress-amount').setAttribute('style', 'width: ' + newPercentage + '%;');
     periodNode.querySelector('.indicator-bar-progress').setAttribute('style', 'left: ' + newPercentage + '%; z-index: ' + newPercentage + ';');
     periodNode.querySelector('.indicator-bar-progress').setAttribute('data-progress', newPercentage);
-    periodNode.querySelector('.indicator-bar-progress-text').textContent = newValue.toString();
+    periodNode.querySelector('.indicator-bar-progress-text').textContent = newValue.toString();// > target ? target.toString() : newValue.toString();
   }
 
   /* Update the values of an update */
@@ -1665,7 +1695,7 @@
   /* Returns a node representing the "Add update" dialog, ready to be injected at
   ** the appropriate point in the DOM.
   */
-  function getUpdateDialog(indicatorPeriodID, periodValue, target, baseline) {
+  function getUpdateDialog(indicatorPeriodID) {
     var container = document.createElement('tr');
     var containerCell = document.createElement('td');
     var currentUpdate = null;
@@ -1677,7 +1707,7 @@
       for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
         if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
           currentUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
-          childElements.push(getUpdateEntry(currentUpdate, indicatorPeriodID, periodValue, target, baseline));
+          childElements.push(getUpdateEntry(currentUpdate));
         }
       }
 
@@ -1697,9 +1727,7 @@
   ** for each and return the appropriate markup each time.
   */
 
-  /* TODO: refactor this (all information is already in 'update' now) */
-
-  function getUpdateEntry(update, indicatorPeriodID, periodValue, target, baseline) {
+  function getUpdateEntry(update) {
     var updateContainer = document.createElement('div');
     var editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
 
@@ -1726,22 +1754,53 @@
       userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
       updateContainer.appendChild(userNameEl);
     }
+    var exceedTargetEl = document.createElement('div');
+    exceedTargetEl.classList.add('update-exceed-target');
+
+    var exceedTargetLabel = document.createElement('label');
+    exceedTargetLabel.textContent = 'Exceed target';
+    exceedTargetLabel.setAttribute('for', 'exceed-' + update.id);
+
+    var exceedTargetCheckbox = document.createElement('input');
+    exceedTargetCheckbox.setAttribute('type', 'checkbox');
+    exceedTargetCheckbox.setAttribute('id', 'exceed-' + update.id);
+    exceedTargetCheckbox.setAttribute('disabled', '');
+    exceedTargetCheckbox.classList.add('update-exceed-target-checkbox');
+
+    var exceedTargetNewValue = document.createElement('input');
+    exceedTargetNewValue.setAttribute('type', 'number');
+    exceedTargetNewValue.setAttribute('disabled', '');
+    exceedTargetNewValue.classList.add('exceed-value');
+
+    exceedTargetCheckbox.addEventListener('change', function () {
+      if(exceedTargetCheckbox.checked){
+        exceedTargetNewValue.removeAttribute('disabled');
+        exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
+      } else {
+        exceedTargetNewValue.setAttribute('disabled', '');
+      }
+    });
+
+    exceedTargetEl.appendChild(exceedTargetCheckbox);
+    exceedTargetEl.appendChild(exceedTargetLabel);
+    exceedTargetEl.appendChild(exceedTargetNewValue);
+    updateContainer.appendChild(exceedTargetEl);
+
     timeLineEl = document.createElement('div');
     timeLineEl.classList.add('update-timeline');
 
     var progressContainer = document.createElement('div');
-
-      progressContainer.classList.add('indicator-bar-display-container');
-      var markerContainer = document.createElement('div');
-      markerContainer.classList.add('indicator-bar-progress-container');
+    progressContainer.classList.add('indicator-bar-display-container');
+    var markerContainer = document.createElement('div');
+    markerContainer.classList.add('indicator-bar-progress-container');
 
       var previousUpdates = [];
       /* Now we need to loop through every update with an ID lower than the id of *this* update,
       ** and store its change amount so we can build the timeline.
       */
-      for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
-        if (updatesByIndicatorPeriod[indicatorPeriodID].hasOwnProperty(updateID)) {
-          var previousUpdate = updatesByIndicatorPeriod[indicatorPeriodID][updateID];
+      for (var updateID in updatesByIndicatorPeriod[update.indicator_period.id]) {
+        if (updatesByIndicatorPeriod[update.indicator_period.id].hasOwnProperty(updateID)) {
+          var previousUpdate = updatesByIndicatorPeriod[update.indicator_period.id][updateID];
 
           /* If the change amount is "None", changes this to zero */
           if (previousUpdate.period_update === 'None') {
@@ -1756,10 +1815,19 @@
           return a.id > b.id;
       });
 
-      var highestValue = 0;
+      var highestValue, periodNode, periodValue, periodTarget, periodBaseline;
+
+      highestValue = 0;
+
+      periodNode = findPeriod(update.indicator_period.id);
+      periodValue = parseInt(periodNode.getAttribute('period-actual'));
+      periodTarget = parseInt(periodNode.getAttribute('period-target'));
+      periodBaseline = parseInt(periodNode.getAttribute('period-start'));
 
       for (var i = previousUpdates.length - 1; i >= 0; i--) {
-        var entry = previousUpdates[i];
+        var entry;
+
+        entry = previousUpdates[i];
 
         if (entry.id > update.id && update.id !== 'add') {
           /* This update is *newer* than the one we're building the dialog
@@ -1767,7 +1835,7 @@
           ** use it's "change" value to calculate the end value for the
           ** timeline for this particular update.
           */
-          periodValue = periodValue - parseFloat(entry.period_update);
+          periodValue = periodValue - parseInt(entry.period_update);
         } else {
           /* This update is *older* (or the same) as the update we're
           ** building the dialog for. We need to make a marker for it.
@@ -1779,7 +1847,7 @@
           var textSpan = document.createElement('span');
           var triangleSpan = document.createElement('span');
 
-          var percentage = (parseInt(periodValue) - parseInt(baseline)) / (parseInt(target) - parseInt(baseline)) * 100;
+          var percentage = (periodValue - periodBaseline) / (periodTarget - periodBaseline) * 100;
           percentage = percentage > 100 ? 100 : percentage;
 
           updateMarker.classList.add('update-dialog-timeline-marker');
@@ -1790,7 +1858,7 @@
 
           triangleSpan.classList.add('indicator-bar-progress-triangle');
           textSpan.classList.add('indicator-bar-progress-text');
-          textSpan.textContent = periodValue;
+          textSpan.textContent = periodValue > periodTarget ? periodTarget : periodValue;
 
           updateMarker.appendChild(textSpan);
           updateMarker.appendChild(triangleSpan);
@@ -1803,7 +1871,7 @@
       indicatorBar.classList.add('indicator-bar');
       progressContainer.appendChild(indicatorBar);
 
-      var highPercentage = (parseInt(highestValue) - parseInt(baseline)) / (parseInt(target) - parseInt(baseline)) * 100;
+      var highPercentage = (highestValue - periodBaseline) / (periodTarget - periodBaseline) * 100;
       highPercentage = highPercentage > 100 ? 100 : highPercentage;
 
       var indicatorBarProgressAmount = document.createElement('div');
@@ -1817,18 +1885,23 @@
       var sliderEl = document.createElement('div');
       sliderEl.classList.add('edit-slider');
       sliderEl.setAttribute('data-start', highestValue);
-      sliderEl.setAttribute('data-max', target);
+      sliderEl.setAttribute('data-max', periodTarget);
 
       progressContainer.appendChild(sliderEl);
-
       timeLineEl.appendChild(progressContainer);
-
       updateContainer.appendChild(timeLineEl);
+
+      if (highestValue > periodTarget) {
+        exceedTargetNewValue.value = highestValue;
+        exceedTargetCheckbox.checked = true;
+      } else {
+        exceedTargetEl.style.display = 'none';
+      }
 
       targetEl = document.createElement('div');
       targetEl.classList.add('update-target');
       targetText = document.createElement('div');
-      targetText.textContent = target;
+      targetText.textContent = periodTarget;
 
       targetEl.appendChild(targetText);
       updateContainer.appendChild(targetEl);

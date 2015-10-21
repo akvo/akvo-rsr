@@ -2985,6 +2985,9 @@ body {
                         border: 0;
                         background-color: #515050;
                         margin-top: -22px;
+                        bottom: 12px;
+                        opacity: 0;
+                        z-index: 999;
                         @include border-radius(4px);
 
                         .noUi-origin {
