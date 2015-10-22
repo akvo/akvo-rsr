@@ -4,7 +4,20 @@ These BIRT templates are intended to be installed on a ReportServer.
 
 They were developed using the BIRT Report Designer plugin for Eclipse, version 4.4.
 
-The RSR projects used as models were 2849 and its parent project 2081.
+The RSR projects used as test cases were 2849 and its parent project 2081.
+
+
+## Deployment to reportserver
+The report has one parameter, TheProjectId, which is created on the RS as a Dataset parameter, key=TheProjectId, BIRT, query="select id from rsr_project order by id desc"
+
+
+
+## Access by URL
+
+https://reporting.test.akvo-ops.org/reportserver/reportserver/httpauthexport?key=restest2&user=user1&password=unicorns&format=pdf&download=false&p_TheProjectId=2081
+
+Where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
+
 
 During development I found it convenient to:
 
