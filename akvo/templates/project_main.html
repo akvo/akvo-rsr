@@ -1382,23 +1382,22 @@
 
             updateMarker.style.left = percentage + '%';
             updateMarker.setAttribute('data-value', value);
-
-            updateMarker.querySelector('.indicator-bar-progress-text').textContent = value;
             updateProgress.style.width = percentage + '%';
 
-            updateActual.textContent = value;
-
             var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
+
             if (value == maxVal) {
               // Display the 'Exceed target' div when bar is full
               exceedTargetNode.querySelector('.update-exceed-target-checkbox').removeAttribute('disabled');
               exceedTargetNode.style.display = '';
               if (exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
                 exceedTargetNode.querySelector('.exceed-value').removeAttribute('disabled');
+                updateActual.textContent = exceedTargetNode.querySelector('.exceed-value').value;
               }
             } else {
               exceedTargetNode.querySelector('.update-exceed-target-checkbox').setAttribute('disabled', '');
               exceedTargetNode.style.display = 'none';
+              updateActual.textContent = value;
             }
           });
         }
@@ -1914,13 +1913,12 @@
           return a.id > b.id;
       });
 
-      var actualText, highestValue, periodNode, periodOrigValue, periodValue, periodTarget, periodBaseline;
+      var actualText, highestValue, periodNode, periodValue, periodTarget, periodBaseline;
 
       highestValue = 0;
 
       periodNode = findPeriod(update.indicator_period.id);
       periodValue = parseInt(periodNode.getAttribute('period-actual'));
-      periodOrigValue = periodValue;
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
 
@@ -2001,7 +1999,7 @@
 
       actualText = document.createElement('span');
       actualText.classList.add('update-target-actual');
-      actualText.textContent = periodOrigValue;
+      actualText.textContent = highestValue;
       targetEl.appendChild(actualText);
 
       targetText = document.createElement('span');
