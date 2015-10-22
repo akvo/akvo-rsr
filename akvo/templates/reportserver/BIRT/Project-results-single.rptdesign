@@ -3485,6 +3485,66 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
                 </cell>
             </row>
         </grid>
+        <table id="228">
+            <property name="dataSet">Child_projects</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">title</property>
+                    <text-property name="displayName">title</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="235"/>
+            <header>
+                <row id="229">
+                    <cell id="230">
+                        <label id="237">
+                            <property name="fontSize">18pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="color">orange</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">8pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">8pt</property>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(Total.count() &lt; 1)</expression>
+                                </structure>
+                            </list-property>
+                            <text-property name="text">Child projects</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="231">
+                    <cell id="232">
+                        <data id="238">
+                            <property name="resultSetColumn">title</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="233">
+                    <cell id="234"/>
+                </row>
+            </footer>
+        </table>
         <table name="table1" id="13">
             <property name="width">7.979166666666667in</property>
             <property name="dataSet">Results_indicators_periods</property>
@@ -3570,6 +3630,12 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
                             <property name="paddingBottom">8pt</property>
                             <property name="paddingRight">8pt</property>
                             <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(Total.count() &lt; 1)</expression>
+                                </structure>
+                            </list-property>
                             <text-property name="text">Results</text-property>
                         </label>
                     </cell>
