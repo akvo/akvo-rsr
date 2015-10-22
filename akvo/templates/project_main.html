@@ -1303,7 +1303,7 @@
           value = newValue - actualValue;
         }
 
-        description = updateContainer.querySelector('.update-description').textContent;
+        description = updateContainer.querySelector('.update-description').innerText;
 
         photoNode = updateContainer.querySelector('.photo-upload');
         photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
@@ -1436,11 +1436,7 @@
 
       fileRequest.onload = function() {
         if (fileRequest.status >= 200 && fileRequest.status < 400) {
-          var response;
-          response = JSON.parse(fileRequest.responseText);
-
           addAdditionalUpdateData(updateId);
-
           return false;
         } else {
           // We reached our target server, but it returned an error
@@ -1477,6 +1473,8 @@
             removeUpdatefromStore(periodId, 'add');
             updateActualValue(periodId, value);
             updateUpdateValues(periodId, 'add', updateId, value);
+
+            addAdditionalUpdateData(updateId);
 
             // Upload photo
             if (photo !== undefined) {
@@ -2003,7 +2001,7 @@
 
       descriptionEl = document.createElement('div');
       descriptionEl.classList.add('update-description');
-      descriptionEl.textContent = update.text;
+      descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
 
       updateContainer.appendChild(descriptionEl);
 
