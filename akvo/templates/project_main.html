@@ -1372,16 +1372,21 @@
 
           var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:first-child');
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
+          var updateActual = updateContainer.querySelector('.update-target-actual');
 
           sliderEl.noUiSlider.on('update', function(value) {
+            value = parseInt(value);
+
             var percentage = (value - minVal) / (maxVal - minVal) * 100;
             percentage = percentage > 100 ? 100 : percentage;
 
             updateMarker.style.left = percentage + '%';
             updateMarker.setAttribute('data-value', value);
 
-            updateMarker.querySelector('.indicator-bar-progress-text').textContent = Math.round(value);
+            updateMarker.querySelector('.indicator-bar-progress-text').textContent = value;
             updateProgress.style.width = percentage + '%';
+
+            updateActual.textContent = value;
 
             var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
             if (value == maxVal) {
@@ -1561,20 +1566,14 @@
 
   /* Display the photo in the update. Either by replacing the existing photo or by adding a new photo */
   function displayPhoto(update, updateNode) {
-      console.log('displaying a photo');
     if (update.photo) {
-      var photoNode;
-        console.log('displaying a photo yes');
-
-
-        photoNode = document.createElement('div');
-        photoNode.classList.add('update-photo');
-        photoNode.style['background-image'] = 'url("' + update.photo + '")';
-        photoNode.style['background-size'] = 'cover';
-        photoNode.style['height'] = '120px';
-        photoNode.style['width'] = '200px';
-        updateNode.appendChild(photoNode);
-
+      var photoNode = document.createElement('div');
+      photoNode.classList.add('update-photo');
+      photoNode.style['background-image'] = 'url("' + update.photo + '")';
+      photoNode.style['background-size'] = 'cover';
+      photoNode.style['height'] = '120px';
+      photoNode.style['width'] = '200px';
+      updateNode.appendChild(photoNode);
     }
   }
 
@@ -1866,8 +1865,14 @@
     exceedTargetNewValue.setAttribute('disabled', '');
     exceedTargetNewValue.classList.add('exceed-value');
 
+    exceedTargetNewValue.addEventListener('keyup', function () {
+      if (exceedTargetCheckbox.checked) {
+        updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
+      }
+    });
+
     exceedTargetCheckbox.addEventListener('change', function () {
-      if(exceedTargetCheckbox.checked){
+      if (exceedTargetCheckbox.checked) {
         exceedTargetNewValue.removeAttribute('disabled');
         exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
       } else {
@@ -1909,12 +1914,13 @@
           return a.id > b.id;
       });
 
-      var highestValue, periodNode, periodValue, periodTarget, periodBaseline;
+      var actualText, highestValue, periodNode, periodOrigValue, periodValue, periodTarget, periodBaseline;
 
       highestValue = 0;
 
       periodNode = findPeriod(update.indicator_period.id);
       periodValue = parseInt(periodNode.getAttribute('period-actual'));
+      periodOrigValue = periodValue;
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
 
@@ -1992,11 +1998,16 @@
       }
 
       targetEl = document.createElement('div');
-
       targetEl.classList.add('update-target');
-      targetText = document.createElement('span');
-      targetText.textContent = periodTarget;
 
+      actualText = document.createElement('span');
+      actualText.classList.add('update-target-actual');
+      actualText.textContent = periodOrigValue;
+      targetEl.appendChild(actualText);
+
+      targetText = document.createElement('span');
+      actualText.classList.add('update-target-actual');
+      targetText.textContent =  ' / ' + periodTarget;
       targetEl.appendChild(targetText);
       updateContainer.appendChild(targetEl);
 

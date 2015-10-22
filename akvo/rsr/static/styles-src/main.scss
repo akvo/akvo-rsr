@@ -3019,6 +3019,13 @@ body {
                         font-size: 1.5em;
                         color: rgb(81,80,80);
                         vertical-align: text-top;
+                        &.update-target-actual {
+                            padding-left: 15px;
+                            font-size: 1.5em;
+                            font-weight: bold;
+                            color: #A3C7E3;
+                            vertical-align: bottom;
+                        }
                     }
                 }
                 .update-description {

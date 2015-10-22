@@ -2311,6 +2311,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           font-size: 1.5em;
           color: #515050;
           vertical-align: text-top; }
+          .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
+            padding-left: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #A3C7E3;
+            vertical-align: bottom; }
       .results .update-dialog-container td .update-entry-container .update-description {
         padding: 0.5em; }
         .results .update-dialog-container td .update-entry-container .update-description.editable {
