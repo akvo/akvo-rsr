@@ -3252,6 +3252,122 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Parent_projects" id="239">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">title</text-property>
+                    <text-property name="heading">title</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">child_of</property>
+                    <property name="paramName">TheProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">2081</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">has_as_parent</property>
+                    <property name="paramName">TheProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">2</property>
+                    <expression name="defaultValue" type="javascript">2081</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">RSR-test</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">title</property>
+                    <property name="nativeName">title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select rsr_project.id, rsr_project.title
+from rsr_relatedproject left join rsr_project on rsr_relatedproject.related_project_id = rsr_project.id
+where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.project_id = ?) 
+union
+select rsr_project.id, rsr_project.title
+from rsr_relatedproject left join rsr_project on rsr_relatedproject.project_id = rsr_project.id
+where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_project_id = ?)
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="38">
@@ -3485,6 +3601,61 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
                 </cell>
             </row>
         </grid>
+        <table id="240">
+            <property name="dataSet">Parent_projects</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">title</property>
+                    <text-property name="displayName">title</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="249"/>
+            <header>
+                <row id="241">
+                    <cell id="242">
+                        <label id="243">
+                            <property name="fontSize">18pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="color">orange</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">8pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">8pt</property>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(Total.count() &lt; 1)</expression>
+                                </structure>
+                            </list-property>
+                            <text-property name="text">Parent project</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="244">
+                    <cell id="245">
+                        <data id="246">
+                            <property name="fontSize">14pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">8pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">8pt</property>
+                            <property name="resultSetColumn">title</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="247">
+                    <cell id="248"/>
+                </row>
+            </footer>
+        </table>
         <table id="228">
             <property name="dataSet">Child_projects</property>
             <list-property name="boundDataColumns">
@@ -3534,6 +3705,12 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
                 <row id="231">
                     <cell id="232">
                         <data id="238">
+                            <property name="fontSize">14pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">8pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">8pt</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
