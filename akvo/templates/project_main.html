@@ -1944,8 +1944,7 @@
             highestValue = periodValue
           }
           var updateMarker = document.createElement('div');
-          var textSpan = document.createElement('span');
-          var triangleSpan = document.createElement('span');
+          var textSpan = document.createElement('div');
 
           var percentage = (periodValue - periodBaseline) / (periodTarget - periodBaseline) * 100;
           percentage = percentage > 100 ? 100 : percentage;
@@ -1954,15 +1953,15 @@
           updateMarker.classList.add('indicator-bar-progress');
           updateMarker.style.left = percentage + '%';
           updateMarker.style['z-index'] = periodValue;
+          
 
-          triangleSpan.classList.add('indicator-bar-progress-triangle');
           textSpan.classList.add('indicator-bar-progress-text');
           textSpan.textContent = periodValue > periodTarget ? periodTarget : periodValue;
-
-          updateMarker.appendChild(textSpan);
-          updateMarker.appendChild(triangleSpan);
-
+          textSpan.style.left = percentage + '%';
+          
           markerContainer.appendChild(updateMarker);
+          markerContainer.appendChild(textSpan);
+
           periodValue = periodValue - parseFloat(entry.period_update);
         }
       }
