@@ -2996,6 +2996,9 @@ body {
                     right: 5px;
                     color: rgb(150,150,150);
                     font-size: 1.5em;
+                    &.activated {
+                        display: none;
+                    }
                 }
 
                 .update-date {
@@ -3047,6 +3050,21 @@ body {
                     }
                 }
                 .save-button {
+                    display: none;
+                    &.active {
+                        display: block;
+                        width: 150px;
+                        padding: 0.5em;
+                        color: white;
+                        font-weight: bold;
+                        background-color: #3e65ff;
+                        margin-top: 1em;
+                        margin-left: auto;
+                        @include border-radius(4px);
+                        text-align: center;
+                    }
+                }
+                .cancel-button {
                     display: none;
                     &.active {
                         display: block;

@@ -2292,6 +2292,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 5px;
         color: #969696;
         font-size: 1.5em; }
+        .results .update-dialog-container td .update-entry-container .edit-button.activated {
+          display: none; }
       .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
@@ -2333,6 +2335,22 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .update-dialog-container td .update-entry-container .save-button {
         display: none; }
         .results .update-dialog-container td .update-entry-container .save-button.active {
+          display: block;
+          width: 150px;
+          padding: 0.5em;
+          color: white;
+          font-weight: bold;
+          background-color: #3e65ff;
+          margin-top: 1em;
+          margin-left: auto;
+          -moz-border-radius: 4px;
+          -o-border-radius: 4px;
+          -webkit-border-radius: 4px;
+          border-radius: 4px;
+          text-align: center; }
+      .results .update-dialog-container td .update-entry-container .cancel-button {
+        display: none; }
+        .results .update-dialog-container td .update-entry-container .cancel-button.active {
           display: block;
           width: 150px;
           padding: 0.5em;

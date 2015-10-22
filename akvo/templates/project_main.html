@@ -1216,6 +1216,7 @@
           addAddOnClicks();
           addEditOnClicks();
           addSaveOnClicks();
+          addCancelOnClicks();
         }
       })
     }
@@ -1268,6 +1269,7 @@
         }
         addEditOnClicks();
         addSaveOnClicks();
+        addCancelOnClicks();
         container.querySelector('.edit-button').click();
         var addButton = periodNode.querySelector('button.add-button');
         addButton.parentNode.removeChild(addButton);
@@ -1336,6 +1338,7 @@
           }
           this.classList.remove('activated');
           updateContainer.querySelector('.save-button').classList.remove('active');
+          updateContainer.querySelector('.cancel-button').classList.remove('active');
           updateContainer.querySelector('.edit-slider').noUiSlider.destroy();
 
           var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
@@ -1352,6 +1355,7 @@
           updateContainer.querySelector('.update-description').classList.add('editable');
           this.classList.add('activated');
           updateContainer.querySelector('.save-button').classList.add('active');
+          updateContainer.querySelector('.cancel-button').classList.add('active');
 
           var uploadPhoto = document.createElement('input');
           uploadPhoto.setAttribute('type', 'file');
@@ -1403,6 +1407,29 @@
               updateActual.textContent = value;
             }
           });
+        }
+      });
+    }
+  }
+
+  function addCancelOnClicks() {
+    var els = document.querySelectorAll('.cancel-button');
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      el.addEventListener('click', function() {
+        var periodNode, periodId, updateNode, updateId;
+
+        updateNode = this.closest('.update-entry-container');
+        updateId = updateNode.getAttribute('update-id');
+        periodNode = this.closest('tbody');
+        periodId = periodNode.getAttribute('period-id');
+
+        if (updateId === 'add') {
+          updateNode.parentNode.removeChild(updateNode);
+          insertAddButton(periodId);
+        } else {
+          periodNode.querySelector('.expand-indicator-period').click();
         }
       });
     }
@@ -1494,6 +1521,7 @@
             addAddOnClicks();
             addEditOnClicks();
             addSaveOnClicks();
+            addCancelOnClicks();
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1597,6 +1625,8 @@
     addUpdateButton.textContent = 'Add a new update';
 
     updateTd.appendChild(addUpdateButton);
+
+    addAddOnClicks();
 
     //if (periodNode.getElementsByTagName('tr').length > 1) {
     //  periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
@@ -2018,8 +2048,13 @@
       saveEl.classList.add('save-button');
       saveEl.classList.add('clickable');
       saveEl.textContent = 'Save changes';
-
       updateContainer.appendChild(saveEl);
+
+      var cancelEl = document.createElement('div');
+      cancelEl.classList.add('cancel-button');
+      cancelEl.classList.add('clickable');
+      cancelEl.textContent = 'Cancel';
+      updateContainer.appendChild(cancelEl);
 
     return updateContainer;
   }
