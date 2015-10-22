@@ -1303,7 +1303,7 @@
           value = newValue - actualValue;
         }
 
-        description = updateContainer.querySelector('.update-description').textContent;
+        description = updateContainer.querySelector('.update-description').innerText;
 
         photoNode = updateContainer.querySelector('.photo-upload');
         photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
@@ -2002,7 +2002,7 @@
 
       descriptionEl = document.createElement('div');
       descriptionEl.classList.add('update-description');
-      descriptionEl.textContent = update.text;
+      descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
 
       updateContainer.appendChild(descriptionEl);
 
