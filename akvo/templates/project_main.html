@@ -1436,11 +1436,7 @@
 
       fileRequest.onload = function() {
         if (fileRequest.status >= 200 && fileRequest.status < 400) {
-          var response;
-          response = JSON.parse(fileRequest.responseText);
-
           addAdditionalUpdateData(updateId);
-
           return false;
         } else {
           // We reached our target server, but it returned an error
@@ -1477,6 +1473,8 @@
             removeUpdatefromStore(periodId, 'add');
             updateActualValue(periodId, value);
             updateUpdateValues(periodId, 'add', updateId, value);
+
+            addAdditionalUpdateData(updateId);
 
             // Upload photo
             if (photo !== undefined) {
