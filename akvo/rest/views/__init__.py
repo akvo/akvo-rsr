@@ -52,7 +52,9 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
-from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
+from .project_update import (ProjectUpdateViewSet,
+                             ProjectUpdateExtraViewSet,
+                             upload_indicator_update_photo)
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -144,5 +146,6 @@ __all__ = [
     'typeahead_project',
     'typeahead_projectupdate',
     'update_details',
+    'upload_indicator_update_photo',
     'UserViewSet',
 ]

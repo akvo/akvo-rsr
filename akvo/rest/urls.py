@@ -141,6 +141,9 @@ urlpatterns += patterns(
     url(r'^project/(?P<pk>[0-9]+)/step_10/$',
         views.project_editor_step10,
         name='project_editor_step10'),
+    url(r'^project_update/(?P<pk>[0-9]+)/upload_photo/$',
+        views.upload_indicator_update_photo,
+        name='upload_indicator_update_photo'),
 )
 
 # Typeahead

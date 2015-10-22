@@ -1279,8 +1279,7 @@
       var el = els[i];
 
       el.addEventListener('click', function() {
-        this.closest('td').querySelector('.edit-button').click();
-        var actualValue, currentChange, description, periodId, periodNode, newValue, updateContainer, updateId, value, targetValue;
+        var actualValue, currentChange, description, periodId, periodNode, photo, photoNode, newValue, updateContainer, updateId, value, targetValue;
 
         updateContainer = this.parentNode;
         updateId = updateContainer.getAttribute('update-id');
@@ -1306,8 +1305,12 @@
 
         description = updateContainer.querySelector('.update-description').textContent;
 
+        photoNode = updateContainer.querySelector('.photo-upload');
+        photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
+
         periodId = parseInt(this.closest('tbody').getAttribute('period-id'));
-        updateId === 'add' ? addNewUpdate(description, periodId, value) : editUpdate(updateId, periodId, description, value);
+        updateId === 'add' ? addNewUpdate(description, periodId, value, photo) : editUpdate(updateId, periodId, description, value, photo);
+        this.closest('td').querySelector('.edit-button').click();
       });
     }
   }
@@ -1339,11 +1342,19 @@
           if (!exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
             exceedTargetNode.style.display = 'none';
           }
+          var photoUpload = updateContainer.querySelector('.photo-upload');
+          photoUpload.parentNode.removeChild(photoUpload);
         } else {
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
           this.classList.add('activated');
           updateContainer.querySelector('.save-button').classList.add('active');
+
+          var uploadPhoto = document.createElement('input');
+          uploadPhoto.setAttribute('type', 'file');
+          uploadPhoto.setAttribute('accept', 'image/*');
+          uploadPhoto.classList.add('photo-upload');
+          updateContainer.appendChild(uploadPhoto);
 
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
@@ -1409,8 +1420,44 @@
   }
   var csrftoken = getCookie('csrftoken');
 
+  /* Upload photo */
+  function uploadPhoto(photo, updateNode) {
+    var apiUrl, fileRequest, formData, updateId;
+
+    updateId = updateNode.getAttribute('update-id');
+    apiUrl = '/rest/v1/project_update/' + updateId + '/upload_photo/?format=json';
+
+      formData = new FormData();
+      formData.append("photo", photo);
+
+      fileRequest = new XMLHttpRequest();
+      fileRequest.open("POST", apiUrl);
+      fileRequest.setRequestHeader("X-CSRFToken", csrftoken);
+
+      fileRequest.onload = function() {
+        if (fileRequest.status >= 200 && fileRequest.status < 400) {
+          var response;
+          response = JSON.parse(fileRequest.responseText);
+
+          addAdditionalUpdateData(updateId);
+
+          return false;
+        } else {
+          // We reached our target server, but it returned an error
+          return false;
+        }
+      };
+
+      fileRequest.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+      };
+
+      fileRequest.send(formData);
+  }
+
   /* Add new update */
-  function addNewUpdate(text, periodId, value) {
+  function addNewUpdate(text, periodId, value, photo) {
     var api_url, request, requestData;
 
     // Create request
@@ -1423,14 +1470,25 @@
     request.onload = function() {
         if (request.status === 201) {
             // Object successfully created
-            var response, updateId;
+            var response, updateId, updateNode;
             response = JSON.parse(request.response);
             updateId = response.id;
+
             removeUpdatefromStore(periodId, 'add');
-            addAdditionalUpdateData(updateId);
             updateActualValue(periodId, value);
             updateUpdateValues(periodId, 'add', updateId, value);
+
+            // Upload photo
+            if (photo !== undefined) {
+              updateNode = findUpdate(periodId, updateId);
+              uploadPhoto(photo, updateNode);
+            }
+
+            // Add the 'Add update' row again
             insertAddRow(periodId);
+            addAddOnClicks();
+            addEditOnClicks();
+            addSaveOnClicks();
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1456,7 +1514,7 @@
   }
 
   /* Edit existing update */
-  function editUpdate(updateId, periodId, text, value) {
+  function editUpdate(updateId, periodId, text, value, photo) {
     var api_url, request;
 
     // Create request
@@ -1469,13 +1527,22 @@
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Object successfully saved
+            var oldValue, updateNode;
+
+            updateNode = findUpdate(periodId, updateId);
+            oldValue = parseInt(updateNode.getAttribute('current-change'));
+
             addAdditionalUpdateData(updateId);
-            var updateNode = findUpdate(periodId, updateId);
-            var oldValue = parseInt(updateNode.getAttribute('current-change'));
             updateActualValue(periodId, value - oldValue);
             updateUpdateValues(periodId, updateId, updateId, value);
 
-            // Close the updates view, because it could be one of the first updates
+            // Upload photo
+            if (photo !== undefined) {
+              uploadPhoto(photo, updateNode);
+            }
+
+            // Close the updates view, because it could be one of the first updates and all values need to be recalculated
+            // TODO: Create recalculation function so that closing isn't necessary
             var periodNode = findPeriod(periodId);
             periodNode.querySelector('.expand-indicator-period').click();
 
@@ -1492,6 +1559,25 @@
     };
 
     request.send(JSON.stringify({text: text, period_update: value}));
+  }
+
+  /* Display the photo in the update. Either by replacing the existing photo or by adding a new photo */
+  function displayPhoto(update, updateNode) {
+      console.log('displaying a photo');
+    if (update.photo) {
+      var photoNode;
+        console.log('displaying a photo yes');
+
+
+        photoNode = document.createElement('div');
+        photoNode.classList.add('update-photo');
+        photoNode.style['background-image'] = 'url("' + update.photo + '")';
+        photoNode.style['background-size'] = 'cover';
+        photoNode.style['height'] = '120px';
+        photoNode.style['width'] = '200px';
+        updateNode.appendChild(photoNode);
+
+    }
   }
 
   /* Return the add row top node */
@@ -1539,7 +1625,17 @@
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
           // Object successfully retrieved
-          addUpdateToStore(JSON.parse(request.response));
+          var response, updateNode;
+
+          response = JSON.parse(request.response);
+
+          addUpdateToStore(response);
+
+          // Try to display the photo in the update node
+          updateNode = findUpdate(response.indicator_period.id, response.id);
+          if (updateNode !== undefined) {
+            displayPhoto(response, updateNode);
+          }
         } else {
           return false;
         }
@@ -1910,14 +2006,9 @@
       descriptionEl.classList.add('update-description');
       descriptionEl.textContent = update.text;
 
-      if (update.photo) {
-        photoEl = document.createElement('div');
-        photoEl.classList.add('update-photo');
-        photoEl.style['background-image'] = 'url("' + update.photo + '")';
-        descriptionEl.appendChild(photoEl);
-      }
-
       updateContainer.appendChild(descriptionEl);
+
+      displayPhoto(update, updateContainer);
 
       var saveEl = document.createElement('div');
       saveEl.classList.add('save-button');
