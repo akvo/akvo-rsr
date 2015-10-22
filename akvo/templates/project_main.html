@@ -1022,6 +1022,7 @@
                         <td>{% trans "Progress" %}</td>
                         <td>{% trans "Target" %}</td>
                         <td></td>
+                        <td></td>
                       </tr>
                     </thead>
                     {% for period in indicator.periods.all %}
@@ -1048,6 +1049,7 @@
                               <span class="indicator-bar-progress-complete"> / {{period.target_value}}</span>
                             </div>
                           </td>
+                          <td class="add-update-td"></td>
                           <td class="expand-td">
                             <span class="expand-indicator-period clickable">
                               <i class="fa fa-chevron-down"></i>
@@ -1198,14 +1200,14 @@
         if (this.classList.contains('expanded')) {
           /* This is period already expanded. Collapse it and remove all update dialogs. */
           removeFromPeriod(periodId, 'tr.update-dialog-container');
-          removeFromPeriod(periodId, 'tr.add-new-update-container');
+          removeFromPeriod(periodId, 'button.add-button');
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded', periodId);
           /* Remove the 'add' update in the store, in case the 'add Update' button was clicked */
           removeUpdatefromStore(periodId, 'add');
         } else {
           var container;
 
-          insertAddRow(periodId);
+          insertAddButton(periodId);
           parentElement.parentNode.appendChild(getUpdateDialog(periodId));
 
           this.parentNode.parentNode.classList.add('expanded');
@@ -1253,7 +1255,7 @@
         container.classList.add('update-dialog-container');
 
         containerCell = document.createElement('td');
-        containerCell.setAttribute('colspan', '5');
+        containerCell.setAttribute('colspan', '6');
 
         addUpdateContainer = getUpdateEntry(newUpdate);
         containerCell.appendChild(addUpdateContainer);
@@ -1267,7 +1269,8 @@
         addEditOnClicks();
         addSaveOnClicks();
         container.querySelector('.edit-button').click();
-        periodNode.removeChild(this.closest('.add-new-update-container'));
+        var addButton = periodNode.querySelector('button.add-button');
+        addButton.parentNode.removeChild(addButton);
       });
     }
   }
@@ -1487,7 +1490,7 @@
             }
 
             // Add the 'Add update' row again
-            insertAddRow(periodId);
+            insertAddButton(periodId);
             addAddOnClicks();
             addEditOnClicks();
             addSaveOnClicks();
@@ -1576,35 +1579,30 @@
     }
   }
 
-  /* Return the add row top node */
-  function insertAddRow(periodId) {
-    var addUpdateButton, periodNode, row, rowCells;
+  /* Return the add button in the top row */
+  function insertAddButton(periodId) {
+    var addUpdateButton, periodNode, row, updateTd;
 
     periodNode = findPeriod(periodId);
+    updateTd = periodNode.querySelector('.add-update-td');
+    updateTd.classList.add('add-new-update-container');
 
-    row = document.createElement('tr');
-    row.classList.add('add-new-update-container');
-    row.classList.add('expanded');
-
-    rowCells = document.createElement('td');
-    rowCells.setAttribute('colspan', '5');
-
-    if (!updatesByIndicatorPeriod[periodId]) {
-      rowCells.textContent = 'No updates for this indicator period. ';
-    }
+    // TODO: Add row when no updates for period
+    //if (!updatesByIndicatorPeriod[periodId]) {
+    //  rowCells.textContent = 'No updates for this indicator period. ';
+    //}
 
     addUpdateButton = document.createElement('button');
     addUpdateButton.classList.add('add-button');
     addUpdateButton.textContent = 'Add a new update';
 
-    rowCells.appendChild(addUpdateButton);
-    row.appendChild(rowCells);
+    updateTd.appendChild(addUpdateButton);
 
-    if (periodNode.getElementsByTagName('tr').length > 1) {
-      periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
-    } else {
-      periodNode.appendChild(row);
-    }
+    //if (periodNode.getElementsByTagName('tr').length > 1) {
+    //  periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
+    //} else {
+    //  periodNode.appendChild(row);
+    //}
   }
 
   /* Get additional data of update */
@@ -1793,7 +1791,7 @@
     var currentUpdate = null;
     var childElements = [];
     container.classList.add('update-dialog-container');
-    containerCell.setAttribute('colspan', '5');
+    containerCell.setAttribute('colspan', '6');
 
     if (updatesByIndicatorPeriod[indicatorPeriodID]) {
       for (var updateID in updatesByIndicatorPeriod[indicatorPeriodID]) {
