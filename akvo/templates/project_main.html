@@ -1284,20 +1284,22 @@
       var el = els[i];
 
       el.addEventListener('click', function() {
-        var actualValue, currentChange, description, periodId, periodNode, photo, photoNode, newValue, updateContainer, updateId, value, targetValue;
+        var actualValue, description, periodId, periodNode, photo, photoNode, newValue, updateContainer, updateId, value;
+        var exceedTargetNode, exceedCheckbox, exceedValueNode;
 
         updateContainer = this.parentNode;
         updateId = updateContainer.getAttribute('update-id');
         periodNode = this.closest('tbody');
-        newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value'));
-        targetValue = parseInt(periodNode.getAttribute('period-target'));
 
-        // Check for exceeding values, but only when bar is full
-        if (newValue == targetValue) {
-            var exceedValue = parseInt(updateContainer.querySelector('.exceed-value').value);
-            if (exceedValue > newValue) {
-                newValue = exceedValue;
-            }
+        exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
+        exceedCheckbox = exceedTargetNode.querySelector('.update-exceed-target-checkbox');
+        exceedValueNode = exceedTargetNode.querySelector('.exceed-value');
+
+        // When checkbox is checked, use the exceeding value
+        if (exceedCheckbox.checked) {
+          newValue = parseInt(exceedValueNode.value);
+        } else {
+          newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value'));
         }
 
         if (updateId !== 'add') {
@@ -1328,6 +1330,9 @@
 
       el.addEventListener('click', function() {
         var updateContainer = this.parentNode;
+        var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
+        var exceedCheckbox = exceedTargetNode.querySelector('.update-exceed-target-checkbox');
+        var exceedValueNode = exceedTargetNode.querySelector('.exceed-value');
 
         if (this.classList.contains('activated')) {
           var editables = updateContainer.querySelectorAll('.editable');
@@ -1341,19 +1346,17 @@
           updateContainer.querySelector('.cancel-button').classList.remove('active');
           updateContainer.querySelector('.edit-slider').noUiSlider.destroy();
 
-          var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
-          exceedTargetNode.querySelector('.update-exceed-target-checkbox').setAttribute('disabled', '');
-          exceedTargetNode.querySelector('.exceed-value').setAttribute('disabled', '');
+          exceedCheckbox.setAttribute('disabled', '');
+          exceedValueNode.setAttribute('disabled', '');
 
-          if (!exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
-            exceedTargetNode.style.display = 'none';
-          }
           var photoUpload = updateContainer.querySelector('.photo-upload');
           photoUpload.parentNode.removeChild(photoUpload);
         } else {
+          this.classList.add('activated');
+
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
-          this.classList.add('activated');
+
           updateContainer.querySelector('.save-button').classList.add('active');
           updateContainer.querySelector('.cancel-button').classList.add('active');
 
@@ -1362,6 +1365,11 @@
           uploadPhoto.setAttribute('accept', 'image/*');
           uploadPhoto.classList.add('photo-upload');
           updateContainer.appendChild(uploadPhoto);
+
+          exceedCheckbox.removeAttribute('disabled');
+          if (exceedCheckbox.checked) {
+            exceedValueNode.removeAttribute('disabled');
+          }
 
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
@@ -1382,28 +1390,19 @@
           var updateActual = updateContainer.querySelector('.update-target-actual');
 
           sliderEl.noUiSlider.on('update', function(value) {
-            value = parseInt(value);
-
-            var percentage = (value - minVal) / (maxVal - minVal) * 100;
-            percentage = percentage > 100 ? 100 : percentage;
-
-            updateMarker.style.left = percentage + '%';
-            updateMarker.setAttribute('data-value', value);
-            updateProgress.style.width = percentage + '%';
-
-            var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
-
-            if (value == maxVal) {
-              // Display the 'Exceed target' div when bar is full
-              exceedTargetNode.querySelector('.update-exceed-target-checkbox').removeAttribute('disabled');
-              exceedTargetNode.style.display = '';
-              if (exceedTargetNode.querySelector('.update-exceed-target-checkbox').checked) {
-                exceedTargetNode.querySelector('.exceed-value').removeAttribute('disabled');
-                updateActual.textContent = exceedTargetNode.querySelector('.exceed-value').value;
-              }
+            if (exceedCheckbox.checked) {
+              updateActual.textContent = exceedValueNode.value
             } else {
-              exceedTargetNode.querySelector('.update-exceed-target-checkbox').setAttribute('disabled', '');
-              exceedTargetNode.style.display = 'none';
+              var percentage;
+              value = parseInt(value);
+
+              percentage = (value - minVal) / (maxVal - minVal) * 100;
+              percentage = percentage > 100 ? 100 : percentage;
+
+              updateMarker.style.left = percentage + '%';
+              updateMarker.setAttribute('data-value', value);
+              updateProgress.style.width = percentage + '%';
+
               updateActual.textContent = value;
             }
           });
@@ -1892,7 +1891,7 @@
     exceedTargetNewValue.setAttribute('disabled', '');
     exceedTargetNewValue.classList.add('exceed-value');
 
-    exceedTargetNewValue.addEventListener('keyup', function () {
+    exceedTargetNewValue.addEventListener('input', function () {
       if (exceedTargetCheckbox.checked) {
         updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
       }
@@ -1903,6 +1902,7 @@
         exceedTargetNewValue.removeAttribute('disabled');
         exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
       } else {
+        exceedTargetNewValue.value = '';
         exceedTargetNewValue.setAttribute('disabled', '');
       }
     });
@@ -2018,8 +2018,6 @@
       if (highestValue > periodTarget) {
         exceedTargetNewValue.value = highestValue;
         exceedTargetCheckbox.checked = true;
-      } else {
-        exceedTargetEl.style.display = 'none';
       }
 
       targetEl = document.createElement('div');
