@@ -3614,7 +3614,7 @@ reportContext.setGlobalVariable("planned_end",row["date_end_planned"]);
                                             <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
-                                    <expression name="valueExpr">row ["city"] + (row ["city"] ? ", ":"") + row["countryname"]</expression>
+                                    <expression name="valueExpr">(row ["city"] ? row ["city"] +  ", " : "") + row["countryname"]</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -3897,6 +3897,12 @@ reportContext.setGlobalVariable("planned_end",row["date_end_planned"]);
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="75">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["title_9"]</expression>
+                            </structure>
+                        </list-property>
                         <cell id="76">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
@@ -3962,6 +3968,12 @@ reportContext.setGlobalVariable("planned_end",row["date_end_planned"]);
                 </header>
                 <footer>
                     <row id="79">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["title_9"]</expression>
+                            </structure>
+                        </list-property>
                         <cell id="80">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
@@ -3978,6 +3990,12 @@ reportContext.setGlobalVariable("planned_end",row["date_end_planned"]);
             </group>
             <detail>
                 <row id="27">
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">!row["title_9"]</expression>
+                        </structure>
+                    </list-property>
                     <cell id="28">
                         <property name="paddingTop">1pt</property>
                         <property name="paddingLeft">8pt</property>
