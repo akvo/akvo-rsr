@@ -2505,7 +2505,6 @@ body {
     a {
         padding: 0.5em;
         margin: 0 1em;
-        font-weight: bold;
         color: $newResultColor;
 
         &:hover, &.selected {
@@ -2645,12 +2644,12 @@ body {
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
-                    padding: 0.5em;
+                    padding: 0.5em 0 0 5px;
                     background-color: white;
                     margin-top: 1em;
 
                     .indicator-nav {
-                        padding: 0.25em 0.5em;
+                        padding: 0.25em 0em;
                         /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
@@ -2777,7 +2776,11 @@ body {
             .table {
                 padding: 0.5em 0.25em;
                 /*background-color: rgb(235,235,231);*/
-
+                tbody {
+                    &.indicator-period {
+                        border-top: 1px solid #E7E8E8;
+                    }
+                }
                 thead {
                     font-weight: normal;
                     color: rgb(192, 192, 192);
@@ -2795,13 +2798,11 @@ body {
                     min-height: 125px;
                     &.expanded {
                         .add-button {
-                            background-color: $akvoBlack;
                             border:none;
-                            @include border-radius(3px);
-                            color:white;
-                            padding:5px 9px;
+                            background-color: transparent;
+                            color: $anchorLink;
                             &:hover {
-                                background-color: rgba($akvoBlack,0.5);
+                                background-color: rgba($akvoBlack,0);
                             }
                         }
                     }
@@ -2809,6 +2810,12 @@ body {
 
                 td {
                     vertical-align: middle;
+                    &.fromTime, &.toTime {
+                        max-width:15%;
+                    }
+                    &.indicator-bar-td {
+                        min-width:35%;
+                    }
                 }
 
                 .expand-indicator-period {
@@ -2885,14 +2892,14 @@ body {
     .indicator-bar-progress-complete-container {
         .indicator-bar-progress-complete {
             padding-left: 15px;
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: normal;
             color: rgb(81,80,80);
             vertical-align: bottom;
         }
         .indicator-bar-progress-text {
             padding-left: 15px;
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #A3C7E3;
             vertical-align: bottom;
@@ -2926,6 +2933,7 @@ body {
                         position: absolute;
                         bottom:-10px;
                         margin-left:-5px;
+                        color: #A3C7E3;
                     }
                     .indicator-bar, .indicator-bar-progress-amount {
                         position: absolute;
@@ -2992,9 +3000,9 @@ body {
                     position: absolute;
                     height:20px;
                     width: 20px;
-                    top: 5px;
-                    right: 5px;
-                    color: rgb(150,150,150);
+                    top: 15px;
+                    right: 10px;
+                    color: $akvoBlack;
                     font-size: 1.5em;
                     &.activated {
                         display: none;
@@ -3004,13 +3012,14 @@ body {
                 .update-date {
                     display: inline-block;
                     text-align: left;
-                    width: 50%;
+                    width: 25%;
                 }
                 .update-name {
                     display: inline-block;
-                    text-align: right;
+                    text-align: left;
                     width: 40%;
                     margin-right: 10%;
+                    color: $akvoBlack;
                 }
                 .update-timeline {
                     display: inline-block;
@@ -3019,17 +3028,19 @@ body {
                     padding-top: 1em;
                 }
                 .update-target {
+                    position: absolute;
+                    margin-top: 45px;
                     display: inline-block;
                     width: 24%;
                     height: 80px;
                     text-align: center;
                     span {
-                        font-size: 1.5em;
+                        font-size: 1.1em;
                         color: rgb(81,80,80);
                         vertical-align: text-top;
                         &.update-target-actual {
                             padding-left: 15px;
-                            font-size: 1.5em;
+                            font-size: 1.1em;
                             font-weight: bold;
                             color: #A3C7E3;
                             vertical-align: bottom;
@@ -3038,9 +3049,10 @@ body {
                 }
                 .update-description {
                     padding: 0.5em;
-
+                    margin:20px auto 30px;
                     &.editable {
                         background: whitesmoke;
+                        border:1px solid #A3C7E3;
                     }
                     .update-photo {
                         float: right;
@@ -3050,17 +3062,16 @@ body {
                     }
                 }
                 .save-button {
+                    position:absolute;
                     display: none;
+                    right: 10px;
+                    bottom: 10px;
                     &.active {
-                        display: block;
-                        width: 150px;
-                        padding: 0.5em;
+                        display: inline-block;
+                        padding: 3px 7px;
                         color: white;
-                        font-weight: bold;
-                        background-color: #3e65ff;
-                        margin-top: 1em;
-                        margin-left: auto;
-                        @include border-radius(4px);
+                        background-color: $akvoBlack;
+                        @include border-radius(2px);
                         text-align: center;
                     }
                 }
@@ -3094,12 +3105,16 @@ body {
                             @include border-radius(4px);
                         }
                         .noUi-handle {
+                            width: 14px;
+                            height: 28px;
                             z-index: 9999;
-                            background-color: #A3C7E3;
+                            background-color: $akvoBlack;
                             cursor: pointer;
-                            left: -14px;
+                            left: -7px;
                             box-shadow:none;
                             top: -12px;
+                            content: "|||";
+                            color: white;
                             &:after {
                                 display: none;
                             }
