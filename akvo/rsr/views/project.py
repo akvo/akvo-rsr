@@ -285,8 +285,8 @@ def main(request, project_id):
 
     # Updates
     updates = project.project_updates.select_related('user').order_by('-created_at')
-    narrative_updates = updates.exclude(indicator_period__gt=0)
-    indicator_updates = updates.filter(indicator_period__gt=0)
+    narrative_updates = updates.exclude(indicator_period__isnull=False)
+    indicator_updates = updates.filter(indicator_period__isnull=False)
 
     # JSON data
     indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
@@ -424,9 +424,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         raise PermissionDenied
 
     # Check if user is allowed to place updates for this project
-    allow_update = False
-    if request.user.has_perm('rsr.post_updates', project):
-        allow_update = True
+    allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
 
     updates = project.updates_desc()[:5]
     update = None
