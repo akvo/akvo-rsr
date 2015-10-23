@@ -2229,6 +2229,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       margin-bottom: 2em;
       position: relative;
       background-color: #EBEBE7; }
+      .results .update-dialog-container td .update-entry-container .update-exceed-target {
+        margin: 10px 0 0 0; }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target input {
+          margin-right: 10px; }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target label {
+          margin-right: 10px;
+          color: rgba(32, 32, 36, 0.5); }
       .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
@@ -2296,8 +2303,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 10px;
         color: #202024;
         font-size: 1.5em; }
-        .results .update-dialog-container td .update-entry-container .edit-button.activated {
-          display: none; }
       .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
@@ -2357,20 +2362,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           border-radius: 2px;
           text-align: center; }
       .results .update-dialog-container td .update-entry-container .cancel-button {
-        display: none; }
+        position: absolute;
+        display: none;
+        right: 60px;
+        bottom: 10px; }
         .results .update-dialog-container td .update-entry-container .cancel-button.active {
-          display: block;
-          width: 150px;
-          padding: 0.5em;
-          color: white;
-          font-weight: bold;
-          background-color: #3e65ff;
-          margin-top: 1em;
-          margin-left: auto;
-          -moz-border-radius: 4px;
-          -o-border-radius: 4px;
-          -webkit-border-radius: 4px;
-          border-radius: 4px;
+          display: inline-block;
+          padding: 3px 7px;
+          color: #202024;
+          -moz-border-radius: 2px;
+          -o-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
           text-align: center; }
       .results .update-dialog-container td .update-entry-container .edit-slider {
         z-index: 9999; }
