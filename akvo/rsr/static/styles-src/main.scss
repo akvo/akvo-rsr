@@ -2924,6 +2924,16 @@ body {
                 margin-bottom: 2em;
                 position: relative;
                 background-color: #EBEBE7;
+                .update-exceed-target {
+                    margin: 10px 0 0 0;
+                    input {
+                        margin-right:10px;
+                    }
+                    label {
+                        margin-right:10px;
+                        color:rgba($akvoBlack, 0.5);
+                    }
+                }
                 .indicator-bar-display-container {
                     position: relative;
                     height: 100%;
@@ -3004,9 +3014,6 @@ body {
                     right: 10px;
                     color: $akvoBlack;
                     font-size: 1.5em;
-                    &.activated {
-                        display: none;
-                    }
                 }
 
                 .update-date {
@@ -3076,17 +3083,15 @@ body {
                     }
                 }
                 .cancel-button {
+                    position:absolute;
                     display: none;
+                    right: 60px;
+                    bottom: 10px;
                     &.active {
-                        display: block;
-                        width: 150px;
-                        padding: 0.5em;
-                        color: white;
-                        font-weight: bold;
-                        background-color: #3e65ff;
-                        margin-top: 1em;
-                        margin-left: auto;
-                        @include border-radius(4px);
+                        display: inline-block;
+                        padding: 3px 7px;
+                        color: $akvoBlack;
+                        @include border-radius(2px);
                         text-align: center;
                     }
                 }
