@@ -1228,11 +1228,13 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       el.addEventListener('click', function() {
-        var addUpdateContainer, container, containerCell, newUpdate, periodId, periodNode, periodTarget;
+        var addUpdateContainer, container, containerCell, currentDate, newUpdate, periodId, periodNode, periodTarget;
 
         periodNode = this.closest('tbody');
         periodId = periodNode.getAttribute('period-id');
         periodTarget = periodNode.getAttribute('period-target');
+
+        currentDate = new Date();
 
         newUpdate = {
           id: 'add',
@@ -1241,7 +1243,7 @@
             target_value: periodTarget
           },
           period_update: "0",
-          created_at: 'New update',
+          created_at: currentDate.toISOString(),
           user: {
             id: defaultValues.user_id,
             first_name: defaultValues.user_first_name,
@@ -1626,12 +1628,6 @@
     updateTd.appendChild(addUpdateButton);
 
     addAddOnClicks();
-
-    //if (periodNode.getElementsByTagName('tr').length > 1) {
-    //  periodNode.insertBefore(row, periodNode.getElementsByTagName('tr')[0].nextSibling);
-    //} else {
-    //  periodNode.appendChild(row);
-    //}
   }
 
   /* Get additional data of update */
@@ -1862,9 +1858,10 @@
     updateContainer.appendChild(editEl);
 
     if (update.created_at) {
+      var dateObj = new Date(update.created_at);
       dateEl = document.createElement('div');
       dateEl.classList.add('update-date');
-      dateEl.textContent = update.created_at;
+      dateEl.textContent = dateObj.toString();
       updateContainer.appendChild(dateEl);
     }
     if (update.user) {
