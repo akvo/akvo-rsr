@@ -3442,6 +3442,18 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
             <expression name="valueExpr" type="javascript">row["title"]</expression>
             <property name="contentType">html</property>
         </text-data>
+        <text-data id="250">
+            <property name="paddingLeft">8pt</property>
+            <property name="paddingBottom">8pt</property>
+            <property name="paddingRight">8pt</property>
+            <expression name="valueExpr">((reportContext.getGlobalVariable("planned_start") ) ? &#13;
+"Planned "+ reportContext.getGlobalVariable("planned_start") + " - " + reportContext.getGlobalVariable("planned_end") :&#13;
+ "(No time period)")&#13;
+ +&#13;
+((reportContext.getGlobalVariable("actual_start") ) ?&#13;
+ "Actual "+ reportContext.getGlobalVariable("actual_start") + " - " + reportContext.getGlobalVariable("actual_end")  + " (actual)" :"")</expression>
+            <property name="contentType">html</property>
+        </text-data>
         <grid id="123">
             <property name="backgroundColor">silver</property>
             <property name="marginTop">0pt</property>
@@ -3499,6 +3511,16 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <method name="onPrepare"><![CDATA[
+]]></method>
+                        <method name="onCreate"><![CDATA[//remember time span of the project 
+reportContext.setGlobalVariable("actual_start",row["date_start_actual"]);
+reportContext.setGlobalVariable("actual_end",row["date_end_actual"]);
+reportContext.setGlobalVariable("planned_start",row["date_start_planned"]);
+reportContext.setGlobalVariable("planned_end",row["date_end_planned"]);
+]]></method>
+                        <method name="onRender"><![CDATA[
+]]></method>
                         <expression name="valueExpr">row["project_plan_summary"]</expression>
                         <property name="contentType">html</property>
                     </text-data>
@@ -3592,7 +3614,7 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
                                             <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
-                                    <expression name="valueExpr">row ["city"] + ", " + row["countryname"]</expression>
+                                    <expression name="valueExpr">row ["city"] + (row ["city"] ? ", ":"") + row["countryname"]</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>

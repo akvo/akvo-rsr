@@ -4,7 +4,7 @@ These BIRT templates are intended to be installed on a ReportServer.
 
 They were developed using the BIRT Report Designer plugin for Eclipse, version 4.4.
 
-The RSR projects used as test cases were 2849 and its parent project 2081.
+The RSR projects used as test cases were #2849 and its parent project #2081.
 
 
 ## Deployment to reportserver
@@ -21,7 +21,7 @@ Where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
 
 During development I found it convenient to:
 
-## Set up a readonly account for the database
+### Set up a readonly account for the database
 ```
 sudo -u postgres psql
 postgres=#  create role rsr_readonly encrypted password '*************' login;
@@ -37,10 +37,10 @@ GRANT
 ```
 
 
-## Make an ssl tunnel to the DB server
+### Make an ssl tunnel to the DB server
 
 ```
-ssh -L  1234:psql.test.akvo-ops.org:5432 gabriel@psql.test.akvo-ops.org
+ssh -L  1234:psql.test.akvo-ops.org:5432 stellan@psql.test.akvo-ops.org
 ```
 which allowed me to create a BIRT data source like this:
 ```
