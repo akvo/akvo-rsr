@@ -3018,6 +3018,9 @@ body {
                     right: 10px;
                     color: $akvoBlack;
                     font-size: 1.5em;
+                    &.activated {
+                        display: none;
+                    }
                 }
 
                 .update-date {

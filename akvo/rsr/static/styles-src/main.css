@@ -2303,6 +2303,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 10px;
         color: #202024;
         font-size: 1.5em; }
+        .results .update-dialog-container td .update-entry-container .edit-button.activated {
+          display: none; }
       .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;

@@ -1362,11 +1362,6 @@
           uploadPhoto.classList.add('photo-upload');
           updateContainer.appendChild(uploadPhoto);
 
-          exceedCheckbox.removeAttribute('disabled');
-          if (exceedCheckbox.checked) {
-            exceedValueNode.removeAttribute('disabled');
-          }
-
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
           var minVal = parseInt(this.closest('.indicator-period').getAttribute('period-start'));
@@ -1384,6 +1379,12 @@
           var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:first-child');
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
           var updateActual = updateContainer.querySelector('.update-target-actual');
+
+          exceedCheckbox.removeAttribute('disabled');
+          if (exceedCheckbox.checked) {
+            exceedValueNode.removeAttribute('disabled');
+            displayEditSlider(updateContainer, false);
+          }
 
           sliderEl.noUiSlider.on('update', function(value) {
             if (exceedCheckbox.checked) {
@@ -1610,6 +1611,12 @@
     addUpdateButton = periodNode.querySelector('.add-button');
 
     addUpdateButton.style['display'] = display ? '' : 'none';
+  }
+
+  /* Display the edit slider in the update */
+  function displayEditSlider(updateNode, display) {
+    var editSlider = updateNode.querySelector('.edit-slider');
+    editSlider.style['display'] = display ? '' : 'none';
   }
 
   /* Get additional data of update */
@@ -1880,9 +1887,11 @@
       if (exceedTargetCheckbox.checked) {
         exceedTargetNewValue.removeAttribute('disabled');
         exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
+        displayEditSlider(updateContainer, false);
       } else {
         exceedTargetNewValue.value = '';
         exceedTargetNewValue.setAttribute('disabled', '');
+        displayEditSlider(updateContainer, true);
       }
     });
 
