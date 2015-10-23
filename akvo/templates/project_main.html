@@ -953,9 +953,16 @@
               <h4 class="item-type">{% trans 'Result' %}</h4>
               <div class="title-container">
                 <h3>{{result.title}}</h3>
-                <div class="result-parent">
-                  {% trans "Parent project:" %} {{result.project.title}}
-                </div>
+                {% if result.parent_result %}
+                  <div class="result-parent">
+                    {% trans "Parent project:" %} <a href="{% url 'project-main' result.parent_result.project.pk %}#results">{{ result.parent_result.project.title }}</a>
+                  </div>
+                {% endif %}
+                {% for child_result in result.child_results.all %}
+                  <div class="result-parent">
+                    {% trans "Linked child project:" %} <a href="{% url 'project-main' child_result.project.pk %}#results">{{ child_result.project.title }}</a>
+                  </div>
+                {% endfor %}
               </div>
               {% if result.description %}
                 <div class="result-description">
@@ -965,19 +972,6 @@
                   </div>
                 </div>
               {% endif %}
-              <!-- Do we actually want this here?
-              {% if result.project.partners.all %}
-                <div class="result-partners">
-                  <h4> {% trans "Responsible Partners" %} ({{result.project.partners.all.count}})</h4>
-                  <ul>
-                    {% for partner in result.project.partners.all %}
-                      <li>{{partner.name}}{% if partner.primary_location.city %},{{partner.primary_location.city}}{% endif %}
-                        {% if partner.primary_location.country %},{{partner.primary_location.country}}{% endif %}</li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              {% endif %}
-              -->
               <div class="result-indicators">
                 <h4><i class="fa fa-tachometer"></i> {% trans "Indicators" %} ({{result.indicators.all.count}})</h4>
                 <ul>
