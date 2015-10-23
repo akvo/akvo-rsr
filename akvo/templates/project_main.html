@@ -1022,8 +1022,8 @@
                     {% for period in indicator.periods.all %}
                       <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
                         <tr class="indicator-period-{{period.id}}-tr">
-                          <td>{{period.period_start}}</td>
-                          <td>{{period.period_end}}</td>
+                          <td class="fromTime">{{period.period_start}}</td>
+                          <td class="toTime">{{period.period_end}}</td>
                           <td class="indicator-bar-td">
                             <div class="indicator-bar-display-container">
                               <div class="indicator-bar">
@@ -1617,7 +1617,7 @@
 
     addUpdateButton = document.createElement('button');
     addUpdateButton.classList.add('add-button');
-    addUpdateButton.textContent = 'Add a new update';
+    addUpdateButton.textContent = '+ Add a new update';
 
     updateTd.appendChild(addUpdateButton);
 
@@ -2036,7 +2036,8 @@
       var saveEl = document.createElement('div');
       saveEl.classList.add('save-button');
       saveEl.classList.add('clickable');
-      saveEl.textContent = 'Save changes';
+      saveEl.textContent = 'Save';
+      
       updateContainer.appendChild(saveEl);
 
       var cancelEl = document.createElement('div');
