@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load compressed i18n rsr_utils rsr_tags %}
+{% load compressed i18n rsr_utils rsr_tags rules %}
 {% load rsr_filters humanize markup_tags %}
 {% block title %}{{ project.title }}{% endblock title %}
 {% block maincontent %}
@@ -1072,9 +1072,11 @@
   <script type="application/json" id="default-values">
     {
       "project_id": {{ project.pk }},
-      "user_id": {{ user.pk }},
+      "user_id": {% if user.pk %}{{ user.pk }}{% else %}""{% endif %},
       "user_first_name": "{{ user.first_name }}",
-      "user_last_name": "{{ user.last_name }}"
+      "user_last_name": "{{ user.last_name }}",
+      "user_is_admin": {% if user.is_superuser or user.is_admin %}true{% else %}false{% endif %},
+      "can_update": {% has_perm 'rsr.post_updates' project as can_update %}{% if can_update %}true{% else %}false{% endif %}
     }
   </script>
   <script>
@@ -1605,12 +1607,14 @@
 
   /* Display the add button in the top row */
   function displayAddButton(periodId, display) {
-    var addUpdateButton, periodNode, row, updateTd;
+    var addUpdateButton, canUpdate, isAdmin, periodNode;
 
+    canUpdate = defaultValues.can_update;
+    isAdmin = defaultValues.user_is_admin;
     periodNode = findPeriod(periodId);
     addUpdateButton = periodNode.querySelector('.add-button');
 
-    addUpdateButton.style['display'] = display ? '' : 'none';
+    addUpdateButton.style['display'] = display && (isAdmin || canUpdate) ? '' : 'none';
   }
 
   /* Display the edit slider in the update */
@@ -1703,6 +1707,16 @@
       if (updateNodes[i].getAttribute('update-id') == updateId) {
         return updateNodes[i];
       }
+    }
+  }
+
+  /* User allowed to click edit button */
+  function allowEdit(update) {
+    var admin = defaultValues.user_is_admin;
+    if (admin) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -1839,12 +1853,14 @@
     updateContainer.setAttribute("current-change", update.period_update);
     updateContainer.classList.add('update-entry-container');
 
-    editEl = document.createElement('i');
-    editEl.classList.add('fa');
-    editEl.classList.add('fa-pencil-square-o');
-    editEl.classList.add('edit-button');
-    editEl.classList.add('clickable');
-    updateContainer.appendChild(editEl);
+    if (allowEdit(update)) {
+      editEl = document.createElement('i');
+      editEl.classList.add('fa');
+      editEl.classList.add('fa-pencil-square-o');
+      editEl.classList.add('edit-button');
+      editEl.classList.add('clickable');
+      updateContainer.appendChild(editEl);
+    }
 
     if (update.created_at) {
       var dateObj = new Date(update.created_at);
