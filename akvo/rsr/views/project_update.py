@@ -21,7 +21,9 @@ from .utils import apply_keywords, org_projects, show_filter_class
 
 
 def _all_updates():
-    """Return all project updates."""
+    """
+    Return all project updates.
+    """
     return ProjectUpdate.objects.select_related().exclude(indicator_period__isnull=False).\
         order_by('-id')
 

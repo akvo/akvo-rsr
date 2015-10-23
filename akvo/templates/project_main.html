@@ -13,7 +13,7 @@
     <a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>
     <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
     {% if project.is_impact_project %}<a href="#results" class="tab-link">{% trans 'Results & indicators' %}</a>{% endif %}
-    <a href="#updates" class="tab-link">{% trans 'Updates' %}</a>
+    {% if updates %}<a href="#updates" class="tab-link">{% trans 'Updates' %}</a>{% endif %}
   </div>
 </div>
 <div class="project-tab summary">
@@ -2046,6 +2046,7 @@
   </script>
 </div>
 {% endif %}
+{% if updates %}
 <div class="project-tab updates">
   <article>
     {% load rsr_filters %}
@@ -2099,6 +2100,7 @@
     </div>
   </article>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block js %}
@@ -2172,13 +2174,16 @@
       // Remove the '#' from the fragment
       fragment = fragment.substring(1);
 
-      if (fragment === 'summary' ||
-          fragment === 'report' ||
-          fragment === 'partners' ||
-          fragment === 'finance' ||
-          {% if project.is_impact_project %}fragment === 'results' ||{% endif %}
-          fragment === 'updates') {
+      if (fragment === 'summary'
+          || fragment === 'report'
+          || fragment === 'partners'
+          || fragment === 'finance'
+          {% if project.is_impact_project %}|| fragment === 'results'{% endif %}
+          {% if updates %}|| fragment === 'updates'{% endif %}) {
         showTab(fragment);
+      } else {
+        // Unknown fragment, show the default tab
+        showTab('summary');
       }
     } else {
       // No fragment, show the default tab
