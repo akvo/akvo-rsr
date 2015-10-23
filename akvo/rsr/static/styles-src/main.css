@@ -1939,7 +1939,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .tab-menu a {
     padding: 0.5em;
     margin: 0 1em;
-    font-weight: bold;
     color: #646363; }
     .tab-menu a:hover, .tab-menu a.selected {
       border-bottom: 3px solid #00aaff; }
@@ -2038,11 +2037,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         .results .sidebar .result-nav.expanded .result-nav-full {
           display: block;
           cursor: pointer;
-          padding: 0.5em;
+          padding: 0.5em 0 0 5px;
           background-color: white;
           margin-top: 1em; }
           .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
-            padding: 0.25em 0.5em;
+            padding: 0.25em 0em;
             /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
@@ -2129,6 +2128,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .indicator-container .indicator-group .table {
         padding: 0.5em 0.25em;
         /*background-color: rgb(235,235,231);*/ }
+        .results .indicator-container .indicator-group .table tbody.indicator-period {
+          border-top: 1px solid #E7E8E8; }
         .results .indicator-container .indicator-group .table thead {
           font-weight: normal;
           color: silver; }
@@ -2139,19 +2140,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           color: #acacac; }
         .results .indicator-container .indicator-group .table tr {
           min-height: 125px; }
+          .results .indicator-container .indicator-group .table tr .add-button {
+            display: none; }
           .results .indicator-container .indicator-group .table tr.expanded .add-button {
-            background-color: #202024;
             border: none;
-            -moz-border-radius: 3px;
-            -o-border-radius: 3px;
-            -webkit-border-radius: 3px;
-            border-radius: 3px;
-            color: white;
-            padding: 5px 9px; }
+            background-color: transparent;
+            color: #00aaff;
+            display: block; }
             .results .indicator-container .indicator-group .table tr.expanded .add-button:hover {
-              background-color: rgba(32, 32, 36, 0.5); }
+              background-color: rgba(32, 32, 36, 0); }
         .results .indicator-container .indicator-group .table td {
           vertical-align: middle; }
+          .results .indicator-container .indicator-group .table td.fromTime, .results .indicator-container .indicator-group .table td.toTime {
+            max-width: 15%; }
+          .results .indicator-container .indicator-group .table td.indicator-bar-td {
+            min-width: 35%; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-up {
           display: none; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-down {
@@ -2204,13 +2207,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     vertical-align: middle; }
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
     padding-left: 15px;
-    font-size: 1.5em;
+    font-size: 1.1em;
     font-weight: normal;
     color: #515050;
     vertical-align: bottom; }
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-text {
     padding-left: 15px;
-    font-size: 1.5em;
+    font-size: 1.1em;
     font-weight: bold;
     color: #A3C7E3;
     vertical-align: bottom; }
@@ -2234,7 +2237,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -10px;
-          margin-left: -5px; }
+          margin-left: -5px;
+          color: #A3C7E3; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           position: absolute;
           top: 38px;
@@ -2288,65 +2292,69 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         position: absolute;
         height: 20px;
         width: 20px;
-        top: 5px;
-        right: 5px;
-        color: #969696;
+        top: 15px;
+        right: 10px;
+        color: #202024;
         font-size: 1.5em; }
         .results .update-dialog-container td .update-entry-container .edit-button.activated {
           display: none; }
       .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
-        width: 50%; }
+        width: 25%; }
       .results .update-dialog-container td .update-entry-container .update-name {
         display: inline-block;
-        text-align: right;
+        text-align: left;
         width: 40%;
-        margin-right: 10%; }
+        margin-right: 10%;
+        color: #202024; }
       .results .update-dialog-container td .update-entry-container .update-timeline {
         display: inline-block;
         width: 75%;
         height: 80px;
         padding-top: 1em; }
       .results .update-dialog-container td .update-entry-container .update-target {
+        position: absolute;
+        margin-top: 45px;
         display: inline-block;
         width: 24%;
         height: 80px;
         text-align: center; }
         .results .update-dialog-container td .update-entry-container .update-target span {
-          font-size: 1.5em;
+          font-size: 1.1em;
           color: #515050;
           vertical-align: text-top; }
           .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
             padding-left: 15px;
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #A3C7E3;
             vertical-align: bottom; }
       .results .update-dialog-container td .update-entry-container .update-description {
-        padding: 0.5em; }
+        padding: 0.5em;
+        margin: 20px auto 30px; }
         .results .update-dialog-container td .update-entry-container .update-description.editable {
-          background: whitesmoke; }
+          background: whitesmoke;
+          border: 1px solid #A3C7E3; }
         .results .update-dialog-container td .update-entry-container .update-description .update-photo {
           float: right;
           width: 150px;
           height: 100px;
           background-size: cover; }
       .results .update-dialog-container td .update-entry-container .save-button {
-        display: none; }
+        position: absolute;
+        display: none;
+        right: 10px;
+        bottom: 10px; }
         .results .update-dialog-container td .update-entry-container .save-button.active {
-          display: block;
-          width: 150px;
-          padding: 0.5em;
+          display: inline-block;
+          padding: 3px 7px;
           color: white;
-          font-weight: bold;
-          background-color: #3e65ff;
-          margin-top: 1em;
-          margin-left: auto;
-          -moz-border-radius: 4px;
-          -o-border-radius: 4px;
-          -webkit-border-radius: 4px;
-          border-radius: 4px;
+          background-color: #202024;
+          -moz-border-radius: 2px;
+          -o-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
           text-align: center; }
       .results .update-dialog-container td .update-entry-container .cancel-button {
         display: none; }
@@ -2383,12 +2391,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             -webkit-border-radius: 4px;
             border-radius: 4px; }
           .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+            width: 14px;
+            height: 28px;
             z-index: 9999;
-            background-color: #A3C7E3;
+            background-color: #202024;
             cursor: pointer;
-            left: -14px;
+            left: -7px;
             box-shadow: none;
-            top: -12px; }
+            top: -12px;
+            content: "|||";
+            color: white; }
             .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
               display: none; }
             .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {

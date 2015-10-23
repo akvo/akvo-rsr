@@ -1043,7 +1043,9 @@
                               <span class="indicator-bar-progress-complete"> / {{period.target_value}}</span>
                             </div>
                           </td>
-                          <td class="add-update-td"></td>
+                          <td class="add-update-td add-new-update-container">
+                              <button class="add-button">+ {% trans 'Add a new update' %}</button>
+                          </td>
                           <td class="expand-td">
                             <span class="expand-indicator-period clickable">
                               <i class="fa fa-chevron-down"></i>
@@ -1194,20 +1196,19 @@
         if (this.classList.contains('expanded')) {
           /* This is period already expanded. Collapse it and remove all update dialogs. */
           removeFromPeriod(periodId, 'tr.update-dialog-container');
-          removeFromPeriod(periodId, 'button.add-button');
+          displayAddButton(periodId, false);
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded', periodId);
           /* Remove the 'add' update in the store, in case the 'add Update' button was clicked */
           removeUpdatefromStore(periodId, 'add');
         } else {
           var container;
 
-          insertAddButton(periodId);
+          displayAddButton(periodId, true);
           parentElement.parentNode.appendChild(getUpdateDialog(periodId));
 
           this.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
 
-          addAddOnClicks();
           addEditOnClicks();
           addSaveOnClicks();
           addCancelOnClicks();
@@ -1267,8 +1268,7 @@
         addSaveOnClicks();
         addCancelOnClicks();
         container.querySelector('.edit-button').click();
-        var addButton = periodNode.querySelector('button.add-button');
-        addButton.parentNode.removeChild(addButton);
+        displayAddButton(periodId, false);
       });
     }
   }
@@ -1422,7 +1422,7 @@
 
         if (updateId === 'add') {
           updateNode.parentNode.removeChild(updateNode);
-          insertAddButton(periodId);
+          displayAddButton(periodId, true);
         } else {
           periodNode.querySelector('.expand-indicator-period').click();
         }
@@ -1511,9 +1511,9 @@
               uploadPhoto(photo, updateNode);
             }
 
-            // Add the 'Add update' row again
-            insertAddButton(periodId);
-            addAddOnClicks();
+            // Display the 'Add update' button again
+            displayAddButton(periodId, true);
+
             addEditOnClicks();
             addSaveOnClicks();
             addCancelOnClicks();
@@ -1602,26 +1602,14 @@
     }
   }
 
-  /* Return the add button in the top row */
-  function insertAddButton(periodId) {
+  /* Display the add button in the top row */
+  function displayAddButton(periodId, display) {
     var addUpdateButton, periodNode, row, updateTd;
 
     periodNode = findPeriod(periodId);
-    updateTd = periodNode.querySelector('.add-update-td');
-    updateTd.classList.add('add-new-update-container');
+    addUpdateButton = periodNode.querySelector('.add-button');
 
-    // TODO: Add row when no updates for period
-    //if (!updatesByIndicatorPeriod[periodId]) {
-    //  rowCells.textContent = 'No updates for this indicator period. ';
-    //}
-
-    addUpdateButton = document.createElement('button');
-    addUpdateButton.classList.add('add-button');
-    addUpdateButton.textContent = '+ Add a new update';
-
-    updateTd.appendChild(addUpdateButton);
-
-    addAddOnClicks();
+    addUpdateButton.style['display'] = display ? '' : 'none';
   }
 
   /* Get additional data of update */
@@ -2053,6 +2041,7 @@
   setResultExpandOnClicks();
   setIndicatorLinkOnClicks();
   setExpandIndicatorPeriodOnClicks();
+  addAddOnClicks();
   buildUpdateJSON();
   </script>
 </div>

@@ -2796,11 +2796,15 @@ body {
 
                 tr {
                     min-height: 125px;
+                    .add-button {
+                        display: none;
+                    }
                     &.expanded {
                         .add-button {
                             border:none;
                             background-color: transparent;
                             color: $anchorLink;
+                            display: block;
                             &:hover {
                                 background-color: rgba($akvoBlack,0);
                             }
