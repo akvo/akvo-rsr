@@ -13,7 +13,7 @@
     <a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>
     <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
     {% if project.is_impact_project %}<a href="#results" class="tab-link">{% trans 'Results & indicators' %}</a>{% endif %}
-    <a href="#blog" class="tab-link">{% trans 'Blog' %}</a>
+    <a href="#updates" class="tab-link">{% trans 'Updates' %}</a>
   </div>
 </div>
 <div class="project-tab summary">
@@ -2057,7 +2057,7 @@
   </script>
 </div>
 {% endif %}
-<div class="project-tab blog">
+<div class="project-tab updates">
   <article>
     {% load rsr_filters %}
          <div class="touch-navbar">
@@ -2188,7 +2188,7 @@
           fragment === 'partners' ||
           fragment === 'finance' ||
           {% if project.is_impact_project %}fragment === 'results' ||{% endif %}
-          fragment === 'blog') {
+          fragment === 'updates') {
         showTab(fragment);
       }
     } else {
