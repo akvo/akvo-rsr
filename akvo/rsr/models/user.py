@@ -369,7 +369,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return False
 
-
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
@@ -390,3 +389,13 @@ class User(AbstractBaseUser, PermissionsMixin):
             last_name=self.last_name,
             employments=employments_array,
         )
+
+    def admin_of(self, org):
+        """
+        Checks if the user is an Admin of this organisation.
+        """
+        admin_group = Group.objects.get(name='Admins')
+        for employment in Employment.objects.filter(user=self, group=admin_group):
+            if employment.organisation == org:
+                return True
+        return False

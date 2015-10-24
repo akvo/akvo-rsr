@@ -1075,8 +1075,10 @@
       "user_id": {% if user.pk %}{{ user.pk }}{% else %}""{% endif %},
       "user_first_name": "{{ user.first_name }}",
       "user_last_name": "{{ user.last_name }}",
-      "user_is_admin": {% if user.is_superuser or user.is_admin %}true{% else %}false{% endif %},
-      "can_update": {% has_perm 'rsr.post_updates' project as can_update %}{% if can_update %}true{% else %}false{% endif %}
+      "user_is_admin": {{ project_admin|yesno:"true,false" }},
+      "can_update": {% has_perm 'rsr.post_updates' user project as can_update %}{{ can_update|yesno:"true,false" }},
+      "update_timeout": {{ update_timeout }},
+      "current_datetime": "{{ current_datetime|date:"c" }}"
     }
   </script>
   <script>
@@ -1086,6 +1088,7 @@
 
   // Default values
   var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+  var currentDate = defaultValues.current_datetime;
 
   /* Set the click listeners that expand or hide the full
   ** "Results" entries in the sidebar.
@@ -1212,8 +1215,6 @@
           this.classList.add('expanded');
 
           addEditOnClicks();
-          addSaveOnClicks();
-          addCancelOnClicks();
         }
       })
     }
@@ -1225,13 +1226,11 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       el.addEventListener('click', function() {
-        var addUpdateContainer, container, containerCell, currentDate, newUpdate, periodId, periodNode, periodTarget;
+        var addUpdateContainer, container, containerCell, newUpdate, periodId, periodNode, periodTarget;
 
         periodNode = this.closest('tbody');
         periodId = periodNode.getAttribute('period-id');
         periodTarget = periodNode.getAttribute('period-target');
-
-        currentDate = new Date();
 
         newUpdate = {
           id: 'add',
@@ -1240,7 +1239,7 @@
             target_value: periodTarget
           },
           period_update: "0",
-          created_at: currentDate.toISOString(),
+          created_at: currentDate,
           user: {
             id: defaultValues.user_id,
             first_name: defaultValues.user_first_name,
@@ -1267,8 +1266,6 @@
           this.parentNode.parentNode.parentNode.appendChild(container);
         }
         addEditOnClicks();
-        addSaveOnClicks();
-        addCancelOnClicks();
         container.querySelector('.edit-button').click();
         displayAddButton(periodId, false);
       });
@@ -1311,11 +1308,13 @@
         description = updateContainer.querySelector('.update-description').innerText;
 
         photoNode = updateContainer.querySelector('.photo-upload');
-        photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
-
+        if (photoNode !== null) {
+          photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
+        }
         periodId = parseInt(this.closest('tbody').getAttribute('period-id'));
         updateId === 'add' ? addNewUpdate(description, periodId, value, photo) : editUpdate(updateId, periodId, description, value, photo);
         this.closest('td').querySelector('.edit-button').click();
+        addEditOnClicks();
       });
     }
   }
@@ -1328,6 +1327,9 @@
 
       el.addEventListener('click', function() {
         var updateContainer = this.parentNode;
+        var updateId = updateContainer.getAttribute('update-id');
+        var periodNode = this.closest('tbody');
+        var periodId = periodNode.getAttribute('period-id');
         var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
         var exceedCheckbox = exceedTargetNode.querySelector('.update-exceed-target-checkbox');
         var exceedValueNode = exceedTargetNode.querySelector('.exceed-value');
@@ -1357,6 +1359,15 @@
 
           updateContainer.querySelector('.save-button').classList.add('active');
           updateContainer.querySelector('.cancel-button').classList.add('active');
+
+          updateContainer.querySelector('.cancel-button').addEventListener('click', function() {
+              if (updateId === 'add') {
+                  updateContainer.parentNode.removeChild(updateContainer);
+                  displayAddButton(periodId, true);
+              } else {
+                  periodNode.querySelector('.expand-indicator-period').click();
+              }
+          });
 
           var uploadPhoto = document.createElement('input');
           uploadPhoto.setAttribute('type', 'file');
@@ -1405,29 +1416,8 @@
               updateActual.textContent = value;
             }
           });
-        }
-      });
-    }
-  }
 
-  function addCancelOnClicks() {
-    var els = document.querySelectorAll('.cancel-button');
-
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      el.addEventListener('click', function() {
-        var periodNode, periodId, updateNode, updateId;
-
-        updateNode = this.closest('.update-entry-container');
-        updateId = updateNode.getAttribute('update-id');
-        periodNode = this.closest('tbody');
-        periodId = periodNode.getAttribute('period-id');
-
-        if (updateId === 'add') {
-          updateNode.parentNode.removeChild(updateNode);
-          displayAddButton(periodId, true);
-        } else {
-          periodNode.querySelector('.expand-indicator-period').click();
+          addSaveOnClicks();
         }
       });
     }
@@ -1451,6 +1441,32 @@
     return cookieValue;
   }
   var csrftoken = getCookie('csrftoken');
+
+  /* Time remaining to edit (needs to be in GMT) */
+  function getTimeDifference(endDate) {
+    var remainingDate = endDate - new Date(currentDate);
+
+    return {
+      'days': Math.floor( remainingDate/(1000*60*60*24) ),
+      'hours': Math.floor( (remainingDate/(1000*60*60)) % 24 ),
+      'minutes': Math.floor( (remainingDate/1000/60) % 60 )
+    };
+  }
+
+  function setMinutesRemaining(node, createdAtDate) {
+    var endDate = createdAtDate;
+    endDate.setMinutes(endDate.getMinutes() + parseInt(defaultValues.update_timeout));
+
+    var timeinterval = setInterval(function(){
+      var remainingTime = getTimeDifference(endDate);
+      node.setAttribute('title', remainingTime.minutes + ' minutes remaining');
+
+      if (remainingTime.minutes < 0) {
+        clearInterval(timeinterval);
+        node.parentNode.removeChild(node);
+      }
+    },100);
+  }
 
   /* Upload photo */
   function uploadPhoto(photo, updateNode) {
@@ -1514,12 +1530,10 @@
               uploadPhoto(photo, updateNode);
             }
 
-            // Display the 'Add update' button again
-            displayAddButton(periodId, true);
-
-            addEditOnClicks();
-            addSaveOnClicks();
-            addCancelOnClicks();
+            // TODO: Create recalculation function so that closing isn't necessary
+            var periodNode = findPeriod(periodId);
+            periodNode.querySelector('.expand-indicator-period').click();
+            
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1712,11 +1726,15 @@
 
   /* User allowed to click edit button */
   function allowEdit(update) {
-    var admin = defaultValues.user_is_admin;
-    if (admin) {
+    if (defaultValues.user_is_admin) {
       return true;
     } else {
-      return false;
+      var endDate = new Date(update.created_at);
+      endDate.setMinutes(endDate.getMinutes() + parseInt(defaultValues.update_timeout));
+      var remaining = getTimeDifference(endDate);
+      var enoughTime = !!(remaining.days >= 0 && remaining.hours >= 0 && remaining.minutes >= 0);
+      var userPk = defaultValues.user_id;
+      return !!(enoughTime && userPk == update.user.id);
     }
   }
 
@@ -1859,6 +1877,10 @@
       editEl.classList.add('fa-pencil-square-o');
       editEl.classList.add('edit-button');
       editEl.classList.add('clickable');
+
+      if (!defaultValues.user_is_admin) {
+        setMinutesRemaining(editEl, new Date(update.created_at));
+      }
       updateContainer.appendChild(editEl);
     }
 
@@ -2062,7 +2084,16 @@
     return updateContainer;
   }
 
+  function setCurrentDate() {
+    var interval = setInterval(function(){
+      var localCurrentDate = new Date(currentDate);
+      localCurrentDate.setSeconds(localCurrentDate.getSeconds() + 1);
+      currentDate = localCurrentDate.toString();
+    }, 1000);
+  }
+
   /* Do stuff */
+  setCurrentDate();
   setResultExpandOnClicks();
   setIndicatorLinkOnClicks();
   setExpandIndicatorPeriodOnClicks();

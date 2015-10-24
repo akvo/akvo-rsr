@@ -8,7 +8,8 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 import json
-from django.core import serializers
+from datetime import datetime
+from django.conf import settings
 
 from sorl.thumbnail import get_thumbnail
 from django.contrib.auth.decorators import login_required
@@ -304,17 +305,22 @@ def main(request, project_id):
     page, paginator, page_range = pagination(page, narrative_updates, 10)
 
     context = {
-        'project': project,
         'accordion_data': accordion_data,
         'carousel_data': carousel_data,
-        'partners': partner_types,
-        'updates': narrative_updates,
+        'current_datetime': datetime.now(),
         'indicator_updates': indicator_updates_data,
-        'pledged': project.get_pledged(),
-        'reporting_org': rep_org_info,
         'page': page,
         'page_range': page_range,
-        'paginator': paginator,        
+        'paginator': paginator,
+        'partners': partner_types,
+        'pledged': project.get_pledged(),
+        'project': project,
+        'project_admin': request.user.is_superuser or request.user.is_admin or True in [
+            request.user.admin_of(partner) for partner in project.partners.all()
+        ],
+        'reporting_org': rep_org_info,
+        'updates': narrative_updates,
+        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 
     return render(request, 'project_main.html', context)
