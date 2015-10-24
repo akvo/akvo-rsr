@@ -164,7 +164,7 @@ def _get_carousel_data(project):
                 "url": im.url,
                 "caption": project.current_image_caption,
                 "credit": project.current_image_credit,
-                "original_url": project.current_image.url,
+                "direct_to_url": '',
             })
         except IOError:
             pass
@@ -172,13 +172,22 @@ def _get_carousel_data(project):
         if len(photos) > 9:
             break
         if update.photo:
+            if update.indicator_period:
+                direct_to = reverse('project-main', kwargs={
+                    'project_id': project.pk
+                }) + '#results'
+            else:
+                direct_to = reverse('update-main', kwargs={
+                    'project_id': project.pk,
+                    'update_id': update.pk
+                })
             try:
                 im = get_thumbnail(update.photo, '750x400', quality=99)
                 photos.append({
                     "url": im.url,
                     "caption": update.photo_caption,
                     "credit": update.photo_credit,
-                    "original_url": update.photo.url,
+                    "direct_to_url": direct_to,
                 })
             except IOError:
                 continue

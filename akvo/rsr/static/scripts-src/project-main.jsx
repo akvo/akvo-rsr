@@ -203,7 +203,7 @@ CarouselInstance = React.createClass({
     var photos = this.props.source.photos.map(function(photo) {
       return (
           <CarouselItem key={photo.url} >
-          <a href={photo.original_url} target="_blank"><img src={photo.url} /></a>
+          <a target="_blank" href={photo.direct_to_url}><img src={photo.url} /></a>
           <div className="carousel-caption">
           <h4>{photo.caption}</h4>
           <p>{photo.credit}</p>
