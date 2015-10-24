@@ -2305,14 +2305,24 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         font-size: 1.5em; }
         .results .update-dialog-container td .update-entry-container .edit-button.activated {
           display: none; }
+      .results .update-dialog-container td .update-entry-container .delete-button {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        top: 40px;
+        right: 10px;
+        color: #ee3124;
+        font-size: 1.5em; }
+        .results .update-dialog-container td .update-entry-container .delete-button.activated {
+          display: none; }
       .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
-        width: 25%; }
+        width: 50%; }
       .results .update-dialog-container td .update-entry-container .update-name {
         display: inline-block;
         text-align: left;
-        width: 40%;
+        width: 30%;
         margin-right: 10%;
         color: #202024; }
       .results .update-dialog-container td .update-entry-container .update-timeline {

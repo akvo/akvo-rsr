@@ -114,7 +114,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         if self.indicator_period and self.period_update:
             try:
                 self.indicator_period.update_actual_value(
-                    Decimal(self.indicator_period.period_update) * -1
+                    Decimal(self.period_update) * -1
                 )
             except (InvalidOperation, TypeError):
                 pass

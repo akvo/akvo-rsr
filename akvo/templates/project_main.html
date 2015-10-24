@@ -1215,6 +1215,7 @@
           this.classList.add('expanded');
 
           addEditOnClicks();
+          addDeleteOnClicks();
         }
       })
     }
@@ -1266,6 +1267,7 @@
           this.parentNode.parentNode.parentNode.appendChild(container);
         }
         addEditOnClicks();
+        addDeleteOnClicks();
         container.querySelector('.edit-button').click();
         displayAddButton(periodId, false);
       });
@@ -1314,9 +1316,56 @@
         periodId = parseInt(this.closest('tbody').getAttribute('period-id'));
         updateId === 'add' ? addNewUpdate(description, periodId, value, photo) : editUpdate(updateId, periodId, description, value, photo);
         this.closest('td').querySelector('.edit-button').click();
-        addEditOnClicks();
       });
     }
+  }
+
+  function addDeleteOnClicks() {
+      var els = document.querySelectorAll('.delete-button');
+
+      for (var i = 0; i < els.length; i++) {
+          var el = els[i];
+
+          el.addEventListener('click', function () {
+            var api_url, periodId, periodNode, request, requestData, updateNode, updateChange, updateId;
+
+            updateNode = this.closest('.update-entry-container');
+            updateChange = parseInt(updateNode.getAttribute('current-change'));
+            updateId = updateNode.getAttribute('update-id');
+            periodNode = updateNode.closest('tbody');
+            periodId = periodNode.getAttribute('period-id');
+
+            // Create request
+            api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
+            request = new XMLHttpRequest();
+            request.open('DELETE', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            request.onload = function() {
+              if (request.status === 204) {
+                // Object successfully deleted
+                removeUpdatefromStore(periodId, parseInt(updateId));
+                updateActualValue(periodId, updateChange * -1);
+
+                // TODO: Create recalculation function so that closing isn't necessary
+                periodNode.querySelector('.expand-indicator-period').click();
+
+                return true;
+              } else {
+                // We reached our target server, but it returned an error
+                return false;
+              }
+            };
+
+            request.onerror = function() {
+              // There was a connection error of some sort
+              return false;
+            };
+
+            request.send(JSON.stringify(requestData));
+          });
+      }
   }
 
   function addEditOnClicks() {
@@ -1333,6 +1382,7 @@
         var exceedTargetNode = updateContainer.querySelector('.update-exceed-target');
         var exceedCheckbox = exceedTargetNode.querySelector('.update-exceed-target-checkbox');
         var exceedValueNode = exceedTargetNode.querySelector('.exceed-value');
+        var deleteButton = updateContainer.querySelector('.delete-button');
 
         if (this.classList.contains('activated')) {
           var editables = updateContainer.querySelectorAll('.editable');
@@ -1346,6 +1396,10 @@
           updateContainer.querySelector('.cancel-button').classList.remove('active');
           updateContainer.querySelector('.edit-slider').noUiSlider.destroy();
 
+          if (deleteButton !== null) {
+            deleteButton.classList.remove('activated');
+          }
+
           exceedCheckbox.setAttribute('disabled', '');
           exceedValueNode.setAttribute('disabled', '');
 
@@ -1353,6 +1407,9 @@
           photoUpload.parentNode.removeChild(photoUpload);
         } else {
           this.classList.add('activated');
+          if (deleteButton !== null) {
+            deleteButton.classList.add('activated');
+          }
 
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
@@ -1865,7 +1922,7 @@
 
   function getUpdateEntry(update) {
     var updateContainer = document.createElement('div');
-    var editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
+    var deleteEl, editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
 
     updateContainer.setAttribute("update-id", update.id);
     updateContainer.setAttribute("current-change", update.period_update);
@@ -1877,11 +1934,18 @@
       editEl.classList.add('fa-pencil-square-o');
       editEl.classList.add('edit-button');
       editEl.classList.add('clickable');
+      updateContainer.appendChild(editEl);
 
       if (!defaultValues.user_is_admin) {
         setMinutesRemaining(editEl, new Date(update.created_at));
+      } else {
+        deleteEl = document.createElement('i');
+        deleteEl.classList.add('fa');
+        deleteEl.classList.add('fa-trash-o');
+        deleteEl.classList.add('delete-button');
+        deleteEl.classList.add('clickable');
+        updateContainer.appendChild(deleteEl);
       }
-      updateContainer.appendChild(editEl);
     }
 
     if (update.created_at) {
