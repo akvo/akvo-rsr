@@ -1492,6 +1492,7 @@ div.projectTopRow {
                             width: 80%;
                             @include bw;
                             transition: all 0.2s ease-in;
+                            margin: inherit;
                             &:hover {
                                 @include colour;
                             }
