@@ -100,7 +100,7 @@
               <p class="projectLocation"><i class="fa fa-map-marker"></i> {{project.primary_location.country}}, {{project.primary_location.country.continent}}</p>
             {% endif %}
             {% if project.primary_organisation %}
-              <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.display_partner}}</a>
+              <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
             {% endif %}
             {% more_link project %}
             <div class="visible-xs-block hidden-sm">
