@@ -2330,7 +2330,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         display: inline-block;
         width: 75%;
         height: 80px;
-        padding-top: 1em; }
+        padding-top: 1em;
+        z-index: 99;
+        position: relative; }
       .results .update-dialog-container td .update-entry-container .update-target {
         position: absolute;
         margin-top: 45px;

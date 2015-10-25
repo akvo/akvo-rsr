@@ -3054,6 +3054,8 @@ body {
                     width: 75%;
                     height: 80px;
                     padding-top: 1em;
+                    z-index: 99;
+                    position: relative;
                 }
                 .update-target {
                     position: absolute;
