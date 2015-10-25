@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import json
 import logging
 import os
 from django import template
@@ -230,10 +231,10 @@ def project_map(id, width, height, dynamic='dynamic'):
         # Small map, so don't show thumbnail of updates
         thumbnail = ""
 
-        update_locations.append([update_location.latitude,
-                                 update_location.longitude,
-                                 [str(project_update.pk),project_update.title.encode('utf8'), thumbnail, 'project',
-                                  str(id)]])
+        update_locations.append([
+            update_location.latitude, update_location.longitude,
+            [str(project_update.pk), project_update.title, thumbnail, 'project', str(id)]
+        ])
 
     template_context = {
         'map_id': map_id,
@@ -241,8 +242,8 @@ def project_map(id, width, height, dynamic='dynamic'):
         'height': height,
         'marker_icon': PROJECT_MARKER_ICON,
         'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
-        'locations': locations,
-        'update_locations': update_locations,
+        'locations': json.dumps(locations),
+        'update_locations': json.dumps(update_locations),
         'dynamic': dynamic,
         'infowindows': False,
         'partnersite_widget': False

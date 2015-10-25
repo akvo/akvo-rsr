@@ -321,6 +321,12 @@ class Project(TimestampsMixin, models.Model):
 
     def save(self, last_updated=False, *args, **kwargs):
         # Check if the project is converted to an RSR Impact project
+        if self.title:
+            self.title = self.title.strip()
+
+        if self.subtitle:
+            self.subtitle = self.subtitle.strip()
+
         if not last_updated:
             if self.pk:
                 orig = get_model('rsr', 'project').objects.get(pk=self.pk)
@@ -349,16 +355,6 @@ class Project(TimestampsMixin, models.Model):
                  'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
                                               u'time than end date (actual).')}
             )
-
-    def save(self, *args, **kwargs):
-        """Strip the title and subtitle from any leading or trailing spaces."""
-        if self.title:
-            self.title = self.title.strip()
-
-        if self.subtitle:
-            self.subtitle = self.subtitle.strip()
-
-        super(Project, self).save(*args, **kwargs)
 
     @models.permalink
     def get_absolute_url(self):
