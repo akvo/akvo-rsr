@@ -29,12 +29,8 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
         'period_update': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        # These filters only accept a date, not a datetime
-        # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
     }
 
-    # filter_fields = ('project', 'user', )
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 

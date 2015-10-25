@@ -66,7 +66,6 @@ class ProjectViewSet(BaseRSRViewSet):
         'date_end_actual': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        # 'sync_owner': ['exact', ],
         'iati_activity_id': ['exact', 'icontains', ],
         'hierarchy': ['exact', ],
         'project_scope': ['exact', ],
@@ -83,6 +82,18 @@ class ProjectViewSet(BaseRSRViewSet):
         'keywords': ['exact', 'in', ],
         'publishingstatus__status': ['exact', ],
     }
+
+    def get_queryset(self):
+        """
+        Allow custom filter for sync_owner, since this field has been replaced by the
+        reporting org partnership.
+        """
+        queryset = self.queryset
+        sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
+        if sync_owner:
+            queryset = queryset.filter(partnerships__iati_organisation_role=101,
+                                       partnerships__organisation__pk=sync_owner)
+        return queryset
 
 
 class ProjectExtraViewSet(ProjectViewSet):
