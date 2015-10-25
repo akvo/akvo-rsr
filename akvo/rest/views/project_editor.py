@@ -31,7 +31,7 @@ from sorl.thumbnail import get_thumbnail
 SECTION_ONE_FIELDS = (
     ('title', 'projectTitle', 'text'),
     ('subtitle', 'projectSubTitle', 'text'),
-    ('iati_activity_id', 'iatiId', 'text'),
+    ('iati_activity_id', 'iatiId', 'none'),
     ('status', 'projectStatus', 'text'),
     ('date_start_planned', 'eventFromPlanned', 'date'),
     ('date_end_planned', 'eventEndPlanned', 'date'),
