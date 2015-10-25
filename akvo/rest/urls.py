@@ -99,6 +99,9 @@ urlpatterns = patterns(
 # Project editor
 urlpatterns += patterns(
     '',
+    url(r'^project/(?P<project_pk>[0-9]+)/import_results/$',
+        views.project_editor_import_results,
+        name='project_editor_import_results'),
     url(r'^project/(?P<project_pk>[0-9]+)/delete_document/(?P<document_pk>[0-9]+)/$',
         views.project_editor_delete_document,
         name='project_editor_delete_document'),
@@ -138,6 +141,9 @@ urlpatterns += patterns(
     url(r'^project/(?P<pk>[0-9]+)/step_10/$',
         views.project_editor_step10,
         name='project_editor_step10'),
+    url(r'^project_update/(?P<pk>[0-9]+)/upload_photo/$',
+        views.upload_indicator_update_photo,
+        name='upload_indicator_update_photo'),
     url(r'^organisation/(?P<pk>[0-9]+)/add_logo/$',
         views.project_editor_organisation_logo,
         name='project_editor_add_org_logo'),

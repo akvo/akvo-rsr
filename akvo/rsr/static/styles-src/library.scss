@@ -1,7 +1,6 @@
 /*---------------------------------------------------------------------------------
 
         Title:          RSR v3 functions and library
-        Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 
@@ -42,7 +41,7 @@ $anchorLinkHover: complement($anchorLink);
 $btnColor :rgb(78, 193, 234);
 
 $rsrGreen: rgb(0, 167, 157);
-
+$rsrHeader: #F6FBFB;
 /* Akvo Secondary Colours:    */
 $secondary1: rgb(225, 237, 195);
 /* Akvo very Light green */
@@ -67,10 +66,26 @@ $progressSuccess: #5cb85c;
 $progressNot: #f0ad4e;
 $progressWarning: #d9534f;
 
+$newResultColor: rgb(100,99,99);
+
 $bodyFont: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
 $scriptFont: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
 $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 
+@mixin flex($value) {
+  -webkit-box-flex: $value;
+  -moz-box-flex:  $value;
+  -webkit-flex:  $value;
+  -ms-flex:  $value;
+  flex:  $value;
+}
+@mixin display-flex() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
 @mixin border-radius($property) {
     -moz-border-radius: $property;
     -o-border-radius: $property;

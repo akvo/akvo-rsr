@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -55,8 +56,120 @@ class Indicator(models.Model):
 
         return indicator_unicode
 
+    def save(self, *args, **kwargs):
+        """Update the values of child indicators, if a parent indicator is updated."""
+        # Update the values for an existing indicator
+        if self.pk:
+            orig_indicator = Indicator.objects.get(pk=self.pk)
+            child_indicators = Indicator.objects.filter(
+                result__in=self.result.child_results.all(),
+                title=orig_indicator.title,
+                measure=orig_indicator.measure,
+                ascending=orig_indicator.ascending
+            )
+
+            for child_indicator in child_indicators:
+                # Always copy title, measure and ascending. They should be the same as the parent.
+                child_indicator.title = self.title
+                child_indicator.measure = self.measure
+                child_indicator.ascending = self.ascending
+
+                # Only copy the description and baseline if the child has none (e.g. new)
+                if not child_indicator.description and self.description:
+                    child_indicator.description = self.description
+                if not child_indicator.baseline_year and self.baseline_year:
+                    child_indicator.baseline_year = self.baseline_year
+                if not child_indicator.baseline_value and self.baseline_value:
+                    child_indicator.baseline_value = self.baseline_value
+                if not child_indicator.baseline_comment and self.baseline_comment:
+                    child_indicator.baseline_comment = self.baseline_comment
+
+                child_indicator.save()
+
+        # Create a new indicator when it's added
+        else:
+            for child_result in self.result.child_results.all():
+                child_result.project.add_indicator(child_result, self)
+
+        super(Indicator, self).save(*args, **kwargs)
+
+    def clean(self):
+        validation_errors = {}
+
+        if self.pk and self.is_child_indicator():
+            orig_indicator = Indicator.objects.get(pk=self.pk)
+
+            # Don't allow some values to be changed when it is a child indicator
+            if self.result != orig_indicator.result:
+                validation_errors['result'] = u'%s' % \
+                    _(u'It is not possible to update the result of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.title != orig_indicator.title:
+                validation_errors['title'] = u'%s' % \
+                    _(u'It is not possible to update the title of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.measure != orig_indicator.measure:
+                validation_errors['measure'] = u'%s' % \
+                    _(u'It is not possible to update the measure of this indicator, '
+                      u'because it is linked to a parent result.')
+            if self.ascending != orig_indicator.ascending:
+                validation_errors['ascending'] = u'%s' % \
+                    _(u'It is not possible to update the ascending value of this indicator, '
+                      u'because it is linked to a parent result.')
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
+
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
+
+    def is_calculated(self):
+        return self.result.project.is_impact_project
+
+    def is_child_indicator(self):
+        """
+        Indicates whether this indicator is linked to a parent result.
+        """
+        return True if self.result.parent_result else False
+
+    def parent_indicator(self):
+        """
+        Returns the parent indicator or None.
+        """
+        if self.is_child_indicator():
+            matching_indicators = Indicator.objects.filter(
+                result=self.result.parent_result,
+                title=self.title,
+                measure=self.measure,
+                ascending=self.ascending
+            )
+            if matching_indicators:
+                return matching_indicators.first()
+        return None
+
+    def is_parent_indicator(self):
+        """
+        Indicates whether this indicator has children.
+        """
+        return True if self.child_indicators() else False
+
+    def child_indicators(self):
+        """
+        Returns the child indicators of this indicator.
+        """
+        child_results = self.result.child_results.all()
+        return Indicator.objects.filter(
+            result__in=child_results,
+            title=self.title,
+            measure=self.measure,
+            ascending=self.ascending
+        )
+
+    @property
+    def last_updated(self):
+        from akvo.rsr.models import ProjectUpdate
+        period_updates = ProjectUpdate.objects.filter(indicator_period__indicator=self)
+        return period_updates.order_by('-created_at')[0].time_gmt if period_updates else None
 
     class Meta:
         app_label = 'rsr'
@@ -117,17 +230,217 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
+    def save(self, *args, **kwargs):
+        """Update the values of child periods, if a parent period is updated."""
+        # Update period when it's edited
+        if self.pk:
+            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+            child_results = self.indicator.result.child_results.all()
+            child_periods = IndicatorPeriod.objects.filter(
+                indicator__result__in=child_results,
+                period_start=orig_period.period_start,
+                period_end=orig_period.period_end
+            )
+
+            for child_period in child_periods:
+                # Always copy period start and end. They should be the same as the parent.
+                child_period.period_start = self.period_start
+                child_period.period_end = self.period_end
+
+                # Only copy the target value and comments if the child has no values (e.g. new)
+                if not child_period.target_value and self.target_value:
+                    child_period.target_value = self.target_value
+                if not child_period.target_comment and self.target_comment:
+                    child_period.target_comment = self.target_comment
+                if not child_period.target_value and self.target_value:
+                    child_period.target_value = self.target_value
+
+                child_period.save()
+
+        # Create a new period when it's added
+        else:
+            for child_indicator in self.indicator.child_indicators():
+                child_indicator.result.project.add_period(child_indicator, self)
+
+        super(IndicatorPeriod, self).save(*args, **kwargs)
+
     def clean(self):
+        validation_errors = {}
+
+        if self.pk:
+            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+
+            # Don't allow an actual value to be changed when the indicator period is calculated
+            if self.is_calculated() and self.actual_value != orig_period.actual_value:
+                validation_errors['actual_value'] = u'%s' % \
+                    _(u'It is not possible to update the actual value of this indicator period, '
+                      u'because it is a calculated value. Please update the actual value through '
+                      u'a new update.')
+
+            # Don't allow some values to be changed when it is a child period
+            if self.is_child_period():
+                if self.indicator != orig_period.indicator:
+                    validation_errors['indicator'] = u'%s' % \
+                        _(u'It is not possible to update the indicator of this indicator period, '
+                          u'because it is linked to a parent result.')
+                if self.period_start != orig_period.period_start:
+                    validation_errors['period_start'] = u'%s' % \
+                        _(u'It is not possible to update the start period of this indicator, '
+                          u'because it is linked to a parent result.')
+                if self.period_end != orig_period.period_end:
+                    validation_errors['period_end'] = u'%s' % \
+                        _(u'It is not possible to update the end period of this indicator, '
+                          u'because it is linked to a parent result.')
+
         # Don't allow a start date before an end date
         if self.period_start and self.period_end and (self.period_start > self.period_end):
-            raise ValidationError(
-                {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.'),
-                 'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.')}
+            validation_errors['period_start'] = u'%s' % _(u'Period start cannot be at a later time '
+                                                          u'than period end.')
+            validation_errors['period_end'] = u'%s' % _(u'Period start cannot be at a later time '
+                                                        u'than period end.')
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
+
+    def is_calculated(self):
+        """
+        When a project is set as an RSR Impact project, the actual values of the indicator
+        periods are calculated through updates.
+        """
+        return self.indicator.result.project.is_impact_project
+
+    def is_child_period(self):
+        """
+        Indicates whether this result is linked to a parent result.
+        """
+        return True if self.indicator.result.parent_result else False
+
+    def parent_period(self):
+        """
+        Returns the parent indicator period, in case this period is a child period.
+        """
+        if self.is_child_period():
+            matching_periods = IndicatorPeriod.objects.filter(
+                indicator__result=self.indicator.result.parent_result,
+                period_start=self.period_start,
+                period_end=self.period_end
             )
+            if matching_periods.exists():
+                return matching_periods.first()
+        return None
+
+    def is_parent_period(self):
+        """
+        Indicates whether this result has child periods linked to it.
+        """
+        return True if self.child_periods() else False
+
+    def child_periods(self):
+        """
+        Returns the child indicator periods, in case this period is a parent period.
+        """
+        child_results = self.indicator.result.child_results.all()
+        return IndicatorPeriod.objects.filter(
+            indicator__result__in=child_results,
+            period_start=self.period_start,
+            period_end=self.period_end
+        )
+
+    def update_actual_value(self, update_value):
+        """
+        :param update_value; String or Integer that should be castable to Decimal
+
+        Updates the actual value of the period.
+        """
+        try:
+            self.actual_value = str(Decimal(self.actual) + Decimal(update_value))
+        except (InvalidOperation, TypeError):
+            self.actual_value = update_value
+
+        self.save(update_fields=['actual_value'])
+
+        # Update parent period
+        parent = self.parent_period()
+        if parent:
+            parent.update_actual_value(update_value)
+
+    @property
+    def percent_accomplishment(self):
+        """
+        Return the percentage completed for this indicator period. If not possible to convert the
+        values to numbers, return 0.
+        """
+        if not self.target_value:
+            return 0
+
+        actual_value = self.actual_value if self.actual_value else self.baseline
+        baseline = self.baseline
+        try:
+            return round(
+                (Decimal(actual_value) - Decimal(baseline)) /
+                (Decimal(self.target_value) - Decimal(baseline)) *
+                100, 1
+            )
+        except (InvalidOperation, TypeError, DivisionByZero):
+            return 0
+
+    @property
+    def percent_accomplishment_100(self):
+        """
+        Similar to the percent_accomplishment property. However, it won't return any number bigger
+        than 100.
+        """
+        return 100 if self.percent_accomplishment > 100 else self.percent_accomplishment
+
+    @property
+    def actual(self):
+        """
+        Returns the actual value of the indicator period, if it can be converted to a number.
+        Otherwise it'll return 0.
+        """
+        try:
+            return Decimal(self.actual_value)
+        except (InvalidOperation, TypeError):
+            return Decimal(self.baseline)
+
+    @property
+    def target(self):
+        """
+        Returns the target value of the indicator period, if it can be converted to a number.
+        Otherwise it'll return 0.
+        """
+        try:
+            return Decimal(self.target_value)
+        except (InvalidOperation, TypeError):
+            return Decimal(self.baseline)
+
+    @property
+    def baseline(self):
+        """
+        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
+        it'll return 0.
+        """
+        baseline = 0
+
+        ordered_periods = self.indicator.periods.exclude(period_start=None).order_by('period_start')
+        if ordered_periods.exists() and self == ordered_periods[0]:
+            baseline = self.indicator.baseline_value
+        elif self in ordered_periods:
+            prev_period = None
+            for period in ordered_periods:
+                if not self == period:
+                    prev_period = period
+                else:
+                    baseline = prev_period.actual
+                    break
+
+        try:
+            return Decimal(baseline)
+        except (InvalidOperation, TypeError):
+            return Decimal(0)
 
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'indicator period')
         verbose_name_plural = _(u'indicator periods')
+        ordering = ['period_start']

@@ -6,12 +6,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import math
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Max, Sum
+from django.db.models import get_model, Max, Sum
 from django.db.models.signals import post_save
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
@@ -186,6 +187,11 @@ class Project(TimestampsMixin, models.Model):
         )
     )
 
+    # RSR Impact
+    is_impact_project = models.BooleanField(_(u'is rsr impact project'), default=False,
+                                            help_text=_(u'Determines whether this project is an '
+                                                        u'RSR Impact project.'))
+
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
@@ -309,6 +315,33 @@ class Project(TimestampsMixin, models.Model):
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
 
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'project')
+        verbose_name_plural = _(u'projects')
+        ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )
+
+    def save(self, last_updated=False, *args, **kwargs):
+        # Check if the project is converted to an RSR Impact project
+        if self.title:
+            self.title = self.title.strip()
+
+        if self.subtitle:
+            self.subtitle = self.subtitle.strip()
+
+        if not last_updated:
+            if self.pk:
+                orig = get_model('rsr', 'project').objects.get(pk=self.pk)
+                if self.is_impact_project and not orig.is_impact_project:
+                    self.convert_to_impact_project()
+            elif self.is_impact_project:
+                self.convert_to_impact_project()
+
+        super(Project, self).save(*args, **kwargs)
+
     def clean(self):
         # Don't allow a start date before an end date
         if self.date_start_planned and self.date_end_planned and \
@@ -327,16 +360,6 @@ class Project(TimestampsMixin, models.Model):
                  'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
                                               u'time than end date (actual).')}
             )
-
-    def save(self, *args, **kwargs):
-        """Strip the title and subtitle from any leading or trailing spaces."""
-        if self.title:
-            self.title = self.title.strip()
-
-        if self.subtitle:
-            self.subtitle = self.subtitle.strip()
-
-        super(Project, self).save(*args, **kwargs)
 
     @models.permalink
     def get_absolute_url(self):
@@ -970,6 +993,104 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
+    def check_mandatory_fields(self, version='2.01'):
+        return check_export_fields(self, version)
+
+    def keyword_logos(self):
+        """Return the keywords of the project which have a logo."""
+        return self.keywords.exclude(logo='')
+
+    ###################################
+    ####### RSR Impact projects #######
+    ###################################
+
+    def convert_to_impact_project(self):
+        """
+        When a project is converted to an RSR Impact project, it is not possible to edit the actual
+        values of the indicators and the actual values should be converted to updates.
+        """
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                for period in indicator.periods.all():
+                    if period.actual_value:
+                        try:
+                            update_value = Decimal(period.actual_value) - period.baseline
+                        except (InvalidOperation, TypeError):
+                            continue
+
+                        period.actual_value = str(period.baseline)
+                        period.save(update_fields=['actual_value'])
+
+                        get_model('rsr', 'ProjectUpdate').objects.create(
+                            project=self,
+                            # TODO: What user should we link to a 'system' update?
+                            # We could make sure that the 1st user in the database is a 'system'
+                            # user.
+                            user=get_model('rsr', 'user').objects.all()[0],
+                            title=u'Initial value of indicator period',
+                            text=u'Initial value of indicator period, added by system while '
+                                 u'calculating the actual value of this indicator period.',
+                            indicator_period=period,
+                            period_update=update_value,
+                        )
+
+    def import_results(self):
+        """Import results from the parent project."""
+        import_failed = 0
+        import_success = 1
+
+        if self.parents().count() == 1:
+            parent_project = self.parents()[0]
+        elif self.parents().count() == 0:
+            return import_failed, 'Project does not have a parent project'
+        else:
+            return import_failed, 'Project has multiple parent projects'
+
+        for result in parent_project.results.all():
+            # Only import results that have not been imported before
+            if not self.results.filter(parent_result=result).exists():
+                self.add_result(result)
+
+        return import_success, 'Results imported'
+
+    def add_result(self, result):
+        self_result = get_model('rsr', 'Result').objects.create(
+            project=self,
+            title=result.title,
+            type=result.type,
+            aggregation_status=result.aggregation_status,
+            description=result.description,
+            parent_result=result
+        )
+
+        for indicator in result.indicators.all():
+            self.add_indicator(self_result, indicator)
+
+    def add_indicator(self, result, indicator):
+        self_indicator = get_model('rsr', 'Indicator').objects.create(
+            result=result,
+            title=indicator.title,
+            measure=indicator.measure,
+            ascending=indicator.ascending,
+            description=indicator.description,
+            baseline_year=indicator.baseline_year,
+            baseline_value=indicator.baseline_value,
+            baseline_comment=indicator.baseline_comment
+        )
+
+        for period in indicator.periods.all():
+            self.add_period(self_indicator, period)
+
+    def add_period(self, indicator, period):
+        get_model('rsr', 'IndicatorPeriod').objects.create(
+            indicator=indicator,
+            period_start=period.period_start,
+            period_end=period.period_end,
+            target_value=period.target_value,
+            target_comment=period.target_comment,
+            actual_comment=period.actual_comment
+        )
+
     def has_results(self):
         for result in self.results.all():
             if result.title or result.type or result.aggregation_status or result.description:
@@ -982,22 +1103,6 @@ class Project(TimestampsMixin, models.Model):
                 return True
         return False
 
-    def check_mandatory_fields(self, version='2.01'):
-        return check_export_fields(self, version)
-
-    def keyword_logos(self):
-        """Return the keywords of the project which have a logo."""
-        return self.keywords.exclude(logo='')
-
-    class Meta:
-        app_label = 'rsr'
-        verbose_name = _(u'project')
-        verbose_name_plural = _(u'projects')
-        ordering = ['-id', ]
-        permissions = (
-            ('post_updates', u'Can post updates'),
-        )
-
 
 @receiver(post_save, sender=ProjectUpdate)
 def update_denormalized_project(sender, **kwargs):
@@ -1005,4 +1110,4 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
-    project.save()
+    project.save(last_updated=True)

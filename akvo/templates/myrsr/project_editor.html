@@ -139,7 +139,7 @@
                                 <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control priority2" name="iatiId" id="iatiId" maxlength="100" value="{{project.iati_activity_id}}" saved-value="{{project.iati_activity_id}}" />
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiId" maxlength="100" value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" saved-value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" />
                                 <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
@@ -588,7 +588,7 @@
                             <div class="row form-group">
                                 <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep4"></div>
                                 <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                             </div>
                             </form>
@@ -618,6 +618,26 @@
                             </div>
                             <form role="form" id="admin-step-5">
                             <h5>{% trans 'Results' %}</h5>
+                            <div class="row {% if not user.is_superuser %}hidden{% endif %}">
+                                <div class="col-xs-6 col-sm-8">
+                                    <div class="form-group control">
+                                        <div class="checkbox">
+                                            <label for="impactProject" class="control-label">
+                                                <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                    {% trans 'RSR Impact project' %}
+                                            </label>
+                                        </div>
+                                        <p class="help-block hidden">
+                                            {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
+                                        </p>
+                                    </div>
+                                </div>
+                                {% if project.parents.count == 1 and project.is_impact_project %}
+                                    <div class="col-xs-6 col-sm-4" style="text-align: right;">
+                                        <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
+                                    </div>
+                                {% endif %}
+                            </div>
                             <div class="result-container" id="result-container">
                                 {% for result in project.results.all %}
                                     {% include "myrsr/project_editor_partials/result_input.html" with key=result.pk %}

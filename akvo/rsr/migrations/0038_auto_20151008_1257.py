@@ -49,7 +49,7 @@ def add_projects_creators(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0036_auto_20151008_1256'),
+        ('rsr', '0037_auto_20151008_1256'),
     ]
 
     operations = [

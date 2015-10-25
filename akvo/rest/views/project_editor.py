@@ -31,7 +31,7 @@ from sorl.thumbnail import get_thumbnail
 SECTION_ONE_FIELDS = (
     ('title', 'projectTitle', 'text'),
     ('subtitle', 'projectSubTitle', 'text'),
-    ('iati_activity_id', 'iatiId', 'text'),
+    ('iati_activity_id', 'iatiId', 'none'),
     ('status', 'projectStatus', 'text'),
     ('date_start_planned', 'eventFromPlanned', 'date'),
     ('date_end_planned', 'eventEndPlanned', 'date'),
@@ -92,6 +92,10 @@ SECTION_FOUR_FIELDS = (
 )
 
 ## Section 5 ##
+
+SECTION_FIVE_FIELDS = (
+    ('is_impact_project', 'impactProject', 'boolean'),
+)
 
 RESULT_FIELDS = (
     ('title', 'result-title-', 'text'),
@@ -486,6 +490,19 @@ def log_addition(obj, user):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor_import_results(request, project_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    user = request.user
+
+    if not user.is_superuser:
+        return HttpResponseForbidden()
+
+    status_code, message = project.import_results()
+
+    return Response({'code': status_code, 'message': message})
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def project_editor_delete_document(request, project_pk=None, document_pk=None):
     project = Project.objects.get(pk=project_pk)
     document = ProjectDocument.objects.get(pk=document_pk)
@@ -855,6 +872,10 @@ def project_editor_step5(request, pk=None):
     rel_objects = []
 
     if data['level'] == '1':
+
+        # Project fields
+        for field in SECTION_FIVE_FIELDS:
+            errors, changes = process_field(project, data, field, errors, changes)
 
         # Related objects
         for key in data.keys():

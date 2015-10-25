@@ -1,0 +1,149 @@
+{% load compressed i18n rsr_utils rsr_tags rules rsr_filters humanize markup_tags %}
+<div class="project-tab summary">
+  <article class="touch-navbar project-container">
+    <div class="container">
+      {% if not project.is_published %}
+        <div id="draft" class="row">{% trans 'This is a draft view of the project. It can only be seen by Administrators and Project editors.' %}</div>
+      {% endif %}
+    </div>
+    <div class="projectTopRow">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8">
+            <div id="carousel"></div>
+          </div>
+          <div class="col-sm-4">
+            <aside class="projectSideInfo">
+              <ul>
+                <li>
+                  <span class="detailedInfo">{% trans 'Project summary' %}</span>
+                  <p>{{project.project_plan_summary}}</p>
+                </li>
+                {% if project.iati_activity_id %}
+                  <li>
+                    <span class="detailedInfo">{% trans 'IATI ID' %}</span>
+                    {{project.iati_activity_id}}
+                  </li>
+                {% endif %}
+                <li>
+                  <span class="detailedInfo">{% trans 'Status' %}</span>
+                  <span class="detailedPoint">{{project.get_status_display}}</span>
+                  <br/>
+                  {% if project.date_start_planned %}
+                    <span class="detailedInfo">{% trans 'Start date (planned)' %}</span>
+                    <span class="detailedPoint">
+                      <i class="fa fa-calendar-o"></i> {{project.date_start_planned|date:"d-M-Y"}}
+                    </span>
+                  {% endif %}
+                  {% if project.date_start_actual %}
+                    <br/>
+                    <span class="detailedInfo">{% trans 'Start date' %}</span>
+                    <span class="detailedPoint">
+                      <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
+                    </span>
+                  {% endif %}
+                  {% if project.date_end_planned %}
+                    <br/>
+                    <span class="detailedInfo">{% trans 'End date (planned)' %}</span>
+                    <span class="detailedPoint">
+                      <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
+                    </span>
+                  {% endif %}
+                  {% if project.date_end_actual %}
+                    <br/>
+                    <span class="detailedInfo">{% trans 'End date' %}</span>
+                    <span class="detailedPoint">
+                      <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
+                    </span>
+                  {% endif %}
+                </li>
+                {% if project.has_relations %}
+                  <li>
+                    <span class="detailedInfo">{% trans 'Hierarchy' %}</span>
+                    {% blocktrans with parents_count=project.parents.count children_count=project.children.count siblings_count=project.siblings.count %}
+                    This project has {{parents_count}} parent projects, {{children_count}} child projects and {{siblings_count}} sibling projects
+                    {% endblocktrans %}
+                    <a href="{% url 'project-hierarchy' project.pk %}">{% trans 'View full hierarchy' %}</a>
+                  </li>
+                {% endif %}
+                {% if project.sectors.all %}
+                  <li><span class="detailedInfo">{% trans "Sectors" %}</span>
+                  {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
+                  </li>
+                {% endif %}
+                {% if project.primary_organisation %}
+                <li class="projectPartners">
+                  <span class="detailedInfo">{% trans "Primary organisation" %}</span>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <a href="{% url 'organisation-main' project.primary_organisation.pk %}" class="pull-left logoImg">
+                      {% img project.primary_organisation 80 60 project.primary_organisation.name %}
+                      </a>
+                      <div class="media-body">
+                        <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
+                        {% more_link project True %}
+                        {% if project.primary_organisation.primary_location.country %}
+                          <div class="projectLocation">
+                            <i class="fa fa-map-marker"></i> {{project.primary_organisation.primary_location.country}}, {{project.primary_organisation.primary_location.country.continent}}
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                {% endif %}
+                <li class="financeBlock">
+                  <span class="detailedInfo">{% trans "financial info" %}</span>
+                  <a href="#finance" class="text-center tab-link"><i class="fa fa-line-chart"></i>{% trans 'See all financial info' %}</a>
+                </li>
+                {% if project.accepts_donations %}
+                  <li class="donateSection text-center topMargin">
+                    <dl class="dl-horizontal">
+                      <dt class="totalBudgetLabel">{% trans 'Total Budget' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
+                      <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed|floatformat|intcomma}}</dd>
+                    </dl>
+                    <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row hidden">
+        <div class="col-sm-3 col-xs-6">
+          <h4 class="detailedInfo">Finance</h4>
+          {% include "partials/project_budget.html" %}
+          <p class="center-text"><a href="#">{% trans 'See all financial info' %}</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="container timelineBlock">
+      <div class="row">
+        <div class="col-sm-12">
+          <div id="timeline"></div>
+        </div>
+      </div>
+    </div>
+    <div class="container textBlock">
+      <div class="row">
+        <div class="col-sm-8">
+          <div id="accordion"></div>
+        </div>
+        {% if updates %}
+          <div class="col-sm-4 udpateComponent">
+            <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
+            {% for update in updates %}
+              <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
+            {% endfor %}
+            <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}">
+              <i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+</div>
