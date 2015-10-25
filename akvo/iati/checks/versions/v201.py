@@ -418,6 +418,8 @@ class V201Checks(object):
             if not budget.currency and not self.project.currency:
                 checks.append((u'error', u'budget (id: %s) has no currency and no default '
                                          u'currency specified' % str(budget.pk)))
+            if not budget.value_date:
+                checks.append((u'error', u'budget (id: %s) has no value date' % str(budget.pk)))
 
         if self.project.budget_items.all() and not checks:
             checks.append((u'success', u'has valid budget items'))
@@ -438,6 +440,9 @@ class V201Checks(object):
             if not pd.value:
                 checks.append((u'error', u'planned disbursement (id: %s) has '
                                          u'no amount' % str(pd.pk)))
+            if not pd.value_date:
+                checks.append((u'error', u'planned disbursement (id: %s) has '
+                                         u'no value date' % str(pd.pk)))
             if not pd.period_start:
                 checks.append((u'error', u'planned disbursement (id: %s) has no start '
                                          u'date' % str(pd.pk)))
@@ -473,8 +478,11 @@ class V201Checks(object):
                 checks.append((u'error', u'transaction (id: %s) has a date in '
                                          u'the future' % str(t.pk)))
 
-            if t.value:
+            if not t.value:
                 checks.append((u'error', u'transaction (id: %s) has no value' % str(t.pk)))
+
+            if not t.value_date:
+                checks.append((u'error', u'transaction (id: %s) has no value date' % str(t.pk)))
 
             if not (t.currency or self.project.currency):
                 checks.append((u'error', u'transaction (id: %s) has no currency and no default '
