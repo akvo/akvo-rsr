@@ -426,6 +426,37 @@ if (firstAccordionChild !== null) {
     }
   }
 
+  function savingPeriod(periodNode, saving) {
+    var saveMessageContainer = periodNode.querySelector('.add-new-update-container');
+    var saveMessageNode;
+    if (saving) {
+      saveMessageNode = document.createElement('div');
+      saveMessageNode.classList.add('save-message');
+      saveMessageNode.innerHTML = 'Saving...';
+      saveMessageContainer.appendChild(saveMessageNode);
+    } else {
+      saveMessageNode = saveMessageContainer.querySelector('.save-message');
+      if (saveMessageNode !== null) {
+        saveMessageNode.parentNode.removeChild(saveMessageNode);
+      }
+    }
+  }
+
+  function savingPeriodError(periodNode, message) {
+    var saveMessageContainer = periodNode.querySelector('.add-new-update-container');
+    var saveMessageNode = saveMessageContainer.querySelector('.save-message');
+    if (saveMessageNode !== null) {
+      saveMessageNode = document.createElement('div');
+      saveMessageNode.classList.add('save-message');
+      saveMessageContainer.appendChild(saveMessageNode);
+    }
+    saveMessageNode.innerHTML = message;
+
+    setInterval(function () {
+      saveMessageNode.parentNode.removeChild(saveMessageNode);
+    }, 10000);
+  }
+
   function addSaveOnClicks() {
     var els = document.querySelectorAll('.save-button');
 
@@ -466,8 +497,7 @@ if (firstAccordionChild !== null) {
           photo = photoNode.files.length > 0 ? photoNode.files[0] : undefined;
         }
         periodId = parseInt(this.closest('tbody').getAttribute('period-id'));
-        updateId === 'add' ? addNewUpdate(description, periodId, value, photo) : editUpdate(updateId, periodId, description, value, photo);
-        this.closest('td').querySelector('.edit-button').click();
+        updateId === 'add' ? addNewUpdate(description, periodId, value, photo) : editUpdate(updateId, periodId, description, value, updateContainer.getAttribute('current-change'), photo);
       });
     }
   }
@@ -494,24 +524,28 @@ if (firstAccordionChild !== null) {
             request.setRequestHeader("X-CSRFToken", csrftoken);
             request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
+            // TODO: Create recalculation function so that closing isn't necessary
+            savingPeriod(periodNode, true);
+            periodNode.querySelector('.expand-indicator-period').click();
+
             request.onload = function() {
               if (request.status === 204) {
                 // Object successfully deleted
                 removeUpdatefromStore(periodId, parseInt(updateId));
                 updateActualValue(periodId, updateChange * -1);
 
-                // TODO: Create recalculation function so that closing isn't necessary
-                periodNode.querySelector('.expand-indicator-period').click();
-
+                savingPeriod(periodNode, false);
                 return true;
               } else {
                 // We reached our target server, but it returned an error
+                savingPeriodError(periodNode, 'Could not delete update.');
                 return false;
               }
             };
 
             request.onerror = function() {
               // There was a connection error of some sort
+              savingPeriodError(periodNode, 'Connection error.');
               return false;
             };
 
@@ -678,10 +712,9 @@ if (firstAccordionChild !== null) {
   }
 
   /* Upload photo */
-  function uploadPhoto(photo, updateNode) {
-    var apiUrl, fileRequest, formData, updateId;
+  function uploadPhoto(photo, updateId, periodNode) {
+    var apiUrl, fileRequest, formData;
 
-    updateId = updateNode.getAttribute('update-id');
     apiUrl = '/rest/v1/project_update/' + updateId + '/upload_photo/?format=json';
 
       formData = new FormData();
@@ -694,15 +727,18 @@ if (firstAccordionChild !== null) {
       fileRequest.onload = function() {
         if (fileRequest.status >= 200 && fileRequest.status < 400) {
           addAdditionalUpdateData(updateId);
+          savingPeriod(periodNode, false);
           return false;
         } else {
           // We reached our target server, but it returned an error
+          savingPeriodError(periodNode, 'Uploading photo failed.');
           return false;
         }
       };
 
       fileRequest.onerror = function() {
         // There was a connection error of some sort
+        savingPeriodError(periodNode, 'Uploading photo failed: connection error.');
         return false;
       };
 
@@ -711,7 +747,14 @@ if (firstAccordionChild !== null) {
 
   /* Add new update */
   function addNewUpdate(text, periodId, value, photo) {
-    var api_url, request, requestData;
+    var api_url, periodNode, request, requestData;
+
+    removeUpdatefromStore(periodId, 'add');
+    periodNode = findPeriod(periodId);
+
+    // TODO: Create recalculation function per period so that closing it isn't necessary
+    savingPeriod(periodNode, true);
+    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/?format=json';
@@ -727,31 +770,28 @@ if (firstAccordionChild !== null) {
             response = JSON.parse(request.response);
             updateId = response.id;
 
-            removeUpdatefromStore(periodId, 'add');
             updateActualValue(periodId, value);
-            updateUpdateValues(periodId, 'add', updateId, value);
-
             addAdditionalUpdateData(updateId);
+            // updateUpdateValues(periodId, 'add', updateId, value);
 
             // Upload photo
             if (photo !== undefined) {
-              updateNode = findUpdate(periodId, updateId);
-              uploadPhoto(photo, updateNode);
+              uploadPhoto(photo, updateId, periodNode);
+            } else {
+              savingPeriod(periodNode, false);
             }
-
-            // TODO: Create recalculation function so that closing isn't necessary
-            var periodNode = findPeriod(periodId);
-            periodNode.querySelector('.expand-indicator-period').click();
 
             return true;
         } else {
             // We reached our target server, but it returned an error
+            savingPeriodError(periodNode, 'Adding update failed.');
             return false;
         }
     };
 
     request.onerror = function() {
         // There was a connection error of some sort
+        savingPeriodError(periodNode, 'Connection error.');
         return false;
     };
 
@@ -768,8 +808,14 @@ if (firstAccordionChild !== null) {
   }
 
   /* Edit existing update */
-  function editUpdate(updateId, periodId, text, value, photo) {
-    var api_url, request;
+  function editUpdate(updateId, periodId, text, value, oldValue, photo) {
+    var api_url, periodNode, request;
+
+    periodNode = findPeriod(periodId);
+
+    // TODO: Create recalculation function per period so that closing it isn't necessary
+    savingPeriod(periodNode, true);
+    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
@@ -781,34 +827,28 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Object successfully saved
-            var oldValue, updateNode;
-
-            updateNode = findUpdate(periodId, updateId);
-            oldValue = parseInt(updateNode.getAttribute('current-change'));
-
             addAdditionalUpdateData(updateId);
             updateActualValue(periodId, value - oldValue);
-            updateUpdateValues(periodId, updateId, updateId, value);
+            // updateUpdateValues(periodId, updateId, updateId, value);
 
             // Upload photo
             if (photo !== undefined) {
-              uploadPhoto(photo, updateNode);
+              uploadPhoto(photo, updateId, periodNode);
+            } else {
+              savingPeriod(periodNode, false);
             }
-
-            // Close the updates view, because it could be one of the first updates and all values need to be recalculated
-            // TODO: Create recalculation function so that closing isn't necessary
-            var periodNode = findPeriod(periodId);
-            periodNode.querySelector('.expand-indicator-period').click();
 
             return true;
         } else {
             // We reached our target server, but it returned an error
+            savingPeriodError(periodNode, 'Editing update failed.');
             return false;
         }
     };
 
     request.onerror = function() {
         // There was a connection error of some sort
+        savingPeriodError(periodNode, 'Connection error.');
         return false;
     };
 
