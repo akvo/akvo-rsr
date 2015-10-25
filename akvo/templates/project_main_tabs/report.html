@@ -488,24 +488,24 @@
               {% endif %}
 
               <h4>{% trans "Reporting Organisation" %}</h4>
-              {% with reporting_org=project.reporting_org %}
+              {% with reporting_partner=project.reporting_partner %}
               <table class="table table-striped table-bordered table-responsive reportingOrganisation">
                   <tbody>
                       <tr>
                           <th scope="row">{% trans "Name" %}</th>
-                          <td>{{reporting_org.name}}</td>
+                          <td>{{reporting_partner.organisation.name}}</td>
                       </tr>
                       <tr>
                           <th scope="row">{% trans "IATI ID" %}</th>
-                          <td>{{reporting_org.iati_org_id|default_if_none:""}}</td>
+                          <td>{{reporting_partner.organisation.iati_org_id|default_if_none:""}}</td>
                       </tr>
                       <tr>
                           <th scope="row">{% trans "Type" %}</th>
-                          <td>{{reporting_org.iati_org_type}}</td>
+                          <td>{{reporting_partner.organisation.iati_org_type}}</td>
                       </tr>
                       <tr>
                           <th scope="row">{% trans "Secondary Reporter" %}?</th>
-                          <td>{{project.sync_owner_secondary_reporter|yesno:"Yes,No"}}</td>
+                          <td>{{reporting_partner.is_secondary_reporter|yesno:"Yes,No"}}</td>
                       </tr>
                   </tbody>
               </table>

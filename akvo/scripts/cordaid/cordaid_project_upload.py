@@ -4,19 +4,19 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
-import getopt
-import sys
 import collections
+import getopt
 import itertools
+import os
+import sys
 
 from lxml import etree
-
+from os.path import join, pardir
 from tastypie.http import HttpCreated, HttpNoContent
 
-from django.http import HttpResponse
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+sys.path.append(project_root)
 
-import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.scripts.cordaid import (
@@ -281,7 +281,7 @@ def upload_activities(argv):
     if user:
         with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
             root = etree.fromstring(f.read())
-            document_akvo_ns = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
+            document_akvo_ns = '{akvo_ns}'.format(akvo_ns=root.nsmap['akvo'])
             assert document_akvo_ns == AKVO_NS, "Akvo name space is incorrect in the IATI XML"
             activities = root.findall('iati-activity')
             activity_count = len(activities)
@@ -293,7 +293,7 @@ def upload_activities(argv):
                     if internal_id:
                         ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
                     elif iati_id:
-                        ok, project = get_project_count(user, **dict(partnerships__iati_activity_id=iati_id))
+                        ok, project = get_project_count(user, **dict(iati_activity_id=iati_id))
                     if not ok:
                         continue #error msg already output
                     project_count = project.response.json()['meta']['total_count']

@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import collections
 import django_filters
 import json
 from datetime import datetime
@@ -40,7 +41,6 @@ def _all_projects():
     """Return all active projects."""
     return Project.objects.published().select_related(
         'publishingstatus__status',
-        'sync_owner',
         'primary_location',
         'primary_location__country'
         'locations',
@@ -262,7 +262,7 @@ def _get_partners_with_types(project):
     partners_dict = {}
     for partner in project.all_partners():
         partners_dict[partner] = partner.has_partner_types(project)
-    return partners_dict
+    return collections.OrderedDict(sorted(partners_dict.items()))
 
 
 def _get_indicator_updates_data(updates, child_projects, child=True):
@@ -328,10 +328,6 @@ def main(request, project_id):
     accordion_data = json.dumps(_get_accordion_data(project))
     partner_types = _get_partners_with_types(project)
 
-    # Reporting org
-    rep_org = project.reporting_org()
-    rep_org_info = (rep_org, rep_org.has_partner_types(project)) if rep_org else None
-
     # Updates pagination
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, narrative_updates, 10)
@@ -348,7 +344,6 @@ def main(request, project_id):
         'pledged': project.get_pledged(),
         'project': project,
         'project_admin': project_admin,
-        'reporting_org': rep_org_info,
         'updates': narrative_updates,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }

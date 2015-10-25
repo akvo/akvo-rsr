@@ -73,11 +73,6 @@ PROJECT_CONTACT_FIELDS = (
 
 ## Section 3 ##
 
-SECTION_THREE_FIELDS = (
-    ('sync_owner', 'value-reportingOrganisation', 'related-object'),
-    ('sync_owner_secondary_reporter', 'secondaryReporter', 'boolean'),
-)
-
 PARTNER_FIELDS = (
     ('organisation', 'value-partner-', 'related-object'),
     ('iati_organisation_role', 'partner-role-', 'integer'),
@@ -760,13 +755,6 @@ def project_editor_step3(request, pk=None):
     errors = []
     changes = []
     rel_objects = []
-
-    # Project fields
-    for field in SECTION_THREE_FIELDS:
-        if field[0] == 'sync_owner':
-            errors, changes = process_field(project, data, field, errors, changes, '', Organisation)
-        else:
-            errors, changes = process_field(project, data, field, errors, changes)
 
     # Related objects
     for key in data.keys():

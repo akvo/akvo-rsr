@@ -354,9 +354,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return self.employers.all().exclude(is_approved=False)
 
-    def has_reportable_org(self):
+    def can_create_project(self):
         """
-        Check to see if the user has at least one reportable organisation, or is a superuser.
+        Check to see if the user can create a project, or is a superuser.
 
         :return: Boolean to indicate whether the user has a reportable organisation
         """
@@ -364,7 +364,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
 
         for employment in self.approved_employments():
-            if employment.organisation.can_become_reporting:
+            if employment.organisation.can_create_projects:
                 return True
 
         return False

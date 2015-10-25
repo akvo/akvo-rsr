@@ -35,6 +35,8 @@ class ProjectSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.Field(source='publishingstatus.status')
     current_image = Base64ImageField(required=False, allow_empty_file=True)
+    sync_owner = serializers.Field(source='reporting_org.id')
+    sync_owner_secondary_reporter = serializers.Field(source='reporting_partner.is_secondary_reporter')
 
     class Meta:
         model = Project

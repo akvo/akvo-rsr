@@ -91,9 +91,8 @@ class ProjectSaver():
                 )
             )
 
-    def _sync_owner(self):
-        rvo = Organisation.objects.get(id=RVO_ORG_ID)
-        self.project.sync_owner = rvo
+    def _reporting_org(self):
+        self.project.set_reporting_org(Organisation.objects.get(id=RVO_ORG_ID))
 
     def _publish(self):
         self.project.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
@@ -111,7 +110,7 @@ class ProjectSaver():
         self.project.keywords.add(keyword)
 
     def process(self):
-        self._sync_owner()
+        self._reporting_org()
         self._current_image()
         self._publish()
         self._keywords()

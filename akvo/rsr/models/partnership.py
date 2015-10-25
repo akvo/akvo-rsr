@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,11 +38,12 @@ class Partnership(models.Model):
     IATI_EXTENDING_PARTNER = 3
     IATI_IMPLEMENTING_PARTNER = 4
     AKVO_SPONSOR_PARTNER = 100   # not part of the IATI OrganisationRole codelist!
+    IATI_REPORTING_ORGANISATION = 101
 
     # make sure the AKVO_SPONSOR_PARTNER is last in the list
     IATI_ROLE_LIST = [
         IATI_FUNDING_PARTNER, IATI_ACCOUNTABLE_PARTNER, IATI_EXTENDING_PARTNER,
-        IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER,
+        IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER, IATI_REPORTING_ORGANISATION
     ]
     IATI_ROLE_LABELS = [
         _(u'Funding partner'),
@@ -49,6 +51,7 @@ class Partnership(models.Model):
         _(u'Extending partner'),
         _(u'Implementing partner'),
         _(u'Sponsor partner'),
+        _(u'Reporting organisation'),
     ]
     IATI_ROLES = zip(IATI_ROLE_LIST, IATI_ROLE_LABELS)
 
@@ -67,6 +70,8 @@ class Partnership(models.Model):
         IATI_EXTENDING_PARTNER: EXTENDING_PARTNER,
         IATI_IMPLEMENTING_PARTNER: FIELD_PARTNER,
         AKVO_SPONSOR_PARTNER: SPONSOR_PARTNER,
+        # TODO: not backwards compatible
+        IATI_REPORTING_ORGANISATION: u''
     }
 
     ALLIANCE_PARTNER = u'alliance'
@@ -90,6 +95,15 @@ class Partnership(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
         u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
+    # is_secondary_reporter is only used when the iati_organisation_role is set to
+    # IATI_REPORTING_ORGANISATION, thus the use of NullBooleanField
+    is_secondary_reporter = models.NullBooleanField(
+        _(u'secondary reporter'),
+        help_text=_(
+            u'This indicates whether the reporting organisation is a secondary publisher: '
+            u'publishing data for which it is not directly responsible.'
+        )
+    )
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
@@ -151,3 +165,15 @@ class Partnership(models.Model):
                 unicode(dict(self.IATI_ROLES)[self.iati_organisation_role])
             )
         return organisation_unicode
+
+    def clean(self):
+        # Don't allow multiple reporting organisations
+        reporting_orgs = self.project.partnerships.filter(
+            iati_organisation_role=self.IATI_REPORTING_ORGANISATION
+        )
+
+        if reporting_orgs:
+            raise ValidationError(
+                {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
+                                                     u'organisation')}
+            )

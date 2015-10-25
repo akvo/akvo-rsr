@@ -54,9 +54,9 @@ class V201Checks(object):
         """
         checks = []
 
-        if self.project.sync_owner:
+        if self.project.reporting_org:
             checks.append((u'success', u'has reporting organisation'))
-            if self.project.sync_owner.iati_org_id:
+            if self.project.reporting_org.iati_org_id:
                 checks.append((u'success', u'reporting organisation has IATI identifier'))
             else:
                 self.all_checks_passed = False

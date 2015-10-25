@@ -22,9 +22,8 @@ register = template.Library()
 def more_link(context, project, project_page=False):
     """Generate the more links."""
     partners = {}
-    for partner in project.all_partners():
-        if partner != project.reporting_org():
-            partners[partner] = partner.has_partner_types(project)
+    for partner in project.all_partners().exclude(pk=project.primary_organisation.pk):
+        partners[partner] = partner.has_partner_types(project)
     return {
         'project': project,
         'partners': partners,

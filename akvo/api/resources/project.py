@@ -86,14 +86,6 @@ class IATIProjectResource(ModelResource):
         'recipient_regions', full=True, related_name='project'
     )
 
-    # This field makes the Cordaid import dismally slow, and isn't used for anything else,
-    # so rather than trying to fix it by re-writing the OrganisationResource, we set the sync_owner
-    # to Cordaid in the post_import.py script
-    # This commented code remains as a reminder NOT to add the field as currently defined ;-)
-    # sync_owner = fields.ToOneField(
-    #     'akvo.api.resources.OrganisationResource',
-    #     'sync_owner', full=True, related_name='project'
-    # )
 
     class Meta:
         max_limit = 10

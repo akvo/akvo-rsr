@@ -86,55 +86,38 @@
 
   <section class="main-list projects">
     <ul class="container">
-      {% for p in page %}
+      {% for project in page %}
         <li class="row">
           <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
-            <a href="{% url 'project-main' p.id %}">
-              {% img p 200 200 p.title %}
+            <a href="{% url 'project-main' project.id %}">
+              {% img project 200 200 project.title %}
             </a>
           </div>
           <div class="col-lg-4 col-sm-3 col-xs-7">
-            <h1><a href="{% url 'project-main' p.id %}"><i class="fa fa-folder-o"></i> {{p.title}}</a></h1>
-            <p class="projectSubT">{{p.subtitle}}</p>
-            {% if p.primary_location.country %}
-              <p class="projectLocation"><i class="fa fa-map-marker"></i> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+            <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
+            <p class="projectSubT">{{project.subtitle}}</p>
+            {% if project.primary_location.country %}
+              <p class="projectLocation"><i class="fa fa-map-marker"></i> {{project.primary_location.country}}, {{project.primary_location.country.continent}}</p>
             {% endif %}
-            <a href="{% url 'organisation-main' p.reporting_org.pk %}">{{p.reporting_org}}</a>
-            {% more_link p %}
-
-            {% comment %}
-            {% if p.reporting_org %}
-              <p><a href="{% url 'organisation-main' p.reporting_org.id %}"><i class="fa fa-users"></i> {{p.reporting_org}}</a>
-              {% more_link p %}
-
-              {% if p.partners.distinct.count > 1 %}
-                <a href="{% url 'project-partners' p.id %}" class="small moreLink  " data-toggle="tooltip"
-                  title="{% for partner in p.partners.all.distinct %}
-                    {% ifnotequal partner.id p.reporting_org.id %}
-                      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
-                    {% endifnotequal %}
-                  {% endfor %}"
-                data-placement="right">+{{p.partners.distinct.count|add:"-1"}} more</a>
-              {% endif %}
-              </p>
+            {% if project.primary_organisation %}
+              <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
             {% endif %}
-            {% endcomment %}
-
+            {% more_link project %}
             <div class="visible-xs-block hidden-sm">
               <p>
-              {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
+              {% if project.sector_categories %}
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in project.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
-              <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
-              {% if p.last_update %}
-              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' p.pk p.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{p.last_update.created_at|date:"d-M-Y"}}</a><br>
+              <span class="detailedInfo">{% trans "Status" %}</span> {{project.get_status_display}}<br>
+              {% if project.last_update %}
+              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat:0|intcomma}}
-              {% if p.accepts_donations %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
               </p>
@@ -142,40 +125,40 @@
           </div>
           <div class="hidden-xs visible-sm">
             <p>
-              {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
+              {% if project.sector_categories %}
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in project.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
-              <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
-              {% if p.last_update %}
-              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' p.pk p.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{p.last_update.created_at|date:"d-M-Y"}}</a><br>
+              <span class="detailedInfo">{% trans "Status" %}</span> {{project.get_status_display}}<br>
+              {% if project.last_update %}
+              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat:0|intcomma}}
-              {% if p.accepts_donations %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
             </p>
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
-            {% if p.sector_categories %}
+            {% if project.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}</p>
+              <p>{% for sector in project.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}</p>
             {% endif %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
-            <p class="complete">{{p.get_status_display}}</p>
+            <p class="complete">{{project.get_status_display}}</p>
             <h4 class="detailedInfo">{% trans "Latest update" %}</h4>
-            {% if p.last_update %}
-            <p><a href="{% url 'update-main' p.pk p.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{p.last_update.created_at|date:"d-M-Y"}}</a></p>
+            {% if project.last_update %}
+            <p><a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a></p>
             {% else %}
             <p>{% trans 'No updates' %}</p>
             {% endif %}
           </div>
           <div class="col-md-3 hidden-xs hidden-sm">
             <h4 class="detailedInfo">{% trans "Finance" %}</h4>
-            {% include "partials/project_budget.html" with project=p %}
+            {% include "partials/project_budget.html" with project=project %}
           </div>
         </li>
       {% endfor %}

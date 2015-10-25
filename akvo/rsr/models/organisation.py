@@ -150,6 +150,11 @@ class Organisation(TimestampsMixin, models.Model):
     primary_location = models.ForeignKey(
         'OrganisationLocation', null=True, on_delete=models.SET_NULL
     )
+    can_create_projects = models.BooleanField(
+        default=False,
+        help_text=_(u'Partner editors of this organisation can create new projects, and publish '
+                    u'projects it is a partner of.')
+    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')
@@ -163,6 +168,7 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    # TODO: Should be removed
     can_become_reporting = models.BooleanField(
         _(u'Reportable'),
         help_text=_(u'Organisation is allowed to become a reporting organisation. '
@@ -270,8 +276,7 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return (Project.objects.filter(partnerships__organisation__in=self) |
-                    Project.objects.filter(sync_owner__in=self)).distinct()
+            return Project.objects.filter(partnerships__organisation__in=self).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -323,9 +328,15 @@ class Organisation(TimestampsMixin, models.Model):
         return self.projects.published().distinct()
 
     def all_projects(self):
-        """returns a queryset with all projects that has self as any kind of partner or reporting
-        organisation."""
-        return (self.projects.all() | self.reporting_projects.all()).distinct()
+        """returns a queryset with all projects that has self as any kind of partner."""
+        return self.projects.all()
+
+    def reporting_on_projects(self):
+        """returns a queryset with all projects that has self as reporting organisation."""
+        return self.projects.filter(
+            partnerships__organisation=self,
+            partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+        )
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
@@ -342,11 +353,13 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
-        partner_types = []
-        for ps in Partnership.objects.filter(project=project, organisation=self):
-            if ps.iati_organisation_role:
-                partner_types.append(ps.iati_organisation_role_label())
-        return partner_types
+        return [
+            dict(Partnership.IATI_ROLES)[role] for role in Partnership.objects.filter(
+                project=project,
+                organisation=self,
+                iati_organisation_role__isnull=False
+            ).values_list('iati_organisation_role', flat=True)
+        ]
 
     def content_owned_organisations(self):
         """
