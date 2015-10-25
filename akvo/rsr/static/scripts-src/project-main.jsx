@@ -230,7 +230,10 @@ React.renderComponent(
     document.getElementById('carousel'));
 
 // Open the first accordion item on load
-document.querySelector('#accordion div.panel-group div:first-child div a').click();
+var firstAccordionChild = document.querySelector('#accordion div.panel-group div:first-child div a');
+if (firstAccordionChild !== null) {
+    firstAccordionChild.click();
+}
 
 
 ///////// RESULTS FRAMEWORK /////////
