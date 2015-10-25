@@ -1839,6 +1839,60 @@ function setRemovePartial(node) {
     };
 }
 
+function setImportResults() {
+    try {
+        var importButton;
+
+        importButton = document.getElementById('import-results');
+        importButton.onclick = getImportResults(importButton);
+
+    } catch (error) {
+        // No import results button
+        return false;
+    }
+}
+
+function getImportResults(importButton) {
+    return function(e) {
+        var api_url, parentNode, request;
+
+        e.preventDefault();
+
+        importButton.setAttribute('disabled', '');
+        parentNode = importButton.parentNode;
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/import_results/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            var response, divNode;
+            response = JSON.parse(request.responseText);
+            divNode = document.createElement('div');
+
+            if (response.code === 1) {
+                parentNode.removeChild(importButton);
+
+                divNode.classList.add('save-success');
+                divNode.innerHTML = 'Import successful. Please refresh the page to see (and edit) the imported results.';
+                parentNode.appendChild(divNode);
+            } else {
+                importButton.removeAttribute('disabled');
+
+                divNode.classList.add('help-block-error');
+                divNode.innerHTML = response.message;
+                parentNode.appendChild(divNode);
+            }
+        };
+
+        request.send();
+    }
+}
+
 function setPublishOnClick() {
     try {
         var publishButton;
@@ -1954,7 +2008,7 @@ function setDatepickers() {
     datepickerContainers = document.getElementsByClassName('datepicker-container');
 
     for (var i=0; i < datepickerContainers.length; i++) {
-        var datepickerId, DatePickerComponent, datepickerContainer, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
+        var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
 
         datepickerContainer = datepickerContainers[i];
 
@@ -1964,6 +2018,8 @@ function setDatepickers() {
 
             // Set initial value of datepicker
             inputValue = datepickerContainer.getAttribute('data-child');
+            disableInput = datepickerContainer.getAttribute('data-disabled');
+
             if (inputValue !== "") {
                 initialDate = moment(inputValue, "DD-MM-YYYY");
             } else {
@@ -1975,7 +2031,8 @@ function setDatepickers() {
 
                 getInitialState: function () {
                     return {
-                        initialDate: initialDate
+                        initialDate: initialDate,
+                        disableInput: disableInput
                     };
                 },
 
@@ -1986,17 +2043,29 @@ function setDatepickers() {
                 },
 
                 render: function () {
-                    return <div>
-                        <DatePicker
-                        locale = 'en'
-                        placeholderText = ''
-                        dateFormat = 'DD/MM/YYYY'
-                        selected = {this.state.initialDate}
-                        onChange = {this.handleDateChange}
-                        />
-                    </div>;
+                    if (disableInput !== 'true') {
+                        return <div>
+                            <DatePicker
+                            locale = 'en'
+                            placeholderText = ''
+                            dateFormat = 'DD/MM/YYYY'
+                            selected = {this.state.initialDate}
+                            onChange = {this.handleDateChange}
+                            />
+                        </div>;
+                    } else {
+                        return <div>
+                            <DatePicker
+                            locale = 'en'
+                            placeholderText = ''
+                            dateFormat = 'DD/MM/YYYY'
+                            selected = {this.state.initialDate}
+                            />
+                        </div>;
+                    }
                 }
             });
+
 
             React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
 
@@ -2005,6 +2074,9 @@ function setDatepickers() {
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
             inputNode.setAttribute("saved-value", inputValue);
+            if (disableInput === 'true') {
+                inputNode.setAttribute("disabled", '');
+            }
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -2490,6 +2562,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setPartialOnClicks();
     setCurrencyOnChange();
     setDeletePhoto();
+    setImportResults();
 
     setValidationListeners();
     updateAllHelpIcons();

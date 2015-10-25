@@ -10,6 +10,10 @@ from akvo.rsr.models import ProjectUpdate
 from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 
 class ProjectUpdateViewSet(BaseRSRViewSet):
 
@@ -21,8 +25,10 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     serializer_class = ProjectUpdateSerializer
     filter_fields = {
         'project': ['exact', ],
+        'indicator_period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
+        'period_update': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # These filters only accept a date, not a datetime
         # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
@@ -91,8 +97,10 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
     serializer_class = ProjectUpdateExtraSerializer
     filter_fields = {
         'project': ['exact', ],
+        'indicator_period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
+        'period_update': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # These filters only accept a date, not a datetime
         # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
@@ -125,3 +133,20 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         if user__organisations:
             queryset = queryset.filter(user__organisations=user__organisations)
         return queryset
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def upload_indicator_update_photo(request, pk=None):
+    update = ProjectUpdate.objects.get(pk=pk)
+    user = request.user
+
+    # TODO: permissions
+
+    files = request.FILES
+
+    if 'photo' in files.keys():
+        update.photo = files['photo']
+        update.save(update_fields=['photo'])
+
+    return Response(ProjectUpdateExtraSerializer(update).data)

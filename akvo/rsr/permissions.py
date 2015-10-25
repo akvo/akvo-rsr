@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from .models import Employment, Organisation, PartnerSite, Project, PublishingStatus
+from .models import Employment, Organisation, PartnerSite, Project, ProjectUpdate, PublishingStatus
 
 
 @rules.predicate
@@ -39,6 +39,8 @@ def is_org_admin(user, obj):
             elif isinstance(obj, PublishingStatus) and obj in employment.organisation.all_projects().publishingstatuses():
                 return True
             elif isinstance(obj, PartnerSite) and obj in employment.organisation.partnersites():
+                return True
+            elif isinstance(obj, ProjectUpdate) and obj.user == user:
                 return True
             else:
                 try:
@@ -102,6 +104,8 @@ def is_org_user_manager(user, obj):
             elif type(obj) == Organisation and \
                     obj in employment.organisation.content_owned_organisations():
                 return True
+            elif isinstance(obj, ProjectUpdate) and obj.user == user:
+                return True
     return False
 
 @rules.predicate
@@ -116,6 +120,8 @@ def is_org_project_editor(user, obj):
                 if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
+                return True
+            elif isinstance(obj, ProjectUpdate) and obj.user == user:
                 return True
             else:
                 try:
@@ -164,6 +170,8 @@ def is_org_user(user, obj):
             if not obj:
                 return True
             if isinstance(obj, Project) and obj in employment.organisation.all_projects():
+                return True
+            if isinstance(obj, ProjectUpdate) and obj.user == user:
                 return True
     return False
 

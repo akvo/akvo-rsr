@@ -42,14 +42,6 @@
                               'width=626,height=436');
                             return false;"><i class="fa fa-twitter-square fa-lg"></i> {% trans 'Share' %}</a>
                             {% endif %}
-                            <div class="col-xs-12 reportPdf">
-                                {% url 'project-report' project.pk as report_url %}
-                                {% if not request.get_full_path == report_url %}
-                                <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-file-text-o"></i> {% trans 'Show full data report' %}</a>
-                                {% else %}
-                                <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> {% trans 'Print this page' %}</a>
-                                {% endif %}
-                            </div>
                         </div>
                     </nav>
                 </div>

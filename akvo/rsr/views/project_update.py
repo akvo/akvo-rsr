@@ -25,8 +25,11 @@ from .organisation import _page_organisations
 
 
 def _all_updates():
-    """Return all project updates."""
-    return ProjectUpdate.objects.select_related().order_by('-id')
+    """
+    Return all project updates.
+    """
+    return ProjectUpdate.objects.select_related().exclude(indicator_period__isnull=False).\
+        order_by('-id')
 
 
 def _all_projects():
@@ -92,8 +95,10 @@ def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
     update = get_object_or_404(
-        ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id)
-    other_updates = project.updates_desc().exclude(pk=update_id)[:5]
+        ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
+    )
+    other_updates = project.updates_desc().exclude(indicator_period__isnull=False).\
+                        exclude(pk=update_id)[:5]
 
     context = {
         'update': update,

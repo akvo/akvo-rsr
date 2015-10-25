@@ -98,6 +98,10 @@ SECTION_FOUR_FIELDS = (
 
 ## Section 5 ##
 
+SECTION_FIVE_FIELDS = (
+    ('is_impact_project', 'impactProject', 'boolean'),
+)
+
 RESULT_FIELDS = (
     ('title', 'result-title-', 'text'),
     ('type', 'result-type-', 'text'),
@@ -491,6 +495,19 @@ def log_addition(obj, user):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor_import_results(request, project_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    user = request.user
+
+    if not user.is_superuser:
+        return HttpResponseForbidden()
+
+    status_code, message = project.import_results()
+
+    return Response({'code': status_code, 'message': message})
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def project_editor_delete_document(request, project_pk=None, document_pk=None):
     project = Project.objects.get(pk=project_pk)
     document = ProjectDocument.objects.get(pk=document_pk)
@@ -867,6 +884,10 @@ def project_editor_step5(request, pk=None):
     rel_objects = []
 
     if data['level'] == '1':
+
+        # Project fields
+        for field in SECTION_FIVE_FIELDS:
+            errors, changes = process_field(project, data, field, errors, changes)
 
         # Related objects
         for key in data.keys():
