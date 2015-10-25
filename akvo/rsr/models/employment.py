@@ -8,6 +8,7 @@ from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.forms.models import model_to_dict
@@ -84,14 +85,15 @@ class Employment(models.Model):
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
-        # Set groups in right order
 
-        all_groups = [
-            Group.objects.get(name='Users'),
-            Group.objects.get(name='User Managers'),
-            Group.objects.get(name='Project Editors'),
-            Group.objects.get(name='Admins')
-        ]
+        # Set groups in right order
+        all_groups = []
+        auth_group_names = ['Users', 'User Managers', 'Project Editors', 'Admins']
+        for auth_group_name in auth_group_names:
+            try:
+                all_groups.append(Group.objects.get(name=auth_group_name))
+            except ObjectDoesNotExist:
+                continue
 
         user_group = model_to_dict(self.group, fields=['id', 'name']) if self.group else None
         other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
