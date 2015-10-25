@@ -304,8 +304,17 @@ def main(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+    if not project.is_published() and not request.user.is_anonymous() and \
+            not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
+
+    # Permissions: project admin
+    if not request.user.is_anonymous() and (
+            request.user.is_superuser or request.user.is_admin or
+            True in [request.user.admin_of(partner) for partner in project.partners.all()]):
+        project_admin = True
+    else:
+        project_admin = False
 
     # Updates
     updates = project.project_updates.select_related('user').order_by('-created_at')
@@ -338,9 +347,7 @@ def main(request, project_id):
         'partners': partner_types,
         'pledged': project.get_pledged(),
         'project': project,
-        'project_admin': request.user.is_superuser or request.user.is_admin or True in [
-            request.user.admin_of(partner) for partner in project.partners.all()
-        ],
+        'project_admin': project_admin,
         'reporting_org': rep_org_info,
         'updates': narrative_updates,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,

@@ -2366,7 +2366,6 @@ function addOrgModal() {
             }
             result = false;
         } else {
-            // TODO: Add good text for lat long error
             if (latitudeNode.value.indexOf(',') > 0) {
                 latitudeHelp.textContent = defaultValues.comma_value;
                 elAddClass(latitudeHelp, 'help-block-error');
