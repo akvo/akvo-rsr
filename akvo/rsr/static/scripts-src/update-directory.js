@@ -7,9 +7,9 @@
 $(document).ready(function(){
 
   // Submit filter form on select change
-  $('#filter select').change(function() {
-    $('#filterForm').submit();
-  });
+  // $('#filter select').change(function() {
+  //   $('#filterForm').submit();
+  // });
 
   var updates_text = JSON.parse(document.getElementById("updates-text").innerHTML).updates_text;
 
@@ -44,3 +44,14 @@ $(document).ready(function(){
     });
 
 });
+
+(function() {
+
+  var applyFilterButton;
+
+  applyFilterButton= document.getElementById('apply-filter');
+  applyFilterButton.onclick = function() {
+      document.getElementById('filterForm').submit();
+  };
+
+}());

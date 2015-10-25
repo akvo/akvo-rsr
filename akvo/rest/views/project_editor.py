@@ -280,6 +280,7 @@ KEYWORD_FIELDS = (
 ## Custom fields ##
 
 CUSTOM_FIELD = ('value', 'custom-field-', 'text')
+ORGANISATION_LOGO_FIELD = ('logo', 'logo', 'none')
 
 
 def add_error(errors, message, field_name):
@@ -1631,5 +1632,34 @@ def project_editor_step10(request, pk=None):
             'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_organisation_logo(request, pk=None):
+    org = Organisation.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_organisation', org):
+        return HttpResponseForbidden()
+
+    files = request.FILES
+    logo = None
+    errors = []
+
+    if 'logo' in files.keys():
+        errors, changes = process_field(org, files, ORGANISATION_LOGO_FIELD, errors, [])
+
+        if not errors:
+            logo = get_thumbnail(
+                org.logo, '250x250', format="PNG", upscale=True
+            ).url
+
+    return Response(
+        {
+            'errors': errors,
+            'logo': logo,
         }
     )

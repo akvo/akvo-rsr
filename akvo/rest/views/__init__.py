@@ -43,7 +43,8 @@ from .project_editor import (project_editor_delete_document,
                              project_editor_step7,
                              project_editor_step8,
                              project_editor_step9,
-                             project_editor_step10)
+                             project_editor_step10,
+                             project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
@@ -129,6 +130,7 @@ __all__ = [
     'project_editor_step8',
     'project_editor_step9',
     'project_editor_step10',
+    'project_editor_organisation_logo',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',

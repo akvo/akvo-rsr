@@ -771,6 +771,23 @@ h4.detailedInfo {
     #map {
       display: none; } }
 
+#map-warning {
+  margin-top: -30px;
+  z-index: 99;
+  opacity: 0.8;
+  background: white;
+  margin-right: 15%;
+  margin-left: 15%;
+  padding: 5px;
+  border: solid 1px;
+  border-color: rgba(44, 42, 116, 0.2);
+  border-bottom: 0px;
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px; }
+  @media only screen and (max-width: 568px) {
+    #map-warning {
+      display: none; } }
+
 .searchContainer {
   position: relative; }
   .searchContainer #search .showFilters {
@@ -2045,8 +2062,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
             padding: 0.25em 0em;
             /* Transparent border means text doesn't shift when
-                        ** we add a colored border to active elements.
-                        */
+            ** we add a colored border to active elements.
+            */
             border-left: 4px solid transparent; }
             .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
               background-color: #ececec;
@@ -2193,9 +2210,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       background-color: #E2EBF5; }
     .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
+      ** padding to ensure it doesn't overflow the parent
+      ** container.
+      */
       position: relative;
       height: 100%; }
       .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
@@ -2266,9 +2283,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           background-color: #fff; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
           /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
           position: relative;
           height: 100%; }
           .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
@@ -2426,3 +2443,97 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               display: none; }
         .results .update-dialog-container td .update-entry-container .edit-slider.active {
           display: initial; }
+
+/* Modal dialog stuff for the Project Editor */
+div.inactive .addOrg {
+  display: none; }
+
+div.active .addOrg {
+  display: block;
+  padding: 0.5em;
+  background-color: white;
+  border: 1px solid #c8c8c8;
+  border-radius: 0 0 4px 4px;
+  margin-top: -3px;
+  cursor: pointer;
+  color: #5cb85c; }
+  div.active .addOrg:hover {
+    font-weight: bold; }
+  div.active .addOrg:active {
+    opacity: 0.8; }
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1031;
+  background-color: rgba(0, 0, 0, 0.7); }
+
+.modalContainer {
+  position: fixed;
+  top: 20%;
+  right: 100px;
+  bottom: 20%;
+  left: 100px;
+  z-index: 1032; }
+  @media only screen and (max-width: 768px) {
+    .modalContainer {
+      right: 25px;
+      left: 25px; } }
+  @media only screen and (max-width: 568px) {
+    .modalContainer {
+      right: 5px;
+      left: 5px; } }
+  @media only screen and (max-height: 900px) {
+    .modalContainer {
+      top: 10%;
+      bottom: 10%; } }
+  @media only screen and (max-height: 700px) {
+    .modalContainer {
+      top: 5%;
+      bottom: 5%; } }
+  .modalContainer .orgModal {
+    width: 100%;
+    max-width: 800px;
+    max-height: 100%;
+    margin: auto;
+    background-color: white;
+    overflow-y: scroll;
+    position: relative;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+    .modalContainer .orgModal .modalContents {
+      min-width: 100px;
+      position: relative;
+      padding: 1em 2em 5em 2em; }
+      .modalContainer .orgModal .modalContents .inputContainer {
+        margin-top: 2.75em;
+        margin-bottom: 1em; }
+        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label, .modalContainer .orgModal .modalContents .inputContainer textarea + label {
+          position: absolute;
+          top: -25px;
+          transition: top 0.7s ease, opacity 0.7s ease;
+          opacity: 0;
+          font-size: 13px;
+          font-weight: 600; }
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label, .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
+          opacity: 1; }
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label, .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
+          color: #2c2a74; }
+    .modalContainer .orgModal .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3.5em;
+      text-align: right; }
+      .modalContainer .orgModal .controls button {
+        margin: 0 0.5em; }
+        .modalContainer .orgModal .controls button.modal-cancel {
+          margin-right: 1em; }
+        .modalContainer .orgModal .controls button.modal-save {
+          margin-right: 1.5em; }

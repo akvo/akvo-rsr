@@ -900,6 +900,24 @@ h4.detailedInfo {
     }
 }
 
+#map-warning {
+    @include responsive(xtra-small-max-screens) {
+        display: none;
+    }
+    margin-top: -30px;
+    z-index: 99;
+    opacity: 0.8;
+    background: white;
+    margin-right: 15%;
+    margin-left: 15%;
+    padding: 5px;
+    border: solid 1px;
+    border-color: rgba($akvoPurple, 0.2);
+    border-bottom: 0px;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+}
+
 .searchContainer {
     position: relative;
     #search {
@@ -2521,360 +2539,453 @@ body {
 /* Results framework display */
 
 .results {
-    position: relative;
+  position: relative;
 
-    * {
-        box-sizing: border-box;
+  * {
+    box-sizing: border-box;
+  }
+
+  article {
+    margin: 0 1em;
+    @include border-radius(3px);
+    overflow: hidden;
+  }
+
+  .clickable {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
     }
 
-    article {
-        margin: 0 1em;
-        @include border-radius(3px);
-        overflow: hidden;
+    &:active {
+      opacity: 0.6;
+    }
+  }
+
+  .results-container {
+    @include display-flex();
+  }
+  .sidebar {
+    width: 25%;
+    min-width: 200px;
+    overflow-y: auto;
+    background-color: rgb(239, 239, 229);
+    vertical-align: top;
+    border: 1px solid rgb(224, 225, 226);
+
+    .result-nav {
+      padding: 0.25em 0.75em 0 0.75em;
+      &:after {
+        height: 1px;
+        background-color: rgb(224, 225, 226);
+        width: 100%;
+        display: block;
+        margin: 1.75em auto 0 auto;
+        content: '';
+      }
     }
 
-    .clickable {
+    .result-nav {
+      &:last-child {
+        padding-bottom: 1em;
+        &:after {
+          display: none;
+        }
+      }
+    }
+
+    .result-nav-header {
+      padding: 0.25em 0.75em 0 0.75em;
+      h3 {
+        color: rgba($akvoBlack, 0.4);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        margin-top: 5px;
+      }
+    }
+
+    .result-nav {
+      cursor: pointer;
+      .fa-chevron-up {
+        display: none;
+      }
+
+      h3 {
+        font-size: 1.1em;
+        color: $secondary6;
+        @include noWrapTxt;
+      }
+      &.expanded {
+        &:after {
+          background-color: transparent;
+        }
+        h3 {
+          color: $akvoBlack;
+        }
+      }
+      .result-title {
+        .fa {
+          float: right;
+          font-size: 1.3em;
+          margin-right: 6px;
+          text-shadow: 0 1px 0 rgb(255, 255, 255);
+        }
+      }
+
+      .result-indicator-count {
+        color: rgb(188, 188, 166);
+        margin-top: -10px;
+        display: block;
+      }
+
+      .result-nav-full {
+        display: none;
+      }
+
+      .indicator-text {
+        display: none;
+      }
+
+      &.expanded {
+        background: white;
+        .fa-chevron-down {
+          display: none;
+        }
+        .fa-chevron-up {
+          display: block;
+        }
+        .indicator-text {
+          display: initial;
+        }
+        .indicator-count {
+          display: none;
+        }
+        .result-nav-full {
+          display: block;
+          cursor: pointer;
+          padding: 0.5em 0 0 5px;
+          background-color: white;
+          margin-top: 1em;
+
+          .indicator-nav {
+            padding: 0.25em 0em;
+            /* Transparent border means text doesn't shift when
+            ** we add a colored border to active elements.
+            */
+            border-left: 4px solid rgba(0, 0, 0, 0);
+
+            &.active {
+              background-color: rgb(236, 236, 236);
+              border-left: 4px solid rgb(174, 9, 34);
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+          a {
+            h4 {
+              font-size: 1.1em;
+              color: rgb(100, 100, 100);
+              margin-bottom: 1px;
+              @include noWrapTxt;
+            }
+            &.active {
+              h4 {
+                color: #ae0922;
+              }
+            }
+          }
+          .last-update {
+            font-size: 0.9em;
+            color: rgb(170, 170, 170);
+          }
+        }
+      }
+    }
+  }
+  .indicator-container {
+    vertical-align: top;
+    overflow-y: scroll;
+    padding: 0.25em 1em;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(241, 241, 242);
+    @include flex(1);
+
+    .result-summary {
+      display: none;
+
+      h4 {
+        font-size: 0.9em;
+        color: #aaaaaa;
+        font-variant: small-caps;
+        text-transform: lowercase;
+      }
+
+      h3 {
+        font-size: 1.2em;
+        color: #424c2b;
+        margin-bottom: 4px;
+      }
+
+      .result-parent {
+        font-size: 0.8em;
+        color: #aaaaaa;
+      }
+
+      .indicator-link {
         cursor: pointer;
 
         &:hover {
-            opacity: 0.8;
+          opacity: 0.8;
         }
 
         &:active {
-            opacity: 0.6;
+          opacity: 0.6;
         }
+      }
+      .result-indicators {
+        margin-top: 20px;
+        ul {
+          list-style-type: none;
+          padding-left: 5px;
+          li {
+            color: $anchorLink;
+          }
+        }
+      }
     }
 
-    .results-container {
-        @include display-flex();
-    }
-    .sidebar {
-        width: 25%;
-        min-width: 200px;
-        overflow-y: auto;
-        background-color: rgb(239,239,229);
-        vertical-align: top;
-        border: 1px solid rgb(224,225,226);
+    .indicator-group {
+      padding: 0;
+      display: none;
 
-        .result-nav {
-            padding: 0.25em 0.75em 0 0.75em;
-            &:after {
-                height: 1px;
-                background-color: rgb(224,225,226);
-                width: 100%;
-                display: block;
-                margin: 1.75em auto 0 auto;
-                content: '';
-            }
+      h4.indicator-title {
+        color: rgb(174, 9, 34);
+        font-size: 1em;
+        .glyphicon {
+          float: left;
+          margin-right: 4px;
+        }
+      }
+
+      .baseline {
+        padding: 2em 0;
+        .baseline-value, .baseline-year {
+          width: 30%;
+          display: inline-block;
+          padding: 0 0 0 5%;
+
+          dt {
+            color: rgb(129, 131, 134);
+          }
+          dd {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: rgb(81, 80, 80);
+          }
+        }
+      }
+
+      .indicator-periods-title {
+        font-size: 1em;
+        color: rgb(81, 80, 80);
+      }
+
+      .table {
+        padding: 0.5em 0.25em;
+        /*background-color: rgb(235,235,231);*/
+        tbody {
+          &.indicator-period {
+            border-top: 1px solid #E7E8E8;
+          }
+        }
+        thead {
+          font-weight: normal;
+          color: rgb(192, 192, 192);
+          tr {
+            background-color: rgb(232, 232, 232);
+          }
         }
 
-        .result-nav {
-            &:last-child {
-                padding-bottom: 1em;
-                &:after {
-                    display: none;
-                }
-            }
+        tr, td {
+          border: none;
+          color: rgb(172, 172, 172);
         }
 
-        .result-nav-header {
-            padding: 0.25em 0.75em 0 0.75em;
-            h3 {
-                color: rgba($akvoBlack,0.4);
-                font-size: 0.9em;
-                text-transform: uppercase;
-                margin-top: 5px;
+        tr {
+          min-height: 125px;
+          .add-button {
+            display: none;
+          }
+          &.expanded {
+            .add-button {
+              border: none;
+              background-color: transparent;
+              color: $anchorLink;
+              display: block;
+              &:hover {
+                background-color: rgba($akvoBlack, 0);
+              }
             }
+          }
         }
 
-        .result-nav {
-            cursor: pointer;
+        td {
+          vertical-align: middle;
+          &.fromTime, &.toTime {
+            max-width: 15%;
+          }
+          &.indicator-bar-td {
+            min-width: 35%;
+          }
+        }
+
+        .expand-indicator-period {
+          .fa-chevron-up {
+            display: none;
+          }
+          .fa-chevron-down {
+            display: initial;
+          }
+          &.expanded {
             .fa-chevron-up {
-                display: none;
+              display: initial;
             }
-
-            h3 {
-                font-size: 1.1em;
-                color: $secondary6;
-                @include noWrapTxt;
+            .fa-chevron-down {
+              display: none;
             }
-            &.expanded {
-                &:after {
-                    background-color: transparent;
-                }
-                h3 {
-                    color: $akvoBlack;
-                }
-            }
-            .result-title {
-                .fa {
-                    float: right;
-                    font-size: 1.3em;
-                    margin-right: 6px;
-                    text-shadow: 0 1px 0 rgb(255,255,255);
-                }
-            }
-
-            .result-indicator-count {
-                color: rgb(188,188,166);
-                margin-top: -10px;
-                display: block;            
-            }
-
-            .result-nav-full {
-                display: none;
-            }
-
-            .indicator-text {
-                display: none;
-            }
-
-            &.expanded {
-                background: white;
-                .fa-chevron-down {
-                    display: none;
-                }
-                .fa-chevron-up {
-                    display: block;
-                }  
-                .indicator-text {
-                    display: initial;
-                }
-                .indicator-count {
-                    display: none;
-                }                                         
-                .result-nav-full {
-                    display: block;
-                    cursor: pointer;
-                    padding: 0.5em 0 0 5px;
-                    background-color: white;
-                    margin-top: 1em;
-
-                    .indicator-nav {
-                        padding: 0.25em 0em;
-                        /* Transparent border means text doesn't shift when
-                        ** we add a colored border to active elements.
-                        */
-                        border-left: 4px solid rgba(0,0,0,0);
-
-                        &.active {
-                            background-color: rgb(236,236,236);
-                            border-left: 4px solid rgb(174,9,34);
-                        }
-
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-                    a {
-                        h4 {
-                            font-size: 1.1em;
-                            color: rgb(100,100,100);
-                            margin-bottom: 1px;
-                            @include noWrapTxt;
-                        }
-                        &.active {
-                            h4 {
-                                color:#ae0922;
-                            }
-                        }
-                    }
-                    .last-update {
-                        font-size: 0.9em;
-                        color: rgb(170,170,170);
-                    }
-                }
-            }
+          }
         }
+      }
+
+      .indicator {
+        display: none;
+      }
     }
-    .indicator-container {
-        vertical-align: top;
-        overflow-y: scroll;
-        padding:0.25em 1em;
-        background-color: rgb(255,255,255);
-        border:1px solid rgb(241,241,242);
-        @include flex(1);
-
-        .result-summary {
-            display: none;
-
-            h4 {
-                font-size: 0.9em;
-                color: #aaaaaa;
-                font-variant: small-caps;
-                text-transform: lowercase;
-            }
-
-            h3 {
-                font-size: 1.2em;
-                color: #424c2b;
-                margin-bottom: 4px;
-            }
-
-            .result-parent {
-                font-size: 0.8em;
-                color: #aaaaaa;
-            }
-
-            .indicator-link {
-                cursor: pointer;
-
-                &:hover {
-                    opacity: 0.8;
-                }
-
-                &:active {
-                    opacity: 0.6;
-                }
-            }
-            .result-indicators {
-                margin-top: 20px;
-                ul {
-                    list-style-type: none;
-                    padding-left: 5px;
-                    li {
-                        color: $anchorLink;
-                    }
-                }
-            }
-        }
-
-        .indicator-group {
-            padding:0;
-            display: none;
-
-            h4.indicator-title {
-                color: rgb(174,9,34);
-                font-size: 1em;
-                .glyphicon {
-                    float: left;
-                    margin-right: 4px;
-                }
-            }            
-
-            .baseline {
-                padding: 2em 0;
-                .baseline-value, .baseline-year {
-                    width: 30%;
-                    display: inline-block;
-                    padding: 0 0 0 5%;
-
-                    dt {
-                        color: rgb(129,131,134);
-                    }
-                    dd {
-                        font-size: 1.5em;
-                        font-weight: bold;
-                        color: rgb(81,80,80);
-                    }
-                }
-            }
-
-            .indicator-periods-title {
-                font-size: 1em;
-                color: rgb(81,80,80);
-            }
-
-            .table {
-                padding: 0.5em 0.25em;
-                /*background-color: rgb(235,235,231);*/
-                tbody {
-                    &.indicator-period {
-                        border-top: 1px solid #E7E8E8;
-                    }
-                }
-                thead {
-                    font-weight: normal;
-                    color: rgb(192, 192, 192);
-                    tr {
-                        background-color: rgb(232,232,232);
-                    }
-                }
-
-                tr, td {
-                    border: none;
-                    color: rgb(172, 172, 172);
-                }
-
-                tr {
-                    min-height: 125px;
-                    .add-button {
-                        display: none;
-                    }
-                    &.expanded {
-                        .add-button {
-                            border:none;
-                            background-color: transparent;
-                            color: $anchorLink;
-                            display: block;
-                            &:hover {
-                                background-color: rgba($akvoBlack,0);
-                            }
-                        }
-                    }
-                }
-
-                td {
-                    vertical-align: middle;
-                    &.fromTime, &.toTime {
-                        max-width:15%;
-                    }
-                    &.indicator-bar-td {
-                        min-width:35%;
-                    }
-                }
-
-                .expand-indicator-period {
-                    .fa-chevron-up {
-                        display: none;
-                    }
-                    .fa-chevron-down {
-                        display: initial;
-                    }
-                    &.expanded {
-                        .fa-chevron-up {
-                            display: initial;
-                        }
-                        .fa-chevron-down {
-                            display: none;
-                        }  
-                    }
-                }
-            }
-
-            .indicator {
-                display: none;
-            }
-        }
+  }
+  /* Styling for the indicator period progress bar */
+  .indicator-bar-td,
+  .target-td {
+    height: 80px;
+    padding: 0;
+  }
+  .indicator-bar-display-container {
+    position: relative;
+    height: 100%;
+    margin-left: 15px;
+    margin-right: 15px;
+    .indicator-bar, .indicator-bar-progress-amount {
+      position: absolute;
+      top: 38px;
+      bottom: 24px;
+      left: 0px;
+      height: 5px;
+      @include border-radius(2px);
+      border: 1px solid #CDDFEF;
     }
-    /* Styling for the indicator period progress bar */
-    .indicator-bar-td,
-    .target-td {
-        height: 80px;
-        padding: 0;
+    .indicator-bar {
+      background-color: #E2EBF5;
+      right: 0px;
     }
-    .indicator-bar-display-container {
+    .indicator-bar-progress-amount {
+      background-color: #E2EBF5;
+    }
+    .indicator-bar-progress-container {
+      /* The progress box has non-zero width, so add some
+      ** padding to ensure it doesn't overflow the parent
+      ** container.
+      */
+      position: relative;
+      height: 100%;
+
+      .indicator-bar-progress {
+        position: absolute;
+        width: 3px;
+        height: 20px;
+        top: 30px;
+        background-color: #A3C7E3;
+        text-align: center;
+      }
+    }
+  }
+  .target-td {
+    vertical-align: middle;
+  }
+  .indicator-bar-progress-complete-container {
+    .indicator-bar-progress-complete {
+      padding-left: 15px;
+      font-size: 1.1em;
+      font-weight: normal;
+      color: rgb(81, 80, 80);
+      vertical-align: bottom;
+    }
+    .indicator-bar-progress-text {
+      padding-left: 15px;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #A3C7E3;
+      vertical-align: bottom;
+    }
+  }
+
+  .indicator-container .indicator-group .table tbody tr.expanded {
+    background-color: white;
+    border-bottom: none !important;
+
+    .indicator-bar-td * {
+      /*display: none;*/
+    }
+  }
+
+  .update-dialog-container {
+    td {
+      background-color: white;
+
+      .update-entry-container {
+        padding: 1em 0.5em;
+        margin-bottom: 2em;
         position: relative;
-        height: 100%;
-        margin-left: 15px;
-        margin-right: 15px;
-        .indicator-bar, .indicator-bar-progress-amount {
+        background-color: #EBEBE7;
+        .update-exceed-target {
+          margin: 10px 0 0 0;
+          input {
+            margin-right: 10px;
+          }
+          label {
+            margin-right: 10px;
+            color: rgba($akvoBlack, 0.5);
+          }
+        }
+        .indicator-bar-display-container {
+          position: relative;
+          height: 100%;
+          margin-left: 15px;
+          margin-right: 15px;
+          .indicator-bar-progress-text {
+            position: absolute;
+            bottom: -10px;
+            margin-left: -5px;
+            color: #A3C7E3;
+          }
+          .indicator-bar, .indicator-bar-progress-amount {
             position: absolute;
             top: 38px;
             bottom: 24px;
             left: 0px;
             height: 5px;
             @include border-radius(2px);
-            border:1px solid #CDDFEF;
-        }      
-        .indicator-bar {
-            background-color: #E2EBF5;
+            border: 1px solid #CDDFEF;
+          }
+          .indicator-bar {
+            background-color: #fff;
             right: 0px;
-        }
-        .indicator-bar-progress-amount {
-            background-color: #E2EBF5;
-        }
-        .indicator-bar-progress-container {
+          }
+          .indicator-bar-progress-amount {
+            background-color: #fff;
+          }
+          .indicator-bar-progress-container {
             /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
             ** container.
@@ -2883,278 +2994,307 @@ body {
             height: 100%;
 
             .indicator-bar-progress {
-                position: absolute;
-                width: 3px;
-                height: 20px;
-                top: 30px;
-                background-color: #A3C7E3;
-                text-align: center;     
-            }            
-        } 
-    }
-    .target-td {
-        vertical-align: middle;
-    }
-    .indicator-bar-progress-complete-container {
-        .indicator-bar-progress-complete {
-            padding-left: 15px;
-            font-size: 1.1em;
-            font-weight: normal;
-            color: rgb(81,80,80);
-            vertical-align: bottom;
+              position: absolute;
+              width: 3px;
+              height: 20px;
+              top: 30px;
+              background-color: #A3C7E3;
+              text-align: center;
+              &.update-dialog-timeline-marker {
+                border: none;
+              }
+            }
+          }
         }
-        .indicator-bar-progress-text {
+        .target-td {
+          vertical-align: middle;
+        }
+        .indicator-bar-progress-complete-container {
+          .indicator-bar-progress-complete {
             padding-left: 15px;
-            font-size: 1.1em;
+            font-size: 1.5em;
+            font-weight: normal;
+            color: rgb(81, 80, 80);
+            vertical-align: bottom;
+          }
+          .indicator-bar-progress-text {
+            padding-left: 15px;
+            font-size: 1.5em;
             font-weight: bold;
             color: #A3C7E3;
             vertical-align: bottom;
+            z-index: 19999;
+          }
         }
-    }     
+        &:last-child {
+          margin-bottom: 0;
+        }
 
-    .indicator-container .indicator-group .table tbody tr.expanded {
+        .edit-button {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          top: 15px;
+          right: 10px;
+          color: $akvoBlack;
+          font-size: 1.5em;
+          &.activated {
+            display: none;
+          }
+        }
+
+        .delete-button {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          top: 13px;
+          right: 35px;
+          font-size: 1.5em;
+          color: $akvoBlack;
+          &.activated {
+            display: none;
+          }
+        }
+
+        .update-date {
+          display: inline-block;
+          text-align: left;
+          width: 50%;
+        }
+        .update-name {
+          display: inline-block;
+          text-align: left;
+          width: 30%;
+          margin-right: 10%;
+          color: $akvoBlack;
+        }
+        .update-timeline {
+          display: inline-block;
+          width: 75%;
+          height: 80px;
+          padding-top: 1em;
+          z-index: 99;
+          position: relative;
+        }
+        .update-target {
+          position: absolute;
+          margin-top: 45px;
+          display: inline-block;
+          width: 24%;
+          height: 80px;
+          text-align: center;
+          span {
+            font-size: 1.1em;
+            color: rgb(81, 80, 80);
+            vertical-align: text-top;
+            &.update-target-actual {
+              padding-left: 15px;
+              font-size: 1.1em;
+              font-weight: bold;
+              color: #A3C7E3;
+              vertical-align: bottom;
+            }
+          }
+        }
+        .update-description {
+          padding: 0.5em;
+          margin: 20px auto 30px;
+          &.editable {
+            background: whitesmoke;
+            border: 1px solid #A3C7E3;
+          }
+          .update-photo {
+            float: right;
+            width: 150px;
+            height: 100px;
+            background-size: cover;
+          }
+        }
+        .save-button {
+          position: absolute;
+          display: none;
+          right: 10px;
+          bottom: 10px;
+          &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: white;
+            background-color: $akvoBlack;
+            @include border-radius(2px);
+            text-align: center;
+          }
+        }
+        .cancel-button {
+          position: absolute;
+          display: none;
+          right: 60px;
+          bottom: 10px;
+          &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: $akvoBlack;
+            @include border-radius(2px);
+            text-align: center;
+          }
+        }
+        .edit-slider {
+          z-index: 9999;
+          .noUi-base, &.noUi-horizontal {
+            height: 5px;
+            border: 0;
+            background-color: rgba(white, 0);
+            margin-top: -28px;
+            z-index: 99999;
+            @include border-radius(4px);
+
+            .noUi-origin {
+              background-color: rgba(white, 0);
+              @include border-radius(4px);
+            }
+            .noUi-handle {
+              width: 14px;
+              height: 28px;
+              z-index: 9999;
+              background-color: $akvoBlack;
+              cursor: pointer;
+              left: -7px;
+              box-shadow: none;
+              top: -12px;
+              content: "|||";
+              color: white;
+              &:after {
+                display: none;
+              }
+              &:before {
+                display: none;
+              }
+            }
+          }
+          &.active {
+            display: initial;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Modal dialog stuff for the Project Editor */
+
+div.inactive {
+    .addOrg {
+        display: none;
+    }
+}
+
+div.active {
+    .addOrg {
+        display: block;
+        padding: 0.5em;
         background-color: white;
-        border-bottom: none !important;      
+        border: 1px solid rgb(200,200,200);
+        border-radius: 0 0 4px 4px;
+        margin-top: -3px;
+        cursor: pointer;
+        color: rgba($progressSuccess, 1);
 
-        .indicator-bar-td * {
-            /*display: none;*/
+        &:hover {
+            font-weight: bold;
+        }
+        &:active {
+            opacity: 0.8;
         }
     }
+}
 
-    .update-dialog-container {
-        td {
-            background-color: white;
+.modalBackground {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1031;
+    background-color: rgba(0,0,0,0.7);
+}
 
-            .update-entry-container {
-                padding: 1em 0.5em;
-                margin-bottom: 2em;
-                position: relative;
-                background-color: #EBEBE7;
-                .update-exceed-target {
-                    margin: 10px 0 0 0;
-                    input {
-                        margin-right:10px;
-                    }
-                    label {
-                        margin-right:10px;
-                        color:rgba($akvoBlack, 0.5);
-                    }
-                }
-                .indicator-bar-display-container {
-                    position: relative;
-                    height: 100%;
-                    margin-left: 15px;
-                    margin-right: 15px;
-                    .indicator-bar-progress-text {
+.modalContainer {
+    position: fixed;
+    top: 20%;
+    right: 100px;
+    bottom: 20%;
+    left: 100px;
+    z-index: 1032;
+
+    @media only screen and (max-width: $width-small) {
+        right: 25px;
+        left: 25px;
+    }
+    @media only screen and (max-width: $xtra-small) {
+        right: 5px;
+        left: 5px;        
+    }
+    @media only screen and (max-height: 900px) {
+        top: 10%;
+        bottom: 10%;
+    }
+    @media only screen and (max-height: 700px) {
+        top: 5%;
+        bottom: 5%;
+    }
+
+    .orgModal {
+        width: 100%;
+        max-width: 800px;
+        max-height: 100%;
+        margin: auto;
+        background-color: white;    
+        overflow-y: scroll;
+        position: relative;
+        @include border-radius(5px);        
+
+        .modalContents {
+            min-width: 100px;
+            position: relative;
+            padding: 1em 2em 5em 2em;
+
+            .inputContainer {
+                margin-top: 2.75em;
+                margin-bottom: 1em;
+
+                input, select, textarea {
+                    & + label {
                         position: absolute;
-                        bottom:-10px;
-                        margin-left:-5px;
-                        color: #A3C7E3;
+                        top: -25px;
+                        transition: top 0.7s ease, opacity 0.7s ease;
+                        opacity: 0;
+                        font-size: 13px;
+                        font-weight: 600;
                     }
-                    .indicator-bar, .indicator-bar-progress-amount {
-                        position: absolute;
-                        top: 38px;
-                        bottom: 24px;
-                        left: 0px;
-                        height: 5px;
-                        @include border-radius(2px);
-                        border:1px solid #CDDFEF;
-                    }      
-                    .indicator-bar {
-                        background-color: #fff;
-                        right: 0px;
+                    &:valid + label {
+                        opacity: 1;
                     }
-                    .indicator-bar-progress-amount {
-                        background-color: #fff;
+                    &:focus + label {
+                        color: $rsrBlue;
                     }
-                    .indicator-bar-progress-container {
-                        /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-                        position: relative;
-                        height: 100%;
+                }                
+            }
+        }
 
-                        .indicator-bar-progress {
-                            position: absolute;
-                            width: 3px;
-                            height: 20px;
-                            top: 30px;
-                            background-color: #A3C7E3;
-                            text-align: center;
-                            &.update-dialog-timeline-marker  {
-                                border:none;
-                            }
-                        }            
-                    } 
-                }
-                .target-td {
-                    vertical-align: middle;
-                }
-                .indicator-bar-progress-complete-container {
-                    .indicator-bar-progress-complete {
-                        padding-left: 15px;
-                        font-size: 1.5em;
-                        font-weight: normal;
-                        color: rgb(81,80,80);
-                        vertical-align: bottom;
-                    }
-                    .indicator-bar-progress-text {
-                        padding-left: 15px;
-                        font-size: 1.5em;
-                        font-weight: bold;
-                        color: #A3C7E3;
-                        vertical-align: bottom;
-                        z-index:19999;
-                    }
-                }   
-                &:last-child {
-                    margin-bottom: 0;
-                }
+        .controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3.5em;
+            text-align: right;
 
-                .edit-button {
-                    position: absolute;
-                    height:20px;
-                    width: 20px;
-                    top: 15px;
-                    right: 10px;
-                    color: $akvoBlack;
-                    font-size: 1.5em;
-                    &.activated {
-                        display: none;
-                    }
+            button {
+                margin: 0 0.5em;
+                &.modal-cancel {
+                    margin-right: 1em;
                 }
-
-                .delete-button {
-                    position: absolute;
-                    height:20px;
-                    width: 20px;
-                    top: 13px;
-                    right: 35px;
-                    font-size: 1.5em;
-                    color: $akvoBlack;
-                    &.activated {
-                        display: none;
-                    }
-                }
-
-                .update-date {
-                    display: inline-block;
-                    text-align: left;
-                    width: 50%;
-                }
-                .update-name {
-                    display: inline-block;
-                    text-align: left;
-                    width: 30%;
-                    margin-right: 10%;
-                    color: $akvoBlack;
-                }
-                .update-timeline {
-                    display: inline-block;
-                    width: 75%;
-                    height: 80px;
-                    padding-top: 1em;
-                    z-index: 99;
-                    position: relative;
-                }
-                .update-target {
-                    position: absolute;
-                    margin-top: 45px;
-                    display: inline-block;
-                    width: 24%;
-                    height: 80px;
-                    text-align: center;
-                    span {
-                        font-size: 1.1em;
-                        color: rgb(81,80,80);
-                        vertical-align: text-top;
-                        &.update-target-actual {
-                            padding-left: 15px;
-                            font-size: 1.1em;
-                            font-weight: bold;
-                            color: #A3C7E3;
-                            vertical-align: bottom;
-                        }
-                    }
-                }
-                .update-description {
-                    padding: 0.5em;
-                    margin:20px auto 30px;
-                    &.editable {
-                        background: whitesmoke;
-                        border:1px solid #A3C7E3;
-                    }
-                    .update-photo {
-                        float: right;
-                        width: 150px;
-                        height: 100px;
-                        background-size: cover;
-                    }
-                }
-                .save-button {
-                    position:absolute;
-                    display: none;
-                    right: 10px;
-                    bottom: 10px;
-                    &.active {
-                        display: inline-block;
-                        padding: 3px 7px;
-                        color: white;
-                        background-color: $akvoBlack;
-                        @include border-radius(2px);
-                        text-align: center;
-                    }
-                }
-                .cancel-button {
-                    position:absolute;
-                    display: none;
-                    right: 60px;
-                    bottom: 10px;
-                    &.active {
-                        display: inline-block;
-                        padding: 3px 7px;
-                        color: $akvoBlack;
-                        @include border-radius(2px);
-                        text-align: center;
-                    }
-                }
-                .edit-slider {
-                    z-index: 9999;
-                    .noUi-base, &.noUi-horizontal {
-                        height: 5px;
-                        border: 0;
-                        background-color: rgba(white,0);
-                        margin-top: -28px;
-                        z-index: 99999;
-                        @include border-radius(4px);
-
-                        .noUi-origin {
-                            background-color: rgba(white,0);
-                            @include border-radius(4px);
-                        }
-                        .noUi-handle {
-                            width: 14px;
-                            height: 28px;
-                            z-index: 9999;
-                            background-color: $akvoBlack;
-                            cursor: pointer;
-                            left: -7px;
-                            box-shadow:none;
-                            top: -12px;
-                            content: "|||";
-                            color: white;
-                            &:after {
-                                display: none;
-                            }
-                            &:before {
-                                display: none;
-                            }
-                        }
-                    }
-                    &.active {
-                        display: initial;
-                    }
+                &.modal-save {
+                    margin-right: 1.5em;
                 }
             }
         }

@@ -147,19 +147,19 @@ class IatiImportActivity(object):
                 organisation = get_model('rsr', 'organisation').objects.get(iati_org_id=iati_org_id)
             except ObjectDoesNotExist:
                 add_log(self.iati_import, 'reporting_org',
-                        'Reporting organisation not present in RSR.', self.project,
+                        'Reporting organisation not present in RSR', self.project,
                         IatiImportLog.CRITICAL_ERROR)
                 return False
 
             if not organisation.can_become_reporting:
                 add_log(self.iati_import, 'reporting_org',
-                        'Reporting organisation not allowed to import projects in RSR.',
+                        'Reporting organisation not allowed to import projects in RSR',
                         self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
 
             if not self.created and sync_owner and sync_owner != organisation:
                 add_log(self.iati_import, 'sync_owner',
-                        'Project has a different sync_owner (%s).' % sync_owner.name,
+                        'Project has a different sync_owner (%s)' % sync_owner.name,
                         self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
 
@@ -174,7 +174,7 @@ class IatiImportActivity(object):
             return True
 
         add_log(self.iati_import, 'reporting_org',
-                'Reporting organisation not correctly specified.', self.project,
+                'Reporting organisation not correctly specified', self.project,
                 IatiImportLog.CRITICAL_ERROR)
         return False
 
@@ -241,9 +241,8 @@ class IatiImportActivity(object):
                 for field in FIELDS:
                     try:
                         with transaction.atomic():
-                            changes = getattr(fields, field)(
-                                self.iati_import, self.activity, self.project, self.globals
-                            )
+                            changes = getattr(fields, field)(self.iati_import, self.activity,
+                                                             self.project, self.globals)
                     except Exception as e:
                         changes = []
                         add_log(self.iati_import, field, str(e), self.project,

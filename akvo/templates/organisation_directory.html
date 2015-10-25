@@ -6,7 +6,9 @@
 <section id="map" class="touch-navbar orgMap">
   {% coll_map map_organisations '100%' '100%' %}
 </section>
-
+{% if not rsr_page.all_maps %}
+  <div id="map-warning" class="text-center">{% trans 'This map only shows the organisations listed on this page.' %}</div>
+{% endif %}
 <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
   <section id="search-filter">
     <div class="container-fluid">
@@ -42,6 +44,7 @@
         <div>
           <nav>
             <ul class="nav nav-pills nav-stacked">
+              <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
               <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
             </ul>
           </nav>

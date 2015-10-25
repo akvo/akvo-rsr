@@ -4,10 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.utils.translation import ugettext_lazy as _
 
@@ -80,7 +80,7 @@ class Organisation(TimestampsMixin, models.Model):
                     u'(25 characters).')
     )
     long_name = ValidXMLCharField(
-        _(u'long name'), blank=True, max_length=75, unique=True,
+        _(u'long name'), max_length=75, db_index=True, unique=True,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
@@ -88,7 +88,8 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'The main language of the organisation'),
     )
     organisation_type = ValidXMLCharField(
-        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
+        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
+        null=True
     )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,
@@ -97,7 +98,8 @@ class Organisation(TimestampsMixin, models.Model):
                                 u'matches your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
+        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
+        unique=True, default=None
     )
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False,
@@ -171,7 +173,46 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation-main', (), {'organisation_id': self.pk})
+        return 'organisation-main', (), {'organisation_id': self.pk}
+
+    def clean(self):
+        """Organisations can only be saved when we're sure that they do not exist already."""
+        validation_errors = {}
+
+        name = self.name.strip()
+        long_name = self.long_name.strip()
+        iati_org_id = self.iati_org_id.strip() if self.iati_org_id else None
+
+        names = Organisation.objects.filter(name__iexact=name)
+        long_names = Organisation.objects.filter(long_name__iexact=long_name)
+        ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id) if iati_org_id else None
+
+        if self.pk:
+            names = names.exclude(pk=self.pk)
+            long_names = long_names.exclude(pk=self.pk)
+            ids = ids.exclude(pk=self.pk) if ids else None
+
+        if name and names.exists():
+            validation_errors['name'] = u'{}: {}'.format(
+                    _('An Organisation with this name already exists'), name)
+        elif not name:
+            # This prevents organisation names with only spaces
+            validation_errors['name'] = _(u'Organisation name may not be blank')
+        
+        if long_name and long_names.exists():
+            validation_errors['long_name'] = u'{}: {}'.format(
+                _('An Organisation with this long name already exists'), long_name)
+
+        elif not long_name:
+            # This prevents organisation long names with only spaces
+            validation_errors['long_name'] = _(u'Organisation long name may not be blank')
+
+        if iati_org_id and ids.exists():
+            validation_errors['iati_org_id'] = u'{}: {}'.format(
+                _('An Organisation with this IATI organisation identifier already exists'), ids[0].name)
+
+        if validation_errors:
+            raise ValidationError(validation_errors)
 
     class QuerySet(DjangoQuerySet):
         def has_location(self):
@@ -242,6 +283,21 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
+        def content_owned_organisations(self):
+            """
+            Returns a list of Organisations of which these organisations are the content owner.
+            Includes self, is recursive.
+            """
+
+            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
+            if kids:
+                return Organisation.objects.filter(
+                    Q(pk__in=self.values_list('pk', flat=True)) |
+                    Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
+                )
+            else:
+                return self
+
     def __unicode__(self):
         return self.name
 
@@ -291,6 +347,13 @@ class Organisation(TimestampsMixin, models.Model):
             if ps.iati_organisation_role:
                 partner_types.append(ps.iati_organisation_role_label())
         return partner_types
+
+    def content_owned_organisations(self):
+        """
+        Returns a list of Organisations of which this organisation is the content owner.
+        Includes self and is recursive.
+        """
+        return Organisation.objects.filter(content_owner=self).content_owned_organisations()
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

@@ -161,6 +161,12 @@ class PartnerSite(TimestampsMixin, models.Model):
         """Unicode representation."""
         return _(u'Akvo page for {}').format(self.organisation.name)
 
+    def save(self, *args, **kwargs):
+        if self.hostname:
+            self.hostname = self.hostname.lower()
+
+        super(PartnerSite, self).save(*args, **kwargs)
+
     @property
     def logo(self):
         """Return logo."""

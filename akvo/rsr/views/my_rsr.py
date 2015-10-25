@@ -112,10 +112,14 @@ def my_updates(request):
 def my_projects(request):
     """Directory of Projects connected to the user."""
     organisations = request.user.employers.approved().organisations()
-    projects = organisations.all_projects().distinct().select_related(
-        'publishingstatus',
-        'primary_location__country',
-    )
+
+    if request.user.is_superuser or request.user.is_admin:
+        projects = Project.objects.all()
+    else:
+        projects = organisations.all_projects().distinct().select_related(
+            'publishingstatus',
+            'primary_location__country',
+        )
 
     new_project_custom_fields = OrganisationCustomField.objects.filter(
         organisation__in=organisations
@@ -135,6 +139,13 @@ def my_projects(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
+    # User's organisations that are reportable
+    approved_employments = request.user.approved_employments()
+    reportable_organisations = []
+    for employment in approved_employments:
+        if employment.organisation.can_become_reporting:
+            reportable_organisations.append(employment.organisation.id)
+
     context = {
         'organisations': organisations,
         'new_project_custom_fields': new_project_custom_fields,
@@ -143,6 +154,7 @@ def my_projects(request):
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
+        'reportable_organisations': reportable_organisations
     }
     return render(request, 'myrsr/my_projects.html', context)
 
@@ -361,14 +373,14 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    if user.is_support and user.is_admin:
+    if user.is_admin or user.is_superuser:
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
     else:
-        organisations = user.employers.approved().organisations()
-        for org in organisations:
-            if not user.has_perm('rsr.user_management', org):
-                organisations = organisations.exclude(pk=org.pk)
+        connected_orgs = user.employers.approved().organisations().content_owned_organisations()
+        connected_orgs_list = [
+                org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
+        organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
 
@@ -378,7 +390,9 @@ def user_management(request):
         for q_item in q_list:
             employments = employments.filter(user__username__icontains=q_item) | \
                 employments.filter(user__first_name__icontains=q_item) | \
-                employments.filter(user__last_name__icontains=q_item)
+                employments.filter(user__last_name__icontains=q_item) | \
+                employments.filter(organisation__name__icontains=q_item) | \
+                employments.filter(organisation__long_name__icontains=q_item)
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')

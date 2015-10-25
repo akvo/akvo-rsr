@@ -5,6 +5,9 @@
   <section id="map" class="touch-navbar">
     {% coll_map map_projects '100%' '100%' %}
   </section>
+  {% if not rsr_page.all_maps %}
+    <div id="map-warning" class="text-center">{% trans 'This map only shows the projects listed on this page.' %}</div>
+  {% endif %}
   <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
     <section id="search-filter">
       <div class="container-fluid">
@@ -41,9 +44,15 @@
                   </div>
                 </div>
             <div>
+              {% if rsr_page %}
+                <div class="btn-group">
+                  {% bootstrap_field filter.form.organisation %}
+                </div>
+              {% else %}
                 <div class="btn-group" id="org-filter-container">
                 </div>
                 <input type="hidden" name="organisation" id="org-filter-input" type="text">
+              {% endif %}
             </div>
             <div>
               <div class="btn-group">

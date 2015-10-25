@@ -144,6 +144,9 @@ urlpatterns += patterns(
     url(r'^project_update/(?P<pk>[0-9]+)/upload_photo/$',
         views.upload_indicator_update_photo,
         name='upload_indicator_update_photo'),
+    url(r'^organisation/(?P<pk>[0-9]+)/add_logo/$',
+        views.project_editor_organisation_logo,
+        name='project_editor_add_org_logo'),
 )
 
 # Typeahead
