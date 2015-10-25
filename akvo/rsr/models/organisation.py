@@ -357,9 +357,8 @@ class Organisation(TimestampsMixin, models.Model):
             dict(Partnership.IATI_ROLES)[role] for role in Partnership.objects.filter(
                 project=project,
                 organisation=self,
-                iati_organisation_role__isnull=False).values_list(
-                'iati_organisation_role', flat=True
-            )
+                iati_organisation_role__isnull=False
+            ).values_list('iati_organisation_role', flat=True)
         ]
 
     def content_owned_organisations(self):

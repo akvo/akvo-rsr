@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import collections
 import django_filters
 import json
 from datetime import datetime
@@ -40,8 +41,6 @@ def _all_projects():
     """Return all active projects."""
     return Project.objects.published().select_related(
         'publishingstatus__status',
-        # TODO: remove
-        # 'sync_owner',
         'primary_location',
         'primary_location__country'
         'locations',
@@ -263,7 +262,7 @@ def _get_partners_with_types(project):
     partners_dict = {}
     for partner in project.all_partners():
         partners_dict[partner] = partner.has_partner_types(project)
-    return partners_dict
+    return collections.OrderedDict(sorted(partners_dict.items()))
 
 
 def _get_indicator_updates_data(updates, child_projects, child=True):
