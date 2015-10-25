@@ -473,7 +473,7 @@ class V201Checks(object):
                 checks.append((u'error', u'transaction (id: %s) has a date in '
                                          u'the future' % str(t.pk)))
 
-            if t.value:
+            if not t.value:
                 checks.append((u'error', u'transaction (id: %s) has no value' % str(t.pk)))
 
             if not (t.currency or self.project.currency):
