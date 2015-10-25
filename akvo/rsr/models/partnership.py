@@ -168,12 +168,13 @@ class Partnership(models.Model):
 
     def clean(self):
         # Don't allow multiple reporting organisations
-        reporting_orgs = self.project.partnerships.filter(
-            iati_organisation_role=self.IATI_REPORTING_ORGANISATION
-        )
-
-        if reporting_orgs:
-            raise ValidationError(
-                {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
-                                                     u'organisation')}
+        if self.iati_organisation_role == self.IATI_REPORTING_ORGANISATION:
+            reporting_orgs = self.project.partnerships.filter(
+                iati_organisation_role=self.IATI_REPORTING_ORGANISATION
             )
+
+            if reporting_orgs.count() > 1:
+                raise ValidationError(
+                    {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
+                                                         u'organisation')}
+                )
