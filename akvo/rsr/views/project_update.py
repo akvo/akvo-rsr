@@ -8,6 +8,8 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 import django_filters
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 
@@ -110,17 +112,7 @@ def main(request, project_id, update_id):
 
 def project_updates(request, project_id):
     """The list of updates for a single project."""
-    project = get_object_or_404(Project, pk=project_id)
-    updates = ProjectUpdate.objects.select_related('project', 'user').filter(project=project)
-
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
-
-    context = {
-        'updates': updates,
-        'project': project,
-        'page': page,
-        'page_range': page_range,
-        'paginator': paginator,
-    }
-    return render(request, 'project_updates.html', context)
+    return HttpResponseRedirect(
+        reverse('project-main', kwargs={'project_id': project_id})
+        + '#updates'
+    )
