@@ -366,7 +366,7 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
           addEditOnClicks();
           addDeleteOnClicks();
         }
-      })
+      });
     }
   }
 
@@ -607,7 +607,7 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
 
           sliderEl.noUiSlider.on('update', function(value) {
             if (exceedCheckbox.checked) {
-              updateActual.textContent = exceedValueNode.value
+              updateActual.textContent = exceedValueNode.value;
             } else {
               var percentage;
               value = parseInt(value);
@@ -819,8 +819,8 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
       photoNode.classList.add('update-photo');
       photoNode.style['background-image'] = 'url("' + update.photo + '")';
       photoNode.style['background-size'] = 'cover';
-      photoNode.style['height'] = '120px';
-      photoNode.style['width'] = '200px';
+      photoNode.style.height = '120px';
+      photoNode.style.width = '200px';
       updateNode.appendChild(photoNode);
     }
   }
@@ -834,13 +834,13 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
     periodNode = findPeriod(periodId);
     addUpdateButton = periodNode.querySelector('.add-button');
 
-    addUpdateButton.style['display'] = display && (isAdmin || canUpdate) ? '' : 'none';
+    addUpdateButton.style.display = display && (isAdmin || canUpdate) ? '' : 'none';
   }
 
   /* Display the edit slider in the update */
   function displayEditSlider(updateNode, display) {
     var editSlider = updateNode.querySelector('.edit-slider');
-    editSlider.style['display'] = display ? '' : 'none';
+    editSlider.style.display = display ? '' : 'none';
   }
 
   /* Get additional data of update */
@@ -990,7 +990,7 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
       // loop through all 'a' elements
       for (i = 0; i < a.length; i++) {
           // Remove the class 'active' if it exists
-          a[i].classList.remove('active')
+          a[i].classList.remove('active');
       }
       // add 'active' classs to the element that was clicked
       elem.classList.add('active');
@@ -1206,7 +1206,7 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
           ** building the dialog for. We need to make a marker for it.
           */
           if (periodValue > highestValue) {
-            highestValue = periodValue
+            highestValue = periodValue;
           }
           var updateMarker = document.createElement('div');
           var textSpan = document.createElement('div');
@@ -1343,11 +1343,17 @@ document.querySelector('#accordion div.panel-group div:first-child div a').click
   }
 
   function readTabFromFragment() {
-    if (window.location.hash) {
-      var fragment = window.location.hash;
+    var fragment = window.location.hash;
+    var parameters = window.location.search;
 
-      // Remove the '#' from the fragment
-      fragment = fragment.substring(1);
+    if (fragment || parameters.indexOf('?page') > -1) {
+      if (parameters.indexOf('?page') > -1) {
+        // KB: Hack, only the updates tab has a 'page' parameter
+        fragment = 'updates';
+      } else {
+        // Remove the '#' from the fragment
+        fragment = fragment.substring(1);
+      }
 
       if (fragment === 'summary' || fragment === 'report' || fragment === 'finance') {
           showTab(fragment);
