@@ -3858,6 +3858,12 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <cell id="160">
                         <text-data id="217">
                             <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">true</expression>
+                                </structure>
+                            </list-property>
                             <expression name="valueExpr">var a=1,b=1;&#13;
 reportContext.getGlobalVariable('debug')</expression>
                             <property name="contentType">html</property>
@@ -4016,6 +4022,12 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="backgroundColor">silver</property>
                                 <property name="paddingTop">0pt</property>
                                 <property name="paddingLeft">8pt</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
+                                    </structure>
+                                </list-property>
                                 <text-property name="text">*</text-property>
                             </label>
                         </cell>
@@ -5215,6 +5227,12 @@ reportContext.getGlobalVariable('debug')</expression>
                 </row>
                 <row id="218">
                     <property name="backgroundColor">#F0F0F0</property>
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">!row["actual_comment"]</expression>
+                        </structure>
+                    </list-property>
                     <cell id="219">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
