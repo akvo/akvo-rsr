@@ -3231,7 +3231,7 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Dummy" id="259">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Two_rows" id="259">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">number</property>
@@ -4011,12 +4011,12 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="paddingTop">0pt</property>
                             <property name="paddingLeft">0pt</property>
                             <property name="paddingBottom">8pt</property>
-                            <property name="paddingRight">8pt</property>
+                            <property name="paddingRight">0pt</property>
                             <label id="211">
                                 <property name="backgroundColor">silver</property>
                                 <property name="paddingTop">0pt</property>
                                 <property name="paddingLeft">8pt</property>
-                                <text-property name="text"> </text-property>
+                                <text-property name="text">*</text-property>
                             </label>
                         </cell>
                     </row>
