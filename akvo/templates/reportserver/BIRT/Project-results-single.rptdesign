@@ -3384,6 +3384,12 @@ select 100-? as number
             <property name="borderTopStyle">solid</property>
             <property name="borderTopWidth">1pt</property>
         </style>
+        <style name="Sectionheader" id="265">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">18pt</property>
+            <property name="fontWeight">bolder</property>
+            <property name="color">#8000FF</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -3492,9 +3498,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             <row id="126">
                 <cell id="127">
                     <label id="132">
+                        <property name="style">Sectionheader</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="color">orange</property>
                         <property name="marginTop">0pt</property>
                         <property name="paddingTop">8pt</property>
                         <property name="paddingLeft">8pt</property>
@@ -3505,9 +3511,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 </cell>
                 <cell id="128">
                     <label id="133">
+                        <property name="style">Sectionheader</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="color">orange</property>
                         <property name="paddingTop">8pt</property>
                         <property name="paddingLeft">8pt</property>
                         <property name="paddingBottom">8pt</property>
@@ -3587,9 +3593,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             <row id="251">
                 <cell id="253">
                     <label id="147">
+                        <property name="style">Sectionheader</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="color">orange</property>
                         <property name="marginLeft">0pt</property>
                         <property name="paddingTop">8pt</property>
                         <property name="paddingLeft">8pt</property>
@@ -3646,9 +3652,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <row id="241">
                     <cell id="242">
                         <label id="243">
+                            <property name="style">Sectionheader</property>
                             <property name="fontSize">18pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="color">orange</property>
                             <property name="paddingTop">8pt</property>
                             <property name="paddingLeft">8pt</property>
                             <property name="paddingBottom">8pt</property>
@@ -3712,9 +3718,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <row id="229">
                     <cell id="230">
                         <label id="237">
+                            <property name="style">Sectionheader</property>
                             <property name="fontSize">18pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="color">orange</property>
                             <property name="paddingTop">8pt</property>
                             <property name="paddingLeft">8pt</property>
                             <property name="paddingBottom">8pt</property>
@@ -3838,9 +3844,9 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <row id="14">
                     <cell id="15">
                         <label id="151">
+                            <property name="style">Sectionheader</property>
                             <property name="fontSize">18pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="color">orange</property>
                             <property name="paddingTop">8pt</property>
                             <property name="paddingLeft">0pt</property>
                             <property name="paddingBottom">8pt</property>
@@ -3886,7 +3892,8 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="rowSpan">1</property>
                             <text-data id="159">
                                 <property name="fontSize">14pt</property>
-                                <property name="color">aqua</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="color">teal</property>
                                 <property name="paddingTop">8pt</property>
                                 <property name="paddingLeft">0pt</property>
                                 <property name="paddingBottom">1pt</property>
@@ -3941,11 +3948,11 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="fontSize">12pt</property>
                                 <property name="color">blue</property>
                                 <property name="paddingLeft">8pt</property>
-                                <expression name="valueExpr">"Indicator " + b++ + ": " + row["indicator_title"]</expression>
+                                <expression name="valueExpr">"INDICATOR " + b++ + ": " + row["indicator_title"]</expression>
                                 <property name="contentType">html</property>
                             </text-data>
                             <text-data id="263">
-                                <property name="color">maroon</property>
+                                <property name="color">purple</property>
                                 <property name="paddingLeft">8pt</property>
                                 <property name="paddingBottom">8pt</property>
                                 <list-property name="visibility">
@@ -5241,7 +5248,7 @@ reportContext.getGlobalVariable('debug')</expression>
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">8pt</property>
                         <text-data id="223">
-                            <property name="color">maroon</property>
+                            <property name="color">purple</property>
                             <expression name="valueExpr">row["actual_comment"]</expression>
                             <property name="contentType">html</property>
                         </text-data>
