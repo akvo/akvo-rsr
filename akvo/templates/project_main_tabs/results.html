@@ -7,7 +7,7 @@
             <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
           </div>
           {% for result in project.results.all %}
-            <div class="result-nav">
+            <div class="result-nav bg-transition">
               <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
                 <h3 class="result-title">
                   <i class="fa fa-chevron-down"></i>
@@ -101,16 +101,16 @@
                   <table class="table table-responsive">
                     <thead>
                       <tr>
-                        <td>{% trans "Start" %}</td>
-                        <td>{% trans "End" %}</td>
-                        <td>{% trans "Progress" %}</td>
-                        <td>{% trans "Target" %}</td>
-                        <td></td>
-                        <td></td>
+                        <td class="th-start">{% trans "Start" %}</td>
+                        <td class="th-end">{% trans "End" %}</td>
+                        <td class="th-progress">{% trans "Progress" %}</td>
+                        <td class="th-target">{% trans "Target" %}</td>
+                        <td class="th-add"></td>
+                        <td class="th-expand"></td>
                       </tr>
                     </thead>
                     {% for period in indicator.periods.all %}
-                      <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
+                      <tbody class="indicator-period bg-transition" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
                         <tr class="indicator-period-{{period.id}}-tr">
                           <td class="fromTime">{{period.period_start}}</td>
                           <td class="toTime">{{period.period_end}}</td>
@@ -133,15 +133,18 @@
                               <span class="indicator-bar-progress-complete"> / {{period.target_value}}</span>
                             </div>
                           </td>
-                          <td class="add-update-td add-new-update-container">
-                              <button class="add-button">+ {% trans 'Add a new update' %}</button>
-                          </td>
+                          <td></td>
                           <td class="expand-td">
                             <span class="expand-indicator-period clickable">
                               <i class="fa fa-chevron-down"></i>
                               <i class="fa fa-chevron-up"></i>
                             </span>
                           </td>
+                        </tr>
+                        <tr class="add-button-tr">
+                          <td colspan="6" class="add-update-td add-new-update-container">
+                              <a class="add-button btn btn-primary">+ {% trans 'Add a new update' %}</button>
+                          </td>                          
                         </tr>
                       </tbody>
                     {% endfor %}

@@ -355,6 +355,7 @@ if (firstAccordionChild !== null) {
           removeFromPeriod(periodId, 'tr.update-dialog-container');
           displayAddButton(periodId, false);
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded', periodId);
+          document.querySelector('.indicator-period-' + periodId + '-tr').parentNode.classList.remove('expanded');
           /* Remove the 'add' update in the store, in case the 'add Update' button was clicked */
           removeUpdatefromStore(periodId, 'add');
         } else {
@@ -364,6 +365,7 @@ if (firstAccordionChild !== null) {
           parentElement.parentNode.appendChild(getUpdateDialog(periodId));
 
           this.parentNode.parentNode.classList.add('expanded');
+          this.parentNode.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
 
           addEditOnClicks();

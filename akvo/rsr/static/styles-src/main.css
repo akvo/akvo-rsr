@@ -1983,6 +1983,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       opacity: 0.8; }
     .results .clickable:active {
       opacity: 0.6; }
+  .results .bg-transition {
+    -moz-transition: background-color 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out;
+    -webkit-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out; }
   .results .results-container {
     display: -webkit-box;
     display: -moz-box;
@@ -1997,18 +2002,20 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     vertical-align: top;
     border: 1px solid #e0e1e2; }
     .results .sidebar .result-nav {
-      padding: 0.25em 0.75em 0 0.75em; }
-      .results .sidebar .result-nav:after {
+      padding: 1px 0.75em 1.75em 0.75em; }
+      .results .sidebar .result-nav:before {
         height: 1px;
         background-color: #e0e1e2;
         width: 100%;
         display: block;
-        margin: 1.75em auto 0 auto;
-        content: ''; }
-    .results .sidebar .result-nav:last-child {
-      padding-bottom: 1em; }
-      .results .sidebar .result-nav:last-child:after {
-        display: none; }
+        content: '';
+        margin: 0 auto;
+        -moz-transition: background-color 0.25s ease-in-out;
+        -o-transition: background-color 0.25s ease-in-out;
+        -webkit-transition: background-color 0.25s ease-in-out;
+        transition: background-color 0.25s ease-in-out; }
+      .results .sidebar .result-nav:last-child {
+        padding-bottom: 1em; }
     .results .sidebar .result-nav-header {
       padding: 0.25em 0.75em 0 0.75em; }
       .results .sidebar .result-nav-header h3 {
@@ -2026,10 +2033,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap; }
-      .results .sidebar .result-nav.expanded:after {
+      .results .sidebar .result-nav.expanded:before {
         background-color: transparent; }
       .results .sidebar .result-nav.expanded h3 {
         color: #202024; }
+      .results .sidebar .result-nav.expanded ~ .result-nav:before {
+        background-color: transparent; }
       .results .sidebar .result-nav .result-title .fa {
         float: right;
         font-size: 1.3em;
@@ -2058,9 +2067,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           cursor: pointer;
           padding: 0.5em 0 0 5px;
           background-color: white;
-          margin-top: 1em; }
+          margin-top: 1em;
+          background-color: transparent; }
           .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
-            padding: 0.25em 0em;
+            padding: 0.25em 0em 0.75em 0.5em;
             /* Transparent border means text doesn't shift when
             ** we add a colored border to active elements.
             */
@@ -2149,11 +2159,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         /*background-color: rgb(235,235,231);*/ }
         .results .indicator-container .indicator-group .table tbody.indicator-period {
           border-top: 1px solid #E7E8E8; }
+        .results .indicator-container .indicator-group .table tbody.expanded {
+          background-color: white; }
         .results .indicator-container .indicator-group .table thead {
           font-weight: normal;
           color: silver; }
           .results .indicator-container .indicator-group .table thead tr {
-            background-color: #e8e8e8; }
+            background-color: #ececec; }
         .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
           border: none;
           color: #acacac; }
@@ -2161,19 +2173,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           min-height: 125px; }
           .results .indicator-container .indicator-group .table tr .add-button {
             display: none; }
-          .results .indicator-container .indicator-group .table tr.expanded .add-button {
-            border: none;
-            background-color: transparent;
-            color: #00aaff;
-            display: block; }
-            .results .indicator-container .indicator-group .table tr.expanded .add-button:hover {
-              background-color: rgba(32, 32, 36, 0); }
+          .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
+            text-align: right; }
+            .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
+              border: none;
+              display: inline-block;
+              margin-right: 1.4em; }
         .results .indicator-container .indicator-group .table td {
           vertical-align: middle; }
-          .results .indicator-container .indicator-group .table td.fromTime, .results .indicator-container .indicator-group .table td.toTime {
-            max-width: 15%; }
+          .results .indicator-container .indicator-group .table td.fromTime, .results .indicator-container .indicator-group .table td.toTime, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.expand-td {
+            white-space: nowrap; }
           .results .indicator-container .indicator-group .table td.indicator-bar-td {
-            min-width: 35%; }
+            width: 55%; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-up {
           display: none; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-down {
@@ -2197,7 +2208,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       top: 38px;
       bottom: 24px;
       left: 0px;
-      height: 5px;
+      height: 8px;
       -moz-border-radius: 2px;
       -o-border-radius: 2px;
       -webkit-border-radius: 2px;
@@ -2207,7 +2218,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       background-color: #E2EBF5;
       right: 0px; }
     .results .indicator-bar-display-container .indicator-bar-progress-amount {
-      background-color: #E2EBF5; }
+      background-color: rgba(0, 0, 0, 0.2); }
     .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
       ** padding to ensure it doesn't overflow the parent
@@ -2218,7 +2229,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
         position: absolute;
         width: 3px;
-        height: 20px;
+        height: 23px;
         top: 30px;
         background-color: #A3C7E3;
         text-align: center; }
@@ -2236,18 +2247,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     font-weight: bold;
     color: #A3C7E3;
     vertical-align: bottom; }
-  .results .indicator-container .indicator-group .table tbody tr.expanded {
+  .results .indicator-container .indicator-group .table tbody {
     background-color: white;
     border-bottom: none !important; }
-    .results .indicator-container .indicator-group .table tbody tr.expanded .indicator-bar-td * {
+    .results .indicator-container .indicator-group .table tbody .indicator-bar-td * {
       /*display: none;*/ }
   .results .update-dialog-container td {
-    background-color: white; }
+    padding: 8px 2em; }
     .results .update-dialog-container td .update-entry-container {
-      padding: 1em 0.5em;
+      padding: 2em;
       margin-bottom: 2em;
       position: relative;
-      background-color: #EBEBE7; }
+      background-color: #ececec; }
       .results .update-dialog-container td .update-entry-container .update-exceed-target {
         margin: 10px 0 0 0; }
         .results .update-dialog-container td .update-entry-container .update-exceed-target input {
@@ -2262,15 +2273,19 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         margin-right: 15px; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
-          bottom: -10px;
-          margin-left: -5px;
-          color: #A3C7E3; }
+          bottom: -18px;
+          width: 30px;
+          margin-left: -15px;
+          text-align: center;
+          color: #B5B5B5; }
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:nth-child(2) {
+            color: #A3C7E3; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           position: absolute;
           top: 38px;
           bottom: 24px;
           left: 0px;
-          height: 5px;
+          height: 14px;
           -moz-border-radius: 2px;
           -o-border-radius: 2px;
           -webkit-border-radius: 2px;
@@ -2280,7 +2295,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           background-color: #fff;
           right: 0px; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
-          background-color: #fff; }
+          background-color: #fff;
+          border-right: none; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
           /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
@@ -2292,9 +2308,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             position: absolute;
             width: 3px;
             height: 20px;
-            top: 30px;
-            background-color: #A3C7E3;
+            top: 35px;
+            background-color: #B5B5B5;
             text-align: center; }
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:first-child {
+              background-color: #A3C7E3; }
             .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
               border: none; }
       .results .update-dialog-container td .update-entry-container .target-td {
@@ -2419,7 +2437,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -moz-border-radius: 4px;
           -o-border-radius: 4px;
           -webkit-border-radius: 4px;
-          border-radius: 4px; }
+          border-radius: 4px;
+          box-shadow: none; }
           .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
             background-color: rgba(255, 255, 255, 0);
             -moz-border-radius: 4px;
@@ -2427,20 +2446,34 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             -webkit-border-radius: 4px;
             border-radius: 4px; }
           .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
-            width: 14px;
+            width: 28px;
             height: 28px;
             z-index: 9999;
-            background-color: #202024;
+            background-color: #007ab8;
             cursor: pointer;
-            left: -7px;
+            left: -14px;
             box-shadow: none;
-            top: -12px;
-            content: "|||";
+            top: -7px;
             color: white; }
             .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
-              display: none; }
+              display: block;
+              content: '|||';
+              color: white;
+              width: 26px;
+              height: 26px;
+              line-height: 23px;
+              text-align: center;
+              letter-spacing: -2px;
+              color: white;
+              background-color: transparent;
+              top: 0;
+              left: -1px; }
             .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
               display: none; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+              background-color: #009ceb; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+              background-color: #de8929; }
         .results .update-dialog-container td .update-entry-container .edit-slider.active {
           display: initial; }
 
