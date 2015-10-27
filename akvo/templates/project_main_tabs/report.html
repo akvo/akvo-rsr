@@ -403,24 +403,21 @@
                       </tbody>
                   </table>
               {% endif %}
-              {% if project.documents.all %}
-              <h4>{% trans "Activity Documents" %}</h4>
+
+              {% if project.links.all or project.documents.all %}
+              <h4>{% trans "Activity links" %}</h4>
               <table class="table table-striped table-bordered table-responsive">
-                  <thead>
-                      <tr>
-                          <th>{% trans "Title" %}</th>
-                          <th>{% trans "Category" %}</th>
-                          <th>{% trans "Language" %}</th>
-                          <th>{% trans "Link" %}</th>
-                      </tr>
-                  </thead>
                   <tbody>
+                      {% for link in project.links.all %}
+                      <tr>
+                          <th scope="row">{% trans "Link" %}</th>
+                          <td>{{link|safe}}</td>
+                      </tr>
+                      {% endfor %}
                       {% for doc in project.documents.all %}
                       <tr>
-                          <td>{{doc.title}}</td>
-                          <td>{{doc.iati_category}}</td>
-                          <td>{{doc.iati_language}}</td>
-                          <td>{{doc.url}}</td>
+                          <th scope="row">{% trans "Document" %}</th>
+                          <td>{{doc|safe}}</td>
                       </tr>
                       {% endfor %}
                   </tbody>
@@ -647,7 +644,6 @@
                   </tbody>
               </table>
               {% endif %}
-
           </div>
   </div>
   </article>
