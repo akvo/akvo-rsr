@@ -900,17 +900,8 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
           // Object successfully retrieved
-          var response, updateNode;
-
-          response = JSON.parse(request.response);
-
+          var response = JSON.parse(request.response);
           addUpdateToStore(response);
-
-          // Try to display the photo in the update node
-          updateNode = findUpdate(response.indicator_period.id, response.id);
-          if (updateNode !== undefined) {
-            displayPhoto(response, updateNode);
-          }
         } else {
           return false;
         }
@@ -1223,10 +1214,9 @@ if (firstAccordionChild !== null) {
           return a.id > b.id;
       });
 
-      var actualText, periodNode, periodValue, periodTarget, periodBaseline, progress;
+      var actualText, periodNode, periodTarget, periodBaseline, progress;
 
       periodNode = findPeriod(update.indicator_period.id);
-      periodValue = parseInt(periodNode.getAttribute('period-actual'));
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
 
@@ -1238,7 +1228,7 @@ if (firstAccordionChild !== null) {
         if (entry.id <= update.id || update.id === 'add') {
           /* This update is older (or the same) as the update we're building the dialog for.
           We need to make a marker for it. */
-          progress += parseInt(entry.period_update);
+          progress += parseInt(entry.period_update, 10);
 
           //if (progress > periodTarget) {
             // The target has been exceeded. Do not place marker.
