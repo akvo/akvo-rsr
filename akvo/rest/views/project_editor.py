@@ -369,7 +369,7 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
         orig_data = field_data
 
     elif field[2] == 'none-boolean':
-        field_data = None if orig_data == 'none' else orig_data
+        field_data = True if orig_data == '1' else False if orig_data == '2' else None
 
     elif field[2] == 'none':
         field_data = orig_data if orig_data else None
