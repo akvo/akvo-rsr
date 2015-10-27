@@ -112,12 +112,19 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     def delete(self, *args, **kwargs):
         if self.indicator_period and self.period_update:
-            try:
-                self.indicator_period.update_actual_value(
-                    Decimal(self.period_update) * -1
-                )
-            except (InvalidOperation, TypeError):
-                pass
+            # Subsctract the value of the update from the actual value of the indicator period
+            if ProjectUpdate.objects.filter(indicator_period=self.indicator_period).\
+                    exclude(pk=self.pk).exists():
+                try:
+                    self.indicator_period.update_actual_value(
+                        Decimal(self.period_update) * -1
+                    )
+                except (InvalidOperation, TypeError):
+                    pass
+            else:
+                # There's no other updates for this indicator period, remove actual value
+                self.indicator_period.actual_value = ''
+                self.indicator_period.save()
         super(ProjectUpdate, self).delete(*args, **kwargs)
 
     def clean(self):

@@ -1223,61 +1223,52 @@ if (firstAccordionChild !== null) {
           return a.id > b.id;
       });
 
-      var actualText, highestValue, periodNode, periodValue, periodTarget, periodBaseline;
-
-      highestValue = 0;
+      var actualText, periodNode, periodValue, periodTarget, periodBaseline, progress;
 
       periodNode = findPeriod(update.indicator_period.id);
       periodValue = parseInt(periodNode.getAttribute('period-actual'));
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
 
-      for (var i = previousUpdates.length - 1; i >= 0; i--) {
-        var entry;
+      progress = periodBaseline;
 
-        entry = previousUpdates[i];
+      for (var i=0; i < previousUpdates.length; i++) {
+        var entry = previousUpdates[i];
 
-        if (entry.id > update.id && update.id !== 'add') {
-          /* This update is *newer* than the one we're building the dialog
-          ** for. We don't need to add a marker for it, but we do need to
-          ** use it's "change" value to calculate the end value for the
-          ** timeline for this particular update.
-          */
-          periodValue = periodValue - parseInt(entry.period_update);
-        } else {
-          /* This update is *older* (or the same) as the update we're
-          ** building the dialog for. We need to make a marker for it.
-          */
-          if (periodValue > highestValue) {
-            highestValue = periodValue;
+        if (entry.id <= update.id || update.id === 'add') {
+          /* This update is older (or the same) as the update we're building the dialog for.
+          We need to make a marker for it. */
+          progress += parseInt(entry.period_update);
+
+          //if (progress > periodTarget) {
+            // The target has been exceeded. Do not place marker.
+
+          if (progress <= periodTarget) {
+            var updateMarker = document.createElement('div');
+            var textSpan = document.createElement('div');
+
+            var percentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
+            percentage = percentage > 100 ? 100 : percentage;
+
+            updateMarker.classList.add('update-dialog-timeline-marker');
+            updateMarker.classList.add('indicator-bar-progress');
+            updateMarker.style.left = percentage + '%';
+            updateMarker.style['z-index'] = progress;
+
+            textSpan.classList.add('indicator-bar-progress-text');
+            textSpan.textContent = progress;
+            textSpan.style.left = percentage + '%';
+
+            markerContainer.appendChild(updateMarker);
+            markerContainer.appendChild(textSpan);
           }
-          var updateMarker = document.createElement('div');
-          var textSpan = document.createElement('div');
-
-          var percentage = (periodValue - periodBaseline) / (periodTarget - periodBaseline) * 100;
-          percentage = percentage > 100 ? 100 : percentage;
-
-          updateMarker.classList.add('update-dialog-timeline-marker');
-          updateMarker.classList.add('indicator-bar-progress');
-          updateMarker.style.left = percentage + '%';
-          updateMarker.style['z-index'] = periodValue;
-
-
-          textSpan.classList.add('indicator-bar-progress-text');
-          textSpan.textContent = periodValue > periodTarget ? periodTarget : periodValue;
-          textSpan.style.left = percentage + '%';
-
-          markerContainer.appendChild(updateMarker);
-          markerContainer.appendChild(textSpan);
-
-          periodValue = periodValue - parseFloat(entry.period_update);
         }
       }
       var indicatorBar = document.createElement('div');
       indicatorBar.classList.add('indicator-bar');
       progressContainer.appendChild(indicatorBar);
 
-      var highPercentage = (highestValue - periodBaseline) / (periodTarget - periodBaseline) * 100;
+      var highPercentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
       highPercentage = highPercentage > 100 ? 100 : highPercentage;
 
       var indicatorBarProgressAmount = document.createElement('div');
@@ -1287,18 +1278,18 @@ if (firstAccordionChild !== null) {
       progressContainer.appendChild(indicatorBarProgressAmount);
       progressContainer.appendChild(markerContainer);
 
-      updateContainer.setAttribute("current-actual", highestValue);
+      updateContainer.setAttribute("current-actual", progress);
       var sliderEl = document.createElement('div');
       sliderEl.classList.add('edit-slider');
-      sliderEl.setAttribute('data-start', highestValue);
+      sliderEl.setAttribute('data-start', progress);
       sliderEl.setAttribute('data-max', periodTarget);
 
       progressContainer.appendChild(sliderEl);
       timeLineEl.appendChild(progressContainer);
       updateContainer.appendChild(timeLineEl);
 
-      if (highestValue > periodTarget) {
-        exceedTargetNewValue.value = highestValue;
+      if (progress > periodTarget) {
+        exceedTargetNewValue.value = progress;
         exceedTargetCheckbox.checked = true;
       }
 
@@ -1307,7 +1298,7 @@ if (firstAccordionChild !== null) {
 
       actualText = document.createElement('span');
       actualText.classList.add('update-target-actual');
-      actualText.textContent = highestValue;
+      actualText.textContent = progress;
       targetEl.appendChild(actualText);
 
       targetText = document.createElement('span');
