@@ -318,7 +318,7 @@
                       <tbody>
                           {% for budget_item in project.budget_items.all %}
                           <tr>
-                              {% if 'other' in budget_item.label.label and budget_item.other_extra %}
+                              {% if 'Other' in budget_item.label.label and budget_item.other_extra %}
                                   <td>{{budget_item.other_extra}}</td>
                               {% else %}
                                   <td>{{budget_item.label}}</td>
