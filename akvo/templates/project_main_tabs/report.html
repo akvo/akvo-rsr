@@ -27,9 +27,13 @@
                       </table>
                   </div>
                   <div class="col-sm-6">
-                      <h4>{% trans "Activity Dates" %}</h4>
+                      <h4>{% trans "Activity dates and status" %}</h4>
                       <table class="table table-striped table-bordered table-responsive">
                           <tbody>
+                              <tr>
+                                  <th scope="row">{% trans "Status" %}</th>
+                                  <td>{{project.get_status_display}}</td>
+                              </tr>
                               <tr>
                                   <th scope="row">{% trans "Planned Start Date" %}</th>
                                   <td>{{project.date_start_planned|default_if_none:""}}</td>
