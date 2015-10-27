@@ -61,29 +61,39 @@
                       </tr>
                   </thead>
                   <tbody>
-                      {% for parent in project.parents.all %}
-                      <tr>
-                          <td>{% trans "Parent" %}</td>
-                          <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
-                          <td>{{parent.iati_activity_id}}</td>
-                          <td>{{parent.pk}}</td>
-                      </tr>
+                      {% for parent in project.parents %}
+                          <tr>
+                              <td>1 - {% trans "Parent" %}</td>
+                              <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
+                              <td>{{parent.iati_activity_id}}</td>
+                              <td>{{parent.pk}}</td>
+                          </tr>
                       {% endfor %}
-                      {% for child in project.children.all %}
-                      <tr>
-                          <td>{% trans "Child" %}</td>
-                          <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
-                          <td>{{child.iati_activity_id}}</td>
-                          <td>{{child.pk}}</td>
-                      </tr>
+                      {% for child in project.children %}
+                          <tr>
+                              <td>2 - {% trans "Child" %}</td>
+                              <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
+                              <td>{{child.iati_activity_id}}</td>
+                              <td>{{child.pk}}</td>
+                          </tr>
                       {% endfor %}
-                      {% for sibling in project.siblings.all %}
-                      <tr>
-                          <td>{% trans "Sibling" %}</td>
-                          <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
-                          <td>{{sibling.iati_activity_id}}</td>
-                          <td>{{sibling.pk}}</td>
-                      </tr>
+                      {% for sibling in project.siblings %}
+                          <tr>
+                              <td>3 - {% trans "Sibling" %}</td>
+                              <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
+                              <td>{{sibling.iati_activity_id}}</td>
+                              <td>{{sibling.pk}}</td>
+                          </tr>
+                      {% endfor %}
+                      {% for related_project in project.related_projects.all %}
+                          {% if not related_project.related_project %}
+                              <tr>
+                                  <td>{{related_project.iati_relation}}</td>
+                                  <td></td>
+                                  <td>{{related_project.related_iati_id}}</td>
+                                  <td></td>
+                              </tr>
+                          {% endif %}
                       {% endfor %}
                   </tbody>
               </table>
