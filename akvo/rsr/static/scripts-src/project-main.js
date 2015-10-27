@@ -1163,6 +1163,7 @@ if (firstAccordionChild !== null) {
         updateContainer.appendChild(deleteEl);
 
         deleteConfirmEl = document.createElement('div');
+        // TODO: use "delete_confirm_text" from translation strings in main template
         deleteConfirmEl.textContent = "Are you sure you want to delete this update?";
         deleteConfirmEl.style.display = 'none';
         deleteConfirmEl.classList.add('delete-confirm');
@@ -1171,12 +1172,14 @@ if (firstAccordionChild !== null) {
         deleteConfirmYesEl.classList.add('btn');
         deleteConfirmYesEl.classList.add('btn-primary');
         deleteConfirmYesEl.classList.add('delete-confirm-yes');
+        // TODO: use "delete_confirm_yes_text" from translation strings in main template
         deleteConfirmYesEl.textContent = "Delete update";
 
         deleteConfirmNoEl = document.createElement('a');        
         deleteConfirmNoEl.classList.add('btn');
         deleteConfirmNoEl.classList.add('btn-primary');  
         deleteConfirmNoEl.classList.add('delete-confirm-no');   
+        // TODO: use "delete_confirm_cancel_text" from translation strings in main template
         deleteConfirmNoEl.textContent = "Cancel";   
 
         deleteConfirmContentsEl = document.createElement('div');    
