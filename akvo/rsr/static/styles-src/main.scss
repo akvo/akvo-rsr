@@ -3056,6 +3056,43 @@ body {
           }
         }
 
+        .delete-confirm {
+            display: none;
+            position: absolute;
+            right: 0px;
+            top: 40px;
+            height: 90px;
+            background-color: white;
+            color: $akvoBlack;
+            padding: 1em;
+            z-index: 101;
+
+            > div {
+                height: 40px;
+                position: relative;
+            }
+
+            .delete-confirm-no {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+            }
+
+            .delete-confirm-yes {
+                background-color: #ae0922;
+                border-color: #ae0922;
+                margin-left: auto;
+                position: absolute;
+                right: 10px;
+                top: 10px;
+
+                &:hover {
+                    background-color: #ff5500;
+                    border-color: #ff5500;
+                }
+            }
+        }
+
         .update-date {
           display: inline-block;
           text-align: left;
@@ -3067,6 +3104,10 @@ body {
           width: 30%;
           margin-right: 10%;
           color: $akvoBlack;
+
+          &.delete-pending {
+            margin-bottom: 90px;
+          }
         }
         .update-timeline {
           display: inline-block;
