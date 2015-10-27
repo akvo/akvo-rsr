@@ -3235,29 +3235,35 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">number</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">number</text-property>
                     <text-property name="heading">number</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
                     <property name="nativeName"></property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                     <property name="position">1</property>
-                    <expression name="defaultValue" type="javascript">1</expression>
+                    <expression name="defaultValue" type="javascript">33</expression>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
                     <property name="nativeName"></property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                     <property name="position">2</property>
-                    <expression name="defaultValue" type="javascript">1</expression>
+                    <expression name="defaultValue" type="javascript">67</expression>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -3267,7 +3273,12 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
                     <structure>
                         <property name="position">1</property>
                         <property name="name">number</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -3277,13 +3288,20 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
                     <property name="position">1</property>
                     <property name="name">number</property>
                     <property name="nativeName">number</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select ? as number
+            <xml-property name="queryText"><![CDATA[select ? as number, 'A' as name
 union all
-select 100-? as number
+select ? as number, 'B' as name
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -3297,7 +3315,7 @@ select 100-? as number
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -3312,7 +3330,7 @@ select 100-? as number
             <design:name></design:name>
             <design:position>2</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -3388,7 +3406,7 @@ select 100-? as number
             <property name="fontFamily">sans-serif</property>
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bolder</property>
-            <property name="color">#8000FF</property>
+            <property name="color">#D87E26</property>
         </style>
     </styles>
     <page-setup>
@@ -3484,7 +3502,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             <property name="contentType">html</property>
         </text-data>
         <grid id="123">
-            <property name="backgroundColor">silver</property>
+            <property name="backgroundColor">#EDEFE1</property>
             <property name="marginTop">0pt</property>
             <property name="marginLeft">0pt</property>
             <property name="marginBottom">0pt</property>
@@ -3760,7 +3778,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
         </table>
         <table name="results_table" id="13">
             <property name="marginLeft">8pt</property>
-            <property name="width">7.979166666666667in</property>
+            <property name="width">7.96875in</property>
             <property name="dataSet">Results_indicators_periods</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -3828,21 +3846,23 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
             <property name="pageBreakInterval">50</property>
+            <column id="275">
+                <property name="width">1.2708333333333333in</property>
+            </column>
             <column id="35">
-                <property name="width">2.7083333333333335in</property>
+                <property name="width">3.0729166666666665in</property>
             </column>
             <column id="167">
-                <property name="width">1.125in</property>
+                <property name="width">1.8958333333333333in</property>
             </column>
             <column id="37">
-                <property name="width">1.2291666666666667in</property>
-            </column>
-            <column id="119">
-                <property name="width">2.9166666666666665in</property>
+                <property name="width">1.6770833333333333in</property>
             </column>
             <header>
                 <row id="14">
-                    <cell id="15">
+                    <cell id="267">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <label id="151">
                             <property name="style">Sectionheader</property>
                             <property name="fontSize">18pt</property>
@@ -3876,7 +3896,6 @@ reportContext.getGlobalVariable('debug')</expression>
                         </text-data>
                     </cell>
                     <cell id="17"/>
-                    <cell id="112"/>
                 </row>
             </header>
             <group id="18">
@@ -3887,13 +3906,13 @@ reportContext.getGlobalVariable('debug')</expression>
                 </structure>
                 <header>
                     <row id="19">
-                        <cell id="20">
+                        <cell id="268">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <text-data id="159">
                                 <property name="fontSize">14pt</property>
                                 <property name="fontWeight">bold</property>
-                                <property name="color">teal</property>
+                                <property name="color">#6D8FAF</property>
                                 <property name="paddingTop">8pt</property>
                                 <property name="paddingLeft">0pt</property>
                                 <property name="paddingBottom">1pt</property>
@@ -3913,10 +3932,10 @@ reportContext.getGlobalVariable('debug')</expression>
                 </header>
                 <footer>
                     <row id="23">
+                        <cell id="273"/>
                         <cell id="24"/>
                         <cell id="165"/>
                         <cell id="26"/>
-                        <cell id="117"/>
                     </row>
                 </footer>
             </group>
@@ -3936,7 +3955,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
                             </structure>
                         </list-property>
-                        <cell id="76">
+                        <cell id="269">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <property name="paddingTop">0pt</property>
@@ -3966,20 +3985,21 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="contentType">html</property>
                             </text-data>
                             <grid id="192">
-                                <property name="width">7.666666666666667in</property>
+                                <property name="width">7.875in</property>
+                                <column id="277">
+                                    <property name="width">1.2291666666666667in</property>
+                                </column>
                                 <column id="193">
-                                    <property name="width">2.6145833333333335in</property>
+                                    <property name="width">3.0416666666666665in</property>
                                 </column>
                                 <column id="194">
-                                    <property name="width">1.25in</property>
+                                    <property name="width">1.96875in</property>
                                 </column>
                                 <column id="195">
-                                    <property name="width">1.09375in</property>
-                                </column>
-                                <column id="196">
-                                    <property name="width">2.7083333333333335in</property>
+                                    <property name="width">1.6145833333333333in</property>
                                 </column>
                                 <row id="202">
+                                    <cell id="276"/>
                                     <cell id="203">
                                         <label id="186">
                                             <property name="fontWeight">bold</property>
@@ -4006,11 +4026,6 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <text-property name="text">Target</text-property>
                                         </label>
                                     </cell>
-                                    <cell id="206">
-                                        <label id="187">
-                                            <text-property name="text"></text-property>
-                                        </label>
-                                    </cell>
                                 </row>
                             </grid>
                         </cell>
@@ -4018,7 +4033,7 @@ reportContext.getGlobalVariable('debug')</expression>
                 </header>
                 <footer>
                     <row id="79">
-                        <cell id="80">
+                        <cell id="272">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <property name="paddingTop">0pt</property>
@@ -4050,42 +4065,36 @@ reportContext.getGlobalVariable('debug')</expression>
                             <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
                         </structure>
                     </list-property>
-                    <cell id="28">
+                    <cell id="270">
                         <property name="paddingTop">1pt</property>
                         <property name="paddingLeft">8pt</property>
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">8pt</property>
-                        <property name="verticalAlign">middle</property>
-                        <text-data id="214">
-                            <property name="textAlign">center</property>
-                            <expression name="valueExpr">(row["period_start"] || row["period_end"]) ? row["period_start"] + " -- " + row["period_end"] : ""</expression>
-                            <property name="contentType">html</property>
-                        </text-data>
-                    </cell>
-                    <cell id="163">
-                        <property name="verticalAlign">middle</property>
-                        <data id="106">
-                            <property name="paddingLeft">8pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="resultSetColumn">actual_value</property>
-                        </data>
-                    </cell>
-                    <cell id="30">
-                        <property name="verticalAlign">middle</property>
-                        <data id="108">
-                            <property name="paddingLeft">8pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="resultSetColumn">target_value</property>
-                        </data>
-                    </cell>
-                    <cell id="115">
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
-                        <extended-item extensionName="Chart" id="226">
-                            <xml-property name="xmlRepresentation"><![CDATA[<model:DialChart xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
+                        <text-data name="percentage" id="215">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">8pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">-36pt</property>
+                            <property name="paddingTop">12pt</property>
+                            <property name="paddingBottom">12pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="display">block</property>
+                            <expression name="valueExpr" type="javascript">(row["actual_value"] &amp;&amp; row["target_value"]) ? Math.round(row["actual_value"] * 100 / row["target_value"]) + "%" : ""</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                        <extended-item extensionName="Chart" name="clock" id="266">
+                            <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithoutAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
-  <Type>Meter Chart</Type>
-  <SubType>Standard Meter Chart</SubType>
+  <Type>Pie Chart</Type>
+  <SubType>Standard</SubType>
   <Block>
     <Children xsi:type="layout:TitleBlock">
       <Bounds>
@@ -4095,7 +4104,7 @@ reportContext.getGlobalVariable('debug')</expression>
         <Height>0.0</Height>
       </Bounds>
       <Insets>
-        <Top>3.0</Top>
+        <Top>24.0</Top>
         <Left>3.0</Left>
         <Bottom>3.0</Bottom>
         <Right>3.0</Right>
@@ -4118,7 +4127,7 @@ reportContext.getGlobalVariable('debug')</expression>
       <Visible>false</Visible>
       <Label>
         <Caption>
-          <Value>Chart Title</Value>
+          <Value>77%</Value>
           <Font>
             <Size>16.0</Size>
             <Bold>true</Bold>
@@ -4161,10 +4170,10 @@ reportContext.getGlobalVariable('debug')</expression>
         <Height>0.0</Height>
       </Bounds>
       <Insets>
-        <Top>3.0</Top>
-        <Left>3.0</Left>
-        <Bottom>3.0</Bottom>
-        <Right>3.0</Right>
+        <Top>1.0</Top>
+        <Left>1.0</Left>
+        <Bottom>1.0</Bottom>
+        <Right>1.0</Right>
       </Insets>
       <Row>-1</Row>
       <Column>-1</Column>
@@ -4182,8 +4191,8 @@ reportContext.getGlobalVariable('debug')</expression>
         <Visible>false</Visible>
       </Outline>
       <Visible>true</Visible>
-      <HorizontalSpacing>5</HorizontalSpacing>
-      <VerticalSpacing>5</VerticalSpacing>
+      <HorizontalSpacing>0</HorizontalSpacing>
+      <VerticalSpacing>0</VerticalSpacing>
       <ClientArea>
         <Outline>
           <Style>Solid</Style>
@@ -4196,12 +4205,6 @@ reportContext.getGlobalVariable('debug')</expression>
           </Color>
           <Visible>false</Visible>
         </Outline>
-        <ShadowColor>
-          <Transparency>0</Transparency>
-          <Red>255</Red>
-          <Green>255</Green>
-          <Blue>255</Blue>
-        </ShadowColor>
         <Insets>
           <Top>0.0</Top>
           <Left>0.0</Left>
@@ -4278,7 +4281,7 @@ reportContext.getGlobalVariable('debug')</expression>
         <Visible>true</Visible>
       </Separator>
       <Position>Right</Position>
-      <ItemType>Series</ItemType>
+      <ItemType>Categories</ItemType>
       <Title>
         <Caption>
           <Value></Value>
@@ -4347,9 +4350,6 @@ reportContext.getGlobalVariable('debug')</expression>
       <Blue>255</Blue>
     </Background>
     <Visible>true</Visible>
-    <Cursor>
-      <Type>Auto</Type>
-    </Cursor>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
   <Units>Points</Units>
@@ -4373,7 +4373,7 @@ reportContext.getGlobalVariable('debug')</expression>
   </Interactivity>
   <EmptyMessage>
     <Caption>
-      <Value>No data.</Value>
+      <Value>This chart contains no data.</Value>
       <Font>
         <Alignment>
           <horizontalAlignment>Center</horizontalAlignment>
@@ -4402,7 +4402,7 @@ reportContext.getGlobalVariable('debug')</expression>
       <Bottom>10.0</Bottom>
       <Right>10.0</Right>
     </Insets>
-    <Visible>true</Visible>
+    <Visible>false</Visible>
   </EmptyMessage>
   <SeriesDefinitions>
     <Query>
@@ -4411,15 +4411,15 @@ reportContext.getGlobalVariable('debug')</expression>
     <SeriesPalette>
       <Entries xsi:type="attribute:ColorDefinition">
         <Transparency>255</Transparency>
-        <Red>128</Red>
-        <Green>0</Green>
-        <Blue>128</Blue>
+        <Red>51</Red>
+        <Green>153</Green>
+        <Blue>102</Blue>
       </Entries>
       <Entries xsi:type="attribute:ColorDefinition">
         <Transparency>255</Transparency>
-        <Red>242</Red>
-        <Green>88</Green>
-        <Blue>106</Blue>
+        <Red>192</Red>
+        <Green>192</Green>
+        <Blue>192</Blue>
       </Entries>
       <Entries xsi:type="attribute:ColorDefinition">
         <Transparency>255</Transparency>
@@ -4429,9 +4429,9 @@ reportContext.getGlobalVariable('debug')</expression>
       </Entries>
       <Entries xsi:type="attribute:ColorDefinition">
         <Transparency>255</Transparency>
-        <Red>128</Red>
-        <Green>255</Green>
-        <Blue>128</Blue>
+        <Red>0</Red>
+        <Green>0</Green>
+        <Blue>255</Blue>
       </Entries>
       <Entries xsi:type="attribute:ColorDefinition">
         <Transparency>255</Transparency>
@@ -4603,15 +4603,15 @@ reportContext.getGlobalVariable('debug')</expression>
       <SeriesPalette>
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
-          <Red>128</Red>
-          <Green>0</Green>
-          <Blue>128</Blue>
+          <Red>51</Red>
+          <Green>153</Green>
+          <Blue>102</Blue>
         </Entries>
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
-          <Red>242</Red>
-          <Green>88</Green>
-          <Blue>106</Blue>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Entries>
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
@@ -4621,9 +4621,9 @@ reportContext.getGlobalVariable('debug')</expression>
         </Entries>
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
-          <Red>128</Red>
-          <Green>255</Green>
-          <Blue>128</Blue>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>255</Blue>
         </Entries>
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
@@ -4788,7 +4788,7 @@ reportContext.getGlobalVariable('debug')</expression>
           <Blue>0</Blue>
         </Entries>
       </SeriesPalette>
-      <Series xsi:type="type:DialSeries">
+      <Series xsi:type="type:PieSeries">
         <Visible>true</Visible>
         <Label>
           <Caption>
@@ -4823,11 +4823,10 @@ reportContext.getGlobalVariable('debug')</expression>
           <Visible>false</Visible>
         </Label>
         <DataDefinition>
-          <Definition>(row[&quot;actual_value&quot;] &amp;&amp; row[&quot;target_value&quot;] &amp;&amp; !isNaN(row[&quot;actual_value&quot;]) &amp;&amp; !isNaN(row[&quot;target_value&quot;])) ? Math.min(100,row[&quot;actual_value&quot;] * 100 / row[&quot;target_value&quot;]) : 0.0</Definition>
+          <Definition>row[&quot;number&quot;]</Definition>
           <Grouping>
-            <Enabled>false</Enabled>
             <GroupType>Text</GroupType>
-            <AggregateExpression xsi:nil="true"/>
+            <AggregateExpression>Sum</AggregateExpression>
           </Grouping>
         </DataDefinition>
         <DataPoint>
@@ -4849,11 +4848,23 @@ reportContext.getGlobalVariable('debug')</expression>
           </Action>
         </Triggers>
         <Translucent>false</Translucent>
-        <Dial>
-          <StartAngle>0.0</StartAngle>
-          <StopAngle>180.0</StopAngle>
-          <Radius>80.0</Radius>
-          <LineAttributes>
+        <Explosion>0</Explosion>
+        <Title>
+          <Caption>
+            <Value></Value>
+            <Font>
+              <Size>16.0</Size>
+              <Bold>true</Bold>
+              <Alignment/>
+            </Font>
+          </Caption>
+          <Background xsi:type="attribute:ColorDefinition">
+            <Transparency>0</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Background>
+          <Outline>
             <Style>Solid</Style>
             <Thickness>1</Thickness>
             <Color>
@@ -4862,293 +4873,25 @@ reportContext.getGlobalVariable('debug')</expression>
               <Green>0</Green>
               <Blue>0</Blue>
             </Color>
-            <Visible>true</Visible>
-          </LineAttributes>
-          <DialRegions>
-            <Outline>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>0</Red>
-                <Green>0</Green>
-                <Blue>0</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </Outline>
-            <Fill xsi:type="attribute:ColorDefinition">
-              <Transparency>255</Transparency>
-              <Red>255</Red>
-              <Green>153</Green>
-              <Blue>0</Blue>
-            </Fill>
-            <StartValue xsi:type="data:NumberDataElement">
-              <Value>0.0</Value>
-            </StartValue>
-            <EndValue xsi:type="data:NumberDataElement">
-              <Value>25.0</Value>
-            </EndValue>
-            <Label>
-              <Caption>
-                <Value></Value>
-                <Font>
-                  <Alignment/>
-                </Font>
-              </Caption>
-              <Background xsi:type="attribute:ColorDefinition">
-                <Transparency>0</Transparency>
-                <Red>255</Red>
-                <Green>255</Green>
-                <Blue>255</Blue>
-              </Background>
-              <Outline>
-                <Style>Solid</Style>
-                <Thickness>1</Thickness>
-                <Color>
-                  <Transparency>255</Transparency>
-                  <Red>0</Red>
-                  <Green>0</Green>
-                  <Blue>0</Blue>
-                </Color>
-              </Outline>
-              <Insets>
-                <Top>0.0</Top>
-                <Left>2.0</Left>
-                <Bottom>0.0</Bottom>
-                <Right>3.0</Right>
-              </Insets>
-              <Visible>true</Visible>
-            </Label>
-            <LabelAnchor>North</LabelAnchor>
-            <InnerRadius>10.0</InnerRadius>
-            <OuterRadius>100.0</OuterRadius>
-          </DialRegions>
-          <DialRegions>
-            <Outline>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>0</Red>
-                <Green>0</Green>
-                <Blue>0</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </Outline>
-            <Fill xsi:type="attribute:ColorDefinition">
-              <Transparency>255</Transparency>
-              <Red>255</Red>
-              <Green>255</Green>
-              <Blue>153</Blue>
-            </Fill>
-            <StartValue xsi:type="data:NumberDataElement">
-              <Value>25.0</Value>
-            </StartValue>
-            <EndValue xsi:type="data:NumberDataElement">
-              <Value>75.0</Value>
-            </EndValue>
-            <Label>
-              <Caption>
-                <Value></Value>
-                <Font>
-                  <Alignment/>
-                </Font>
-              </Caption>
-              <Background xsi:type="attribute:ColorDefinition">
-                <Transparency>0</Transparency>
-                <Red>255</Red>
-                <Green>255</Green>
-                <Blue>255</Blue>
-              </Background>
-              <Outline>
-                <Style>Solid</Style>
-                <Thickness>1</Thickness>
-                <Color>
-                  <Transparency>255</Transparency>
-                  <Red>0</Red>
-                  <Green>0</Green>
-                  <Blue>0</Blue>
-                </Color>
-              </Outline>
-              <Insets>
-                <Top>0.0</Top>
-                <Left>2.0</Left>
-                <Bottom>0.0</Bottom>
-                <Right>3.0</Right>
-              </Insets>
-              <Visible>true</Visible>
-            </Label>
-            <LabelAnchor>North</LabelAnchor>
-            <InnerRadius>10.0</InnerRadius>
-            <OuterRadius>100.0</OuterRadius>
-          </DialRegions>
-          <DialRegions>
-            <Outline>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>0</Red>
-                <Green>0</Green>
-                <Blue>0</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </Outline>
-            <Fill xsi:type="attribute:ColorDefinition">
-              <Transparency>255</Transparency>
-              <Red>204</Red>
-              <Green>255</Green>
-              <Blue>204</Blue>
-            </Fill>
-            <StartValue xsi:type="data:NumberDataElement">
-              <Value>75.0</Value>
-            </StartValue>
-            <EndValue xsi:type="data:NumberDataElement">
-              <Value>100.0</Value>
-            </EndValue>
-            <Label>
-              <Caption>
-                <Value></Value>
-                <Font>
-                  <Alignment/>
-                </Font>
-              </Caption>
-              <Background xsi:type="attribute:ColorDefinition">
-                <Transparency>0</Transparency>
-                <Red>255</Red>
-                <Green>255</Green>
-                <Blue>255</Blue>
-              </Background>
-              <Outline>
-                <Style>Solid</Style>
-                <Thickness>1</Thickness>
-                <Color>
-                  <Transparency>255</Transparency>
-                  <Red>0</Red>
-                  <Green>0</Green>
-                  <Blue>0</Blue>
-                </Color>
-              </Outline>
-              <Insets>
-                <Top>0.0</Top>
-                <Left>2.0</Left>
-                <Bottom>0.0</Bottom>
-                <Right>3.0</Right>
-              </Insets>
-              <Visible>true</Visible>
-            </Label>
-            <LabelAnchor>North</LabelAnchor>
-            <InnerRadius>10.0</InnerRadius>
-            <OuterRadius>100.0</OuterRadius>
-          </DialRegions>
-          <MajorGrid>
-            <LineAttributes>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>196</Red>
-                <Green>196</Green>
-                <Blue>196</Blue>
-              </Color>
-              <Visible>true</Visible>
-            </LineAttributes>
-            <TickStyle>Below</TickStyle>
-            <TickAttributes>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>196</Red>
-                <Green>196</Green>
-                <Blue>196</Blue>
-              </Color>
-              <Visible>true</Visible>
-            </TickAttributes>
-          </MajorGrid>
-          <MinorGrid>
-            <LineAttributes>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>225</Red>
-                <Green>225</Green>
-                <Blue>225</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </LineAttributes>
-            <TickStyle>Below</TickStyle>
-            <TickAttributes>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>225</Red>
-                <Green>225</Green>
-                <Blue>225</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </TickAttributes>
-          </MinorGrid>
-          <Scale>
-            <Min xsi:type="data:NumberDataElement">
-              <Value>0.0</Value>
-            </Min>
-            <Max xsi:type="data:NumberDataElement">
-              <Value>100.0</Value>
-            </Max>
-            <MinorGridsPerUnit>5</MinorGridsPerUnit>
-            <StepNumber>4</StepNumber>
-          </Scale>
-          <Label>
-            <Caption>
-              <Value></Value>
-              <Font>
-                <Alignment/>
-                <Rotation>0.0</Rotation>
-              </Font>
-            </Caption>
-            <Background xsi:type="attribute:ColorDefinition">
-              <Transparency>0</Transparency>
-              <Red>255</Red>
-              <Green>255</Green>
-              <Blue>255</Blue>
-            </Background>
-            <Outline>
-              <Style>Solid</Style>
-              <Thickness>1</Thickness>
-              <Color>
-                <Transparency>255</Transparency>
-                <Red>0</Red>
-                <Green>0</Green>
-                <Blue>0</Blue>
-              </Color>
-              <Visible>false</Visible>
-            </Outline>
-            <Insets>
-              <Top>0.0</Top>
-              <Left>2.0</Left>
-              <Bottom>0.0</Bottom>
-              <Right>3.0</Right>
-            </Insets>
-            <Visible>false</Visible>
-          </Label>
-        </Dial>
-        <Needle>
-          <LineAttributes>
-            <Style>Solid</Style>
-            <Thickness>2</Thickness>
-            <Color>
-              <Transparency>255</Transparency>
-              <Red>0</Red>
-              <Green>0</Green>
-              <Blue>0</Blue>
-            </Color>
-            <Visible>true</Visible>
-          </LineAttributes>
-          <Decorator>Arrow</Decorator>
-        </Needle>
+          </Outline>
+          <Insets>
+            <Top>0.0</Top>
+            <Left>2.0</Left>
+            <Bottom>0.0</Bottom>
+            <Right>3.0</Right>
+          </Insets>
+          <Visible>true</Visible>
+        </Title>
+        <TitlePosition>Below</TitlePosition>
+        <LeaderLineAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Visible>true</Visible>
+        </LeaderLineAttributes>
+        <LeaderLineLength>10.0</LeaderLineLength>
+        <Ratio>1.0</Ratio>
+        <Rotation>90.0</Rotation>
+        <InnerRadius>60.0</InnerRadius>
       </Series>
       <Grouping>
         <GroupType>Text</GroupType>
@@ -5190,9 +4933,8 @@ reportContext.getGlobalVariable('debug')</expression>
         <Visible>false</Visible>
       </Label>
       <DataDefinition>
-        <Definition>1</Definition>
+        <Definition>row[&quot;name&quot;]</Definition>
       </DataDefinition>
-      <SeriesIdentifier></SeriesIdentifier>
       <DataPoint>
         <Components>
           <Type>Orthogonal_Value</Type>
@@ -5204,32 +4946,95 @@ reportContext.getGlobalVariable('debug')</expression>
     </Series>
     <Grouping>
       <Enabled>false</Enabled>
-      <GroupType>Numeric</GroupType>
+      <GroupType>Text</GroupType>
       <AggregateExpression>Sum</AggregateExpression>
     </Grouping>
+    <SortKey/>
   </SeriesDefinitions>
   <Coverage>1.0</Coverage>
-  <DialSuperimposition>false</DialSuperimposition>
-</model:DialChart>
+</model:ChartWithoutAxes>
 ]]></xml-property>
                             <property name="outputFormat">SVG</property>
                             <property name="inheritColumns">false</property>
                             <property name="display">block</property>
-                            <property name="height">1.0625in</property>
-                            <property name="width">1.0416666666666667in</property>
-                            <list-property name="visibility">
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="height">38pt</property>
+                            <property name="width">38pt</property>
+                            <property name="dataSet">Two_rows</property>
+                            <list-property name="paramBindings">
                                 <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!(row["actual_value"] &amp;&amp; row["target_value"])</expression>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value>row["actual_value"] &amp;&amp; row["target_value"] &amp;&amp; !isNaN(100 * row["actual_value"]/row["target_value"]) &#13;
+? &#13;
+Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
+:&#13;
+0</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="paramName">param_2</property>
+                                    <simple-property-list name="expression">
+                                        <value>row["actual_value"] &amp;&amp; row["target_value"] &amp;&amp; !isNaN(100 * row["actual_value"]/row["target_value"]) &#13;
+? &#13;
+100 - Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
+:&#13;
+0</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">number</property>
+                                    <expression name="expression" type="javascript">dataSetRow["number"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">name</property>
+                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                         </extended-item>
-                        <text-data id="215">
+                    </cell>
+                    <cell id="28">
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">8pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">8pt</property>
+                        <property name="verticalAlign">middle</property>
+                        <text-data id="214">
+                            <property name="fontSize">12pt</property>
                             <property name="textAlign">center</property>
-                            <property name="display">block</property>
-                            <expression name="valueExpr">(row["actual_value"] &amp;&amp; row["target_value"]) ? Math.round(row["actual_value"] * 100 / row["target_value"]) + "%" : ""</expression>
+                            <expression name="valueExpr">(row["period_start"] || row["period_end"]) ? row["period_start"] + " -- " + row["period_end"] : ""</expression>
                             <property name="contentType">html</property>
                         </text-data>
+                    </cell>
+                    <cell id="163">
+                        <property name="verticalAlign">middle</property>
+                        <data id="106">
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="resultSetColumn">actual_value</property>
+                        </data>
+                    </cell>
+                    <cell id="30">
+                        <property name="verticalAlign">middle</property>
+                        <data id="108">
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="resultSetColumn">target_value</property>
+                        </data>
                     </cell>
                 </row>
                 <row id="218">
@@ -5240,7 +5045,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <expression name="valueExpr" type="javascript">!row["actual_comment"]</expression>
                         </structure>
                     </list-property>
-                    <cell id="219">
+                    <cell id="271">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
                         <property name="paddingTop">1pt</property>
@@ -5257,10 +5062,10 @@ reportContext.getGlobalVariable('debug')</expression>
             </detail>
             <footer>
                 <row id="31">
+                    <cell id="274"/>
                     <cell id="32"/>
                     <cell id="166"/>
                     <cell id="34"/>
-                    <cell id="118"/>
                 </row>
             </footer>
         </table>
