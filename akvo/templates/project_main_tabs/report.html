@@ -463,7 +463,7 @@
                       <tr>
                           <td>{{result.title}}</td>
                           <td>{{result.iati_type}}</td>
-                          <td>{{result.aggregation_status|yesno:"Aggregatable,Not Aggregatable,"}}</td>
+                          <td>{{result.aggregation_status|yesno:"Yes,No,"}}</td>
                           <td>{{result.description}}</td>
                       </tr>
                       {% endif %}
@@ -500,7 +500,7 @@
                               </td>
                               {% for period in indicator.periods.all %}
                               {% if not forloop.first %}
-                              <tr><td></td><td></td><td></td><td></td><td></td><td></td>
+                              <tr><td></td><td></td><td></td><td></td>
                               {% endif %}
                               <td>{{period.period_start|default_if_none:""}}</td>
                               <td>{{period.period_end|default_if_none:""}}</td>
