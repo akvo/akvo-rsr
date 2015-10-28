@@ -3884,6 +3884,13 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">target_value_number</property>
+                    <text-property name="displayName">target_value_number</text-property>
+                    <expression name="expression" type="javascript">(dataSetRow["target_value"] &amp;&amp; !isNaN(dataSetRow["target_value"])) ? dataSetRow["target_value"] : -1</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
@@ -5143,7 +5150,30 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                             <property name="fontWeight">bold</property>
                             <property name="paddingLeft">1pt</property>
                             <property name="textAlign">center</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["target_value"] &amp;&amp; (!isNaN(row["target_value"]))</expression>
+                                </structure>
+                            </list-property>
                             <property name="resultSetColumn">target_value</property>
+                        </data>
+                        <data id="296">
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingLeft">1pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">center</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["target_value_number"] == -1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">target_value_number</property>
                         </data>
                     </cell>
                 </row>
