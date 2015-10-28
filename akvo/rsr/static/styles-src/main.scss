@@ -2983,7 +2983,7 @@ body {
             margin-left: -15px;
             text-align: center;
             color: #B5B5B5;
-            &:nth-child(2) {
+            &:last-child {
                 color: #A3C7E3;                
             }
           }
@@ -3018,7 +3018,7 @@ body {
               height: 20px;
               top: 35px;
               background-color: #B5B5B5;
-              &:first-child {
+              &:nth-last-child(2) {
                 background-color: #A3C7E3;                
               }
               text-align: center;

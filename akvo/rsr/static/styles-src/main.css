@@ -2289,7 +2289,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           margin-left: -15px;
           text-align: center;
           color: #B5B5B5; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:nth-child(2) {
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
             color: #A3C7E3; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           position: absolute;
@@ -2322,7 +2322,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             top: 35px;
             background-color: #B5B5B5;
             text-align: center; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:first-child {
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
               background-color: #A3C7E3; }
             .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
               border: none; }
