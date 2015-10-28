@@ -3422,16 +3422,13 @@ select ? as number, 'B' as name
             </structure>
         </style>
         <style name="progress_low" id="293">
-            <property name="fontFamily">sans-serif</property>
-            <property name="fontSize">12pt</property>
-            <property name="fontWeight">bold</property>
             <property name="color">#D95E75</property>
         </style>
         <style name="progress_middle" id="295">
-            <property name="fontFamily">sans-serif</property>
-            <property name="fontSize">12pt</property>
-            <property name="fontWeight">bold</property>
             <property name="color">#E17A0C</property>
+        </style>
+        <style name="progress_high" id="297">
+            <property name="color">#34B573</property>
         </style>
     </styles>
     <page-setup>
@@ -4124,6 +4121,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="backgroundColor">silver</property>
                                 <property name="paddingTop">0pt</property>
                                 <property name="paddingLeft">8pt</property>
+                                <property name="pageBreakBefore">avoid</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -4173,6 +4171,34 @@ reportContext.getGlobalVariable('debug')</expression>
  :&#13;
  ""</expression>
                             <property name="contentType">html</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">0.0</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">33.0</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">33</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">66</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">66</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
                         </text-data>
                         <extended-item extensionName="Chart" name="clock" id="266">
                             <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithoutAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
@@ -5110,13 +5136,6 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                                 <property name="category">Unformatted</property>
                             </structure>
                             <property name="textAlign">center</property>
-                            <list-property name="highlightRules">
-                                <structure>
-                                    <property name="operator">is-false</property>
-                                    <property name="color">#FF0000</property>
-                                    <expression name="testExpr" type="javascript">isNaN(row["actual_value"])</expression>
-                                </structure>
-                            </list-property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -5134,6 +5153,34 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                                 <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
                             </structure>
                             <property name="textAlign">center</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">0.0</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">33.0</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">33</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">66</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">66</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -5194,7 +5241,37 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">8pt</property>
                         <text-data id="223">
-                            <property name="color">#004040</property>
+                            <property name="style">progress_high</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">normal</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">0.0</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">33.0</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">33</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">66</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">66</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
                             <expression name="valueExpr">row["actual_comment"]</expression>
                             <property name="contentType">html</property>
                         </text-data>
