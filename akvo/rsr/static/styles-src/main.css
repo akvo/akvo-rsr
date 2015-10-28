@@ -2049,11 +2049,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         color: #202024; }
       .results .sidebar .result-nav.expanded ~ .result-nav:before {
         background-color: transparent; }
-      .results .sidebar .result-nav .result-title .fa {
-        float: right;
-        font-size: 1.3em;
-        margin-right: 6px;
-        text-shadow: 0 1px 0 white; }
+      .results .sidebar .result-nav .result-title {
+        position: relative; }
+        .results .sidebar .result-nav .result-title .fa {
+          float: right;
+          font-size: 1.3em;
+          margin-right: 6px;
+          text-shadow: 0 1px 0 white; }
+        .results .sidebar .result-nav .result-title > span {
+          max-width: 80%;
+          display: block;
+          text-overflow: ellipsis;
+          overflow: hidden; }
       .results .sidebar .result-nav .result-indicator-count {
         color: #bcbca6;
         margin-top: -10px;
@@ -2082,8 +2089,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
             padding: 0.25em 0em 0.75em 0.5em;
             /* Transparent border means text doesn't shift when
-            ** we add a colored border to active elements.
-            */
+                        ** we add a colored border to active elements.
+                        */
             border-left: 4px solid transparent; }
             .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
               background-color: #ececec;
@@ -2232,9 +2239,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       background-color: rgba(0, 0, 0, 0.2); }
     .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
-      ** padding to ensure it doesn't overflow the parent
-      ** container.
-      */
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
       position: relative;
       height: 100%; }
       .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
@@ -2310,9 +2317,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           border-right: none; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
           /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
+                        ** padding to ensure it doesn't overflow the parent
+                        ** container.
+                        */
           position: relative;
           height: 100%; }
           .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
