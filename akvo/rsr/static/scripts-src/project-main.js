@@ -1208,7 +1208,7 @@ if (firstAccordionChild !== null) {
       var dateObj = new Date(update.created_at);
       dateEl = document.createElement('div');
       dateEl.classList.add('update-date');
-      dateEl.textContent = dateObj.toString();
+      dateEl.textContent = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
       updateContainer.appendChild(dateEl);
     }
     if (update.user) {
