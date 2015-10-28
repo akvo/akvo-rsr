@@ -27,9 +27,13 @@
                       </table>
                   </div>
                   <div class="col-sm-6">
-                      <h4>{% trans "Activity Dates" %}</h4>
+                      <h4>{% trans "Activity dates and status" %}</h4>
                       <table class="table table-striped table-bordered table-responsive">
                           <tbody>
+                              <tr>
+                                  <th scope="row">{% trans "Status" %}</th>
+                                  <td>{{project.get_status_display}}</td>
+                              </tr>
                               <tr>
                                   <th scope="row">{% trans "Planned Start Date" %}</th>
                                   <td>{{project.date_start_planned|default_if_none:""}}</td>
@@ -61,29 +65,39 @@
                       </tr>
                   </thead>
                   <tbody>
-                      {% for parent in project.parents.all %}
-                      <tr>
-                          <td>{% trans "Parent" %}</td>
-                          <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
-                          <td>{{parent.iati_activity_id}}</td>
-                          <td>{{parent.pk}}</td>
-                      </tr>
+                      {% for parent in project.parents %}
+                          <tr>
+                              <td>1 - {% trans "Parent" %}</td>
+                              <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
+                              <td>{{parent.iati_activity_id}}</td>
+                              <td>{{parent.pk}}</td>
+                          </tr>
                       {% endfor %}
-                      {% for child in project.children.all %}
-                      <tr>
-                          <td>{% trans "Child" %}</td>
-                          <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
-                          <td>{{child.iati_activity_id}}</td>
-                          <td>{{child.pk}}</td>
-                      </tr>
+                      {% for child in project.children %}
+                          <tr>
+                              <td>2 - {% trans "Child" %}</td>
+                              <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
+                              <td>{{child.iati_activity_id}}</td>
+                              <td>{{child.pk}}</td>
+                          </tr>
                       {% endfor %}
-                      {% for sibling in project.siblings.all %}
-                      <tr>
-                          <td>{% trans "Sibling" %}</td>
-                          <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
-                          <td>{{sibling.iati_activity_id}}</td>
-                          <td>{{sibling.pk}}</td>
-                      </tr>
+                      {% for sibling in project.siblings %}
+                          <tr>
+                              <td>3 - {% trans "Sibling" %}</td>
+                              <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
+                              <td>{{sibling.iati_activity_id}}</td>
+                              <td>{{sibling.pk}}</td>
+                          </tr>
+                      {% endfor %}
+                      {% for related_project in project.related_projects.all %}
+                          {% if not related_project.related_project %}
+                              <tr>
+                                  <td>{{related_project.iati_relation}}</td>
+                                  <td></td>
+                                  <td>{{related_project.related_iati_id}}</td>
+                                  <td></td>
+                              </tr>
+                          {% endif %}
                       {% endfor %}
                   </tbody>
               </table>
@@ -174,11 +188,16 @@
                   <table class="table table-striped table-bordered table-responsive locationTab">
                       <thead>
                           <tr>
-                              <th>{% trans "Reference" %}</th>
-                              <th>{% trans "Name" %}</th>
-                              <th>{% trans "Description" %}</th>
                               <th>{% trans "Latitude" %}</th>
                               <th>{% trans "Longitude" %}</th>
+                              <th>{% trans "Country" %}</th>
+                              <th>{% trans "Reference" %}</th>
+                              <th>{% trans "Description" %}</th>
+                              <th>{% trans "City" %}</th>
+                              <th>{% trans "State" %}</th>
+                              <th>{% trans "Address 1" %}</th>
+                              <th>{% trans "Address 2" %}</th>
+                              <th>{% trans "Postal code" %}</th>
                               <th>{% trans "Reach" %}</th>
                               <th>{% trans "Exactness" %}</th>
                               <th>{% trans "Class" %}</th>
@@ -188,11 +207,16 @@
                       <tbody>
                           {% for location in project.locations.all %}
                           <tr>
-                              <td>{{location.reference}}</td>
-                              <td>{{location.name}}</td>
-                              <td>{{location.description}}</td>
                               <td>{{location.latitude}}</td>
                               <td>{{location.longitude}}</td>
+                              <td>{% if location.country %}{{location.country.name}}{% endif %}</td>
+                              <td>{{location.reference}}</td>
+                              <td>{{location.description}}</td>
+                              <td>{{location.city}}</td>
+                              <td>{{location.state}}</td>
+                              <td>{{location.address1}}</td>
+                              <td>{{location.address2}}</td>
+                              <td>{{location.postcode}}</td>
                               <td>{{location.iati_reach}}</td>
                               <td>{{location.iati_exactness}}</td>
                               <td>{{location.iati_class}}</td>
@@ -244,6 +268,15 @@
                   </tbody>
               </table>
               {% endif %}
+              <h4>{% trans "Project currency" %}</h4>
+              <table class="table table-striped table-bordered table-responsive">
+                  <tbody>
+                      <tr>
+                          <th scope="row">{% trans "Currency" %}</th>
+                          <td>{{project.currency}}</td>
+                      </tr>
+                  </tbody>
+              </table>
               {% if project.country_budget_items.all %}
               <h4>{% trans "Country Budget Items" %}</h4>
               <table class="table table-striped table-bordered table-responsive">
@@ -285,7 +318,7 @@
                       <tbody>
                           {% for budget_item in project.budget_items.all %}
                           <tr>
-                              {% if 'other' in budget_item.label.label and budget_item.other_extra %}
+                              {% if 'Other' in budget_item.label.label and budget_item.other_extra %}
                                   <td>{{budget_item.other_extra}}</td>
                               {% else %}
                                   <td>{{budget_item.label}}</td>
@@ -374,24 +407,21 @@
                       </tbody>
                   </table>
               {% endif %}
-              {% if project.documents.all %}
-              <h4>{% trans "Activity Documents" %}</h4>
+
+              {% if project.links.all or project.documents.all %}
+              <h4>{% trans "Activity links" %}</h4>
               <table class="table table-striped table-bordered table-responsive">
-                  <thead>
-                      <tr>
-                          <th>{% trans "Title" %}</th>
-                          <th>{% trans "Category" %}</th>
-                          <th>{% trans "Language" %}</th>
-                          <th>{% trans "Link" %}</th>
-                      </tr>
-                  </thead>
                   <tbody>
+                      {% for link in project.links.all %}
+                      <tr>
+                          <th scope="row">{% trans "Link" %}</th>
+                          <td>{{link|safe}}</td>
+                      </tr>
+                      {% endfor %}
                       {% for doc in project.documents.all %}
                       <tr>
-                          <td>{{doc.title}}</td>
-                          <td>{{doc.iati_category}}</td>
-                          <td>{{doc.iati_language}}</td>
-                          <td>{{doc.url}}</td>
+                          <th scope="row">{% trans "Document" %}</th>
+                          <td>{{doc|safe}}</td>
                       </tr>
                       {% endfor %}
                   </tbody>
@@ -434,7 +464,7 @@
                       <tr>
                           <td>{{result.title}}</td>
                           <td>{{result.iati_type}}</td>
-                          <td>{{result.aggregation_status|yesno:"Aggregatable,Not Aggregatable,"}}</td>
+                          <td>{{result.aggregation_status|yesno:"Yes,No,"}}</td>
                           <td>{{result.description}}</td>
                       </tr>
                       {% endif %}
@@ -471,7 +501,7 @@
                               </td>
                               {% for period in indicator.periods.all %}
                               {% if not forloop.first %}
-                              <tr><td></td><td></td><td></td><td></td><td></td><td></td>
+                              <tr><td></td><td></td><td></td><td></td>
                               {% endif %}
                               <td>{{period.period_start|default_if_none:""}}</td>
                               <td>{{period.period_end|default_if_none:""}}</td>
@@ -618,7 +648,6 @@
                   </tbody>
               </table>
               {% endif %}
-
           </div>
   </div>
   </article>
