@@ -332,7 +332,7 @@ if (firstAccordionChild !== null) {
 
         /* Add an "active" class to this indicator in the sidebar for styling purposes */
         removeClassFromAll('.indicator-nav.active', 'active');
-        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"').classList.add('active');
+        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"]').classList.add('active');
 
       });
     }
@@ -1467,6 +1467,18 @@ if (firstAccordionChild !== null) {
       showTab('summary');
     }
   }
+
+  /* POLYFILLS */
+
+  // Polyfill for element.closest() for IE and Safari
+  this.Element && function(ElementPrototype) {
+      ElementPrototype.closest = ElementPrototype.closest ||
+      function(selector) {
+          var el = this;
+          while (el.matches && !el.matches(selector)) el = el.parentNode;
+          return el.matches ? el : null;
+      }
+  }(Element.prototype); 
 
   /* Initialise page */
   document.addEventListener('DOMContentLoaded', function() {
