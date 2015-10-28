@@ -18,7 +18,7 @@
               </div>
               <div class="result-nav-full">
                 {% for indicator in result.indicators.all %}
-                  <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                  <div class="indicator-nav clickable border-transition bg-transition" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
                     <a class="">
                       <h4>
                           {{indicator.title}}
@@ -39,7 +39,7 @@
         </div>
         <div class="indicator-container">
           {% for result in project.results.all %}
-            <div class="result-{{result.id}} result-summary">
+            <div class="result-{{result.id}} result-summary opacity-transition">
               <h4 class="item-type">{% trans 'Result' %}</h4>
               <div class="title-container">
                 <h3>{{result.title}}</h3>
@@ -73,9 +73,9 @@
                 </ul>
               </div>
             </div>
-            <div class="result-{{result.id}} indicator-group">
+            <div class="result-{{result.id}} indicator-group opacity-transition">
               {% for indicator in result.indicators.all %} 
-                <div class="indicator-{{indicator.id}} indicator">
+                <div class="indicator-{{indicator.id}} indicator opacity-transition">
                   <h4 class="indicator-title"><i class="fa fa-tachometer"></i> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>
 
                   {% if indicator.baseline_year or indicator.baseline_value %}

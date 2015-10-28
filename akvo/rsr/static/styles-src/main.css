@@ -1988,6 +1988,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     -o-transition: background-color 0.25s ease-in-out;
     -webkit-transition: background-color 0.25s ease-in-out;
     transition: background-color 0.25s ease-in-out; }
+  .results .border-transition {
+    -moz-transition: border 0.25s ease-in-out;
+    -o-transition: border 0.25s ease-in-out;
+    -webkit-transition: border 0.25s ease-in-out;
+    transition: border 0.25s ease-in-out; }
+  .results .opacity-transition {
+    -moz-transition: opacity 0.25s ease-in-out;
+    -o-transition: opacity 0.25s ease-in-out;
+    -webkit-transition: opacity 0.25s ease-in-out;
+    transition: opacity 0.25s ease-in-out; }
   .results .results-container {
     display: -webkit-box;
     display: -moz-box;
@@ -2104,7 +2114,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     -ms-flex: 1;
     flex: 1; }
     .results .indicator-container .result-summary {
-      display: none; }
+      display: none;
+      opacity: 0; }
       .results .indicator-container .result-summary h4 {
         font-size: 0.9em;
         color: #aaaaaa;

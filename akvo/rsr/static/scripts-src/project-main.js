@@ -292,10 +292,9 @@ if (firstAccordionChild !== null) {
   */
   function showResultsSummary(id) {
     var selector = '.result-' + id + '.result-summary';
-    var resultSummary = document.querySelector(selector);
 
     hideAllResultsSummaries();
-    resultSummary.style.display = 'initial';
+    fadeIn(selector);
   }
 
   /* Hide all results summaries. */
@@ -325,8 +324,11 @@ if (firstAccordionChild !== null) {
         var indicatorSelector = '.indicator-' + indicatorID;
         var indicatorGroupSelector = '.indicator-group.result-' + this.getAttribute('data-result-id');
 
-        document.querySelector(indicatorGroupSelector).style.display = 'block';
-        document.querySelector(indicatorSelector).style.display = 'block';
+        // document.querySelector(indicatorGroupSelector).style.display = 'block';
+        // document.querySelector(indicatorSelector).style.display = 'block';
+
+        fadeIn(indicatorGroupSelector);
+        fadeIn(indicatorSelector);
 
         /* Add an "active" class to this indicator in the sidebar for styling purposes */
         removeClassFromAll('.indicator-nav.active', 'active');
@@ -669,6 +671,75 @@ if (firstAccordionChild !== null) {
   }
 
   /* GENERAL HELPER FUNCTIONS */
+
+  /* Fade in */
+
+  function fadeIn(selector) {
+    var els = document.querySelectorAll(selector);
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var opacityCallback = getOpacityCallback(el);
+      var classCallback = getClassCallback(el);
+
+      el.style.opacity = 0;
+      el.style.display = 'block';
+      el.classList.add('fading-in');
+
+      setTimeout(opacityCallback, 1);
+      setTimeout(classCallback, 250);
+    }
+
+    function getOpacityCallback(el) {
+      var cb = function() {
+        el.style.opacity = 1;
+      }
+
+      return cb;
+    }
+
+    function getClassCallback(el) {
+      var cb = function() {
+        el.classList.remove('fading-in');
+      }
+
+      return cb;      
+    }
+  }
+
+  /* Fade out */
+
+  function fadeOut(selector) {
+    var els = document.querySelectorAll(selector);
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var opacityCallback = getOpacityCallback(el);
+      var displayCallback = getDisplayCallback(el);
+
+      el.style.opacity = 1;
+      setTimeout(opacityCallback, 1);
+      setTimeout(displayCallback, 250);
+    }
+
+    function getOpacityCallback(el) {
+      var cb = function() {
+        el.style.opacity = 0;
+      }
+
+      return cb;
+    }
+
+    function getDisplayCallback(el) {
+      var cb = function() {
+        if (!el.classList.contains('fading-in')) {
+          el.style.display = 'none';          
+        }
+      }
+
+      return cb;
+    }        
+  }
 
   /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
   function getCookie(name) {

@@ -2567,6 +2567,14 @@ body {
     @include transition(background-color 0.25s ease-in-out);
   }
 
+  .border-transition {
+    @include transition(border 0.25s ease-in-out);
+  }
+
+  .opacity-transition {
+    @include transition(opacity 0.25s ease-in-out);
+  }
+
   .results-container {
     @include display-flex();
   }
@@ -2720,6 +2728,7 @@ body {
 
     .result-summary {
       display: none;
+      opacity: 0;
 
       h4 {
         font-size: 0.9em;
