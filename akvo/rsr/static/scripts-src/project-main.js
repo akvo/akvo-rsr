@@ -509,7 +509,7 @@ if (firstAccordionChild !== null) {
           var el = els[i];
 
           el.addEventListener('click', function () {
-            var api_url, periodId, periodNode, request, requestData, updateNode, updateChange, updateId;
+            var api_url, deleteConfirmContainer, deleteConfirmYes, deleteConfirmNo, periodId, periodNode, request, requestData, updateNode, updateChange, updateId;
 
             updateNode = this.closest('.update-entry-container');
             updateChange = parseInt(updateNode.getAttribute('current-change'));
@@ -517,39 +517,63 @@ if (firstAccordionChild !== null) {
             periodNode = updateNode.closest('tbody');
             periodId = periodNode.getAttribute('period-id');
 
-            // Create request
-            api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
-            request = new XMLHttpRequest();
-            request.open('DELETE', api_url, true);
-            request.setRequestHeader("X-CSRFToken", csrftoken);
-            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            // Show confirmation dialog
+            deleteConfirmContainer = updateNode.querySelector('.delete-confirm');
 
-            // TODO: Create recalculation function so that closing isn't necessary
-            savingPeriod(periodNode, true);
-            periodNode.querySelector('.expand-indicator-period').click();
+            // Add a class to update-name so we can set a margin on it to make room
+            // for the delete confirmation dialog.
+            updateNode.querySelector('.update-name').classList.add('delete-pending');
+            deleteConfirmContainer.style.display="block";
 
-            request.onload = function() {
-              if (request.status === 204) {
-                // Object successfully deleted
-                removeUpdatefromStore(periodId, parseInt(updateId));
-                updateActualValue(periodId, updateChange * -1);
+            deleteConfirmNo = updateNode.querySelector('.delete-confirm-no');
+            deleteConfirmNo.removeEventListener('click');
+            deleteConfirmNo.addEventListener('click', function() {
 
-                savingPeriod(periodNode, false);
-                return true;
-              } else {
-                // We reached our target server, but it returned an error
-                savingPeriodError(periodNode, 'Could not delete update.');
+              // Cancel the delete operation
+              deleteConfirmContainer.style.display='none';
+              updateNode.querySelector('.update-name').classList.remove('delete-pending');
+            });
+
+            deleteConfirmYes = updateNode.querySelector('.delete-confirm-yes');
+            deleteConfirmYes.removeEventListener('click');
+            deleteConfirmYes.addEventListener('click', function() {
+
+              // Create request
+              api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
+              request = new XMLHttpRequest();
+              request.open('DELETE', api_url, true);
+              request.setRequestHeader("X-CSRFToken", csrftoken);
+              request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+              // TODO: Create recalculation function so that closing isn't necessary
+              savingPeriod(periodNode, true);
+              periodNode.querySelector('.expand-indicator-period').click();
+
+              request.onload = function() {
+                if (request.status === 204) {
+                  // Object successfully deleted
+                  removeUpdatefromStore(periodId, parseInt(updateId));
+                  updateActualValue(periodId, updateChange * -1);
+
+                  savingPeriod(periodNode, false);
+                  deleteConfirmContainer.style.display='none';
+                  updateNode.querySelector('.update-name').classList.remove('delete-pending');                  
+                  return true;
+                } else {
+                  // We reached our target server, but it returned an error
+                  savingPeriodError(periodNode, 'Could not delete update.');
+                  return false;
+                }
+              };
+
+              request.onerror = function() {
+                // There was a connection error of some sort
+                savingPeriodError(periodNode, 'Connection error.');
                 return false;
-              }
-            };
+              };
 
-            request.onerror = function() {
-              // There was a connection error of some sort
-              savingPeriodError(periodNode, 'Connection error.');
-              return false;
-            };
-
-            request.send(JSON.stringify(requestData));
+              request.send(JSON.stringify(requestData));              
+            });
           });
       }
   }
@@ -1105,7 +1129,7 @@ if (firstAccordionChild !== null) {
 
   function getUpdateEntry(update) {
     var updateContainer = document.createElement('div');
-    var deleteEl, editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
+    var deleteEl, deleteConfirmEl, deleteConfirmContentsEl, deleteConfirmYesEl, deleteConfirmNoEl, editEl, dateEl, userNameEl, timeLineEl, targetEl, targetText, photoEl, descriptionEl;
 
     updateContainer.setAttribute("update-id", update.id);
     updateContainer.setAttribute("current-change", update.period_update);
@@ -1128,6 +1152,33 @@ if (firstAccordionChild !== null) {
         deleteEl.classList.add('delete-button');
         deleteEl.classList.add('clickable');
         updateContainer.appendChild(deleteEl);
+
+        deleteConfirmEl = document.createElement('div');
+        // TODO: use "delete_confirm_text" from translation strings in main template
+        deleteConfirmEl.textContent = "Are you sure you want to delete this update?";
+        deleteConfirmEl.style.display = 'none';
+        deleteConfirmEl.classList.add('delete-confirm');
+
+        deleteConfirmYesEl = document.createElement('a');
+        deleteConfirmYesEl.classList.add('btn');
+        deleteConfirmYesEl.classList.add('btn-primary');
+        deleteConfirmYesEl.classList.add('delete-confirm-yes');
+        // TODO: use "delete_confirm_yes_text" from translation strings in main template
+        deleteConfirmYesEl.textContent = "Delete update";
+
+        deleteConfirmNoEl = document.createElement('a');        
+        deleteConfirmNoEl.classList.add('btn');
+        deleteConfirmNoEl.classList.add('btn-primary');  
+        deleteConfirmNoEl.classList.add('delete-confirm-no');   
+        // TODO: use "delete_confirm_cancel_text" from translation strings in main template
+        deleteConfirmNoEl.textContent = "Cancel";   
+
+        deleteConfirmContentsEl = document.createElement('div');    
+
+        deleteConfirmContentsEl.appendChild(deleteConfirmNoEl); 
+        deleteConfirmContentsEl.appendChild(deleteConfirmYesEl); 
+        deleteConfirmEl.appendChild(deleteConfirmContentsEl);           
+        updateContainer.appendChild(deleteConfirmEl);
       }
     }
 
