@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="author">Akvo Foundation</property>
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
@@ -3408,6 +3409,30 @@ select ? as number, 'B' as name
             <property name="fontWeight">bolder</property>
             <property name="color">#D87E26</property>
         </style>
+        <style name="NewStyle" id="290">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+            </structure>
+        </style>
+        <style name="ResultNumber" id="291">
+            <structure name="numberFormat">
+                <property name="category">Currency</property>
+                <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
+            </structure>
+        </style>
+        <style name="progress_low" id="293">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">12pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="color">#D95E75</property>
+        </style>
+        <style name="progress_middle" id="295">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">12pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="color">#E17A0C</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -3664,6 +3689,12 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <expression name="expression" type="javascript">dataSetRow["title"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">id</property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="249"/>
             <header>
@@ -3700,6 +3731,11 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                             <property name="paddingBottom">8pt</property>
                             <property name="paddingRight">8pt</property>
                             <property name="resultSetColumn">title</property>
+                            <list-property name="action">
+                                <structure>
+                                    <property name="linkType">none</property>
+                                </structure>
+                            </list-property>
                         </data>
                     </cell>
                 </row>
@@ -3842,6 +3878,12 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">actual_value_number</property>
+                    <expression name="expression" type="javascript">dataSetRow["actual_value"] &amp;&amp; !isNaN(dataSetRow["actual_value"]) ? dataSetRow["actual_value"] : -1</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
@@ -3980,7 +4022,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="backgroundColor">silver</property>
                                     <cell id="280">
                                         <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
                                         <property name="paddingBottom">4pt</property>
+                                        <property name="paddingRight">0pt</property>
                                         <text-data id="213">
                                             <property name="backgroundColor">gray</property>
                                             <property name="fontSize">12pt</property>
@@ -5055,8 +5099,41 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="paddingLeft">1pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Unformatted</property>
+                            </structure>
                             <property name="textAlign">center</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">is-false</property>
+                                    <property name="color">#FF0000</property>
+                                    <expression name="testExpr" type="javascript">isNaN(row["actual_value"])</expression>
+                                </structure>
+                            </list-property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["actual_value"] &amp;&amp; (!isNaN(row["actual_value"]))</expression>
+                                </structure>
+                            </list-property>
                             <property name="resultSetColumn">actual_value</property>
+                        </data>
+                        <data id="292">
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingLeft">1pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">center</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["actual_value_number"] == -1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">actual_value_number</property>
                         </data>
                     </cell>
                     <cell id="30">
@@ -5072,6 +5149,7 @@ Math.min(100, 100 * row["actual_value"]/row["target_value"])&#13;
                 </row>
                 <row id="218">
                     <property name="backgroundColor">#F0F0F0</property>
+                    <property name="pageBreakBefore">avoid</property>
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
