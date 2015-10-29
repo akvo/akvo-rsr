@@ -2268,8 +2268,131 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .results .indicator-container .indicator-group .table tbody {
     background-color: white;
     border-bottom: none !important; }
-    .results .indicator-container .indicator-group .table tbody .indicator-bar-td * {
-      /*display: none;*/ }
+    .results .indicator-container .indicator-group .table tbody:last-child {
+      margin-bottom: 0; }
+    .results .indicator-container .indicator-group .table tbody .edit-button {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      top: 15px;
+      right: 10px;
+      color: #202024;
+      font-size: 1.5em; }
+      .results .indicator-container .indicator-group .table tbody .edit-button.activated {
+        display: none; }
+    .results .indicator-container .indicator-group .table tbody .delete-button {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      top: 13px;
+      right: 35px;
+      font-size: 1.5em;
+      color: #202024; }
+      .results .indicator-container .indicator-group .table tbody .delete-button.activated {
+        display: none; }
+    .results .indicator-container .indicator-group .table tbody .delete-confirm {
+      display: none;
+      position: absolute;
+      right: 0px;
+      top: 40px;
+      height: 90px;
+      background-color: white;
+      color: #202024;
+      padding: 1em;
+      z-index: 101; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm > div {
+        height: 40px;
+        position: relative; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
+        position: absolute;
+        left: 10px;
+        top: 10px; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
+        background-color: #ae0922;
+        border-color: #ae0922;
+        margin-left: auto;
+        position: absolute;
+        right: 10px;
+        top: 10px; }
+        .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
+          background-color: #ff5500;
+          border-color: #ff5500; }
+    .results .indicator-container .indicator-group .table tbody .update-date {
+      display: inline-block;
+      text-align: left;
+      width: 50%; }
+    .results .indicator-container .indicator-group .table tbody .update-name {
+      display: inline-block;
+      text-align: left;
+      width: 30%;
+      margin-right: 10%;
+      color: #202024; }
+      .results .indicator-container .indicator-group .table tbody .update-name.delete-pending {
+        margin-bottom: 90px; }
+    .results .indicator-container .indicator-group .table tbody .update-timeline {
+      display: inline-block;
+      width: 75%;
+      height: 80px;
+      padding-top: 1em;
+      z-index: 99;
+      position: relative; }
+    .results .indicator-container .indicator-group .table tbody .update-target {
+      position: absolute;
+      margin-top: 45px;
+      display: inline-block;
+      width: 24%;
+      height: 80px;
+      text-align: center; }
+      .results .indicator-container .indicator-group .table tbody .update-target span {
+        font-size: 1.1em;
+        color: #515050;
+        vertical-align: text-top; }
+        .results .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
+          padding-left: 15px;
+          font-size: 1.1em;
+          font-weight: bold;
+          color: #A3C7E3;
+          vertical-align: bottom; }
+    .results .indicator-container .indicator-group .table tbody .update-description {
+      padding: 0.5em;
+      margin: 20px auto 30px; }
+      .results .indicator-container .indicator-group .table tbody .update-description.editable {
+        background: whitesmoke;
+        border: 1px solid #A3C7E3; }
+      .results .indicator-container .indicator-group .table tbody .update-description .update-photo {
+        float: right;
+        width: 150px;
+        height: 100px;
+        background-size: cover; }
+    .results .indicator-container .indicator-group .table tbody .save-button {
+      position: absolute;
+      display: none;
+      right: 10px;
+      bottom: 10px; }
+      .results .indicator-container .indicator-group .table tbody .save-button.active {
+        display: inline-block;
+        padding: 3px 7px;
+        color: white;
+        background-color: #202024;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        text-align: center; }
+    .results .indicator-container .indicator-group .table tbody .cancel-button {
+      position: absolute;
+      display: none;
+      right: 60px;
+      bottom: 10px; }
+      .results .indicator-container .indicator-group .table tbody .cancel-button.active {
+        display: inline-block;
+        padding: 3px 7px;
+        color: #202024;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        text-align: center; }
   .results .update-dialog-container.pending-new-update .update-entry-container {
     background-color: #D1E6D1; }
     .results .update-dialog-container.pending-new-update .update-entry-container:first-child {

@@ -2914,8 +2914,158 @@ body {
     .indicator-container .indicator-group .table tbody {
         background-color: white;
         border-bottom: none !important;
-        .indicator-bar-td * {
-            /*display: none;*/
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .edit-button {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          top: 15px;
+          right: 10px;
+          color: $akvoBlack;
+          font-size: 1.5em;
+          &.activated {
+            display: none;
+          }
+        }
+
+        .delete-button {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          top: 13px;
+          right: 35px;
+          font-size: 1.5em;
+          color: $akvoBlack;
+          &.activated {
+            display: none;
+          }
+        }
+
+        .delete-confirm {
+            display: none;
+            position: absolute;
+            right: 0px;
+            top: 40px;
+            height: 90px;
+            background-color: white;
+            color: $akvoBlack;
+            padding: 1em;
+            z-index: 101;
+
+            > div {
+                height: 40px;
+                position: relative;
+            }
+
+            .delete-confirm-no {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+            }
+
+            .delete-confirm-yes {
+                background-color: #ae0922;
+                border-color: #ae0922;
+                margin-left: auto;
+                position: absolute;
+                right: 10px;
+                top: 10px;
+
+                &:hover {
+                    background-color: #ff5500;
+                    border-color: #ff5500;
+                }
+            }
+        }
+
+        .update-date {
+          display: inline-block;
+          text-align: left;
+          width: 50%;
+        }
+        .update-name {
+          display: inline-block;
+          text-align: left;
+          width: 30%;
+          margin-right: 10%;
+          color: $akvoBlack;
+
+          &.delete-pending {
+            margin-bottom: 90px;
+          }
+        }
+        .update-timeline {
+          display: inline-block;
+          width: 75%;
+          height: 80px;
+          padding-top: 1em;
+          z-index: 99;
+          position: relative;
+        }
+        .update-target {
+          position: absolute;
+          margin-top: 45px;
+          display: inline-block;
+          width: 24%;
+          height: 80px;
+          text-align: center;
+          span {
+            font-size: 1.1em;
+            color: rgb(81, 80, 80);
+            vertical-align: text-top;
+            &.update-target-actual {
+              padding-left: 15px;
+              font-size: 1.1em;
+              font-weight: bold;
+              color: #A3C7E3;
+              vertical-align: bottom;
+            }
+          }
+        }
+        .update-description {
+          padding: 0.5em;
+          margin: 20px auto 30px;
+          &.editable {
+            background: whitesmoke;
+            border: 1px solid #A3C7E3;
+          }
+          .update-photo {
+            float: right;
+            width: 150px;
+            height: 100px;
+            background-size: cover;
+          }
+        }
+        .save-button {
+          position: absolute;
+          display: none;
+          right: 10px;
+          bottom: 10px;
+          &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: white;
+            background-color: $akvoBlack;
+            @include border-radius(2px);
+            text-align: center;
+          }
+        }
+        .cancel-button {
+          position: absolute;
+          display: none;
+          right: 60px;
+          bottom: 10px;
+          &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: $akvoBlack;
+            @include border-radius(2px);
+            text-align: center;
+          }
         }
     }
     .update-dialog-container {
