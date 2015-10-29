@@ -673,7 +673,7 @@ if (firstAccordionChild !== null) {
             }
           });
 
-          var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:first-child');
+          var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:nth-last-child(2)');
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
           var updateActual = updateContainer.querySelector('.update-target-actual');
 
