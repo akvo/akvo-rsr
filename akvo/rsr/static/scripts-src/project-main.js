@@ -490,7 +490,7 @@ if (firstAccordionChild !== null) {
         if (exceedCheckbox.checked) {
           newValue = parseInt(exceedValueNode.value);
         } else {
-          newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value'));
+          newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:nth-last-child(2)').getAttribute('data-value'));
         }
 
         if (updateId !== 'add') {
