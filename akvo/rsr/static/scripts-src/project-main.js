@@ -608,6 +608,8 @@ if (firstAccordionChild !== null) {
         if (this.classList.contains('activated')) {
           var editables = updateContainer.querySelectorAll('.editable');
 
+          updateContainer.classList.remove('edit-in-progress');
+
           for (var j = 0; j < editables.length; j++) {
             editables[j].classList.remove('editable');
             editables[j].removeAttribute('contenteditable');
@@ -633,6 +635,8 @@ if (firstAccordionChild !== null) {
           if (deleteButton !== null) {
             deleteButton.classList.add('activated');
           }
+
+          updateContainer.classList.add('edit-in-progress');
 
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
@@ -1235,6 +1239,7 @@ if (firstAccordionChild !== null) {
     updateContainer.setAttribute("update-id", update.id);
     updateContainer.setAttribute("current-change", update.period_update);
     updateContainer.classList.add('update-entry-container');
+    updateContainer.classList.add('bg-border-transition');
 
     if (allowEdit(update)) {
       editEl = document.createElement('i');
