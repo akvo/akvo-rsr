@@ -332,7 +332,7 @@ if (firstAccordionChild !== null) {
 
         /* Add an "active" class to this indicator in the sidebar for styling purposes */
         removeClassFromAll('.indicator-nav.active', 'active');
-        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"').classList.add('active');
+        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"]').classList.add('active');
 
       });
     }
@@ -362,9 +362,12 @@ if (firstAccordionChild !== null) {
           removeUpdatefromStore(periodId, 'add');
         } else {
           var container;
+          var updateDialog = getUpdateDialog(periodId);
 
           displayAddButton(periodId, true);
-          parentElement.parentNode.appendChild(getUpdateDialog(periodId));
+          updateDialog.style.display = 'none';
+          parentElement.parentNode.appendChild(updateDialog);
+          fadeIn(updateDialog, true, 'table-row');
 
           this.parentNode.parentNode.classList.add('expanded');
           this.parentNode.parentNode.parentNode.classList.add('expanded');
@@ -409,6 +412,7 @@ if (firstAccordionChild !== null) {
 
         container = document.createElement('tr');
         container.classList.add('update-dialog-container');
+        container.classList.add('pending-new-update');
 
         containerCell = document.createElement('td');
         containerCell.setAttribute('colspan', '6');
@@ -416,12 +420,15 @@ if (firstAccordionChild !== null) {
         addUpdateContainer = getUpdateEntry(newUpdate);
         containerCell.appendChild(addUpdateContainer);
         container.appendChild(containerCell);
+        container.style.opacity = 0;
 
         if (this.parentNode.parentNode.nextSibling) {
           this.parentNode.parentNode.parentNode.insertBefore(container, this.parentNode.parentNode.nextSibling);
         } else {
           this.parentNode.parentNode.parentNode.appendChild(container);
         }
+        fadeIn(container, true, 'table-row');
+
         addEditOnClicks();
         addDeleteOnClicks();
         container.querySelector('.edit-button').click();
@@ -595,6 +602,8 @@ if (firstAccordionChild !== null) {
 
           var photoUpload = updateContainer.querySelector('.photo-upload');
           photoUpload.parentNode.removeChild(photoUpload);
+
+          exceedTargetNode.style.display = 'none';
         } else {
           this.classList.add('activated');
           if (deleteButton !== null) {
@@ -664,6 +673,8 @@ if (firstAccordionChild !== null) {
             }
           });
 
+          fadeIn(exceedTargetNode, true);
+
           addSaveOnClicks();
         }
       });
@@ -672,28 +683,45 @@ if (firstAccordionChild !== null) {
 
   /* GENERAL HELPER FUNCTIONS */
 
-  /* Fade in */
+  /* Fade in
+  ** =======
+  ** Takes a selector and fades in each matching element.
+  ** Takes an optional second argument, isElement, that indicates
+  ** the first argument in an element rather than a selector.
+  ** Takes an optional third argument, displayVal, that indicates
+  ** what display value to give the element after fading in. 
+  ** If this argument is not present, defaults to 'block'
+  */
+  function fadeIn(selector, isElement, displayVal) {
 
-  function fadeIn(selector) {
-    var els = document.querySelectorAll(selector);
+    if (isElement) {
+      fadeElIn(selector);
+    } else {
+      var els = document.querySelectorAll(selector);
 
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i];
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        fadeElIn(el);
+      }
+    }
+
+    function fadeElIn(el) {
       var opacityCallback = getOpacityCallback(el);
       var classCallback = getClassCallback(el);
 
+      el.classList.add('opacity-transition');
       el.style.opacity = 0;
-      el.style.display = 'block';
+      el.style.display = displayVal || 'block';
       el.classList.add('fading-in');
 
       setTimeout(opacityCallback, 1);
-      setTimeout(classCallback, 250);
+      setTimeout(classCallback, 250);      
     }
 
     function getOpacityCallback(el) {
       var cb = function() {
         el.style.opacity = 1;
-      }
+      };
 
       return cb;
     }
@@ -701,7 +729,7 @@ if (firstAccordionChild !== null) {
     function getClassCallback(el) {
       var cb = function() {
         el.classList.remove('fading-in');
-      }
+      };
 
       return cb;      
     }
@@ -725,7 +753,7 @@ if (firstAccordionChild !== null) {
     function getOpacityCallback(el) {
       var cb = function() {
         el.style.opacity = 0;
-      }
+      };
 
       return cb;
     }
@@ -735,7 +763,7 @@ if (firstAccordionChild !== null) {
         if (!el.classList.contains('fading-in')) {
           el.style.display = 'none';          
         }
-      }
+      };
 
       return cb;
     }        
@@ -1217,46 +1245,6 @@ if (firstAccordionChild !== null) {
       userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
       updateContainer.appendChild(userNameEl);
     }
-    var exceedTargetEl = document.createElement('div');
-    exceedTargetEl.classList.add('update-exceed-target');
-
-    var exceedTargetLabel = document.createElement('label');
-    exceedTargetLabel.textContent = 'Exceed target';
-    exceedTargetLabel.setAttribute('for', 'exceed-' + update.id);
-
-    var exceedTargetCheckbox = document.createElement('input');
-    exceedTargetCheckbox.setAttribute('type', 'checkbox');
-    exceedTargetCheckbox.setAttribute('id', 'exceed-' + update.id);
-    exceedTargetCheckbox.setAttribute('disabled', '');
-    exceedTargetCheckbox.classList.add('update-exceed-target-checkbox');
-
-    var exceedTargetNewValue = document.createElement('input');
-    exceedTargetNewValue.setAttribute('type', 'number');
-    exceedTargetNewValue.setAttribute('disabled', '');
-    exceedTargetNewValue.classList.add('exceed-value');
-
-    exceedTargetNewValue.addEventListener('input', function () {
-      if (exceedTargetCheckbox.checked) {
-        updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
-      }
-    });
-
-    exceedTargetCheckbox.addEventListener('change', function () {
-      if (exceedTargetCheckbox.checked) {
-        exceedTargetNewValue.removeAttribute('disabled');
-        exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
-        displayEditSlider(updateContainer, false);
-      } else {
-        exceedTargetNewValue.value = '';
-        exceedTargetNewValue.setAttribute('disabled', '');
-        displayEditSlider(updateContainer, true);
-      }
-    });
-
-    exceedTargetEl.appendChild(exceedTargetCheckbox);
-    exceedTargetEl.appendChild(exceedTargetLabel);
-    exceedTargetEl.appendChild(exceedTargetNewValue);
-    updateContainer.appendChild(exceedTargetEl);
 
     timeLineEl = document.createElement('div');
     timeLineEl.classList.add('update-timeline');
@@ -1370,6 +1358,48 @@ if (firstAccordionChild !== null) {
       targetEl.appendChild(targetText);
       updateContainer.appendChild(targetEl);
 
+    var exceedTargetEl = document.createElement('div');
+    exceedTargetEl.classList.add('update-exceed-target');
+
+    var exceedTargetLabel = document.createElement('label');
+    exceedTargetLabel.textContent = 'Exceed target';
+    exceedTargetLabel.setAttribute('for', 'exceed-' + update.id);
+
+    var exceedTargetCheckbox = document.createElement('input');
+    exceedTargetCheckbox.setAttribute('type', 'checkbox');
+    exceedTargetCheckbox.setAttribute('id', 'exceed-' + update.id);
+    exceedTargetCheckbox.setAttribute('disabled', '');
+    exceedTargetCheckbox.classList.add('update-exceed-target-checkbox');
+
+    var exceedTargetNewValue = document.createElement('input');
+    exceedTargetNewValue.setAttribute('type', 'number');
+    exceedTargetNewValue.setAttribute('disabled', '');
+    exceedTargetNewValue.classList.add('exceed-value');
+
+    exceedTargetNewValue.addEventListener('input', function () {
+      if (exceedTargetCheckbox.checked) {
+        updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
+      }
+    });
+
+    exceedTargetCheckbox.addEventListener('change', function () {
+      if (exceedTargetCheckbox.checked) {
+        exceedTargetNewValue.removeAttribute('disabled');
+        exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
+        displayEditSlider(updateContainer, false);
+      } else {
+        exceedTargetNewValue.value = '';
+        exceedTargetNewValue.setAttribute('disabled', '');
+        displayEditSlider(updateContainer, true);
+      }
+    });
+
+    exceedTargetEl.appendChild(exceedTargetCheckbox);
+    exceedTargetEl.appendChild(exceedTargetLabel);
+    exceedTargetEl.appendChild(exceedTargetNewValue);
+    exceedTargetEl.style.display = 'none';
+    updateContainer.appendChild(exceedTargetEl);      
+
       descriptionEl = document.createElement('div');
       descriptionEl.classList.add('update-description');
       descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
@@ -1467,6 +1497,18 @@ if (firstAccordionChild !== null) {
       showTab('summary');
     }
   }
+
+  /* POLYFILLS */
+
+  // Polyfill for element.closest() for IE and Safari
+  this.Element && function(ElementPrototype) {
+      ElementPrototype.closest = ElementPrototype.closest ||
+      function(selector) {
+          var el = this;
+          while (el.matches && !el.matches(selector)) el = el.parentNode;
+          return el.matches ? el : null;
+      };
+  }(Element.prototype); 
 
   /* Initialise page */
   document.addEventListener('DOMContentLoaded', function() {

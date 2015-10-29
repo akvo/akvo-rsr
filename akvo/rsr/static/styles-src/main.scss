@@ -2919,6 +2919,14 @@ body {
         }
     }
     .update-dialog-container {
+        &.pending-new-update {
+            .update-entry-container {
+                background-color: #D1E6D1;
+                &:first-child {
+                    border-left: none;
+                }
+            }
+        }
         td {
             padding: 8px 2em;
             .update-entry-container {
@@ -2926,21 +2934,28 @@ body {
                 margin-bottom: 2em;
                 position: relative;
                 background-color: #ececec;
+                &:first-child {
+                    border-left: 4px solid #ae0922;
+                }                    
                 .update-exceed-target {
-                    margin: 10px 0 0 0;
+                    margin: 2em 0 0 0;
+                    text-align: right;
                     input {
-                        margin-right: 10px;
+                        
                     }
                     label {
                         margin-right: 10px;
                         color: rgba($akvoBlack, 0.5);
                     }
+                    .update-exceed-target-checkbox {
+                        margin-right: 10px;
+                    }
                 }
                 .indicator-bar-display-container {
                     position: relative;
                     height: 100%;
-                    margin-left: 15px;
-                    margin-right: 15px;
+                    margin-left: 0;
+                    margin-right: 0;
                     .indicator-bar-progress-text {
                         position: absolute;
                         bottom: -18px;
@@ -3053,7 +3068,7 @@ body {
                 }
                 .update-timeline {
                     display: inline-block;
-                    width: 75%;
+                    width: 84%;
                     height: 80px;
                     padding-top: 1em;
                     z-index: 99;
@@ -3061,11 +3076,11 @@ body {
                 }
                 .update-target {
                     position: absolute;
-                    margin-top: 45px;
+                    margin-top: 49px;
                     display: inline-block;
-                    width: 24%;
+                    width: 15%;
                     height: 80px;
-                    text-align: center;
+                    text-align: right;
                     span {
                         font-size: 1.1em;
                         color: rgb(81, 80, 80);

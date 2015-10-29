@@ -2270,6 +2270,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     border-bottom: none !important; }
     .results .indicator-container .indicator-group .table tbody .indicator-bar-td * {
       /*display: none;*/ }
+  .results .update-dialog-container.pending-new-update .update-entry-container {
+    background-color: #D1E6D1; }
+    .results .update-dialog-container.pending-new-update .update-entry-container:first-child {
+      border-left: none; }
   .results .update-dialog-container td {
     padding: 8px 2em; }
     .results .update-dialog-container td .update-entry-container {
@@ -2277,18 +2281,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       margin-bottom: 2em;
       position: relative;
       background-color: #ececec; }
+      .results .update-dialog-container td .update-entry-container:first-child {
+        border-left: 4px solid #ae0922; }
       .results .update-dialog-container td .update-entry-container .update-exceed-target {
-        margin: 10px 0 0 0; }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target input {
-          margin-right: 10px; }
+        margin: 2em 0 0 0;
+        text-align: right; }
         .results .update-dialog-container td .update-entry-container .update-exceed-target label {
           margin-right: 10px;
           color: rgba(32, 32, 36, 0.5); }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
+          margin-right: 10px; }
       .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
-        margin-left: 15px;
-        margin-right: 15px; }
+        margin-left: 0;
+        margin-right: 0; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -18px;
@@ -2382,18 +2389,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         color: #202024; }
       .results .update-dialog-container td .update-entry-container .update-timeline {
         display: inline-block;
-        width: 75%;
+        width: 84%;
         height: 80px;
         padding-top: 1em;
         z-index: 99;
         position: relative; }
       .results .update-dialog-container td .update-entry-container .update-target {
         position: absolute;
-        margin-top: 45px;
+        margin-top: 49px;
         display: inline-block;
-        width: 24%;
+        width: 15%;
         height: 80px;
-        text-align: center; }
+        text-align: right; }
         .results .update-dialog-container td .update-entry-container .update-target span {
           font-size: 1.1em;
           color: #515050;
