@@ -110,12 +110,15 @@
                       </tr>
                     </thead>
                     {% for period in indicator.periods.all %}
-                      <tbody class="indicator-period bg-transition" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
+                      <tbody class="indicator-period bg-transition" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}" indicator-baseline="{{ indicator.baseline_value|floatformat:"0" }}" has-updates="{% if period.updates.all%}true{% else %}false{% endif %}">
                         <tr class="indicator-period-{{period.id}}-tr">
                           <td class="fromTime">{{period.period_start}}</td>
                           <td class="toTime">{{period.period_end}}</td>
                           <td class="indicator-bar-td">
                             <div class="indicator-bar-display-container">
+                              <div class="indicator-baseline">
+                                {{indicator.baseline_value|floatformat:"0"}}
+                              </div>
                               <div class="indicator-bar">
                               </div>
                               <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment_100}}%;">

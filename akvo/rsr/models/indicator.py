@@ -171,6 +171,22 @@ class Indicator(models.Model):
         period_updates = ProjectUpdate.objects.filter(indicator_period__indicator=self)
         return period_updates.order_by('-created_at')[0].time_gmt if period_updates else None
 
+    @property
+    def baseline(self):
+        """
+        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
+        it'll return 0.
+        """
+        baseline = 0
+
+        if self.baseline_value:
+            baseline = self.baseline_value  
+
+        try:
+            return Decimal(baseline)
+        except (InvalidOperation, TypeError):
+            return Decimal(1)   
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'indicator')
@@ -374,10 +390,10 @@ class IndicatorPeriod(models.Model):
             return 0
 
         actual_value = self.actual_value if self.actual_value else self.baseline
-        baseline = self.baseline
+        baseline = self.indicator.baseline_value
         try:
             return round(
-                (Decimal(actual_value) - Decimal(baseline)) /
+                (Decimal(actual_value) - Decimal(self.indicator.baseline_value)) /
                 (Decimal(self.target_value) - Decimal(baseline)) *
                 100, 1
             )

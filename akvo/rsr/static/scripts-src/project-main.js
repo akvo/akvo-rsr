@@ -477,6 +477,7 @@ if (firstAccordionChild !== null) {
       el.addEventListener('click', function() {
         var actualValue, description, periodId, periodNode, photo, photoNode, newValue, updateContainer, updateId, value;
         var exceedTargetNode, exceedCheckbox, exceedValueNode;
+        var periodValue;
 
         updateContainer = this.parentNode;
         updateId = updateContainer.getAttribute('update-id');
@@ -661,7 +662,7 @@ if (firstAccordionChild !== null) {
 
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
-          var minVal = parseInt(this.closest('.indicator-period').getAttribute('period-start'));
+          var minVal = parseInt(this.closest('.indicator-period').getAttribute('indicator-baseline'));
           var maxVal = parseInt(sliderEl.getAttribute('data-max'));
 
           noUiSlider.create(sliderEl, {
@@ -944,7 +945,7 @@ if (firstAccordionChild !== null) {
 
     // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    periodNode.querySelector('.expand-indicator-period').click();
+    container.querySelector('.edit-button').click();
 
     // Create request
     api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
@@ -1052,7 +1053,7 @@ if (firstAccordionChild !== null) {
     target = parseInt(periodNode.getAttribute('period-target'));
     oldValue = parseInt(periodNode.getAttribute('period-actual'));
     newValue = oldValue + parseInt(value);
-    baseline = parseInt(periodNode.getAttribute('period-start'));
+    baseline = parseInt(periodNode.getAttribute('indicator-baseline'));
     periodNode.setAttribute('period-actual', newValue);
 
     newPercentage = (newValue - baseline) / (target - baseline) * 100;
@@ -1336,6 +1337,7 @@ if (firstAccordionChild !== null) {
       periodNode = findPeriod(update.indicator_period.id);
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
+      indicatorBaseline = parseInt(periodNode.getAttribute('indicator-baseline'));
 
       progress = periodBaseline;
 
@@ -1354,7 +1356,7 @@ if (firstAccordionChild !== null) {
             var updateMarker = document.createElement('div');
             var textSpan = document.createElement('div');
 
-            var percentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
+            var percentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
             percentage = percentage > 100 ? 100 : percentage;
 
             updateMarker.classList.add('update-dialog-timeline-marker');
@@ -1375,7 +1377,7 @@ if (firstAccordionChild !== null) {
       indicatorBar.classList.add('indicator-bar');
       progressContainer.appendChild(indicatorBar);
 
-      var highPercentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
+      var highPercentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
       highPercentage = highPercentage > 100 ? 100 : highPercentage;
 
       var indicatorBarProgressAmount = document.createElement('div');
@@ -1394,11 +1396,6 @@ if (firstAccordionChild !== null) {
       progressContainer.appendChild(sliderEl);
       timeLineEl.appendChild(progressContainer);
       updateContainer.appendChild(timeLineEl);
-
-      if (progress > periodTarget) {
-        exceedTargetNewValue.value = progress;
-        exceedTargetCheckbox.checked = true;
-      }
 
       targetEl = document.createElement('div');
       targetEl.classList.add('update-target');
@@ -1454,7 +1451,13 @@ if (firstAccordionChild !== null) {
     exceedTargetEl.appendChild(exceedTargetLabel);
     exceedTargetEl.appendChild(exceedTargetNewValue);
     exceedTargetEl.style.display = 'none';
-    updateContainer.appendChild(exceedTargetEl);      
+    updateContainer.appendChild(exceedTargetEl);  
+
+    if (progress > periodTarget) {
+      exceedTargetNewValue.value = progress;
+      exceedTargetCheckbox.checked = true;
+    }
+
 
       descriptionEl = document.createElement('div');
       descriptionEl.classList.add('update-description');

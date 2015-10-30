@@ -2224,7 +2224,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .results .indicator-bar-display-container {
     position: relative;
     height: 100%;
-    margin-left: 15px;
+    margin-left: 30px;
     margin-right: 15px; }
     .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
       position: absolute;
@@ -2237,6 +2237,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       -webkit-border-radius: 2px;
       border-radius: 2px;
       border: 1px solid #CDDFEF; }
+    .results .indicator-bar-display-container .indicator-baseline {
+      position: absolute;
+      left: -25px;
+      top: 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      vertical-align: bottom; }
     .results .indicator-bar-display-container .indicator-bar {
       background-color: #E2EBF5;
       right: 0px; }
