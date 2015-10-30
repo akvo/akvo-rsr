@@ -945,7 +945,7 @@ if (firstAccordionChild !== null) {
 
     // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    container.querySelector('.edit-button').click();
+    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
@@ -960,6 +960,7 @@ if (firstAccordionChild !== null) {
             addAdditionalUpdateData(updateId);
             updateActualValue(periodId, value - oldValue);
             // updateUpdateValues(periodId, updateId, updateId, value);
+            updatePeriodValues(periodId, (value - oldValue));
 
             // Upload photo
             if (photo !== undefined) {
@@ -967,7 +968,6 @@ if (firstAccordionChild !== null) {
             } else {
               savingPeriod(periodNode, false);
             }
-
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1071,6 +1071,39 @@ if (firstAccordionChild !== null) {
     updateNode.setAttribute('current-change', change);
     // Only works for the latest update
     updateNode.setAttribute('current-actual', findPeriod(periodId).getAttribute('period-actual'));
+  }
+
+  /* Update the values of other periods when an earlier period is edited */
+  function updatePeriodValues(periodId, change) {
+    var baseDate = new Date(document.querySelector('.indicator-period[period-id="' + periodId + '"] .toTime').textContent);
+    var resultEl = document.querySelector('.indicator-period[period-id="' + periodId + '"]').closest('.indicator-group');
+    var allPeriods = resultEl.querySelectorAll('.indicator-period');
+
+    for (var i = 0; i < allPeriods.length; i++) {
+      var period = allPeriods[i];
+      var periodDate = new Date(period.querySelector('.fromTime').textContent);
+
+      if (periodDate.getTime() >= baseDate.getTime()) {
+        // This indicator period is more recent that in the original
+        // We need to update it's value with the new changes from the original
+
+        var oldStart = parseInt(period.getAttribute('period-start'));
+        var oldActual = parseInt(period.getAttribute('period-actual'));
+        var oldProgress = parseInt(period.querySelector('.indicator-bar-progress-text'));
+
+
+        var baseline = parseInt(period.getAttribute('indicator-baseline'));
+        var target = parseInt(period.getAttribute('period-target'));
+        var newValue = oldActual + change;
+        var completionPercentage = ((newValue - baseline) / (target - baseline)) * 100;
+
+        period.setAttribute('period-start', oldStart + change);
+        period.setAttribute('period-actual', newValue);
+        period.querySelector('.indicator-bar-progress-text').textContent = newValue;
+        period.querySelector('.indicator-bar-progress').style.left = completionPercentage + '%';
+        period.querySelector('.indicator-bar-progress-amount').style.width = completionPercentage + '%';
+      }
+    }
   }
 
   /* Find the period node based on its' ID */
