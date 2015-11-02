@@ -916,6 +916,7 @@ if (firstAccordionChild !== null) {
 
             updateActualValue(periodId, value);
             addAdditionalUpdateData(updateId, callback);
+            updatePeriodValues(periodId, value);
             // updateUpdateValues(periodId, 'add', updateId, value);
 
             // Upload photo
@@ -1053,7 +1054,7 @@ if (firstAccordionChild !== null) {
           // Object successfully retrieved
           var response = JSON.parse(request.response);
           addUpdateToStore(response);
-          callback();f
+          callback();
         } else {
           return false;
         }
