@@ -1423,8 +1423,17 @@ if (firstAccordionChild !== null) {
             updateMarker.style['z-index'] = progress;
 
             textSpan.classList.add('indicator-bar-progress-text');
+            textSpan.classList.add('bg-transition');
             textSpan.textContent = progress;
             textSpan.style.left = percentage + '%';
+
+            var textHoverEl = document.createElement('span');
+            var createdDate = new Date(entry.created_at);
+
+            textHoverEl.classList.add('progress-hover-text');
+            textHoverEl.classList.add('opacity-transition');
+            textHoverEl.textContent = createdDate.toLocaleDateString() + ' ' + createdDate.toLocaleTimeString();
+            textSpan.appendChild(textHoverEl);
 
             markerContainer.appendChild(updateMarker);
             markerContainer.appendChild(textSpan);
