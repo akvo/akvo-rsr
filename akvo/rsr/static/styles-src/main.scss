@@ -2898,7 +2898,8 @@ body {
             height: 100%;
             .indicator-bar-progress {
                 position: absolute;
-                width: 3px;
+                width: 4px;
+                margin-left: -2px; /* Offset half the width */
                 height: 23px;
                 top: 30px;
                 background-color: #A3C7E3;
