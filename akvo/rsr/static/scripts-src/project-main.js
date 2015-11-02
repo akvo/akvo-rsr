@@ -559,7 +559,6 @@ if (firstAccordionChild !== null) {
 
               // TODO: Create recalculation function so that closing isn't necessary
               savingPeriod(periodNode, true);
-              periodNode.querySelector('.expand-indicator-period').click();
 
               request.onload = function() {
                 if (request.status === 204) {
@@ -568,8 +567,14 @@ if (firstAccordionChild !== null) {
                   updateActualValue(periodId, updateChange * -1);
 
                   savingPeriod(periodNode, false);
+
+                  // Close the indicator period panel
+                  periodNode.querySelector('.expand-indicator-period').click();
                   deleteConfirmContainer.style.display='none';
-                  updateNode.querySelector('.update-name').classList.remove('delete-pending');                  
+                  updateNode.querySelector('.update-name').classList.remove('delete-pending');
+
+                  // Reopen the indicator period panel
+                  periodNode.querySelector('.expand-indicator-period').click();               
                   return true;
                 } else {
                   // We reached our target server, but it returned an error
@@ -884,7 +889,6 @@ if (firstAccordionChild !== null) {
 
     // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/?format=json';
@@ -896,12 +900,22 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status === 201) {
             // Object successfully created
+
+            // This callback expands the indicator period panel when the new data is loaded
+            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+
+            // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
+            // call has finished
+
+            // Close the indicator period panel
+            periodNode.querySelector('.expand-indicator-period').click();
+
             var response, updateId, updateNode;
             response = JSON.parse(request.response);
             updateId = response.id;
 
             updateActualValue(periodId, value);
-            addAdditionalUpdateData(updateId);
+            addAdditionalUpdateData(updateId, callback);
             // updateUpdateValues(periodId, 'add', updateId, value);
 
             // Upload photo
@@ -942,10 +956,7 @@ if (firstAccordionChild !== null) {
     var api_url, periodNode, request;
 
     periodNode = findPeriod(periodId);
-
-    // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
@@ -957,7 +968,16 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Object successfully saved
-            addAdditionalUpdateData(updateId);
+
+            // This callback expands the indicator period panel when the new data is loaded
+            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+
+            // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
+            // call has finished
+
+            // Close the indicator period panel
+            periodNode.querySelector('.expand-indicator-period').click();
+            addAdditionalUpdateData(updateId, callback);
             updateActualValue(periodId, value - oldValue);
             // updateUpdateValues(periodId, updateId, updateId, value);
             updatePeriodValues(periodId, (value - oldValue));
@@ -968,6 +988,7 @@ if (firstAccordionChild !== null) {
             } else {
               savingPeriod(periodNode, false);
             }
+
             return true;
         } else {
             // We reached our target server, but it returned an error
@@ -1017,7 +1038,7 @@ if (firstAccordionChild !== null) {
   }
 
   /* Get additional data of update */
-  function addAdditionalUpdateData(updateId) {
+  function addAdditionalUpdateData(updateId, callback) {
     var api_url, request;
 
     // Create request
@@ -1032,6 +1053,7 @@ if (firstAccordionChild !== null) {
           // Object successfully retrieved
           var response = JSON.parse(request.response);
           addUpdateToStore(response);
+          callback();f
         } else {
           return false;
         }
