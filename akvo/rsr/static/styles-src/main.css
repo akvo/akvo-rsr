@@ -2352,7 +2352,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       position: relative; }
     .results .indicator-container .indicator-group .table tbody .update-target {
       position: absolute;
-      margin-top: 45px;
+      margin-top: 48px;
       display: inline-block;
       width: 24%;
       height: 80px;
@@ -2434,8 +2434,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
-        margin-left: 0;
+        margin-left: 15px;
         margin-right: 0; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
+          top: 34px; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -18px;

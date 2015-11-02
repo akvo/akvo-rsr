@@ -3023,7 +3023,7 @@ body {
         }
         .update-target {
           position: absolute;
-          margin-top: 45px;
+          margin-top: 48px;
           display: inline-block;
           width: 24%;
           height: 80px;
@@ -3123,8 +3123,11 @@ body {
                 .indicator-bar-display-container {
                     position: relative;
                     height: 100%;
-                    margin-left: 0;
+                    margin-left: 15px;
                     margin-right: 0;
+                    .indicator-baseline {
+                        top:34px;
+                    }
                     .indicator-bar-progress-text {
                         position: absolute;
                         bottom: -18px;

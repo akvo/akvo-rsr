@@ -1365,6 +1365,7 @@ if (firstAccordionChild !== null) {
 
     var progressContainer = document.createElement('div');
     progressContainer.classList.add('indicator-bar-display-container');
+
     var markerContainer = document.createElement('div');
     markerContainer.classList.add('indicator-bar-progress-container');
 
@@ -1430,6 +1431,12 @@ if (firstAccordionChild !== null) {
           }
         }
       }
+
+      var baselineEl = document.createElement('div');
+      baselineEl.classList.add('indicator-baseline');
+      baselineEl.textContent = periodNode.querySelector('.indicator-bar-td > div > .indicator-baseline').textContent;
+      progressContainer.appendChild(baselineEl);
+
       var indicatorBar = document.createElement('div');
       indicatorBar.classList.add('indicator-bar');
       progressContainer.appendChild(indicatorBar);
