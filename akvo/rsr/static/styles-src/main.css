@@ -2634,6 +2634,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           text-align: center; }
       .results .update-dialog-container td .update-entry-container .edit-slider {
         z-index: 9999; }
+        .results .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
+          width: 3px;
+          margin-left: -2px;
+          height: 20px;
+          position: absolute;
+          background-color: #B5B5B5;
+          top: -3px; }
+        .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
+          position: absolute;
+          background-color: green;
+          height: 20px;
+          top: -40px;
+          z-index: 101; }
+          .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
+            background-color: red; }
         .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
           height: 5px;
           border: 0;

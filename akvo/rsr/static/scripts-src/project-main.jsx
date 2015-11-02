@@ -683,6 +683,18 @@ if (firstAccordionChild !== null) {
           var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:nth-last-child(2)');
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
           var updateActual = updateContainer.querySelector('.update-target-actual');
+          var originalPercentageProgress = parseInt(updateMarker.style.left.substring(0, updateMarker.style.left.length - 1));
+          var originalPositionMarkerEl = document.createElement('div');
+          var changeIndicatorEl = document.createElement('div');
+
+          originalPositionMarkerEl.classList.add('original-position-marker');
+          originalPositionMarkerEl.style.left = originalPercentageProgress + '%';
+
+          changeIndicatorEl.classList.add('change-indicator');
+          changeIndicatorEl.style.left = originalPercentageProgress + '%';
+
+          document.querySelector('.edit-slider').appendChild(originalPositionMarkerEl);
+          document.querySelector('.edit-slider').appendChild(changeIndicatorEl);
 
           exceedCheckbox.removeAttribute('disabled');
           if (exceedCheckbox.checked) {
@@ -695,7 +707,10 @@ if (firstAccordionChild !== null) {
               updateActual.textContent = exceedValueNode.value;
             } else {
               var percentage;
+              var changeValueIsNegative;
+
               value = parseInt(value);
+              value < originalPercentageProgress ? changeValueIsNegative = true : changeValueIsNegative = false;
 
               percentage = (value - minVal) / (maxVal - minVal) * 100;
               percentage = percentage > 100 ? 100 : percentage;
@@ -703,6 +718,18 @@ if (firstAccordionChild !== null) {
               updateMarker.style.left = percentage + '%';
               updateMarker.setAttribute('data-value', value);
               updateProgress.style.width = percentage + '%';
+
+              if (changeValueIsNegative) {
+                // Change is negative
+                changeIndicatorEl.style.right = (100 - originalPercentageProgress) + '%';
+                changeIndicatorEl.style.left = percentage + '%';
+                changeIndicatorEl.classList.add('negative');
+              } else {
+                // Change is positive
+                changeIndicatorEl.style.left = originalPercentageProgress + '%';
+                changeIndicatorEl.style.right = (100 - percentage) + '%';  
+                changeIndicatorEl.classList.remove('negative');             
+              }
 
               updateActual.textContent = value;
             }

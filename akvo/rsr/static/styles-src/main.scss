@@ -3351,6 +3351,24 @@ body {
                 }
                 .edit-slider {
                     z-index: 9999;
+                    .original-position-marker {
+                        width: 3px;
+                        margin-left: -2px;
+                        height: 20px;
+                        position:absolute;
+                        background-color: #B5B5B5;
+                        top: -3px;
+                    }
+                    .change-indicator {
+                        position: absolute;
+                        background-color: green;
+                        height: 20px;
+                        top: -40px;
+                        z-index: 101;
+                        &.negative {
+                            background-color: red;
+                        }
+                    }
                     .noUi-base, &.noUi-horizontal {
                         height: 5px;
                         border: 0;
