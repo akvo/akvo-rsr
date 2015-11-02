@@ -572,6 +572,7 @@ if (firstAccordionChild !== null) {
                   periodNode.querySelector('.expand-indicator-period').click();
                   deleteConfirmContainer.style.display='none';
                   updateNode.querySelector('.update-name').classList.remove('delete-pending');
+                  updatePeriodValues(periodId, updateChange * -1);
 
                   // Reopen the indicator period panel
                   periodNode.querySelector('.expand-indicator-period').click();               
