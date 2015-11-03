@@ -691,7 +691,6 @@ if (firstAccordionChild !== null) {
           var handleLabelEl = document.createElement('div');
           var handleChangeLabelEl = document.createElement('div');
 
-
           originalPositionMarkerEl.classList.add('original-position-marker');
           originalPositionMarkerEl.style.left = originalPercentageProgress + '%';
 
@@ -699,6 +698,11 @@ if (firstAccordionChild !== null) {
           changeIndicatorEl.style.left = originalPercentageProgress + '%';
 
           handleLabelEl.classList.add('handle-label');
+
+          // Placeholder to ensure label is correct size - under rare
+          // conditions label will have no text content until slider handle
+          // is moved.
+          handleLabelEl.textContent = '--'
 
           handleChangeLabelEl.classList.add('handle-change-label');
 
