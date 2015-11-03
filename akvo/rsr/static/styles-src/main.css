@@ -2640,13 +2640,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           height: 20px;
           position: absolute;
           background-color: #B5B5B5;
-          top: -3px; }
+          top: -3px;
+          z-index: 102; }
         .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
           position: absolute;
           background-color: green;
-          height: 20px;
-          top: -40px;
-          z-index: 101; }
+          height: 12px;
+          top: 1px;
+          z-index: 101;
+          opacity: 0.5; }
           .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
             background-color: red; }
         .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
@@ -2667,6 +2669,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             -webkit-border-radius: 4px;
             border-radius: 4px; }
           .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+            position: relative;
             width: 28px;
             height: 28px;
             z-index: 9999;
@@ -2695,6 +2698,30 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               background-color: #009ceb; }
             .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
               background-color: #de8929; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+              position: absolute;
+              top: -32px;
+              background-color: #007ab8;
+              padding: 3px;
+              width: 100%;
+              text-align: center; }
+              .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+                content: '';
+                height: 0px;
+                width: 0px;
+                position: absolute;
+                bottom: -5px;
+                left: 9px;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid #007ab8; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+              position: absolute;
+              width: 100%;
+              text-align: center;
+              bottom: -25px;
+              background-color: white;
+              color: #007ab8; }
         .results .update-dialog-container td .update-entry-container .edit-slider.active {
           display: initial; }
 

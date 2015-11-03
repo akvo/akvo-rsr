@@ -684,8 +684,12 @@ if (firstAccordionChild !== null) {
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
           var updateActual = updateContainer.querySelector('.update-target-actual');
           var originalPercentageProgress = parseInt(updateMarker.style.left.substring(0, updateMarker.style.left.length - 1));
+          var originalValue = updateActual.textContent;
           var originalPositionMarkerEl = document.createElement('div');
           var changeIndicatorEl = document.createElement('div');
+          var handleLabelEl = document.createElement('div');
+          var handleChangeLabelEl = document.createElement('div');
+
 
           originalPositionMarkerEl.classList.add('original-position-marker');
           originalPositionMarkerEl.style.left = originalPercentageProgress + '%';
@@ -693,8 +697,15 @@ if (firstAccordionChild !== null) {
           changeIndicatorEl.classList.add('change-indicator');
           changeIndicatorEl.style.left = originalPercentageProgress + '%';
 
+          handleLabelEl.classList.add('handle-label');
+
+          handleChangeLabelEl.classList.add('handle-change-label');
+
+
           document.querySelector('.edit-slider').appendChild(originalPositionMarkerEl);
           document.querySelector('.edit-slider').appendChild(changeIndicatorEl);
+          document.querySelector('.edit-slider .noUi-handle').appendChild(handleLabelEl);
+          document.querySelector('.edit-slider .noUi-handle').appendChild(handleChangeLabelEl);
 
           exceedCheckbox.removeAttribute('disabled');
           if (exceedCheckbox.checked) {
@@ -718,6 +729,10 @@ if (firstAccordionChild !== null) {
               updateMarker.style.left = percentage + '%';
               updateMarker.setAttribute('data-value', value);
               updateProgress.style.width = percentage + '%';
+
+              handleLabelEl.textContent = value;
+              handleChangeLabelEl.textContent = changeValueIsNegative ? '-' : '+';
+              handleChangeLabelEl.textContent += Math.abs(value - originalValue);
 
               if (changeValueIsNegative) {
                 // Change is negative
