@@ -2387,7 +2387,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         display: inline-block;
         padding: 3px 7px;
         color: white;
-        background-color: #202024;
+        background-color: #007ab8;
         -moz-border-radius: 2px;
         -o-border-radius: 2px;
         -webkit-border-radius: 2px;
@@ -2397,11 +2397,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       position: absolute;
       display: none;
       right: 60px;
-      bottom: 10px; }
+      bottom: 10px;
+      background-color: none; }
       .results .indicator-container .indicator-group .table tbody .cancel-button.active {
         display: inline-block;
         padding: 3px 7px;
-        color: #202024;
+        color: #007ab8;
         -moz-border-radius: 2px;
         -o-border-radius: 2px;
         -webkit-border-radius: 2px;
