@@ -3110,8 +3110,8 @@ body {
                 .update-exceed-target {
                     margin: 2em 0 0 0;
                     text-align: right;
-                    input {
-                        
+                    input.exceed-value {
+                        opacity: 0;
                     }
                     label {
                         margin-right: 10px;
@@ -3119,6 +3119,12 @@ body {
                     }
                     .update-exceed-target-checkbox {
                         margin-right: 10px;
+
+                        &:checked {
+                            ~ input.exceed-value {
+                                opacity: 1;
+                            }
+                        }
                     }
                 }
                 .indicator-bar-display-container {

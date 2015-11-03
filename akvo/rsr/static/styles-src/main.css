@@ -2427,11 +2427,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .update-dialog-container td .update-entry-container .update-exceed-target {
         margin: 2em 0 0 0;
         text-align: right; }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
+          opacity: 0; }
         .results .update-dialog-container td .update-entry-container .update-exceed-target label {
           margin-right: 10px;
           color: rgba(32, 32, 36, 0.5); }
         .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
           margin-right: 10px; }
+          .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
+            opacity: 1; }
       .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;

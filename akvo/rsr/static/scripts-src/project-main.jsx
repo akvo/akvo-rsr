@@ -1546,6 +1546,7 @@ if (firstAccordionChild !== null) {
     exceedTargetNewValue.setAttribute('type', 'number');
     exceedTargetNewValue.setAttribute('disabled', '');
     exceedTargetNewValue.classList.add('exceed-value');
+    exceedTargetNewValue.classList.add('opacity-transition');
 
     exceedTargetNewValue.addEventListener('input', function () {
       if (exceedTargetCheckbox.checked) {
