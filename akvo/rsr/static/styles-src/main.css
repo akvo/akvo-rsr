@@ -2711,7 +2711,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
                 width: 0px;
                 position: absolute;
                 bottom: -5px;
-                left: 9px;
+                left: 10px;
                 border-left: 5px solid transparent;
                 border-right: 5px solid transparent;
                 border-top: 5px solid #007ab8; }

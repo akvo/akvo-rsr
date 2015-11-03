@@ -657,6 +657,7 @@ if (firstAccordionChild !== null) {
                   displayAddButton(periodId, true);
               } else {
                   periodNode.querySelector('.expand-indicator-period').click();
+                  periodNode.querySelector('.expand-indicator-period').click();
               }
           });
 
@@ -1162,6 +1163,8 @@ if (firstAccordionChild !== null) {
         var target = parseInt(period.getAttribute('period-target'));
         var newValue = oldActual + change;
         var completionPercentage = ((newValue - baseline) / (target - baseline)) * 100;
+
+        if (completionPercentage > 100) completionPercentage = 100;
 
         period.setAttribute('period-start', oldStart + change);
         period.setAttribute('period-actual', newValue);
