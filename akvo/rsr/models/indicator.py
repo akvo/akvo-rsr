@@ -362,6 +362,21 @@ class IndicatorPeriod(models.Model):
             period_end=self.period_end
         )
 
+    def next_period(self):
+        """
+        Returns the next indicator period, in case there are other periods beginning at a later
+        time than self.
+        """
+        ordered_periods = self.indicator.periods.exclude(period_start=None).order_by('period_start')
+        if ordered_periods.count() > 1:
+            current_period = False
+            for period in ordered_periods:
+                if period.pk == self.pk:
+                    current_period = True
+                elif current_period:
+                    return period
+        return None
+
     def update_actual_value(self, update_value):
         """
         :param update_value; String or Integer that should be castable to Decimal
@@ -379,6 +394,11 @@ class IndicatorPeriod(models.Model):
         parent = self.parent_period()
         if parent:
             parent.update_actual_value(update_value)
+
+        # Update next period
+        next_period = self.next_period()
+        if next_period and next_period.actual_value:
+            next_period.update_actual_value(update_value)
 
     @property
     def percent_accomplishment(self):
