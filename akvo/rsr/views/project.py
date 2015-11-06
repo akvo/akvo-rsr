@@ -344,7 +344,7 @@ def main(request, project_id):
         'pledged': project.get_pledged(),
         'project': project,
         'project_admin': project_admin,
-        'updates': narrative_updates,
+        'updates': narrative_updates[:5] if narrative_updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 
