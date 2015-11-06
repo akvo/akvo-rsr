@@ -362,6 +362,20 @@ class IndicatorPeriod(models.Model):
             period_end=self.period_end
         )
 
+    def adjacent_period(self, next_period=True):
+        """
+        Returns the next or previous indicator period, if we can find one with a start date,
+        and we have a start date ourselves.
+        """
+        if not self.period_start:
+            return None
+        elif next_period:
+            return self.indicator.periods.exclude(period_start=None).filter(
+                period_start__gt=self.period_start).order_by('period_start').first()
+        else:
+            return self.indicator.periods.exclude(period_start=None).filter(
+                period_start__lt=self.period_start).order_by('-period_start').first()
+
     def update_actual_value(self, update_value):
         """
         :param update_value; String or Integer that should be castable to Decimal
@@ -379,6 +393,11 @@ class IndicatorPeriod(models.Model):
         parent = self.parent_period()
         if parent:
             parent.update_actual_value(update_value)
+
+        # Update next period
+        next_period = self.adjacent_period()
+        if next_period and next_period.actual_value:
+            next_period.update_actual_value(update_value)
 
     @property
     def percent_accomplishment(self):
@@ -433,22 +452,17 @@ class IndicatorPeriod(models.Model):
     @property
     def baseline(self):
         """
-        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
-        it'll return 0.
-        """
-        baseline = 0
+        Returns the baseline value of the indicator. The baseline is a calculated value:
 
-        ordered_periods = self.indicator.periods.exclude(period_start=None).order_by('period_start')
-        if ordered_periods.exists() and self == ordered_periods[0]:
+        - If the period has no previous periods, then it's the baseline value of the indicator
+        - If the period has a previous period, then it's the actual value of that period
+        - In all other cases, the baseline defaults to 0
+        """
+        previous_period = self.adjacent_period(False)
+        if not previous_period:
             baseline = self.indicator.baseline_value
-        elif self in ordered_periods:
-            prev_period = None
-            for period in ordered_periods:
-                if not self == period:
-                    prev_period = period
-                else:
-                    baseline = prev_period.actual
-                    break
+        else:
+            baseline = previous_period.actual
 
         try:
             return Decimal(baseline)
