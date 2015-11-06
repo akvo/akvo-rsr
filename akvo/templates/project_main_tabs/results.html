@@ -4,7 +4,12 @@
     <div class="results-container container">
         <div class="sidebar">
           <div class="result-nav-header">
-            <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
+            <h3>
+                {% trans "Results" %} ({{project.results.all.count}})
+                <a href="/en/reports/project_results/{{ project.pk }}?format=pdf&download=false" target="_blank">
+                    <span class="fa-file-pdf-o fa"></span>
+                </a>
+            </h3>
           </div>
           {% for result in project.results.all %}
             <div class="result-nav bg-transition">
