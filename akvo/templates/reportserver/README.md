@@ -14,9 +14,18 @@ The report has one parameter, TheProjectId, which is created on the RS as a Data
 
 ## Access by URL
 
-https://reporting.test.akvo-ops.org/reportserver/reportserver/httpauthexport?key=restest2&user=user1&password=unicorns&format=pdf&download=false&p_TheProjectId=2081
+https://reporting.test.akvo-ops.org/reportserver/reportserver/httpauthexport?key=project_results&user=user1&password=unicorns&format=pdf&download=false&p_TheProjectId=2081
 
-Where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
+Since this exposes a password, even if just a dummy one, it should be hidden behind the rsr nginx proxy which can append the key/username/password query parameters. A proxy rule like this should do it, as the original query parameters will be copied over:
+
+location /report/project {
+	 proxy_pass https://reporting.test.akvo-ops.org;
+	 rewrite ^(.*)$ /reportserver/reportserver/httpauthexport?key=project_results&username=user1&password=unicorns break;
+}
+
+The URL will then become something like
+https://rsr.akvo.org/report/project/2849?format=pdf
+where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
 
 
 During development I found it convenient to:
@@ -25,15 +34,11 @@ During development I found it convenient to:
 ```
 sudo -u postgres psql
 postgres=#  create role rsr_readonly encrypted password '*************' login;
-CREATE ROLE
 postgres=# grant connect on database rsr to rsr_readonly;
-GRANT
 \c rsr
 rsr=# grant usage on schema public to rsr_readonly;
-GRANT
 rsr=# grant select on all tables in schema public to rsr_readonly;
 rsr=# grant select on all sequences in schema public to rsr_readonly;
-GRANT
 ```
 
 
