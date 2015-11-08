@@ -726,10 +726,11 @@ if (firstAccordionChild !== null) {
               var changeValueIsNegative;
 
               value = parseInt(value);
-              value < originalPercentageProgress ? changeValueIsNegative = true : changeValueIsNegative = false;
 
               percentage = (value - minVal) / (maxVal - minVal) * 100;
               percentage = percentage > 100 ? 100 : percentage;
+
+              percentage < originalPercentageProgress ? changeValueIsNegative = true : changeValueIsNegative = false;
 
               updateMarker.style.left = percentage + '%';
               updateMarker.setAttribute('data-value', value);
