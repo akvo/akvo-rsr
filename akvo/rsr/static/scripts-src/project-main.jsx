@@ -1457,38 +1457,37 @@ if (firstAccordionChild !== null) {
           We need to make a marker for it. */
           progress += parseInt(entry.period_update, 10);
 
-          //if (progress > periodTarget) {
-            // The target has been exceeded. Do not place marker.
+          var updateMarker = document.createElement('div');
+          var textSpan = document.createElement('div');
 
-          if (progress <= periodTarget) {
-            var updateMarker = document.createElement('div');
-            var textSpan = document.createElement('div');
+          var percentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
+          percentage = percentage > 100 ? 100 : percentage;
 
-            var percentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
-            percentage = percentage > 100 ? 100 : percentage;
+          updateMarker.classList.add('update-dialog-timeline-marker');
+          updateMarker.classList.add('indicator-bar-progress');
+          updateMarker.style.left = percentage + '%';
+          updateMarker.style['z-index'] = progress;
 
-            updateMarker.classList.add('update-dialog-timeline-marker');
-            updateMarker.classList.add('indicator-bar-progress');
-            updateMarker.style.left = percentage + '%';
-            updateMarker.style['z-index'] = progress;
+          textSpan.classList.add('indicator-bar-progress-text');
+          textSpan.classList.add('bg-transition');
+          textSpan.textContent = progress;
+          textSpan.style.left = percentage + '%';
 
-            textSpan.classList.add('indicator-bar-progress-text');
-            textSpan.classList.add('bg-transition');
-            textSpan.textContent = progress;
-            textSpan.style.left = percentage + '%';
+          var textHoverEl = document.createElement('span');
+          var createdDate = new Date(entry.created_at);
 
-            var textHoverEl = document.createElement('span');
-            var createdDate = new Date(entry.created_at);
+          textHoverEl.classList.add('progress-hover-text');
+          textHoverEl.classList.add('opacity-transition');
+          textHoverEl.textContent = createdDate.toLocaleDateString() + ' ' + createdDate.toLocaleTimeString();
+          textSpan.appendChild(textHoverEl);
 
-            textHoverEl.classList.add('progress-hover-text');
-            textHoverEl.classList.add('opacity-transition');
-            textHoverEl.textContent = createdDate.toLocaleDateString() + ' ' + createdDate.toLocaleTimeString();
-            textSpan.appendChild(textHoverEl);
-
-            markerContainer.appendChild(updateMarker);
-            markerContainer.appendChild(textSpan);
-          }
+          markerContainer.appendChild(updateMarker);
+          markerContainer.appendChild(textSpan);
         }
+      }
+
+      if (progress > periodTarget) {
+        updateContainer.classList.add('target-exceeded');      
       }
 
       var baselineEl = document.createElement('div');
