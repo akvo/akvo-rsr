@@ -3159,13 +3159,13 @@ body {
                     .indicator-bar-progress-text {
                         position: absolute;
                         bottom: -18px;
-                        width: 30px;
-                        margin-left: -15px;
+                        width: 44px;
+                        margin-left: -22px;
                         text-align: center;
                         color: #B5B5B5;
                         border: 1px solid #B5B5B5;
                         background-color: #ececec;
-                        cursor: pointer;
+                        cursor: pointer;                     
                         .progress-hover-text {
                             content: '';
                             opacity: 0;
@@ -3193,7 +3193,7 @@ body {
                                 background-color: white;
                                 width: 100px;
                                 height: auto;
-                                margin-left: -35px; /* Half of the width of this - half the width of the parent */
+                                margin-left: -28px; /* Half of the width of this - half the width of the parent */
                                 padding: 5px 0;
                                 &:before {
                                     content: '';
@@ -3450,7 +3450,8 @@ body {
                                 top: -32px;
                                 background-color: rgb(0, 122, 184);
                                 padding: 3px;
-                                width: 100%;
+                                width: 44px;
+                                left: -8px;
                                 text-align: center;
                                 &:after {
                                     content: '';
@@ -3458,7 +3459,7 @@ body {
                                     width: 0px;
                                     position: absolute;
                                     bottom: -5px;
-                                    left: 8px;
+                                    left: 17px;
                                     border-left: 5px solid transparent;
                                     border-right: 5px solid transparent;
                                     border-top: 5px solid rgb(0, 122, 184);
@@ -3466,9 +3467,10 @@ body {
                             }
                             .handle-change-label {
                                 position: absolute;
-                                width: 100%;
+                                width: 42px;
                                 text-align: center;
                                 bottom: -25px;
+                                left: -8px;
                                 background-color: white;
                                 color: rgb(0, 122, 184);
                             }
