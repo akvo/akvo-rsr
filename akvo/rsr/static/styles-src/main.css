@@ -2456,10 +2456,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
-        margin-left: 15px;
+        margin-left: 45px;
         margin-right: 0; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
-          top: 34px; }
+          top: 34px;
+          left: -60px; }
         .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -18px;

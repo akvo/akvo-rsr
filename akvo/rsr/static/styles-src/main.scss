@@ -3151,10 +3151,11 @@ body {
                 .indicator-bar-display-container {
                     position: relative;
                     height: 100%;
-                    margin-left: 15px;
+                    margin-left: 45px;
                     margin-right: 0;
                     .indicator-baseline {
                         top:34px;
+                        left: -60px;
                     }
                     .indicator-bar-progress-text {
                         position: absolute;
