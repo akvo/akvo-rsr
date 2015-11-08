@@ -1967,7 +1967,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 /* Results framework display */
 .results {
   position: relative;
-  /* Styling for the indicator period progress bar */ }
+  /* Styling for the indicator period progress bar */
+  /* Insert some transparent text to space the "progress" label */ }
   .results * {
     box-sizing: border-box; }
   .results article {
@@ -2221,10 +2222,19 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .results .indicator-bar-td, .results .target-td {
     height: 80px;
     padding: 0; }
+  .results .th-progress:before {
+    content: 'spacer';
+    width: 40px;
+    height: 1px;
+    display: inline-block;
+    color: transparent; }
+    @media only screen and (max-width: 800px) {
+      .results .th-progress:before {
+        display: none; } }
   .results .indicator-bar-display-container {
     position: relative;
     height: 100%;
-    margin-left: 30px;
+    margin-left: 50px;
     margin-right: 15px; }
     .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
       position: absolute;
@@ -2239,11 +2249,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       border: 1px solid #CDDFEF; }
     .results .indicator-bar-display-container .indicator-baseline {
       position: absolute;
-      left: -25px;
+      left: -45px;
       top: 30px;
       font-size: 1.1em;
       font-weight: bold;
-      vertical-align: bottom; }
+      vertical-align: bottom;
+      width: 35px;
+      text-align: right; }
     .results .indicator-bar-display-container .indicator-bar {
       background-color: #E2EBF5;
       right: 0px; }
