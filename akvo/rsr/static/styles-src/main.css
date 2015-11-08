@@ -2038,7 +2038,12 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         color: rgba(32, 32, 36, 0.4);
         font-size: 0.9em;
         text-transform: uppercase;
-        margin-top: 5px; }
+        margin-top: 5px;
+        margin-right: 5px;
+        position: relative; }
+        .results .sidebar .result-nav-header h3 > a {
+          position: absolute;
+          right: -5px; }
     .results .sidebar .result-nav {
       cursor: pointer; }
       .results .sidebar .result-nav .fa-chevron-up {

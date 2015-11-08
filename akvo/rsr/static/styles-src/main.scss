@@ -2604,6 +2604,12 @@ body {
                 font-size: 0.9em;
                 text-transform: uppercase;
                 margin-top: 5px;
+                margin-right: 5px;
+                position: relative;
+                > a {
+                    position: absolute;
+                    right: -5px;
+                }
             }
         }
         .result-nav {
