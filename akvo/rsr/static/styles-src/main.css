@@ -2331,8 +2331,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     .results .indicator-container .indicator-group .table tbody .delete-confirm {
       display: none;
       position: absolute;
-      right: 0px;
-      top: 40px;
+      right: 10px;
+      top: 55px;
       height: 90px;
       background-color: white;
       color: #202024;
@@ -2449,7 +2449,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         background-color: #D1E6D1;
         border-left: none; }
       .results .update-dialog-container td .update-entry-container .update-exceed-target {
-        margin: 2em 0 0 0;
+        margin: 3em 0 1em 0;
         text-align: right; }
         .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
           opacity: 0; }

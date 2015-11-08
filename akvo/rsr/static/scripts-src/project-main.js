@@ -1581,27 +1581,26 @@ if (firstAccordionChild !== null) {
       exceedTargetCheckbox.checked = true;
     }
 
+    descriptionEl = document.createElement('div');
+    descriptionEl.classList.add('update-description');
+    descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
 
-      descriptionEl = document.createElement('div');
-      descriptionEl.classList.add('update-description');
-      descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
+    updateContainer.appendChild(descriptionEl);
 
-      updateContainer.appendChild(descriptionEl);
+    displayPhoto(update, updateContainer);
 
-      displayPhoto(update, updateContainer);
+    var saveEl = document.createElement('div');
+    saveEl.classList.add('save-button');
+    saveEl.classList.add('clickable');
+    saveEl.textContent = 'Save';
 
-      var saveEl = document.createElement('div');
-      saveEl.classList.add('save-button');
-      saveEl.classList.add('clickable');
-      saveEl.textContent = 'Save';
+    updateContainer.appendChild(saveEl);
 
-      updateContainer.appendChild(saveEl);
-
-      var cancelEl = document.createElement('div');
-      cancelEl.classList.add('cancel-button');
-      cancelEl.classList.add('clickable');
-      cancelEl.textContent = 'Cancel';
-      updateContainer.appendChild(cancelEl);
+    var cancelEl = document.createElement('div');
+    cancelEl.classList.add('cancel-button');
+    cancelEl.classList.add('clickable');
+    cancelEl.textContent = 'Cancel';
+    updateContainer.appendChild(cancelEl);
 
     return updateContainer;
   }

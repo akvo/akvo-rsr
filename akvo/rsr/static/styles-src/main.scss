@@ -2993,8 +2993,8 @@ body {
         .delete-confirm {
             display: none;
             position: absolute;
-            right: 0px;
-            top: 40px;
+            right: 10px;
+            top: 55px;
             height: 90px;
             background-color: white;
             color: $akvoBlack;
@@ -3138,7 +3138,7 @@ body {
                     border-left: none;
                 }             
                 .update-exceed-target {
-                    margin: 2em 0 0 0;
+                    margin: 3em 0 1em 0;
                     text-align: right;
                     input.exceed-value {
                         opacity: 0;
