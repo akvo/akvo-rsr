@@ -418,7 +418,7 @@ class IatiExportForm(forms.ModelForm):
     def __init__(self, org=None, *args, **kwargs):
         super(IatiExportForm, self).__init__(*args, **kwargs)
         if org:
-            self.fields['projects'].queryset = org.reporting_projects.all()
+            self.fields['projects'].queryset = org.reporting_on_projects()
 
     def save(self, reporting_organisation=None, user=None):
         if reporting_organisation and user:

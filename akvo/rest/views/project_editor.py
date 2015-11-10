@@ -31,7 +31,7 @@ from sorl.thumbnail import get_thumbnail
 SECTION_ONE_FIELDS = (
     ('title', 'projectTitle', 'text'),
     ('subtitle', 'projectSubTitle', 'text'),
-    ('iati_activity_id', 'iatiId', 'text'),
+    ('iati_activity_id', 'iatiId', 'none'),
     ('status', 'projectStatus', 'text'),
     ('date_start_planned', 'eventFromPlanned', 'date'),
     ('date_end_planned', 'eventEndPlanned', 'date'),
@@ -73,11 +73,6 @@ PROJECT_CONTACT_FIELDS = (
 
 ## Section 3 ##
 
-SECTION_THREE_FIELDS = (
-    ('sync_owner', 'value-reportingOrganisation', 'related-object'),
-    ('sync_owner_secondary_reporter', 'secondaryReporter', 'boolean'),
-)
-
 PARTNER_FIELDS = (
     ('organisation', 'value-partner-', 'related-object'),
     ('iati_organisation_role', 'partner-role-', 'integer'),
@@ -97,6 +92,10 @@ SECTION_FOUR_FIELDS = (
 )
 
 ## Section 5 ##
+
+SECTION_FIVE_FIELDS = (
+    ('is_impact_project', 'impactProject', 'boolean'),
+)
 
 RESULT_FIELDS = (
     ('title', 'result-title-', 'text'),
@@ -370,7 +369,7 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
         orig_data = field_data
 
     elif field[2] == 'none-boolean':
-        field_data = None if orig_data == 'none' else orig_data
+        field_data = True if orig_data == '1' else False if orig_data == '2' else None
 
     elif field[2] == 'none':
         field_data = orig_data if orig_data else None
@@ -488,6 +487,19 @@ def log_addition(obj, user):
         change_message=change_message
     )
 
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_import_results(request, project_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    user = request.user
+
+    if not user.is_superuser:
+        return HttpResponseForbidden()
+
+    status_code, message = project.import_results()
+
+    return Response({'code': status_code, 'message': message})
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -744,13 +756,6 @@ def project_editor_step3(request, pk=None):
     changes = []
     rel_objects = []
 
-    # Project fields
-    for field in SECTION_THREE_FIELDS:
-        if field[0] == 'sync_owner':
-            errors, changes = process_field(project, data, field, errors, changes, '', Organisation)
-        else:
-            errors, changes = process_field(project, data, field, errors, changes)
-
     # Related objects
     for key in data.keys():
 
@@ -867,6 +872,10 @@ def project_editor_step5(request, pk=None):
     rel_objects = []
 
     if data['level'] == '1':
+
+        # Project fields
+        for field in SECTION_FIVE_FIELDS:
+            errors, changes = process_field(project, data, field, errors, changes)
 
         # Related objects
         for key in data.keys():

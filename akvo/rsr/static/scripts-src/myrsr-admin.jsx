@@ -32,11 +32,9 @@ var csrftoken = getCookie('csrftoken');
 var MAX_RETRIES = 2;
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
-var reportingOrgsAPIUrl = '/rest/v1/typeaheads/reporting_organisations?format=json';
 var responses = {};
 responses[projectsAPIUrl] = null;
 responses[orgsAPIUrl] = null;
-responses[reportingOrgsAPIUrl] = null;
 
 // LOCAL STORAGE
 var MAX_LOCALSTORAGE_DAYS = 30;
@@ -373,19 +371,7 @@ function submitStep(step, level) {
             form_data += '&value-' + input_id + '=' + input_value;
         }
     } else if (step === '3') {
-        var reporting_org, reporting_org_value, partners;
-
-        reporting_org = form.querySelector('#reportingOrganisation');
-
-        if (reporting_org.value !== '') {
-            reporting_org_value = reporting_org.getAttribute("value");
-        } else {
-            reporting_org_value = '';
-        }
-
-        form_data += '&value-reportingOrganisation=' + reporting_org_value;
-
-        partners = form.getElementsByClassName('partner-input');
+        var partners = form.getElementsByClassName('partner-input');
 
         for (var j=0; j < partners.length; j++) {
             var partner_input, partner_input_id, partner_input_value;
@@ -877,9 +863,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         },
         onKeyUp: function() {
 
-            /* Only activate the "add org" button for typeaheads that i) are for organisations,
-            ** and ii) are not for reporting organisations. */
-            if (inputType === 'org' && selector.indexOf('reportingOrganisation') === -1) {
+            /* Only activate the "add org" button for typeaheads that are for organisations. */
+            if (inputType === 'org') {
                 this.setState({focusClass: 'active'});
             }
         },
@@ -1269,15 +1254,6 @@ function updateTypeaheads(forceReloadOrg) {
     inputType = 'project';
 
     updateTypeahead(els1, filterOption, labelText, helpText, API, inputType);
-
-    els = document.querySelectorAll('.reportingOrganisation-input');
-    labelText = defaultValues.reporting_org_label;
-    helpText = defaultValues.reporting_org_helptext;
-    filterOption = 'name';
-    API = reportingOrgsAPIUrl;
-    inputType = 'org';
-
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.partner-input');
     labelText = defaultValues.partner_label;
@@ -1839,6 +1815,60 @@ function setRemovePartial(node) {
     };
 }
 
+function setImportResults() {
+    try {
+        var importButton;
+
+        importButton = document.getElementById('import-results');
+        importButton.onclick = getImportResults(importButton);
+
+    } catch (error) {
+        // No import results button
+        return false;
+    }
+}
+
+function getImportResults(importButton) {
+    return function(e) {
+        var api_url, parentNode, request;
+
+        e.preventDefault();
+
+        importButton.setAttribute('disabled', '');
+        parentNode = importButton.parentNode;
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/import_results/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            var response, divNode;
+            response = JSON.parse(request.responseText);
+            divNode = document.createElement('div');
+
+            if (response.code === 1) {
+                parentNode.removeChild(importButton);
+
+                divNode.classList.add('save-success');
+                divNode.innerHTML = 'Import successful. Please refresh the page to see (and edit) the imported results.';
+                parentNode.appendChild(divNode);
+            } else {
+                importButton.removeAttribute('disabled');
+
+                divNode.classList.add('help-block-error');
+                divNode.innerHTML = response.message;
+                parentNode.appendChild(divNode);
+            }
+        };
+
+        request.send();
+    }
+}
+
 function setPublishOnClick() {
     try {
         var publishButton;
@@ -1954,7 +1984,7 @@ function setDatepickers() {
     datepickerContainers = document.getElementsByClassName('datepicker-container');
 
     for (var i=0; i < datepickerContainers.length; i++) {
-        var datepickerId, DatePickerComponent, datepickerContainer, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
+        var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
 
         datepickerContainer = datepickerContainers[i];
 
@@ -1964,6 +1994,8 @@ function setDatepickers() {
 
             // Set initial value of datepicker
             inputValue = datepickerContainer.getAttribute('data-child');
+            disableInput = datepickerContainer.getAttribute('data-disabled');
+
             if (inputValue !== "") {
                 initialDate = moment(inputValue, "DD-MM-YYYY");
             } else {
@@ -1975,7 +2007,8 @@ function setDatepickers() {
 
                 getInitialState: function () {
                     return {
-                        initialDate: initialDate
+                        initialDate: initialDate,
+                        disableInput: disableInput
                     };
                 },
 
@@ -1986,17 +2019,29 @@ function setDatepickers() {
                 },
 
                 render: function () {
-                    return <div>
-                        <DatePicker
-                        locale = 'en'
-                        placeholderText = ''
-                        dateFormat = 'DD/MM/YYYY'
-                        selected = {this.state.initialDate}
-                        onChange = {this.handleDateChange}
-                        />
-                    </div>;
+                    if (disableInput !== 'true') {
+                        return <div>
+                            <DatePicker
+                            locale = 'en'
+                            placeholderText = ''
+                            dateFormat = 'DD/MM/YYYY'
+                            selected = {this.state.initialDate}
+                            onChange = {this.handleDateChange}
+                            />
+                        </div>;
+                    } else {
+                        return <div>
+                            <DatePicker
+                            locale = 'en'
+                            placeholderText = ''
+                            dateFormat = 'DD/MM/YYYY'
+                            selected = {this.state.initialDate}
+                            />
+                        </div>;
+                    }
                 }
             });
+
 
             React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
 
@@ -2005,6 +2050,9 @@ function setDatepickers() {
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
             inputNode.setAttribute("saved-value", inputValue);
+            if (disableInput === 'true') {
+                inputNode.setAttribute("disabled", '');
+            }
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -2490,6 +2538,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setPartialOnClicks();
     setCurrencyOnChange();
     setDeletePhoto();
+    setImportResults();
 
     setValidationListeners();
     updateAllHelpIcons();

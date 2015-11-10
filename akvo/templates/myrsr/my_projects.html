@@ -7,7 +7,7 @@
       <div class="col-sm-6"><h3>{% trans "My projects" %}</h3></div>
       <div class="col-sm-6 text-right btnHeader">
           {% has_perm 'rsr.add_project' user as can_add_project %}
-          {% if can_add_project and user.has_reportable_org %}
+          {% if can_add_project and user.can_create_project %}
             <button class="btn btn-success" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
           {% endif %}
       </div>

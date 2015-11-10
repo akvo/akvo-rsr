@@ -7,13 +7,17 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
+import collections
 import django_filters
-
+import json
+from datetime import datetime
 from sorl.thumbnail import get_thumbnail
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
 from lxml import etree
@@ -21,7 +25,7 @@ from lxml import etree
 from ..forms import ProjectUpdateForm
 from ..filters import (build_choices, location_choices, ProjectFilter,
                        remove_empty_querydict_items)
-from ..models import Invoice, Project, ProjectUpdate, Organisation
+from ..models import Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
@@ -37,7 +41,6 @@ def _all_projects():
     """Return all active projects."""
     return Project.objects.published().select_related(
         'publishingstatus__status',
-        'sync_owner',
         'primary_location',
         'primary_location__country'
         'locations',
@@ -128,15 +131,8 @@ def directory(request):
 
 
 def _get_accordion_data(project):
-    accordion_data = dict()
-    accordion_data['background'] = project.background
-    accordion_data['current_status'] = project.current_status
-    accordion_data['project_plan'] = project.project_plan
-    accordion_data['target_group'] = project.target_group
-    accordion_data['sustainability'] = project.sustainability
-    accordion_data['goals_overview'] = project.goals_overview
-    if project.results.all():
-        results_data = []
+    results_data = []
+    if project.results.all() and not project.is_impact_project:
         for result in project.results.all():
             result_data = dict()
             result_data['id'] = str(result.pk)
@@ -161,56 +157,16 @@ def _get_accordion_data(project):
                     indicators_data.append(indicator_data)
             result_data['indicators'] = indicators_data
             results_data.append(result_data)
-        accordion_data['results'] = results_data
-    return accordion_data
 
-
-def _get_timeline_data(project):
-    timeline_data = {'timeline': {'type': 'default'}}
-    timeline_dates = []
-
-    # Project start and end dates
-    # TODO: fix when no planned start date
-    date_start = (project.date_start_actual, 'Start', 'actual') if project.date_start_actual else \
-        (project.date_start_planned, 'Start', 'planned')
-    date_end = (project.date_end_actual, 'End', 'actual') if project.date_end_actual else \
-        (project.date_end_planned, 'End', 'planned') if project.date_end_planned else None
-
-    for date in (date_start, date_end):
-        if date:
-            headline = date[1] + " date of project"
-            if not date[2] == 'actual':
-                headline += " (planned)"
-            timeline_dates.append({
-                'startDate': ','.join((str(date[0].year), str(date[0].month), str(date[0].day))),
-                'headline': headline,
-            })
-
-    # Project updates
-    for update in project.updates_desc():
-        date = update.last_modified_at
-        timeline_dates.append({
-            'startDate': ','.join((str(date.year), str(date.month), str(date.day))),
-            'headline': 'Project update added',
-            'text': '<a href="' + update.get_absolute_url() + '">' + update.title + '</a>',
-            'asset': {
-                'thumbnail': update.photo.url if update.photo else None,
-                'media': update.photo.url if update.photo else None,
-            }
-        })
-
-    # Donations
-    for donation in Invoice.objects.filter(project=project):
-        date = donation.time
-        timeline_dates.append({
-            'startDate': ','.join((str(date.year), str(date.month), str(date.day))),
-            'headline': 'Donation added',
-            'text': 'by ' + donation.name if donation.name else 'Anonymous',
-        })
-
-    timeline_data['timeline']['date'] = timeline_dates
-
-    return timeline_data
+    return dict(
+        background=project.background,
+        current_status=project.current_status,
+        project_plan=project.project_plan,
+        target_group=project.target_group,
+        sustainability=project.sustainability,
+        goals_overview=project.goals_overview,
+        results=results_data if results_data else ''
+    )
 
 
 def _get_carousel_data(project):
@@ -222,7 +178,7 @@ def _get_carousel_data(project):
                 "url": im.url,
                 "caption": project.current_image_caption,
                 "credit": project.current_image_credit,
-                "original_url": project.current_image.url,
+                "direct_to_url": '',
             })
         except IOError:
             pass
@@ -230,13 +186,22 @@ def _get_carousel_data(project):
         if len(photos) > 9:
             break
         if update.photo:
+            if update.indicator_period:
+                direct_to = reverse('project-main', kwargs={
+                    'project_id': project.pk
+                }) + '#results'
+            else:
+                direct_to = reverse('update-main', kwargs={
+                    'project_id': project.pk,
+                    'update_id': update.pk
+                })
             try:
                 im = get_thumbnail(update.photo, '750x400', quality=99)
                 photos.append({
                     "url": im.url,
                     "caption": update.photo_caption,
                     "credit": update.photo_credit,
-                    "original_url": update.photo.url,
+                    "direct_to_url": direct_to,
                 })
             except IOError:
                 continue
@@ -293,49 +258,102 @@ def _get_hierarchy_grid(project):
     return grid
 
 
-def _get_project_partners(project):
-    partners = {}
+def _get_partners_with_types(project):
+    partners_dict = {}
     for partner in project.all_partners():
-        partners[partner] = partner.has_partner_types(project)
-    return partners
+        partners_dict[partner] = partner.has_partner_types(project)
+    return collections.OrderedDict(sorted(partners_dict.items()))
+
+
+def _get_indicator_updates_data(updates, child_projects, child=True):
+    updates_list = []
+    for update in updates:
+        if child:
+            indicator_period = update.indicator_period
+        else:
+            indicator_period = update.indicator_period.parent_period()
+
+        updates_list.append({
+            "id": update.pk,
+            "indicator_period": {
+                "id": indicator_period.pk if indicator_period else '',
+                "target_value": str(indicator_period.target_value) if indicator_period else ''
+            },
+            "period_update": str(update.period_update),
+            "created_at": str(update.created_at),
+            "user": {
+                "id": update.user.id,
+                "first_name": update.user.first_name,
+                "last_name": update.user.last_name,
+            },
+            "text": update.text,
+            "photo": update.photo.url if update.photo else '',
+        })
+
+    for child_project in child_projects:
+        updates = child_project.project_updates.select_related('user').order_by('-created_at').\
+            filter(indicator_period__gt=0)
+        child_updates_list = _get_indicator_updates_data(updates, child_project.children(), False)
+        updates_list += child_updates_list
+
+    return updates_list
 
 
 def main(request, project_id):
-    """."""
+    """The main project page."""
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+    if not project.is_published() and not request.user.is_anonymous() and \
+            not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
-    carousel_data = _get_carousel_data(project)
-    updates = project.project_updates.all().order_by('-created_at')[:5]
-    accordion_data = _get_accordion_data(project)
-    # timeline_data = _get_timeline_data(project)
-
-    reporting_org = project.reporting_org()
-    if reporting_org:
-        reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    # Permissions: project admin
+    if not request.user.is_anonymous() and (
+            request.user.is_superuser or request.user.is_admin or
+            True in [request.user.admin_of(partner) for partner in project.partners.all()]):
+        project_admin = True
     else:
-        reporting_org_info = None
-    partners = _get_project_partners(project)
+        project_admin = False
+
+    # Updates
+    updates = project.project_updates.select_related('user').order_by('-created_at')
+    narrative_updates = updates.exclude(indicator_period__isnull=False)
+    indicator_updates = updates.filter(indicator_period__isnull=False)
+
+    # JSON data
+    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
+                                                                    project.children()))
+    carousel_data = json.dumps(_get_carousel_data(project))
+    accordion_data = json.dumps(_get_accordion_data(project))
+    partner_types = _get_partners_with_types(project)
+
+    # Updates pagination
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, narrative_updates, 10)
 
     context = {
-        'accordion_data': json.dumps(accordion_data),
-        'carousel_data': json.dumps(carousel_data),
+        'accordion_data': accordion_data,
+        'carousel_data': carousel_data,
+        'current_datetime': datetime.now(),
+        'indicator_updates': indicator_updates_data,
+        'page': page,
+        'page_range': page_range,
+        'paginator': paginator,
+        'partners': partner_types,
+        'pledged': project.get_pledged(),
         'project': project,
-        # 'timeline_data': json.dumps(timeline_data),
-        'updates': updates,
-        'reporting_org': reporting_org_info,
-        'partners': partners,
+        'project_admin': project_admin,
+        'updates': narrative_updates[:5] if narrative_updates else None,
+        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 
     return render(request, 'project_main.html', context)
 
 
-###############################################################################
-# Project hierarchy
-###############################################################################
+#####################
+# Project hierarchy #
+#####################
 
 
 def hierarchy(request, project_id):
@@ -359,24 +377,33 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
-###############################################################################
-# Project report
-###############################################################################
+###############################################################################################
+# Old links, now incorporated in tabs of the project main page, will redirect to project main #
+###############################################################################################
 
 
 def report(request, project_id):
-    """."""
-    project = get_object_or_404(Project, pk=project_id)
+    """Show the full data report tab on the project main page."""
+    return HttpResponseRedirect(
+        reverse('project-main', kwargs={'project_id': project_id})
+        + '#report'
+    )
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
-        raise PermissionDenied
 
-    context = {
-        'project': project,
-    }
+def partners(request, project_id):
+    """Show the partners tab on the project main page."""
+    return HttpResponseRedirect(
+        reverse('project-main', kwargs={'project_id': project_id})
+        + '#partners'
+    )
 
-    return render(request, 'project_report.html', context)
+
+def finance(request, project_id):
+    """Show finance tab on the project main page."""
+    return HttpResponseRedirect(
+        reverse('project-main', kwargs={'project_id': project_id})
+        + '#finance'
+    )
 
 ###############################################################################
 # Project IATI file
@@ -428,9 +455,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         raise PermissionDenied
 
     # Check if user is allowed to place updates for this project
-    allow_update = False
-    if request.user.has_perm('rsr.post_updates', project):
-        allow_update = True
+    allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
 
     updates = project.updates_desc()[:5]
     update = None
@@ -470,33 +495,6 @@ def search(request):
     """."""
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
-
-
-def partners(request, project_id):
-    """."""
-    project = get_object_or_404(Project, pk=project_id)
-    partners = project.all_partners().values()
-    for partner in partners:
-        id_key = "id".decode('unicode-escape')
-        p = Organisation.objects.get(pk=partner[id_key])
-        partner['partner_types'] = p.has_partner_types(project)
-        partner['organisation_obj'] = p
-    context = {
-        'project': project,
-        'partners': partners,
-    }
-    return render(request, 'project_partners.html', context)
-
-
-def finance(request, project_id):
-    """."""
-    project = get_object_or_404(Project, pk=project_id)
-    pledged = project.get_pledged()
-    context = {
-        'project': project,
-        'pledged': pledged,
-    }
-    return render(request, 'project_finance.html', context)
 
 
 def donations_disabled(project):

@@ -131,14 +131,8 @@ class IatiImportActivity(object):
                 change_message=message
             )
 
-    def set_sync_owner(self):
-        """
-        Check if the project can be edited by the current reporting organisation and set
-        the sync_owner.
-
-        :return: Boolean; True if all checks are passed and False otherwise
-        """
-        sync_owner = self.project.sync_owner
+    def set_reporting_org(self):
+        reporting_org = self.project.reporting_org
         reporting_org_element = self.activity.find('reporting-org')
 
         if not reporting_org_element is None and 'ref' in reporting_org_element.attrib.keys():
@@ -147,36 +141,39 @@ class IatiImportActivity(object):
                 organisation = get_model('rsr', 'organisation').objects.get(iati_org_id=iati_org_id)
             except ObjectDoesNotExist:
                 add_log(self.iati_import, 'reporting_org',
-                        'Reporting organisation not present in RSR', self.project,
+                        'Reporting organisation not present in RSR.', self.project,
                         IatiImportLog.CRITICAL_ERROR)
                 return False
 
-            if not organisation.can_become_reporting:
+            if not organisation.can_create_projects:
                 add_log(self.iati_import, 'reporting_org',
-                        'Reporting organisation not allowed to import projects in RSR',
+                        'Reporting organisation not allowed to import projects in RSR.',
                         self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
 
-            if not self.created and sync_owner and sync_owner != organisation:
-                add_log(self.iati_import, 'sync_owner',
-                        'Project has a different sync_owner (%s)' % sync_owner.name,
+            if not self.created and reporting_org and reporting_org != organisation:
+                add_log(self.iati_import, 'reporting_org',
+                        'Project has a different reporting-org already (%s).' % reporting_org.name,
                         self.project, IatiImportLog.CRITICAL_ERROR)
                 return False
+
+            self.project.set_reporting_org(organisation)
 
             if 'secondary-reporter' in reporting_org_element.attrib.keys():
                 if reporting_org_element.attrib['secondary-reporter'] == '1':
-                    self.project.sync_owner_secondary_reporter = True
+                    self.project.reporting_partner.is_secondary_reporter = True
+                    self.project.reporting_partner.save()
                 elif reporting_org_element.attrib['secondary-reporter'] == '0':
-                    self.project.sync_owner_secondary_reporter = False
+                    self.project.reporting_partner.is_secondary_reporter = False
+                    self.project.reporting_partner.save()
 
-            self.project.sync_owner = organisation
-            self.project.save(update_fields=['sync_owner', 'sync_owner_secondary_reporter'])
             return True
 
         add_log(self.iati_import, 'reporting_org',
-                'Reporting organisation not correctly specified', self.project,
+                'Reporting organisation not correctly specified.', self.project,
                 IatiImportLog.CRITICAL_ERROR)
         return False
+
 
     def get_or_create_project(self):
         """
@@ -237,12 +234,13 @@ class IatiImportActivity(object):
             # Start import process
             self.set_status(IatiProjectImport.IN_PROGRESS_STATUS)
             self.set_start_date()
-            if self.set_sync_owner():
+            if self.set_reporting_org():
                 for field in FIELDS:
                     try:
                         with transaction.atomic():
-                            changes = getattr(fields, field)(self.iati_import, self.activity,
-                                                             self.project, self.globals)
+                            changes = getattr(fields, field)(
+                                self.iati_import, self.activity, self.project, self.globals
+                            )
                     except Exception as e:
                         changes = []
                         add_log(self.iati_import, field, str(e), self.project,

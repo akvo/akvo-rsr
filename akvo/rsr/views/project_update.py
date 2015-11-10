@@ -8,6 +8,8 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 import django_filters
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 
@@ -25,8 +27,11 @@ from .organisation import _page_organisations
 
 
 def _all_updates():
-    """Return all project updates."""
-    return ProjectUpdate.objects.select_related().order_by('-id')
+    """
+    Return all project updates.
+    """
+    return ProjectUpdate.objects.select_related().exclude(indicator_period__isnull=False).\
+        order_by('-id')
 
 
 def _all_projects():
@@ -92,8 +97,10 @@ def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
     update = get_object_or_404(
-        ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id)
-    other_updates = project.updates_desc().exclude(pk=update_id)[:5]
+        ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
+    )
+    other_updates = project.updates_desc().exclude(indicator_period__isnull=False).\
+                        exclude(pk=update_id)[:5]
 
     context = {
         'update': update,
@@ -105,17 +112,7 @@ def main(request, project_id, update_id):
 
 def project_updates(request, project_id):
     """The list of updates for a single project."""
-    project = get_object_or_404(Project, pk=project_id)
-    updates = ProjectUpdate.objects.select_related('project', 'user').filter(project=project)
-
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
-
-    context = {
-        'updates': updates,
-        'project': project,
-        'page': page,
-        'page_range': page_range,
-        'paginator': paginator,
-    }
-    return render(request, 'project_updates.html', context)
+    return HttpResponseRedirect(
+        reverse('project-main', kwargs={'project_id': project_id})
+        + '#updates'
+    )

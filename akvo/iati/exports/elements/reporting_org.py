@@ -14,15 +14,17 @@ def reporting_org(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    org = project.sync_owner
+    org = project.reporting_org
     if org:
         element = etree.Element("reporting-org")
 
         if org.iati_org_id:
             element.attrib['ref'] = org.iati_org_id
 
-        if project.sync_owner_secondary_reporter is not None:
-            element.attrib['secondary-reporter'] = '1' if project.sync_owner_secondary_reporter else '0'
+        if project.reporting_partner.is_secondary_reporter:
+            element.attrib['secondary-reporter'] = '1'
+        else:
+            element.attrib['secondary-reporter'] = '0'
 
         if org.new_organisation_type:
             element.attrib['type'] = str(org.new_organisation_type)

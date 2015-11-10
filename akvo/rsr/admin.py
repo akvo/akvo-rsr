@@ -100,7 +100,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     fieldsets = (
         (_(u'General information'), {'fields': (
             'name', 'long_name', 'organisation_type', 'new_organisation_type',
-            'can_become_reporting', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
+            'can_create_projects', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
             'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
@@ -125,7 +125,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         if request.user.is_superuser:
             return ['created_at', 'last_modified_at']
         else:
-            return ['created_at', 'last_modified_at', 'can_become_reporting']
+            return ['created_at', 'last_modified_at', 'can_create_projects']
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
@@ -598,15 +598,15 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': (),
         }),
-        (_(u'Reporting Organisation'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Indicate the reporting organisation of this project. This organisation must be existing '
-                u'already in Akvo RSR. If the organisation does not exist in the system, please send the details of '
-                u'the organisation including Name, Address, Logo, Contact Person and Website to '
-                u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
-            ),
-            'fields': ('sync_owner', 'sync_owner_secondary_reporter'),
-        }),
+        # (_(u'Reporting Organisation'), {
+        #     'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+        #         u'Indicate the reporting organisation of this project. This organisation must be existing '
+        #         u'already in Akvo RSR. If the organisation does not exist in the system, please send the details of '
+        #         u'the organisation including Name, Address, Logo, Contact Person and Website to '
+        #         u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
+        #     ),
+        #     'fields': ('sync_owner', 'sync_owner_secondary_reporter'),
+        # }),
         (_(u'Project Partners'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add each of the partners you are working with on your project. These organisations must be existing '
@@ -953,6 +953,9 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
         (_(u'Image and video'), {
             'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
                        'video_credit',),
+        }),
+        (_(u'Results'), {
+            'fields': ('indicator_period', 'period_update',),
         }),
     )
     # Methods overridden from ModelAdmin (django/contrib/admin/options.py)

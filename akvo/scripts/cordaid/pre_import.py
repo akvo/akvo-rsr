@@ -5,16 +5,16 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import csv
-import glob
-from lxml import etree
-import os
-from os.path import splitext, basename
-import sys
 import django
+import csv
+import os
+import sys
 
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
+from lxml import etree
+from os.path import join, pardir
+
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+sys.path.append(project_root)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 

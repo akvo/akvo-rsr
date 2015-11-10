@@ -32,6 +32,7 @@ from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_editor import (project_editor_delete_document,
                              project_editor_delete_photo,
+                             project_editor_import_results,
                              project_editor_remove_keyword,
                              project_editor_step1,
                              project_editor_step2,
@@ -52,7 +53,9 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
-from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
+from .project_update import (ProjectUpdateViewSet,
+                             ProjectUpdateExtraViewSet,
+                             upload_indicator_update_photo)
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -64,7 +67,6 @@ from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
-                        typeahead_reporting_organisation,
                         typeahead_project,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
@@ -116,6 +118,7 @@ __all__ = [
     'ProjectViewSet',
     'project_editor_delete_document',
     'project_editor_delete_photo',
+    'project_editor_import_results',
     'project_editor_step1',
     'project_editor_step2',
     'project_editor_step3',
@@ -140,9 +143,9 @@ __all__ = [
     'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
-    'typeahead_reporting_organisation',
     'typeahead_project',
     'typeahead_projectupdate',
     'update_details',
+    'upload_indicator_update_photo',
     'UserViewSet',
 ]

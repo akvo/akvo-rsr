@@ -150,6 +150,11 @@ class Organisation(TimestampsMixin, models.Model):
     primary_location = models.ForeignKey(
         'OrganisationLocation', null=True, on_delete=models.SET_NULL
     )
+    can_create_projects = models.BooleanField(
+        default=False,
+        help_text=_(u'Partner editors of this organisation can create new projects, and publish '
+                    u'projects it is a partner of.')
+    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')
@@ -163,6 +168,7 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    # TODO: Should be removed
     can_become_reporting = models.BooleanField(
         _(u'Reportable'),
         help_text=_(u'Organisation is allowed to become a reporting organisation. '
@@ -180,30 +186,36 @@ class Organisation(TimestampsMixin, models.Model):
         validation_errors = {}
 
         name = self.name.strip()
-        other_names = Organisation.objects.filter(name__iexact=name)
-        if name:
-            if other_names.exists():
-                validation_errors['name'] = _('Organisation name already exists: %s.' %
-                                              other_names[0].name)
-        else:
-            validation_errors['name'] = _('Organisation name can not be blank')
-
         long_name = self.long_name.strip()
-        other_long_names = Organisation.objects.filter(long_name__iexact=long_name)
-        if long_name:
-            if other_long_names.exists():
-                validation_errors['long_name'] = _('Organisation long name already exists: %s.' %
-                                                   other_long_names[0].long_name)
-        else:
-            validation_errors['long_name'] = _('Organisation long name can not be blank')
+        iati_org_id = self.iati_org_id.strip() if self.iati_org_id else None
 
-        if self.iati_org_id:
-            iati_org_id = self.iati_org_id.strip()
-            other_iati_ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id)
-            if iati_org_id and other_iati_ids.exists():
-                validation_errors['iati_org_id'] = _('IATI organisation identifier already exists '
-                                                     'for this organisation: %s.' %
-                                                     other_iati_ids[0].name)
+        names = Organisation.objects.filter(name__iexact=name)
+        long_names = Organisation.objects.filter(long_name__iexact=long_name)
+        ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id) if iati_org_id else None
+
+        if self.pk:
+            names = names.exclude(pk=self.pk)
+            long_names = long_names.exclude(pk=self.pk)
+            ids = ids.exclude(pk=self.pk) if ids else None
+
+        if name and names.exists():
+            validation_errors['name'] = u'{}: {}'.format(
+                    _('An Organisation with this name already exists'), name)
+        elif not name:
+            # This prevents organisation names with only spaces
+            validation_errors['name'] = _(u'Organisation name may not be blank')
+        
+        if long_name and long_names.exists():
+            validation_errors['long_name'] = u'{}: {}'.format(
+                _('An Organisation with this long name already exists'), long_name)
+
+        elif not long_name:
+            # This prevents organisation long names with only spaces
+            validation_errors['long_name'] = _(u'Organisation long name may not be blank')
+
+        if iati_org_id and ids.exists():
+            validation_errors['iati_org_id'] = u'{}: {}'.format(
+                _('An Organisation with this IATI organisation identifier already exists'), ids[0].name)
 
         if validation_errors:
             raise ValidationError(validation_errors)
@@ -264,8 +276,7 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return (Project.objects.filter(partnerships__organisation__in=self) |
-                    Project.objects.filter(sync_owner__in=self)).distinct()
+            return Project.objects.filter(partnerships__organisation__in=self).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -286,7 +297,8 @@ class Organisation(TimestampsMixin, models.Model):
             kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
             if kids:
                 return Organisation.objects.filter(
-                    Q(pk__in=self.values_list('pk', flat=True)) | Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
+                    Q(pk__in=self.values_list('pk', flat=True)) |
+                    Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
                 )
             else:
                 return self
@@ -316,9 +328,15 @@ class Organisation(TimestampsMixin, models.Model):
         return self.projects.published().distinct()
 
     def all_projects(self):
-        """returns a queryset with all projects that has self as any kind of partner or reporting
-        organisation."""
-        return (self.projects.all() | self.reporting_projects.all()).distinct()
+        """returns a queryset with all projects that has self as any kind of partner."""
+        return self.projects.all()
+
+    def reporting_on_projects(self):
+        """returns a queryset with all projects that has self as reporting organisation."""
+        return self.projects.filter(
+            partnerships__organisation=self,
+            partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+        )
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
@@ -335,11 +353,13 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
-        partner_types = []
-        for ps in Partnership.objects.filter(project=project, organisation=self):
-            if ps.iati_organisation_role:
-                partner_types.append(ps.iati_organisation_role_label())
-        return partner_types
+        return [
+            dict(Partnership.IATI_ROLES)[role] for role in Partnership.objects.filter(
+                project=project,
+                organisation=self,
+                iati_organisation_role__isnull=False
+            ).values_list('iati_organisation_role', flat=True)
+        ]
 
     def content_owned_organisations(self):
         """

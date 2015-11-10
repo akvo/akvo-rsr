@@ -1,14 +1,12 @@
-@charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
             Title:   Akvo RSR v3
-            Author:  Loic Sans, loic@akvo.org
+            Author:  Loic Sans & Gabriel Brady, akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------
 
         Title:          RSR v3 functions and library
-        Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /* Colours
@@ -773,6 +771,23 @@ h4.detailedInfo {
     #map {
       display: none; } }
 
+#map-warning {
+  margin-top: -30px;
+  z-index: 99;
+  opacity: 0.8;
+  background: white;
+  margin-right: 15%;
+  margin-left: 15%;
+  padding: 5px;
+  border: solid 1px;
+  border-color: rgba(44, 42, 116, 0.2);
+  border-bottom: 0px;
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px; }
+  @media only screen and (max-width: 568px) {
+    #map-warning {
+      display: none; } }
+
 .searchContainer {
   position: relative; }
   .searchContainer #search .showFilters {
@@ -1074,9 +1089,9 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #f0f0fa;
-  border-bottom: 1px solid #f8f8f8;
-  margin-bottom: 15px;
+  background: #F6FBFB;
+  border-bottom: 1px solid rgba(0, 167, 157, 0.15);
+  margin: -10px 0 15px 0;
   -moz-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   -o-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   -webkit-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
@@ -1223,7 +1238,8 @@ div.projectTopRow {
               -webkit-filter: grayscale(100%);
               filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
               filter: grayscale(100%);
-              transition: all 0.2s ease-in; }
+              transition: all 0.2s ease-in;
+              margin: inherit; }
               div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img:hover {
                 filter: 0;
                 -webkit-filter: grayscale(0%);
@@ -1250,32 +1266,6 @@ div.projectTopRow {
             margin-left: 15px; }
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
-
-ul.results {
-  padding: 5px 0 5px 10px; }
-  ul.results span li {
-    display: inline-block;
-    font-weight: normal; }
-  ul.results dl.indicators {
-    display: inline-block;
-    padding: 0 0 0 35px;
-    width: 100%;
-    overflow: hidden; }
-    ul.results dl.indicators dd {
-      width: 30%;
-      float: left;
-      text-align: right; }
-    ul.results dl.indicators dt {
-      width: 70%;
-      color: rgba(32, 32, 36, 0.4);
-      font-weight: normal;
-      float: left; }
-
-div.timelineBlock {
-  margin: 15px auto 25px;
-  display: none; }
-  div.timelineBlock #timeline {
-    height: 200px; }
 
 div.textBlock {
   margin: 10px auto; }
@@ -1960,6 +1950,812 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     @media only screen and (min-width: 992px) {
       #publishProject.btn {
         margin-left: -1.25em; } } }
+
+/* New concatenated project page */
+.tab-menu {
+  padding: 0.5em 1em 2em 1em; }
+  .tab-menu a {
+    padding: 0.5em;
+    margin: 0 1em;
+    color: #00aaff; }
+    .tab-menu a:hover, .tab-menu a.selected {
+      border-bottom: 3px solid #646363;
+      color: #646363; }
+    .tab-menu a:active {
+      opacity: 0.6; }
+
+/* Results framework display */
+.results {
+  position: relative;
+  /* Styling for the indicator period progress bar */
+  /* Insert some transparent text to space the "progress" label */ }
+  .results * {
+    box-sizing: border-box; }
+  .results article {
+    margin: 0 1em;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    overflow: hidden; }
+  .results .clickable {
+    cursor: pointer; }
+    .results .clickable:hover {
+      opacity: 0.8; }
+    .results .clickable:active {
+      opacity: 0.6; }
+  .results .bg-transition {
+    -moz-transition: background-color 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out;
+    -webkit-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out; }
+  .results .border-transition {
+    -moz-transition: border 0.25s ease-in-out;
+    -o-transition: border 0.25s ease-in-out;
+    -webkit-transition: border 0.25s ease-in-out;
+    transition: border 0.25s ease-in-out; }
+  .results .bg-border-transition {
+    -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out; }
+  .results .opacity-transition {
+    -moz-transition: opacity 0.25s ease-in-out;
+    -o-transition: opacity 0.25s ease-in-out;
+    -webkit-transition: opacity 0.25s ease-in-out;
+    transition: opacity 0.25s ease-in-out; }
+  .results .results-container {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex; }
+  .results .sidebar {
+    width: 30%;
+    min-width: 200px;
+    overflow-y: auto;
+    background-color: #efefe5;
+    vertical-align: top;
+    border: 1px solid #e0e1e2; }
+    .results .sidebar .result-nav {
+      padding: 1px 0.75em 1.75em 0.75em; }
+      .results .sidebar .result-nav:before {
+        height: 1px;
+        background-color: #e0e1e2;
+        width: 100%;
+        display: block;
+        content: '';
+        margin: 0 auto;
+        -moz-transition: background-color 0.25s ease-in-out;
+        -o-transition: background-color 0.25s ease-in-out;
+        -webkit-transition: background-color 0.25s ease-in-out;
+        transition: background-color 0.25s ease-in-out; }
+      .results .sidebar .result-nav:last-child {
+        padding-bottom: 1em; }
+    .results .sidebar .result-nav-header {
+      padding: 0.25em 0.75em 0 0.75em; }
+      .results .sidebar .result-nav-header h3 {
+        color: rgba(32, 32, 36, 0.4);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        margin-top: 5px;
+        margin-right: 5px;
+        position: relative; }
+        .results .sidebar .result-nav-header h3 > a {
+          position: absolute;
+          right: -5px; }
+    .results .sidebar .result-nav {
+      cursor: pointer; }
+      .results .sidebar .result-nav .fa-chevron-up {
+        display: none; }
+      .results .sidebar .result-nav h3 {
+        font-size: 1.1em;
+        color: #424c2b; }
+      .results .sidebar .result-nav.expanded:before {
+        background-color: transparent; }
+      .results .sidebar .result-nav.expanded h3 {
+        color: #202024; }
+      .results .sidebar .result-nav.expanded ~ .result-nav:before {
+        background-color: transparent; }
+      .results .sidebar .result-nav .result-title {
+        position: relative;
+        height: 2.8em;
+        overflow: hidden;
+        box-sizing: border-box; }
+        .results .sidebar .result-nav .result-title .fa {
+          float: right;
+          font-size: 1.3em;
+          margin-right: 6px;
+          text-shadow: 0 1px 0 white; }
+        .results .sidebar .result-nav .result-title > span {
+          box-sizing: border-box;
+          max-width: 80%;
+          margin: 0 auto 0 0;
+          display: block;
+          display: -webkit-box;
+          line-height: 1.4em;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-word; }
+      .results .sidebar .result-nav .result-indicator-count {
+        color: #bcbca6;
+        margin-top: -10px;
+        display: block; }
+      .results .sidebar .result-nav .result-nav-full {
+        display: none; }
+      .results .sidebar .result-nav .indicator-text {
+        display: none; }
+      .results .sidebar .result-nav.expanded {
+        background: white; }
+        .results .sidebar .result-nav.expanded .fa-chevron-down {
+          display: none; }
+        .results .sidebar .result-nav.expanded .fa-chevron-up {
+          display: block; }
+        .results .sidebar .result-nav.expanded .indicator-text {
+          display: initial; }
+        .results .sidebar .result-nav.expanded .indicator-count {
+          display: none; }
+        .results .sidebar .result-nav.expanded .result-nav-full {
+          display: block;
+          cursor: pointer;
+          padding: 0.5em 0 0 5px;
+          background-color: white;
+          margin-top: 1em;
+          background-color: transparent; }
+          .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
+            padding: 0.25em 0em 0.75em 0.5em;
+            /* Transparent border means text doesn't shift when
+                        ** we add a colored border to active elements.
+                        */
+            border-left: 4px solid transparent; }
+            .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
+              background-color: #ececec;
+              border-left: 4px solid #ae0922; }
+            .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav:last-child {
+              margin-bottom: 0; }
+          .results .sidebar .result-nav.expanded .result-nav-full a h4 {
+            font-size: 1.1em;
+            color: #646464;
+            margin-bottom: 1px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; }
+          .results .sidebar .result-nav.expanded .result-nav-full a.active h4 {
+            color: #ae0922; }
+          .results .sidebar .result-nav.expanded .result-nav-full .last-update {
+            font-size: 0.9em;
+            color: #aaaaaa; }
+  .results .indicator-container {
+    vertical-align: top;
+    overflow-y: scroll;
+    padding: 0.25em 1em;
+    background-color: white;
+    border: 1px solid #f1f1f2;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1; }
+    .results .indicator-container .result-summary {
+      display: none;
+      opacity: 0; }
+      .results .indicator-container .result-summary h4 {
+        font-size: 0.9em;
+        color: #aaaaaa;
+        font-variant: small-caps;
+        text-transform: lowercase; }
+      .results .indicator-container .result-summary h3 {
+        font-size: 1.2em;
+        color: #424c2b;
+        margin-bottom: 4px; }
+      .results .indicator-container .result-summary .result-parent {
+        font-size: 0.8em;
+        color: #aaaaaa; }
+      .results .indicator-container .result-summary .indicator-link {
+        cursor: pointer; }
+        .results .indicator-container .result-summary .indicator-link:hover {
+          opacity: 0.8; }
+        .results .indicator-container .result-summary .indicator-link:active {
+          opacity: 0.6; }
+      .results .indicator-container .result-summary .result-indicators {
+        margin-top: 20px; }
+        .results .indicator-container .result-summary .result-indicators ul {
+          list-style-type: none;
+          padding-left: 5px; }
+          .results .indicator-container .result-summary .result-indicators ul li {
+            color: #00aaff; }
+    .results .indicator-container .indicator-group {
+      padding: 0;
+      display: none; }
+      .results .indicator-container .indicator-group h4.indicator-title {
+        color: #ae0922;
+        font-size: 1em; }
+        .results .indicator-container .indicator-group h4.indicator-title .glyphicon {
+          float: left;
+          margin-right: 4px; }
+      .results .indicator-container .indicator-group .baseline {
+        padding: 2em 0; }
+        .results .indicator-container .indicator-group .baseline .baseline-value, .results .indicator-container .indicator-group .baseline .baseline-year {
+          width: 30%;
+          display: inline-block;
+          padding: 0 0 0 5%; }
+          .results .indicator-container .indicator-group .baseline .baseline-value dt, .results .indicator-container .indicator-group .baseline .baseline-year dt {
+            color: #818386; }
+          .results .indicator-container .indicator-group .baseline .baseline-value dd, .results .indicator-container .indicator-group .baseline .baseline-year dd {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #515050; }
+      .results .indicator-container .indicator-group .indicator-periods-title {
+        font-size: 1em;
+        color: #515050; }
+      .results .indicator-container .indicator-group .table {
+        padding: 0.5em 0.25em;
+        /*background-color: rgb(235,235,231);*/ }
+        .results .indicator-container .indicator-group .table tbody.indicator-period {
+          border-top: 1px solid #E7E8E8; }
+        .results .indicator-container .indicator-group .table tbody.expanded {
+          background-color: white; }
+        .results .indicator-container .indicator-group .table thead {
+          font-weight: normal;
+          color: silver; }
+          .results .indicator-container .indicator-group .table thead tr {
+            background-color: #ececec; }
+        .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
+          border: none;
+          color: #acacac; }
+        .results .indicator-container .indicator-group .table tr {
+          min-height: 125px; }
+          .results .indicator-container .indicator-group .table tr .add-button {
+            display: none; }
+          .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
+            text-align: right; }
+            .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
+              border: none;
+              display: inline-block;
+              margin-right: 1.4em; }
+        .results .indicator-container .indicator-group .table td {
+          vertical-align: middle; }
+          .results .indicator-container .indicator-group .table td.fromTime, .results .indicator-container .indicator-group .table td.toTime, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.expand-td {
+            white-space: nowrap; }
+          .results .indicator-container .indicator-group .table td.indicator-bar-td {
+            width: 55%; }
+        .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-up {
+          display: none; }
+        .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-down {
+          display: initial; }
+        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-up {
+          display: initial; }
+        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-down {
+          display: none; }
+      .results .indicator-container .indicator-group .indicator {
+        display: none; }
+  .results .indicator-bar-td, .results .target-td {
+    height: 80px;
+    padding: 0; }
+  .results .th-progress:before {
+    content: 'spacer';
+    width: 40px;
+    height: 1px;
+    display: inline-block;
+    color: transparent; }
+    @media only screen and (max-width: 800px) {
+      .results .th-progress:before {
+        display: none; } }
+  .results .indicator-bar-display-container {
+    position: relative;
+    height: 100%;
+    margin-left: 50px;
+    margin-right: 15px; }
+    .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
+      position: absolute;
+      top: 38px;
+      bottom: 24px;
+      left: 0px;
+      height: 8px;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      border: 1px solid #CDDFEF; }
+    .results .indicator-bar-display-container .indicator-baseline {
+      position: absolute;
+      left: -45px;
+      top: 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      vertical-align: bottom;
+      width: 35px;
+      text-align: right; }
+    .results .indicator-bar-display-container .indicator-bar {
+      background-color: #E2EBF5;
+      right: 0px; }
+    .results .indicator-bar-display-container .indicator-bar-progress-amount {
+      background-color: rgba(0, 0, 0, 0.2); }
+    .results .indicator-bar-display-container .indicator-bar-progress-container {
+      /* The progress box has non-zero width, so add some
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
+      position: relative;
+      height: 100%; }
+      .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+        position: absolute;
+        width: 4px;
+        margin-left: -2px;
+        /* Offset half the width */
+        height: 23px;
+        top: 30px;
+        background-color: #A3C7E3;
+        text-align: center; }
+  .results .target-td {
+    vertical-align: middle; }
+  .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+    padding-left: 15px;
+    font-size: 1.1em;
+    font-weight: normal;
+    color: #515050;
+    vertical-align: bottom; }
+  .results .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+    padding-left: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #A3C7E3;
+    vertical-align: bottom; }
+  .results .indicator-container .indicator-group .table tbody {
+    background-color: white;
+    border-bottom: none !important; }
+    .results .indicator-container .indicator-group .table tbody:last-child {
+      margin-bottom: 0; }
+    .results .indicator-container .indicator-group .table tbody .edit-button {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      top: 15px;
+      right: 10px;
+      color: #202024;
+      font-size: 1.5em; }
+      .results .indicator-container .indicator-group .table tbody .edit-button.activated {
+        display: none; }
+    .results .indicator-container .indicator-group .table tbody .delete-button {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      top: 13px;
+      right: 35px;
+      font-size: 1.5em;
+      color: #202024; }
+      .results .indicator-container .indicator-group .table tbody .delete-button.activated {
+        display: none; }
+    .results .indicator-container .indicator-group .table tbody .delete-confirm {
+      display: none;
+      position: absolute;
+      right: 10px;
+      top: 55px;
+      height: 90px;
+      background-color: white;
+      color: #202024;
+      padding: 1em;
+      z-index: 101; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm > div {
+        height: 40px;
+        position: relative; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
+        position: absolute;
+        left: 10px;
+        top: 10px; }
+      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
+        background-color: #ae0922;
+        border-color: #ae0922;
+        margin-left: auto;
+        position: absolute;
+        right: 10px;
+        top: 10px; }
+        .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
+          background-color: #ff5500;
+          border-color: #ff5500; }
+    .results .indicator-container .indicator-group .table tbody .update-date {
+      display: inline-block;
+      text-align: left;
+      width: 50%; }
+    .results .indicator-container .indicator-group .table tbody .update-name {
+      display: inline-block;
+      text-align: left;
+      width: 30%;
+      margin-right: 10%;
+      color: #202024; }
+      .results .indicator-container .indicator-group .table tbody .update-name.delete-pending {
+        margin-bottom: 90px; }
+    .results .indicator-container .indicator-group .table tbody .update-timeline {
+      display: inline-block;
+      width: 75%;
+      height: 80px;
+      padding-top: 1em;
+      z-index: 99;
+      position: relative; }
+    .results .indicator-container .indicator-group .table tbody .update-target {
+      position: absolute;
+      margin-top: 48px;
+      display: inline-block;
+      width: 24%;
+      height: 80px;
+      text-align: center; }
+      .results .indicator-container .indicator-group .table tbody .update-target span {
+        font-size: 1.1em;
+        color: #515050;
+        vertical-align: text-top; }
+        .results .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
+          padding-left: 15px;
+          font-size: 1.1em;
+          font-weight: bold;
+          color: #A3C7E3;
+          vertical-align: bottom; }
+    .results .indicator-container .indicator-group .table tbody .update-description {
+      padding: 0.5em;
+      margin: 20px auto 30px; }
+      .results .indicator-container .indicator-group .table tbody .update-description.editable {
+        background: whitesmoke;
+        border: 1px solid #A3C7E3; }
+      .results .indicator-container .indicator-group .table tbody .update-description .update-photo {
+        float: right;
+        width: 150px;
+        height: 100px;
+        background-size: cover; }
+    .results .indicator-container .indicator-group .table tbody .save-button {
+      position: absolute;
+      display: none;
+      right: 10px;
+      bottom: 10px; }
+      .results .indicator-container .indicator-group .table tbody .save-button.active {
+        display: inline-block;
+        padding: 3px 7px;
+        color: white;
+        background-color: #007ab8;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        text-align: center; }
+    .results .indicator-container .indicator-group .table tbody .cancel-button {
+      position: absolute;
+      display: none;
+      right: 60px;
+      bottom: 10px;
+      background-color: none; }
+      .results .indicator-container .indicator-group .table tbody .cancel-button.active {
+        display: inline-block;
+        padding: 3px 7px;
+        color: #007ab8;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        text-align: center; }
+  .results .update-dialog-container.pending-new-update .update-entry-container {
+    background-color: #D1E6D1; }
+    .results .update-dialog-container.pending-new-update .update-entry-container:first-child {
+      border-left: none; }
+  .results .update-dialog-container td {
+    padding: 8px 2em; }
+    .results .update-dialog-container td .update-entry-container {
+      padding: 2em;
+      margin-bottom: 2em;
+      position: relative;
+      background-color: #ececec; }
+      .results .update-dialog-container td .update-entry-container:first-child {
+        border-left: 4px solid #ae0922; }
+      .results .update-dialog-container td .update-entry-container.edit-in-progress {
+        background-color: #D1E6D1;
+        border-left: none; }
+      .results .update-dialog-container td .update-entry-container .update-exceed-target {
+        margin: 3em 0 1em 0;
+        text-align: right; }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
+          opacity: 0; }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target label {
+          margin-right: 10px;
+          color: rgba(32, 32, 36, 0.5); }
+        .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
+          margin-right: 10px; }
+          .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
+            opacity: 1; }
+      .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
+        position: relative;
+        height: 100%;
+        margin-left: 45px;
+        margin-right: 0; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
+          top: 34px;
+          left: -60px; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
+          position: absolute;
+          bottom: -18px;
+          width: 44px;
+          margin-left: -22px;
+          text-align: center;
+          color: #B5B5B5;
+          border: 1px solid #B5B5B5;
+          background-color: #ececec;
+          cursor: pointer; }
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
+            content: '';
+            opacity: 0;
+            height: 0px;
+            width: 0px;
+            padding: 0;
+            margin: 0;
+            font-size: 0; }
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
+            color: #A3C7E3;
+            border-color: #A3C7E3; }
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
+            z-index: 101;
+            background-color: white; }
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
+              display: block;
+              font-size: initial;
+              opacity: 1;
+              position: absolute;
+              top: 26px;
+              color: inherit;
+              content: initial;
+              background-color: white;
+              width: 100px;
+              height: auto;
+              margin-left: -28px;
+              /* Half of the width of this - half the width of the parent */
+              padding: 5px 0; }
+              .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
+                content: '';
+                width: 0;
+                height: 0;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 5px solid white;
+                position: absolute;
+                top: -5px;
+                left: 45px; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+          position: absolute;
+          top: 38px;
+          bottom: 24px;
+          left: 0px;
+          height: 14px;
+          -moz-border-radius: 2px;
+          -o-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
+          border: 1px solid #CDDFEF; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
+          background-color: #fff;
+          right: 0px; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+          background-color: #fff;
+          border-right: none; }
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
+          /* The progress box has non-zero width, so add some
+                        ** padding to ensure it doesn't overflow the parent
+                        ** container.
+                        */
+          position: relative;
+          height: 100%; }
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            top: 35px;
+            background-color: #B5B5B5;
+            text-align: center; }
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
+              background-color: #A3C7E3; }
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
+              border: none; }
+      .results .update-dialog-container td .update-entry-container .target-td {
+        vertical-align: middle; }
+      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+        padding-left: 15px;
+        font-size: 1.5em;
+        font-weight: normal;
+        color: #515050;
+        vertical-align: bottom; }
+      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+        padding-left: 15px;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #A3C7E3;
+        vertical-align: bottom;
+        z-index: 19999; }
+      .results .update-dialog-container td .update-entry-container:last-child {
+        margin-bottom: 0; }
+      .results .update-dialog-container td .update-entry-container .edit-button {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        top: 15px;
+        right: 10px;
+        color: #202024;
+        font-size: 1.5em; }
+        .results .update-dialog-container td .update-entry-container .edit-button.activated {
+          display: none; }
+      .results .update-dialog-container td .update-entry-container .delete-button {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        top: 13px;
+        right: 35px;
+        font-size: 1.5em;
+        color: #202024; }
+        .results .update-dialog-container td .update-entry-container .delete-button.activated {
+          display: none; }
+      .results .update-dialog-container td .update-entry-container .update-date {
+        display: inline-block;
+        text-align: left;
+        width: 50%; }
+      .results .update-dialog-container td .update-entry-container .update-name {
+        display: inline-block;
+        text-align: left;
+        width: 30%;
+        margin-right: 10%;
+        color: #202024; }
+      .results .update-dialog-container td .update-entry-container .update-timeline {
+        display: inline-block;
+        width: 84%;
+        height: 80px;
+        padding-top: 1em;
+        z-index: 99;
+        position: relative; }
+      .results .update-dialog-container td .update-entry-container .update-target {
+        position: absolute;
+        margin-top: 49px;
+        display: inline-block;
+        width: 15%;
+        height: 80px;
+        text-align: right; }
+        .results .update-dialog-container td .update-entry-container .update-target span {
+          font-size: 1.1em;
+          color: #515050;
+          vertical-align: text-top; }
+          .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
+            padding-left: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #A3C7E3;
+            vertical-align: bottom; }
+      .results .update-dialog-container td .update-entry-container .update-description {
+        padding: 0.5em;
+        margin: 20px auto 30px; }
+        .results .update-dialog-container td .update-entry-container .update-description.editable {
+          background: whitesmoke;
+          border: 1px solid #A3C7E3; }
+        .results .update-dialog-container td .update-entry-container .update-description .update-photo {
+          float: right;
+          width: 150px;
+          height: 100px;
+          background-size: cover; }
+      .results .update-dialog-container td .update-entry-container .save-button {
+        position: absolute;
+        display: none;
+        right: 10px;
+        bottom: 10px; }
+        .results .update-dialog-container td .update-entry-container .save-button.active {
+          display: inline-block;
+          padding: 3px 7px;
+          color: white;
+          background-color: #202024;
+          -moz-border-radius: 2px;
+          -o-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
+          text-align: center; }
+      .results .update-dialog-container td .update-entry-container .cancel-button {
+        position: absolute;
+        display: none;
+        right: 60px;
+        bottom: 10px; }
+        .results .update-dialog-container td .update-entry-container .cancel-button.active {
+          display: inline-block;
+          padding: 3px 7px;
+          color: #202024;
+          -moz-border-radius: 2px;
+          -o-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
+          text-align: center; }
+      .results .update-dialog-container td .update-entry-container .edit-slider {
+        z-index: 9999; }
+        .results .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
+          width: 3px;
+          margin-left: -2px;
+          height: 20px;
+          position: absolute;
+          background-color: #B5B5B5;
+          top: -3px;
+          z-index: 102; }
+        .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
+          position: absolute;
+          background-color: green;
+          height: 12px;
+          top: 1px;
+          z-index: 101;
+          opacity: 0.5; }
+          .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
+            background-color: red; }
+        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
+          height: 5px;
+          border: 0;
+          background-color: rgba(255, 255, 255, 0);
+          margin-top: -28px;
+          z-index: 99999;
+          -moz-border-radius: 4px;
+          -o-border-radius: 4px;
+          -webkit-border-radius: 4px;
+          border-radius: 4px;
+          box-shadow: none; }
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
+            background-color: rgba(255, 255, 255, 0);
+            -moz-border-radius: 4px;
+            -o-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px; }
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            z-index: 9999;
+            background-color: #007ab8;
+            cursor: pointer;
+            left: -14px;
+            box-shadow: none;
+            top: -7px;
+            color: white; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+              display: block;
+              content: '|||';
+              color: white;
+              width: 26px;
+              height: 26px;
+              line-height: 23px;
+              text-align: center;
+              letter-spacing: -2px;
+              color: white;
+              background-color: transparent;
+              top: 0;
+              left: -1px; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+              display: none; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+              background-color: #009ceb; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+              background-color: #de8929; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+              position: absolute;
+              top: -32px;
+              background-color: #007ab8;
+              padding: 3px;
+              width: 44px;
+              left: -8px;
+              text-align: center; }
+              .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+                content: '';
+                height: 0px;
+                width: 0px;
+                position: absolute;
+                bottom: -5px;
+                left: 17px;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid #007ab8; }
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+              position: absolute;
+              width: 42px;
+              text-align: center;
+              bottom: -25px;
+              left: -8px;
+              background-color: white;
+              color: #007ab8; }
+        .results .update-dialog-container td .update-entry-container .edit-slider.active {
+          display: initial; }
 
 /* Modal dialog stuff for the Project Editor */
 div.inactive .addOrg {
