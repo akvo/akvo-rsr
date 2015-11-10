@@ -6,6 +6,7 @@
 
 
 import logging
+
 logger = logging.getLogger('akvo.rsr')
 
 import os
@@ -27,6 +28,7 @@ from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_sen
 from akvo.iati.exports.iati_export import IatiXML
 from akvo.iati.imports.iati_import import IatiImportProcess
 from akvo.iati.imports.utils import add_log
+from .models.iati_import import IatiImport
 
 
 def create_publishing_status(sender, **kwargs):
@@ -321,15 +323,14 @@ def import_iati_file(sender, **kwargs):
     """
     iati_import = kwargs.get("instance", None)
 
-    if iati_import and iati_import.status == get_model('rsr', 'IatiImport').PENDING_STATUS:
+    if iati_import and iati_import.status == IatiImport.PENDING_STATUS:
         post_save.disconnect(import_iati_file, sender=sender)
         iati_import.save()
         try:
             with transaction.atomic():
                 IatiImportProcess(iati_import)
         except Exception as e:
-            add_log(iati_import, 'general', str(e), None,
-                    get_model('rsr', 'IatiImportLog').CRITICAL_ERROR)
-            iati_import.status = get_model('rsr', 'IatiImport').CANCELLED_STATUS
+            add_log(iati_import, 'general', str(e), None, IatiImport.CRITICAL_ERROR)
+            iati_import.status = IatiImport.CANCELLED_STATUS
             iati_import.save()
         post_save.connect(import_iati_file, sender=sender)

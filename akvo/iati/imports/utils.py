@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ...rsr.models.iati_import_log import IatiImportLog
+from ...rsr.models.organisation import Organisation
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import get_model
 
 
 def add_log(iati_import, field, error, project=None, severity=IatiImportLog.VALUE_NOT_SAVED):
@@ -20,7 +20,7 @@ def add_log(iati_import, field, error, project=None, severity=IatiImportLog.VALU
     :param project: Project instance
     :param severity: Integer
     """
-    get_model('rsr', 'iatiimportlog').objects.create(
+    IatiImportLog.objects.create(
         iati_import=iati_import,
         text=u'%s: %s.' % (field, error),
         project=project,
@@ -62,20 +62,20 @@ def get_or_create_organisation(ref, name):
 
     if ref:
         try:
-            return get_model('rsr', 'organisation').objects.get(iati_org_id=ref)
+            return Organisation.objects.get(iati_org_id=ref)
         except ObjectDoesNotExist:
             pass
 
     if name:
         try:
-            return get_model('rsr', 'organisation').objects.get(name=name[:25])
+            return Organisation.objects.get(name=name[:25])
         except ObjectDoesNotExist:
             try:
-                return get_model('rsr', 'organisation').objects.get(long_name=name[:75])
+                return Organisation.objects.get(long_name=name[:75])
             except ObjectDoesNotExist:
                 pass
 
-    return get_model('rsr', 'organisation').objects.create(
+    return Organisation.objects.create(
         name=name[:25],
         long_name=name[:75],
         iati_org_id=ref if ref else None,

@@ -5,10 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.custom_field import ProjectCustomField
+
 from ..utils import add_log, get_text
 
 from django.conf import settings
-from django.db.models import get_model, ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist
 
 START_WITH = {
     'project_name': 'Project name: ',
@@ -32,7 +34,7 @@ def _add_custom_field(project, name, text, section):
     :param section: Integer; field section
     """
     if project and name and section:
-        custom_field, _created = get_model('rsr', 'projectcustomfield').objects.get_or_create(
+        custom_field, _created = ProjectCustomField.objects.get_or_create(
             project=project,
             name=name,
             section=section,
@@ -57,7 +59,7 @@ def _delete_custom_field(project, name, section):
     """
     if project and name and section:
         try:
-            custom_field = get_model('rsr', 'projectcustomfield').objects.get(
+            custom_field = ProjectCustomField.objects.get(
                 project=project,
                 name=name,
                 section=section
@@ -517,7 +519,7 @@ def custom_fields(iati_import, activity, project, activities_globals):
             except ValueError as e:
                 add_log(iati_import, 'custom_field_order', str(e), project)
 
-        cf, created = get_model('rsr', 'projectcustomfield').objects.get_or_create(
+        cf, created = ProjectCustomField.objects.get_or_create(
             project=project,
             name=custom_label,
             section=section,

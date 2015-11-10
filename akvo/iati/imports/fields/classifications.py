@@ -5,11 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.policy_marker import PolicyMarker
+from ....rsr.models.sector import Sector
+
 from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
-
-from django.db.models import get_model
 
 SECTOR_TO_CODE = {
     'ADT': '6',
@@ -86,7 +87,7 @@ def sectors(iati_import, activity, project, activities_globals):
                 add_log(iati_import, 'sector', 'vocabulary is too long (5 characters allowed)',
                         project)
 
-        sec, created = get_model('rsr', 'sector').objects.get_or_create(
+        sec, created = Sector.objects.get_or_create(
             project=project,
             sector_code=code,
             percentage=percentage,
@@ -158,7 +159,7 @@ def policy_markers(iati_import, activity, project, activities_globals):
                 add_log(iati_import, 'policy_marker',
                         'vocabulary is too long (5 characters allowed)', project)
 
-        pm, created = get_model('rsr', 'policymarker').objects.get_or_create(
+        pm, created = PolicyMarker.objects.get_or_create(
             project=project,
             policy_marker=code,
             significance=significance,

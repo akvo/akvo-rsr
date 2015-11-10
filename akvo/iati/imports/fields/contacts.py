@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
-from ..utils import add_log, get_text
+from ....rsr.models.project_contact import ProjectContact
 
-from django.db.models import get_model
+from ..utils import add_log, get_text
 
 
 def contacts(iati_import, activity, project, activities_globals):
@@ -98,7 +98,7 @@ def contacts(iati_import, activity, project, activities_globals):
                         IatiImportLog.VALUE_PARTLY_SAVED)
                 mailing_address_text = mailing_address_text[:255]
 
-        c, created = get_model('rsr', 'projectcontact').objects.get_or_create(
+        project_contact, created = ProjectContact.objects.get_or_create(
             project=project,
             type=contact_type,
             person_name=person_name_text,
@@ -112,9 +112,9 @@ def contacts(iati_import, activity, project, activities_globals):
         )
 
         if created:
-            changes.append(u'added contact (id: %s): %s' % (str(c.pk), c))
+            changes.append(u'added contact (id: %s): %s' % (str(project_contact.pk), project_contact))
 
-        imported_contacts.append(c)
+        imported_contacts.append(project_contact)
 
     for contact in project.contacts.all():
         if not contact in imported_contacts:

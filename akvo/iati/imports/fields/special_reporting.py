@@ -5,6 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.crs_add import CrsAdd, CrsAddOtherFlag
+from ....rsr.models.fss import Fss, FssForecast
+from ....rsr.models.legacy_data import LegacyData
+
 from ..utils import add_log
 
 from datetime import datetime
@@ -12,7 +16,6 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import get_model
 
 TRUE_VALUES = [
     'true',
@@ -72,7 +75,7 @@ def legacy_data(iati_import, activity, project, activities_globals):
                         IatiImportLog.VALUE_PARTLY_SAVED)
                 iati_equivalent = iati_equivalent[:100]
 
-        ld, created = get_model('rsr', 'legacydata').objects.get_or_create(
+        ld, created = LegacyData.objects.get_or_create(
             project=project,
             name=name,
             value=value,
@@ -109,7 +112,7 @@ def crs_add(iati_import, activity, project, activities_globals):
 
     crs_element = activity.find('crs-add')
     if not crs_element is None:
-        crs_ins, created = get_model('rsr', 'crsadd').objects.get_or_create(project=project)
+        crs_ins, created = CrsAdd.objects.get_or_create(project=project)
 
         if created:
             changes.append(u'added CRS++ (id: %s)' % str(crs_ins.pk))
@@ -273,7 +276,7 @@ def crs_add(iati_import, activity, project, activities_globals):
                 elif significance in FALSE_VALUES:
                     significance = False
 
-            of, created = get_model('rsr', 'crsaddotherflag').objects.get_or_create(
+            of, created = CrsAddOtherFlag.objects.get_or_create(
                 crs=crs_ins,
                 code=code,
                 significance=significance
@@ -291,7 +294,7 @@ def crs_add(iati_import, activity, project, activities_globals):
 
     else:
         try:
-            crs_ins = get_model('rsr', 'crsadd').objects.get(project=project)
+            crs_ins = CrsAdd.objects.get(project=project)
             changes.append(u'deleted CRS++ (id: %s)' % str(crs_ins.pk))
             crs_ins.delete()
         except ObjectDoesNotExist:
@@ -315,7 +318,7 @@ def fss(iati_import, activity, project, activities_globals):
 
     fss_element = activity.find('fss')
     if not fss_element is None:
-        fss_ins, created = get_model('rsr', 'fss').objects.get_or_create(project=project)
+        fss_ins, created = Fss.objects.get_or_create(project=project)
 
         if created:
             changes.append(u'added FSS (id: %s)' % str(fss_ins.pk))
@@ -383,7 +386,7 @@ def fss(iati_import, activity, project, activities_globals):
                     add_log(iati_import, 'fss_forecast_currency',
                             'currency is too long (3 characters allowed)', project)
 
-            fore, created = get_model('rsr', 'fssforecast').objects.get_or_create(
+            fore, created = FssForecast.objects.get_or_create(
                 fss=fss_ins,
                 value=value,
                 year=year,
@@ -403,7 +406,7 @@ def fss(iati_import, activity, project, activities_globals):
 
     else:
         try:
-            fss_ins = get_model('rsr', 'fss').objects.get(project=project)
+            fss_ins = Fss.objects.get(project=project)
             changes.append(u'deleted FSS (id: %s)' % str(fss_ins.pk))
             fss_ins.delete()
         except ObjectDoesNotExist:

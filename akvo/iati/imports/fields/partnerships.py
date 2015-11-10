@@ -4,11 +4,11 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.partnership import Partnership
+
 from ..utils import add_log, get_or_create_organisation, get_text
 
 from django.conf import settings
-from django.db.models import get_model
 
 ROLE_TO_CODE = {
     'accountable': 2,
@@ -70,7 +70,7 @@ def partnerships(iati_import, activity, project, activities_globals):
                     project)
             continue
 
-        ps, created = get_model('rsr', 'partnership').objects.get_or_create(
+        ps, created = Partnership.objects.get_or_create(
             project=project,
             organisation=partner,
             iati_organisation_role=partner_role,

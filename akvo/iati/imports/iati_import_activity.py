@@ -6,6 +6,9 @@
 
 from ...rsr.models.iati_import_log import IatiImportLog
 from ...rsr.models.iati_project_import import IatiProjectImport
+from ...rsr.models.organisation import Organisation
+from ...rsr.models.project import Project
+
 from .utils import add_log
 
 from django.conf import settings
@@ -13,7 +16,7 @@ from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import get_model, ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist
 
 import datetime
 import fields
@@ -138,7 +141,7 @@ class IatiImportActivity(object):
         if not reporting_org_element is None and 'ref' in reporting_org_element.attrib.keys():
             iati_org_id = reporting_org_element.attrib['ref']
             try:
-                organisation = get_model('rsr', 'organisation').objects.get(iati_org_id=iati_org_id)
+                organisation = Organisation.objects.get(iati_org_id=iati_org_id)
             except ObjectDoesNotExist:
                 add_log(self.iati_import, 'reporting_org',
                         'Reporting organisation not present in RSR.', self.project,
@@ -190,7 +193,7 @@ class IatiImportActivity(object):
                     IatiImportLog.CRITICAL_ERROR)
             return None, None
 
-        project, created = get_model('rsr', 'project').objects.get_or_create(
+        project, created = Project.objects.get_or_create(
             iati_activity_id=iati_identifier
         )
 
@@ -223,12 +226,12 @@ class IatiImportActivity(object):
 
         # Get or create project
         self.project, self.created = self.get_or_create_project()
-        act = IatiProjectImport.CREATE_ACTION if self.created else IatiProjectImport.UPDATE_ACTION
+        action = IatiProjectImport.CREATE_ACTION if self.created else IatiProjectImport.UPDATE_ACTION
         if self.project:
-            self.project_import_log = get_model('rsr', 'iatiprojectimport').objects.create(
+            self.project_import_log = IatiProjectImport.objects.create(
                 iati_import=self.iati_import,
                 project=self.project,
-                action=act
+                action=action
             )
 
             # Start import process

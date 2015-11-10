@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
-from ..utils import add_log, get_text
+from ....rsr.models.project_condition import ProjectCondition
 
-from django.db.models import get_model
+from ..utils import add_log, get_text
 
 CODE_TO_STATUS = {
     '1': 'H',
@@ -347,16 +347,18 @@ def conditions(iati_import, activity, project, activities_globals):
                         project, IatiImportLog.VALUE_PARTLY_SAVED)
                 condition_text = condition_text[:100]
 
-            cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(
+            project_condition, created = ProjectCondition.objects.get_or_create(
                 project=project,
                 type=condition_type,
                 text=condition_text
             )
 
             if created:
-                changes.append(u'added condition (id: %s): %s' % (str(cond.pk), cond))
+                changes.append(
+                    u'added condition (id: %s): %s' % (str(project_condition.pk), project_condition)
+                )
 
-            imported_conditions.append(cond)
+            imported_conditions.append(project_condition)
 
     for condition in project.conditions.all():
         if not condition in imported_conditions:

@@ -5,9 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
-from ..utils import add_log, get_text
+from ....rsr.models.indicator import Indicator, IndicatorPeriod
+from ....rsr.models.result import Result
 
-from django.db.models import get_model
+from ..utils import add_log, get_text
 
 from datetime import datetime
 
@@ -76,7 +77,7 @@ def results(iati_import, activity, project, activities_globals):
         elif result_aggregation_status and result_aggregation_status.lower() in FALSE_VALUES:
             result_aggregation_status = False
 
-        res, created = get_model('rsr', 'result').objects.get_or_create(
+        res, created = Result.objects.get_or_create(
             project=project,
             type=result_type,
             title=result_title_text,
@@ -187,7 +188,7 @@ def indicators(iati_import, result_element, result, activities_globals):
                             IatiImportLog.VALUE_PARTLY_SAVED)
                     baseline_comment_text = baseline_comment_text[:2000]
 
-        ind, created = get_model('rsr', 'indicator').objects.get_or_create(
+        ind, created = Indicator.objects.get_or_create(
             result=result,
             measure=indicator_measure,
             ascending=indicator_ascending,
@@ -291,7 +292,7 @@ def indicator_periods(iati_import, indicator_element, indicator, activities_glob
                             indicator.result.project, IatiImportLog.VALUE_PARTLY_SAVED)
                     actual_comment = actual_comment[:2000]
 
-        per, created = get_model('rsr', 'indicatorperiod').objects.get_or_create(
+        per, created = IndicatorPeriod.objects.get_or_create(
             indicator=indicator,
             period_start=period_start,
             period_end=period_end,

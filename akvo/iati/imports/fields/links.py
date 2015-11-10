@@ -5,13 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.link import Link
+from ....rsr.models.project_document import ProjectDocument
+
 from ..utils import add_log, get_text
 
 from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-
-from django.db.models import get_model
 
 import urllib2
 
@@ -124,7 +125,7 @@ def links(iati_import, activity, project, activities_globals):
         if url and 'rsr.akvo.org' in url:
             continue
 
-        link, created = get_model('rsr', 'link').objects.get_or_create(
+        link, created = Link.objects.get_or_create(
             project=project,
             url=url
         )
@@ -153,7 +154,7 @@ def links(iati_import, activity, project, activities_globals):
                         project, IatiImportLog.VALUE_PARTLY_SAVED)
                 caption = caption[:50]
 
-        link, created = get_model('rsr', 'link').objects.get_or_create(
+        link, created = Link.objects.get_or_create(
             project=project,
             url=url,
             caption=caption
@@ -262,7 +263,7 @@ def documents(iati_import, activity, project, activities_globals):
                 add_log(iati_import, 'document_link_language',
                         'language is too long (2 characters allowed)', project)
 
-        doc, created = get_model('rsr', 'projectdocument').objects.get_or_create(
+        doc, created = ProjectDocument.objects.get_or_create(
             project=project,
             url=url,
             format=doc_format,

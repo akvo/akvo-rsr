@@ -4,13 +4,16 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.country import Country, RecipientCountry
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.location import AdministrativeLocation, ProjectLocation
+from ....rsr.models.region import RecipientRegion
+
 from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import get_model
 
 
 def locations(iati_import, activity, project, activities_globals):
@@ -161,11 +164,11 @@ def locations(iati_import, activity, project, activities_globals):
                             'code is too long (2 characters allowed)', project)
         if country_code:
             try:
-                country = get_model('rsr', 'country').objects.get(iso_code=country_code)
+                country = Country.objects.get(iso_code=country_code)
             except ObjectDoesNotExist as e:
                 add_log(iati_import, 'location_country', str(e), project)
 
-        loc, created = get_model('rsr', 'projectlocation').objects.get_or_create(
+        loc, created = ProjectLocation.objects.get_or_create(
             location_target=project,
             latitude=latitude,
             longitude=longitude,
@@ -247,7 +250,7 @@ def administratives(iati_import, location_element, location, activities_globals)
                 add_log(iati_import, 'administrative_location_level',
                         'level is too long (1 character allowed)', location.location_target)
 
-        admin, created = get_model('rsr', 'administrativelocation').objects.get_or_create(
+        admin, created = AdministrativeLocation.objects.get_or_create(
             location=location,
             code=code,
             vocabulary=vocabulary,
@@ -308,7 +311,7 @@ def recipient_countries(iati_import, activity, project, activities_globals):
         except InvalidOperation as e:
             add_log(iati_import, 'recipient_country_percentage', str(e), project)
 
-        rc, created = get_model('rsr', 'recipientcountry').objects.get_or_create(
+        rc, created = RecipientCountry.objects.get_or_create(
             project=project,
             country=code,
             percentage=percentage,
@@ -376,7 +379,7 @@ def recipient_regions(iati_import, activity, project, activities_globals):
                 add_log(iati_import, 'recipient_region_vocabulary',
                         'vocabulary is too long (1 character allowed)', project)
 
-        rr, created = get_model('rsr', 'recipientregion').objects.get_or_create(
+        rr, created = RecipientRegion.objects.get_or_create(
             project=project,
             region=code,
             percentage=percentage,

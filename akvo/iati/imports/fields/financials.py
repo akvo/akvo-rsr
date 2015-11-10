@@ -4,14 +4,18 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ....rsr.models.budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from ....rsr.models.iati_import_log import IatiImportLog
+from ....rsr.models.planned_disbursement import PlannedDisbursement
+from ....rsr.models.transaction import Transaction, TransactionSector
+
 from ..utils import add_log, get_or_create_organisation, get_text
 
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from django.conf import settings
-from django.db.models import get_model, ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist
 
 TYPE_TO_CODE = {
     'C': '2',
@@ -215,7 +219,7 @@ def transactions(iati_import, activity, project, activities_globals):
                     add_log(iati_import, 'transaction_recipient_region_vocabulary',
                             'vocabulary too long (1 character allowed)', project)
 
-        trans, created = get_model('rsr', 'transaction').objects.get_or_create(
+        trans, created = Transaction.objects.get_or_create(
             project=project,
             reference=transaction_ref,
             aid_type=transaction_aid,
@@ -300,7 +304,7 @@ def transaction_sectors(iati_import, transaction_element, transaction, activitie
                     IatiImportLog.VALUE_PARTLY_SAVED)
             sector_description = sector_description[:100]
 
-        sec, created = get_model('rsr', 'transactionsector').objects.get_or_create(
+        sec, created = TransactionSector.objects.get_or_create(
             transaction=transaction,
             code=sector_code,
             text=sector_description,
@@ -350,21 +354,21 @@ def budget_items(iati_import, activity, project, activities_globals):
         value = None
         value_date = None
         currency = ''
-        label = get_model('rsr', 'budgetitemlabel').objects.get(label='Other')
+        label = BudgetItemLabel.objects.get(label='Other')
         other_extra = 'Other'
 
         if 'type' in budget.attrib.keys() and len(budget.attrib['type']) < 2:
             budget_type = budget.attrib['type']
             if (budget_type == '1' and original_budgets_count == 1) or \
                     (budget_type == '2' and revised_budgets_count == 1) or all_budget_count == 1:
-                label = get_model('rsr', 'budgetitemlabel').objects.get(label='Total')
+                label = BudgetItemLabel.objects.get(label='Total')
                 other_extra = ''
 
         if '{%s}type' % settings.AKVO_NS in budget.attrib.keys() or \
                 '{%s}label' % settings.AKVO_NS in budget.attrib.keys():
             if '{%s}type' % settings.AKVO_NS in budget.attrib.keys():
                 try:
-                    label = get_model('rsr', 'budgetitemlabel').objects.get(
+                    label = BudgetItemLabel.objects.get(
                         pk=int(budget.attrib['{%s}type' % settings.AKVO_NS])
                     )
                 except (ValueError, ObjectDoesNotExist) as e:
@@ -423,7 +427,7 @@ def budget_items(iati_import, activity, project, activities_globals):
                     add_log(iati_import, 'budget_item_currency',
                             'currency too long (3 characters allowed)', project)
 
-        budget, created = get_model('rsr', 'budgetitem').objects.get_or_create(
+        budget, created = BudgetItem.objects.get_or_create(
             project=project,
             type=budget_type,
             period_start=period_start,
@@ -502,7 +506,7 @@ def country_budget_items(iati_import, activity, project, activities_globals):
             except InvalidOperation as e:
                 add_log(iati_import, 'country_budget_item_percentage', str(e), project)
 
-            cbi, created = get_model('rsr', 'countrybudgetitem').objects.get_or_create(
+            cbi, created = CountryBudgetItem.objects.get_or_create(
                 project=project,
                 code=code_text,
                 description=description_text,
@@ -636,7 +640,7 @@ def planned_disbursements(iati_import, activity, project, activities_globals):
                     add_log(iati_import, 'planned_disbursement_currency',
                             'currency too long (3 characters allowed)', project)
 
-        pd, created = get_model('rsr', 'planneddisbursement').objects.get_or_create(
+        pd, created = PlannedDisbursement.objects.get_or_create(
             project=project,
             value=value,
             value_date=value_date,
