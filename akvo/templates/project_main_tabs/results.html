@@ -4,21 +4,26 @@
     <div class="results-container container">
         <div class="sidebar">
           <div class="result-nav-header">
-            <h3>{% trans "Results" %} ({{project.results.all.count}})</h3>
+            <h3>
+                {% trans "Results" %} ({{project.results.all.count}})
+                <a href="/en/reports/project_results/{{ project.pk }}?format=pdf&download=false" target="_blank">
+                    <span class="fa-file-pdf-o fa"></span>
+                </a>
+            </h3>
           </div>
           {% for result in project.results.all %}
-            <div class="result-nav">
+            <div class="result-nav bg-transition">
               <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
                 <h3 class="result-title">
                   <i class="fa fa-chevron-down"></i>
                   <i class="fa fa-chevron-up"></i>                  
-                  {{result.title}}              
+                  <span>{{result.title}}</span>        
                 </h3>
                 <span class="result-indicator-count"><i class="fa fa-tachometer"></i> <span class="indicator-count">{{result.indicators.all.count}}</span><span class="indicator-text">{% trans "Indicators:" %}</span></span>
               </div>
               <div class="result-nav-full">
                 {% for indicator in result.indicators.all %}
-                  <div class="indicator-nav clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
+                  <div class="indicator-nav clickable bg-border-transition" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">
                     <a class="">
                       <h4>
                           {{indicator.title}}
@@ -39,7 +44,7 @@
         </div>
         <div class="indicator-container">
           {% for result in project.results.all %}
-            <div class="result-{{result.id}} result-summary">
+            <div class="result-{{result.id}} result-summary opacity-transition">
               <h4 class="item-type">{% trans 'Result' %}</h4>
               <div class="title-container">
                 <h3>{{result.title}}</h3>
@@ -73,9 +78,9 @@
                 </ul>
               </div>
             </div>
-            <div class="result-{{result.id}} indicator-group">
+            <div class="result-{{result.id}} indicator-group opacity-transition">
               {% for indicator in result.indicators.all %} 
-                <div class="indicator-{{indicator.id}} indicator">
+                <div class="indicator-{{indicator.id}} indicator opacity-transition">
                   <h4 class="indicator-title"><i class="fa fa-tachometer"></i> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>
 
                   {% if indicator.baseline_year or indicator.baseline_value %}
@@ -101,21 +106,24 @@
                   <table class="table table-responsive">
                     <thead>
                       <tr>
-                        <td>{% trans "Start" %}</td>
-                        <td>{% trans "End" %}</td>
-                        <td>{% trans "Progress" %}</td>
-                        <td>{% trans "Target" %}</td>
-                        <td></td>
-                        <td></td>
+                        <td class="th-start">{% trans "Start" %}</td>
+                        <td class="th-end">{% trans "End" %}</td>
+                        <td class="th-progress">{% trans "Progress" %}</td>
+                        <td class="th-target">{% trans "Target" %}</td>
+                        <td class="th-add"></td>
+                        <td class="th-expand"></td>
                       </tr>
                     </thead>
                     {% for period in indicator.periods.all %}
-                      <tbody class="indicator-period" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}">
+                      <tbody class="indicator-period bg-transition" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}" indicator-baseline="{{ indicator.baseline_value|floatformat:"0" }}" has-updates="{% if period.updates.all%}true{% else %}false{% endif %}">
                         <tr class="indicator-period-{{period.id}}-tr">
                           <td class="fromTime">{{period.period_start}}</td>
                           <td class="toTime">{{period.period_end}}</td>
                           <td class="indicator-bar-td">
                             <div class="indicator-bar-display-container">
+                              <div class="indicator-baseline">
+                                {{indicator.baseline_value|floatformat:"0"}}
+                              </div>
                               <div class="indicator-bar">
                               </div>
                               <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment_100}}%;">
@@ -133,15 +141,18 @@
                               <span class="indicator-bar-progress-complete"> / {{period.target_value}}</span>
                             </div>
                           </td>
-                          <td class="add-update-td add-new-update-container">
-                              <button class="add-button">+ {% trans 'Add a new update' %}</button>
-                          </td>
+                          <td></td>
                           <td class="expand-td">
                             <span class="expand-indicator-period clickable">
                               <i class="fa fa-chevron-down"></i>
                               <i class="fa fa-chevron-up"></i>
                             </span>
                           </td>
+                        </tr>
+                        <tr class="add-button-tr">
+                          <td colspan="6" class="add-update-td add-new-update-container">
+                              <a class="add-button btn btn-primary">+ {% trans 'Add a new update' %}</button>
+                          </td>                          
                         </tr>
                       </tbody>
                     {% endfor %}

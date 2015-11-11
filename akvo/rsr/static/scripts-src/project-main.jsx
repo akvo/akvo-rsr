@@ -292,10 +292,9 @@ if (firstAccordionChild !== null) {
   */
   function showResultsSummary(id) {
     var selector = '.result-' + id + '.result-summary';
-    var resultSummary = document.querySelector(selector);
 
     hideAllResultsSummaries();
-    resultSummary.style.display = 'initial';
+    fadeIn(selector);
   }
 
   /* Hide all results summaries. */
@@ -325,12 +324,15 @@ if (firstAccordionChild !== null) {
         var indicatorSelector = '.indicator-' + indicatorID;
         var indicatorGroupSelector = '.indicator-group.result-' + this.getAttribute('data-result-id');
 
-        document.querySelector(indicatorGroupSelector).style.display = 'block';
-        document.querySelector(indicatorSelector).style.display = 'block';
+        // document.querySelector(indicatorGroupSelector).style.display = 'block';
+        // document.querySelector(indicatorSelector).style.display = 'block';
+
+        fadeIn(indicatorGroupSelector);
+        fadeIn(indicatorSelector);
 
         /* Add an "active" class to this indicator in the sidebar for styling purposes */
         removeClassFromAll('.indicator-nav.active', 'active');
-        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"').classList.add('active');
+        document.querySelector('.indicator-nav[data-indicator-id="' + indicatorID + '"]').classList.add('active');
 
       });
     }
@@ -355,15 +357,20 @@ if (firstAccordionChild !== null) {
           removeFromPeriod(periodId, 'tr.update-dialog-container');
           displayAddButton(periodId, false);
           removeClassFromAll('tr.expanded, .expand-indicator-period.expanded', 'expanded', periodId);
+          document.querySelector('.indicator-period-' + periodId + '-tr').parentNode.classList.remove('expanded');
           /* Remove the 'add' update in the store, in case the 'add Update' button was clicked */
           removeUpdatefromStore(periodId, 'add');
         } else {
           var container;
+          var updateDialog = getUpdateDialog(periodId);
 
           displayAddButton(periodId, true);
-          parentElement.parentNode.appendChild(getUpdateDialog(periodId));
+          updateDialog.style.display = 'none';
+          parentElement.parentNode.appendChild(updateDialog);
+          fadeIn(updateDialog, true, 'table-row');
 
           this.parentNode.parentNode.classList.add('expanded');
+          this.parentNode.parentNode.parentNode.classList.add('expanded');
           this.classList.add('expanded');
 
           addEditOnClicks();
@@ -405,6 +412,7 @@ if (firstAccordionChild !== null) {
 
         container = document.createElement('tr');
         container.classList.add('update-dialog-container');
+        container.classList.add('pending-new-update');
 
         containerCell = document.createElement('td');
         containerCell.setAttribute('colspan', '6');
@@ -412,12 +420,15 @@ if (firstAccordionChild !== null) {
         addUpdateContainer = getUpdateEntry(newUpdate);
         containerCell.appendChild(addUpdateContainer);
         container.appendChild(containerCell);
+        container.style.opacity = 0;
 
         if (this.parentNode.parentNode.nextSibling) {
           this.parentNode.parentNode.parentNode.insertBefore(container, this.parentNode.parentNode.nextSibling);
         } else {
           this.parentNode.parentNode.parentNode.appendChild(container);
         }
+        fadeIn(container, true, 'table-row');
+
         addEditOnClicks();
         addDeleteOnClicks();
         container.querySelector('.edit-button').click();
@@ -466,6 +477,7 @@ if (firstAccordionChild !== null) {
       el.addEventListener('click', function() {
         var actualValue, description, periodId, periodNode, photo, photoNode, newValue, updateContainer, updateId, value;
         var exceedTargetNode, exceedCheckbox, exceedValueNode;
+        var periodValue;
 
         updateContainer = this.parentNode;
         updateId = updateContainer.getAttribute('update-id');
@@ -479,7 +491,7 @@ if (firstAccordionChild !== null) {
         if (exceedCheckbox.checked) {
           newValue = parseInt(exceedValueNode.value);
         } else {
-          newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:first-child').getAttribute('data-value'));
+          newValue = parseInt(updateContainer.querySelector('.update-dialog-timeline-marker:nth-last-child(2)').getAttribute('data-value'));
         }
 
         if (updateId !== 'add') {
@@ -547,7 +559,6 @@ if (firstAccordionChild !== null) {
 
               // TODO: Create recalculation function so that closing isn't necessary
               savingPeriod(periodNode, true);
-              periodNode.querySelector('.expand-indicator-period').click();
 
               request.onload = function() {
                 if (request.status === 204) {
@@ -556,8 +567,15 @@ if (firstAccordionChild !== null) {
                   updateActualValue(periodId, updateChange * -1);
 
                   savingPeriod(periodNode, false);
+
+                  // Close the indicator period panel
+                  periodNode.querySelector('.expand-indicator-period').click();
                   deleteConfirmContainer.style.display='none';
-                  updateNode.querySelector('.update-name').classList.remove('delete-pending');                  
+                  updateNode.querySelector('.update-name').classList.remove('delete-pending');
+                  updatePeriodValues(periodId, updateChange * -1);
+
+                  // Reopen the indicator period panel
+                  periodNode.querySelector('.expand-indicator-period').click();               
                   return true;
                 } else {
                   // We reached our target server, but it returned an error
@@ -597,6 +615,8 @@ if (firstAccordionChild !== null) {
         if (this.classList.contains('activated')) {
           var editables = updateContainer.querySelectorAll('.editable');
 
+          updateContainer.classList.remove('edit-in-progress');
+
           for (var j = 0; j < editables.length; j++) {
             editables[j].classList.remove('editable');
             editables[j].removeAttribute('contenteditable');
@@ -615,11 +635,15 @@ if (firstAccordionChild !== null) {
 
           var photoUpload = updateContainer.querySelector('.photo-upload');
           photoUpload.parentNode.removeChild(photoUpload);
+
+          exceedTargetNode.style.display = 'none';
         } else {
           this.classList.add('activated');
           if (deleteButton !== null) {
             deleteButton.classList.add('activated');
           }
+
+          updateContainer.classList.add('edit-in-progress');
 
           updateContainer.querySelector('.update-description').setAttribute('contentEditable', 'true');
           updateContainer.querySelector('.update-description').classList.add('editable');
@@ -633,6 +657,7 @@ if (firstAccordionChild !== null) {
                   displayAddButton(periodId, true);
               } else {
                   periodNode.querySelector('.expand-indicator-period').click();
+                  periodNode.querySelector('.expand-indicator-period').click();
               }
           });
 
@@ -644,7 +669,7 @@ if (firstAccordionChild !== null) {
 
           var sliderEl = updateContainer.querySelector('.edit-slider');
           var startVal = updateContainer.getAttribute('current-actual');
-          var minVal = parseInt(this.closest('.indicator-period').getAttribute('period-start'));
+          var minVal = parseInt(this.closest('.indicator-period').getAttribute('indicator-baseline'));
           var maxVal = parseInt(sliderEl.getAttribute('data-max'));
 
           noUiSlider.create(sliderEl, {
@@ -656,9 +681,36 @@ if (firstAccordionChild !== null) {
             }
           });
 
-          var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:first-child');
+          var updateMarker = updateContainer.querySelector('.update-dialog-timeline-marker:nth-last-child(2)');
           var updateProgress = updateContainer.querySelector('.indicator-bar-progress-amount');
           var updateActual = updateContainer.querySelector('.update-target-actual');
+          var originalPercentageProgress = parseInt(updateMarker.style.left.substring(0, updateMarker.style.left.length - 1));
+          var originalValue = updateActual.textContent;
+          var originalPositionMarkerEl = document.createElement('div');
+          var changeIndicatorEl = document.createElement('div');
+          var handleLabelEl = document.createElement('div');
+          var handleChangeLabelEl = document.createElement('div');
+
+          originalPositionMarkerEl.classList.add('original-position-marker');
+          originalPositionMarkerEl.style.left = originalPercentageProgress + '%';
+
+          changeIndicatorEl.classList.add('change-indicator');
+          changeIndicatorEl.style.left = originalPercentageProgress + '%';
+
+          handleLabelEl.classList.add('handle-label');
+
+          // Placeholder to ensure label is correct size - under rare
+          // conditions label will have no text content until slider handle
+          // is moved.
+          handleLabelEl.textContent = '--'
+
+          handleChangeLabelEl.classList.add('handle-change-label');
+
+
+          document.querySelector('.edit-slider').appendChild(originalPositionMarkerEl);
+          document.querySelector('.edit-slider').appendChild(changeIndicatorEl);
+          document.querySelector('.edit-slider .noUi-handle').appendChild(handleLabelEl);
+          document.querySelector('.edit-slider .noUi-handle').appendChild(handleChangeLabelEl);
 
           exceedCheckbox.removeAttribute('disabled');
           if (exceedCheckbox.checked) {
@@ -671,18 +723,40 @@ if (firstAccordionChild !== null) {
               updateActual.textContent = exceedValueNode.value;
             } else {
               var percentage;
+              var changeValueIsNegative;
+
               value = parseInt(value);
 
               percentage = (value - minVal) / (maxVal - minVal) * 100;
               percentage = percentage > 100 ? 100 : percentage;
 
+              percentage < originalPercentageProgress ? changeValueIsNegative = true : changeValueIsNegative = false;
+
               updateMarker.style.left = percentage + '%';
               updateMarker.setAttribute('data-value', value);
               updateProgress.style.width = percentage + '%';
 
+              handleLabelEl.textContent = value;
+              handleChangeLabelEl.textContent = changeValueIsNegative ? '-' : '+';
+              handleChangeLabelEl.textContent += Math.abs(value - originalValue);
+
+              if (changeValueIsNegative) {
+                // Change is negative
+                changeIndicatorEl.style.right = (100 - originalPercentageProgress) + '%';
+                changeIndicatorEl.style.left = percentage + '%';
+                changeIndicatorEl.classList.add('negative');
+              } else {
+                // Change is positive
+                changeIndicatorEl.style.left = originalPercentageProgress + '%';
+                changeIndicatorEl.style.right = (100 - percentage) + '%';  
+                changeIndicatorEl.classList.remove('negative');             
+              }
+
               updateActual.textContent = value;
             }
           });
+
+          fadeIn(exceedTargetNode, true);
 
           addSaveOnClicks();
         }
@@ -691,6 +765,92 @@ if (firstAccordionChild !== null) {
   }
 
   /* GENERAL HELPER FUNCTIONS */
+
+  /* Fade in
+  ** =======
+  ** Takes a selector and fades in each matching element.
+  ** Takes an optional second argument, isElement, that indicates
+  ** the first argument in an element rather than a selector.
+  ** Takes an optional third argument, displayVal, that indicates
+  ** what display value to give the element after fading in. 
+  ** If this argument is not present, defaults to 'block'
+  */
+  function fadeIn(selector, isElement, displayVal) {
+
+    if (isElement) {
+      fadeElIn(selector);
+    } else {
+      var els = document.querySelectorAll(selector);
+
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        fadeElIn(el);
+      }
+    }
+
+    function fadeElIn(el) {
+      var opacityCallback = getOpacityCallback(el);
+      var classCallback = getClassCallback(el);
+
+      el.classList.add('opacity-transition');
+      el.style.opacity = 0;
+      el.style.display = displayVal || 'block';
+      el.classList.add('fading-in');
+
+      setTimeout(opacityCallback, 1);
+      setTimeout(classCallback, 250);      
+    }
+
+    function getOpacityCallback(el) {
+      var cb = function() {
+        el.style.opacity = 1;
+      };
+
+      return cb;
+    }
+
+    function getClassCallback(el) {
+      var cb = function() {
+        el.classList.remove('fading-in');
+      };
+
+      return cb;      
+    }
+  }
+
+  /* Fade out */
+
+  function fadeOut(selector) {
+    var els = document.querySelectorAll(selector);
+
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var opacityCallback = getOpacityCallback(el);
+      var displayCallback = getDisplayCallback(el);
+
+      el.style.opacity = 1;
+      setTimeout(opacityCallback, 1);
+      setTimeout(displayCallback, 250);
+    }
+
+    function getOpacityCallback(el) {
+      var cb = function() {
+        el.style.opacity = 0;
+      };
+
+      return cb;
+    }
+
+    function getDisplayCallback(el) {
+      var cb = function() {
+        if (!el.classList.contains('fading-in')) {
+          el.style.display = 'none';          
+        }
+      };
+
+      return cb;
+    }        
+  }
 
   /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
   function getCookie(name) {
@@ -778,7 +938,6 @@ if (firstAccordionChild !== null) {
 
     // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/?format=json';
@@ -790,12 +949,23 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status === 201) {
             // Object successfully created
+
+            // This callback expands the indicator period panel when the new data is loaded
+            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+
+            // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
+            // call has finished
+
+            // Close the indicator period panel
+            periodNode.querySelector('.expand-indicator-period').click();
+
             var response, updateId, updateNode;
             response = JSON.parse(request.response);
             updateId = response.id;
 
             updateActualValue(periodId, value);
-            addAdditionalUpdateData(updateId);
+            addAdditionalUpdateData(updateId, callback);
+            updatePeriodValues(periodId, value);
             // updateUpdateValues(periodId, 'add', updateId, value);
 
             // Upload photo
@@ -836,10 +1006,7 @@ if (firstAccordionChild !== null) {
     var api_url, periodNode, request;
 
     periodNode = findPeriod(periodId);
-
-    // TODO: Create recalculation function per period so that closing it isn't necessary
     savingPeriod(periodNode, true);
-    periodNode.querySelector('.expand-indicator-period').click();
 
     // Create request
     api_url = '/rest/v1/project_update/' + updateId + '/?format=json';
@@ -851,9 +1018,19 @@ if (firstAccordionChild !== null) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Object successfully saved
-            addAdditionalUpdateData(updateId);
+
+            // This callback expands the indicator period panel when the new data is loaded
+            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+
+            // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
+            // call has finished
+
+            // Close the indicator period panel
+            periodNode.querySelector('.expand-indicator-period').click();
+            addAdditionalUpdateData(updateId, callback);
             updateActualValue(periodId, value - oldValue);
             // updateUpdateValues(periodId, updateId, updateId, value);
+            updatePeriodValues(periodId, (value - oldValue));
 
             // Upload photo
             if (photo !== undefined) {
@@ -911,7 +1088,7 @@ if (firstAccordionChild !== null) {
   }
 
   /* Get additional data of update */
-  function addAdditionalUpdateData(updateId) {
+  function addAdditionalUpdateData(updateId, callback) {
     var api_url, request;
 
     // Create request
@@ -926,6 +1103,7 @@ if (firstAccordionChild !== null) {
           // Object successfully retrieved
           var response = JSON.parse(request.response);
           addUpdateToStore(response);
+          callback();
         } else {
           return false;
         }
@@ -947,7 +1125,7 @@ if (firstAccordionChild !== null) {
     target = parseInt(periodNode.getAttribute('period-target'));
     oldValue = parseInt(periodNode.getAttribute('period-actual'));
     newValue = oldValue + parseInt(value);
-    baseline = parseInt(periodNode.getAttribute('period-start'));
+    baseline = parseInt(periodNode.getAttribute('indicator-baseline'));
     periodNode.setAttribute('period-actual', newValue);
 
     newPercentage = (newValue - baseline) / (target - baseline) * 100;
@@ -965,6 +1143,41 @@ if (firstAccordionChild !== null) {
     updateNode.setAttribute('current-change', change);
     // Only works for the latest update
     updateNode.setAttribute('current-actual', findPeriod(periodId).getAttribute('period-actual'));
+  }
+
+  /* Update the values of other periods when an earlier period is edited */
+  function updatePeriodValues(periodId, change) {
+    var baseDate = new Date(document.querySelector('.indicator-period[period-id="' + periodId + '"] .toTime').textContent);
+    var resultEl = document.querySelector('.indicator-period[period-id="' + periodId + '"]').closest('.indicator-group');
+    var allPeriods = resultEl.querySelectorAll('.indicator-period');
+
+    for (var i = 0; i < allPeriods.length; i++) {
+      var period = allPeriods[i];
+      var periodDate = new Date(period.querySelector('.fromTime').textContent);
+
+      if (periodDate.getTime() >= baseDate.getTime()) {
+        // This indicator period is more recent that in the original
+        // We need to update it's value with the new changes from the original
+
+        var oldStart = parseInt(period.getAttribute('period-start'));
+        var oldActual = parseInt(period.getAttribute('period-actual'));
+        var oldProgress = parseInt(period.querySelector('.indicator-bar-progress-text'));
+
+
+        var baseline = parseInt(period.getAttribute('indicator-baseline'));
+        var target = parseInt(period.getAttribute('period-target'));
+        var newValue = oldActual + change;
+        var completionPercentage = ((newValue - baseline) / (target - baseline)) * 100;
+
+        if (completionPercentage > 100) completionPercentage = 100;
+
+        period.setAttribute('period-start', oldStart + change);
+        period.setAttribute('period-actual', newValue);
+        period.querySelector('.indicator-bar-progress-text').textContent = newValue;
+        period.querySelector('.indicator-bar-progress').style.left = completionPercentage + '%';
+        period.querySelector('.indicator-bar-progress-amount').style.width = completionPercentage + '%';
+      }
+    }
   }
 
   /* Find the period node based on its' ID */
@@ -1134,6 +1347,7 @@ if (firstAccordionChild !== null) {
     updateContainer.setAttribute("update-id", update.id);
     updateContainer.setAttribute("current-change", update.period_update);
     updateContainer.classList.add('update-entry-container');
+    updateContainer.classList.add('bg-border-transition');
 
     if (allowEdit(update)) {
       editEl = document.createElement('i');
@@ -1186,7 +1400,7 @@ if (firstAccordionChild !== null) {
       var dateObj = new Date(update.created_at);
       dateEl = document.createElement('div');
       dateEl.classList.add('update-date');
-      dateEl.textContent = dateObj.toString();
+      dateEl.textContent = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
       updateContainer.appendChild(dateEl);
     }
     if (update.user) {
@@ -1195,52 +1409,13 @@ if (firstAccordionChild !== null) {
       userNameEl.textContent = update.user.first_name + ' ' + update.user.last_name;
       updateContainer.appendChild(userNameEl);
     }
-    var exceedTargetEl = document.createElement('div');
-    exceedTargetEl.classList.add('update-exceed-target');
-
-    var exceedTargetLabel = document.createElement('label');
-    exceedTargetLabel.textContent = 'Exceed target';
-    exceedTargetLabel.setAttribute('for', 'exceed-' + update.id);
-
-    var exceedTargetCheckbox = document.createElement('input');
-    exceedTargetCheckbox.setAttribute('type', 'checkbox');
-    exceedTargetCheckbox.setAttribute('id', 'exceed-' + update.id);
-    exceedTargetCheckbox.setAttribute('disabled', '');
-    exceedTargetCheckbox.classList.add('update-exceed-target-checkbox');
-
-    var exceedTargetNewValue = document.createElement('input');
-    exceedTargetNewValue.setAttribute('type', 'number');
-    exceedTargetNewValue.setAttribute('disabled', '');
-    exceedTargetNewValue.classList.add('exceed-value');
-
-    exceedTargetNewValue.addEventListener('input', function () {
-      if (exceedTargetCheckbox.checked) {
-        updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
-      }
-    });
-
-    exceedTargetCheckbox.addEventListener('change', function () {
-      if (exceedTargetCheckbox.checked) {
-        exceedTargetNewValue.removeAttribute('disabled');
-        exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
-        displayEditSlider(updateContainer, false);
-      } else {
-        exceedTargetNewValue.value = '';
-        exceedTargetNewValue.setAttribute('disabled', '');
-        displayEditSlider(updateContainer, true);
-      }
-    });
-
-    exceedTargetEl.appendChild(exceedTargetCheckbox);
-    exceedTargetEl.appendChild(exceedTargetLabel);
-    exceedTargetEl.appendChild(exceedTargetNewValue);
-    updateContainer.appendChild(exceedTargetEl);
 
     timeLineEl = document.createElement('div');
     timeLineEl.classList.add('update-timeline');
 
     var progressContainer = document.createElement('div');
     progressContainer.classList.add('indicator-bar-display-container');
+
     var markerContainer = document.createElement('div');
     markerContainer.classList.add('indicator-bar-progress-container');
 
@@ -1270,6 +1445,7 @@ if (firstAccordionChild !== null) {
       periodNode = findPeriod(update.indicator_period.id);
       periodTarget = parseInt(periodNode.getAttribute('period-target'));
       periodBaseline = parseInt(periodNode.getAttribute('period-start'));
+      indicatorBaseline = parseInt(periodNode.getAttribute('indicator-baseline'));
 
       progress = periodBaseline;
 
@@ -1281,35 +1457,49 @@ if (firstAccordionChild !== null) {
           We need to make a marker for it. */
           progress += parseInt(entry.period_update, 10);
 
-          //if (progress > periodTarget) {
-            // The target has been exceeded. Do not place marker.
+          var updateMarker = document.createElement('div');
+          var textSpan = document.createElement('div');
 
-          if (progress <= periodTarget) {
-            var updateMarker = document.createElement('div');
-            var textSpan = document.createElement('div');
+          var percentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
+          percentage = percentage > 100 ? 100 : percentage;
 
-            var percentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
-            percentage = percentage > 100 ? 100 : percentage;
+          updateMarker.classList.add('update-dialog-timeline-marker');
+          updateMarker.classList.add('indicator-bar-progress');
+          updateMarker.style.left = percentage + '%';
+          updateMarker.style['z-index'] = progress;
 
-            updateMarker.classList.add('update-dialog-timeline-marker');
-            updateMarker.classList.add('indicator-bar-progress');
-            updateMarker.style.left = percentage + '%';
-            updateMarker.style['z-index'] = progress;
+          textSpan.classList.add('indicator-bar-progress-text');
+          textSpan.classList.add('bg-transition');
+          textSpan.textContent = progress;
+          textSpan.style.left = percentage + '%';
 
-            textSpan.classList.add('indicator-bar-progress-text');
-            textSpan.textContent = progress;
-            textSpan.style.left = percentage + '%';
+          var textHoverEl = document.createElement('span');
+          var createdDate = new Date(entry.created_at);
 
-            markerContainer.appendChild(updateMarker);
-            markerContainer.appendChild(textSpan);
-          }
+          textHoverEl.classList.add('progress-hover-text');
+          textHoverEl.classList.add('opacity-transition');
+          textHoverEl.textContent = createdDate.toLocaleDateString() + ' ' + createdDate.toLocaleTimeString();
+          textSpan.appendChild(textHoverEl);
+
+          markerContainer.appendChild(updateMarker);
+          markerContainer.appendChild(textSpan);
         }
       }
+
+      if (progress > periodTarget) {
+        updateContainer.classList.add('target-exceeded');      
+      }
+
+      var baselineEl = document.createElement('div');
+      baselineEl.classList.add('indicator-baseline');
+      baselineEl.textContent = periodNode.querySelector('.indicator-bar-td > div > .indicator-baseline').textContent;
+      progressContainer.appendChild(baselineEl);
+
       var indicatorBar = document.createElement('div');
       indicatorBar.classList.add('indicator-bar');
       progressContainer.appendChild(indicatorBar);
 
-      var highPercentage = (progress - periodBaseline) / (periodTarget - periodBaseline) * 100;
+      var highPercentage = (progress - indicatorBaseline) / (periodTarget - indicatorBaseline) * 100;
       highPercentage = highPercentage > 100 ? 100 : highPercentage;
 
       var indicatorBarProgressAmount = document.createElement('div');
@@ -1329,11 +1519,6 @@ if (firstAccordionChild !== null) {
       timeLineEl.appendChild(progressContainer);
       updateContainer.appendChild(timeLineEl);
 
-      if (progress > periodTarget) {
-        exceedTargetNewValue.value = progress;
-        exceedTargetCheckbox.checked = true;
-      }
-
       targetEl = document.createElement('div');
       targetEl.classList.add('update-target');
 
@@ -1348,26 +1533,74 @@ if (firstAccordionChild !== null) {
       targetEl.appendChild(targetText);
       updateContainer.appendChild(targetEl);
 
-      descriptionEl = document.createElement('div');
-      descriptionEl.classList.add('update-description');
-      descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
+    var exceedTargetEl = document.createElement('div');
+    exceedTargetEl.classList.add('update-exceed-target');
 
-      updateContainer.appendChild(descriptionEl);
+    var exceedTargetLabel = document.createElement('label');
+    exceedTargetLabel.textContent = 'Exceed target';
+    exceedTargetLabel.setAttribute('for', 'exceed-' + update.id);
 
-      displayPhoto(update, updateContainer);
+    var exceedTargetCheckbox = document.createElement('input');
+    exceedTargetCheckbox.setAttribute('type', 'checkbox');
+    exceedTargetCheckbox.setAttribute('id', 'exceed-' + update.id);
+    exceedTargetCheckbox.setAttribute('disabled', '');
+    exceedTargetCheckbox.classList.add('update-exceed-target-checkbox');
 
-      var saveEl = document.createElement('div');
-      saveEl.classList.add('save-button');
-      saveEl.classList.add('clickable');
-      saveEl.textContent = 'Save';
+    var exceedTargetNewValue = document.createElement('input');
+    exceedTargetNewValue.setAttribute('type', 'number');
+    exceedTargetNewValue.setAttribute('disabled', '');
+    exceedTargetNewValue.classList.add('exceed-value');
+    exceedTargetNewValue.classList.add('opacity-transition');
 
-      updateContainer.appendChild(saveEl);
+    exceedTargetNewValue.addEventListener('input', function () {
+      if (exceedTargetCheckbox.checked) {
+        updateContainer.querySelector('.update-target-actual').textContent = exceedTargetNewValue.value;
+      }
+    });
 
-      var cancelEl = document.createElement('div');
-      cancelEl.classList.add('cancel-button');
-      cancelEl.classList.add('clickable');
-      cancelEl.textContent = 'Cancel';
-      updateContainer.appendChild(cancelEl);
+    exceedTargetCheckbox.addEventListener('change', function () {
+      if (exceedTargetCheckbox.checked) {
+        exceedTargetNewValue.removeAttribute('disabled');
+        exceedTargetNewValue.value = parseInt(findPeriod(update.indicator_period.id).getAttribute('period-target'));
+        displayEditSlider(updateContainer, false);
+      } else {
+        exceedTargetNewValue.value = '';
+        exceedTargetNewValue.setAttribute('disabled', '');
+        displayEditSlider(updateContainer, true);
+      }
+    });
+
+    exceedTargetEl.appendChild(exceedTargetCheckbox);
+    exceedTargetEl.appendChild(exceedTargetLabel);
+    exceedTargetEl.appendChild(exceedTargetNewValue);
+    exceedTargetEl.style.display = 'none';
+    updateContainer.appendChild(exceedTargetEl);  
+
+    if (progress > periodTarget) {
+      exceedTargetNewValue.value = progress;
+      exceedTargetCheckbox.checked = true;
+    }
+
+    descriptionEl = document.createElement('div');
+    descriptionEl.classList.add('update-description');
+    descriptionEl.innerHTML = update.text.replace(/\n/g,"<br>");
+
+    updateContainer.appendChild(descriptionEl);
+
+    displayPhoto(update, updateContainer);
+
+    var saveEl = document.createElement('div');
+    saveEl.classList.add('save-button');
+    saveEl.classList.add('clickable');
+    saveEl.textContent = 'Save';
+
+    updateContainer.appendChild(saveEl);
+
+    var cancelEl = document.createElement('div');
+    cancelEl.classList.add('cancel-button');
+    cancelEl.classList.add('clickable');
+    cancelEl.textContent = 'Cancel';
+    updateContainer.appendChild(cancelEl);
 
     return updateContainer;
   }
@@ -1445,6 +1678,18 @@ if (firstAccordionChild !== null) {
       showTab('summary');
     }
   }
+
+  /* POLYFILLS */
+
+  // Polyfill for element.closest() for IE and Safari
+  this.Element && function(ElementPrototype) {
+      ElementPrototype.closest = ElementPrototype.closest ||
+      function(selector) {
+          var el = this;
+          while (el.matches && !el.matches(selector)) el = el.parentNode;
+          return el.matches ? el : null;
+      };
+  }(Element.prototype); 
 
   /* Initialise page */
   document.addEventListener('DOMContentLoaded', function() {
