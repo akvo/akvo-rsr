@@ -101,8 +101,8 @@
             {% endif %}
             {% if project.primary_organisation %}
               <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
+              {% more_link project %}
             {% endif %}
-            {% more_link project %}
             <div class="visible-xs-block hidden-sm">
               <p>
               {% if project.sector_categories %}

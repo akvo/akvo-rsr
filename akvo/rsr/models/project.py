@@ -512,6 +512,14 @@ class Project(TimestampsMixin, models.Model):
         """
         return self.reporting_partner.organisation if self.reporting_partner else None
 
+    @property
+    def publishing_orgs(self):
+        """
+        Returns the organisations that have the right to publish the project. In other words, that
+        have Organisation.can_create_project set to True.
+        """
+        return self.partners.filter(can_create_projects=True)
+
     def set_reporting_org(self, organisation):
         """ Set the reporting-org for the project.
             Currently protests if you try to set another organisation when one is already set.
@@ -860,15 +868,19 @@ class Project(TimestampsMixin, models.Model):
 
     @property
     def primary_organisation(self):
-        """ This method tries to return the "managing" partner organisation.
         """
-        # If we have a reporting-org then we choose that
+        This method tries to return the "managing" partner organisation.
+        """
+        # Pick the partner that can publish the project first
+        if self.publishing_orgs:
+            return self.publishing_orgs[0]
+        # Otherwise, if we have a reporting-org then we choose that
         if self.reporting_org:
             return self.reporting_org
-        # otherwise grab the first accountable partner we find
+        # Otherwise, grab the first accountable partner we find
         elif self.support_partners():
             return self.support_partners()[0]
-        # panic mode: grab the first partner we find
+        # Panic mode: grab the first partner we find
         elif self.all_partners():
             return self.all_partners()[0]
         # Uh-oh...
