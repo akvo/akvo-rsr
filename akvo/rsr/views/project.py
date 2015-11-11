@@ -89,10 +89,12 @@ def directory(request):
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
 
-    # Filter location filter list to only populated locations
-    f.filters['location'].extra['choices'] = location_choices(all_projects)
-    # Swap to choice filter for RSR pages
+    # Change filter options further when on an Akvo Page
     if request.rsr_page:
+        # Filter location filter list to only populated locations
+        f.filters['location'].extra['choices'] = location_choices(all_projects)
+
+        # Swap to choice filter for RSR pages
         f.filters['organisation'] = django_filters.ChoiceFilter(
             choices=build_choices(_page_organisations(request.rsr_page)),
             label=_(u'organisation'),
