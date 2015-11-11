@@ -178,3 +178,16 @@ class Partnership(models.Model):
                     {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
                                                          u'organisation')}
                 )
+
+    def save(self, *args, **kwargs):
+        super(Partnership, self).save(*args, **kwargs)
+        self.check_primary_organisation()
+
+    def delete(self, *args, **kwargs):
+        super(Partnership, self).delete(*args, **kwargs)
+        self.check_primary_organisation()
+
+    def check_primary_organisation(self):
+        # Check which organisation should be set to the primary organisation of the project
+        self.project.primary_organisation = self.project.calculate_primary_organisation()
+        self.project.save(update_fields=['primary_organisation'])

@@ -46,6 +46,7 @@ def _all_projects():
         'locations',
         'partnerships',
         'partnerships__organisation',
+        'primary_organisation',
         'sectors',
         'partners',
     ).order_by('-id')

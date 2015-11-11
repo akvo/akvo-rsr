@@ -228,27 +228,13 @@ class Project(TimestampsMixin, models.Model):
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
+    primary_organisation = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
 
     # donate button
     donate_button = models.BooleanField(
         _(u'donate button'), default=False,
         help_text=_(u'Show donate button for this project. If not selected, it is not possible '
                     u'to donate to this project and the donate button will not be shown.')
-    )
-
-    # synced projects
-    # TODO: remove sync_owner and sync_owner_secondary_reporter when data is migrated
-    sync_owner = models.ForeignKey(
-        'Organisation',
-        limit_choices_to={'can_become_reporting': True},
-        verbose_name=_(u'reporting organisation'),
-        related_name='reporting_projects', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_(u'Select the reporting organisation of the project.')
-    )
-    sync_owner_secondary_reporter = models.NullBooleanField(
-        _(u'secondary reporter'),
-        help_text=_(u'This indicates whether the reporting organisation is a secondary publisher: '
-                    u'publishing data for which it is not directly responsible.')
     )
 
     # extra IATI fields
@@ -866,8 +852,7 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
-    @property
-    def primary_organisation(self):
+    def calculate_primary_organisation(self):
         """
         This method tries to return the "managing" partner organisation.
         """
