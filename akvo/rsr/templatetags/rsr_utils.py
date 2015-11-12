@@ -42,6 +42,8 @@ def img(context, obj, width, height, alt):
 
     return {"default_img": default_img,
             "geometry": geometry,
+            "height": height,
+            "width": width,
             "img": img,
             "alt": alt}
 
