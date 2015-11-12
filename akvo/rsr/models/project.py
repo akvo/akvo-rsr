@@ -228,6 +228,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
+    # primary_organisation is a denormalized field used for performance of the project list page
     primary_organisation = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
 
     # donate button

@@ -184,13 +184,14 @@ class Partnership(models.Model):
 
     def save(self, *args, **kwargs):
         super(Partnership, self).save(*args, **kwargs)
-        self.check_primary_organisation()
+        self.set_primary_organisation()
 
     def delete(self, *args, **kwargs):
         super(Partnership, self).delete(*args, **kwargs)
-        self.check_primary_organisation()
+        self.set_primary_organisation()
 
-    def check_primary_organisation(self):
+    def set_primary_organisation(self):
         # Check which organisation should be set to the primary organisation of the project
+        # This is done to get better performance on the project list page
         self.project.primary_organisation = self.project.calculate_primary_organisation()
         self.project.save(update_fields=['primary_organisation'])
