@@ -40,16 +40,16 @@ from akvo.codelists.models import SectorCategory, Version
 
 def _all_projects():
     """Return all active projects."""
-    return Project.objects.published().select_related(
-        'publishingstatus__status',
-        'primary_location',
-        'primary_location__country'
-        'locations',
+    return Project.objects.published().prefetch_related(
+        'publishingstatus',
+        'sectors',
         'partnerships',
         'partnerships__organisation',
+    ).select_related(
         'primary_organisation',
-        'sectors',
-        'partners',
+        'primary_location',
+        'primary_location__country',
+        'last_update'
     ).order_by('-id')
 
 
@@ -271,7 +271,7 @@ def _get_hierarchy_grid(project):
 
 def _get_partners_with_types(project):
     partners_dict = {}
-    for partner in project.all_partners():
+    for partner in project.partners.all():
         partners_dict[partner] = partner.has_partner_types(project)
     return collections.OrderedDict(sorted(partners_dict.items()))
 
@@ -312,7 +312,35 @@ def _get_indicator_updates_data(updates, child_projects, child=True):
 
 def main(request, project_id):
     """The main project page."""
-    project = get_object_or_404(Project, pk=project_id)
+    try:
+        project = Project.objects.prefetch_related(
+            'publishingstatus',
+            'sectors',
+            'partners',
+            'partnerships',
+            'keywords',
+            'locations',
+            'budget_items',
+            'budget_items__label',
+            'transactions',
+            'transactions__provider_organisation',
+            'transactions__receiver_organisation',
+            'results',
+            'recipient_countries',
+            'recipient_regions',
+            'policy_markers',
+            'country_budget_items',
+            'links',
+            'documents',
+            'contacts',
+            'invoices',
+        ).select_related(
+            'primary_organisation',
+            'primary_location',
+            'last_update'
+        ).get(pk=project_id)
+    except Project.DoesNotExist:
+        raise Http404
 
     # Non-editors are not allowed to view unpublished projects
     if not project.is_published() and not request.user.is_anonymous() and \
@@ -328,7 +356,7 @@ def main(request, project_id):
         project_admin = False
 
     # Updates
-    updates = project.project_updates.select_related('user').order_by('-created_at')
+    updates = project.project_updates.prefetch_related('user').order_by('-created_at')
     narrative_updates = updates.exclude(indicator_period__isnull=False)
     indicator_updates = updates.filter(indicator_period__isnull=False)
 
