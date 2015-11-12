@@ -10,7 +10,6 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import django_filters
 
 from copy import deepcopy
-from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 from akvo.codelists.store.codelists_v201 import SECTOR_CATEGORY
 from akvo.utils import codelist_choices
@@ -24,8 +23,7 @@ ANY_CHOICE = (('', _('All')), )
 def sectors():
     sectors_list = []
     for sector in codelist_choices(SECTOR_CATEGORY):
-        if get_model('rsr', 'Project').objects.filter(sectors__sector_code=sector[0]):
-            sectors_list.append(sector)
+        sectors_list.append(sector)
     return sectors_list
 
 
