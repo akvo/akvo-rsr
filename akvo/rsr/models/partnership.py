@@ -135,7 +135,10 @@ class Partnership(models.Model):
     )
 
     def iati_organisation_role_label(self):
-        return dict(self.IATI_ROLES)[self.iati_organisation_role]
+        if self.iati_organisation_role:
+            return dict(self.IATI_ROLES)[self.iati_organisation_role]
+        else:
+            return None
 
     def iati_role_to_partner_type(self):
         if self.iati_organisation_role:
