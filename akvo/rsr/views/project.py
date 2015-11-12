@@ -30,6 +30,7 @@ from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 from .organisation import _page_organisations
+from akvo.codelists.models import SectorCategory, Version
 
 
 ###############################################################################
@@ -113,6 +114,12 @@ def directory(request):
     # Get projects to be displayed on the map
     map_projects = all_projects if request.rsr_page and request.rsr_page.all_maps else page
 
+    # Get all sector categories in a dict
+    sectors = SectorCategory.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
+    sectors_dict = {}
+    for sector in sectors:
+        sectors_dict[str(sector.code)] = sector.name
+
     context = {
         'project_count': sorted_projects.count(),
         'filter': f,
@@ -124,6 +131,7 @@ def directory(request):
         'sorting': sorting,
         'current_org': org_filter,
         'map_projects': map_projects,
+        'sectors_dict': sectors_dict,
     }
     return render(request, 'project_directory.html', context)
 
