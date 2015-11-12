@@ -855,7 +855,7 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
-    def calculate_primary_organisation(self):
+    def find_primary_organisation(self):
         """
         This method tries to return the "managing" partner organisation.
         """

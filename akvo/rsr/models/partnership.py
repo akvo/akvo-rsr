@@ -187,5 +187,5 @@ class Partnership(models.Model):
     def set_primary_organisation(self):
         # Check which organisation should be set to the primary organisation of the project
         # This is done to get better performance on the project list page
-        self.project.primary_organisation = self.project.calculate_primary_organisation()
+        self.project.primary_organisation = self.project.find_primary_organisation()
         self.project.save(update_fields=['primary_organisation'])
