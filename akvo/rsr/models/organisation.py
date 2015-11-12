@@ -23,6 +23,7 @@ from .country import Country
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
+from .project_update import ProjectUpdate
 
 ORG_TYPE_NGO = 'N'
 ORG_TYPE_GOV = 'G'
@@ -283,6 +284,10 @@ class Organisation(TimestampsMixin, models.Model):
             from .user import User
             return User.objects.filter(employers__organisation__in=self).distinct()
 
+        def all_updates(self):
+            """returns a queryset with all updates of the organisation."""
+            return ProjectUpdate.objects.filter(user__in=self.users()).distinct()
+
         def employments(self):
             "returns a queryset of all employments belonging to the organisation(s)"
             from .employment import Employment
@@ -321,7 +326,8 @@ class Organisation(TimestampsMixin, models.Model):
     def all_users(self):
         "returns a queryset of all users belonging to the organisation"
         from .user import User
-        return User.objects.filter(employers__organisation=self).distinct()
+        #return User.objects.filter(employers__organisation=self).distinct()
+        return self.employees.all()
 
     def published_projects(self):
         "returns a queryset with published projects that has self as any kind of partner"
@@ -329,7 +335,11 @@ class Organisation(TimestampsMixin, models.Model):
 
     def all_projects(self):
         """returns a queryset with all projects that has self as any kind of partner."""
-        return self.projects.all()
+        return self.projects.distinct()
+
+    def all_updates(self):
+        """returns a queryset with all updates of the organisation."""
+        return ProjectUpdate.objects.filter(user__in=self.all_users())
 
     def reporting_on_projects(self):
         """returns a queryset with all projects that has self as reporting organisation."""

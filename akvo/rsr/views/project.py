@@ -38,19 +38,9 @@ from akvo.codelists.models import SectorCategory, Version
 ###############################################################################
 
 
-def _all_projects():
+def _published_projects():
     """Return all active projects."""
-    return Project.objects.published().prefetch_related(
-        'publishingstatus',
-        'sectors',
-        'partnerships',
-        'partnerships__organisation',
-    ).select_related(
-        'primary_organisation',
-        'primary_location',
-        'primary_location__country',
-        'last_update'
-    ).order_by('-id')
+    return Project.objects.published()
 
 
 def _page_projects(page):
@@ -59,7 +49,7 @@ def _page_projects(page):
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """
-    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
     return apply_keywords(page, projects)
 
 
@@ -67,7 +57,7 @@ def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
     if not page:
-        return _all_projects()
+        return _published_projects()
     return _page_projects(page)
 
 
@@ -112,7 +102,24 @@ def directory(request):
     org_filter = request.GET.get('organisation', '')
 
     # Get projects to be displayed on the map
-    map_projects = all_projects if request.rsr_page and request.rsr_page.all_maps else page
+    if request.rsr_page and request.rsr_page.all_maps:
+        map_projects = all_projects
+    else:
+        map_projects = page.object_list
+    map_projects = map_projects.select_related('primary_location')
+
+    # Get related objects of page at once
+    page.object_list = page.object_list.prefetch_related(
+        'publishingstatus',
+        'sectors',
+        'partnerships',
+        'partnerships__organisation',
+    ).select_related(
+        'primary_organisation',
+        'primary_location',
+        'primary_location__country',
+        'last_update'
+    )
 
     # Get all sector categories in a dict
     sectors = SectorCategory.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))

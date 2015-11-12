@@ -7,27 +7,17 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, render
 
-from ..filters import (build_choices, location_choices, OrganisationFilter,
-                       remove_empty_querydict_items)
-# from ..filters import remove_empty_querydict_items, OrganisationFilter
-from ..models import Organisation, Project
+from ..filters import location_choices, OrganisationFilter, remove_empty_querydict_items
+from ..models import Organisation, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from .utils import apply_keywords, org_projects, show_filter_class
 
 ###############################################################################
 # Organisation directory
 ###############################################################################
-
-
-def _all_organisations():
-    """Return all organisations."""
-    return Organisation.objects.select_related(
-        'locations',
-        'primary_location',
-        'primary_location__country',
-    )
 
 
 def _all_projects():
@@ -39,18 +29,14 @@ def _page_organisations(page):
     """Dig out the list or organisations to use."""
     projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
     keyword_projects = apply_keywords(page, projects)
-    return keyword_projects.all_partners().select_related(
-        'locations',
-        'primary_location',
-        'primary_location__country',
-    )
+    return keyword_projects.all_partners()
 
 
 def _organisation_directory_coll(request):
     """Dig out and pass correct organisations to the view."""
     page = request.rsr_page
     if not page:
-        return _all_organisations()
+        return Organisation.objects.all()
     return _page_organisations(page)
 
 
@@ -65,21 +51,35 @@ def directory(request):
     all_organisations = _organisation_directory_coll(request)
 
     # Easter egg feature
-    show_reporting = request.GET.get('creator', False)
-    if show_reporting:
+    creator_organisations = request.GET.get('creator', False)
+    if creator_organisations:
         all_organisations = all_organisations.filter(can_create_projects=True)
 
     f = OrganisationFilter(qs, queryset=all_organisations)
 
-    # Filter location filter list to only populated locations
-    f.filters['location'].extra['choices'] = location_choices(all_organisations)
+    # Change filter options further when on an Akvo Page
+    if request.rsr_page:
+        # Filter location filter list to only populated locations
+        f.filters['location'].extra['choices'] = location_choices(all_organisations)
 
     # Build page
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
 
     # Get organisations to be displayed on the map
-    map_orgs = all_organisations if request.rsr_page and request.rsr_page.all_maps else page
+    if request.rsr_page and request.rsr_page.all_maps:
+        map_orgs = all_organisations
+    else:
+        map_orgs = page.object_list
+    map_orgs = map_orgs.select_related('primary_location')
+
+    # Get related objects of page at once
+    page.object_list = page.object_list.prefetch_related(
+        'employees',
+    ).select_related(
+        'primary_location',
+        'primary_location__country',
+    )
 
     return render(request, 'organisation_directory.html', {
         'orgs_count': f.qs.distinct().count(),

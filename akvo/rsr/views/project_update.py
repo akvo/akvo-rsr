@@ -30,8 +30,7 @@ def _all_updates():
     """
     Return all project updates.
     """
-    return ProjectUpdate.objects.select_related().exclude(indicator_period__isnull=False).\
-        order_by('-id')
+    return ProjectUpdate.objects.exclude(indicator_period__isnull=False).order_by('-id')
 
 
 def _all_projects():
@@ -43,7 +42,7 @@ def _page_updates(page):
     """Dig out the list or project updates to use."""
     projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
     keyword_projects = apply_keywords(page, projects)
-    return keyword_projects.all_updates().select_related()
+    return keyword_projects.all_updates()
 
 
 def _update_directory_coll(request):
@@ -65,10 +64,12 @@ def directory(request):
     all_updates = _update_directory_coll(request)
     f = ProjectUpdateFilter(qs, queryset=all_updates)
 
-    # Filter location filter list to only populated locations
-    f.filters['location'].extra['choices'] = location_choices(all_updates)
     # Swap to choice filter for RSR pages
     if request.rsr_page:
+        # Filter location filter list to only populated locations
+        f.filters['location'].extra['choices'] = location_choices(all_updates)
+
+        # Filter partner filter list to only populated partners
         f.filters['partner'] = django_filters.ChoiceFilter(
             choices=build_choices(_page_organisations(request.rsr_page)),
             label=_(u'organisation'),
@@ -79,7 +80,25 @@ def directory(request):
     page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
 
     # Get updates to be displayed on the map
-    map_updates = all_updates if request.rsr_page and request.rsr_page.all_maps else page
+    if request.rsr_page and request.rsr_page.all_maps:
+        map_updates = all_updates
+    else:
+        map_updates = page.object_list
+    map_updates = map_updates.select_related(
+        'project',
+        'primary_location',
+    )
+
+    # Get related objects of page at once
+    page.object_list = page.object_list.prefetch_related(
+        'user__employers',
+        'user__employers__organisation',
+    ).select_related(
+        'project',
+        'user',
+        'primary_location',
+        'primary_location__country'
+    )
 
     return render(request, 'update_directory.html', {
         'updates_count': f.qs.distinct().count(),
