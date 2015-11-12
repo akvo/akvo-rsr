@@ -162,18 +162,41 @@ def my_projects(request):
 def project_editor(request, project_id):
     """The project admin."""
     try:
-        project = Project.objects.select_related(
+        project = Project.objects.prefetch_related(
+            'related_projects',
+            'related_projects__project',
+            'contacts',
+            'partnerships',
+            'partnerships__organisation',
+            'results',
+            'results__indicators',
+            'results__indicators__periods',
+            'conditions',
+            'budget_items',
+            'budget_items__label',
+            'country_budget_items',
+            'transactions',
+            'transactions__provider_organisation',
+            'transactions__receiver_organisation',
+            'transactions__sectors',
+            'planned_disbursements',
+            'locations',
+            'locations__country',
+            'locations__administratives',
+            'recipient_countries',
+            'recipient_regions',
+            'sectors',
+            'policy_markers',
+            'links',
+            'documents',
+            'keywords',
+        ).select_related(
             'publishingstatus__status',
             'primary_location',
             'primary_location__country'
-            'locations',
-            'partnerships',
             'partnerships__organisation',
-            'sectors',
-            'partners',
-            'custom_fields',
         ).get(pk=project_id)
-    except:
+    except Project.DoesNotExist:
         return Http404
 
     budget_item_labels = BudgetItemLabel.objects.all()

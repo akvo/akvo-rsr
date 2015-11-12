@@ -908,6 +908,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     );
 
     typeaheadInput = document.querySelector('.' + selector + ' .typeahead' + ' input');
+    typeaheadInput.setAttribute('autocomplete', 'off');
 
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
@@ -1010,31 +1011,31 @@ function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
 
     xmlHttp.open("GET", url, true);
     xmlHttp.send();
+}
 
-    function updateLocalStorage(url, response) {
-        var output, writeDate, lsData;
+function updateLocalStorage(url, response) {
+    var output, writeDate, lsData;
 
-        if (localStorageResponses === null || localStorageResponses === '') {
-            localStorageResponses = {};
-        }
+    if (localStorageResponses === null || localStorageResponses === '') {
+        localStorageResponses = {};
+    }
 
-        output = {};
+    output = {};
 
-        writeDate = new Date();
-        writeDate = writeDate.getTime();
-        output.date = writeDate;
-        output.json = response;
+    writeDate = new Date();
+    writeDate = writeDate.getTime();
+    output.date = writeDate;
+    output.json = response;
 
-        localStorageResponses[url] = output;
+    localStorageResponses[url] = output;
 
-        lsData = JSON.stringify(localStorageResponses);
+    lsData = JSON.stringify(localStorageResponses);
 
-        try {
-            localStorage.setItem(localStorageName, lsData);
-        } catch (error) {
-            // Not enough space in local storage
-            localStorage.setItem(localStorageName, JSON.stringify({}));
-        }
+    try {
+        localStorage.setItem(localStorageName, lsData);
+    } catch (error) {
+        // Not enough space in local storage
+        localStorage.setItem(localStorageName, JSON.stringify({}));
     }
 }
 
@@ -1243,17 +1244,67 @@ function getOnClick(pName, parentElement) {
     return onclick;
 }
 
-function updateTypeaheads(forceReloadOrg) {
+function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
+        return function() {
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
+        };
+    }
+
+    for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+
+        // Check if we've already rendered this typeahead
+        if (elHasClass(el, 'has-typeahead')) {
+            if (forceReloadOrg) {
+                // Remove the existing typeahead, then build a new one with the reloaded API response
+                var child = el.querySelector('div');
+                el.removeChild(child);
+            } else {
+                // Typeahead exists and we don't need to reload the API response. Do nothing.
+                continue;
+            }
+        }
+
+        var childSelector = el.getAttribute('data-child-id');
+        var childClass = el.getAttribute('data-child-class');
+        var valueId = null;
+        var label = document.createElement('label');
+        var help = document.createElement('p');
+
+        label.setAttribute('for', childSelector);
+        elAddClass(label, 'control-label');
+        elAddClass(label, 'typeahead-label');
+        label.textContent = labelText;
+
+        elAddClass(help, 'help-block');
+        elAddClass(help, 'hidden');
+        help.textContent = helpText;
+
+        if (el.getAttribute('data-value') !== "") {
+            valueId = el.getAttribute('data-value');
+        }
+
+        var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
+        cb();
+    }
+}
+
+function updateProjectTypeaheads() {
     var els, filterOption, labelText, helpText, API, inputType;
 
-    els1 = document.querySelectorAll('.related-project-input');
+    els = document.querySelectorAll('.related-project-input');
     labelText = defaultValues.related_project_label;
     helpText = defaultValues.related_project_helptext;
     filterOption = 'title';
     API = projectsAPIUrl;
     inputType = 'project';
 
-    updateTypeahead(els1, filterOption, labelText, helpText, API, inputType);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+}
+
+function updateOrganisationTypeaheads(forceReloadOrg) {
+    var els, filterOption, labelText, helpText, API, inputType;
 
     els = document.querySelectorAll('.partner-input');
     labelText = defaultValues.partner_label;
@@ -1261,8 +1312,6 @@ function updateTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-
-
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-provider-org-input');
@@ -1271,8 +1320,6 @@ function updateTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-
-
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.transaction-receiver-org-input');
@@ -1281,61 +1328,12 @@ function updateTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-
-
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+}
 
-    function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
-        for (var i = 0; i < els.length; i++) {
-            var el = els[i];
-
-            // Check if we've already rendered this typeahead
-            if (elHasClass(el, 'has-typeahead')) {
-                if (forceReloadOrg) {
-
-                    // Remove the existing typeahead, then build a new
-                    // one with the reloaded API response
-                    var child = el.querySelector('div');
-                    el.removeChild(child);
-                } else {
-
-                    // Typeahead exists and we don't need to reload the API response.
-                    // Do nothing.
-                    continue;                    
-                }
-            }
-
-            var childSelector = el.getAttribute('data-child-id');
-            var childClass = el.getAttribute('data-child-class');
-            var valueId = null;
-            var label = document.createElement('label');
-            var help = document.createElement('p');
-
-            label.setAttribute('for', childSelector);
-            elAddClass(label, 'control-label');
-            elAddClass(label, 'typeahead-label');
-            label.textContent = labelText;
-
-            elAddClass(help, 'help-block');
-            elAddClass(help, 'hidden');
-            help.textContent = helpText;
-
-            if (el.getAttribute('data-value') !== "") {
-                valueId = el.getAttribute('data-value');
-            }
-
-            var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
-            cb();
-        }
-    }
-
-    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
-        var output = function() {
-            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
-        };
-
-        return output;
-    }
+function updateTypeaheads(forceReloadOrg) {
+    updateOrganisationTypeaheads(forceReloadOrg);
+    updateProjectTypeaheads();
 }
 
 function updateHelpIcons(container) {
@@ -2238,7 +2236,7 @@ function addOrgModal() {
                     // This flag forces the fetching of a fresh API response
                     var forceReloadOrg = true;
 
-                    updateTypeaheads(forceReloadOrg);
+                    updateOrganisationTypeaheads(forceReloadOrg);
                     cancelModal();
                 } else if (request.status === 400) {
                     var response;
@@ -2491,8 +2489,56 @@ function addOrgModal() {
     );    
 }
 
-/* General Helper Functions */
 
+/* Retrieve all projects for the typeaheads and store in the responses global variable */
+function getAllProjects() {
+    var url = projectsAPIUrl;
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+            if (xmlHttp.status == 200){
+                var response = JSON.parse(xmlHttp.responseText);
+                responses[url] = response;
+                updateLocalStorage(url, response);
+                updateProjectTypeaheads();
+            } else {
+                // TODO: display error message
+            }
+        } else {
+            return false;
+        }
+    };
+
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send();
+}
+
+/* Retrieve all organisations for the typeaheads and store in the responses global variable */
+function getAllOrganisations() {
+    var url = orgsAPIUrl;
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+            if (xmlHttp.status == 200){
+                var response = JSON.parse(xmlHttp.responseText);
+                responses[url] = response;
+                updateLocalStorage(url, response);
+                updateOrganisationTypeaheads();
+            } else {
+                // TODO: display error message
+            }
+        } else {
+            return false;
+        }
+    };
+
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send();
+}
+
+/* General Helper Functions */
 function elHasClass(el, className) {
     if (el.classList && el.classList.forEach) {
         var result = false;
@@ -2530,6 +2576,9 @@ function elIsVisible(el) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    getAllOrganisations();
+    getAllProjects();
+
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();
@@ -2542,8 +2591,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setValidationListeners();
     updateAllHelpIcons();
-
-    updateTypeaheads();
 
     try {
         localStorageResponses = JSON.parse(localStorageResponses);
