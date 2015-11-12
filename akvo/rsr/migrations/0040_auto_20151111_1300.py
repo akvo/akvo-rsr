@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+from ..models.project import Project
 
 def add_primary_organisations(apps, schema_editor):
-    Project = apps.get_model("rsr", "Project")
 
     for project in Project.objects.all():
         project.primary_organisation = project.find_primary_organisation()
