@@ -94,7 +94,6 @@
                     <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
                   {% endwith %}
                 {% endif %}
-{#                {% for empl in u.user.employers.all %}{{ empl.organisation }}{% endfor %}#}
             </div>
             <div  class="projectLocation">
               {% if u.primary_location.country %}
