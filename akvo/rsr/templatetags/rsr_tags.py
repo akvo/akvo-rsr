@@ -31,7 +31,7 @@ def more_link(context, project, project_page=False):
         else:
             label = _(u'No partner role')
 
-        if not organisation == project.primary_organisation:
+        if organisation != project.primary_organisation:
             if organisation in partners_dict.keys():
                 partners_dict[organisation].append(label)
             else:
