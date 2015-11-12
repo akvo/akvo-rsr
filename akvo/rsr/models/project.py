@@ -325,19 +325,27 @@ class Project(TimestampsMixin, models.Model):
         )
 
     def save(self, last_updated=False, *args, **kwargs):
-        # Check if the project is converted to an RSR Impact project
+        # Strip title of any trailing or leading spaces
         if self.title:
             self.title = self.title.strip()
 
+        # Strip subtitle of any trailing or leading spaces
         if self.subtitle:
             self.subtitle = self.subtitle.strip()
 
+        # Strip IATI ID of any trailing or leading spaces
+        if self.iati_activity_id:
+            self.iati_activity_id = self.iati_activity_id.strip()
+
+        # Check if project should be converted to an Impact project
         if not last_updated:
             if self.pk:
+                # Existing project, only convert if original project was not an Impact project
                 orig = get_model('rsr', 'project').objects.get(pk=self.pk)
                 if self.is_impact_project and not orig.is_impact_project:
                     self.convert_to_impact_project()
             elif self.is_impact_project:
+                # New project, so convert to Impact project
                 self.convert_to_impact_project()
 
         super(Project, self).save(*args, **kwargs)
@@ -360,6 +368,10 @@ class Project(TimestampsMixin, models.Model):
                  'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
                                               u'time than end date (actual).')}
             )
+
+        # In order for the IATI activity IDs not be unique, we set them to None when they're empty
+        if not self.iati_activity_id:
+            self.iati_activity_id = None
 
     @models.permalink
     def get_absolute_url(self):
