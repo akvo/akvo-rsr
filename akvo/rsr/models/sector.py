@@ -80,3 +80,4 @@ class Sector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'sector')
         verbose_name_plural = _(u'sectors')
+        ordering = ['sector_code', ]

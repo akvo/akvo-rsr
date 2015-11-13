@@ -11,8 +11,8 @@ from django import template
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation
-register = template.Library()
 
+register = template.Library()
 
 @register.inclusion_tag('rsr_utils/img.html', takes_context=True)
 def img(context, obj, width, height, alt):
@@ -42,6 +42,8 @@ def img(context, obj, width, height, alt):
 
     return {"default_img": default_img,
             "geometry": geometry,
+            "height": height,
+            "width": width,
             "img": img,
             "alt": alt}
 
@@ -63,3 +65,7 @@ def vid_img(context, obj, width, height, alt):
             'vid': vid,
             'geometry': geometry,
             'width': width}
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

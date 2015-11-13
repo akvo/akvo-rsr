@@ -6,6 +6,6 @@
     {% endthumbnail %}
 {% else %}
   {% with url=default_img %}
-    <img src="{{url}}" alt="{{alt}}" />
+    <img src="{{url}}" alt="{{alt}}" style="max-width: {{width}}px; max-height: {{height}}px;" />
   {% endwith %}
 {% endif %}

@@ -23,8 +23,7 @@ ANY_CHOICE = (('', _('All')), )
 def sectors():
     sectors_list = []
     for sector in codelist_choices(SECTOR_CATEGORY):
-        if Project.objects.filter(sectors__sector_code=sector[0]):
-            sectors_list.append(sector)
+        sectors_list.append(sector)
     return sectors_list
 
 
