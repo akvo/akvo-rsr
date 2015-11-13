@@ -93,7 +93,7 @@ class ProjectViewSet(BaseRSRViewSet):
         if sync_owner:
             queryset = queryset.filter(partnerships__iati_organisation_role=101,
                                        partnerships__organisation__pk=sync_owner)
-        return queryset
+        return queryset.distinct()
 
 
 class ProjectExtraViewSet(ProjectViewSet):

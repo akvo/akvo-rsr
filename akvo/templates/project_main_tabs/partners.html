@@ -3,11 +3,10 @@
 <article class="touch-navbar project-container">
   <section class="projectPartners">
     <div class="container">
-{#      {% with partners=partners|dictsort:'name' %}#}
       {% for partner, partner_types in partners.items %}
           <div class="row verticalPadding projectPartners">
             <div class="col-sm-2 img">
-              <a href='{% url 'organisation-main' partner.id %}'>{% img partner.organisation_obj 120 120 partner.name %}</a>
+              <a href='{% url 'organisation-main' partner.id %}'>{% img partner 120 120 partner.name %}</a>
             </div>
             <div class="col-sm-6">
               <a href='{% url 'organisation-main' partner.id %}' class="org-link">
@@ -27,7 +26,6 @@
             </div>
           </div>
       {% endfor %}
-{#      {% endwith %}#}
     </div>
   </section>
 </article>
