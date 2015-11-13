@@ -2,22 +2,25 @@
 
 {% url 'project-main' project.pk as project_url %}
 
-{% if partners|length > 0 %}
+{% if num_other_partners > 0 %}
 <a href="{% if not project_page %}{{ project_url }}{% endif %}#partners" class="small moreLink tab-link" data-toggle="tooltip"
   title="
   <div class='extra-partner-tooltip'>
-    {% for partner, types in partners.items %}
+    {% for partner, types in partners_dict.items %}
       <div class='extra-partner-entry'>
       {% if partner.logo %}
-        <a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}
-      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
-      ({{ types|join:", "|capfirst }})
-    {% if not forloop.last %}<hr>{% endif %}</div>
-  {% endfor %}
+        <a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>
+      {% endif %}
+      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({{ types|join:", " }})
+      {% if not forloop.last %}
+        <hr>
+      {% endif %}
+      </div>
+    {% endfor %}
   </div>
   "
   data-placement="right"> +
-  {% blocktrans count num_partners=partners|length %}
+  {% blocktrans count num_partners=num_other_partners %}
     {{ num_partners }} partner
   {% plural %}
     {{ num_partners }} partners
