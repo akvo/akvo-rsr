@@ -559,7 +559,7 @@
                       </tr>
                       <tr>
                           <th scope="row">{% trans "Role" %}</th>
-                          <td>{% for ps in info.0 %}{% if not forloop.first %}, {% endif %}{{ps.iati_organisation_role_label}}{% endfor %}</td>
+                          <td>{% for ps in info.0 %}{% if not forloop.first %}, {% endif %}{{ps.iati_organisation_role_label|default_if_none:""}}{% endfor %}</td>
                       </tr>
                       <tr>
                           <th scope="row">{% trans "RSR ID" %}</th>

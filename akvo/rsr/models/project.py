@@ -228,27 +228,14 @@ class Project(TimestampsMixin, models.Model):
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
+    # primary_organisation is a denormalized field used for performance of the project list page
+    primary_organisation = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
 
     # donate button
     donate_button = models.BooleanField(
         _(u'donate button'), default=False,
         help_text=_(u'Show donate button for this project. If not selected, it is not possible '
                     u'to donate to this project and the donate button will not be shown.')
-    )
-
-    # synced projects
-    # TODO: remove sync_owner and sync_owner_secondary_reporter when data is migrated
-    sync_owner = models.ForeignKey(
-        'Organisation',
-        limit_choices_to={'can_become_reporting': True},
-        verbose_name=_(u'reporting organisation'),
-        related_name='reporting_projects', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_(u'Select the reporting organisation of the project.')
-    )
-    sync_owner_secondary_reporter = models.NullBooleanField(
-        _(u'secondary reporter'),
-        help_text=_(u'This indicates whether the reporting organisation is a secondary publisher: '
-                    u'publishing data for which it is not directly responsible.')
     )
 
     # extra IATI fields
@@ -325,19 +312,27 @@ class Project(TimestampsMixin, models.Model):
         )
 
     def save(self, last_updated=False, *args, **kwargs):
-        # Check if the project is converted to an RSR Impact project
+        # Strip title of any trailing or leading spaces
         if self.title:
             self.title = self.title.strip()
 
+        # Strip subtitle of any trailing or leading spaces
         if self.subtitle:
             self.subtitle = self.subtitle.strip()
 
+        # Strip IATI ID of any trailing or leading spaces
+        if self.iati_activity_id:
+            self.iati_activity_id = self.iati_activity_id.strip()
+
+        # Check if project should be converted to an Impact project
         if not last_updated:
             if self.pk:
+                # Existing project, only convert if original project was not an Impact project
                 orig = get_model('rsr', 'project').objects.get(pk=self.pk)
                 if self.is_impact_project and not orig.is_impact_project:
                     self.convert_to_impact_project()
             elif self.is_impact_project:
+                # New project, so convert to Impact project
                 self.convert_to_impact_project()
 
         super(Project, self).save(*args, **kwargs)
@@ -360,6 +355,10 @@ class Project(TimestampsMixin, models.Model):
                  'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
                                               u'time than end date (actual).')}
             )
+
+        # In order for the IATI activity IDs not be unique, we set them to None when they're empty
+        if not self.iati_activity_id:
+            self.iati_activity_id = None
 
     @models.permalink
     def get_absolute_url(self):
@@ -511,6 +510,14 @@ class Project(TimestampsMixin, models.Model):
         """ Returns the organisation of the partnership that is the reporting-org, if there is one
         """
         return self.reporting_partner.organisation if self.reporting_partner else None
+
+    @property
+    def publishing_orgs(self):
+        """
+        Returns the organisations that have the right to publish the project. In other words, that
+        have Organisation.can_create_project set to True.
+        """
+        return self.partners.filter(can_create_projects=True)
 
     def set_reporting_org(self, organisation):
         """ Set the reporting-org for the project.
@@ -671,11 +678,13 @@ class Project(TimestampsMixin, models.Model):
 
         def all_updates(self):
             "return ProjectUpdates for self, newest first"
-            from ..models import ProjectUpdate
-            qs = ProjectUpdate.objects.none()
-            for project in self:
-                qs = qs | project.project_updates.all()
-            return qs
+            # from ..models import ProjectUpdate
+            # qs = ProjectUpdate.objects.none()
+            # for project in self:
+            #     qs = qs | project.project_updates.all()
+            # return qs
+            return ProjectUpdate.objects.filter(project__in=self).order_by('-id')
+            # return self.project_updates.all()
 
         #the following 6 methods return organisation querysets!
         def _partners(self, role=None):
@@ -858,17 +867,20 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
-    @property
-    def primary_organisation(self):
-        """ This method tries to return the "managing" partner organisation.
+    def find_primary_organisation(self):
         """
-        # If we have a reporting-org then we choose that
+        This method tries to return the "managing" partner organisation.
+        """
+        # Pick the partner that can publish the project first
+        if self.publishing_orgs:
+            return self.publishing_orgs[0]
+        # Otherwise, if we have a reporting-org then we choose that
         if self.reporting_org:
             return self.reporting_org
-        # otherwise grab the first accountable partner we find
+        # Otherwise, grab the first accountable partner we find
         elif self.support_partners():
             return self.support_partners()[0]
-        # panic mode: grab the first partner we find
+        # Panic mode: grab the first partner we find
         elif self.all_partners():
             return self.all_partners()[0]
         # Uh-oh...

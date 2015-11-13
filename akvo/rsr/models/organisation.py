@@ -23,6 +23,7 @@ from .country import Country
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
+from .project_update import ProjectUpdate
 
 ORG_TYPE_NGO = 'N'
 ORG_TYPE_GOV = 'G'
@@ -191,12 +192,12 @@ class Organisation(TimestampsMixin, models.Model):
 
         names = Organisation.objects.filter(name__iexact=name)
         long_names = Organisation.objects.filter(long_name__iexact=long_name)
-        ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id) if iati_org_id else None
+        ids = Organisation.objects.filter(iati_org_id__iexact=iati_org_id)
 
         if self.pk:
             names = names.exclude(pk=self.pk)
             long_names = long_names.exclude(pk=self.pk)
-            ids = ids.exclude(pk=self.pk) if ids else None
+            ids = ids.exclude(pk=self.pk)
 
         if name and names.exists():
             validation_errors['name'] = u'{}: {}'.format(
@@ -208,7 +209,6 @@ class Organisation(TimestampsMixin, models.Model):
         if long_name and long_names.exists():
             validation_errors['long_name'] = u'{}: {}'.format(
                 _('An Organisation with this long name already exists'), long_name)
-
         elif not long_name:
             # This prevents organisation long names with only spaces
             validation_errors['long_name'] = _(u'Organisation long name may not be blank')
@@ -283,6 +283,10 @@ class Organisation(TimestampsMixin, models.Model):
             from .user import User
             return User.objects.filter(employers__organisation__in=self).distinct()
 
+        def all_updates(self):
+            """returns a queryset with all updates of the organisation."""
+            return ProjectUpdate.objects.filter(project__partners=self).distinct()
+
         def employments(self):
             "returns a queryset of all employments belonging to the organisation(s)"
             from .employment import Employment
@@ -321,7 +325,8 @@ class Organisation(TimestampsMixin, models.Model):
     def all_users(self):
         "returns a queryset of all users belonging to the organisation"
         from .user import User
-        return User.objects.filter(employers__organisation=self).distinct()
+        #return User.objects.filter(employers__organisation=self).distinct()
+        return self.employees.all()
 
     def published_projects(self):
         "returns a queryset with published projects that has self as any kind of partner"
@@ -329,7 +334,11 @@ class Organisation(TimestampsMixin, models.Model):
 
     def all_projects(self):
         """returns a queryset with all projects that has self as any kind of partner."""
-        return self.projects.all()
+        return self.projects.distinct()
+
+    def all_updates(self):
+        """returns a queryset with all updates of the organisation."""
+        return ProjectUpdate.objects.filter(project__partners=self).distinct()
 
     def reporting_on_projects(self):
         """returns a queryset with all projects that has self as reporting organisation."""
