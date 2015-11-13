@@ -148,15 +148,21 @@
           <div class="col-sm-3 hidden-xs hidden-sm">
             <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
               <p>
-                {% for sector in project.sectors.all %}
-                  {% if sector.sector_code|length == 3 %}
-                    <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}</a><br/>
-                  {% elif sector.sector_code|length == 5 %}
-                    {{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}<br/>
-                  {% endif %}
-                {% empty %}
+                {% if not project.sectors.all %}
                   {% trans 'No sectors' %}
-                {% endfor %}
+                {% else %}
+                  {# KB: Small hack with two for loops to display the 3-digit sectors first #}
+                  {% for sector in project.sectors.all %}
+                    {% if sector.sector_code|length == 3 %}
+                      <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}</a><br/>
+                    {% endif %}
+                  {% endfor %}
+                  {% for sector in project.sectors.all %}
+                    {% if sector.sector_code|length == 5 %}
+                      {{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}<br/>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
               </p>
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
             <p class="complete">{{project.get_status_display}}</p>
