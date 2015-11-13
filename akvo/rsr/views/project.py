@@ -30,7 +30,7 @@ from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 from .organisation import _page_organisations
-from akvo.codelists.models import SectorCategory, Version
+from akvo.codelists.models import SectorCategory, Sector, Version
 
 
 ###############################################################################
@@ -122,8 +122,13 @@ def directory(request):
     )
 
     # Get all sector categories in a dict
-    sectors = SectorCategory.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
+    iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
+    sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
+    sectors = Sector.objects.filter(version=iati_version_obj)
+
     sectors_dict = {}
+    for sector_cat in sector_cats:
+        sectors_dict[str(sector_cat.code)] = sector_cat.name
     for sector in sectors:
         sectors_dict[str(sector.code)] = sector.name
 
