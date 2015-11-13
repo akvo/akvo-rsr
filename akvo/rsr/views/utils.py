@@ -8,18 +8,18 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 
-def apply_keywords(page, coll):
+def apply_keywords(page, project_qs):
     """Apply keywords.
 
     If keywords exist, check if they should be used for filtering or exclusion.
     """
     if not page.keywords.all():
-        return coll
+        return project_qs
 
     if page.exclude_keywords:
-        return coll.exclude(keywords__in=page.keywords.all())
+        return project_qs.exclude(keywords__in=page.keywords.all())
     else:
-        return coll.filter(keywords__in=page.keywords.all())
+        return project_qs.filter(keywords__in=page.keywords.all())
 
 def org_projects(organisation):
     """."""

@@ -285,7 +285,7 @@ class Organisation(TimestampsMixin, models.Model):
 
         def all_updates(self):
             """returns a queryset with all updates of the organisation."""
-            return ProjectUpdate.objects.filter(user__in=self.users()).distinct()
+            return ProjectUpdate.objects.filter(project__partners=self).distinct()
 
         def employments(self):
             "returns a queryset of all employments belonging to the organisation(s)"
@@ -338,7 +338,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     def all_updates(self):
         """returns a queryset with all updates of the organisation."""
-        return ProjectUpdate.objects.filter(user__in=self.all_users())
+        return ProjectUpdate.objects.filter(project__partners=self).distinct()
 
     def reporting_on_projects(self):
         """returns a queryset with all projects that has self as reporting organisation."""
