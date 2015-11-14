@@ -16,7 +16,7 @@
                     <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator title' %}</label>
                     <p class="help-block hidden">{% trans 'Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.' %}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 hide-default {% if not advanced_editor %}hidden{% endif %}">
                     <div class="select-group control">
                         <select name="indicator-measure{% if key %}-{{ key }}{% endif %}" id="indicator-measure{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{{ indicator.measure }}" {% if indicator.is_child_indicator %}disabled{% endif %}>
                             <option value="" {% if not indicator.measure %} selected="selected" {% endif %}></option>
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="row hidden hide-default">
+        <div class="row hide-default {% if not advanced_editor %}hidden{% endif %}">
             <div class="col-md-8">
                 <div class="form-group control">
                     <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.description }}">{{ indicator.description }}</textarea>
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hide-default {% if not advanced_editor %}hidden{% endif %}">
             <div class="row">
                 <div class="col-md-6 control">
                     <input type="text" class="form-control priority2 indicator" name="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-year{% if key %}-{{ key }}{% endif %}"
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group control hidden hide-default">
+        <div class="form-group control hide-default {% if not advanced_editor %}hidden{% endif %}">
             <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
             {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.baseline_comment }}">{{ indicator.baseline_comment }}</textarea>
             <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline comment' %}</label>

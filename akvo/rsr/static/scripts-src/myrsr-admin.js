@@ -56,7 +56,7 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 
 // Add a class selector here if you only want inputs with a certain class to count
 // towards the completion percentage. If left blank, all inputs will count.
-var MEASURE_CLASS = '.priority1';
+var MEASURE_CLASS = '.mandatory-rsr';
 
 function findAncestor(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
@@ -938,7 +938,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
     }
 
-    var mandatoryLabels = selectorClass.querySelectorAll('.priority1 ~ label');
+    var mandatoryLabels = selectorClass.querySelectorAll(MEASURE_CLASS + ' ~ label');
     var markerSpan = document.createElement('span');
 
     elAddClass(markerSpan, 'mandatory');
@@ -1465,14 +1465,13 @@ function setPageCompletionPercentage() {
     numInputsCompleted = inputResults[1];
 
     completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs,
-                                            document.querySelector('.formOverviewInfo'));
+                                            document.querySelector('.formProgress'));
 
     // Enable publishing when all is filled in
     if (completionPercentage === 100) {
         try {
             publishButton = document.getElementById('publishProject');
             publishButton.removeAttribute('disabled');
-            publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
         } catch (error) {
             // Do nothing, no publish button
         }
@@ -1480,7 +1479,6 @@ function setPageCompletionPercentage() {
         try {
             publishButton = document.getElementById('publishProject');
             publishButton.setAttribute('disabled', '');
-            publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
         } catch (error) {
             // Do nothing, no publish button
         }
@@ -1704,7 +1702,7 @@ function setValidationListeners() {
     // Mark mandatory fields with an asterisk
     function markMandatoryFields() {
         var existingMarkers = document.querySelectorAll('.mandatory');
-        var elementsToMark = document.querySelectorAll('.priority1 ~ label');
+        var elementsToMark = document.querySelectorAll(MEASURE_CLASS + ' ~ label');
 
         // Clear any existing markers
         for (var i = 0; i < existingMarkers.length; i++) {
@@ -1886,32 +1884,36 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         publishButton.setAttribute('disabled', '');
 
-        var api_url, request, publishErrorNode, span, unsavedMessage, unsavedSections;
+        var api_url, request, publishErrorNode, span, status, unsavedMessage, unsavedSections;
+
+        status = publishButton.getAttribute('status');
 
         // Remove any previous errors
         publishErrorNode = document.getElementById('publishErrors');
         publishErrorNode.innerHTML = '';
 
-        // Check for unsaved changes first
-        unsavedSections = checkUnsavedChanges();
-        if (unsavedSections.length > 0) {
-            unsavedMessage = "You can't publish, because there are unsaved changes in the following section(s):<ul>";
+        // If we want to publish, check for unsaved changes first
+        if (status === 'unpublished') {
+            unsavedSections = checkUnsavedChanges();
+            if (unsavedSections.length > 0) {
+                unsavedMessage = "There are unsaved changes in the following section(s):<ul>";
 
-            for (var i = 0; i < unsavedSections.length; i++) {
-                unsavedMessage += "<li>" + unsavedSections[i] + "</li>";
+                for (var i = 0; i < unsavedSections.length; i++) {
+                    unsavedMessage += "<li>" + unsavedSections[i] + "</li>";
+                }
+
+                unsavedMessage += "</ul>";
+
+                span = document.createElement("span");
+                span.className = 'notPublished';
+                span.innerHTML = unsavedMessage;
+                publishErrorNode.appendChild(span);
+
+                publishButton.removeAttribute('disabled');
+
+                // Don't publish
+                return;
             }
-
-            unsavedMessage += "</ul>";
-
-            span = document.createElement("span");
-            span.className = 'notPublished';
-            span.innerHTML = unsavedMessage;
-            publishErrorNode.appendChild(span);
-
-            publishButton.removeAttribute('disabled');
-
-            // Don't publish
-            return;
         }
 
         // Create request
@@ -1924,17 +1926,33 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
-                // Succesfully published project!
+                // Succesfully (un)published project!
                 var publishingStatusNode, viewProjectButton;
-
-                publishButton.parentNode.removeChild(publishButton);
-
                 publishingStatusNode = document.getElementById('publishingStatus');
-                publishingStatusNode.className = "published";
-                publishingStatusNode.innerHTML = "published";
-
                 viewProjectButton = document.getElementById('viewProject');
-                viewProjectButton.innerHTML = defaultValues.view_project;
+
+                // Change the project's status indicator
+                // Change the view project page button to "View project" or "Preview project"
+                // Update the button's status and appearance
+                if (status === 'unpublished') {
+                    publishingStatusNode.className = "published";
+                    publishingStatusNode.innerHTML = "published";
+                    viewProjectButton.innerHTML = defaultValues.view_project;
+                    publishButton.setAttribute('status', 'published');
+                    publishButton.innerHTML = "Unpublish project";
+                    console.log(publishButton.className);
+                    publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
+                } else {
+                    publishingStatusNode.className = "notPublished";
+                    publishingStatusNode.innerHTML = "unpublished";
+                    viewProjectButton.innerHTML = defaultValues.preview_project;
+                    publishButton.setAttribute('status', 'unpublished');
+                    publishButton.innerHTML = "Publish project";
+                    console.log(publishButton.className);
+                    publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
+                }
+
+                publishButton.removeAttribute('disabled');
 
                 return false;
             } else {
@@ -1957,7 +1975,11 @@ function getProjectPublish(publishingStatusId, publishButton) {
                         }
                     } catch (error) {
                         // General error message
-                        publishErrorNode.innerHTML = 'Could not publish project';
+                        if (status === 'unpublished') {
+                            publishErrorNode.innerHTML = 'Could not publish project.';
+                        } else {
+                            publishErrorNode.innerHTML = 'Could not unpublish project.';
+                        }
                     }
                 }
 
@@ -1967,11 +1989,25 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         request.onerror = function() {
             // There was a connection error of some sort
+            span = document.createElement("span");
+            span.className = 'notPublished';
+            publishErrorNode.appendChild(span);
+
+            if (status === 'unpublished') {
+                publishErrorNode.innerHTML = 'Could not publish project due to a connection error.';
+            } else {
+                publishErrorNode.innerHTML = 'Could not unpublish project due to a connection error.';
+            }
+
             publishButton.removeAttribute('disabled');
             return false;
         };
 
-        request.send('{"status": "published"}');
+        if (status === 'unpublished') {
+            request.send('{"status": "published"}');
+        } else {
+            request.send('{"status": "unpublished"}');
+        }
 
     };
 }
@@ -2489,6 +2525,30 @@ function addOrgModal() {
     );    
 }
 
+/* Set the onclick() for switching to the advanced editor */
+function setAdvancedFieldsOnClick () {
+    var advancedFieldsButton;
+
+    advancedFieldsButton = document.getElementById('showAdvancedFields');
+    advancedFieldsButton.onclick = function(e) {
+        e.preventDefault();
+
+        var advancedFields = document.getElementsByClassName("hide-default");
+        for (var i=0; i < advancedFields.length; i++){
+            if (advancedFields[i].classList.contains("hidden")) {
+                advancedFields[i].classList.remove("hidden");
+            }
+        }
+
+        var hideFields = document.getElementsByClassName("show-default");
+        for (var j=0; j < hideFields.length; j++){
+            if (!hideFields[j].classList.contains("hidden")) {
+                hideFields[j].classList.add("hidden");
+            }
+        }
+    };
+}
+
 
 /* Retrieve all projects for the typeaheads and store in the responses global variable */
 function getAllProjects() {
@@ -2579,6 +2639,7 @@ document.addEventListener('DOMContentLoaded', function() {
     getAllOrganisations();
     getAllProjects();
 
+    setAdvancedFieldsOnClick();
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();

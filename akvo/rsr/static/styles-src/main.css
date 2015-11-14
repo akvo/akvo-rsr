@@ -570,10 +570,6 @@ div.paginationWrap {
   margin-bottom: 15px; }
   .editDate span {
     color: rgba(32, 32, 36, 0.3); }
-  .editDate span.published {
-    color: #5cb85c; }
-  .editDate span.notPublished {
-    color: #e31b23; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1701,24 +1697,24 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress .progress-bar .progress-percentage {
   display: none; }
 
-.formOverviewInfo .progress .progress-bar .progress-percentage {
+.formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
-.formOverviewInfo .info-icon {
-  padding-left: 0.5em;
-  cursor: pointer;
-  cursor: hand;
-  color: #2c2a74; }
-  .formOverviewInfo .info-icon.activated {
-    color: rgba(44, 42, 116, 0.3); }
+.formProgress .redLegenda {
+  background: #d9534f;
+  color: #d9534f; }
+.formProgress .orangeLegenda {
+  background: #f0ad4e;
+  color: #f0ad4e; }
+.formProgress .greenLegenda {
+  background: #5cb85c;
+  color: #5cb85c; }
+.formProgress .mandatoryIndicator {
+  color: #d9534f; }
 
-.formOverviewInfo {
-  border: 1px solid rgba(52, 52, 56, 0.1);
-  padding: 20px;
-  margin-bottom: 15px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
+.formOverviewInfo span.published {
+  color: #5cb85c; }
+.formOverviewInfo span.notPublished {
+  color: #e31b23; }
 
 .projectEdit h2 {
   font-weight: normal;
@@ -1911,15 +1907,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border-radius: 5px;
   padding: 5px 15px 5px 15px;
   margin: 15px 15px 15px 15px; }
-  .legenda .redLegenda {
-    background: #d9534f;
-    color: #d9534f; }
-  .legenda .orangeLegenda {
-    background: #f0ad4e;
-    color: #f0ad4e; }
-  .legenda .greenLegenda {
-    background: #5cb85c;
-    color: #5cb85c; }
   .legenda .mandatory {
     color: #d9534f; }
 
@@ -1943,13 +1930,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
-
-#publishProject.btn {
-  margin-top: -6px; }
-  @media only screen and (max-width: 1200px) {
-    @media only screen and (min-width: 992px) {
-      #publishProject.btn {
-        margin-left: -1.25em; } } }
 
 /* New concatenated project page */
 .tab-menu {

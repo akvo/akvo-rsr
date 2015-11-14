@@ -662,12 +662,6 @@ div.paginationWrap {
     span {
         color: rgba($akvoBlack, 0.3);
     }
-    span.published {
-        color: $progressSuccess;
-    }
-    span.notPublished {
-        color: $secondary2;
-    }
 }
 
 #profile {
@@ -2181,7 +2175,7 @@ body {
     }
 }
 
-.formOverviewInfo {
+.formProgress {
     .progress {
         .progress-bar {
             .progress-percentage {
@@ -2189,22 +2183,30 @@ body {
             }
         }
     }
-    .info-icon {
-        padding-left: 0.5em;
-        cursor: pointer;
-        cursor: hand;
-        color: $akvoPurple;
-        &.activated {
-            color: rgba(44, 42, 116, 0.3);
-        }
+    .redLegenda {
+        background: $progressWarning;
+        color: $progressWarning;
+    }
+    .orangeLegenda {
+        background: $progressNot;
+        color: $progressNot;
+    }
+    .greenLegenda {
+        background: $progressSuccess;
+        color: $progressSuccess;
+    }
+    .mandatoryIndicator {
+        color: $progressWarning;
     }
 }
 
 .formOverviewInfo {
-    border: 1px solid rgba(52, 52, 56, 0.1);
-    padding: 20px;
-    margin-bottom: 15px;
-    @include border-radius(5px);
+    span.published {
+        color: $progressSuccess;
+    }
+    span.notPublished {
+        color: $secondary2;
+    }
 }
 
 .projectEdit {
@@ -2466,18 +2468,6 @@ body {
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
     margin: 15px 15px 15px 15px;
-    .redLegenda {
-        background: $progressWarning;
-        color: $progressWarning;
-    }
-    .orangeLegenda {
-        background: $progressNot;
-        color: $progressNot;
-    }
-    .greenLegenda {
-        background: $progressSuccess;
-        color: $progressSuccess;
-    }
     .mandatory {
         color: $progressWarning;
     }
@@ -2506,15 +2496,6 @@ body {
         -moz-transform: rotate(-90deg);
         -ms-transform: rotate(-90deg);
         -o-transform: rotate(-90deg);
-    }
-}
-
-#publishProject.btn {
-    margin-top: -6px;
-    @media only screen and (max-width: $width-large) {
-        @media only screen and (min-width: $width-medium) {
-            margin-left: -1.25em;
-        }
     }
 }
 

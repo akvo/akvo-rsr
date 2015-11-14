@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority1" saved-value="{{ sector.vocabulary }}" onchange="toggleSectors(this)">
+                        <select name="sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control mandatory-rsr" saved-value="{{ sector.vocabulary }}" onchange="toggleSectors(this)">
                             <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}></option>
                             {% for vocabulary in sector_vocabularies %}
                                 <option value="{{ vocabulary.code }}" {% if sector.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="sector-code{% if key %}-{{ key }}{% endif %}" id="sector-code{% if key %}-{{ key }}{% endif %}" class="form-control priority1" saved-value="{{ sector.sector_code }}"
+                        <select name="sector-code{% if key %}-{{ key }}{% endif %}" id="sector-code{% if key %}-{{ key }}{% endif %}" class="form-control mandatory-rsr" saved-value="{{ sector.sector_code }}"
                                 displayed-options="{% if sector.sector_code|length == 5 or sector.vocabulary == '1' %}1{% elif sector.sector_code|length == 3 or sector.vocabulary == '2' %}2{% endif %}">
                             {% if sector.sector_code|length == 3 or sector.vocabulary == '2' %}
                                 <option value=""></option>
@@ -48,9 +48,9 @@
                         <p class="help-block hidden">{% trans 'This is based on DAC sectors. Please select a sector vocabulary first.' %}</p>
                     </div>
                 </div>
-                <div class="col-md-4 control">
-                    <div class="input-group priority1">
-                        <input type="text" class="form-control priority1" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}" saved-value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}">
+                <div class="col-md-4 hide-default {% if not advanced_editor %}hidden{% endif %}">
+                    <div class="input-group mandatory-rsr">
+                        <input type="text" class="form-control mandatory-rsr" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}" saved-value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}">
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="sector-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Sector percentage' %}</label>

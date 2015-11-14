@@ -40,46 +40,48 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="select-group control">
-                        <select class="form-control priority2" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.format }}">
-                            <option value="" {% if not document.format %} selected="selected" {% endif %}></option>
-                            {% for format in file_formats %}
-                                <option value="{{ format.code }}" {% if document.format == format.code %} selected="selected" {% endif %}>{{ format.code }}</option>
-                            {% endfor %}
-                        </select>
-                        <label class="control-label" for="document-format{% if key %}-{{ key }}{% endif %}">{% trans 'Document format' %}</label>
-                        <p class="help-block hidden">{% trans 'This provides the code for the Internet Media Type ("MIME type") of the document, and includes pdf, msword, rtf, xml, csv, etc. For a list of commonly used MIME types, visit this link:' %} <a href="http://www.sitepoint.com/web-foundations/mime-types-summary-list/" target="_blank">http://www.sitepoint.com/web-foundations/mime-types-summary-list/</a>.</p>
+        <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="select-group control">
+                            <select class="form-control priority2" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.format }}">
+                                <option value="" {% if not document.format %} selected="selected" {% endif %}></option>
+                                {% for format in file_formats %}
+                                    <option value="{{ format.code }}" {% if document.format == format.code %} selected="selected" {% endif %}>{{ format.code }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="control-label" for="document-format{% if key %}-{{ key }}{% endif %}">{% trans 'Document format' %}</label>
+                            <p class="help-block hidden">{% trans 'This provides the code for the Internet Media Type ("MIME type") of the document, and includes pdf, msword, rtf, xml, csv, etc. For a list of commonly used MIME types, visit this link:' %} <a href="http://www.sitepoint.com/web-foundations/mime-types-summary-list/" target="_blank">http://www.sitepoint.com/web-foundations/mime-types-summary-list/</a>.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="select-group control">
-                        <select class="form-control priority3" id="document-category{% if key %}-{{ key }}{% endif %}" name="document-category{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.category }}">
-                            <option value="" {% if not document.category %} selected="selected" {% endif %}></option>
-                            {% for category in document_categories %}
-                                <option value="{{ category.code }}" {% if document.category == category.code %} selected="selected" {% endif %}>{{ category.code }} - {{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <label class="control-label" for="document-category{% if key %}-{{ key }}{% endif %}">{% trans 'Document category' %}</label>
-                        <p class="help-block hidden">{% trans 'The description of the type of content contained within the document.' %}</p>
+                    <div class="col-md-6">
+                        <div class="select-group control">
+                            <select class="form-control priority3" id="document-category{% if key %}-{{ key }}{% endif %}" name="document-category{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.category }}">
+                                <option value="" {% if not document.category %} selected="selected" {% endif %}></option>
+                                {% for category in document_categories %}
+                                    <option value="{{ category.code }}" {% if document.category == category.code %} selected="selected" {% endif %}>{{ category.code }} - {{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="control-label" for="document-category{% if key %}-{{ key }}{% endif %}">{% trans 'Document category' %}</label>
+                            <p class="help-block hidden">{% trans 'The description of the type of content contained within the document.' %}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group hidden hide-default">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="select-group control">
-                        <select class="form-control priority3" id="document-language{% if key %}-{{ key }}{% endif %}" name="document-language{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.language }}">
-                            <option value="" {% if not document.language %} selected="selected" {% endif %}></option>
-                            {% for language in languages %}
-                                <option value="{{ language.code }}" {% if document.language == language.code %} selected="selected" {% endif %}>{{ language.code }} - {{ language.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <label class="control-label" for="document-language{% if key %}-{{ key }}{% endif %}">{% trans 'Document language' %}</label>
-                        <p class="help-block hidden">{% trans 'Select the language that the document is written in.' %}</p>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="select-group control">
+                            <select class="form-control priority3" id="document-language{% if key %}-{{ key }}{% endif %}" name="document-language{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.language }}">
+                                <option value="" {% if not document.language %} selected="selected" {% endif %}></option>
+                                {% for language in languages %}
+                                    <option value="{{ language.code }}" {% if document.language == language.code %} selected="selected" {% endif %}>{{ language.code }} - {{ language.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="control-label" for="document-language{% if key %}-{{ key }}{% endif %}">{% trans 'Document language' %}</label>
+                            <p class="help-block hidden">{% trans 'Select the language that the document is written in.' %}</p>
+                        </div>
                     </div>
                 </div>
             </div>

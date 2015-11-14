@@ -199,6 +199,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         return Http404
 
+    advanced_editor = request.GET.get('advanced', False)
+
     budget_item_labels = BudgetItemLabel.objects.all()
     countries = Country.objects.only('name').all()
     keywords = Keyword.objects.all()
@@ -258,6 +260,7 @@ def project_editor(request, project_id):
     context = {
         'id': project_id,
         'project': project,
+        'advanced_editor': advanced_editor,
 
         # RSR codes
         'budget_item_labels': budget_item_labels,

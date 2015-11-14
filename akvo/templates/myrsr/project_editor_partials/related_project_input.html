@@ -23,7 +23,7 @@
                         <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Related project IATI identifier' %}</label>
                         <p class="help-block hidden">{% trans 'In case you know the IATI identifier of a project that does not exist in RSR, you can point out the IATI identifier here.' %}</p>
                     </div>
-                    <div>
+                    <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
                         <p>
                             <input type="checkbox" id="rp-toggle{% if key %}-{{ key }}{% endif %}" {% if rp.related_iati_id and not rp.related_project %}checked{% endif %} onchange="toggleRelatedProject(this)">
                             <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Related project is not present in RSR' %}</span>
