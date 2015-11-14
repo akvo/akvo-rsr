@@ -135,13 +135,10 @@ class Partnership(models.Model):
     )
 
     def iati_organisation_role_label(self):
-        return dict(self.IATI_ROLES)[self.iati_organisation_role]
+        return dict(self.IATI_ROLES).get(self.iati_organisation_role)
 
     def iati_role_to_partner_type(self):
-        if self.iati_organisation_role:
-            return self.ROLES_TO_PARTNER_TYPES_MAP[int(self.iati_organisation_role)]
-        else:
-            return None
+        return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(int(self.iati_organisation_role))
 
     class Meta:
         app_label = 'rsr'
@@ -178,3 +175,17 @@ class Partnership(models.Model):
                     {'iati_organisation_role': u'%s' % _(u'Project can only have one reporting '
                                                          u'organisation')}
                 )
+
+    def save(self, *args, **kwargs):
+        super(Partnership, self).save(*args, **kwargs)
+        self.set_primary_organisation()
+
+    def delete(self, *args, **kwargs):
+        super(Partnership, self).delete(*args, **kwargs)
+        self.set_primary_organisation()
+
+    def set_primary_organisation(self):
+        # Check which organisation should be set to the primary organisation of the project
+        # This is done to get better performance on the project list page
+        self.project.primary_organisation = self.project.find_primary_organisation()
+        self.project.save(update_fields=['primary_organisation'])
