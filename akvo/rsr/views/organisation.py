@@ -11,7 +11,7 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, render
 
 from ..filters import location_choices, OrganisationFilter, remove_empty_querydict_items
-from ..models import Organisation, Project, ProjectUpdate
+from ..models import Employment, Organisation, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from .utils import apply_keywords, org_projects, show_filter_class
 
@@ -20,14 +20,14 @@ from .utils import apply_keywords, org_projects, show_filter_class
 ###############################################################################
 
 
-def _all_projects():
-    """Return all active projects."""
-    return Project.objects.published().select_related('partners').order_by('-id')
+def _public_projects():
+    """Return all public projects."""
+    return Project.objects.public().published().select_related('partners').order_by('-id')
 
 
 def _page_organisations(page):
     """Dig out the list or organisations to use."""
-    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
     keyword_projects = apply_keywords(page, projects)
     return keyword_projects.all_partners()
 
@@ -71,13 +71,15 @@ def directory(request):
         map_orgs = all_organisations
     else:
         map_orgs = page.object_list
-    map_orgs = map_orgs.select_related('primary_location')
+    map_orgs = map_orgs
 
     # Get related objects of page at once
     page.object_list = page.object_list.prefetch_related(
         'employees',
+        Prefetch('projects', queryset=_public_projects(), to_attr='public_projects'),
+        Prefetch('public_projects__project_updates',
+                 queryset=ProjectUpdate.objects.only('project')),
     ).select_related(
-        'primary_location',
         'primary_location__country',
     )
 

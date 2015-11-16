@@ -40,7 +40,7 @@ from akvo.codelists.models import SectorCategory, Sector, Version
 
 def _published_projects():
     """Return all active projects."""
-    return Project.objects.published()
+    return Project.objects.public().published()
 
 
 def _page_projects(page):

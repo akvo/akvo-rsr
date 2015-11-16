@@ -539,9 +539,7 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
-
     class QuerySet(DjangoQuerySet):
-
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
@@ -558,6 +556,12 @@ class Project(TimestampsMixin, models.Model):
 
         def unpublished(self):
             return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
+
+        def private(self):
+            return self.filter(is_private=True)
+
+        def public(self):
+            return self.filter(is_private=False)
 
         def status_none(self):
             return self.filter(status__exact=Project.STATUS_NONE)

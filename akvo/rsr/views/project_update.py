@@ -30,12 +30,13 @@ def _all_updates():
     """
     Return all project updates.
     """
-    return ProjectUpdate.objects.exclude(indicator_period__isnull=False).order_by('-id')
+    return ProjectUpdate.objects.exclude(project__is_private=True).\
+        exclude(indicator_period__isnull=False).order_by('-id')
 
 
 def _all_projects():
     """Return all active projects."""
-    return Project.objects.published().select_related('project_updates').order_by('-id')
+    return Project.objects.public().published().select_related('project_updates').order_by('-id')
 
 
 def _page_updates(page):
