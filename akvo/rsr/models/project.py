@@ -192,6 +192,11 @@ class Project(TimestampsMixin, models.Model):
                                             help_text=_(u'Determines whether this project is an '
                                                         u'RSR Impact project.'))
 
+    # Private projects
+    is_private = models.BooleanField(_(u'is private project'), default=False,
+                                     help_text=_(u'Determines whether this project is a private '
+                                                 u'project.'))
+
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
