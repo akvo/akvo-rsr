@@ -30,6 +30,7 @@ from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 from .organisation import _page_organisations
+from akvo.codelists.models import SectorCategory, Sector, Version
 
 
 ###############################################################################
@@ -37,18 +38,9 @@ from .organisation import _page_organisations
 ###############################################################################
 
 
-def _all_projects():
+def _published_projects():
     """Return all active projects."""
-    return Project.objects.published().select_related(
-        'publishingstatus__status',
-        'primary_location',
-        'primary_location__country'
-        'locations',
-        'partnerships',
-        'partnerships__organisation',
-        'sectors',
-        'partners',
-    ).order_by('-id')
+    return Project.objects.published()
 
 
 def _page_projects(page):
@@ -57,7 +49,7 @@ def _page_projects(page):
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """
-    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
     return apply_keywords(page, projects)
 
 
@@ -65,7 +57,7 @@ def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
     if not page:
-        return _all_projects()
+        return _published_projects()
     return _page_projects(page)
 
 
@@ -89,10 +81,12 @@ def directory(request):
     all_projects = _project_directory_coll(request)
     f = ProjectFilter(qs, queryset=all_projects)
 
-    # Filter location filter list to only populated locations
-    f.filters['location'].extra['choices'] = location_choices(all_projects)
-    # Swap to choice filter for RSR pages
+    # Change filter options further when on an Akvo Page
     if request.rsr_page:
+        # Filter location filter list to only populated locations
+        f.filters['location'].extra['choices'] = location_choices(all_projects)
+
+        # Swap to choice filter for RSR pages
         f.filters['organisation'] = django_filters.ChoiceFilter(
             choices=build_choices(_page_organisations(request.rsr_page)),
             label=_(u'organisation'),
@@ -108,7 +102,35 @@ def directory(request):
     org_filter = request.GET.get('organisation', '')
 
     # Get projects to be displayed on the map
-    map_projects = all_projects if request.rsr_page and request.rsr_page.all_maps else page
+    if request.rsr_page and request.rsr_page.all_maps:
+        map_projects = all_projects
+    else:
+        map_projects = page.object_list
+    map_projects = map_projects.select_related('primary_location')
+
+    # Get related objects of page at once
+    page.object_list = page.object_list.prefetch_related(
+        'publishingstatus',
+        'sectors',
+        'partnerships',
+        'partnerships__organisation',
+    ).select_related(
+        'primary_organisation',
+        'primary_location',
+        'primary_location__country',
+        'last_update'
+    )
+
+    # Get all sector categories in a dict
+    iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
+    sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
+    sectors = Sector.objects.filter(version=iati_version_obj)
+
+    sectors_dict = {}
+    for sector_cat in sector_cats:
+        sectors_dict[str(sector_cat.code)] = sector_cat.name
+    for sector in sectors:
+        sectors_dict[str(sector.code)] = sector.name
 
     context = {
         'project_count': sorted_projects.count(),
@@ -121,6 +143,7 @@ def directory(request):
         'sorting': sorting,
         'current_org': org_filter,
         'map_projects': map_projects,
+        'sectors_dict': sectors_dict,
     }
     return render(request, 'project_directory.html', context)
 
@@ -260,7 +283,7 @@ def _get_hierarchy_grid(project):
 
 def _get_partners_with_types(project):
     partners_dict = {}
-    for partner in project.all_partners():
+    for partner in project.partners.all():
         partners_dict[partner] = partner.has_partner_types(project)
     return collections.OrderedDict(sorted(partners_dict.items()))
 
@@ -301,7 +324,35 @@ def _get_indicator_updates_data(updates, child_projects, child=True):
 
 def main(request, project_id):
     """The main project page."""
-    project = get_object_or_404(Project, pk=project_id)
+    try:
+        project = Project.objects.prefetch_related(
+            'publishingstatus',
+            'sectors',
+            'partners',
+            'partnerships',
+            'keywords',
+            'locations',
+            'budget_items',
+            'budget_items__label',
+            'transactions',
+            'transactions__provider_organisation',
+            'transactions__receiver_organisation',
+            'results',
+            'recipient_countries',
+            'recipient_regions',
+            'policy_markers',
+            'country_budget_items',
+            'links',
+            'documents',
+            'contacts',
+            'invoices',
+        ).select_related(
+            'primary_organisation',
+            'primary_location',
+            'last_update'
+        ).get(pk=project_id)
+    except Project.DoesNotExist:
+        raise Http404
 
     # Non-editors are not allowed to view unpublished projects
     if not project.is_published() and not request.user.is_anonymous() and \
@@ -317,7 +368,7 @@ def main(request, project_id):
         project_admin = False
 
     # Updates
-    updates = project.project_updates.select_related('user').order_by('-created_at')
+    updates = project.project_updates.prefetch_related('user').order_by('-created_at')
     narrative_updates = updates.exclude(indicator_period__isnull=False)
     indicator_updates = updates.filter(indicator_period__isnull=False)
 
