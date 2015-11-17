@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from django.db.models import Prefetch
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, render
 
 from ..filters import location_choices, OrganisationFilter, remove_empty_querydict_items
@@ -74,13 +75,12 @@ def directory(request):
     map_orgs = map_orgs
 
     # Get related objects of page at once
-    page.object_list = page.object_list.prefetch_related(
-        'employees',
-        Prefetch('projects', queryset=_public_projects(), to_attr='public_projects'),
-        Prefetch('public_projects__project_updates',
-                 queryset=ProjectUpdate.objects.only('project')),
-    ).select_related(
+    page.object_list = page.object_list.select_related(
         'primary_location__country',
+    ).annotate(
+        num_employees=Count('employees', distinct=True),
+        num_projects=Count('projects', distinct=True),
+        num_updates=Count('projects__project_updates', distinct=True),
     )
 
     return render(request, 'organisation_directory.html', {
