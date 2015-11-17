@@ -49,31 +49,15 @@
         </tr>
         </thead>
         {% for project in page %}
-          {% if project.is_private %}
-            <tr class="isPrivate">
-          {% elif not project.is_published %}
-            <tr class="notPublished">
-          {% else %}
-            <tr>
-          {% endif %}
+          <tr class="{% if project.is_private %}isPrivate{% elif not project.is_published %}notPublished{% endif %}">
             <td class="media">
-              {% if project.is_private %}
-                <div class="pull-left">
-                  {% img project 64 64 project.title %}
-                </div>
-              {% else %}
-                <a class="pull-left" href="{% url 'project-main' project.id %}">
-                  {% img project 64 64 project.title %}
-                </a>
-              {% endif %}
+              <a class="pull-left" href="{% url 'project-main' project.id %}">
+                {% img project 64 64 project.title %}
+              </a>
               <div class="media-body">
-                {% if project.is_private %}
-                  <h4 class="media-heading"><i class="fa fa-lock"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
-                {% else %}
-                  <a href="{% url 'project-main' project.id %}">
-                    <h4 class="media-heading"><i class="fa fa-folder-o"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
-                  </a>
-                {% endif %}
+                <a href="{% url 'project-main' project.id %}">
+                  <h4 class="media-heading"><i class="fa fa-{% if project.is_private %}lock{% else %}folder-o{% endif %}"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
+                </a>
                 <p class="small">{{ project.subtitle }}</p>
               </div>
             </td>

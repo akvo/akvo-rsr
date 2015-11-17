@@ -152,6 +152,18 @@ def directory(request):
 # Project main
 ###############################################################################
 
+def _check_project_viewing_permissions(user, project):
+    """
+    Checks if the user can view a project, otherwise raises a PermissionDenied exception.
+
+    A user can view any public project, but when a project is private or not published the user
+    should be logged in and able to make changes to the project (e.g. be an admin of the project).
+    """
+    if (project.is_private or not project.is_published()) and \
+            user.is_anonymous() or \
+            (not user.is_anonymous() and not user.has_perm('rsr.change_project', project)):
+        raise PermissionDenied
+
 
 def _get_accordion_data(project):
     results_data = []
@@ -354,13 +366,9 @@ def main(request, project_id):
     except Project.DoesNotExist:
         raise Http404
 
-    # Do not show private projects, and non-editors are not allowed to view unpublished projects
-    if project.is_private or \
-            (not project.is_published() and not request.user.is_anonymous() and
-             not request.user.has_perm('rsr.change_project', project)):
-        raise PermissionDenied
+    # Permissions
+    _check_project_viewing_permissions(request.user, project)
 
-    # Permissions: project admin
     if not request.user.is_anonymous() and (
             request.user.is_superuser or request.user.is_admin or
             True in [request.user.admin_of(partner) for partner in project.partners.all()]):
@@ -413,8 +421,7 @@ def hierarchy(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
-        raise PermissionDenied
+    _check_project_viewing_permissions(request.user, project)
 
     if not project.has_relations():
         raise Http404
@@ -506,11 +513,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     """."""
     project = get_object_or_404(Project, id=project_id)
 
-    # Do not show private projects, and non-editors are not allowed to view unpublished projects
-    if project.is_private or \
-            (not project.is_published() and not request.user.is_anonymous() and
-             not request.user.has_perm('rsr.change_project', project)):
-        raise PermissionDenied
+    # Permissions
+    _check_project_viewing_permissions(request.user, project)
 
     # Check if user is allowed to place updates for this project
     allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
