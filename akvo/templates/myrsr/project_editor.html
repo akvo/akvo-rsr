@@ -31,7 +31,7 @@
     </div>
 
     <!--*************************************** Project editor progress **********************************************-->
-    <div class="panel panel-success formProgress">
+    <div class="panel panel-success">
         <div class="panel-heading">
             <h3 class="panel-title">
                 {% trans 'Project progress' %}
@@ -57,16 +57,18 @@
                 </div>
             </div>
             <hr/>
-            <div class="row help-block">
-                <div class="col-md-12"><strong>{% trans 'Akvo RSR' %}</strong></div>
-                <div class="col-md-12">{% trans 'This progress bar indicates the number of completed mandatory fields for Akvo RSR. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. Mandatory fields for Akvo RSR are marked with a' %} <span class="mandatoryIndicator">*</span>.</div>
-            </div>
-            <div class="progress overview">
-                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <span class="sr-only"></span><span class="progress-percentage"></span>
+            <div class="rsr-progress">
+                <div class="row help-block">
+                    <div class="col-md-12"><strong>{% trans 'Akvo RSR' %}</strong></div>
+                    <div class="col-md-12">{% trans 'This progress bar indicates the number of completed mandatory fields for Akvo RSR. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. Mandatory fields for Akvo RSR are marked with a' %} <span class="mandatoryIndicator">*</span>.</div>
+                </div>
+                <div class="progress overview">
+                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                        <span class="sr-only"></span><span class="progress-percentage"></span>
+                    </div>
                 </div>
             </div>
-            <div class="{% if not advanced_editor %}hidden hide-default{% endif %}">
+            <div class="iati-progress {% if not advanced_editor %}hidden hide-default{% endif %}">
                 <hr/>
                 <div class="row help-block">
                     <div class="col-md-12"><strong>{% trans 'International Aid Transparency Initiative' %}</strong></div>
@@ -162,7 +164,7 @@
                         </p>
                         <form role="form" id="admin-step-1">
                             <div class="form-group control">
-                                <input type="text" class="form-control validate mandatory-rsr" name="projectTitle" id="projectTitle" value="{{project.title}}" saved-value="{{project.title}}" maxlength="45"/>
+                                <input type="text" class="form-control validate mandatory-rsr mandatory-iati" name="projectTitle" id="projectTitle" value="{{project.title}}" saved-value="{{project.title}}" maxlength="45"/>
                                 <label for="projectTitle" class="control-label">{%  trans 'Project title' %}</label>
                             </div>
                             <div class="form-group control">
@@ -170,7 +172,7 @@
                                 <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
                             </div>
                             <div class="form-group control hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <input type="text" class="form-control" name="iatiId" id="iatiId" maxlength="100" value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" saved-value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" />
+                                <input type="text" class="form-control mandatory-iati" name="iatiId" id="iatiId" maxlength="100" value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" saved-value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" />
                                 <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
@@ -201,7 +203,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control mandatory-rsr" saved-value="{{ project.status }}">
+                                    <select name="projectStatus" id="projectStatus" class="form-control mandatory-rsr mandatory-iati" saved-value="{{ project.status }}">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
@@ -229,14 +231,14 @@
                                              data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
                                              data-label="{% trans 'Start date (planned)' %}"
                                              data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="priority{% if not project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                             data-classes="{% if not project.date_start_actual %}mandatory-rsr mandatory-iati{% endif %}"></div>
                                         <div class="control datepicker-container {% if not project.date_start_actual %}hidden{% endif %}"
                                              id="actual-start-date-container"
                                              data-id="eventFromActual"
                                              data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
                                              data-label="{% trans 'Start date (actual)' %}"
                                              data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="priority{% if project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                             data-classes="priority{% if project.date_start_actual %}mandatory-rsr mandatory-iati{% endif %}"></div>
                                         <p>
                                             <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">
                                             <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>
@@ -554,7 +556,7 @@
                             <p class="help-block hidden" id="step-4-helptext">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
                             <form role="form" id="admin-step-4">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control mandatory-rsr" name="summary" maxlength="400" rows="5" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
+                                <textarea id="summary" class="form-control mandatory-rsr mandatory-iati" name="summary" maxlength="400" rows="5" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
                                 <label class="control-label" for="summary">{% trans 'Summary of project plan' %}</label>
                                 <p class="help-block hidden">
                                     {% blocktrans %}Enter a brief summary. The summary should explain:<br/>

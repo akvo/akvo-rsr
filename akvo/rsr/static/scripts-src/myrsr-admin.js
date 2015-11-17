@@ -57,6 +57,7 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 // Add a class selector here if you only want inputs with a certain class to count
 // towards the completion percentage. If left blank, all inputs will count.
 var MEASURE_CLASS = '.mandatory-rsr';
+var MEASURE_CLASS_IATI = '.mandatory-iati';
 
 function findAncestor(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
@@ -1438,7 +1439,7 @@ function updateAllHelpIcons() {
 }
 
 function setSectionCompletionPercentage(section) {
-    var inputResults = getInputResults(section);
+    var inputResults = getInputResults(section, MEASURE_CLASS);
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
 
@@ -1460,12 +1461,12 @@ function setSectionCompletionPercentage(section) {
 function setPageCompletionPercentage() {
     var inputResults, numInputs, numInputsCompleted, completionPercentage, publishButton;
 
-    inputResults = getInputResults(document.querySelector('.projectEdit'));
+    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS);
     numInputs = inputResults[0];
     numInputsCompleted = inputResults[1];
 
     completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs,
-                                            document.querySelector('.formProgress'));
+                                            document.querySelector('.rsr-progress'));
 
     // Enable publishing when all is filled in
     if (completionPercentage === 100) {
@@ -1483,16 +1484,22 @@ function setPageCompletionPercentage() {
             // Do nothing, no publish button
         }
     }
+
+    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_IATI);
+    numInputs = inputResults[0];
+    numInputsCompleted = inputResults[1];
+
+    renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.iati-progress'));
 }
 
-function getInputResults(section) {
+function getInputResults(section, measureClass) {
     var numInputs = 0;
     var numInputsCompleted = 0;
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var selector, sectionResults;
 
-        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+        selector = INPUT_ELEMENTS[i] + measureClass;
         sectionResults = section.querySelectorAll(selector);
 
         for (var j = 0; j < sectionResults.length; j++ ) {
@@ -1571,6 +1578,24 @@ function setSectionChangeListener(section) {
 
             listener = getChangeListener(section, this);
             el.addEventListener('change', listener);
+        }
+
+        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_IATI;
+        elements = section.querySelectorAll(selector);
+
+        for (var z = 0; z < elements.length; z++) {
+            var listener_iati;
+            var el_iati = elements[z];
+
+            if (elHasClass(el_iati, 'has-listener')) {
+
+                // We have already added a class for this listener
+                // do nothing
+                continue;
+            }
+
+            listener_iati = getChangeListener(section, this);
+            el_iati.addEventListener('change', listener_iati);
         }
     }
 }

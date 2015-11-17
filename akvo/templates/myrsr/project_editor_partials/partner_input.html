@@ -12,16 +12,16 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-4 control">
-                    <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container mandatory-rsr"
+                    <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container mandatory-rsr mandatory-iati"
                     data-child-id="partner{% if key %}-{{ key }}{% endif %}"
-                    data-child-class="mandatory-rsr"
+                    data-child-class="mandatory-rsr mandatory-iati"
                     data-value="{% if partnership.organisation.id %}{{partnership.organisation.id}}{% endif %}"
                     data-count-class="partner">
                     </div>
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="partner-role{% if key %}-{{ key }}{% endif %}" id="partner-role{% if key %}-{{ key }}{% endif %}" class="form-control mandatory-rsr" onchange="toggleFunding(this)" saved-value="{{ partnership.iati_organisation_role }}">
+                        <select name="partner-role{% if key %}-{{ key }}{% endif %}" id="partner-role{% if key %}-{{ key }}{% endif %}" class="form-control mandatory-rsr mandatory-iati" onchange="toggleFunding(this)" saved-value="{{ partnership.iati_organisation_role }}">
                             <option value="" {% if not partnership.iati_organisation_role %} selected="selected" {% endif %}></option>
                             <option value="1" {% if partnership.iati_organisation_role == 1 %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
                             <option value="2" {% if partnership.iati_organisation_role == 2 %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
