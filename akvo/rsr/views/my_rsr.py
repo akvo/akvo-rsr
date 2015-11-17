@@ -344,7 +344,7 @@ def my_iati(request):
 
     if selected_org:
         iati_exports = selected_org.iati_exports.all().order_by('-last_modified_at')
-        projects = selected_org.reporting_on_projects()
+        projects = selected_org.reporting_on_projects().public()
         project_count = projects.count()
         initial = {
             'is_public': True,

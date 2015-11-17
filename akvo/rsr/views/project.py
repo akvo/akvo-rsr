@@ -467,7 +467,7 @@ def iati(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.is_private:
         raise PermissionDenied
-    xml_data = etree.tostring(etree.ElementTree(IatiXML(project).iati_activities))
+    xml_data = etree.tostring(etree.ElementTree(IatiXML([project]).iati_activities))
     return HttpResponse(xml_data, content_type="text/xml")
 
 
