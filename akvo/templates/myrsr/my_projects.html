@@ -12,7 +12,7 @@
           {% endif %}
       </div>
     </div>
-  {% if not organisations %}
+  {% if not user.is_superuser and not user.is_admin and not organisations %}
     <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
     <p class="text-center col-sm-8 col-sm-offset-2">
       {% url 'my_details' as my_details_url %}
@@ -49,19 +49,31 @@
         </tr>
         </thead>
         {% for project in page %}
-          {% if project.is_published %}
-            <tr class="isPublished">
+          {% if project.is_private %}
+            <tr class="isPrivate">
+          {% elif not project.is_published %}
+            <tr class="notPublished">
           {% else %}
             <tr>
           {% endif %}
             <td class="media">
-              <a class="pull-left" href="{% url 'project-main' project.id %}">
-                {% img project 64 64 project.title %}
-              </a>
-              <div class="media-body">
-                <a href="{% url 'project-main' project.id %}">
-                  <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
+              {% if project.is_private %}
+                <div class="pull-left">
+                  {% img project 64 64 project.title %}
+                </div>
+              {% else %}
+                <a class="pull-left" href="{% url 'project-main' project.id %}">
+                  {% img project 64 64 project.title %}
                 </a>
+              {% endif %}
+              <div class="media-body">
+                {% if project.is_private %}
+                  <h4 class="media-heading"><i class="fa fa-lock"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
+                {% else %}
+                  <a href="{% url 'project-main' project.id %}">
+                    <h4 class="media-heading"><i class="fa fa-folder-o"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
+                  </a>
+                {% endif %}
                 <p class="small">{{ project.subtitle }}</p>
               </div>
             </td>
@@ -73,11 +85,11 @@
                 {% if can_edit_project %}
                   <a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a>
                 {% endif %}
-                {% if project.is_published %}
+                {% if project.is_published and not project.is_private %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
                 {% else %}
-                  <a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}">{% trans 'Update' %}</a>
+                  <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}">{% trans 'Update' %}</a>
                 {% endif %}                
               </div>
             </td>
