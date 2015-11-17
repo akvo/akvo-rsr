@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Transaction, TransactionSector
 from ..serializers import TransactionSerializer, TransactionSectorSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import BaseRSRViewSet, PublicRSRViewSet
 
 
-class TransactionViewSet(BaseRSRViewSet):
+class TransactionViewSet(PublicRSRViewSet):
     """Transaction resource."""
 
     queryset = Transaction.objects.all()
@@ -23,6 +23,6 @@ class TransactionViewSet(BaseRSRViewSet):
 class TransactionSectorViewSet(BaseRSRViewSet):
     """Transaction sector resource."""
 
-    queryset = TransactionSector.objects.all()
+    queryset = TransactionSector.objects.filter(transaction__project__is_private=False)
     serializer_class = TransactionSectorSerializer
     filter_fields = ('transaction', 'code')

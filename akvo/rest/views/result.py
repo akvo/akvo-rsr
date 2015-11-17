@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Result
 from ..serializers import ResultSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class ResultViewSet(BaseRSRViewSet):
+class ResultViewSet(PublicRSRViewSet):
 
     """Result resource."""
 

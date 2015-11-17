@@ -8,10 +8,10 @@
 from akvo.rsr.models import ProjectContact
 
 from ..serializers import ProjectContactSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class ProjectContactViewSet(BaseRSRViewSet):
+class ProjectContactViewSet(PublicRSRViewSet):
     """
     """
     queryset = ProjectContact.objects.all()

@@ -8,10 +8,10 @@
 from akvo.rsr.models import ProjectCondition
 
 from ..serializers import ProjectConditionSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class ProjectConditionViewSet(BaseRSRViewSet):
+class ProjectConditionViewSet(PublicRSRViewSet):
     """
     """
     queryset = ProjectCondition.objects.all()

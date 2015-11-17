@@ -22,3 +22,13 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     permission_classes = (DjangoObjectPermissions, )
     filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter, )
     ordering_fields = '__all__'
+
+
+class PublicRSRViewSet(BaseRSRViewSet):
+    """
+    Base class used to show only public projects. Only works for models with a 'project' field.
+    """
+
+    def get_queryset(self):
+        """Filter out any private projects."""
+        return self.queryset.filter(project__is_private=False)

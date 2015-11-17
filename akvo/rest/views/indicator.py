@@ -14,7 +14,7 @@ from ..viewsets import BaseRSRViewSet
 class IndicatorViewSet(BaseRSRViewSet):
     """
     """
-    queryset = Indicator.objects.all()
+    queryset = Indicator.objects.filter(result__project__is_private=False)
     serializer_class = IndicatorSerializer
     filter_fields = ('result', )
 
@@ -22,6 +22,6 @@ class IndicatorViewSet(BaseRSRViewSet):
 class IndicatorPeriodViewSet(BaseRSRViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.all()
+    queryset = IndicatorPeriod.objects.filter(indicator__result__project__is_private=False)
     serializer_class = IndicatorPeriodSerializer
     filter_fields = ('indicator', )

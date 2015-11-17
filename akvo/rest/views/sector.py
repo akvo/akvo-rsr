@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Sector
 from ..serializers import SectorSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class SectorViewSet(BaseRSRViewSet):
+class SectorViewSet(PublicRSRViewSet):
 
     """."""
 

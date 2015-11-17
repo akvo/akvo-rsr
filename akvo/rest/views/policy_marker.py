@@ -8,10 +8,10 @@
 from akvo.rsr.models import PolicyMarker
 
 from ..serializers import PolicyMarkerSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class PolicyMarkerViewSet(BaseRSRViewSet):
+class PolicyMarkerViewSet(PublicRSRViewSet):
     """
     """
     queryset = PolicyMarker.objects.all()

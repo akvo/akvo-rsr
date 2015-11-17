@@ -46,12 +46,13 @@ class ProjectViewSet(BaseRSRViewSet):
     __keywords__ (exact, in), and
     __publishingstatus\__status__.
     """
-    queryset = Project.objects.select_related(
-        'publishingstatus'
-        ).prefetch_related(
-            'categories',
-            'keywords',
-            'partners')
+    queryset = Project.objects.public().select_related(
+        'categories',
+        'keywords',
+        'partners',
+    ).prefetch_related(
+        'publishingstatus',
+    )
 
     serializer_class = ProjectSerializer
     filter_fields = {
@@ -107,9 +108,11 @@ class ProjectExtraViewSet(ProjectViewSet):
     __publishingstatus\__status__ (filter on publishing status)
     """
 
-    queryset = Project.objects.select_related(
-        'publishing_status').prefetch_related(
-            'sectors', 'partnerships')
+    queryset = Project.objects.public().prefetch_related(
+        'publishingstatus',
+        'sectors',
+        'partnerships',
+    )
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
     filter_fields = ('partnerships__organisation', 'publishingstatus__status')
@@ -126,14 +129,15 @@ class ProjectUpViewSet(ProjectViewSet):
     __publishingstatus\__status__ (filter on publishing status)
     """
 
-    queryset = Project.objects.select_related(
+    queryset = Project.objects.public().select_related(
         'primary_location',
+        'categories',
+        'keywords',
+        'partners',
+    ).prefetch_related(
+        'publishingstatus',
         'updates',
-        'publishingstatus'
-        ).prefetch_related(
-            'categories',
-            'keywords',
-            'partners')
+    )
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 100

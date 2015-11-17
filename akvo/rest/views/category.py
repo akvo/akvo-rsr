@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Category
 from ..serializers import CategorySerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicRSRViewSet
 
 
-class CategoryViewSet(BaseRSRViewSet):
+class CategoryViewSet(PublicRSRViewSet):
 
     """Category resource."""
 

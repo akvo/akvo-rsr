@@ -13,7 +13,7 @@ from ..viewsets import BaseRSRViewSet
 class ProjectLocationViewSet(BaseRSRViewSet):
     """
     """
-    queryset = ProjectLocation.objects.all()
+    queryset = ProjectLocation.objects.filter(location_target__is_private=False)
     serializer_class = ProjectLocationSerializer
     filter_fields = ('location_target', 'country', )
 
@@ -21,7 +21,7 @@ class ProjectLocationViewSet(BaseRSRViewSet):
 class AdministrativeLocationViewSet(BaseRSRViewSet):
     """
     """
-    queryset = AdministrativeLocation.objects.all()
+    queryset = AdministrativeLocation.objects.filter(location__location_target__is_private=False)
     serializer_class = AdministrativeLocationSerializer
     filter_fields = ('location', 'code', )
 
@@ -44,7 +44,7 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
     )
     max_paginate_by = 500
     paginate_by = 100
-    queryset = ProjectLocation.objects.select_related(
+    queryset = ProjectLocation.objects.filter(location_target__is_private=False).select_related(
         'location_target', 'country').only(
             'id', 'latitude', 'longitude',
             'location_target__id', 'location_target__title',
