@@ -354,9 +354,10 @@ def main(request, project_id):
     except Project.DoesNotExist:
         raise Http404
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.is_anonymous() and \
-            not request.user.has_perm('rsr.change_project', project):
+    # Do not show private projects, and non-editors are not allowed to view unpublished projects
+    if project.is_private or \
+            (not project.is_published() and not request.user.is_anonymous() and
+             not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
     # Permissions: project admin
@@ -463,8 +464,10 @@ def finance(request, project_id):
 
 def iati(request, project_id):
     """Generate the IATI file on-the-fly and return the XML."""
-    iati_activities = IatiXML(Project.objects.filter(pk=project_id)).iati_activities
-    xml_data = etree.tostring(etree.ElementTree(iati_activities))
+    project = get_object_or_404(Project, pk=project_id)
+    if project.is_private:
+        raise PermissionDenied
+    xml_data = etree.tostring(etree.ElementTree(IatiXML(project).iati_activities))
     return HttpResponse(xml_data, content_type="text/xml")
 
 
@@ -478,8 +481,10 @@ def widgets(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     selected_widget = request.GET.get('widget', None)
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+    # Do not show private projects, and non-editors are not allowed to view unpublished projects
+    if project.is_private or \
+            (not project.is_published() and not request.user.is_anonymous() and
+             not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
     context = {
@@ -501,8 +506,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     """."""
     project = get_object_or_404(Project, id=project_id)
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+    # Do not show private projects, and non-editors are not allowed to view unpublished projects
+    if project.is_private or \
+            (not project.is_published() and not request.user.is_anonymous() and
+             not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
     # Check if user is allowed to place updates for this project
@@ -540,17 +547,6 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     }
 
     return render(request, 'update_add.html', context)
-
-
-def search(request):
-    """."""
-    context = {'projects': Project.objects.published()}
-    return render(request, 'project_search.html', context)
-
-
-def donations_disabled(project):
-    """."""
-    return not project.donate_button
 
 
 def can_accept_donations(project):
