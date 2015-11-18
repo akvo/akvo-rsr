@@ -59,9 +59,9 @@
         <h5>{% trans 'Indicators' %}</h5>
         <div class="indicator-container" id="indicator-container">
             {% for indicator in result.indicators.all %}
-                {% include "myrsr/project_editor_partials/indicator_input.html" with key=indicator.pk %}
+                {% include "myrsr/project_editor/indicator_input.html" with key=indicator.pk %}
             {% empty %}
-                {% include "myrsr/project_editor_partials/indicator_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor/indicator_input.html" with key='add-0' %}
             {% endfor %}
         </div>
         <div class="row form-group">

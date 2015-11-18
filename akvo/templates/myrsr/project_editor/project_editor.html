@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize project_editor %}
 {% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
 {% block myrsr_main %}
     <!--[if lte IE 9]>
@@ -31,7 +31,7 @@
     </div>
 
     <!--*************************************** Project editor progress **********************************************-->
-    <div class="panel panel-success">
+    <div class="panel panel-success formProgress">
         <div class="panel-heading">
             <h3 class="panel-title">
                 {% trans 'Project progress' %}
@@ -145,6 +145,7 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
+        {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
         <fieldset>
             <!--*************************************** Section 1 **********************************************-->
             <div class="myPanel borderBottom" id="panel1">
@@ -163,37 +164,16 @@
                             {% trans 'This section contains top-level information about your project which will be used in searches.' %}
                         </p>
                         <form role="form" id="admin-step-1">
-                            <div class="form-group control">
-                                <input type="text" class="form-control validate mandatory-rsr mandatory-iati" name="projectTitle" id="projectTitle" value="{{project.title}}" saved-value="{{project.title}}" maxlength="45"/>
-                                <label for="projectTitle" class="control-label">{%  trans 'Project title' %}</label>
-                            </div>
-                            <div class="form-group control">
-                                <input type="text" class="form-control mandatory-rsr" name="projectSubTitle" id="projectSubTitle" maxlength="75" value="{{project.subtitle}}" saved-value="{{project.subtitle}}"/>
-                                <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
-                            </div>
-                            <div class="form-group control hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <input type="text" class="form-control mandatory-iati" name="iatiId" id="iatiId" maxlength="100" value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" saved-value="{% if project.iati_activity_id %}{{project.iati_activity_id}}{% endif %}" />
-                                <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
-                                <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
-                            </div>
+                            {% include text_input with obj=project field="title" mandatory_rsr=True mandatory_iati=True %}
+                            {% include text_input with obj=project field="subtitle" mandatory_rsr=True %}
+                            {% include text_input with obj=project field="iati_activity_id" mandatory_iati=True hidden=True %}
                             <h5>{% trans 'Related projects' %}</h5>
-                            <div class="form-group hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <div class="select-group control">
-                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
-                                        <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}></option>
-                                        <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>{% trans 'Core activity' %}</option>
-                                        <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>{% trans 'Sub activity' %}</option>
-                                        <option value="3" {% if project.hierarchy|add:0 == 3 %} selected="selected" {% endif %}>{% trans 'Lower sub activity' %}</option>
-                                    </select>
-                                    <label for="projectHierarchy" class="control-label">{% trans 'Hierarchy' %}</label>
-                                </div>
-                                <p class="help-block hidden">{% trans 'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core, sub, or lower sub activity here.' %}</p>
-                            </div>
-                            <div class="related-project-container" id="related-project-container">
+                            {% include choice_input with obj=project field="hierarchy" hidden=True %}
+                            <div class="related-project-container">
                                 {% for rp in project.related_projects.all %}
-                                    {% include "myrsr/project_editor_partials/related_project_input.html" with key=rp.pk %}
+                                    {% include "myrsr/project_editor/related_project_input.html" %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/related_project_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/related_project_input.html" with rp='RelatedProject' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -201,96 +181,23 @@
                                     <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control mandatory-rsr mandatory-iati" saved-value="{{ project.status }}">
-                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
-                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
-                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
-                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>{% trans 'Complete' %}</option>
-                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>{% trans 'Cancelled' %}</option>
-                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>{% trans 'Archived' %}</option>
-                                    </select>
-                                    <label for="projectStatus" class="control-label">{% trans 'Status' %}</label>
+                            {% include choice_input with obj=project field="status" not_empty=True mandatory_rsr=True mandatory_iati=True %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include date_input with obj=project field="date_start_planned" mandatory_rsr=True mandatory_iati=True %}
+                                    {% include date_input with obj=project field="date_start_actual" %}
                                 </div>
-                                <p class="help-block hidden">
-                                    {% blocktrans %}There are five different project statuses:<br/>
-                                    1) Needs funding: this project still needs funding and implementation has not yet started.<br/>
-                                    2) Active: the implementation phase has begun.<br/>
-                                    3) Completed: the project has been completed.<br/>
-                                    4) Cancelled: the project never took place or work stopped before it was fully implemented.<br/>
-                                    5) Archived: projects are archived when the reporting partner no longer uses RSR.{% endblocktrans %}
-                                </p>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="control datepicker-container {% if project.date_start_actual %}hidden{% endif %}"
-                                             id="planned-start-date-container"
-                                             data-id="eventFromPlanned"
-                                             data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
-                                             data-label="{% trans 'Start date (planned)' %}"
-                                             data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="{% if not project.date_start_actual %}mandatory-rsr mandatory-iati{% endif %}"></div>
-                                        <div class="control datepicker-container {% if not project.date_start_actual %}hidden{% endif %}"
-                                             id="actual-start-date-container"
-                                             data-id="eventFromActual"
-                                             data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
-                                             data-label="{% trans 'Start date (actual)' %}"
-                                             data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="priority{% if project.date_start_actual %}mandatory-rsr mandatory-iati{% endif %}"></div>
-                                        <p>
-                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">
-                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="control datepicker-container {% if project.date_end_actual %}hidden{% endif %}"
-                                             id="planned-end-date-container"
-                                             data-id="eventEndPlanned"
-                                             data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
-                                             data-label="{% trans 'End date (planned)' %}"
-                                             data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="priority2"></div>
-                                        <div class="control datepicker-container {% if not project.date_end_actual %}hidden{% endif %}"
-                                             id="actual-end-date-container"
-                                             data-id="eventEndActual"
-                                             data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
-                                             data-label="{% trans 'End date (actual)' %}"
-                                             data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
-                                             data-classes="priority2"></div>
-                                        <p>
-                                            <input type="checkbox" id="end-date-toggle" {% if project.date_end_actual %}checked{% endif %} onchange="toggleEndDate(this)">
-                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual end date' %}</span>
-                                        </p>
-                                    </div>
+                                <div class="col-md-6">
+                                    {% include date_input with obj=project field="date_end_planned" %}
+                                    {% include date_input with obj=project field="date_end_actual" %}
                                 </div>
+{#                                        <p>#}
+{#                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">#}
+{#                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>#}
+{#                                        </p>#}
                             </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
-                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                    </select>
-                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
-                                </div>
-                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2" saved-value="{{ project.language }}">
-                                        <option value="" {% if not project.language %}selected="selected"{% endif %}></option>
-                                        <option value="de" {% if project.language == 'de' %}selected="selected"{% endif %}>{% trans 'German' %}</option>
-                                        <option value="en" {% if project.language == 'en' %}selected="selected"{% endif %}>{% trans 'English' %}</option>
-                                        <option value="es" {% if project.language == 'es' %}selected="selected"{% endif %}>{% trans 'Spanish' %}</option>
-                                        <option value="fr" {% if project.language == 'fr' %}selected="selected"{% endif %}>{% trans 'French' %}</option>
-                                        <option value="nl" {% if project.language == 'nl' %}selected="selected"{% endif %}>{% trans 'Dutch' %}</option>
-                                        <option value="ru" {% if project.language == 'ru' %}selected="selected"{% endif %}>{% trans 'Russian' %}</option>
-                                    </select>
-                                    <label for="language" class="control-label">{% trans 'Language' %}</label>
-                                </div>
-                                <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
-                            </div>
+                            {% include choice_input with obj=project field="currency" not_empty=True %}
+                            {% include choice_input with obj=project field="language" %}
                             <h5>{% trans 'Project photo' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'photo-helptext');"></span></h5>
                             <p class="help-block hidden" id="photo-helptext">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
                             <div class="row">
@@ -307,105 +214,42 @@
                                 <input type="file" class="form-control mandatory-rsr" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/*" />
                                 <label class="control-label" for="photo">{% trans 'Photo' %}</label>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCaption" name="photoCaption" value="{{project.current_image_caption}}" saved-value="{{project.current_image_caption}}" maxlength="50">
-                                        <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
-                                        <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCredit" name="photoCredit" value="{{project.current_image_credit}}" saved-value="{{project.current_image_credit}}" maxlength="50">
-                                        <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
-                                        <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include text_input with obj=project field="current_image_caption" %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include text_input with obj=project field="current_image_credit" %}
                                 </div>
                             </div>
-                            <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="defaultAidType" id="defaultAidType" class="form-control priority3" saved-value="{{ project.default_aid_type }}">
-                                            <option value="" {% if not project.default_aid_type %}selected="selected"{% endif %}></option>
-                                            {% for aid_type in aid_types %}
-                                                <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %}selected="selected"{% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="defaultAidType" class="control-label">{% trans 'Default aid type' %}</label>
-                                        <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of aid being supplied or activity being undertaken. This element specifies a default for all the project’s financial transactions. This can be overridden at the individual transaction level. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3" saved-value="{{ project.default_flow_type }}">
-                                            <option value="" {% if not project.default_flow_type %}selected="selected"{% endif %}></option>
-                                            {% for flow_type in flow_types %}
-                                                <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %}selected="selected"{% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
-                                        <p class="help-block hidden">{% trans 'This is the IATI identifier for how the activity (project) is funded. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FlowType/" target="_blank">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3" saved-value="{{ project.default_tied_status }}">
-                                            <option value="" {% if not project.default_tied_status %}selected="selected"{% endif %}></option>
-                                            {% for tied_status in tied_statuses %}
-                                                <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %}selected="selected"{% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="defaultTiedStatus" class="control-label">{% trans 'Default tied status' %}</label>
-                                        <p class="help-block hidden">{% trans 'This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a>.</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="collaborationType" id="collaborationType" class="form-control priority3" saved-value="{{ project.collaboration_type }}">
-                                            <option value="" {% if not project.collaboration_type %}selected="selected"{% endif %}></option>
-                                            {% for collaboration_type in collaboration_types %}
-                                                <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %}selected="selected"{% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="collaborationType" class="control-label">{% trans 'Collaboration type' %}</label>
-                                        <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of collaboration involved. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/CollaborationType/</a>.</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3" saved-value="{{ project.default_finance_type }}">
-                                            <option value="" {% if not project.default_finance_type %}selected="selected"{% endif %}></option>
-                                            {% for finance_type in finance_types %}
-                                                <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %}selected="selected"{% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="defaultFinanceType" class="control-label">{% trans 'Default finance type' %}</label>
-                                        <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of finance. This element specifies a default for all the transactions in the project’s activity report; it can be overridden at the individual transaction level. For reference visit:' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_1 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
+                            {% include choice_input with obj=project field="default_aid_type" hidden=True %}
+                            {% include choice_input with obj=project field="default_flow_type" hidden=True %}
+                            {% include choice_input with obj=project field="default_tied_status" hidden=True %}
+                            {% include choice_input with obj=project field="collaboration_type" hidden=True %}
+                            {% include choice_input with obj=project field="default_finance_type" hidden=True %}
+{#                            {% for customfield in custom_fields_section_1 %}#}
+{#                                <div id="custom_field-{{ customfield.pk }}">#}
+{#                                    {% if customfield.type == 'text' %}#}
+{#                                    <div class="form-group control">#}
+{#                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>#}
+{#                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>#}
+{#                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}#}
+{#                                    </div>#}
+{#                                    {% elif customfield.type == 'boolean' %}#}
+{#                                        <div class="form-group control">#}
+{#                                            <div class="checkbox">#}
+{#                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">#}
+{#                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>#}
+{#                                                        {{ customfield.name }}#}
+{#                                                </label>#}
+{#                                            </div>#}
+{#                                            {% if customfield.help_text %}#}
+{#                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>#}
+{#                                            {% endif %}#}
+{#                                        </div>#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
                             <div class="row form-group">
                                 <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep1"></div>
                                 <div class="col-xs-4 col-sm-2" style="text-align: right;">
@@ -433,9 +277,9 @@
                             <form role="form" id="admin-step-2">
                             <div class="contact-information-container" id="contact-information-container">
                                 {% for contact in project.contacts.all %}
-                                    {% include "myrsr/project_editor_partials/contact_information_input.html" with key=contact.pk %}
+                                    {% include "myrsr/project_editor/contact_information_input.html" with key=contact.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/contact_information_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/contact_information_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -497,9 +341,9 @@
                             <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
                             <div class="partner-container" id="partner-container">
                                 {% for partnership in project.partnerships.all %}
-                                    {% include "myrsr/project_editor_partials/partner_input.html" with key=partnership.pk %}
+                                    {% include "myrsr/project_editor/partner_input.html" with key=partnership.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/partner_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/partner_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -675,9 +519,9 @@
                             </div>
                             <div class="result-container" id="result-container">
                                 {% for result in project.results.all %}
-                                    {% include "myrsr/project_editor_partials/result_input.html" with key=result.pk %}
+                                    {% include "myrsr/project_editor/result_input.html" with key=result.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/result_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/result_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -688,9 +532,9 @@
                             <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
                             <div class="condition-container hidden hide-default" id="condition-container">
                                 {% for condition in project.conditions.all %}
-                                    {% include "myrsr/project_editor_partials/condition_input.html" with key=condition.pk %}
+                                    {% include "myrsr/project_editor/condition_input.html" with key=condition.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/condition_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/condition_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
@@ -772,9 +616,9 @@
                             </div>
                             <div class="budget-item-container" id="budget-item-container">
                                 {% for item in project.budget_items.all %}
-                                    {% include "myrsr/project_editor_partials/budget_item_input.html" with key=item.pk %}
+                                    {% include "myrsr/project_editor/budget_item_input.html" with key=item.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/budget_item_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/budget_item_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -798,9 +642,9 @@
                                 </div>
                                 <div class="country-budget-item-container" id="country-budget-item-container">
                                     {% for item in project.country_budget_items.all %}
-                                        {% include "myrsr/project_editor_partials/country_budget_item_input.html" with key=item.pk %}
+                                        {% include "myrsr/project_editor/country_budget_item_input.html" with key=item.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/country_budget_item_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/country_budget_item_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -811,9 +655,9 @@
                                 <h5>{% trans 'Transactions' %}</h5>
                                 <div class="transaction-container" id="transaction-container">
                                     {% for transaction in project.transactions.all %}
-                                        {% include "myrsr/project_editor_partials/transaction_input.html" with key=transaction.pk %}
+                                        {% include "myrsr/project_editor/transaction_input.html" with key=transaction.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/transaction_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/transaction_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -824,9 +668,9 @@
                                 <h5>{% trans 'Planned disbursements' %}</h5>
                                 <div class="planned-disbursement-container" id="planned-disbursement-container">
                                     {% for pd in project.planned_disbursements.all %}
-                                        {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key=pd.pk %}
+                                        {% include "myrsr/project_editor/planned_disbursement_input.html" with key=pd.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/planned_disbursement_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -902,10 +746,10 @@
                             <div class="project-location-container" id="project-location-container">
                                 {% if project.locations.all %}
                                     {% for location in project.locations.all %}
-                                        {% include "myrsr/project_editor_partials/project_location_input.html" with key=location.pk %}
+                                        {% include "myrsr/project_editor/project_location_input.html" with key=location.pk %}
                                     {% endfor %}
                                 {% else %}
-                                    {% include "myrsr/project_editor_partials/project_location_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/project_location_input.html" with key='add-0' %}
                                 {% endif %}
                             </div>
                             <div class="row form-group">
@@ -917,9 +761,9 @@
                                 <h5>{% trans 'Recipient countries' %}</h5>
                                 <div class="recipient-country-container" id="recipient-country-container">
                                     {% for rc in project.recipient_countries.all %}
-                                        {% include "myrsr/project_editor_partials/recipient_country_input.html" with key=rc.pk %}
+                                        {% include "myrsr/project_editor/recipient_country_input.html" with key=rc.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/recipient_country_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/recipient_country_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -930,9 +774,9 @@
                                 <h5>{% trans 'Recipient regions' %}</h5>
                                 <div class="recipient-region-container" id="recipient-region-container">
                                     {% for rr in project.recipient_regions.all %}
-                                        {% include "myrsr/project_editor_partials/recipient_region_input.html" with key=rr.pk %}
+                                        {% include "myrsr/project_editor/recipient_region_input.html" with key=rr.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/recipient_region_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/recipient_region_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -996,9 +840,9 @@
                             <h5>{% trans 'Sectors' %}</h5>
                             <div class="sector-container" id="sector-container">
                                 {% for sector in project.sectors.all %}
-                                    {% include "myrsr/project_editor_partials/sector_input.html" with key=sector.pk %}
+                                    {% include "myrsr/project_editor/sector_input.html" with key=sector.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/sector_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/sector_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -1010,9 +854,9 @@
                                 <h5>{% trans 'Policy markers' %}</h5>
                                 <div class="policy-marker-container" id="policy-marker-container">
                                     {% for marker in project.policy_markers.all %}
-                                        {% include "myrsr/project_editor_partials/policy_marker_input.html" with key=marker.pk %}
+                                        {% include "myrsr/project_editor/policy_marker_input.html" with key=marker.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/policy_marker_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/policy_marker_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                                 <div class="row form-group">
@@ -1073,9 +917,9 @@
                             <div class="form-group">
                                 <div class="link-container" id="link-container">
                                     {% for link in project.links.all %}
-                                        {% include "myrsr/project_editor_partials/link_input.html" with key=link.pk %}
+                                        {% include "myrsr/project_editor/link_input.html" with key=link.pk %}
                                     {% empty %}
-                                        {% include "myrsr/project_editor_partials/link_input.html" with key='add-0' %}
+                                        {% include "myrsr/project_editor/link_input.html" with key='add-0' %}
                                     {% endfor %}
                                 </div>
                             </div>
@@ -1087,9 +931,9 @@
                             <h5>{% trans 'Document links' %}</h5>
                             <div class="document-container" id="document-container">
                                 {% for document in project.documents.all %}
-                                    {% include "myrsr/project_editor_partials/document_input.html" with key=document.pk %}
+                                    {% include "myrsr/project_editor/document_input.html" with key=document.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/document_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/document_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -1153,9 +997,9 @@
                             <h5>{% trans 'Keywords' %}</h5>
                             <div class="keyword-container" id="keyword-container">
                                 {% for keyword in project.keywords.all %}
-                                    {% include "myrsr/project_editor_partials/keyword_input.html" with key=keyword.pk %}
+                                    {% include "myrsr/project_editor/keyword_input.html" with key=keyword.pk %}
                                 {% empty %}
-                                    {% include "myrsr/project_editor_partials/keyword_input.html" with key='add-0' %}
+                                    {% include "myrsr/project_editor/keyword_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
@@ -1198,6 +1042,7 @@
                 </div>
             </fieldset>
         </form>
+        {% endwith %}
     </section>
     <div id="editor-feedback" class="hidden-xs">
         <script type="text/javascript">
@@ -1219,27 +1064,29 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    <script type="text/template" id="related-project-input">{% include "myrsr/project_editor_partials/related_project_input.html" %}</script>
-    <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor_partials/budget_item_input.html" %}</script>
-    <script type="text/template" id="condition-input">{% include "myrsr/project_editor_partials/condition_input.html" %}</script> 
-    <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor_partials/contact_information_input.html" %}</script> 
-    <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor_partials/country_budget_item_input.html" %}</script> 
-    <script type="text/template" id="document-input">{% include "myrsr/project_editor_partials/document_input.html" %}</script> 
-    <script type="text/template" id="indicator-input">{% include "myrsr/project_editor_partials/indicator_input.html" %}</script> 
-    <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor_partials/indicator_period_input.html" %}</script> 
-    <script type="text/template" id="keyword-input">{% include "myrsr/project_editor_partials/keyword_input.html" %}</script>
-    <script type="text/template" id="link-input">{% include "myrsr/project_editor_partials/link_input.html" %}</script>
-    <script type="text/template" id="project-location-input">{% include "myrsr/project_editor_partials/project_location_input.html" %}</script>     
-    <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor_partials/location_administrative_input.html"%}</script> 
-    <script type="text/template" id="partner-input">{% include "myrsr/project_editor_partials/partner_input.html" %}</script> 
-    <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor_partials/planned_disbursement_input.html" %}</script> 
-    <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor_partials/policy_marker_input.html" %}</script> 
-    <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor_partials/recipient_country_input.html" %}</script> 
-    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor_partials/recipient_region_input.html" %}</script>
-    <script type="text/template" id="result-input">{% include "myrsr/project_editor_partials/result_input.html" %}</script> 
-    <script type="text/template" id="sector-input">{% include "myrsr/project_editor_partials/sector_input.html" %}</script> 
-    <script type="text/template" id="transaction-input">{% include "myrsr/project_editor_partials/transaction_input.html" %}</script> 
-    <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor_partials/transaction_sector_input.html" %}</script>
+    {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_project_input.html" with rp='RelatedProject' %}</script>
+    <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>
+    <script type="text/template" id="condition-input">{% include "myrsr/project_editor/condition_input.html" %}</script>
+    <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/contact_information_input.html" %}</script>
+    <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/country_budget_item_input.html" %}</script>
+    <script type="text/template" id="document-input">{% include "myrsr/project_editor/document_input.html" %}</script>
+    <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/indicator_input.html" %}</script>
+    <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/indicator_period_input.html" %}</script>
+    <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/keyword_input.html" %}</script>
+    <script type="text/template" id="link-input">{% include "myrsr/project_editor/link_input.html" %}</script>
+    <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/project_location_input.html" %}</script>
+    <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/location_administrative_input.html"%}</script>
+    <script type="text/template" id="partner-input">{% include "myrsr/project_editor/partner_input.html" %}</script>
+    <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/planned_disbursement_input.html" %}</script>
+    <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/policy_marker_input.html" %}</script>
+    <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/recipient_country_input.html" %}</script>
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/recipient_region_input.html" %}</script>
+    <script type="text/template" id="result-input">{% include "myrsr/project_editor/result_input.html" %}</script>
+    <script type="text/template" id="sector-input">{% include "myrsr/project_editor/sector_input.html" %}</script>
+    <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/transaction_input.html" %}</script>
+    <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/transaction_sector_input.html" %}</script>
+    {% endwith %}
  
     {% block react_js %}
         <script src="//fb.me/react-0.12.0.js"></script>
@@ -1502,18 +1349,18 @@
             }
         }
 
-        function toggleRelatedProjectHelptext(node) {
-            var helpText = node.parentNode.parentNode.querySelectorAll('.help-block')[0];
-
-            if (node.className.indexOf('activated') === -1) {
-                node.className += ' activated';
-                helpText.className = helpText.className.replace('hidden', '');
-
-            } else {
-                node.className = node.className.replace('activated', '');
-                helpText.className += ' hidden';
-            }
-        }
+{#        function toggleRelatedProjectHelptext(node) {#}
+{#            var helpText = node.parentNode.parentNode.querySelectorAll('.help-block')[0];#}
+{##}
+{#            if (node.className.indexOf('activated') === -1) {#}
+{#                node.className += ' activated';#}
+{#                helpText.className = helpText.className.replace('hidden', '');#}
+{##}
+{#            } else {#}
+{#                node.className = node.className.replace('activated', '');#}
+{#                helpText.className += ' hidden';#}
+{#            }#}
+{#        }#}
 
         function toggleStartDate(node) {
             var startDateActual, startDatePlanned, startDateActualInput, startDatePlannedInput, startDateActualLabel, startDatePlannedLabel, mandatoryNode;

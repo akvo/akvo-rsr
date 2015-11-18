@@ -1294,7 +1294,7 @@ function updateTypeahead(els, filterOption, labelText, helpText, API, inputType,
 function updateProjectTypeaheads() {
     var els, filterOption, labelText, helpText, API, inputType;
 
-    els = document.querySelectorAll('.related-project-input');
+    els = document.querySelectorAll('.rsr_relatedproject-related_project');
     labelText = defaultValues.related_project_label;
     helpText = defaultValues.related_project_helptext;
     filterOption = 'title';

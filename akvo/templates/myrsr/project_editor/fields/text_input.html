@@ -1,0 +1,22 @@
+{% load project_editor %}
+
+<div class="form-group control{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+    <input type="text"
+           name="{{ obj|field_id:field }}"
+           id="{{ obj|field_id:field }}"
+           class="form-control
+                  {% if mandatory_rsr %}mandatory-rsr{% endif %}
+                  {% if mandatory_iati %}mandatory-iati{% endif %}"
+           {% if obj|max_length:field %}
+               maxlength="{{ obj|max_length:field }}"
+           {% endif %}
+           value="{{ obj|value:field }}"
+           saved-value="{{ obj|value:field }}"
+    />
+    <label for="{{ obj|field_id:field }}" class="control-label">
+        {{ obj|field_name:field }}
+    </label>
+    {% if obj|help_text:field %}
+        <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+    {% endif %}
+</div>

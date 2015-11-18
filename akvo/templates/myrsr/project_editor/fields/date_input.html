@@ -1,0 +1,13 @@
+{% load project_editor %}
+
+<div class="form-group{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+    <div class="control datepicker-container"
+         id="planned-start-date-container"
+         data-id="{{ obj|field_id:field }}"
+         data-child="{{ obj|value:field|date:"d/m/Y" }}"
+         data-label="{{ obj|field_name:field }}"
+         data-helptext="{{ obj|help_text:field }}"
+         data-classes="{% if mandatory_rsr %}mandatory-rsr{% endif %}
+                       {% if mandatory_iati %}mandatory-iati{% endif %}">
+    </div>
+</div>

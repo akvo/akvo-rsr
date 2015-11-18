@@ -202,9 +202,9 @@
         <h5 class="hidden hide-default">{% trans 'Transaction sectors' %}</h5>
         <div class="transaction-sector-container hidden hide-default" id="transaction-sector-container">
             {% for sector in transaction.sectors.all %}
-                {% include "myrsr/project_editor_partials/transaction_sector_input.html" with key=sector.pk %}
+                {% include "myrsr/project_editor/transaction_sector_input.html" with key=sector.pk %}
             {% empty %}
-                {% include "myrsr/project_editor_partials/transaction_sector_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor/transaction_sector_input.html" with key='add-0' %}
             {% endfor %}
         </div>
         <div class="row form-group hidden hide-default">

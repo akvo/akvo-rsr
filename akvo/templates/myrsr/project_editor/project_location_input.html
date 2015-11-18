@@ -155,9 +155,9 @@
             <h5>{% trans 'Location administratives' %}</h5>
             <div class="location-administrative-container" id="location-administrative-container">
                 {% for admin in location.administratives.all %}
-                    {% include "myrsr/project_editor_partials/location_administrative_input.html" with key=admin.pk %}
+                    {% include "myrsr/project_editor/location_administrative_input.html" with key=admin.pk %}
                 {% empty %}
-                    {% include "myrsr/project_editor_partials/location_administrative_input.html" with key='add-0' %}
+                    {% include "myrsr/project_editor/location_administrative_input.html" with key='add-0' %}
                 {% endfor %}
             </div>
             <div class="row form-group">

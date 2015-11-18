@@ -260,6 +260,7 @@ def project_editor(request, project_id):
     context = {
         'id': project_id,
         'project': project,
+        'projectmodel': Project,
         'advanced_editor': advanced_editor,
 
         # RSR codes
@@ -334,7 +335,7 @@ def project_editor(request, project_id):
         'custom_fields_section_10': custom_fields_section_10,
     }
 
-    return render(request, 'myrsr/project_editor.html', context)
+    return render(request, 'myrsr/project_editor/project_editor.html', context)
     
 @login_required
 def my_iati(request):

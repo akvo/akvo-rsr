@@ -1,0 +1,25 @@
+{% load project_editor %}
+
+<div class="form-group{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+    <div class="select-group control">
+        <select name="{{ obj|field_id:field }}"
+                id="{{ obj|field_id:field }}"
+                class="form-control
+                       {% if mandatory_rsr %}mandatory-rsr{% endif %}
+                       {% if mandatory_iati %}mandatory-iati{% endif %}"
+                saved-value="{{ obj|value:field }}">
+            {% if not not_empty %}
+                <option value=""{% if not obj|value:field %} selected="selected"{% endif %}></option>
+            {% endif %}
+            {% for choice in obj|choices:field %}
+                <option value="{{ choice.0 }}"{% if obj|value:field == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
+            {% endfor %}
+        </select>
+        <label for="{{ obj|field_id:field }}" class="control-label">
+            {{ obj|field_name:field }}
+        </label>
+    </div>
+    {% if obj|help_text:field %}
+        <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+    {% endif %}
+</div>
