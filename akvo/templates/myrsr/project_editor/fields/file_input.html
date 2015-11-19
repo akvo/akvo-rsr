@@ -1,0 +1,24 @@
+{% load project_editor %}
+
+<div class="form-group control">
+    <input type="file"
+           name="{{ obj|field_id:field }}"
+           id="{{ obj|field_id:field }}"
+           class="form-control
+                  {% if mandatory_rsr %}mandatory-rsr{% endif %}
+                  {% if mandatory_iati %}mandatory-iati{% endif %}"
+           default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}"
+           {% if accept %}
+               accept={{ accept }}
+           {% endif %} />
+    <label for="{{ obj|field_id:field }}" class="control-label">
+        {{ obj|field_name:field }}
+    </label>
+    {% if obj|help_text:field %}
+        <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+    {% endif %}
+</div>
+<div class="progress file-progress hidden" id="{{ obj|field_id:field }}.progress">
+    <div class="progress-bar progress-bar-info progress-bar-striped"
+         role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+</div>

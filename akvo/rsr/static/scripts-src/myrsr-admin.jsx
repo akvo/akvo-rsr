@@ -526,53 +526,6 @@ function submitStep(step, level) {
     };
 
     request.send(form_data);
-
-    if (step === '1') {
-        var formData = new FormData();
-        formData.append("photo", document.getElementById("photo").files[0]);
-
-        file_request = new XMLHttpRequest();
-        file_request.open("POST", api_url);
-        file_request.setRequestHeader("X-CSRFToken", csrftoken);
-
-        file_request.onload = function() {
-            if (file_request.status >= 200 && file_request.status < 400) {
-                var response;
-
-                removeErrors(form);
-                response = JSON.parse(file_request.responseText);
-                replacePhoto(response.new_image);
-                addErrors(response.errors);
-
-                if (response.errors.length > 0) {
-                    message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving photo</div>';
-                    finishSave(step, message);
-                }
-                return false;
-            } else {
-                // We reached our target server, but it returned an error
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
-
-                if (file_request.status == 413) {
-                    // Image is too big
-                    addErrors([{"name": "photo", "error": "Photo is too big, please upload a photo that is smaller than 2 MB."}]);
-                }
-
-                finishSave(step, message);
-                return false;
-            }
-        };
-
-        file_request.onerror = function() {
-            // There was a connection error of some sort
-            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
-
-            finishSave(step, message);
-            return false;
-        };
-
-        file_request.send(formData);
-    }
 }
 
 function deleteItem(itemId, itemType, parentDiv) {
@@ -606,6 +559,11 @@ function deleteItem(itemId, itemType, parentDiv) {
     };
 
     request.send();
+}
+
+/* Check the size of a file. MaxSize is specified in MB. */
+function checkFileSize(file, maxSize) {
+    return file.size < maxSize * 1024 * 1024;
 }
 
 function setDeletePhoto() {
@@ -649,7 +607,7 @@ function deletePhoto() {
             aNode = document.getElementById('delete-photo');
             aNode.parentNode.removeChild(aNode);
 
-            inputNode = document.getElementById('photo');
+            inputNode = document.getElementById('rsr_project.current_image.' + defaultValues.project_id);
             inputNode.setAttribute('default', '');
 
             setAllSectionsCompletionPercentage();
@@ -667,6 +625,107 @@ function deletePhoto() {
     };
 
     request.send();
+}
+
+function setPhotoUpload() {
+    try {
+        var photoInput;
+
+        photoInput = document.getElementById('rsr_project.current_image.' + defaultValues.project_id);
+        photoInput.onchange = function(e) {
+            e.preventDefault();
+            uploadPhoto(photoInput);
+        };
+
+    } catch (error) {
+        // No photo input found
+        return false;
+    }
+}
+
+function uploadPhoto(photoInput) {
+    var formData, progressBarContainer, request, uploadFile, url;
+
+    // Remove error indications
+    var errorHelpNodes = photoInput.parentNode.querySelectorAll('.help-block-error');
+    for (var i=0; i<errorHelpNodes.length; i++) {
+        errorHelpNodes[i].parentNode.removeChild(errorHelpNodes[i])
+    }
+    photoInput.parentNode.classList.remove('has-error');
+
+    // Get photo
+    uploadFile = photoInput.files[0];
+
+    // Check file size first
+    if (!checkFileSize(uploadFile, 2)) {
+        var errorText, uploadFileSize;
+
+        uploadFileSize = uploadFile.size / 1024 / 1024;
+
+        errorText = defaultValues.file_size + ': ' + uploadFileSize.toFixed(2) + ' MB. ';
+        errorText += defaultValues.file_size_allowed + ' 2 MB.';
+
+        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
+                    "error": errorText}]);
+        return false;
+    }
+
+    // Check if file is image, supported formats are: jpg, jpeg, png, gif
+    if (!uploadFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
+                    "error": defaultValues.image_file_format + ": jpg, jpeg, png, gif"}]);
+        return false;
+    }
+
+    url = '/rest/v1/project/' + defaultValues.project_id + '/step_1/?format=json';
+
+    formData = new FormData();
+    formData.append("photo", uploadFile);
+
+    request = new XMLHttpRequest();
+
+    progressBarContainer = document.getElementById('rsr_project.current_image.' + defaultValues.project_id + '.progress');
+
+    if (request.upload) {
+        // Show progress bar
+        progressBarContainer.classList.remove('hidden');
+
+        // progress bar
+		request.upload.addEventListener("progress", function(e) {
+            var progressBar = progressBarContainer.querySelector('.progress-bar');
+			var percentage = parseInt(100 - (e.loaded / e.total * 100));
+            progressBar.setAttribute('aria-valuenow', percentage);
+            progressBar.style.width = percentage + '%';
+            progressBar.innerHTML = percentage + '%';
+		}, false);
+    }
+
+    request.open("POST", url);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var response = JSON.parse(request.responseText);
+            replacePhoto(response.new_image);
+        }
+
+        // Remove progress bar
+        progressBarContainer.classList.add('hidden');
+
+        return false;
+    };
+
+    request.onerror = function() {
+        // Remove progress bar
+        progressBarContainer.classList.add('hidden');
+
+        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
+                    "error": defaultValues.connection_error}]);
+
+        return false;
+    };
+
+    request.send(formData);
 }
 
 function deleteDocument(document_id) {
@@ -1522,7 +1581,7 @@ function getInputResults(section, measureClass) {
                 continue;
             } else if (result.value !== '') {
                 numInputsCompleted += 1;
-            } else if (result.getAttribute('name') === 'photo' && result.getAttribute('default') !== '' && result.getAttribute('default') !== null) {
+            } else if (result.getAttribute('name') === 'rsr_project.current_image.' + defaultValues.project_id && result.getAttribute('default') !== '' && result.getAttribute('default') !== null) {
                 // Custom code for project photo
                 numInputsCompleted += 1;
             }
@@ -2672,6 +2731,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setSubmitOnClicks();
     setPartialOnClicks();
     setCurrencyOnChange();
+    setPhotoUpload();
     setDeletePhoto();
     setImportResults();
 

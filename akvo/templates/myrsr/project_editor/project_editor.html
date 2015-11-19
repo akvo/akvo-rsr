@@ -145,7 +145,7 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
+        {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" %}
         <fieldset>
             <!--*************************************** Section 1 **********************************************-->
             <div class="myPanel borderBottom" id="panel1">
@@ -154,7 +154,7 @@
                         <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-1-helptext');"></span></h4></label>
                     </div>
                     <input type="radio" name="step" id="stepOne">
-                    <div class="progress">
+                    <div class="progress section-progress">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                             <span class="sr-only"></span><span class="progress-percentage"></span>
                         </div>
@@ -198,8 +198,7 @@
                             </div>
                             {% include choice_input with obj=project field="currency" not_empty=True %}
                             {% include choice_input with obj=project field="language" %}
-                            <h5>{% trans 'Project photo' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'photo-helptext');"></span></h5>
-                            <p class="help-block hidden" id="photo-helptext">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
+                            <h5>{% trans 'Project photo' %}</h5>
                             <div class="row">
                                 <div class="col-md-12 text-center" id="photo-container">
                                     {% if project.current_image %}
@@ -210,10 +209,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="form-group control">
-                                <input type="file" class="form-control mandatory-rsr" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/*" />
-                                <label class="control-label" for="photo">{% trans 'Photo' %}</label>
-                            </div>
+                            {% include file_input with obj=project field="current_image" mandatory_rsr=True %}
                             <div class="row">
                                 <div class="col-md-6">
                                     {% include text_input with obj=project field="current_image_caption" %}
@@ -267,7 +263,7 @@
                             <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-2-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTwo">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -327,7 +323,7 @@
                             <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepThree">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -391,7 +387,7 @@
                             <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-4-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFour">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -481,7 +477,7 @@
                             <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-5-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFive">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -582,7 +578,7 @@
                             <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSix">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -719,7 +715,7 @@
                             <label for="stepSeven" class="stepLabel"><h4>07 - {% trans 'Project locations' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-7-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSeven">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -825,7 +821,7 @@
                             <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-8-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepEight">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -905,7 +901,7 @@
                             <label for="stepNine" class="stepLabel"><h4>09 - {% trans 'Links and documents' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-9-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepNine">                        
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -981,7 +977,7 @@
                             <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments and keywords' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTen">
-                        <div class="progress">
+                        <div class="progress section-progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
@@ -1142,7 +1138,11 @@
             "org_logo": "{% trans 'Organisation logo' %}",
             "location_check": "{% trans 'All location fields have to be filled in' %}",
             "general_error": "{% trans 'Something went wrong while adding the organisation' %}",
-            "comma_value": "{% trans 'It is not allowed to use a comma, use a period to denote decimals' %}"
+            "comma_value": "{% trans 'It is not allowed to use a comma, use a period to denote decimals' %}",
+            "image_file_format": "{% trans 'File is not an image file. Supported formats are' %}",
+            "file_size": "{% trans 'File size is too large' %}",
+            "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
+            "connection_error": "{% trans 'Connection error, please check your internet connection' %}"
         }
     </script>
 

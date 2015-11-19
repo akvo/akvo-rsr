@@ -130,12 +130,11 @@ class Project(TimestampsMixin, models.Model):
     )
 
     current_image = ImageField(
-        _('project photo'), blank=True, upload_to=image_path,
-        help_text=_(u'Add your project photo here. You can only add one photo. '
-                    u'If you have more, you can add them via RSR updates when your project is '
-                    u'published.<br>'
-                    u'The photo should be about 1 MB in size, and should preferably be in '
-                    u'JPG format.'),
+        _('photo'), blank=True, upload_to=image_path,
+        help_text=_(u'Add your project photo here. You can only add one photo. If you have more, '
+                    u'you can add them via RSR updates when your project is published. A photo '
+                    u'album will feature on the project page. The photo should not be larger '
+                    u'than 2 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
