@@ -7,7 +7,7 @@
 from ....rsr.models.policy_marker import PolicyMarker
 from ....rsr.models.sector import Sector
 
-from ..utils import add_log, ImporterHelper
+from ..utils import add_log, ImportHelper
 
 from decimal import Decimal, InvalidOperation
 
@@ -38,7 +38,7 @@ POLICY_MARKER_TO_CODE = {
 }
 
 
-class Sectors(ImporterHelper):
+class Sectors(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
         super(Sectors, self).__init__(iati_import, parent_element, project, globals)
@@ -130,7 +130,7 @@ class Sectors(ImporterHelper):
         return changes
 
 
-class PolicyMarkers(ImporterHelper):
+class PolicyMarkers(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
         super(PolicyMarkers, self).__init__(iati_import, parent_element, project, globals)

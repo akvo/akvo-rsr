@@ -10,7 +10,7 @@ from ....rsr.models.custom_field import ProjectCustomField
 # from ....rsr.models.iati_import_log import IatiImportLog
 from ....rsr.models.project import Project
 
-from ..utils import add_log, get_text, ImporterHelper
+from ..utils import add_log, get_text, ImportHelper
 
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
@@ -80,7 +80,7 @@ def _delete_custom_field(project, name, section):
 SECTION_ONE = 1
 SECTION_FOUR = 4
 
-class Descriptions(ImporterHelper):
+class Descriptions(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Descriptions, self).__init__(iati_import, parent_elem, project, globals)
@@ -604,7 +604,7 @@ class Descriptions(ImporterHelper):
 #     return []
 
 
-class CustomFields(ImporterHelper):
+class CustomFields(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(CustomFields, self).__init__(iati_import, parent_elem, project, globals, related_obj)

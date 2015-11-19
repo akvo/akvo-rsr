@@ -9,7 +9,7 @@ from ....rsr.models.crs_add import CrsAdd, CrsAddOtherFlag
 from ....rsr.models.fss import Fss, FssForecast
 from ....rsr.models.legacy_data import LegacyData
 
-from ..utils import add_log, ImporterHelper
+from ..utils import add_log, ImportHelper
 
 from datetime import datetime
 
@@ -18,7 +18,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class LegacyDatas(ImporterHelper):
+class LegacyDatas(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(LegacyDatas, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -93,7 +93,7 @@ class LegacyDatas(ImporterHelper):
         return changes
 
 
-class CrsAdds(ImporterHelper):
+class CrsAdds(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(CrsAdds, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -373,7 +373,7 @@ class CrsAdds(ImporterHelper):
         return changes
 
 
-class FSSs(ImporterHelper):
+class FSSs(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(FSSs, self).__init__(iati_import, parent_elem, project, globals, related_obj)

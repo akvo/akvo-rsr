@@ -8,12 +8,12 @@
 from ....rsr.models.indicator import Indicator, IndicatorPeriod
 from ....rsr.models.result import Result
 
-from ..utils import add_log, get_text, ImporterHelper
+from ..utils import add_log, get_text, ImportHelper
 
 # from datetime import datetime
 
 
-class Results(ImporterHelper):
+class Results(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Results, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -102,7 +102,7 @@ class Results(ImporterHelper):
         return changes
 
 
-class Indicators(ImporterHelper):
+class Indicators(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Indicators, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -237,7 +237,7 @@ class Indicators(ImporterHelper):
         return changes
 
 
-class IndicatorPeriods(ImporterHelper):
+class IndicatorPeriods(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(IndicatorPeriods, self).__init__(iati_import, parent_elem, project, globals, related_obj)

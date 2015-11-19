@@ -6,7 +6,7 @@
 
 from ....rsr.models.partnership import Partnership
 
-from ..utils import add_log, get_or_create_organisation, get_text, ImporterHelper
+from ..utils import add_log, get_or_create_organisation, get_text, ImportHelper
 
 from django.conf import settings
 
@@ -18,7 +18,7 @@ ROLE_TO_CODE = {
 }
 
 
-class Partnerships(ImporterHelper):
+class Partnerships(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Partnerships, self).__init__(iati_import, parent_elem, project, globals, related_obj)

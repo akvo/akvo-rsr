@@ -9,7 +9,7 @@ from ....rsr.models.iati_import_log import IatiImportLog
 from ....rsr.models.planned_disbursement import PlannedDisbursement
 from ....rsr.models.transaction import Transaction, TransactionSector
 
-from ..utils import add_log, get_or_create_organisation, get_text, ImporterHelper
+from ..utils import add_log, get_or_create_organisation, get_text, ImportHelper
 
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
@@ -30,7 +30,7 @@ TYPE_TO_CODE = {
     'CG': '10'
 }
 
-class Transactions(ImporterHelper):
+class Transactions(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
         super(Transactions, self).__init__(iati_import, parent_element, project, globals)
@@ -322,7 +322,7 @@ class Transactions(ImporterHelper):
         return changes
 
 
-class TransactionsSectors(ImporterHelper):
+class TransactionsSectors(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj):
         super(TransactionsSectors, self).__init__(
@@ -395,7 +395,7 @@ class TransactionsSectors(ImporterHelper):
         return changes
 
 
-class BudgetItems(ImporterHelper):
+class BudgetItems(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(BudgetItems, self).__init__(iati_import, parent_elem, project, globals)
@@ -549,7 +549,7 @@ class BudgetItems(ImporterHelper):
         return changes
 
 
-class CountryBudgetItems(ImporterHelper):
+class CountryBudgetItems(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(CountryBudgetItems, self).__init__(iati_import, parent_elem, project, globals)
@@ -640,7 +640,7 @@ class CountryBudgetItems(ImporterHelper):
         return changes
 
 
-class CapitalSpend(ImporterHelper):
+class CapitalSpend(ImportHelper):
 
     def do_import(self):
         """
@@ -672,7 +672,7 @@ class CapitalSpend(ImporterHelper):
         #
         # return []
 
-class PlannedDisbursements(ImporterHelper):
+class PlannedDisbursements(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(PlannedDisbursements, self).__init__(iati_import, parent_elem, project, globals)

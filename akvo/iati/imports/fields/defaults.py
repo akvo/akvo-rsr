@@ -8,7 +8,7 @@ from ....rsr.models.iati_import_log import IatiImportLog
 from ....rsr.models.project import Project
 from ....rsr.models.project_condition import ProjectCondition
 
-from ..utils import add_log, get_text, ImporterHelper
+from ..utils import add_log, get_text, ImportHelper
 
 CODE_TO_STATUS = {
     '1': 'H',
@@ -20,7 +20,7 @@ CODE_TO_STATUS = {
 }
 
 
-class Language(ImporterHelper):
+class Language(ImportHelper):
 
     def do_import(self):
         """
@@ -47,7 +47,7 @@ class Language(ImporterHelper):
         # return []
 
 
-class Currency(ImporterHelper):
+class Currency(ImportHelper):
 
     def do_import(self):
         """
@@ -72,7 +72,7 @@ class Currency(ImporterHelper):
         #     return ['currency']
         # return []
 
-class Hierarchy(ImporterHelper):
+class Hierarchy(ImportHelper):
 
     def do_import(self):
         """
@@ -110,7 +110,7 @@ class Hierarchy(ImporterHelper):
         #     return ['hierarchy']
         # return []
 
-class Scope(ImporterHelper):
+class Scope(ImportHelper):
 
     def do_import(self):
         """
@@ -144,7 +144,7 @@ class Scope(ImporterHelper):
         #     return ['project_scope']
         # return []
 
-class CollaborationType(ImporterHelper):
+class CollaborationType(ImportHelper):
 
     def do_import(self):
         """
@@ -178,7 +178,7 @@ class CollaborationType(ImporterHelper):
         #     return ['collaboration_type']
         # return []
 
-class DefaultFlowType(ImporterHelper):
+class DefaultFlowType(ImportHelper):
 
     def do_import(self):
         """
@@ -211,7 +211,7 @@ class DefaultFlowType(ImporterHelper):
         # return []
 
 
-class DefaultFinanceType(ImporterHelper):
+class DefaultFinanceType(ImportHelper):
 
     def do_import(self):
         """
@@ -246,7 +246,7 @@ class DefaultFinanceType(ImporterHelper):
         # return []
 
 
-class DefaultAidType(ImporterHelper):
+class DefaultAidType(ImportHelper):
 
     def do_import(self):
         """
@@ -278,7 +278,7 @@ class DefaultAidType(ImporterHelper):
         # return []
 
 
-class DefaultTiedStatus(ImporterHelper):
+class DefaultTiedStatus(ImportHelper):
 
     def do_import(self):
         """
@@ -316,7 +316,7 @@ class DefaultTiedStatus(ImporterHelper):
         # return []
 
 
-class Status(ImporterHelper):
+class Status(ImportHelper):
 
     def do_import(self):
         """
@@ -357,7 +357,7 @@ class Status(ImporterHelper):
         #     return ['status']
         # return []
 
-class Conditions(ImporterHelper):
+class Conditions(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
         super(Conditions, self).__init__(iati_import, parent_element, project, globals)

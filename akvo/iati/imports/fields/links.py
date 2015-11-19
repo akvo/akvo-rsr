@@ -9,7 +9,7 @@ from django.core import files
 from ....rsr.models.link import Link
 from ....rsr.models.project_document import ProjectDocument
 
-from ..utils import ImporterHelper
+from ..utils import ImportHelper
 
 from django.conf import settings
 from django.core.files import File
@@ -30,7 +30,7 @@ def file_info_from_url(url):
     return filename, extension
 
 
-class CurrentImage(ImporterHelper):
+class CurrentImage(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(CurrentImage, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -154,7 +154,7 @@ class CurrentImage(ImporterHelper):
         #
         # return changes
 
-class Links(ImporterHelper):
+class Links(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Links, self).__init__(iati_import, parent_elem, project, globals, related_obj)
@@ -230,7 +230,7 @@ class Links(ImporterHelper):
         return changes
 
 
-class Documents(ImporterHelper):
+class Documents(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Documents, self).__init__(iati_import, parent_elem, project, globals, related_obj)

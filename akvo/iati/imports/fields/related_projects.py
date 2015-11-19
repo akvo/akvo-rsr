@@ -7,12 +7,12 @@
 from ....rsr.models.project import Project
 from ....rsr.models.related_project import RelatedProject
 
-from ..utils import add_log, ImporterHelper
+from ..utils import add_log, ImportHelper
 
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class RelatedProjects(ImporterHelper):
+class RelatedProjects(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(RelatedProjects, self).__init__(iati_import, parent_elem, project, globals)

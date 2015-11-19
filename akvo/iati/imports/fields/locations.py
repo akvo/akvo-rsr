@@ -9,14 +9,14 @@ from ....rsr.models.iati_import_log import IatiImportLog
 from ....rsr.models.location import AdministrativeLocation, ProjectLocation
 from ....rsr.models.region import RecipientRegion
 
-from ..utils import add_log, get_text, ImporterHelper
+from ..utils import add_log, get_text, ImportHelper
 
 from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class Locations(ImporterHelper):
+class Locations(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Locations, self).__init__(iati_import, parent_elem, project, globals)
@@ -257,7 +257,7 @@ class Locations(ImporterHelper):
         return changes
 
 
-class Administratives(ImporterHelper):
+class Administratives(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(Administratives, self).__init__(
@@ -338,7 +338,7 @@ class Administratives(ImporterHelper):
         return changes
 
 
-class RecipientCountries(ImporterHelper):
+class RecipientCountries(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(RecipientCountries, self).__init__(iati_import, parent_elem, project, globals)
@@ -405,7 +405,7 @@ class RecipientCountries(ImporterHelper):
         return changes
 
 
-class RecipientRegions(ImporterHelper):
+class RecipientRegions(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
         super(RecipientRegions, self).__init__(iati_import, parent_elem, project, globals)

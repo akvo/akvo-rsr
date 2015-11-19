@@ -92,7 +92,7 @@ def get_or_create_organisation(ref, name):
 
 
 
-class ImporterHelper(object):
+class ImportHelper(object):
     """
     The ImporterHelper holds data that is used over the whole import of an activity, and provides a
     number of helper methods for extracting and massaging the data from the XML.

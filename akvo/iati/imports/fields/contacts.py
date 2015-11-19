@@ -7,10 +7,10 @@
 from ....rsr.models.iati_import_log import IatiImportLog
 from ....rsr.models.project_contact import ProjectContact
 
-from ..utils import add_log, get_text, ImporterHelper
+from ..utils import add_log, get_text, ImportHelper
 
 
-class Contacts(ImporterHelper):
+class Contacts(ImportHelper):
 
     def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
         super(Contacts, self).__init__(iati_import, parent_element, project, globals)
