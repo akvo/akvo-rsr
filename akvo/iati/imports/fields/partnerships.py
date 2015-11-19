@@ -6,7 +6,7 @@
 
 from ....rsr.models.partnership import Partnership
 
-from ..utils import add_log, get_or_create_organisation, get_text, ImportHelper
+from ..utils import get_or_create_organisation, ImportHelper
 
 from django.conf import settings
 
@@ -39,17 +39,9 @@ class Partnerships(ImportHelper):
         funding_amount_present = False
 
         for partnership in self.parent_elem.findall('participating-org'):
-            # org_ref = ''
-            # partner_role = None
-            # funding_amount = None
 
             org_ref = self.get_attrib(partnership, 'ref', None)
-            # if 'ref' in partnership.attrib.keys():
-            #     org_ref = partnership.attrib['ref']
-
             org_name = self.get_text(partnership)
-            # org_name = get_text(partnership, activities_globals['version'])
-
             organisation = get_or_create_organisation(org_ref, org_name)
 
             organisation_role = partnership.get('role', None)
@@ -67,12 +59,6 @@ class Partnerships(ImportHelper):
             if funding_amount:
                 funding_amount = self.cast_to_decimal(
                         funding_amount, 'participating-org', 'funding_amount')
-            # if '{%s}funding-amount' % settings.AKVO_NS in partnership.attrib.keys():
-            #     try:
-            #         funding_amount = int(partnership.attrib['{%s}funding-amount' % settings.AKVO_NS])
-            #         funding_amount_present = True
-            #     except ValueError as e:
-            #         add_log(iati_import, 'funding_amount', str(e), project)
 
             if not (organisation or organisation_role):
                 self.add_log('participating-org', 'participating_org',
@@ -85,21 +71,13 @@ class Partnerships(ImportHelper):
                 iati_organisation_role=organisation_role,
                 funding_amount=funding_amount
             )
-
             if created:
                 changes.append(u'added partnership (id: {}): {}'.format(
                         partnership_obj.pk, partnership_obj))
-
             imported_partnerships.append(partnership_obj)
 
         changes += self.delete_objects(
                 self.project.partnerships, imported_partnerships, 'partnership')
-        # for partnership in self.project.partnerships.all():
-        #     if not partnership in imported_partnerships and \
-        #             not partnership.iati_organisation_role == partnership.IATI_REPORTING_ORGANISATION:
-        #         changes.append(u'deleted partnership (id: {}): {}'.format(
-        #                 partnership.pk, partnership.__unicode__()))
-        #         partnership.delete()
 
         if not funding_amount_present:
             funding_partners = self.project.partnerships.filter(iati_organisation_role=1)

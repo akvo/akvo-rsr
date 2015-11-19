@@ -94,66 +94,6 @@ class CurrentImage(ImportHelper):
         return changes + image_meta_changes
 
 
-
-        #     if 'url' in document_link_element.attrib.keys():
-        #         image_url = document_link_element.attrib['url']
-        #         image_filename = image_url.rsplit('/', 1)[1] if '/' in image_url else ''
-        #         image_ext = image_filename.rsplit('.', 1)[1].lower() if '.' in image_filename else ''
-        #         image_name_no_ext = image_filename.rsplit('.', 1)[0] if '.' in image_filename else ''
-        #
-        #         if not image_ext in VALID_IMAGE_EXTENSIONS:
-        #             continue
-        #
-        #         if not project.current_image or \
-        #                 (project.current_image
-        #                  and not image_name_no_ext in
-        #                     project.current_image.name.rsplit('/', 1)[1].rsplit('.', 1)[0]):
-        #             tmp_file = NamedTemporaryFile(delete=True)
-        #             tmp_file.write(urllib2.urlopen(image_url, timeout=100).read())
-        #             tmp_file.flush()
-        #             project.current_image.save(image_filename, File(tmp_file))
-        #             project.save(update_fields=['current_image'])
-        #             changes.append('current_image')
-        #
-        #             # Image caption
-        #             image_caption = ''
-        #
-        #             title_element = document_link_element.find('title')
-        #             if title_element is not None:
-        #                 image_caption = get_text(title_element, activities_globals['version'])
-        #                 if len(image_caption) > 50:
-        #                     add_log(iati_import, 'image_caption',
-        #                             'caption too long (50 characters allowed)', project,
-        #                             IatiImportLog.VALUE_PARTLY_SAVED)
-        #                     image_caption = image_caption[:50]
-        #
-        #             if project.current_image_caption != image_caption:
-        #                 project.current_image_caption = image_caption
-        #                 project.save(update_fields=['current_image_caption'])
-        #                 changes.append('current_image_caption')
-        #
-        #             # Image credit
-        #             image_credit = ''
-        #
-        #             if '{%s}photo-credit' % settings.AKVO_NS in document_link_element.attrib.keys():
-        #                 image_credit = document_link_element.attrib[
-        #                     '{%s}photo-credit' % settings.AKVO_NS
-        #                 ]
-        #                 if len(image_credit) > 50:
-        #                     add_log(iati_import, 'image_credit',
-        #                             'credit too long (50 characters allowed)', project,
-        #                             IatiImportLog.VALUE_PARTLY_SAVED)
-        #                     image_credit = image_credit[:50]
-        #
-        #             if project.current_image_credit != image_credit:
-        #                 project.current_image_credit = image_credit
-        #                 project.save(update_fields=['current_image_credit'])
-        #                 changes.append('current_image_credit')
-        #
-        #         break
-        #
-        # return changes
-
 class Links(ImportHelper):
 
     def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
@@ -182,15 +122,11 @@ class Links(ImportHelper):
                 project=self.project,
                 url=url
             )
-
             if created:
                 changes.append(u'added link (id: %s): %s' % (str(link.pk), link))
-
             imported_links.append(link)
 
         for doc_link in self.parent_elem.findall("document-link[@format='application/http']"):
-            url = ''
-            caption = ''
 
             url = self.get_attrib(doc_link, 'url', 'url')
             if url and 'rsr.akvo.org' in url:
@@ -203,30 +139,14 @@ class Links(ImportHelper):
                     continue
 
             caption = self.get_child_element_text(doc_link, 'title', 'caption')
-            # title_element = doc_link.find('title')
-            # if not title_element is None:
-            #     caption = get_text(title_element, activities_globals['version'])
-            #     if len(caption) > 50:
-            #         add_log(iati_import, 'link_caption', 'caption is too long (50 characters allowed)',
-            #                 project, IatiImportLog.VALUE_PARTLY_SAVED)
-            #         caption = caption[:50]
 
             link, created = Link.objects.get_or_create(
                     project=self.project, url=url, caption=caption)
-
             if created:
                 changes.append(u'added link (id: {}): {}'.format(link.pk, link))
-
             imported_links.append(link)
 
         changes += self.delete_objects(self.project.links, imported_links, 'link')
-        # for link in project.links.all():
-        #     if not link in imported_links:
-        #         changes.append(u'deleted link (id: %s): %s' %
-        #                        (str(link.pk),
-        #                         link.__unicode__()))
-        #         link.delete()
-
         return changes
 
 
@@ -252,12 +172,6 @@ class Documents(ImportHelper):
         first_image = True
 
         for doc_link in self.parent_elem.findall('document-link'):
-            # url = ''
-            # doc_format = ''
-            # title = ''
-            # title_language = ''
-            # category = ''
-            # language = ''
 
             url = self.get_attrib(doc_link, 'url', 'url')
             if url:
@@ -265,37 +179,14 @@ class Documents(ImportHelper):
                 if extension in VALID_IMAGE_EXTENSIONS and first_image:
                     first_image = False
                     continue
-            # if 'url' in doc_link.attrib.keys():
-            #     url = doc_link.attrib['url']
-            #
-            #     # Check if it's the first image
-            #     if url and url.rsplit('.', 1)[1].lower() in VALID_IMAGE_EXTENSIONS and first_image:
-            #         first_image = False
-            #         continue
 
             format = self.get_attrib(doc_link, 'format', 'format')
             if format == 'application/http':
                 continue
-            # if 'format' in doc_link.attrib.keys():
-            #     if not len(doc_link.attrib['format']) > 75:
-            #         doc_format = doc_link.attrib['format']
-            #     else:
-            #         add_log(iati_import, 'document_link_format',
-            #                 'format is too long (75 characters allowed)', project)
-            #
-            #     # Check if the format is 'application/http'
-            #     if doc_format == 'application/http':
-            #         continue
 
-            title, title_element = self.get_child_element_text(doc_link, 'title', 'title', return_element=True)
-            # title_element = doc_link.find('title')
-            # if not title_element is None:
-            #     title = get_text(title_element, activities_globals['version'])
-            #     if len(title) > 100:
-            #         add_log(iati_import, 'document_link_title',
-            #                 'title is too long (100 characters allowed)', project,
-            #                 IatiImportLog.VALUE_PARTLY_SAVED)
-            #         title = title[:100]
+            title, title_element = self.get_child_element_text(
+                    doc_link, 'title', 'title', return_element=True)
+
             title_language = ''
             if title:
                 if self.globals['version'][0] == '1':
@@ -305,40 +196,8 @@ class Documents(ImportHelper):
                     title_language = self.get_child_elem_attrib(
                             title_element, 'narrative', '{%s}lang' % xml_ns, 'title_language')
 
-                # if activities_globals['version'][0] == '1' and \
-                #         '{%s}lang' % xml_ns in title_element.attrib.keys():
-                #     if not len(title_element.attrib['{%s}lang' % xml_ns]) > 2:
-                #         title_language = title_element.attrib['{%s}lang' % xml_ns]
-                #     else:
-                #         add_log(iati_import, 'document_link_title_language',
-                #                 'language is too long (2 characters allowed)', project)
-                # elif activities_globals['version'][0] == '2':
-                #     narrative_element = title_element.find('narrative')
-                #     if not narrative_element is None and \
-                #             '{%s}lang' % xml_ns in narrative_element.attrib.keys():
-                #         if not len(narrative_element.attrib['{%s}lang' % xml_ns]) > 2:
-                #             title_language = narrative_element.attrib['{%s}lang' % xml_ns]
-                #         else:
-                #             add_log(iati_import, 'document_link_title_language',
-                #                     'language is too long (2 characters allowed)', project)
-
             category = self.get_child_elem_attrib(doc_link, 'category', 'code', 'category')
-            # category_element = doc_link.find('category')
-            # if not category_element is None and 'code' in category_element.attrib.keys():
-            #     if not len(category_element.attrib['code']) > 3:
-            #         category = category_element.attrib['code']
-            #     else:
-            #         add_log(iati_import, 'document_link_category',
-            #                 'category is too long (3 characters allowed)', project)
-
             language = self.get_child_elem_attrib(doc_link, 'language', 'code', 'language')
-            # language_element = doc_link.find('language')
-            # if not language_element is None and 'code' in language_element.attrib.keys():
-            #     if not len(language_element.attrib['code']) > 2:
-            #         language = language_element.attrib['code']
-            #     else:
-            #         add_log(iati_import, 'document_link_language',
-            #                 'language is too long (2 characters allowed)', project)
 
             doc, created = ProjectDocument.objects.get_or_create(
                 project=self.project,
@@ -349,18 +208,9 @@ class Documents(ImportHelper):
                 category=category,
                 language=language
             )
-
             if created:
                 changes.append(u'added project document (id: {}): {}'.format(doc.pk, doc))
-
             imported_docs.append(doc)
 
         changes += self.delete_objects(self.project.documents, imported_docs, 'project document')
-        # for doc_link in project.documents.all():
-        #     if not doc_link in imported_docs:
-        #         changes.append(u'deleted project document (id: %s): %s' %
-        #                        (str(doc_link.pk),
-        #                         doc_link.__unicode__()))
-        #         doc_link.delete()
-        #
         return changes
