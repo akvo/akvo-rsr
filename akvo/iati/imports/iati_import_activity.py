@@ -9,6 +9,21 @@ from ...rsr.models.iati_project_import import IatiProjectImport
 from ...rsr.models.organisation import Organisation
 from ...rsr.models.project import Project
 
+from .fields.classifications import Sectors, PolicyMarkers
+from .fields.contacts import Contacts
+from .fields.dates import ActualEndDate, ActualStartDate, PlannedEndDate, PlannedStartDate
+from .fields.defaults import (Conditions, Currency, CollaborationType, DefaultAidType,
+        DefaultFinanceType, DefaultFlowType, DefaultTiedStatus, Hierarchy, Language, Scope, Status)
+from .fields.descriptions import Descriptions, CustomFields
+from .fields.financials import (
+        Transactions, BudgetItems, PlannedDisbursements, CountryBudgetItems,  CapitalSpend)
+from .fields.links import CurrentImage, Links, Documents
+from .fields.locations import Locations, RecipientCountries, RecipientRegions
+from .fields.partnerships import Partnerships
+from .fields.related_projects import RelatedProjects
+from .fields.results import Results
+from .fields.special_reporting import CrsAdds, FSSs, LegacyDatas
+
 from .utils import add_log
 
 from django.conf import settings
@@ -22,53 +37,92 @@ import datetime
 import fields
 
 FIELDS = [
-    'title',
-    'subtitle',
-    'status',
-    'project_plan_summary',
-    'goals_overview',
-    'background',
-    'current_status',
-    'target_group',
-    'project_plan',
-    'sustainability',
-    'custom_fields',
-    'planned_start_date',
-    'actual_start_date',
-    'planned_end_date',
-    'actual_end_date',
-    'current_image',
-    'language',
-    'currency',
-    'hierarchy',
-    'scope',
-    'collaboration_type',
-    'default_aid_type',
-    'default_finance_type',
-    'default_flow_type',
-    'default_tied_status',
-    'budget_items',
-    'country_budget_items',
-    'capital_spend',
-    'transactions',
-    'planned_disbursements',
-    'partnerships',
-    'related_projects',
-    'contacts',
-    'results',
-    'conditions',
-    'locations',
-    'recipient_countries',
-    'recipient_regions',
-    'sectors',
-    'policy_markers',
-    'links',
-    'documents',
-    'legacy_data',
-    'crs_add',
-    'fss',
+    # 'title',
+    # 'subtitle',
+    # 'status',
+    # 'project_plan_summary',
+    # 'goals_overview',
+    # 'background',
+    # 'current_status',
+    # 'target_group',
+    # 'project_plan',
+    # 'sustainability',
+    # 'custom_fields',
+    # 'planned_start_date',
+    # 'actual_start_date',
+    # 'planned_end_date',
+    # 'actual_end_date',
+    # 'current_image',
+    # 'language',
+    # 'currency',
+    # 'hierarchy',
+    # 'scope',
+    # 'collaboration_type',
+    # 'default_aid_type',
+    # 'default_finance_type',
+    # 'default_flow_type',
+    # 'default_tied_status',
+    # 'budget_items',
+    # 'country_budget_items',
+    # 'capital_spend',
+    # 'transactions',
+    # 'planned_disbursements',
+    # 'partnerships',
+    # 'related_projects',
+    # 'contacts',
+    # 'results',
+    # 'conditions',
+    # 'locations',
+    # 'recipient_countries',
+    # 'recipient_regions',
+    # 'sectors',
+    # 'policy_markers',
+    # 'links',
+    # 'documents',
+    # 'legacy_data',
+    # 'crs_add',
+    # 'fss',
 ]
 
+CLASSES = [
+    ActualEndDate,
+    ActualStartDate,
+    BudgetItems,
+    CapitalSpend,
+    Conditions,
+    Contacts,
+    CollaborationType,
+    CountryBudgetItems,
+    CrsAdds,
+    Currency,
+    CurrentImage,
+    CustomFields,
+    DefaultAidType,
+    DefaultFinanceType,
+    DefaultFlowType,
+    DefaultTiedStatus,
+    Descriptions,
+    Documents,
+    FSSs,
+    Hierarchy,
+    Language,
+    LegacyDatas,
+    Links,
+    Locations,
+    Partnerships,
+    PlannedDisbursements,
+    PlannedStartDate,
+    PlannedEndDate,
+    PolicyMarkers,
+    RecipientCountries,
+    RecipientRegions,
+    RelatedProjects,
+    Results,
+    Scope,
+    Sectors,
+    Status,
+    Transactions,
+]
 
 class IatiImportActivity(object):
     def set_start_date(self):
@@ -177,7 +231,6 @@ class IatiImportActivity(object):
                 IatiImportLog.CRITICAL_ERROR)
         return False
 
-
     def get_or_create_project(self):
         """
         Get an existing project or create a new project if no existing project can be found
@@ -247,6 +300,19 @@ class IatiImportActivity(object):
                     except Exception as e:
                         changes = []
                         add_log(self.iati_import, field, str(e), self.project,
+                                IatiImportLog.CRITICAL_ERROR)
+
+                    for change in changes:
+                        self.changes.append(change)
+
+                for Klass in CLASSES:
+                    try:
+                        with transaction.atomic():
+                            klass = Klass(self.iati_import, self.activity, self.project, self.globals)
+                            changes = klass.do_import()
+                    except Exception as e:
+                        changes = []
+                        add_log(self.iati_import, Klass.__name__, str(e), self.project,
                                 IatiImportLog.CRITICAL_ERROR)
 
                     for change in changes:
