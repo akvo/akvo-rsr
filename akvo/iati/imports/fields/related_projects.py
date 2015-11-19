@@ -7,67 +7,67 @@
 from ....rsr.models.project import Project
 from ....rsr.models.related_project import RelatedProject
 
-from ..utils import add_log
+from ..utils import add_log, ImporterHelper
 
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def related_projects(iati_import, activity, project, activities_globals):
-    """
-    Retrieve and store the related projects.
-    The related projects will be extracted from the 'related-activity' elements.
+class RelatedProjects(ImporterHelper):
 
-    :param iati_import: IatiImport instance
-    :param activity: ElementTree; contains all data for the activity
-    :param project: Project instance
-    :param activities_globals: Dictionary; contains all global activities information
-    :return: List; contains fields that have changed
-    """
-    imported_related_projects = []
-    changes = []
+    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
+        super(RelatedProjects, self).__init__(iati_import, parent_elem, project, globals)
+        self.model = RelatedProject
 
-    for related_project in activity.findall('related-activity'):
-        project_reference = ''
-        project_type = ''
-        related_project_project = None
+    def do_import(self):
+        """
+        Retrieve and store the related projects.
+        The related projects will be extracted from the 'related-activity' elements.
 
-        if 'ref' in related_project.attrib.keys():
-            project_reference = related_project.attrib['ref']
+        :return: List; contains fields that have changed
+        """
+        imported_related_projects = []
+        changes = []
 
-        if 'type' in related_project.attrib.keys():
-            if not len(related_project.attrib['type']) > 1:
-                project_type = related_project.attrib['type']
-            else:
-                add_log(iati_import, 'related_project_type',
-                        'type is too long (1 character allowed)', project)
+        for related_activity in self.parent_elem.findall('related-activity'):
+            project_reference = ''
+            project_type = ''
+            related_project_project = None
 
-        try:
-            related_project_project = Project.objects.get(
-                iati_activity_id=project_reference
+            related_iati_id = self.get_attrib(related_activity, 'ref', 'related_iati_id')
+            # if 'ref' in related_activity.attrib.keys():
+            #     project_reference = related_activity.attrib['ref']
+
+            relation = self.get_attrib(related_activity, 'type', 'relation')
+            # if 'type' in related_activity.attrib.keys():
+            #     if not len(related_activity.attrib['type']) > 1:
+            #         project_type = related_activity.attrib['type']
+            #     else:
+            #         add_log(iati_import, 'related_activity_type',
+            #                 'type is too long (1 character allowed)', project)
+
+            # TODO: I don't fully understand the original logic, need Kasper's explanation
+            try:
+                related_project = Project.objects.get(iati_activity_id=related_iati_id)
+            except ObjectDoesNotExist:
+                related_project = None
+
+            rp, created = RelatedProject.objects.get_or_create(
+                project=self.project,
+                related_project=related_project,
+                related_iati_id=related_iati_id if not related_activity else '',
+                relation=relation
             )
-        except ObjectDoesNotExist:
-            if related_project_project and len(project_reference) > 100:
-                add_log(iati_import, 'related_project_reference',
-                        'reference too long (100 characters allowed)', project)
-                project_reference = ''
 
-        rp, created = RelatedProject.objects.get_or_create(
-            project=project,
-            related_project=related_project_project,
-            related_iati_id=project_reference[:100] if not related_project_project else '',
-            relation=project_type
-        )
+            if created:
+                changes.append(u'added related project (id: {}): {}'.format(rp.pk, rp))
 
-        if created:
-            changes.append(u'added related project (id: %s): %s' % (str(rp.pk), rp))
+            imported_related_projects.append(rp)
 
-        imported_related_projects.append(rp)
-
-    for related_project in project.related_projects.all():
-        if not related_project in imported_related_projects:
-            changes.append(u'deleted related project (id: %s): %s' %
-                           (str(related_project.pk),
-                            related_project.__unicode__()))
-            related_project.delete()
-
-    return changes
+        changes += self.delete_objects(
+                self.project.related_projects, imported_related_projects, 'related project')
+        # for related_project in self.project.related_projects.all():
+        #     if not related_project in imported_related_projects:
+        #         changes.append(u'deleted related project (id: {}): {}'.format(
+        #                 related_project.pk, related_project.__unicode__()))
+        #         related_project.delete()
+        return changes

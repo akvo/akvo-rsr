@@ -6,7 +6,7 @@
 
 from ....rsr.models.partnership import Partnership
 
-from ..utils import add_log, get_or_create_organisation, get_text
+from ..utils import add_log, get_or_create_organisation, get_text, ImporterHelper
 
 from django.conf import settings
 
@@ -18,89 +18,100 @@ ROLE_TO_CODE = {
 }
 
 
-def partnerships(iati_import, activity, project, activities_globals):
-    """
-    Retrieve and store the partnerships.
-    The partnerships will be extracted from the 'participating-org' elements. Since it is not
-    possible in the IATI standard to supply the funding amount for a funding partner, this value
-    is calculated by taking the total budget of the project and dividing that by the number of
-    funding partners.
+class Partnerships(ImporterHelper):
 
-    :param iati_import: IatiImport instance
-    :param activity: ElementTree; contains all data for the activity
-    :param project: Project instance
-    :param activities_globals: Dictionary; contains all global activities information
-    :return: List; contains fields that have changed
-    """
-    imported_partnerships = []
-    changes = []
-    funding_amount_present = False
+    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
+        super(Partnerships, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+        self.model = Partnership
 
-    for partnership in activity.findall('participating-org'):
-        org_ref = ''
-        partner_role = None
-        funding_amount = None
+    def do_import(self):
+        """
+        Retrieve and store the partnerships.
+        The partnerships will be extracted from the 'participating-org' elements. Since it is not
+        possible in the IATI standard to supply the funding amount for a funding partner, this value
+        is calculated by taking the total budget of the project and dividing that by the number of
+        funding partners.
 
-        if 'ref' in partnership.attrib.keys():
-            org_ref = partnership.attrib['ref']
+        :return: List; contains fields that have changed
+        """
+        imported_partnerships = []
+        changes = []
+        funding_amount_present = False
 
-        org_name = get_text(partnership, activities_globals['version'])
+        for partnership in self.parent_elem.findall('participating-org'):
+            # org_ref = ''
+            # partner_role = None
+            # funding_amount = None
 
-        partner = get_or_create_organisation(org_ref, org_name)
+            org_ref = self.get_attrib(partnership, 'ref', None)
+            # if 'ref' in partnership.attrib.keys():
+            #     org_ref = partnership.attrib['ref']
 
-        if 'role' in partnership.attrib.keys():
-            partner_role = partnership.attrib['role']
-            if partner_role and partner_role.lower() in ROLE_TO_CODE:
-                partner_role = ROLE_TO_CODE[partner_role.lower()]
-            elif partner_role:
+            org_name = self.get_text(partnership)
+            # org_name = get_text(partnership, activities_globals['version'])
+
+            organisation = get_or_create_organisation(org_ref, org_name)
+
+            organisation_role = partnership.get('role', None)
+            if organisation_role and organisation_role.lower() in ROLE_TO_CODE:
+                organisation_role = ROLE_TO_CODE[organisation_role.lower()]
+            elif organisation_role:
                 try:
-                    partner_role = int(partner_role)
+                    organisation_role = int(organisation_role)
                 except ValueError as e:
-                    add_log(iati_import, 'participating_org_role', str(e), project)
+                    organisation_role = None
+                    self.add_log('role', 'iati_organisation_role', str(e))
 
-        if '{%s}funding-amount' % settings.AKVO_NS in partnership.attrib.keys():
-            try:
-                funding_amount = int(partnership.attrib['{%s}funding-amount' % settings.AKVO_NS])
-                funding_amount_present = True
-            except ValueError as e:
-                add_log(iati_import, 'funding_amount', str(e), project)
+            funding_amount = self.get_attrib(
+                    partnership, '{%s}funding-amount' % settings.AKVO_NS, 'funding_amount', None)
+            if funding_amount:
+                funding_amount = self.cast_to_decimal(
+                        funding_amount, 'participating-org', 'funding_amount')
+            # if '{%s}funding-amount' % settings.AKVO_NS in partnership.attrib.keys():
+            #     try:
+            #         funding_amount = int(partnership.attrib['{%s}funding-amount' % settings.AKVO_NS])
+            #         funding_amount_present = True
+            #     except ValueError as e:
+            #         add_log(iati_import, 'funding_amount', str(e), project)
 
-        if not (partner or partner_role):
-            add_log(iati_import, 'participating_org', 'participating organisation or role missing',
-                    project)
-            continue
+            if not (organisation or organisation_role):
+                self.add_log('participating-org', 'participating_org',
+                             'participating organisation or role missing')
+                continue
 
-        ps, created = Partnership.objects.get_or_create(
-            project=project,
-            organisation=partner,
-            iati_organisation_role=partner_role,
-            funding_amount=funding_amount
-        )
+            partnership_obj, created = Partnership.objects.get_or_create(
+                project=self.project,
+                organisation=organisation,
+                iati_organisation_role=organisation_role,
+                funding_amount=funding_amount
+            )
 
-        if created:
-            changes.append(u'added partnership (id: %s): %s' % (str(ps.pk), ps))
+            if created:
+                changes.append(u'added partnership (id: {}): {}'.format(
+                        partnership_obj.pk, partnership_obj))
 
-        imported_partnerships.append(ps)
+            imported_partnerships.append(partnership_obj)
 
-    for partnership in project.partnerships.all():
-        if not partnership in imported_partnerships and \
-                not partnership.iati_organisation_role == partnership.IATI_REPORTING_ORGANISATION:
-            changes.append(u'deleted partnership (id: %s): %s' %
-                           (str(partnership.pk),
-                            partnership.__unicode__()))
-            partnership.delete()
+        changes += self.delete_objects(
+                self.project.partnerships, imported_partnerships, 'partnership')
+        # for partnership in self.project.partnerships.all():
+        #     if not partnership in imported_partnerships and \
+        #             not partnership.iati_organisation_role == partnership.IATI_REPORTING_ORGANISATION:
+        #         changes.append(u'deleted partnership (id: {}): {}'.format(
+        #                 partnership.pk, partnership.__unicode__()))
+        #         partnership.delete()
 
-    if not funding_amount_present:
-        funding_partners = project.partnerships.filter(iati_organisation_role=1)
-        total_budget = project.budget
+        if not funding_amount_present:
+            funding_partners = self.project.partnerships.filter(iati_organisation_role=1)
+            total_budget = self.project.budget
 
-        if funding_partners.count() > 0 and total_budget > 0:
-            average_budget = total_budget / funding_partners.count()
-            for funding_partner in funding_partners:
-                if funding_partner.funding_amount != average_budget:
-                    funding_partner.funding_amount = average_budget
-                    funding_partner.save()
-                    changes.append(u'updated funding amount for partnership (id: %s): %s' %
-                                   (str(funding_partner.pk), funding_partner))
-
-    return changes
+            if funding_partners.count() > 0 and total_budget > 0:
+                average_budget = total_budget / funding_partners.count()
+                for funding_partner in funding_partners:
+                    if funding_partner.funding_amount != average_budget:
+                        funding_partner.funding_amount = average_budget
+                        funding_partner.save()
+                        changes.append(
+                                u'updated funding amount for partnership (id: {}): {}'.format(
+                                    funding_partner.pk, funding_partner))
+        return changes
