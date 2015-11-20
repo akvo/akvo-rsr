@@ -1367,7 +1367,7 @@ function updateProjectTypeaheads() {
 function updateOrganisationTypeaheads(forceReloadOrg) {
     var els, filterOption, labelText, helpText, API, inputType;
 
-    els = document.querySelectorAll('.partner-input');
+    els = document.querySelectorAll('.rsr_partnership-organisation');
     labelText = defaultValues.partner_label;
     helpText = defaultValues.partner_helptext;
     filterOption = 'name';

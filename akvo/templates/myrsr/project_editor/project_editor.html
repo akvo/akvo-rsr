@@ -145,76 +145,14 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
         <fieldset>
             {% include "myrsr/project_editor/section_1/section_1.html" %}
             {% include "myrsr/project_editor/section_2/section_2.html" %}
+            {% include "myrsr/project_editor/section_3/section_3.html" %}
 
 
-                <!--*************************************** Section 3 **********************************************-->
-                <div class="myPanel borderBottom" id="panel3">
-                    <div class="formStep stepThree">
-                        <div class="toggleSection">
-                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
-                        </div>
-                        <input type="radio" name="step" id="stepThree">
-                        <div class="progress section-progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
-                            </div>
-                        </div>
-                        <div class="formBlock hidden">
-                            <p class="help-block hidden" id="step-3-helptext">
-                                {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
-                            </p>
-                            <form role="form" id="admin-step-3">
-                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
-                            <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
-                            <div class="partner-container" id="partner-container">
-                                {% for partnership in project.partnerships.all %}
-                                    {% include "myrsr/project_editor/partner_input.html" with key=partnership.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/partner_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_3 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep3"></div>
-                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+
                 <!--*************************************** Section 4 **********************************************-->
                 <div class="myPanel borderBottom" id="panel4">
                     <div class="formStep stepFour">
@@ -895,9 +833,16 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
+    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
+        {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}</script>
+
+        {# Section 2 #}
         <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/section_2/contact_information_input.html" with contact='ProjectContact.1205' %}</script>
+
+        {# Section 3 #}
+        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.1205' %}</script>
+
         <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>
         <script type="text/template" id="condition-input">{% include "myrsr/project_editor/condition_input.html" %}</script>
         <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/country_budget_item_input.html" %}</script>
@@ -908,7 +853,6 @@
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/link_input.html" %}</script>
         <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/project_location_input.html" %}</script>
         <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/location_administrative_input.html"%}</script>
-        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/partner_input.html" %}</script>
         <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/planned_disbursement_input.html" %}</script>
         <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/policy_marker_input.html" %}</script>
         <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/recipient_country_input.html" %}</script>
@@ -932,8 +876,6 @@
             "preview_project": "{% trans 'Preview project page' %}",
             "related_project_label": "{% trans 'Related RSR project' %}",
             "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
-            "reporting_org_label": "{% trans 'Reporting organisation' %}",
-            "reporting_org_helptext": "{% trans 'The organisation issuing the IATI report. May be a primary source (reporting on its own activity as donor, implementing agency, etc) or a secondary source (reporting on the activities of another organisation). If the organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database, so it shows up in the drop down menu.' %}",
             "partner_label": "{% trans 'Project partner' %}",
             "partner_helptext": "{% trans 'Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database.' %}",
             "provider_org_label": "{% trans 'Provider organisation' %}",

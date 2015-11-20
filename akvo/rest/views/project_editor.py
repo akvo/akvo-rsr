@@ -18,7 +18,8 @@ import datetime
 import decimal
 
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
-                              ForeignKey, NullBooleanField, PositiveIntegerField, URLField)
+                              ForeignKey, NullBooleanField, PositiveIntegerField,
+                              PositiveSmallIntegerField, URLField)
 from django.http import HttpResponseForbidden
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -528,7 +529,7 @@ def pre_process_data(key, data, errors):
             return None, errors
 
     # Integers should be converted to an integer
-    if isinstance(model_field, PositiveIntegerField):
+    if isinstance(model_field, (PositiveIntegerField, PositiveSmallIntegerField)):
         if data:
             try:
                 return int(data), errors
@@ -561,6 +562,7 @@ def pre_process_data(key, data, errors):
     # if isinstance(model_field, NullBooleanField):
     #     return True, errors if data else False, errors
 
+    # TODO: Base on project or organisation ID
     # In case of a foreign key, we first check if this is a project or organisation foreign key.
     # Then the data should be converted to the related object.
     if isinstance(model_field, ForeignKey):
@@ -569,6 +571,13 @@ def pre_process_data(key, data, errors):
                 try:
                     project_id = int(data[-7:-1].split(' ')[1])
                     return Project.objects.get(pk=project_id), errors
+                except Exception as e:
+                    errors = add_error(errors, e, key)
+                    return None, errors
+            elif 'organisation' in field:
+                try:
+                    org_name = data.split('(')[0][:-1]
+                    return Organisation.objects.get(name=org_name), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
                     return None, errors

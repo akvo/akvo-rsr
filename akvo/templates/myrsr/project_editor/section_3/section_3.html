@@ -1,0 +1,45 @@
+{% load i18n %}
+
+<div class="myPanel borderBottom" id="panel3">
+    <div class="formStep stepThree">
+        <div class="toggleSection">
+            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
+        </div>
+        <input type="radio" name="step" id="stepThree">
+        <div class="progress section-progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+        <div class="formBlock hidden">
+            <p class="help-block hidden" id="step-3-helptext">
+                {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
+            </p>
+            <form role="form" id="admin-step-3">
+                <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
+                <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
+                <div class="partner-container" id="partner-container">
+                    {% for ps in project.partnerships.all %}
+                        {% include "myrsr/project_editor/section_3/partner_input.html" %}
+                    {% empty %}
+                        {% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.1205' %}
+                    {% endfor %}
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
+                    </div>
+                </div>
+                {% for customfield in custom_fields_section_3 %}
+                        {% include custom_field_input %}
+                    {% endfor %}
+                <div class="row form-group">
+                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep3"></div>
+                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                        <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

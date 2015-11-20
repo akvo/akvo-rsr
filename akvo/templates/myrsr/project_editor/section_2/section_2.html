@@ -14,47 +14,27 @@
         <div class="formBlock hidden">
             <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
             <form role="form" id="admin-step-2">
-            <div class="contact-information-container" id="contact-information-container">
-                {% for contact in project.contacts.all %}
-                    {% include "myrsr/project_editor/section_2/contact_information_input.html" %}
-                {% empty %}
-                    {% include "myrsr/project_editor/section_2/contact_information_input.html" with contact="ProjectContact.1205" %}
-                {% endfor %}
-            </div>
-            <div class="row form-group">
-                <div class="col-md-12 text-center add-object-link">
-                    <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                <div class="contact-information-container" id="contact-information-container">
+                    {% for contact in project.contacts.all %}
+                        {% include "myrsr/project_editor/section_2/contact_information_input.html" %}
+                    {% empty %}
+                        {% include "myrsr/project_editor/section_2/contact_information_input.html" with contact="ProjectContact.1205" %}
+                    {% endfor %}
                 </div>
-            </div>
-            {% for customfield in custom_fields_section_2 %}
-                <div id="custom_field-{{ customfield.pk }}">
-                    {% if customfield.type == 'text' %}
-                    <div class="form-group control">
-                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                     </div>
-                    {% elif customfield.type == 'boolean' %}
-                        <div class="form-group control">
-                            <div class="checkbox">
-                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                        {{ customfield.name }}
-                                </label>
-                            </div>
-                            {% if customfield.help_text %}
-                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                            {% endif %}
-                        </div>
-                    {% endif %}
                 </div>
-            {% endfor %}
-            <div class="row form-group">
-                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
-                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                    <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                {% for customfield in custom_fields_section_2 %}
+                    {% include custom_field_input %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
+                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                        <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                    </div>
                 </div>
-            </div>
             </form>
         </div>
     </div>
