@@ -12,9 +12,13 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel
                              ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
                              Result, Sector, Transaction, TransactionSector)
 
+from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+
 import datetime
 import decimal
 
+from django.db.models import (get_model, BooleanField, DateField, DecimalField, ForeignKey,
+                              NullBooleanField, PositiveIntegerField)
 from django.http import HttpResponseForbidden
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -488,6 +492,88 @@ def log_addition(obj, user):
     )
 
 
+def split_key(key):
+    """
+    Helper function for splitting the keys of the form data. Key input will be a string like
+    'rsr_project.title.1234' and it will return a tuple as such: ('rsr', 'project'), 'title', '1234'
+    """
+    key_info = key.split('.')
+    return key_info[0].split('_'), key_info[1], key_info[2]
+
+
+def pre_process_data(key, data, errors):
+    """
+    Pre-process the data. Needed to transform some of the form data to usable data in the Django
+    models. Returns the processed data and any errors that have occurred so far.
+    """
+    # Retrieve field information first
+    model, field, obj_id = split_key(key)
+    Model = get_model(model[0], model[1])
+    model_field = Model._meta.get_field(field)
+
+    # Text data does not need pre-processing
+    if isinstance(model_field, (ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField)):
+        return data, errors
+
+    # Dates should be converted to a datetime object, or None if empty
+    if isinstance(model_field, DateField):
+        if data:
+            try:
+                return datetime.datetime.strptime(data, "%d/%m/%Y").strftime("%Y-%m-%d"), errors
+            except ValueError as e:
+                errors = add_error(errors, e, key)
+                return None, errors
+        else:
+            return None, errors
+
+    # Integers should be converted to an integer
+    if isinstance(model_field, PositiveIntegerField):
+        if data:
+            try:
+                return int(data), errors
+            except ValueError as e:
+                errors = add_error(errors, e, key)
+                return None, errors
+        else:
+            return None, errors
+
+    # Decimals should be converted to a decimal
+    if isinstance(model_field, DecimalField):
+        if data:
+            try:
+                return decimal.Decimal(data), errors
+            except decimal.InvalidOperation as e:
+                if ',' in data:
+                    # Specific error message for commas
+                    e = u'%s' % _(u'It is not allowed to use a comma, use a period to denote '
+                                  u'decimals.')
+                errors = add_error(errors, e, key)
+                return None, errors
+        else:
+            return None, errors
+
+    # TODO: Booleans should be converted to True or False
+    # if isinstance(model_field, BooleanField):
+    #     return True, errors if data else False, errors
+
+    # TODO: Null-booleans should be converted to True, False or None
+    # if isinstance(model_field, NullBooleanField):
+    #     return True, errors if data else False, errors
+
+    # In case of a foreign key, we first check if this is a project or organisation foreign key.
+    # Then the data should be converted to the related object.
+    if isinstance(model_field, ForeignKey):
+        if data:
+            if 'project' in field:
+                try:
+                    project_id = int(data[-7:-1].split(' ')[1])
+                    return Project.objects.get(pk=project_id), errors
+                except Exception as e:
+                    errors = add_error(errors, e, key)
+                    return None, errors
+        else:
+            return None, errors
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_import_results(request, project_pk=None):
@@ -540,6 +626,31 @@ def project_editor_delete_document(request, project_pk=None, document_pk=None):
 
     return Response({'errors': errors})
 
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_upload_photo(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    new_image = None
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    errors, changes = process_field(project, request.FILES, CURRENT_IMAGE_FIELD, [], [])
+    log_changes(changes, user, project)
+
+    if not errors:
+        new_image = get_thumbnail(
+            project.current_image, '250x250', format="PNG", upscale=True
+        ).url
+
+    return Response(
+        {
+            'errors': errors,
+            'new_image': new_image
+        }
+    )
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -597,82 +708,79 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_editor_step1(request, pk=None):
+def project_editor(request, pk=None):
+    """
+    The main API call for saving any data entered in the project editor.
+    """
+    # Retrieve project and user information, and check user permissions to edit the project
     project = Project.objects.get(pk=pk)
     user = request.user
 
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
 
+    # Retrieve form data and set default values
     data = request.POST
-    files = request.FILES
     errors = []
     changes = []
-    rel_objects = []
-    new_image = None
+    rel_objects = {}
 
-    if not files and 'photo' not in data.keys():
+    for key in data.keys():
+        # The keys in form data are of format "rsr_project.title.1234".
+        # Separated by .'s, the data contains the model name, field name and object id
+        model, field, obj_id = split_key(key)
 
-        # Project fields
-        for field in SECTION_ONE_FIELDS:
-            errors, changes = process_field(project, data, field, errors, changes)
+        # We pre-process the data first. For example, empty dates will be retrieved as an empty
+        # string, but it should be converted to None. This is done based on the type of field.
+        obj_data, errors = pre_process_data(key, data[key], errors)
 
-        # Related objects
-        for key in data.keys():
+        Model = get_model(model[0], model[1])
+        if not 'new' in obj_id:
+            if '_' in obj_id:
+                obj_id = obj_id.split('_')[1]
+            obj = Model.objects.get(pk=obj_id)
+            setattr(obj, field, obj_data)
+            obj.save(update_fields=[field])
+            changes.append(field)
+        else:
+            related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
+            if obj_data and related_obj_id not in rel_objects.keys():
+                kwargs = dict()
+                kwargs[field] = obj_data
+                kwargs['project'] = Project.objects.get(pk=obj_id.split('_')[0])
+                obj = Model.objects.create(**kwargs)
+                setattr(obj, field, obj_data)
+                obj.save(update_fields=[field])
+                changes.append(field)
+                rel_objects[related_obj_id] = obj.pk
+            elif obj_data:
+                obj = Model.objects.get(pk=rel_objects[related_obj_id])
+                setattr(obj, field, obj_data)
+                obj.save(update_fields=[field])
+                changes.append(field)
 
-            # Related projects
-            if 'value-related-project-project-' in key:
-                rp_id = key.split('-', 4)[4]
 
-                rp, errors, rel_objects, new_object = check_related_object(
-                    rp_id, 'related_project', RelatedProject, RELATED_PROJECT_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
 
-                if new_object:
-                    log_addition(rp, user)
-
-                if rp:
-                    for field in RELATED_PROJECT_FIELDS:
-                        if field[0] == 'related_project':
-                            errors, changes = process_field(
-                                rp, data, field, errors, changes, rp_id, Project
-                            )
-                        else:
-                            errors, changes = process_field(rp, data, field, errors, changes, rp_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(rp.pk):
-                        rel_objects[-1]['unicode'] = rp.__unicode__()
-
-            # Custom fields
-            elif 'custom-field-' in key:
-                cf_id = key.split('-', 2)[2]
-
-                cf, errors, rel_objects, new_object = check_related_object(
-                    cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Current image
-    elif 'photo' in files.keys():
-        errors, changes = process_field(project, files, CURRENT_IMAGE_FIELD, errors, changes)
-
-        if not errors:
-            new_image = get_thumbnail(
-                project.current_image, '250x250', format="PNG", upscale=True
-            ).url
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
+    #
+    #     # Custom fields
+    #     elif 'custom-field-' in key:
+    #         cf_id = key.split('-', 2)[2]
+    #
+    #         cf, errors, rel_objects, new_object = check_related_object(
+    #             cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
+    #             {'project': project}, data, errors, rel_objects
+    #         )
+    #
+    #         errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
+    #
+    # # Log changes
+    # field_changes = log_changes(changes, user, project)
 
     return Response(
         {
-            'changes': field_changes,
+            'changes': changes,
             'errors': errors,
-            'rel_objects': rel_objects,
-            'new_image': new_image,
+            'rel_objects': [rel_objects],
         }
     )
 

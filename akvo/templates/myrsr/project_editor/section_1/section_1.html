@@ -1,0 +1,90 @@
+{% load i18n thumbnail %}
+
+<div class="myPanel borderBottom" id="panel1">
+    <div class="formStep stepOne">
+        <div class="toggleSection">
+            <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-1-helptext');"></span></h4></label>
+        </div>
+        <input type="radio" name="step" id="stepOne">
+        <div class="progress section-progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+        <div class="formBlock hidden">
+            <p class="help-block hidden" id="step-1-helptext">
+                {% trans 'This section contains top-level information about your project which will be used in searches.' %}
+            </p>
+            <form role="form" id="admin-step-1">
+                {% include text_input with obj=project field="title" mandatory_rsr=True mandatory_iati=True %}
+                {% include text_input with obj=project field="subtitle" mandatory_rsr=True %}
+                {% include text_input with obj=project field="iati_activity_id" mandatory_iati=True hidden=True %}
+                <h5>{% trans 'Related projects' %}</h5>
+                {% include choice_input with obj=project field="hierarchy" hidden=True %}
+                <div class="related-project-container">
+                    {% for rp in project.related_projects.all %}
+                        {% include "myrsr/project_editor/section_1/related_project_input.html" %}
+                    {% empty %}
+                        {% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}
+                    {% endfor %}
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                    </div>
+                </div>
+                {% include choice_input with obj=project field="status" not_empty=True mandatory_rsr=True mandatory_iati=True %}
+                <div class="row">
+                    <div class="col-md-6">
+                        {% include date_input with obj=project field="date_start_planned" mandatory_rsr=True mandatory_iati=True %}
+                        {% include date_input with obj=project field="date_start_actual" %}
+                    </div>
+                    <div class="col-md-6">
+                        {% include date_input with obj=project field="date_end_planned" %}
+                        {% include date_input with obj=project field="date_end_actual" %}
+                    </div>
+                </div>
+                {% include choice_input with obj=project field="currency" not_empty=True %}
+                {% include choice_input with obj=project field="language" %}
+                <h5>{% trans 'Project photo' %}</h5>
+                <div class="row">
+                    <div class="col-md-12 text-center" id="photo-container">
+                        {% if project.current_image %}
+                            {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                            {% endthumbnail %}
+                            <a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% include file_input with obj=project field="current_image" mandatory_rsr=True accept="image/*" %}
+                <div class="row">
+                    <div class="col-md-6">
+                        {% include text_input with obj=project field="current_image_caption" %}
+                    </div>
+                    <div class="col-md-6">
+                        {% include text_input with obj=project field="current_image_credit" %}
+                    </div>
+                </div>
+                {% include choice_input with obj=project field="default_aid_type" hidden=True %}
+                {% include choice_input with obj=project field="default_flow_type" hidden=True %}
+                {% include choice_input with obj=project field="default_tied_status" hidden=True %}
+                {% include choice_input with obj=project field="collaboration_type" hidden=True %}
+                {% include choice_input with obj=project field="default_finance_type" hidden=True %}
+                {% for customfield in custom_fields_section_1 %}
+                    {% include custom_field_input %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep1"></div>
+                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                        <button type="submit" class="btn btn-success" id="savingstep1-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{#                                        <p>#}
+{#                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">#}
+{#                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>#}
+{#                                        </p>#}

@@ -444,7 +444,7 @@ function submitStep(step, level) {
     }
 
     // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/step_' + step + '/?format=json';
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
 
     request = new XMLHttpRequest();
     request.open('POST', api_url, true);
@@ -677,7 +677,7 @@ function uploadPhoto(photoInput) {
         return false;
     }
 
-    url = '/rest/v1/project/' + defaultValues.project_id + '/step_1/?format=json';
+    url = '/rest/v1/project/' + defaultValues.project_id + '/upload_photo/?format=json';
 
     formData = new FormData();
     formData.append("photo", uploadFile);
@@ -914,7 +914,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     }
     inputClass = selector + " form-control " + childClass;
 
-    selectorClass = document.querySelector('.' + selector);
+    selectorClass = document.querySelector('.' + childClass);
 
     TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
 
@@ -964,11 +964,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     React.render(
         TypeaheadContainer(null ),
-        document.querySelector('.' + selector)
+        document.querySelector('.' + childClass)
     );
 
-    typeaheadInput = document.querySelector('.' + selector + ' .typeahead' + ' input');
+    typeaheadInput = document.querySelector('.' + childClass + ' .typeahead' + ' input');
     typeaheadInput.setAttribute('autocomplete', 'off');
+    typeaheadInput.setAttribute('id', selector);
 
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
@@ -1008,7 +1009,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         mandatoryLabels[i].appendChild(markerSpan);
     }
 
-    updateHelpIcons('.' + selector);
+    updateHelpIcons('.' + childClass);
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
@@ -1104,7 +1105,7 @@ function processResponse(response, selector, childClass, valueId, label, help, f
     var typeaheadCallback = function(option) {
         var el;
 
-        el = document.querySelector('input.' + this.childID);
+        el = document.querySelector('input.' + childClass);
         el.setAttribute('value', option.id);
     };
     var displayOption = function(option, index) {

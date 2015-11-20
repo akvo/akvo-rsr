@@ -18,15 +18,21 @@ def retrieve_model(obj):
     """
     Retrieves the model from 'obj', which can be either a Django Object or a string.
     """
-    return get_model('rsr', obj) if isinstance(obj, basestring) else type(obj)
+    return get_model('rsr', obj.split('.')[0]) if isinstance(obj, basestring) else type(obj)
 
 
 def retrieve_id(obj):
     """
     Retrieves the id from 'obj', which can be either a Django Object or a string.
-    In case of a string, "new-0" is returned.
     """
-    return "new-0" if isinstance(obj, basestring) else obj.id
+    if not isinstance(obj, basestring):
+        if hasattr(obj, 'capital_spend_percentage'):
+            return obj.id
+
+        elif hasattr(obj, 'project'):
+            return "{0}_{1}".format(obj.project.id, obj.id)
+    else:
+        return "{0}_{1}".format(obj.split('.')[1], "new-0")
 
 @register.filter
 def field_id(obj, field):
