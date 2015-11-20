@@ -145,70 +145,12 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
         <fieldset>
             {% include "myrsr/project_editor/section_1/section_1.html" %}
+            {% include "myrsr/project_editor/section_2/section_2.html" %}
 
-                <!--*************************************** Section 2 **********************************************-->
-                <div class="myPanel borderBottom" id="panel2">
-                    <div class="formStep stepTwo">
-                        <div class="toggleSection">
-                            <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-2-helptext');"></span></h4></label>
-                        </div>
-                        <input type="radio" name="step" id="stepTwo">
-                        <div class="progress section-progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
-                            </div>
-                        </div>
-                        <div class="formBlock hidden">
-                            <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
-                            <form role="form" id="admin-step-2">
-                            <div class="contact-information-container" id="contact-information-container">
-                                {% for contact in project.contacts.all %}
-                                    {% include "myrsr/project_editor/contact_information_input.html" with key=contact.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/contact_information_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_2 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
-                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+
                 <!--*************************************** Section 3 **********************************************-->
                 <div class="myPanel borderBottom" id="panel3">
                     <div class="formStep stepThree">
@@ -953,11 +895,11 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    {% with text_input="myrsr/project_editor/fields/text_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
+    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" %}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}</script>
+        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/section_2/contact_information_input.html" with contact='ProjectContact.1205' %}</script>
         <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>
         <script type="text/template" id="condition-input">{% include "myrsr/project_editor/condition_input.html" %}</script>
-        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/contact_information_input.html" %}</script>
         <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/country_budget_item_input.html" %}</script>
         <script type="text/template" id="document-input">{% include "myrsr/project_editor/document_input.html" %}</script>
         <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/indicator_input.html" %}</script>

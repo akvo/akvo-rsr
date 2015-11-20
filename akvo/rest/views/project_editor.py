@@ -17,8 +17,8 @@ from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXML
 import datetime
 import decimal
 
-from django.db.models import (get_model, BooleanField, DateField, DecimalField, ForeignKey,
-                              NullBooleanField, PositiveIntegerField)
+from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
+                              ForeignKey, NullBooleanField, PositiveIntegerField, URLField)
 from django.http import HttpResponseForbidden
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -512,7 +512,8 @@ def pre_process_data(key, data, errors):
     model_field = Model._meta.get_field(field)
 
     # Text data does not need pre-processing
-    if isinstance(model_field, (ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField)):
+    if isinstance(model_field, (EmailField, ProjectLimitedTextField, URLField, ValidXMLCharField,
+                                ValidXMLTextField)):
         return data, errors
 
     # Dates should be converted to a datetime object, or None if empty
