@@ -121,7 +121,7 @@ class Project(TimestampsMixin, models.Model):
     )
     project_plan_summary = ProjectLimitedTextField(
         _(u'summary of project plan'), max_length=400, blank=True,
-        help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
+        help_text=_(u'Enter a brief summary. The summary should explain:<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
                     u'- Who will benefit and/or participate;<br>'
@@ -147,38 +147,38 @@ class Project(TimestampsMixin, models.Model):
 
     goals_overview = ProjectLimitedTextField(
         _(u'goals overview'), max_length=600, blank=True,
-        help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
+        help_text=_(u'Provide a brief description of the overall project goals.')
     )
     current_status = ProjectLimitedTextField(
-        _(u'current situation'), blank=True, max_length=600,
-        help_text=_(u'Describe the current situation of the project: (600 characters)<br>'
-                    u'- What is the starting point of the project?<br>'
-                    u'- What is happening at the moment?')
+        _(u'baseline situation'), blank=True, max_length=600,
+        help_text=_(u'Describe the situation at the start of the project.')
     )
     project_plan = ValidXMLTextField(
         _(u'project plan'), blank=True,
-        help_text=_(
-            u'This should include detailed information about the '
-            u'project and plans for implementing: the what, how, who and when. (unlimited)'
-        )
+        help_text=_(u'Detailed information about the implementation of the project: the what, how, '
+                    u'who and when.')
     )
     sustainability = ValidXMLTextField(
         _(u'sustainability'), blank=True,
-        help_text=_(u'Describe plans for sustaining/maintaining results after '
-                    u'implementation is complete. (unlimited)')
+        help_text=_(u'Describe how you aim to guarantee sustainability of the project until 10 '
+                    u'years after project implementation. Think about the institutional setting, '
+                    u'capacity-building, a cost recovery plan, products used, feasible '
+                    u'arrangements for operation and maintenance, anticipation of environmental '
+                    u'impact and social integration.')
     )
     background = ProjectLimitedTextField(
         _(u'background'), blank=True, max_length=1000,
         help_text=_(
-            u'Include relevant background information, including geographic, political, '
-            u'environmental, social and/or cultural issues. (1000 characters)'
+            u'This should describe the geographical, political, environmental, social and/or '
+            u'cultural context of the project, and any related activities that have already taken '
+            u'place or are underway.'
         )
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True, max_length=600,
         help_text=_(
             u'This should include information about the people, organisations or resources that '
-            u'are being impacted by this project. (600 characters)'
+            u'are being impacted by this project.'
         )
     )
 
