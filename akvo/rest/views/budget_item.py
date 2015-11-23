@@ -8,10 +8,10 @@
 from akvo.rsr.models import BudgetItem, CountryBudgetItem
 
 from ..serializers import BudgetItemSerializer, CountryBudgetItemSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class BudgetItemViewSet(PublicRSRViewSet):
+class BudgetItemViewSet(BaseRSRViewSet):
     """
     """
     queryset = BudgetItem.objects.all()
@@ -19,7 +19,7 @@ class BudgetItemViewSet(PublicRSRViewSet):
     filter_fields = ('project', 'label', 'type', )
 
 
-class CountryBudgetItemViewSet(PublicRSRViewSet):
+class CountryBudgetItemViewSet(BaseRSRViewSet):
     """
     """
     queryset = CountryBudgetItem.objects.all()

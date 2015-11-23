@@ -8,10 +8,10 @@
 from akvo.rsr.models import ProjectComment
 
 from ..serializers import ProjectCommentSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class ProjectCommentViewSet(PublicRSRViewSet):
+class ProjectCommentViewSet(BaseRSRViewSet):
     """
     """
     queryset = ProjectComment.objects.all()

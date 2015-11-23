@@ -17,8 +17,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='project',
-            name='is_private',
-            field=models.BooleanField(default=False, help_text='Determines whether this project is a private project.', verbose_name='is private project'),
+            name='is_public',
+            field=models.BooleanField(default=True, help_text='Determines whether this project is a public project.', verbose_name='is public project'),
             preserve_default=True,
         ),
     ]

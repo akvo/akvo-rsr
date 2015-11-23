@@ -8,14 +8,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import ProjectUpdate
 
 from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-class ProjectUpdateViewSet(PublicRSRViewSet):
+class ProjectUpdateViewSet(BaseRSRViewSet):
 
     """."""
     queryset = ProjectUpdate.objects.select_related('project',
@@ -60,7 +60,7 @@ class ProjectUpdateViewSet(PublicRSRViewSet):
         return super(ProjectUpdateViewSet, self).get_queryset()
 
 
-class ProjectUpdateExtraViewSet(PublicRSRViewSet):
+class ProjectUpdateExtraViewSet(BaseRSRViewSet):
 
     """Project update extra resource."""
 

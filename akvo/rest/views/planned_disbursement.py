@@ -8,10 +8,10 @@
 from akvo.rsr.models import PlannedDisbursement
 
 from ..serializers import PlannedDisbursementSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class PlannedDisbursementViewSet(PublicRSRViewSet):
+class PlannedDisbursementViewSet(BaseRSRViewSet):
     """
     """
     queryset = PlannedDisbursement.objects.all()

@@ -193,9 +193,10 @@ class Project(TimestampsMixin, models.Model):
                                                         u'RSR Impact project.'))
 
     # Private projects
-    is_private = models.BooleanField(_(u'is private project'), default=False,
-                                     help_text=_(u'Determines whether this project is a private '
-                                                 u'project.'))
+    is_public = models.BooleanField(
+        _(u'is public project'), default=True,
+        help_text=_(u'Determines whether this project is a public project.')
+    )
 
     # project meta info
     language = ValidXMLCharField(
@@ -558,10 +559,10 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
 
         def private(self):
-            return self.filter(is_private=True)
+            return self.filter(is_public=False)
 
         def public(self):
-            return self.filter(is_private=False)
+            return self.filter(is_public=True)
 
         def status_none(self):
             return self.filter(status__exact=Project.STATUS_NONE)

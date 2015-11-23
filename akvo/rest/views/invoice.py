@@ -7,10 +7,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Invoice
 from ..serializers import InvoiceSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class InvoiceViewSet(PublicRSRViewSet):
+class InvoiceViewSet(BaseRSRViewSet):
 
     """Invoice resource."""
 

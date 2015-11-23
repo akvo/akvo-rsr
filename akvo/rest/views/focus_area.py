@@ -8,10 +8,10 @@
 from akvo.rsr.models import FocusArea
 
 from ..serializers import FocusAreaSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class FocusAreaViewSet(PublicRSRViewSet):
+class FocusAreaViewSet(BaseRSRViewSet):
     """
     """
     queryset = FocusArea.objects.all()

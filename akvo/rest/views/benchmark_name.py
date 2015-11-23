@@ -13,5 +13,5 @@ from ..viewsets import BaseRSRViewSet
 class BenchmarknameViewSet(BaseRSRViewSet):
     """
     """
-    queryset = Benchmarkname.objects.filter(benchmark__project__is_private=False)
+    queryset = Benchmarkname.objects.filter(benchmark__project__is_public=True)
     serializer_class = BenchmarknameSerializer

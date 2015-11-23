@@ -8,10 +8,10 @@
 from akvo.rsr.models import PublishingStatus
 
 from ..serializers import PublishingStatusSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class PublishingStatusViewSet(PublicRSRViewSet):
+class PublishingStatusViewSet(BaseRSRViewSet):
     """
     """
     queryset = PublishingStatus.objects.all()

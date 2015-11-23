@@ -30,7 +30,7 @@ def _all_updates():
     """
     Return all project updates.
     """
-    return ProjectUpdate.objects.exclude(project__is_private=True).\
+    return ProjectUpdate.objects.exclude(project__is_public=False).\
         exclude(indicator_period__isnull=False).order_by('-id')
 
 

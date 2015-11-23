@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rest.serializers.project import ProjectUpSerializer
-from akvo.rsr.models import Project, PublishingStatus
+from akvo.rsr.models import Project
 from ..serializers import ProjectSerializer, ProjectExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -46,7 +46,7 @@ class ProjectViewSet(BaseRSRViewSet):
     __keywords__ (exact, in), and
     __publishingstatus\__status__.
     """
-    queryset = Project.objects.public().select_related(
+    queryset = Project.objects.select_related(
         'categories',
         'keywords',
         'partners',

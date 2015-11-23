@@ -14,7 +14,7 @@ class ProjectUpdateLocationViewSet(BaseRSRViewSet):
     """
     API endpoint that allows organisation locations to be viewed or edited.
     """
-    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_private=False)
+    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_public=True)
     serializer_class = ProjectUpdateLocationSerializer
 
 
@@ -37,7 +37,7 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     )
     max_paginate_by = 500
     paginate_by = 100
-    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_private=False).\
+    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_public=True).\
         select_related(
             'location_target',
             'location_target__project'

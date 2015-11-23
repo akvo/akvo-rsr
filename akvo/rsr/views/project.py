@@ -159,9 +159,8 @@ def _check_project_viewing_permissions(user, project):
     A user can view any public project, but when a project is private or not published the user
     should be logged in and able to make changes to the project (e.g. be an admin of the project).
     """
-    if (project.is_private or not project.is_published()) and \
-            user.is_anonymous() or \
-            (not user.is_anonymous() and not user.has_perm('rsr.change_project', project)):
+    if (not project.is_public or not project.is_published()) and \
+            not user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
 
@@ -472,7 +471,7 @@ def finance(request, project_id):
 def iati(request, project_id):
     """Generate the IATI file on-the-fly and return the XML."""
     project = get_object_or_404(Project, pk=project_id)
-    if project.is_private:
+    if not project.is_public:
         raise PermissionDenied
     xml_data = etree.tostring(etree.ElementTree(IatiXML([project]).iati_activities))
     return HttpResponse(xml_data, content_type="text/xml")
@@ -489,7 +488,7 @@ def widgets(request, project_id):
     selected_widget = request.GET.get('widget', None)
 
     # Do not show private projects, and non-editors are not allowed to view unpublished projects
-    if project.is_private or \
+    if not project.is_public or \
             (not project.is_published() and not request.user.is_anonymous() and
              not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied

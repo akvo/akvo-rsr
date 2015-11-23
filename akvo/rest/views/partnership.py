@@ -8,10 +8,10 @@
 from akvo.rsr.models import Partnership
 
 from ..serializers import PartnershipSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class PartnershipViewSet(PublicRSRViewSet):
+class PartnershipViewSet(BaseRSRViewSet):
     """
     """
     queryset = Partnership.objects.all()

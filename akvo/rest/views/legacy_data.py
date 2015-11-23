@@ -8,10 +8,10 @@
 from akvo.rsr.models import LegacyData
 
 from ..serializers import LegacyDataSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class LegacyDataViewSet(PublicRSRViewSet):
+class LegacyDataViewSet(BaseRSRViewSet):
     """
     """
     queryset = LegacyData.objects.all()

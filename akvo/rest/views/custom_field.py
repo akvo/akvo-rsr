@@ -8,7 +8,7 @@
 from akvo.rsr.models import OrganisationCustomField, ProjectCustomField
 
 from ..serializers import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
-from ..viewsets import BaseRSRViewSet, PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
 class OrganisationCustomFieldViewSet(BaseRSRViewSet):
@@ -19,7 +19,7 @@ class OrganisationCustomFieldViewSet(BaseRSRViewSet):
     filter_fields = ('organisation', 'name', 'max_characters', 'section', )
 
 
-class ProjectCustomFieldViewSet(PublicRSRViewSet):
+class ProjectCustomFieldViewSet(BaseRSRViewSet):
     """
     """
     queryset = ProjectCustomField.objects.all()

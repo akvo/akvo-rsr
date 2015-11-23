@@ -8,10 +8,10 @@
 from akvo.rsr.models import Goal
 
 from ..serializers import GoalSerializer
-from ..viewsets import PublicRSRViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class GoalViewSet(PublicRSRViewSet):
+class GoalViewSet(BaseRSRViewSet):
     """
     """
     queryset = Goal.objects.all()
