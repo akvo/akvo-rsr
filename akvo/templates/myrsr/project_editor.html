@@ -49,6 +49,8 @@
         </div>
         {% trans 'RSR editors can edit the project information, and RSR administrators can edit and publish the project once all mandatory fields are filled out and the progress bar on top of the page is green. Changes that are made to a published project, will be visible online immediately after saving.' %}<br/><br/>
         {% trans 'If you have questions, please get in touch with us via' %}
+        {# Javascript will generate the support feedback email, as to reduce spam #}
+        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
         <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>.
     </div>
     <!--*************************************** FORM Container **********************************************-->
@@ -1160,8 +1162,11 @@
         </form>
     </section>
     <div id="editor-feedback" class="hidden-xs">
+        {# Javascript will generate the support feedback email, as to reduce spam #}
+        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback"> #}
         <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62));</script>
         <i class="fa fa-comment-o"></i> {% trans 'Provide feedback' %}
+        {# </a> #}
         <script type="text/javascript">document.write(String.fromCharCode(60,47,97,62));</script>
     </div>
 {% endblock %}
