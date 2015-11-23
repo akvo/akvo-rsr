@@ -1,4 +1,4 @@
-{% load project_editor %}
+{% load i18n project_editor %}
 
 <div class="form-group{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
     <div class="select-group control">
@@ -7,14 +7,13 @@
                 class="form-control
                        {% if mandatory_rsr %}mandatory-rsr{% endif %}
                        {% if mandatory_iati %}mandatory-iati{% endif %}"
-                saved-value="{{ obj|value:field }}"
+                saved-value="{% if obj|value:field == True %}1{% elif obj|value:field == False %}2{% endif %}"
                 {% if disabled %}disabled{% endif %}>
-            {% if not not_empty %}
+            {% if nullboolean %}
                 <option value=""{% if not obj|value:field %} selected="selected"{% endif %}></option>
             {% endif %}
-            {% for choice in obj|choices:field %}
-                <option value="{{ choice.0 }}"{% if obj|value:field == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
-            {% endfor %}
+            <option value="1"{% if obj|value:field == True %} selected="selected"{% endif %}>{% trans 'Yes' %}</option>
+            <option value="2"{% if obj|value:field == False %} selected="selected"{% endif %}>{% trans 'No' %}</option>
         </select>
         <label for="{{ obj|field_id:field }}" class="control-label">
             {{ obj|field_name:field }}

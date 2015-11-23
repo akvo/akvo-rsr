@@ -387,8 +387,6 @@ function submitStep(step, level) {
 
             form_data += '&value-' + partner_input_id + '=' + partner_input_value;
         }
-    } else if (step === '5') {
-        form_data += '&level=' + level;
     } else if (step === '6') {
         var receiverOrgs, providerOrgs;
 

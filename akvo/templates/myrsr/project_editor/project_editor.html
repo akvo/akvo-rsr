@@ -139,121 +139,45 @@
                 <div class="col-md-9 help-block">
                     {% trans 'View the project page in a new tab. In case the project is not published yet, a preview of the project page will be shown, which is only visible to admins and project editors of this project.' %}
                 </div>
+                {% if user.is_superuser %}<hr/>{% endif %}
             </div>
+            {% if user.is_superuser %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group control">
+                            <div class="checkbox">
+                                <label for="impactProject" class="control-label">
+                                    <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                        {% trans 'RSR Impact project' %}
+                                </label>
+                            </div>
+                        </div>
+                        {% if project.parents.count == 1 and project.is_impact_project %}
+                            <div class="col-xs-6 col-sm-4" style="text-align: right;">
+                                <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9 help-block">
+                        {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
         <fieldset>
             {% include "myrsr/project_editor/section_1/section_1.html" %}
             {% include "myrsr/project_editor/section_2/section_2.html" %}
             {% include "myrsr/project_editor/section_3/section_3.html" %}
             {% include "myrsr/project_editor/section_4/section_4.html" %}
+            {% include "myrsr/project_editor/section_5/section_5.html" %}
 
 
-                <!--*************************************** Section 5 **********************************************-->
-                <div class="myPanel borderBottom" id="panel5">
-                    <div class="formStep stepFive">
-                        <div class="toggleSection">
-                            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-5-helptext');"></span></h4></label>
-                        </div>
-                        <input type="radio" name="step" id="stepFive">
-                        <div class="progress section-progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
-                            </div>
-                        </div>
-                        <div class="formBlock hidden">
-                            <div class="hidden" id="step-5-helptext">
-                                <p class="help-block">{% trans 'In the results and indicators section you can define which results you plan to achieve and how you will measure these to be able to monitor and evaluate your project. There are three main types of results. Outputs are usually very practical. For example to organise a particular type of training. An indicator can be the number of trainings given. This is easy to measure. Outcome results occur when users use outputs, for example when people portray different behaviour because of the training they took part in. Impact is a broader result such as empowered citizens.' %}</p>
-                                <p class="help-block">{% trans 'Indicators help us to measure progress on these various types of results. They are usually easy to determine for outputs (e.g. 9 trainings), harder for outcomes (e.g. number of policy documents written) and hardest (or near to impossible) for impacts. You can set a target value (e.g. 9 trainings) and later add the actual value (e.g. 8 trainings took place). This gives you progress information against set targets for monitoring and evaluation purposes. Sometimes baseline values are used to measure against (e.g. average income level at project start).' %}</p>
-                                <p class="help-block">{% trans 'Lastly, indicators can be separated per period. Especially for longer projects this is helpful to track progress during the project. For example, you can set a target of 3 trainings per year for a 3 year project. When you don’t add a period for an indicator, it is assumed that the indicator (and the target and actual values) applies to the full project period. A full example:' %}</p>
-                                <p class="help-block"><i>{% trans 'Result: "Organise training sessions for staff"' %}<br/>
-                                <span class="tab"></span>{% trans 'Indicator: "Organise 10 training sessions"' %}<br/>
-                                <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
-                            </div>
-                            <form role="form" id="admin-step-5">
-                            <h5>{% trans 'Results' %}</h5>
-                            <div class="row {% if not user.is_superuser %}hidden{% endif %}">
-                                <div class="col-xs-6 col-sm-8">
-                                    <div class="form-group control">
-                                        <div class="checkbox">
-                                            <label for="impactProject" class="control-label">
-                                                <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                    {% trans 'RSR Impact project' %}
-                                            </label>
-                                        </div>
-                                        <p class="help-block hidden">
-                                            {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
-                                        </p>
-                                    </div>
-                                </div>
-                                {% if project.parents.count == 1 and project.is_impact_project %}
-                                    <div class="col-xs-6 col-sm-4" style="text-align: right;">
-                                        <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="result-container" id="result-container">
-                                {% for result in project.results.all %}
-                                    {% include "myrsr/project_editor/result_input.html" with key=result.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/result_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
-                                </div>
-                            </div>
-                            <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
-                            <div class="condition-container hidden hide-default" id="condition-container">
-                                {% for condition in project.conditions.all %}
-                                    {% include "myrsr/project_editor/condition_input.html" with key=condition.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/condition_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_5 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep5"></div>
-                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep5-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+
                 <!--*************************************** Section 6 **********************************************-->
                 <div class="myPanel borderBottom" id="panel6">
                     <div class="formStep stepSix">
@@ -743,7 +667,7 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
+    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
         {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}</script>
 
@@ -753,12 +677,16 @@
         {# Section 3 #}
         <script type="text/template" id="partner-input">{% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.1205' %}</script>
 
+        {# Section 5 #}
+        <script type="text/template" id="result-input">{% include "myrsr/project_editor/section_5/result_input.html" with result='Result.1205' %}</script>
+{#        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/section_5/indicator_input.html" %}</script>#}
+{#        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/section_5/indicator_period_input.html" %}</script>#}
+{#        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/section_5/condition_input.html" %}</script>#}
+
+
         <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>
-        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/condition_input.html" %}</script>
         <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/country_budget_item_input.html" %}</script>
         <script type="text/template" id="document-input">{% include "myrsr/project_editor/document_input.html" %}</script>
-        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/indicator_input.html" %}</script>
-        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/indicator_period_input.html" %}</script>
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/keyword_input.html" %}</script>
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/link_input.html" %}</script>
         <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/project_location_input.html" %}</script>
@@ -767,7 +695,6 @@
         <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/policy_marker_input.html" %}</script>
         <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/recipient_country_input.html" %}</script>
         <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/recipient_region_input.html" %}</script>
-        <script type="text/template" id="result-input">{% include "myrsr/project_editor/result_input.html" %}</script>
         <script type="text/template" id="sector-input">{% include "myrsr/project_editor/sector_input.html" %}</script>
         <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/transaction_input.html" %}</script>
         <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/transaction_sector_input.html" %}</script>

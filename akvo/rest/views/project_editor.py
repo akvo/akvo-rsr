@@ -554,13 +554,18 @@ def pre_process_data(key, data, errors):
         else:
             return None, errors
 
-    # TODO: Booleans should be converted to True or False
-    # if isinstance(model_field, BooleanField):
-    #     return True, errors if data else False, errors
+    # Booleans should be converted to True or False
+    if isinstance(model_field, BooleanField):
+        return (True, errors) if data == '1' else (False, errors)
 
-    # TODO: Null-booleans should be converted to True, False or None
-    # if isinstance(model_field, NullBooleanField):
-    #     return True, errors if data else False, errors
+    # Booleans should be converted to True, False or None
+    if isinstance(model_field, NullBooleanField):
+        if data == '1':
+            return True, errors
+        elif data == '2':
+            return False, errors
+        else:
+            return None, errors
 
     # TODO: Base on project or organisation ID
     # In case of a foreign key, we first check if this is a project or organisation foreign key.

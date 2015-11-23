@@ -12,6 +12,7 @@
            {% endif %}
            value="{{ obj|value:field }}"
            saved-value="{{ obj|value:field }}"
+           {% if disabled %}disabled{% endif %}
     />
     <label for="{{ obj|field_id:field }}" class="control-label">
         {{ obj|field_name:field }}

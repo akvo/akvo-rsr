@@ -1,0 +1,52 @@
+{% load i18n %}
+<div class="result-item parent" id="result{% if result.pk %}-{{ result.pk }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if result.pk %}+{% else %}-{% endif %}</span> {% trans 'Result' %}: <span class="unicode">{% if result.pk %}{{ result }}{% else %}({% trans 'new' %}){% endif %}</span> {% if result.parent_result %} <span class="glyphicon glyphicon-import" title="{% trans 'Imported result from' %} '{{ result.parent_result.project.title }}'"></span>{% endif %}
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-result{% if result.pk %}-{{ result.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if result.pk %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-8">
+                    {% if result.parent_result %}
+                        {% include text_input with obj=result field='title' disabled=True %}
+                    {% else %}
+                        {% include text_input with obj=result field='title' %}
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    {% if result.parent_result %}
+                        {% include choice_input with obj=result field='type' disabled=True %}
+                    {% else %}
+                        {% include choice_input with obj=result field='type' %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                {% include textarea_input with obj=result field='description' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {% include boolean_input with obj=result field='aggregation_status' hidden=True nullboolean=True %}
+            </div>
+        </div>
+{#        <h5>{% trans 'Indicators' %}</h5>#}
+{#        <div class="indicator-container" id="indicator-container">#}
+{#            {% for indicator in result.indicators.all %}#}
+{#                {% include "myrsr/project_editor/indicator_input.html" with key=indicator.pk %}#}
+{#            {% empty %}#}
+{#                {% include "myrsr/project_editor/indicator_input.html" with key='add-0' %}#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <div class="row form-group">#}
+{#            <div class="col-md-12 text-center add-object-link">#}
+{#                <a href="#" class="add-indicator" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>#}
+{#            </div>#}
+{#        </div>#}
+    </div>
+</div>
