@@ -29,7 +29,7 @@
                             <input type="radio" name="widget-project" value="project" checked>{% blocktrans with title=project.title %}Use the {{title}} project{% endblocktrans %}
                         </label>
                     </div>
-                    {% if project.all_partners.distinct.count > 1 %}
+                    {% if project.all_partners.distinct.count >= 1 %}
                         <div class="radio">
                             <label>
                                 <input type="radio" name="widget-project" value="random">{% trans "Display a random project from an organisation" %}:
