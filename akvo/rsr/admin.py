@@ -906,14 +906,24 @@ class UserAdmin(DjangoUserAdmin):
             return ['is_admin', 'is_support', 'is_superuser', 'last_login', 'date_joined']
 
     def get_queryset(self, request):
+        # Superusers or RSR Admins can see all users
         if request.user.is_superuser or request.user.is_admin:
             return super(UserAdmin, self).get_queryset(request)
 
-        qs = get_user_model().objects.filter(pk__in=[request.user.pk, ])
-        for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'User Managers']):
-                qs = qs.distinct() | employment.organisation.all_users().distinct()
-        return qs.distinct()
+        else:
+            # Retrieve the organisations of which the user is an approved Admin or User manager
+            user_manager_groups = Group.objects.filter(name__in=['Admins', 'User Managers'])
+            managing_orgs = request.user.organisations.filter(
+                employees__user__pk=request.user.pk,
+                employees__is_approved=True,
+                employees__group__in=user_manager_groups
+            )
+            if managing_orgs:
+                # Return all users of the organisations that the user manages
+                return managing_orgs.users()
+            else:
+                # User doesn't manage any organisation, only return the user itself
+                return get_user_model().objects.filter(pk=request.user.pk)
 
 admin.site.register(get_user_model(), UserAdmin)
 
