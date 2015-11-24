@@ -582,7 +582,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy'),
+                       'currency', 'donate_button', 'hierarchy', 'is_public'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -598,15 +598,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': (),
         }),
-        # (_(u'Reporting Organisation'), {
-        #     'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-        #         u'Indicate the reporting organisation of this project. This organisation must be existing '
-        #         u'already in Akvo RSR. If the organisation does not exist in the system, please send the details of '
-        #         u'the organisation including Name, Address, Logo, Contact Person and Website to '
-        #         u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
-        #     ),
-        #     'fields': ('sync_owner', 'sync_owner_secondary_reporter'),
-        # }),
         (_(u'Project Partners'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add each of the partners you are working with on your project. These organisations must be existing '

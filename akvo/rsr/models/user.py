@@ -350,7 +350,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def approved_employments(self):
         """
-        Return
+        Return all approved employments.
         """
         return self.employers.all().exclude(is_approved=False)
 

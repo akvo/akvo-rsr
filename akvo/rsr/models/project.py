@@ -192,6 +192,12 @@ class Project(TimestampsMixin, models.Model):
                                             help_text=_(u'Determines whether this project is an '
                                                         u'RSR Impact project.'))
 
+    # Private projects
+    is_public = models.BooleanField(
+        _(u'is public project'), default=True,
+        help_text=_(u'Determines whether this project is a public project.')
+    )
+
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
@@ -534,9 +540,7 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
-
     class QuerySet(DjangoQuerySet):
-
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
@@ -553,6 +557,12 @@ class Project(TimestampsMixin, models.Model):
 
         def unpublished(self):
             return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
+
+        def private(self):
+            return self.filter(is_public=False)
+
+        def public(self):
+            return self.filter(is_public=True)
 
         def status_none(self):
             return self.filter(status__exact=Project.STATUS_NONE)
