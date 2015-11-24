@@ -8,6 +8,7 @@
          data-label="{{ obj|field_name:field }}"
          data-helptext="{{ obj|help_text:field }}"
          data-classes="{% if mandatory_rsr %}mandatory-rsr{% endif %}
-                       {% if mandatory_iati %}mandatory-iati{% endif %}">
+                       {% if mandatory_iati %}mandatory-iati{% endif %}"
+         {% if disabled %}data-disabled="true"{% endif %}>
     </div>
 </div>

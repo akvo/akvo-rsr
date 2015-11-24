@@ -26,11 +26,15 @@ def retrieve_id(obj):
     Retrieves the id from 'obj', which can be either a Django Object or a string.
     """
     if not isinstance(obj, basestring):
-        if hasattr(obj, 'capital_spend_percentage'):
-            return obj.id
-
-        elif hasattr(obj, 'project'):
-            return "{0}_{1}".format(obj.project.id, obj.id)
+        return obj.id
+        # if hasattr(obj, 'capital_spend_percentage'):
+        #     return obj.id
+        #
+        # elif hasattr(obj, 'project'):
+        #     return "{0}_{1}".format(obj.project.id, obj.id)
+        #
+        # elif hasattr(obj, 'result'):
+        #     return "{0}_{1}".format(obj.result.id, obj.id)
     else:
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 

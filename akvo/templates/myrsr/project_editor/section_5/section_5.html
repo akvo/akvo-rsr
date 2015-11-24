@@ -34,19 +34,19 @@
                         <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
                     </div>
                 </div>
-{#                <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>#}
-{#                <div class="condition-container hidden hide-default" id="condition-container">#}
-{#                    {% for condition in project.conditions.all %}#}
-{#                        {% include "myrsr/project_editor/section_5/condition_input.html" %}#}
-{#                    {% empty %}#}
-{#                        {% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#                <div class="row form-group hidden hide-default">#}
-{#                    <div class="col-md-12 text-center add-object-link">#}
-{#                        <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>#}
-{#                    </div>#}
-{#                </div>#}
+                <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
+                <div class="condition-container hidden hide-default" id="condition-container">
+                    {% for condition in project.conditions.all %}
+                        {% include "myrsr/project_editor/section_5/condition_input.html" %}
+                    {% empty %}
+                        {% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}
+                    {% endfor %}
+                </div>
+                <div class="row form-group hidden hide-default">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                    </div>
+                </div>
                 {% for customfield in custom_fields_section_5 %}
                     {% include custom_field_input %}
                 {% endfor %}

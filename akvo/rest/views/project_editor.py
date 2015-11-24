@@ -282,6 +282,16 @@ KEYWORD_FIELDS = (
 CUSTOM_FIELD = ('value', 'custom-field-', 'text')
 ORGANISATION_LOGO_FIELD = ('logo', 'logo', 'none')
 
+## Special mappings for related objects ##
+
+RELATED_OBJECTS_MAPPING = {
+    Indicator: (Result, 'result'),
+    IndicatorPeriod: (Indicator, 'indicator'),
+    TransactionSector: (Transaction, 'transaction'),
+    ProjectLocation: (Project, 'location_target'),
+    AdministrativeLocation: (ProjectLocation, 'location')
+}
+
 
 def add_error(errors, message, field_name):
     errors.append({'name': field_name, 'error': str(message).capitalize()})
@@ -591,6 +601,96 @@ def pre_process_data(key, data, errors):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor(request, pk=None):
+    """The main API call for saving any data entered in the project editor."""
+
+    # Retrieve project and user information, and check user permissions to edit the project
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    # Retrieve form data and set default values
+    data = request.POST
+    errors, changes, rel_objects = [], [], {}
+
+    for key in data.keys():
+        # The keys in form data are of format "rsr_project.title.1234".
+        # Separated by .'s, the data contains the model name, field name and object id
+        model, field, obj_id = split_key(key)
+
+        # We pre-process the data first. For example, dates will be converted to datetime objects.
+        obj_data, errors = pre_process_data(key, data[key], errors)
+
+        # Retrieve the model
+        Model = get_model(model[0], model[1])
+
+        if not '_' in obj_id:
+            # Already existing object, update it
+            obj = Model.objects.get(pk=obj_id)
+            setattr(obj, field, obj_data)
+            obj.save(update_fields=[field])
+            changes.append(field)
+
+        else:
+            # New object, with potentially a new parent as well
+            related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
+            parent_obj_id, obj_id = obj_id.split('_')
+
+            # TODO: Split between new objects and new object with new parent
+            if obj_data:
+                if related_obj_id not in rel_objects.keys():
+                    kwargs = dict()
+                    kwargs[field] = obj_data
+
+                    if Model in RELATED_OBJECTS_MAPPING.keys():
+                        # Special mapping needed
+                        RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+                        kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+                    else:
+                        # Project is the related object
+                        kwargs['project'] = project
+
+                    # Create new object
+                    obj = Model.objects.create(**kwargs)
+                    setattr(obj, field, obj_data)
+                    obj.save(update_fields=[field])
+                    changes.append(field)
+                    rel_objects[related_obj_id] = obj.pk
+                else:
+                    obj = Model.objects.get(pk=rel_objects[related_obj_id])
+                    setattr(obj, field, obj_data)
+                    obj.save(update_fields=[field])
+                    changes.append(field)
+
+
+
+    #
+    #     # Custom fields
+    #     elif 'custom-field-' in key:
+    #         cf_id = key.split('-', 2)[2]
+    #
+    #         cf, errors, rel_objects, new_object = check_related_object(
+    #             cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
+    #             {'project': project}, data, errors, rel_objects
+    #         )
+    #
+    #         errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
+    #
+    # # Log changes
+    # field_changes = log_changes(changes, user, project)
+
+    return Response(
+        {
+            'changes': changes,
+            'errors': errors,
+            'rel_objects': [rel_objects],
+        }
+    )
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
@@ -719,85 +819,6 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
         )
 
     return Response({})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor(request, pk=None):
-    """
-    The main API call for saving any data entered in the project editor.
-    """
-    # Retrieve project and user information, and check user permissions to edit the project
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    # Retrieve form data and set default values
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = {}
-
-    for key in data.keys():
-        # The keys in form data are of format "rsr_project.title.1234".
-        # Separated by .'s, the data contains the model name, field name and object id
-        model, field, obj_id = split_key(key)
-
-        # We pre-process the data first. For example, empty dates will be retrieved as an empty
-        # string, but it should be converted to None. This is done based on the type of field.
-        obj_data, errors = pre_process_data(key, data[key], errors)
-
-        Model = get_model(model[0], model[1])
-        if not 'new' in obj_id:
-            if '_' in obj_id:
-                obj_id = obj_id.split('_')[1]
-            obj = Model.objects.get(pk=obj_id)
-            setattr(obj, field, obj_data)
-            obj.save(update_fields=[field])
-            changes.append(field)
-        else:
-            related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
-            if obj_data and related_obj_id not in rel_objects.keys():
-                kwargs = dict()
-                kwargs[field] = obj_data
-                kwargs['project'] = Project.objects.get(pk=obj_id.split('_')[0])
-                obj = Model.objects.create(**kwargs)
-                setattr(obj, field, obj_data)
-                obj.save(update_fields=[field])
-                changes.append(field)
-                rel_objects[related_obj_id] = obj.pk
-            elif obj_data:
-                obj = Model.objects.get(pk=rel_objects[related_obj_id])
-                setattr(obj, field, obj_data)
-                obj.save(update_fields=[field])
-                changes.append(field)
-
-
-
-    #
-    #     # Custom fields
-    #     elif 'custom-field-' in key:
-    #         cf_id = key.split('-', 2)[2]
-    #
-    #         cf, errors, rel_objects, new_object = check_related_object(
-    #             cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-    #             {'project': project}, data, errors, rel_objects
-    #         )
-    #
-    #         errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-    #
-    # # Log changes
-    # field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': changes,
-            'errors': errors,
-            'rel_objects': [rel_objects],
-        }
-    )
 
 
 @api_view(['POST'])

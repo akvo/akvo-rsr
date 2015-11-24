@@ -1,82 +1,50 @@
 {% load i18n %}
-<div class="indicator-item parent" id="indicator{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}>
+
+<div class="indicator-item parent" id="indicator{% if indicator.pk %}-{{ indicator.pk }}{% endif %}">
     <div class="row partial-header">
         <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if indicator %}+{% else %}-{% endif %}</span> {% trans 'Indicator' %}: <span class="unicode">{% if indicator %}{{ indicator }}{% else %}({% trans 'new' %}){% endif %}</span>
+            <span class="folded-sign">{% if indicator.pk %}+{% else %}-{% endif %}</span> {% trans 'Indicator' %}: <span class="unicode">{% if indicator.pk %}{{ indicator }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-indicator{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="delete-object-button" id="delete-indicator{% if indicator.pk %}-{{ indicator.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </div>
-    <div class="hide-partial {% if indicator %}hidden{% endif %}">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-8 control">
-                    <input type="text" class="form-control priority2 indicator" name="indicator-title{% if key %}-{{ key }}{% endif %}" id="indicator-title{% if key %}-{{ key }}{% endif %}" value="{{indicator.title}}" saved-value="{{indicator.title}}" {% if indicator %}indicator{% endif %} maxlength="255" {% if indicator.is_child_indicator %}disabled{% endif %}>
-                    <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator title' %}</label>
-                    <p class="help-block hidden">{% trans 'Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.' %}</p>
-                </div>
-                <div class="col-md-4 hide-default {% if not advanced_editor %}hidden{% endif %}">
-                    <div class="select-group control">
-                        <select name="indicator-measure{% if key %}-{{ key }}{% endif %}" id="indicator-measure{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{{ indicator.measure }}" {% if indicator.is_child_indicator %}disabled{% endif %}>
-                            <option value="" {% if not indicator.measure %} selected="selected" {% endif %}></option>
-                            {% for entry in indicator_measures %}
-                                <option value="{{ entry.code }}" {% if indicator.measure == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <label class="control-label" for="indicator-measure{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator measure' %}</label>
-                        <p class="help-block hidden">{% trans 'Choose how the indicator will be measured (in percentage or units).' %}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row hide-default {% if not advanced_editor %}hidden{% endif %}">
+    <div class="hide-partial {% if indicator.pk %}hidden{% endif %}">
+        <div class="row">
             <div class="col-md-8">
-                <div class="form-group control">
-                    <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.description }}">{{ indicator.description }}</textarea>
-                    <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
-                    <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
-                </div>
+                {% if indicator.is_child_indicator %}
+                    {% include text_input with obj=indicator field='title' disabled=True %}
+                {% else %}
+                    {% include text_input with obj=indicator field='title' %}
+                {% endif %}
             </div>
             <div class="col-md-4">
-                <div class="select-group control">
-                    <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{% if indicator %}{{ indicator.ascending|yesno:"1,2,none" }}{% else %}none{% endif %}" {% if indicator.is_child_indicator %}disabled{% endif %}>
-                        <option value="none" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
-                        <option value="1" {% if indicator.ascending|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
-                        <option value="2" {% if indicator.ascending|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
-                    </select>
-                    <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
-                    <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
-                </div>
+                {% include choice_input with obj=indicator field='measure' hidden=True %}
             </div>
         </div>
-        <div class="form-group hide-default {% if not advanced_editor %}hidden{% endif %}">
-            <div class="row">
-                <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator" name="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-year{% if key %}-{{ key }}{% endif %}"
-                    value="{% if indicator.baseline_year %}{{ indicator.baseline_year }}{% endif %}" saved-value="{% if indicator.baseline_year %}{{ indicator.baseline_year }}{% endif %}" {% if indicator %}indicator{% endif %} maxlength="4">
-                    <label class="control-label" for="indicator-baseline-year{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline year' %}</label>
-                    <p class="help-block hidden">{% trans 'The year the baseline value was taken.' %}</p>
-                </div>
-                <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator" name="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" value="{{ indicator.baseline_value }}" saved-value="{{ indicator.baseline_value }}" {% if indicator %}indicator{% endif %} maxlength="50">
-                    <label class="control-label" for="indicator-baseline-value{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline value' %}</label>
-                    <p class="help-block hidden">{% trans 'The value of the baseline at the start of the project.' %}</p>
-                </div>
+        <div class="row">
+            <div class="col-md-8">
+                {% include textarea_input with obj=indicator field='description' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {% include boolean_input with obj=indicator field='ascending' hidden=True nullboolean=True %}
             </div>
         </div>
-        <div class="form-group control hide-default {% if not advanced_editor %}hidden{% endif %}">
-            <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
-            {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.baseline_comment }}">{{ indicator.baseline_comment }}</textarea>
-            <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline comment' %}</label>
-            <p class="help-block hidden">{% trans 'Here you can provide extra information on the baseline value, if needed.' %}</p>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=indicator field='baseline_year' hidden=True number=True %}
+            </div>
+            <div class="col-md-6">
+                {% include text_input with obj=indicator field='baseline_value' hidden=True %}
+            </div>
         </div>
+        {% include textarea_input with obj=indicator field='baseline_comment' hidden=True %}
         <h5>{% trans 'Indicator periods' %}</h5>
         <div class="indicator-period-container" id="indicator-period-container">
             {% for period in indicator.periods.all %}
-                {% include "myrsr/project_editor/indicator_period_input.html" with key=period.pk %}
+                {% include "myrsr/project_editor/section_5/indicator_period_input.html" %}
             {% empty %}
-                {% include "myrsr/project_editor/indicator_period_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor/section_5/indicator_period_input.html" with period='IndicatorPeriod.1205' %}
             {% endfor %}
         </div>
         <div class="row form-group">

@@ -667,7 +667,7 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
+    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
         {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}</script>
 
@@ -679,9 +679,9 @@
 
         {# Section 5 #}
         <script type="text/template" id="result-input">{% include "myrsr/project_editor/section_5/result_input.html" with result='Result.1205' %}</script>
-{#        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/section_5/indicator_input.html" %}</script>#}
-{#        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/section_5/indicator_period_input.html" %}</script>#}
-{#        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/section_5/condition_input.html" %}</script>#}
+        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/section_5/indicator_input.html" with indicator='Indicator.1205' %}</script>
+        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/section_5/indicator_period_input.html" with period='IndicatorPeriod.1205' %}</script>
+        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}</script>
 
 
         <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>

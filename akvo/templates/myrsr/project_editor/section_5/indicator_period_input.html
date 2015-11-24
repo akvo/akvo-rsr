@@ -1,65 +1,49 @@
 {% load i18n %}
-<div class="indicator-period-item parent" id="indicator_period{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>
+
+<div class="indicator-period-item parent" id="indicator_period{% if period.pk %}-{{ period.pk }}{% endif %}">
     <div class="row partial-header">
         <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if period %}+{% else %}-{% endif %}</span> {% trans 'Indicator period' %}: <span class="unicode">{% if period %}{{ period }}{% else %}({% trans 'new' %}){% endif %}</span>
+            <span class="folded-sign">{% if period.pk %}+{% else %}-{% endif %}</span> {% trans 'Indicator period' %}: <span class="unicode">{% if period.pk %}{{ period }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-indicator-period{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="delete-object-button" id="delete-indicator-period{% if period.pk %}-{{ period.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </div>
-    <div class="hide-partial {% if period %}hidden{% endif %}">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6 control priority2 datepicker-container"
-                     data-id="indicator-period-start{% if key %}-{{ key }}{% endif %}"
-                     data-child="{{ period.period_start|date:"d/m/Y" }}"
-                     data-label="{% trans 'Period start' %}"
-                     data-helptext="{% trans 'The start date of the reporting period for this indicator.' %}"
-                     data-classes="priority2 indicator indicator-period"
-                     data-attributes="{% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}"
-                     {% if period.is_child_period %}data-disabled="true"{% endif %}></div>
-                <div class="col-md-6 control priority2 datepicker-container"
-                     data-id="indicator-period-end{% if key %}-{{ key }}{% endif %}"
-                     data-child="{{ period.period_end|date:"d/m/Y" }}"
-                     data-label="{% trans 'Period end' %}"
-                     data-helptext="{% trans 'The end date of the reporting period for this indicator.' %}"
-                     data-classes="priority2 indicator indicator-period"
-                     data-attributes="{% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}"
-                     {% if period.is_child_period %}data-disabled="true"{% endif %}></div>
+    <div class="hide-partial {% if period.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% if period.is_child_period %}
+                    {% include date_input with obj=period field='period_start' disabled=True %}
+                {% else %}
+                    {% include date_input with obj=period field='period_start' %}
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                {% if period.is_child_period %}
+                    {% include date_input with obj=period field='period_end' disabled=True %}
+                {% else %}
+                    {% include date_input with obj=period field='period_end' %}
+                {% endif %}
             </div>
         </div>
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-target-value{% if key %}-{{ key }}{% endif %}"
-                    value="{{ period.target_value }}" saved-value="{{ period.target_value }}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="50">
-                    <label class="control-label" for="indicator-period-target-value{% if key %}-{{ key }}{% endif %}">{% trans 'Target value' %}</label>
-                    <p class="help-block hidden">{% trans 'The target value for the above period.' %}</p>
-                </div>
-                <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}"
-                    value="{{ period.actual_value }}" saved-value="{{ period.actual_value }}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="50"
-                    {% if project.is_impact_project %}disabled placeholder="{% trans 'The actual value will be calculated based on updates' %}"{% endif %}>
-                    <label class="control-label" for="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value' %}</label>
-                    <p class="help-block hidden">{% trans 'A record of the achieved result for this period.' %}</p>
-                </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=period field='target_value' %}
+            </div>
+            <div class="col-md-6">
+                {% if not project.is_impact_project %}
+                    {% include text_input with obj=period field='actual_value' %}
+                {% else %}
+                    {% include text_input with obj=period field='actual_value' disabled=True %}
+                {% endif %}
             </div>
         </div>
-        <div class="form-group">
-            <div class="row hide-default {% if not advanced_editor %}hidden{% endif %}">
-                <div class="col-md-6 control">
-                    <textarea id="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}"
-                    {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000" saved-value="{{ period.target_comment }}">{{ period.target_comment }}</textarea>
-                    <label class="control-label" for="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Target value comment' %}</label>
-                    <p class="help-block hidden">{% trans 'Here you can provide extra information on the target value, if needed.' %}</p>
-                </div>
-                <div class="col-md-6 control">
-                    <textarea id="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}"
-                    {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000" saved-value="{{ period.actual_comment }}">{{ period.actual_comment }}</textarea>
-                    <label class="control-label" for="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value comment' %}</label>
-                    <p class="help-block hidden">{% trans 'Here you can provide extra information on the actual value, if needed (for instance, why the actual value differs from the target value).' %}</p>
-                </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include textarea_input with obj=period field='target_comment' hidden=True %}
+            </div>
+            <div class="col-md-6">
+                {% include textarea_input with obj=period field='actual_comment' hidden=True %}
             </div>
         </div>
     </div>
