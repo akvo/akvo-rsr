@@ -1,0 +1,113 @@
+{% load i18n humanize %}
+
+<div class="myPanel borderBottom" id="panel6">
+    <div class="formStep stepSix">
+        <div class="toggleSection">
+            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
+        </div>
+        <input type="radio" name="step" id="stepSix">
+        <div class="progress section-progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+        <div class="formBlock hidden">
+            <div class="hidden" id="step-6-helptext">
+                <p class="help-block">{% trans 'You can define the budget information as a total for the whole project or within sections and periods to provide more granular information about where the project funds are being spent.' %}</p>
+                <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
+            </div>
+            <form role="form" id="admin-step-6">
+                <h5>{% trans 'Budget items' %}</h5>
+                <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include percentage_input with obj=project field='capital_spend_percentage' hidden=True %}
+                    </div>
+                </div>
+                <div class="budget-item-container" id="budget-item-container">
+                    {% for item in project.budget_items.all %}
+                        {% include "myrsr/project_editor/section_6/budget_item_input.html" %}
+                    {% empty %}
+                        {% include "myrsr/project_editor/section_6/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}
+                    {% endfor %}
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
+                    </div>
+                </div>
+                <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
+                    <h5>{% trans 'Country budget items' %}</h5>
+                    {% include choice_input with obj=project field='country_budget_vocabulary' hidden=True %}
+                    <div class="country-budget-item-container" id="country-budget-item-container">
+                        {% for item in project.country_budget_items.all %}
+                            {% include "myrsr/project_editor/section_6/country_budget_item_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/section_6/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}
+                        {% endfor %}
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                             <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
+                        </div>
+                    </div>
+                    <h5>{% trans 'Transactions' %}</h5>
+                    <div class="transaction-container" id="transaction-container">
+                        {% for transaction in project.transactions.all %}
+                            {% include "myrsr/project_editor/section_6/transaction_input.html" with key=transaction.pk %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/section_6/transaction_input.html" with key='add-0' %}
+                        {% endfor %}
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
+                        </div>
+                    </div>
+                    <h5>{% trans 'Planned disbursements' %}</h5>
+                    <div class="planned-disbursement-container" id="planned-disbursement-container">
+                        {% for pd in project.planned_disbursements.all %}
+                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key=pd.pk %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key='add-0' %}
+                        {% endfor %}
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                             <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
+                        </div>
+                    </div>
+                </div>
+                {% for customfield in custom_fields_section_6 %}
+                    <div id="custom_field-{{ customfield.pk }}">
+                        {% if customfield.type == 'text' %}
+                        <div class="form-group control">
+                            <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                            <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                            {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                        </div>
+                        {% elif customfield.type == 'boolean' %}
+                            <div class="form-group control">
+                                <div class="checkbox">
+                                    <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                        <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                            {{ customfield.name }}
+                                    </label>
+                                </div>
+                                {% if customfield.help_text %}
+                                    <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>
+                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                        <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from django import template
+from django.db import models
 from django.db.models import get_model
 from django.db.models.fields import NOT_PROVIDED
 
@@ -27,14 +28,6 @@ def retrieve_id(obj):
     """
     if not isinstance(obj, basestring):
         return obj.id
-        # if hasattr(obj, 'capital_spend_percentage'):
-        #     return obj.id
-        #
-        # elif hasattr(obj, 'project'):
-        #     return "{0}_{1}".format(obj.project.id, obj.id)
-        #
-        # elif hasattr(obj, 'result'):
-        #     return "{0}_{1}".format(obj.result.id, obj.id)
     else:
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 
@@ -140,4 +133,9 @@ def choices(obj, field):
 
     :returns ((1, "Core Activity"), (2, "Sub Activity), (3, "Lower Sub Activity"))
     """
-    return retrieve_model(obj)._meta.get_field(field).choices
+    model_field = retrieve_model(obj)._meta.get_field(field)
+    if not isinstance(model_field, models.ForeignKey):
+        return model_field.choices
+    else:
+        # KB: Hack to retrieve budget item labels
+        return get_model('rsr', 'budgetitemlabel').objects.all().values_list('id', 'label')

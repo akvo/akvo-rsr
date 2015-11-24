@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div class="budget-item parent" id="budget_item{% if item.pk %}-{{ item.pk }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if item.pk %}+{% else %}-{% endif %}</span> {% trans 'Budget item' %}: <span class="unicode">{% if item.pk %}{{ item }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-budget-item{% if item.pk %}-{{ item.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if item.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-4">
+                {% include choice_input with obj=item field='label' mandatory_rsr=True %} {# TODO: onchange="toggleOtherLabel(this)" #}
+            </div>
+            <div class="col-md-4">
+                {# TODO: Toggle + make mandatory #}
+                {% include text_input with obj=item field='other_extra' %}
+            </div>
+            <div class="col-md-4">
+                {% include currency_input with obj=item field='amount' mandatory_rsr=True %}
+            </div>
+        </div>
+        {% include choice_input with obj=item field='type' hidden=True %}
+        <div class="row">
+            <div class="col-md-4">
+                {% include date_input with obj=item field='period_start' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {% include date_input with obj=item field='period_end' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {% include date_input with obj=item field='value_date' hidden=True %}
+            </div>
+        </div>
+    </div>
+</div>

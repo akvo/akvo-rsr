@@ -257,7 +257,10 @@ class Project(TimestampsMixin, models.Model):
     )
     capital_spend_percentage = models.DecimalField(
         _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'The percentage of the total commitment allocated to or planned for capital '
+                    u'expenditure. Content must be a positive decimal number between 0 and 100, '
+                    u'with no percentage sign. Use a period to denote decimals.')
     )
     collaboration_type = ValidXMLCharField(
         _(u'collaboration type'), blank=True, max_length=1,
@@ -302,7 +305,13 @@ class Project(TimestampsMixin, models.Model):
     )
     country_budget_vocabulary = ValidXMLCharField(
         _(u'country budget vocabulary'), blank=True, max_length=1,
-        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY)
+        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY),
+        help_text=_(u'Enter an IATI code for the common functional classification or country '
+                    u'system (this allows for common codes, country-specific codes, or any other '
+                    u'classification agreed between countries and donors) see: '
+                    u'<a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" '
+                    u'target="_blank">http://iatistandard.org/201/codelists/'
+                    u'BudgetIdentifierVocabulary/</a>.')
     )
 
     # denormalized data

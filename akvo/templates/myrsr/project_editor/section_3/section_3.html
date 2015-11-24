@@ -22,7 +22,7 @@
                     {% for ps in project.partnerships.all %}
                         {% include "myrsr/project_editor/section_3/partner_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.1205' %}
+                        {% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">

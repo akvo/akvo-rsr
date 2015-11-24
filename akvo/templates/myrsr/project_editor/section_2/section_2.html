@@ -18,7 +18,7 @@
                     {% for contact in project.contacts.all %}
                         {% include "myrsr/project_editor/section_2/contact_information_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_2/contact_information_input.html" with contact="ProjectContact.1205" %}
+                        {% include "myrsr/project_editor/section_2/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">

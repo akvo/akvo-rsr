@@ -144,7 +144,7 @@
             {% if user.is_superuser %}
                 <div class="row">
                     <div class="col-md-3">
-                        <div class="form-group control">
+                        <div class="form-group">
                             <div class="checkbox">
                                 <label for="impactProject" class="control-label">
                                     <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
@@ -161,6 +161,21 @@
                     <div class="col-md-9 help-block">
                         {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
                     </div>
+                    <hr/>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label for="donateButton" class="control-label">
+                                    <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 help-block">
+                        {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -168,153 +183,17 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+        {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
         <fieldset>
             {% include "myrsr/project_editor/section_1/section_1.html" %}
             {% include "myrsr/project_editor/section_2/section_2.html" %}
             {% include "myrsr/project_editor/section_3/section_3.html" %}
             {% include "myrsr/project_editor/section_4/section_4.html" %}
             {% include "myrsr/project_editor/section_5/section_5.html" %}
+            {% include "myrsr/project_editor/section_6/section_6.html" %}
 
 
 
-                <!--*************************************** Section 6 **********************************************-->
-                <div class="myPanel borderBottom" id="panel6">
-                    <div class="formStep stepSix">
-                        <div class="toggleSection">
-                            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
-                        </div>
-                        <input type="radio" name="step" id="stepSix">
-                        <div class="progress section-progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
-                            </div>
-                        </div>
-                        <div class="formBlock hidden">
-                            <div class="hidden" id="step-6-helptext">
-                                <p class="help-block">{% trans 'You can define the budget information as a total for the whole project or within sections and periods to provide more granular information about where the project funds are being spent.' %}</p>
-                                <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
-                            </div>
-                            <form role="form" id="admin-step-6">
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label for="donateButton" class="control-label">
-                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
-                                    </label>
-                                </div>
-                                <p class="help-block hidden">
-                                    {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
-                                </p>
-                            </div>
-                            <h5>{% trans 'Budget items' %}</h5>
-                            <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
-                            <div class="form-group control hidden hide-default">
-                                <div class="input-group priority3">
-                                    <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage"
-                                    value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}" saved-value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}">
-                                    <span class="input-group-addon">%</span>
-                                </div>
-                                <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
-                                <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign. Use a period to denote decimals.' %}</p>
-                            </div>
-                            <div class="budget-item-container" id="budget-item-container">
-                                {% for item in project.budget_items.all %}
-                                    {% include "myrsr/project_editor/budget_item_input.html" with key=item.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/budget_item_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
-                                </div>
-                            </div>
-                            <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <h5>{% trans 'Country budget items' %}</h5>
-                                <div class="form-group">
-                                    <div class="select-group control">
-                                        <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3" saved-value="{{ project.country_budget_vocabulary }}">
-                                            <option value="" {% if not project.country_budget_vocabulary %}selected="selected"{% endif %}></option>
-                                            {% for vocabulary in budget_identifier_vocabularies %}
-                                                <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="country-budget-vocabulary" class="control-label">{% trans 'Country budget vocabulary' %}</label>
-                                        <p class="help-block hidden">{% trans 'Enter an IATI code for the common functional classification or country system (this allows for common codes, country-specific codes, or any other classification agreed between countries and donors) see:' %} <a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" target="_blank">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>.</p>
-                                    </div>
-                                </div>
-                                <div class="country-budget-item-container" id="country-budget-item-container">
-                                    {% for item in project.country_budget_items.all %}
-                                        {% include "myrsr/project_editor/country_budget_item_input.html" with key=item.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_editor/country_budget_item_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
-                                    </div>
-                                </div>
-                                <h5>{% trans 'Transactions' %}</h5>
-                                <div class="transaction-container" id="transaction-container">
-                                    {% for transaction in project.transactions.all %}
-                                        {% include "myrsr/project_editor/transaction_input.html" with key=transaction.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_editor/transaction_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                        <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
-                                    </div>
-                                </div>
-                                <h5>{% trans 'Planned disbursements' %}</h5>
-                                <div class="planned-disbursement-container" id="planned-disbursement-container">
-                                    {% for pd in project.planned_disbursements.all %}
-                                        {% include "myrsr/project_editor/planned_disbursement_input.html" with key=pd.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_editor/planned_disbursement_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_6 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>
-                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
                 <!--*************************************** Section 7 **********************************************-->
                 <div class="myPanel borderBottom" id="panel7">
                     <div class="formStep stepSeven">
@@ -667,37 +546,39 @@
     {{ block.super }}
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
-    {% with text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" %}
+    {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" %}
         {# Section 1 #}
-        <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.1205' %}</script>
+        <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
 
         {# Section 2 #}
-        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/section_2/contact_information_input.html" with contact='ProjectContact.1205' %}</script>
+        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/section_2/contact_information_input.html" with contact='ProjectContact.'|add:project_id_string %}</script>
 
         {# Section 3 #}
-        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.1205' %}</script>
+        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.'|add:project_id_string %}</script>
 
         {# Section 5 #}
-        <script type="text/template" id="result-input">{% include "myrsr/project_editor/section_5/result_input.html" with result='Result.1205' %}</script>
+        <script type="text/template" id="result-input">{% include "myrsr/project_editor/section_5/result_input.html" with result='Result.'|add:project_id_string %}</script>
         <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/section_5/indicator_input.html" with indicator='Indicator.1205' %}</script>
         <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/section_5/indicator_period_input.html" with period='IndicatorPeriod.1205' %}</script>
         <script type="text/template" id="condition-input">{% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}</script>
 
+        {# Section 6 #}
+        <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/section_6/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/section_6/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/section_6/transaction_input.html" %}</script>
+        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/section_6/transaction_sector_input.html" %}</script>
+        <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/section_6/planned_disbursement_input.html" %}</script>
 
-        <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/budget_item_input.html" %}</script>
-        <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/country_budget_item_input.html" %}</script>
         <script type="text/template" id="document-input">{% include "myrsr/project_editor/document_input.html" %}</script>
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/keyword_input.html" %}</script>
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/link_input.html" %}</script>
         <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/project_location_input.html" %}</script>
         <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/location_administrative_input.html"%}</script>
-        <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/planned_disbursement_input.html" %}</script>
         <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/policy_marker_input.html" %}</script>
         <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/recipient_country_input.html" %}</script>
         <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/recipient_region_input.html" %}</script>
         <script type="text/template" id="sector-input">{% include "myrsr/project_editor/sector_input.html" %}</script>
-        <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/transaction_input.html" %}</script>
-        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/transaction_sector_input.html" %}</script>
+
     {% endwith %}
  
     {% block react_js %}

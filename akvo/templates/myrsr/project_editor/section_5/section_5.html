@@ -26,7 +26,7 @@
                     {% for result in project.results.all %}
                         {% include "myrsr/project_editor/section_5/result_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_5/result_input.html" with result='Result.1205' %}
+                        {% include "myrsr/project_editor/section_5/result_input.html" with result='Result.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -39,7 +39,7 @@
                     {% for condition in project.conditions.all %}
                         {% include "myrsr/project_editor/section_5/condition_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}
+                        {% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group hidden hide-default">

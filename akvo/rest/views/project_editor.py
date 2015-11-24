@@ -612,58 +612,111 @@ def project_editor(request, pk=None):
         return HttpResponseForbidden()
 
     # Retrieve form data and set default values
-    data = request.POST
+    data = request.POST.copy()
     errors, changes, rel_objects = [], [], {}
 
-    for key in data.keys():
-        # The keys in form data are of format "rsr_project.title.1234".
-        # Separated by .'s, the data contains the model name, field name and object id
-        model, field, obj_id = split_key(key)
+    # Run through the form data 3 times to be sure that all nested objects will be created
+    for i in range(3):
+        for key in data.keys():
+            # The keys in form data are of format "rsr_project.title.1234".
+            # Separated by .'s, the data contains the model name, field name and object id
+            model, field, obj_id = split_key(key)
 
-        # We pre-process the data first. For example, dates will be converted to datetime objects.
-        obj_data, errors = pre_process_data(key, data[key], errors)
+            # We pre-process the data first. For example, dates will be converted to datetime
+            # objects.
+            obj_data, errors = pre_process_data(key, data[key], errors)
 
-        # Retrieve the model
-        Model = get_model(model[0], model[1])
+            # Retrieve the model
+            Model = get_model(model[0], model[1])
 
-        if not '_' in obj_id:
-            # Already existing object, update it
-            obj = Model.objects.get(pk=obj_id)
-            setattr(obj, field, obj_data)
-            obj.save(update_fields=[field])
-            changes.append(field)
+            if not '_' in obj_id:
+                # Already existing object, update it
+                obj = Model.objects.get(pk=obj_id)
+                setattr(obj, field, obj_data)
+                obj.save(update_fields=[field])
+                changes.append(field)
+                data.pop(key, None)
 
-        else:
-            # New object, with potentially a new parent as well
-            related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
-            parent_obj_id, obj_id = obj_id.split('_')
+            else:
+                # New object, with potentially a new parent as well
+                related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
+                id_list = obj_id.split('_')
+                parent_id = '_'.join(id_list[:-1])
 
-            # TODO: Split between new objects and new object with new parent
-            if obj_data:
-                if related_obj_id not in rel_objects.keys():
-                    kwargs = dict()
-                    kwargs[field] = obj_data
+                if not 'new' in parent_id:
+                    # New object with existing parent
+                    parent_obj_id = id_list[-2]
 
-                    if Model in RELATED_OBJECTS_MAPPING.keys():
-                        # Special mapping needed
-                        RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
-                        kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+                    if related_obj_id not in rel_objects.keys():
+                        kwargs = dict()
+                        kwargs[field] = obj_data
+
+                        if Model in RELATED_OBJECTS_MAPPING.keys():
+                            # Special mapping needed
+                            RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+                            kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+                        else:
+                            # Project is the related object
+                            kwargs['project'] = Project.objects.get(pk=parent_obj_id)
+
+                        # Create new object
+                        obj = Model.objects.create(**kwargs)
+                        setattr(obj, field, obj_data)
+                        obj.save(update_fields=[field])
+                        changes.append(field)
+                        rel_objects[related_obj_id] = obj.pk
+                        data.pop(key, None)
                     else:
-                        # Project is the related object
-                        kwargs['project'] = project
+                        # Object was already created earlier, update it
+                        obj = Model.objects.get(pk=rel_objects[related_obj_id])
+                        setattr(obj, field, obj_data)
+                        obj.save(update_fields=[field])
+                        changes.append(field)
+                        data.pop(key, None)
 
-                    # Create new object
-                    obj = Model.objects.create(**kwargs)
-                    setattr(obj, field, obj_data)
-                    obj.save(update_fields=[field])
-                    changes.append(field)
-                    rel_objects[related_obj_id] = obj.pk
                 else:
-                    obj = Model.objects.get(pk=rel_objects[related_obj_id])
-                    setattr(obj, field, obj_data)
-                    obj.save(update_fields=[field])
-                    changes.append(field)
+                    # New object with new parent
+                    # rsr_result.title.1205_new-0
+                    # rsr_result.title.1205_new-1
+                    # rsr_indicator.title.1205_new-0_new-0
+                    # rsr_indicator.title.1205_new-1_new-0
+                    # rsr_indicatorperiod.target_value.1205_new-0_new-0_new-0
 
+                    # Check if parent object was already created earlier
+                    RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+                    if RelatedModel._meta.db_table + '.' + parent_id in rel_objects.keys():
+                        # Parent object has already been created
+                        parent_obj_id = rel_objects[RelatedModel._meta.db_table + '.' + parent_id]
+
+                        if related_obj_id not in rel_objects.keys():
+                            kwargs = dict()
+                            kwargs[field] = obj_data
+
+                            if Model in RELATED_OBJECTS_MAPPING.keys():
+                                # Special mapping needed
+                                RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+                                kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+                            else:
+                                # Project is the related object
+                                kwargs['project'] = Project.objects.get(pk=parent_obj_id)
+
+                            # Create new object
+                            obj = Model.objects.create(**kwargs)
+                            setattr(obj, field, obj_data)
+                            obj.save(update_fields=[field])
+                            changes.append(field)
+                            rel_objects[related_obj_id] = obj.pk
+                            data.pop(key, None)
+                        else:
+                            # Object was already created earlier, update it
+                            obj = Model.objects.get(pk=rel_objects[related_obj_id])
+                            setattr(obj, field, obj_data)
+                            obj.save(update_fields=[field])
+                            changes.append(field)
+                            data.pop(key, None)
+
+        if not data:
+            break
 
 
     #
@@ -686,6 +739,7 @@ def project_editor(request, pk=None):
             'changes': changes,
             'errors': errors,
             'rel_objects': [rel_objects],
+            'need_saving': [data],
         }
     )
 
