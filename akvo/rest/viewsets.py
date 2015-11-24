@@ -28,5 +28,6 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
         """Filter out any private projects."""
         for related_obj in self.queryset.model._meta.get_all_related_objects():
             if related_obj.model == Project:
-                return self.queryset.filter(project__is_public=True)
+                self.queryset = self.queryset.filter(project__is_public=True)
+                break
         return super(BaseRSRViewSet, self).get_queryset()

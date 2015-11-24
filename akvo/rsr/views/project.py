@@ -159,8 +159,8 @@ def _check_project_viewing_permissions(user, project):
     A user can view any public project, but when a project is private or not published the user
     should be logged in and able to make changes to the project (e.g. be an admin of the project).
     """
-    if (not project.is_public or not project.is_published()) and \
-            not user.has_perm('rsr.change_project', project):
+    if not ((project.is_public and project.is_published())
+            or user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
 
