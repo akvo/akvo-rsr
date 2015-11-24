@@ -54,9 +54,9 @@
                     <h5>{% trans 'Transactions' %}</h5>
                     <div class="transaction-container" id="transaction-container">
                         {% for transaction in project.transactions.all %}
-                            {% include "myrsr/project_editor/section_6/transaction_input.html" with key=transaction.pk %}
+                            {% include "myrsr/project_editor/section_6/transaction_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_6/transaction_input.html" with key='add-0' %}
+                            {% include "myrsr/project_editor/section_6/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -64,42 +64,22 @@
                             <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
                         </div>
                     </div>
-                    <h5>{% trans 'Planned disbursements' %}</h5>
-                    <div class="planned-disbursement-container" id="planned-disbursement-container">
-                        {% for pd in project.planned_disbursements.all %}
-                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key=pd.pk %}
-                        {% empty %}
-                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key='add-0' %}
-                        {% endfor %}
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                             <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
-                        </div>
-                    </div>
+{#                    <h5>{% trans 'Planned disbursements' %}</h5>#}
+{#                    <div class="planned-disbursement-container" id="planned-disbursement-container">#}
+{#                        {% for pd in project.planned_disbursements.all %}#}
+{#                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key=pd.pk %}#}
+{#                        {% empty %}#}
+{#                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key='add-0' %}#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                    <div class="row form-group">#}
+{#                        <div class="col-md-12 text-center add-object-link">#}
+{#                             <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
                 {% for customfield in custom_fields_section_6 %}
-                    <div id="custom_field-{{ customfield.pk }}">
-                        {% if customfield.type == 'text' %}
-                        <div class="form-group control">
-                            <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                            <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                            {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                        </div>
-                        {% elif customfield.type == 'boolean' %}
-                            <div class="form-group control">
-                                <div class="checkbox">
-                                    <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                        <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                            {{ customfield.name }}
-                                    </label>
-                                </div>
-                                {% if customfield.help_text %}
-                                    <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% include custom_field_input %}
                 {% endfor %}
                 <div class="row form-group">
                     <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>

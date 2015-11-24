@@ -421,9 +421,6 @@ function submitStep(step, level) {
             form_data += '&value-' + provider_org_input_id + '=' + provider_org_input_value;
         }
 
-        form_data += '&level=' + level;
-    } else if (step === '7') {
-        form_data += '&level=' + level;
     }
 
     // Boolean custom fields
@@ -1373,7 +1370,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     inputType = 'org';
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
-    els = document.querySelectorAll('.transaction-provider-org-input');
+    els = document.querySelectorAll('.rsr_transaction-provider_organisation');
     labelText = defaultValues.provider_org_label;
     helpText = defaultValues.provider_org_helptext;
     filterOption = 'name';
@@ -1381,7 +1378,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     inputType = 'org';
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
-    els = document.querySelectorAll('.transaction-receiver-org-input');
+    els = document.querySelectorAll('.rsr_transaction-receiver_organisation');
     labelText = defaultValues.recipient_org_label;
     helpText = defaultValues.recipient_org_helptext;
     filterOption = 'name';

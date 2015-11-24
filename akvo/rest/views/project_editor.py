@@ -588,6 +588,7 @@ def pre_process_data(key, data, errors):
                     return Project.objects.get(pk=project_id), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
+                    # TODO: Can't return None
                     return None, errors
             elif 'organisation' in field:
                 try:
@@ -595,8 +596,17 @@ def pre_process_data(key, data, errors):
                     return Organisation.objects.get(name=org_name), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
+                    # TODO: Can't return None
+                    return None, errors
+            elif 'label' in field:
+                try:
+                    return BudgetItemLabel.objects.get(pk=int(data)), errors
+                except Exception as e:
+                    errors = add_error(errors, e, key)
+                    # TODO: Can't return None
                     return None, errors
         else:
+            # TODO: Can't return None
             return None, errors
 
 @api_view(['POST'])
