@@ -15,14 +15,14 @@
             <p class="help-block hidden" id="step-3-helptext">
                 {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
             </p>
-            <form role="form" id="admin-step-3">
+            <form role="form" class="form">
                 <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
                 <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
                 <div class="partner-container" id="partner-container">
                     {% for ps in project.partnerships.all %}
-                        {% include "myrsr/project_editor/section_3/partner_input.html" %}
+                        {% include "myrsr/project_editor/related_objects/partner_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.'|add:project_id_string %}
+                        {% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -33,12 +33,8 @@
                 {% for customfield in custom_fields_section_3 %}
                     {% include custom_field_input %}
                 {% endfor %}
-                <div class="row form-group">
-                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep3"></div>
-                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                        <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
             </form>
         </div>
     </div>

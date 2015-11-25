@@ -17,13 +17,13 @@
                 <p class="help-block">- {% trans 'DAC-3 sector codes which are more general. For reference see:' %} <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">http://iatistandard.org/201/codelists/SectorCategory/</a>.</p>
                 <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
             </div>
-            <form role="form" id="admin-step-8">
+            <form role="form" class="form">
                 <h5>{% trans 'Sectors' %}</h5>
                 <div class="sector-container" id="sector-container">
                     {% for sector in project.sectors.all %}
-                        {% include "myrsr/project_editor/section_8/sector_input.html" %}
+                        {% include "myrsr/project_editor/related_objects/sector_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_8/sector_input.html" with sector='Sector.'|add:project_id_string %}
+                        {% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -35,9 +35,9 @@
                     <h5>{% trans 'Policy markers' %}</h5>
                     <div class="policy-marker-container" id="policy-marker-container">
                         {% for marker in project.policy_markers.all %}
-                            {% include "myrsr/project_editor/section_8/policy_marker_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/policy_marker_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_8/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -49,12 +49,8 @@
                 {% for customfield in custom_fields_section_8 %}
                     {% include custom_field_input %}
                 {% endfor %}
-                <div class="row form-group">
-                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep8"></div>
-                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                        <button type="submit" class="btn btn-success" id="savingstep8-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
             </form>
         </div>
     </div>

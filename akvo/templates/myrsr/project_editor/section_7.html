@@ -16,15 +16,15 @@
                 <p class="help-block">{% trans 'The scope of the project refers to the geographical area within which the project is active.' %}</p>
                 <p class="help-block">{% trans 'Also add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}</p>
             </div>
-            <form role="form" id="admin-step-7">
+            <form role="form" class="form">
                 {% include choice_input with obj=project field='project_scope' hidden=True %}
 
                 <h5>{% trans 'Project locations' %}</h5>
                 <div class="project-location-container" id="project-location-container">
                     {% for location in project.locations.all %}
-                        {% include "myrsr/project_editor/section_7/location_input.html" %}
+                        {% include "myrsr/project_editor/related_objects/location_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_7/location_input.html" with location='ProjectLocation.'|add:project_id_string %}
+                        {% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -36,9 +36,9 @@
                     <h5>{% trans 'Recipient countries' %}</h5>
                     <div class="recipient-country-container" id="recipient-country-container">
                         {% for rc in project.recipient_countries.all %}
-                            {% include "myrsr/project_editor/section_7/recipient_country_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/recipient_country_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_7/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -49,9 +49,9 @@
                     <h5>{% trans 'Recipient regions' %}</h5>
                     <div class="recipient-region-container" id="recipient-region-container">
                         {% for rr in project.recipient_regions.all %}
-                            {% include "myrsr/project_editor/section_7/recipient_region_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/recipient_region_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_7/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -63,12 +63,8 @@
                 {% for customfield in custom_fields_section_7 %}
                     {% include custom_field_input %}
                 {% endfor %}
-                <div class="row form-group">
-                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep7"></div>
-                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                        <button type="submit" class="btn btn-success" id="savingstep7-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
             </form>
         </div>
     </div>

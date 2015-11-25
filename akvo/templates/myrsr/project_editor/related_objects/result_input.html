@@ -39,10 +39,10 @@
         <h5>{% trans 'Indicators' %}</h5>
         <div class="indicator-container" id="indicator-container">
             {% for indicator in result.indicators.all %}
-                {% include "myrsr/project_editor/section_5/indicator_input.html" %}
+                {% include "myrsr/project_editor/related_objects/indicator_input.html" %}
             {% empty %}
                 {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" %}
-                    {% include "myrsr/project_editor/section_5/indicator_input.html" with indicator='Indicator.'|add:project_id_string|add:'_'|add:result_id_string %}
+                    {% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string|add:'_'|add:result_id_string %}
                 {% endwith %}
             {% endfor %}
         </div>

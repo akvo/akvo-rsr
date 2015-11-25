@@ -3,7 +3,7 @@
 <div class="condition-item parent" id="project_condition{% if condition.pk %}-{{ condition.pk }}{% endif %}">
     <div class="row partial-header">
         <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if condition.pk %}+{% else %}-{% endif %}</span> {% trans 'Project condition' %}: <span class="unicode">{% if condition.pk %}{{ condition }}{% else %}({% trans 'new' %}){% endif %}</span>
+            <span class="folded-sign">{% if condition.pk %}+{% else %}-{% endif %}</span> {% trans 'Project condition' %}: <span class="unicode">{% if condition.pk %}{# condition #}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
             <a class="delete-object-button" id="delete-condition{% if condition.pk %}-{{ condition.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>

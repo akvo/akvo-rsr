@@ -16,7 +16,7 @@
                 <p class="help-block">{% trans 'You can define the budget information as a total for the whole project or within sections and periods to provide more granular information about where the project funds are being spent.' %}</p>
                 <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
             </div>
-            <form role="form" id="admin-step-6">
+            <form role="form" class="form">
                 <h5>{% trans 'Budget items' %}</h5>
                 <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
                 <div class="row">
@@ -26,9 +26,9 @@
                 </div>
                 <div class="budget-item-container" id="budget-item-container">
                     {% for item in project.budget_items.all %}
-                        {% include "myrsr/project_editor/section_6/budget_item_input.html" %}
+                        {% include "myrsr/project_editor/related_objects/budget_item_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_6/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}
+                        {% include "myrsr/project_editor/related_objects/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -41,9 +41,9 @@
                     {% include choice_input with obj=project field='country_budget_vocabulary' hidden=True %}
                     <div class="country-budget-item-container" id="country-budget-item-container">
                         {% for item in project.country_budget_items.all %}
-                            {% include "myrsr/project_editor/section_6/country_budget_item_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/country_budget_item_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_6/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -54,9 +54,9 @@
                     <h5>{% trans 'Transactions' %}</h5>
                     <div class="transaction-container" id="transaction-container">
                         {% for transaction in project.transactions.all %}
-                            {% include "myrsr/project_editor/section_6/transaction_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/transaction_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_6/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -67,9 +67,9 @@
                     <h5>{% trans 'Planned disbursements' %}</h5>
                     <div class="planned-disbursement-container" id="planned-disbursement-container">
                         {% for pd in project.planned_disbursements.all %}
-                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" %}
+                            {% include "myrsr/project_editor/related_objects/planned_disbursement_input.html" %}
                         {% empty %}
-                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}
+                            {% include "myrsr/project_editor/related_objects/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}
                         {% endfor %}
                     </div>
                     <div class="row form-group">
@@ -81,12 +81,8 @@
                 {% for customfield in custom_fields_section_6 %}
                     {% include custom_field_input %}
                 {% endfor %}
-                <div class="row form-group">
-                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>
-                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                        <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
             </form>
         </div>
     </div>

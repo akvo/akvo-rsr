@@ -28,6 +28,9 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
+// Serialize forms (source: http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js)
+function serialize(form){if(!form||form.nodeName!=="FORM"){return }var i,j,q=[];for(i=form.elements.length-1;i>=0;i=i-1){if(form.elements[i].name===""){continue}switch(form.elements[i].nodeName){case"INPUT":switch(form.elements[i].type){case"text":case"hidden":case"password":case"button":case"reset":case"submit":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"checkbox":case"radio":if(form.elements[i].checked){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value))}break;case"file":break}break;case"TEXTAREA":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"SELECT":switch(form.elements[i].type){case"select-one":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"select-multiple":for(j=form.elements[i].options.length-1;j>=0;j=j-1){if(form.elements[i].options[j].selected){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].options[j].value))}}break}break;case"BUTTON":switch(form.elements[i].type){case"reset":case"submit":case"button":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break}break}}return q.join("&")};
+
 // TYPEAHEADS
 var MAX_RETRIES = 2;
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
@@ -64,51 +67,51 @@ function findAncestor(el, cls) {
     return el;
 }
 
-function startSave(step) {
-    var div, div_id, div_button_id, div_button;
+function startSave(saveButton) {
+    /* Indicate that saving has started:
+        - Disable save button
+        - Show 'Saving...' message */
 
-    div_id = 'savingstep' + step;
-    div = document.getElementById(div_id);
+    saveButton.setAttribute('disabled', '');
 
-    div_button_id = 'savingstep' + step + '-button';
-    div_button = document.getElementById(div_button_id);
-
-    div_button.setAttribute('disabled', '');
-    div.innerHTML = '<div class="help-block">Saving...</div>';
+    var save_message_div = findAncestor(saveButton, 'row').querySelector('.save-message');
+    save_message_div.innerHTML = defaultValues.saving + '...';
 }
 
-function finishSave(step, message) {
-    var div, div_id, div_button_id, div_button, message_time;
+function finishSave(saveButton, success, message) {
+    /* Indicate that saving has finished:
+        - Enable the save button again
+        - If no errors, show that it has successfully completed
+        - If errors, show the error message */
 
-    div_id = 'savingstep' + step;
-    div = document.getElementById(div_id);
+    saveButton.removeAttribute('disabled');
 
-    div_button_id = 'savingstep' + step + '-button';
-    div_button = document.getElementById(div_button_id);
+    var save_message_div = findAncestor(saveButton, 'row').querySelector('.save-message');
+    var message_div = document.createElement('div');
+    var icon = document.createElement('span');
 
-    // Show error message 20 seconds, other messages only 5 seconds
-    if (message.indexOf('class="help-block-error"') > -1) {
-        message_time = 20000;
+    save_message_div.innerHTML = '';
+    icon.classList.add('glyphicon');
+
+    if (success) {
+        icon.classList.add('glyphicon-ok-circle');
+        message_div.classList.add('save-success');
+        message_div.appendChild(icon);
     } else {
-        message_time = 5000;
+        icon.classList.add('glyphicon-remove-circle');
+        message_div.classList.add('help-block-error');
+        message_div.appendChild(icon);
     }
 
-    // Only replace the message if no error is shown yet
-    if (div.innerHTML.indexOf('class="help-block-error"') === -1) {
-        div.innerHTML = message;
-
-        setTimeout(function () {
-            div.innerHTML = '';
-            div_button.removeAttribute('disabled');
-        }, message_time);
-    }
+    message_div.appendChild(document.createTextNode(' ' + message));
+    save_message_div.appendChild(message_div);
 }
 
 function removeErrors(form) {
     var error_elements, form_elements;
 
-    error_elements = form.getElementsByClassName('help-block-error');
-    form_elements = form.getElementsByClassName('has-error');
+    error_elements = form.querySelectorAll('.help-block-error');
+    form_elements = form.querySelectorAll('.has-error');
 
     while (error_elements.length > 0) {
         error_elements[0].parentNode.removeChild(error_elements[0]);
@@ -340,187 +343,89 @@ function saveDocuments(form, api_url, step, new_objects) {
     file_request.send(documentFormData);
 }
 
-function submitStep(step, level) {
-    var api_url, form, form_data, form_div, request, file_request, message;
+function submitStep(saveButton) {
+    return function(e) {
+        /* Main function for submitting a form */
+        e.preventDefault();
 
-    // Collect form data
-    form_div = '#admin-step-' + step;
-    form = document.querySelector(form_div);
-    form_data = serialize(form);
+        var api_url, form, form_data, request, file_request, message;
 
-    if (level === undefined || level === 1) {
-        // Indicate saving has started
-        startSave(step);
+        // Collect form data
+        form = findAncestor(saveButton, 'form');
+        form_data = serialize(form);
+
+        // Remove existing errors and indicate that saving has started
         removeErrors(form);
-    }
+        startSave(saveButton);
 
-    // Custom code per step
-    if (step === '1') {
-        var related_projects = form.getElementsByClassName('related-project-input');
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        for (var i=0; i < related_projects.length; i++) {
-            var input, input_id, input_value;
+        request.onload = function () {
+            if (request.status >= 200 && request.status < 400) {
+                var response;
+                response = JSON.parse(request.responseText);
 
-            input = related_projects[i].getElementsByTagName('input')[0];
-            input_id = input.getAttribute("id");
-            if (input.value !== '') {
-                input_value = input.getAttribute("value");
+                // Check for errors
+                if (response.errors.length > 0) {
+                    message = defaultValues.save_error;
+                    addErrors(response.errors);
+                    finishSave(saveButton, false, message);
+                } else {
+                    message = defaultValues.save_success;
+                    finishSave(saveButton, true, message);
+                }
+
+                // TODO: Replace saved values
+//            for (var i=0; i < response.changes.length; i++) {
+//                var formElement;
+//
+//                formElement = document.getElementById(response.changes[i][0]);
+//                formElement.setAttribute('saved-value', response.changes[i][1]);
+//            }
+
+                // TODO: Replace field names
+//            replaceNames(response.rel_objects, 'indicator');
+
+//            TODO: save documents
+//            if (step === '9') {
+//                saveDocuments(form, api_url, step, response.new_objects);
+//            }
+
+                var section = findAncestor(form, 'formStep');
+                setSectionCompletionPercentage(section);
+                setPageCompletionPercentage();
+
+
+
+                return false;
+            } else if (request.status === 403) {
+                // TODO: Not allowed to save
+                finishSave(saveButton, message);
+                return false;
             } else {
-                input_value = '';
+                // We reached our target server, but it returned an error
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
+
+                finishSave(saveButton, message);
+                return false;
             }
+        };
 
-            form_data += '&value-' + input_id + '=' + input_value;
-        }
-    } else if (step === '3') {
-        var partners = form.getElementsByClassName('partner-input');
+        request.onerror = function () {
+            // There was a connection error of some sort
+            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
 
-        for (var j=0; j < partners.length; j++) {
-            var partner_input, partner_input_id, partner_input_value;
-
-            partner_input = partners[j].getElementsByTagName('input')[0];
-            partner_input_id = partner_input.getAttribute("id");
-            if (partner_input.value !== '') {
-                partner_input_value = partner_input.getAttribute("value");
-            } else {
-                partner_input_value = '';
-            }
-
-            form_data += '&value-' + partner_input_id + '=' + partner_input_value;
-        }
-    } else if (step === '6') {
-        var receiverOrgs, providerOrgs;
-
-        receiverOrgs = form.getElementsByClassName('transaction-receiver-org-input');
-        providerOrgs = form.getElementsByClassName('transaction-provider-org-input');
-
-        for (var o=0; o < receiverOrgs.length; o++) {
-            var receiver_org_input, receiver_org_input_id, receiver_org_input_value;
-
-            receiver_org_input = receiverOrgs[o].getElementsByTagName('input')[0];
-            receiver_org_input_id = receiver_org_input.getAttribute("id");
-            if (receiver_org_input.value !== '') {
-                receiver_org_input_value = receiver_org_input.getAttribute("value");
-            } else {
-                receiver_org_input_value = '';
-            }
-
-            form_data += '&value-' + receiver_org_input_id + '=' + receiver_org_input_value;
-        }
-
-        for (var p=0; p < providerOrgs.length; p++) {
-            var provider_org_input, provider_org_input_id, provider_org_input_value;
-
-            provider_org_input = providerOrgs[p].getElementsByTagName('input')[0];
-            provider_org_input_id = provider_org_input.getAttribute("id");
-            if (provider_org_input.value !== '') {
-                provider_org_input_value = provider_org_input.getAttribute("value");
-            } else {
-                provider_org_input_value = '';
-            }
-
-            form_data += '&value-' + provider_org_input_id + '=' + provider_org_input_value;
-        }
-
-    }
-
-    // Boolean custom fields
-    var booleanCustomFields = form.getElementsByClassName('boolean-custom-field');
-    for (var q=0; q < booleanCustomFields.length; q++) {
-        var custom_field, custom_field_id;
-
-        custom_field = booleanCustomFields[q];
-        custom_field_id = custom_field.getAttribute('id');
-
-        if (custom_field.checked) {
-            form_data = form_data.replace(custom_field_id + '=on', custom_field_id + '=True');
-        } else {
-            form_data += '&' + custom_field_id + '=False';
-        }
-    }
-
-    // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
-
-    request = new XMLHttpRequest();
-    request.open('POST', api_url, true);
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var response;
-            response = JSON.parse(request.responseText);
-
-            // Add errors
-            if (response.errors.length > 0) {
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving</div>';
-            } else {
-                message = '<div class="save-success"><span class="glyphicon glyphicon-ok-circle"></span> Saved successfully!</div>';
-            }
-            addErrors(response.errors);
-
-            // Replace saved values
-            for (var i=0; i < response.changes.length; i++) {
-                var formElement;
-
-                formElement = document.getElementById(response.changes[i][0]);
-                formElement.setAttribute('saved-value', response.changes[i][1]);
-            }
-
-            if (step === '5' && level === 1) {
-                replaceNames(response.rel_objects, 'indicator');
-            } else if (step === '5' && level === 2) {
-                replaceNames(response.rel_objects, 'indicator-period');
-            } else if (step === '6' && level === 1) {
-                replaceNames(response.rel_objects, 'sector');
-                replaceTotalBudget(response.total_budget);
-            } else if (step === '7' && level === 1) {
-                replaceNames(response.rel_objects, 'administrative');
-            }  else {
-                replaceNames(response.rel_objects);
-            }
-
-            if (step === '5' && level < 3) {
-                submitStep('5', level + 1);
-            }
-
-            if (step === '6' && level < 2) {
-                submitStep('6', level + 1);
-            }
-
-            if (step === '7' && level < 2) {
-                submitStep('7', level + 1);
-            }
-
-            if (step === '9') {
-                saveDocuments(form, api_url, step, response.new_objects);
-            }
-
-            var section = findAncestor(form, 'formStep');
-            setSectionCompletionPercentage(section);
-            setPageCompletionPercentage();
-
-            finishSave(step, message);
-
+            finishSave(saveButton, message);
             return false;
-        } else {
-            // We reached our target server, but it returned an error
-            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
+        };
 
-            finishSave(step, message);
-            return false;
-        }
-    };
-
-    request.onerror = function() {
-        // There was a connection error of some sort
-        message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
-
-        finishSave(step, message);
-        return false;
-    };
-
-    request.send(form_data);
+        request.send(form_data);
+    }
 }
 
 function deleteItem(itemId, itemType, parentDiv) {
@@ -1119,27 +1024,17 @@ function getCallback(selector, childClass, valueId, label, help, filterOption, i
 }
 
 function setSubmitOnClicks() {
-    var forms;
+    var saveDivs = document.querySelectorAll('.save-button');
 
-    forms = document.getElementsByTagName('form');
+    for (var i=0; i < saveDivs.length; i++) {
+        var saveButton = saveDivs[i].querySelector('button');
+        saveButton.addEventListener('click', submitStep(saveButton));
 
-    for (var i=0; i < forms.length; i++) {
-        var stepId;
-
-        stepId = forms[i].getAttribute('id').replace('admin-step-', '');
-        forms[i].onsubmit = getFormSubmit(stepId);
+//        saveButton.onclick = function (e) {
+//            e.preventDefault();
+//            submitStep(saveButton);
+//        };
     }
-}
-
-function getFormSubmit(stepId) {
-    return function(e) {
-        e.preventDefault();
-        if (stepId === '5' || '6' || '7') {
-            submitStep(stepId, 1);
-        } else {
-            submitStep(stepId);
-        }
-    };
 }
 
 function setPartialOnClicks() {
@@ -2020,7 +1915,6 @@ function getProjectPublish(publishingStatusId, publishButton) {
                     viewProjectButton.innerHTML = defaultValues.view_project;
                     publishButton.setAttribute('status', 'published');
                     publishButton.innerHTML = "Unpublish project";
-                    console.log(publishButton.className);
                     publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
                 } else {
                     publishingStatusNode.className = "notPublished";
@@ -2028,7 +1922,6 @@ function getProjectPublish(publishingStatusId, publishButton) {
                     viewProjectButton.innerHTML = defaultValues.preview_project;
                     publishButton.setAttribute('status', 'unpublished');
                     publishButton.innerHTML = "Publish project";
-                    console.log(publishButton.className);
                     publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
                 }
 

@@ -72,10 +72,10 @@
             <h5>{% trans 'Location administratives' %}</h5>
             <div class="location-administrative-container" id="location-administrative-container">
                 {% for admin in location.administratives.all %}
-                    {% include "myrsr/project_editor/section_7/location_administrative_input.html" %}
+                    {% include "myrsr/project_editor/related_objects/location_administrative_input.html" %}
                 {% empty %}
                     {% with location_id_string=location.pk|default:"new-0"|stringformat:"s" %}
-                        {% include "myrsr/project_editor/section_7/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string|add:'_'|add:location_id_string %}
+                        {% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string|add:'_'|add:location_id_string %}
                     {% endwith %}
                 {% endfor %}
             </div>

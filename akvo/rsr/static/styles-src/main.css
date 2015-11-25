@@ -1900,6 +1900,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   font-size: 12px;
   margin-top: 10px;
   margin-bottom: 10px; }
+.projectEdit .save-message {
+  text-align: center; }
+.projectEdit .save-button {
+  text-align: right; }
 
 .legenda {
   border: 1px solid rgba(44, 42, 116, 0.5);

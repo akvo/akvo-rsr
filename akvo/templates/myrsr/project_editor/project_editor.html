@@ -185,16 +185,16 @@
     <section class="panels projectEdit">
         {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
             <fieldset>
-                {% include "myrsr/project_editor/section_1/section_1.html" %}
-                {% include "myrsr/project_editor/section_2/section_2.html" %}
-                {% include "myrsr/project_editor/section_3/section_3.html" %}
-                {% include "myrsr/project_editor/section_4/section_4.html" %}
-                {% include "myrsr/project_editor/section_5/section_5.html" %}
-                {% include "myrsr/project_editor/section_6/section_6.html" %}
-                {% include "myrsr/project_editor/section_7/section_7.html" %}
-                {% include "myrsr/project_editor/section_8/section_8.html" %}
-                {% include "myrsr/project_editor/section_9/section_9.html" %}
-                {% include "myrsr/project_editor/section_10/section_10.html" %}
+                {% include "myrsr/project_editor/section_1.html" %}
+                {% include "myrsr/project_editor/section_2.html" %}
+                {% include "myrsr/project_editor/section_3.html" %}
+                {% include "myrsr/project_editor/section_4.html" %}
+                {% include "myrsr/project_editor/section_5.html" %}
+                {% include "myrsr/project_editor/section_6.html" %}
+                {% include "myrsr/project_editor/section_7.html" %}
+                {% include "myrsr/project_editor/section_8.html" %}
+                {% include "myrsr/project_editor/section_9.html" %}
+                {% include "myrsr/project_editor/section_10.html" %}
             </fieldset>
         {% endwith %}
     </section>
@@ -216,47 +216,46 @@
 
 {% block js %}
     {{ block.super }}
-    <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" %}
         {# Section 1 #}
-        <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/section_1/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
+        <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
 
         {# Section 2 #}
-        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/section_2/contact_information_input.html" with contact='ProjectContact.'|add:project_id_string %}</script>
+        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact='ProjectContact.'|add:project_id_string %}</script>
 
         {# Section 3 #}
-        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/section_3/partner_input.html" with ps='Partnership.'|add:project_id_string %}</script>
+        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}</script>
 
         {# Section 5 #}
-        <script type="text/template" id="result-input">{% include "myrsr/project_editor/section_5/result_input.html" with result='Result.'|add:project_id_string %}</script>
-        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/section_5/indicator_input.html" with indicator='Indicator.1205' %}</script>
-        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/section_5/indicator_period_input.html" with period='IndicatorPeriod.1205' %}</script>
-        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/section_5/condition_input.html" with condition='ProjectCondition.1205' %}</script>
+        <script type="text/template" id="result-input">{% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.1205' %}</script>
+        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.1205' %}</script>
+        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.1205' %}</script>
 
         {# Section 6 #}
-        <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/section_6/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}</script>
-        <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/section_6/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}</script>
-        <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/section_6/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}</script>
-        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/section_6/transaction_sector_input.html" with sector='TransactionSector.1205'%}</script>
-        <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}</script>
+        <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/related_objects/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/related_objects/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/related_objects/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}</script>
+        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.1205'%}</script>
+        <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/related_objects/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}</script>
 
         {# Section 7 #}
-        <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/section_7/location_input.html" with location='ProjectLocation.'|add:project_id_string %}</script>
-        <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/section_7/location_administrative_input.html" with admin='AdministrativeLocation.1205' %}</script>
-        <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/section_7/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}</script>
-        <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/section_7/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}</script>
+        <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}</script>
+        <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.1205' %}</script>
+        <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}</script>
+        <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}</script>
 
         {# Section 8 #}
-        <script type="text/template" id="sector-input">{% include "myrsr/project_editor/section_8/sector_input.html" with sector='Sector.'|add:project_id_string %}</script>
-        <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/section_8/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}</script>
+        <script type="text/template" id="sector-input">{% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}</script>
+        <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}</script>
 
         {# Section 9 #}
-        <script type="text/template" id="link-input">{% include "myrsr/project_editor/section_9/link_input.html" with link='Link.'|add:project_id_string %}</script>
-        <script type="text/template" id="document-input">{% include "myrsr/project_editor/section_9/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>
+        <script type="text/template" id="link-input">{% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}</script>
+        <script type="text/template" id="document-input">{% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>
 
         {# Section 10 #}
-        <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/section_10/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
+        <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
     {% endwith %}
  
     {% block react_js %}
@@ -270,6 +269,9 @@
             "user_id": "{{ user.pk }}",
             "view_project": "{% trans 'View project page' %}",
             "preview_project": "{% trans 'Preview project page' %}",
+            "saving": "{% trans 'Saving' %}",
+            "save_error": "{% trans 'Could not save one or more fields' %}",
+            "save_success": "{% trans 'Saved successfully!' %}",
             "related_project_label": "{% trans 'Related RSR project' %}",
             "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
             "partner_label": "{% trans 'Project partner' %}",

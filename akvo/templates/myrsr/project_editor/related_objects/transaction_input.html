@@ -67,10 +67,10 @@
         <h5 class="hidden hide-default">{% trans 'Transaction sectors' %}</h5>
         <div class="transaction-sector-container hidden hide-default" id="transaction-sector-container">
             {% for sector in transaction.sectors.all %}
-                {% include "myrsr/project_editor/section_6/transaction_sector_input.html" %}
+                {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
             {% empty %}
                 {% with transaction_id_string=transaction.pk|default:"new-0"|stringformat:"s" %}
-                    {% include "myrsr/project_editor/section_6/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
+                    {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
                 {% endwith %}
             {% endfor %}
         </div>

@@ -13,12 +13,12 @@
         </div>
         <div class="formBlock hidden">
             <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
-            <form role="form" id="admin-step-2">
+            <form role="form" class="form">
                 <div class="contact-information-container" id="contact-information-container">
                     {% for contact in project.contacts.all %}
-                        {% include "myrsr/project_editor/section_2/contact_information_input.html" %}
+                        {% include "myrsr/project_editor/related_objects/contact_information_input.html" %}
                     {% empty %}
-                        {% include "myrsr/project_editor/section_2/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
+                        {% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
                     {% endfor %}
                 </div>
                 <div class="row form-group">
@@ -29,12 +29,8 @@
                 {% for customfield in custom_fields_section_2 %}
                     {% include custom_field_input %}
                 {% endfor %}
-                <div class="row form-group">
-                    <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
-                    <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                        <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
             </form>
         </div>
     </div>
