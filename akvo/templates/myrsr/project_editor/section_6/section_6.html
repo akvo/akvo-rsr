@@ -64,19 +64,19 @@
                             <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
                         </div>
                     </div>
-{#                    <h5>{% trans 'Planned disbursements' %}</h5>#}
-{#                    <div class="planned-disbursement-container" id="planned-disbursement-container">#}
-{#                        {% for pd in project.planned_disbursements.all %}#}
-{#                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key=pd.pk %}#}
-{#                        {% empty %}#}
-{#                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with key='add-0' %}#}
-{#                        {% endfor %}#}
-{#                    </div>#}
-{#                    <div class="row form-group">#}
-{#                        <div class="col-md-12 text-center add-object-link">#}
-{#                             <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>#}
-{#                        </div>#}
-{#                    </div>#}
+                    <h5>{% trans 'Planned disbursements' %}</h5>
+                    <div class="planned-disbursement-container" id="planned-disbursement-container">
+                        {% for pd in project.planned_disbursements.all %}
+                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/section_6/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}
+                        {% endfor %}
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                             <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
+                        </div>
+                    </div>
                 </div>
                 {% for customfield in custom_fields_section_6 %}
                     {% include custom_field_input %}

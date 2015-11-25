@@ -12,9 +12,11 @@
     <div class="hide-partial {% if sector.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">
+                {# TODO: Base on vocabulary #}
                 {% include text_input with obj=sector field='code' hidden=True %}
             </div>
             <div class="col-md-4">
+                {# TODO: Limit choices #}
                 {% include choice_input with obj=sector field='vocabulary' hidden=True %}
             </div>
             <div class="col-md-4">

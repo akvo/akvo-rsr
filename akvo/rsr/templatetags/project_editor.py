@@ -136,6 +136,11 @@ def choices(obj, field):
     model_field = retrieve_model(obj)._meta.get_field(field)
     if not isinstance(model_field, models.ForeignKey):
         return model_field.choices
-    else:
-        # KB: Hack to retrieve budget item labels
+    elif isinstance(obj, get_model('rsr', 'BudgetItem')) or \
+            (isinstance(obj, basestring) and 'BudgetItem' in obj):
+        # The ForeignKey field on budget items is the budget item labels
         return get_model('rsr', 'budgetitemlabel').objects.all().values_list('id', 'label')
+    elif isinstance(obj, get_model('rsr', 'ProjectLocation')) or \
+            (isinstance(obj, basestring) and 'ProjectLocation' in obj):
+        # The ForeignKey field on locations is the countries
+        return get_model('rsr', 'country').objects.all().values_list('id', 'name')

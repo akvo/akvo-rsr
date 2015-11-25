@@ -58,10 +58,10 @@
         {% include choice_input with obj=transaction field='recipient_country' hidden=True %}
         <div class="row">
             <div class="col-md-6">
-                {% include text_input with obj=transaction field='recipient_region' hidden=True %}
+                {% include choice_input with obj=transaction field='recipient_region' hidden=True %}
             </div>
             <div class="col-md-6">
-                {% include text_input with obj=transaction field='recipient_region_vocabulary' hidden=True %}
+                {% include choice_input with obj=transaction field='recipient_region_vocabulary' hidden=True %}
             </div>
         </div>
         <h5 class="hidden hide-default">{% trans 'Transaction sectors' %}</h5>

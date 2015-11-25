@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<div class="location-administrative-input parent" id="administrative_location{% if admin.pk %}-{{ admin.pk }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if admin.pk %}+{% else %}-{% endif %}</span> {% trans 'Location administrative' %}: <span class="unicode">{% if admin.pk %}{{ admin }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-administrative-level{% if admin.pk %}-{{ admin.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if admin.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-4">
+                {% include text_input with obj=admin field='code' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=admin field='vocabulary' hidden=True %}
+            </div>
+            <div class="col-md-4">
+                {# TODO: Saving not working? #}
+                {% include text_input with obj=admin field='level' number=True hidden=True %}
+            </div>
+        </div>
+    </div>
+</div>

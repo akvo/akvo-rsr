@@ -1,0 +1,89 @@
+{% load i18n %}
+
+<div class="project-location-item parent" id="project_location{% if location.pk %}-{{ location.pk }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if location.pk %}+{% else %}-{% endif %}</span> {% trans 'Project location' %}: <span class="unicode">{% if location.pk %}{{ location }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-location{% if location.pk %}-{{ location.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if location %}hidden{% endif %}">
+        <p class="help-block">{% trans 'Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}</p>
+        <div class="row">
+            <div class="col-md-4">
+                {% include text_input with obj=location field='latitude' mandatory_rsr=True %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=location field='longitude' mandatory_rsr=True %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=location field='country' mandatory_rsr=True %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=location field='address_1' %}
+            </div>
+            <div class="col-md-6">
+                {% include text_input with obj=location field='address_2' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {% include text_input with obj=location field='postcode' %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=location field='city' %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=location field='state' %}
+            </div>
+        </div>
+        <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
+            <div class="row">
+                <div class="col-md-4">
+                    {% include text_input with obj=location field='name' hidden=True %}
+                </div>
+                <div class="col-md-4">
+                    {% include text_input with obj=location field='reference' hidden=True %}
+                </div>
+                <div class="col-md-4">
+                    {% include text_input with obj=location field='location_code' hidden=True %}
+                </div>
+            </div>
+            {% include textarea_input with obj=location field='description' hidden=True %}
+            {% include textarea_input with obj=location field='activity_description' hidden=True %}
+            <div class="row">
+                <div class="col-md-3">
+                    {% include choice_input with obj=location field='exactness' hidden=True %}
+                </div>
+                <div class="col-md-3">
+                    {% include choice_input with obj=location field='location_reach' hidden=True %}
+                </div>
+                <div class="col-md-3">
+                    {% include choice_input with obj=location field='location_class' hidden=True %}
+                </div>
+                <div class="col-md-3">
+                    {% include choice_input with obj=location field='feature_designation' hidden=True %}
+                </div>
+            </div>
+            <h5>{% trans 'Location administratives' %}</h5>
+            <div class="location-administrative-container" id="location-administrative-container">
+                {% for admin in location.administratives.all %}
+                    {% include "myrsr/project_editor/section_7/location_administrative_input.html" %}
+                {% empty %}
+                    {% with location_id_string=location.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/section_7/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string|add:'_'|add:location_id_string %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                     <a href="#" class="add-location-administrative" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another administrative' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

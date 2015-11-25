@@ -12,7 +12,8 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel
                              ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
                              Result, Sector, Transaction, TransactionSector)
 
-from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
+                             ValidXMLCharField, ValidXMLTextField)
 
 import datetime
 import decimal
@@ -564,6 +565,17 @@ def pre_process_data(key, data, errors):
         else:
             return None, errors
 
+    # Latitude and longitude should be converted to a float
+    if isinstance(model_field, (LatitudeField, LongitudeField)):
+        if data:
+            try:
+                return float(data), errors
+            except ValueError as e:
+                errors = add_error(errors, e, key)
+                return None, errors
+        else:
+            return None, errors
+
     # Booleans should be converted to True or False
     if isinstance(model_field, BooleanField):
         return (True, errors) if data == '1' else (False, errors)
@@ -601,6 +613,13 @@ def pre_process_data(key, data, errors):
             elif 'label' in field:
                 try:
                     return BudgetItemLabel.objects.get(pk=int(data)), errors
+                except Exception as e:
+                    errors = add_error(errors, e, key)
+                    # TODO: Can't return None
+                    return None, errors
+            elif 'country' in field:
+                try:
+                    return Country.objects.get(pk=int(data)), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
                     # TODO: Can't return None

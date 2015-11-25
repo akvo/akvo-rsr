@@ -21,18 +21,33 @@ class RecipientRegion(models.Model):
         'Project', verbose_name=_(u'project'), related_name='recipient_regions'
     )
     region = ValidXMLCharField(
-        _(u'region'), blank=True, max_length=3, choices=codelist_choices(REGION)
+        _(u'recipient region'), blank=True, max_length=3, choices=codelist_choices(REGION),
+        help_text=_(u'This identifies the region in which the activity takes place. Regions can be '
+                    u'supra-national (a geographical or administrative grouping of countries into '
+                    u'a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities '
+                    u'benefiting substantially all developing countries). For the codes to use, '
+                    u'please see <a href="http://iatistandard.org/201/codelists/Region/" '
+                    u'target="_blank">http://iatistandard.org/201/codelists/Region/</a>.')
     )
     region_vocabulary = ValidXMLCharField(
-        _(u'region vocabulary'), blank=True, max_length=1,
-        choices=codelist_choices(REGION_VOCABULARY)
+        _(u'recipient region vocabulary'), blank=True, max_length=1,
+        choices=codelist_choices(REGION_VOCABULARY),
+        help_text=_(u'The vocabulary from which the region code is drawn. If it is not present 1 – '
+                    u'\'OECD DAC\' is assumed. For more information, see '
+                    u'<a href="http://iatistandard.org/201/codelists/RegionVocabulary/" '
+                    u'target="_blank">http://iatistandard.org/201/codelists/RegionVocabulary/</a>.')
     )
     percentage = models.DecimalField(
-        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'recipient region percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'If the activity occurs in more than one region, the percentage of activity '
+                    u'commitment allocated to each region should be provided if available. '
+                    u'Percentages should add up to 100% of the activity being reported if they are '
+                    u'shown for each region. Use a period to denote decimals.')
     )
     text = ValidXMLCharField(
-        _(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
+        _(u'recipient region description'), blank=True, max_length=50,
+        help_text=_(u'Optionally enter a description.')
     )
 
     def __unicode__(self):
