@@ -192,88 +192,9 @@
             {% include "myrsr/project_editor/section_5/section_5.html" %}
             {% include "myrsr/project_editor/section_6/section_6.html" %}
             {% include "myrsr/project_editor/section_7/section_7.html" %}
+            {% include "myrsr/project_editor/section_8/section_8.html" %}
 
 
-                <!--*************************************** Section 8 **********************************************-->
-                <div class="myPanel borderBottom" id="panel8">
-                    <div class="formStep stepEight">
-                        <div class="toggleSection">
-                            <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-8-helptext');"></span></h4></label>
-                        </div>
-                        <input type="radio" name="step" id="stepEight">
-                        <div class="progress section-progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
-                            </div>
-                        </div>
-                        <div class="formBlock hidden">
-                            <div class="hidden" id="step-8-helptext">
-                                <p class="help-block">{% trans 'The project focus aims to define the broad areas of the project activities. This ensures that the project can be collectively grouped by e.g. sector with other similar projects to help make the most out of the project resources. Generally accepted codes are used to help determine these sectors:' %}</p>
-                                <p class="help-block">- {% trans 'DAC-3 sector codes which are more general. For reference see:' %} <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">http://iatistandard.org/201/codelists/SectorCategory/</a>.</p>
-                                <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
-                            </div>
-                            <form role="form" id="admin-step-8">
-                            <h5>{% trans 'Sectors' %}</h5>
-                            <div class="sector-container" id="sector-container">
-                                {% for sector in project.sectors.all %}
-                                    {% include "myrsr/project_editor/sector_input.html" with key=sector.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/sector_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                     <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
-                                </div>
-                            </div>
-                            <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
-                                <h5>{% trans 'Policy markers' %}</h5>
-                                <div class="policy-marker-container" id="policy-marker-container">
-                                    {% for marker in project.policy_markers.all %}
-                                        {% include "myrsr/project_editor/policy_marker_input.html" with key=marker.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_editor/policy_marker_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% for customfield in custom_fields_section_8 %}
-                                <div id="custom_field-{{ customfield.pk }}">
-                                    {% if customfield.type == 'text' %}
-                                    <div class="form-group control">
-                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
-                                    </div>
-                                    {% elif customfield.type == 'boolean' %}
-                                        <div class="form-group control">
-                                            <div class="checkbox">
-                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
-                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                                        {{ customfield.name }}
-                                                </label>
-                                            </div>
-                                            {% if customfield.help_text %}
-                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep8"></div>
-                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
-                                    <button type="submit" class="btn btn-success" id="savingstep8-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
                 <!--*************************************** Section 9 **********************************************-->
                 <div class="myPanel borderBottom" id="panel9">
                     <div class="formStep stepNine">
@@ -469,11 +390,15 @@
         <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/section_7/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}</script>
         <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/section_7/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}</script>
 
+        {# Section 8 #}
+        <script type="text/template" id="sector-input">{% include "myrsr/project_editor/section_8/sector_input.html" with sector='Sector.'|add:project_id_string %}</script>
+        <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/section_8/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}</script>
+
         <script type="text/template" id="document-input">{% include "myrsr/project_editor/document_input.html" %}</script>
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/keyword_input.html" %}</script>
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/link_input.html" %}</script>
-        <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/policy_marker_input.html" %}</script>
-        <script type="text/template" id="sector-input">{% include "myrsr/project_editor/sector_input.html" %}</script>
+
+
 
     {% endwith %}
  
