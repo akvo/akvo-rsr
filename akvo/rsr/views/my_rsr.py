@@ -111,40 +111,45 @@ def my_updates(request):
 @login_required
 def my_projects(request):
     """Directory of Projects connected to the user."""
-    organisations = request.user.employers.approved().organisations()
 
+    # Get user organisation information
+    organisations = request.user.approved_employments().organisations()
+    creator_organisations = organisations.filter(can_create_projects=True).\
+        values_list('id', flat=True)
+
+    # Get project list
     if request.user.is_superuser or request.user.is_admin:
         projects = Project.objects.all()
     else:
-        projects = organisations.all_projects().distinct().select_related(
-            'publishingstatus',
-            'primary_location__country',
-        )
+        projects = organisations.all_projects().distinct()
 
-    new_project_custom_fields = OrganisationCustomField.objects.filter(
-        organisation__in=organisations
-    )
-
+    # Custom filter on project id or (sub)title
     q = request.GET.get('q')
     if q:
         try:
             project_pk = int(q)
             projects = projects.filter(pk=project_pk)
-        except:
+        except Project.DoesNotExist:
+            Project.objects.none()
+        except ValueError:
             q_list = q.split()
             for q_item in q_list:
                 projects = projects.filter(title__icontains=q_item) | \
                     projects.filter(subtitle__icontains=q_item)
+
+    # Pagination
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
-    # User's organisations that are reportable
-    approved_employments = request.user.approved_employments()
-    reportable_organisations = []
-    for employment in approved_employments:
-        if employment.organisation.can_create_projects:
-            reportable_organisations.append(employment.organisation.id)
+    # Get related objects of page at once
+    page.object_list = page.object_list.select_related('primary_location__country').\
+        prefetch_related('publishingstatus')
+
+    # Add custom fields in case user adds a new project
+    new_project_custom_fields = OrganisationCustomField.objects.filter(
+        organisation__in=organisations
+    )
 
     context = {
         'organisations': organisations,
@@ -154,7 +159,7 @@ def my_projects(request):
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
-        'reportable_organisations': reportable_organisations
+        'reportable_organisations': creator_organisations
     }
     return render(request, 'myrsr/my_projects.html', context)
 
@@ -339,7 +344,7 @@ def my_iati(request):
 
     if selected_org:
         iati_exports = selected_org.iati_exports.all().order_by('-last_modified_at')
-        projects = selected_org.reporting_on_projects()
+        projects = selected_org.reporting_on_projects().public()
         project_count = projects.count()
         initial = {
             'is_public': True,

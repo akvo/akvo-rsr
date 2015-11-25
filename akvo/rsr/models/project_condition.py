@@ -23,7 +23,7 @@ class ProjectCondition(models.Model):
                              choices=codelist_choices(CONDITION_TYPE))
 
     def __unicode__(self):
-        return self.text if self.text else _(u'No condition specified')
+        return self.text if self.text else u'%s' % _(u'No condition specified')
 
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')
