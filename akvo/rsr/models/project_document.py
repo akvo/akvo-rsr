@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import DocumentCategory, Language
-from akvo.codelists.store.codelists_v201 import DOCUMENT_CATEGORY, LANGUAGE
+from akvo.codelists.store.codelists_v201 import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -23,40 +23,42 @@ def document_path(self, filename):
 class ProjectDocument(models.Model):
     project = models.ForeignKey('Project', related_name='documents', verbose_name=_(u'project'))
     url = models.URLField(
-        _(u'url'), blank=True,
-        help_text=_(u'You can indicate an URL of a document of the project. These documents will '
-                    u'allow users to download and view to gain further insight in the project '
-                    u'activities.')
+        _(u'document url'), blank=True,
+        help_text=_(u'Enter the online location of your document. The URL should start with '
+                    u'\'http://\' or \'https://\'.')
     )
     document = models.FileField(
         _(u'document'), blank=True, upload_to=document_path,
         help_text=_(u'You can upload a document to your project. To upload multiple documents, '
-                    u'press the \'Add another Project Document\' link.<br>'
+                    u'press the \'Add another document\' link.<br>'
                     u'These documents will be stored on the RSR server and will be '
                     u'publicly available for users to download and view to gain further insight in '
                     u'the project activities.')
     )
     format = ValidXMLCharField(
-        _(u'format'), max_length=75, blank=True,
-        help_text=_(u'Indicate the IATI format code of the document. <a '
-                    u'href="http://iatistandard.org/codelists/FileFormat/" target="_blank">Full '
-                    u'list of IATI format codes</a>')
+        _(u'document format'), max_length=75, blank=True, choices=codelist_choices(FILE_FORMAT),
+        help_text=_(u'This provides the code for the Internet Media Type ("MIME type") of the '
+                    u'document, and includes pdf, msword, rtf, xml, csv, etc. For a list of '
+                    u'commonly used MIME types, visit this link: '
+                    u'<a href="http://www.sitepoint.com/web-foundations/mime-types-summary-list/" '
+                    u'target="_blank">http://www.sitepoint.com/web-foundations/'
+                    u'mime-types-summary-list/</a>.')
     )
     title = ValidXMLCharField(
-        _(u'title'), max_length=100, blank=True,
-        help_text=_(u'Indicate the document title. (100 characters)')
+        _(u'document title'), max_length=100, blank=True,
+        help_text=_(u'Enter the title of your document.')
     )
     title_language = ValidXMLCharField(
         _(u'title language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
         help_text=_(u'Select the language of the document title.')
     )
     category = ValidXMLCharField(
-        _(u'category'), max_length=3, blank=True,
+        _(u'document category'), max_length=3, blank=True,
         choices=codelist_choices(DOCUMENT_CATEGORY),
-        help_text=_(u'Select a document category.')
+        help_text=_(u'The description of the type of content contained within the document.')
     )
     language = ValidXMLCharField(
-        _(u'language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
+        _(u'document language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
         help_text=_(u'Select the language that the document is written in.')
     )
 

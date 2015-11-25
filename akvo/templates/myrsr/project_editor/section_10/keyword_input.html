@@ -1,14 +1,15 @@
 {% load i18n %}
-<div class="keyword-item parent" id="keyword{% if key %}-{{ key }}{% endif %}">
+
+<div class="keyword-item parent" id="keyword{% if keyword.pk %}-{{ keyword.pk }}{% endif %}">
     <div class="row partial-header">
         <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if keyword %}+{% else %}-{% endif %}</span> {% trans 'Keyword' %}: <span class="unicode">{% if keyword %}{{ keyword }}{% else %}({% trans 'new' %}){% endif %}</span>
+            <span class="folded-sign">{% if keyword.pk %}+{% else %}-{% endif %}</span> {% trans 'Keyword' %}: <span class="unicode">{% if keyword.pk %}{{ keyword }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-keyword{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="delete-object-button" id="delete-keyword{% if keyword.pk %}-{{ keyword.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </div>
-    <div class="hide-partial {% if keyword %}hidden{% endif %}">
+    <div class="hide-partial {% if keyword.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-12 control">
                 <div class="select-group">

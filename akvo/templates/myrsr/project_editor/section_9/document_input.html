@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<div class="document-item parent" id="project_document{% if document.pk %}-{{ document.pk }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if document.pk %}+{% else %}-{% endif %}</span> {% trans 'Document link' %}: <span class="unicode">{% if document.pk %}{{ document|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-document{% if document.pk %}-{{ document.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if document.pk %}hidden{% endif %}">
+{# TODO: Toggle document upload #}
+{#        <div class="row">#}
+{#            <div class="col-md-12">#}
+{#                <input type="checkbox" id="document-toggle{% if key %}-{{ key }}{% endif %}" {% if document.document %}checked{% endif %} onchange="toggleDocumentUpload(this)">#}
+{#                <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'I would like to upload a document (max 5 MB)' %}</span>#}
+{#                <span style="font-size: 0.9em;" class="glyphicon glyphicon-info-sign info-icon" onclick="toggleDocumentUploadHelptext(this);"></span>#}
+{#            </div>#}
+{#        </div>#}
+{#        <p class="help-block document-upload-help hidden">{% trans 'You can upload a document to your project. We kindly request you not to upload files larger than 5 MB. These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight into your project activities. Only use this function when your document is not already available online. To upload multiple documents, click "Add another document".' %}</p>#}
+        <div class="row">
+            <div class="col-md-4">
+                {% include text_input with obj=document field='url' %}
+            </div>
+            <div class="col-md-4">
+                {# TODO: Show document somewhere + immediate upload #}
+                {# accept="application/pdf,application/vnd.ms-excel,application/msword,text/html,application/rtf,application/vnd.ms-powerpoint,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/jpeg,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/tiff,application/vnd.oasis.opendocument.text,text/xml,application/octet-stream,image/gif,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.template,text/enriched,application/zip,text/csv" #}
+                {% include file_input with obj=document field='document' %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=document field='title' %}
+            </div>
+        </div>
+        <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
+            <div class="row">
+                <div class="col-md-4">
+                    {% include choice_input with obj=document field='format' hidden=True %}
+                </div>
+                <div class="col-md-4">
+                    {% include choice_input with obj=document field='category' hidden=True %}
+                </div>
+                <div class="col-md-4">
+                    {% include choice_input with obj=document field='language' hidden=True %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

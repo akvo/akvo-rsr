@@ -193,10 +193,13 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'Enter the language used when entering the details for this project.')
     )
     notes = ValidXMLTextField(
-        _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
+        _(u'project comments'), blank=True,
+        help_text=_(u'The project comments are only for internal use and will not be displayed '
+                    u'anywhere on the project page.')
     )
     keywords = models.ManyToManyField(
-        'Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True
+        'Keyword', verbose_name=_(u'keyword'), related_name='projects', blank=True,
+        help_text=_(u'Choose a keyword to link to this project.')
     )
 
     # budget

@@ -19,7 +19,7 @@ import datetime
 import decimal
 
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
-                              ForeignKey, NullBooleanField, PositiveIntegerField,
+                              ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
 from django.http import HttpResponseForbidden
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
@@ -625,6 +625,15 @@ def pre_process_data(key, data, errors):
                     # TODO: Can't return None
                     return None, errors
         else:
+            # TODO: Can't return None
+            return None, errors
+
+    # Keywords is the only ManyToManyField
+    if isinstance(model_field, ManyToManyField):
+        try:
+            return Keyword.objects.get(pk=int(data))
+        except Exception as e:
+            errors = add_error(errors, e, key)
             # TODO: Can't return None
             return None, errors
 
