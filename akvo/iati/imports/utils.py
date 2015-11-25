@@ -108,7 +108,7 @@ class ImportHelper(object):
         :param parent_elem: this is usually the iati-activity, but in some cases it is another
             element that has a number of sub-elements of the same kind, e.g. transaction/sector
         :param project: the project we are assembling the data for
-        :param globals: the attributes on the iati-activity tag
+        :param globals: the attributes on the iati-activities tag
         :param related_obj: Related fields on the RSR models are usually to the Project object, but
             in some cases it is another object to which we need to make a relation. In those cases
             we use related_obj
@@ -223,23 +223,22 @@ class ImportHelper(object):
             except ObjectDoesNotExist:
                 pass
 
-    def check_text_length_and_set_custom_field(self, element, text, field, cf_name, cf_section):
+    def check_text_length_and_set_custom_field(self, element, text, field, cf_section):
         """
         Here we add a custom field for texts that don't fit in their specified fields. If a field is
         updated with short enough text any existing custom field is deleted.
         :param element: ElementTree node; Only used to get the tag for logging
         :param text: String; field text
         :param field: String; the name of the model field who's max_length attribute is checked
-            against
-        :param cf_name: String; name of the custom field
+            against; also used for the custom field name
         :param cf_section: int; the section where the custom field is visible in the project editor
         :return:
         """
         checked = self.check_text_length(element, text, field)
         if len(text) != len(checked):
-            self.add_custom_field(cf_name, text, cf_section)
+            self.add_custom_field(field, text, cf_section)
         else:
-            self.delete_custom_field(cf_name, cf_section)
+            self.delete_custom_field(field, cf_section)
         return checked
 
     def get_attrib(self, element, attr, field, default=''):
@@ -256,7 +255,7 @@ class ImportHelper(object):
         """
         try:
             value = element.get(attr)
-            if not value:
+            if value is None:
                 return default
         except AttributeError:
             return default

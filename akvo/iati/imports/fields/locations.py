@@ -184,8 +184,9 @@ class RecipientCountries(ImportHelper):
             text = self.get_element_text(country, 'text')
             country_code = self.get_attrib(country,'code', 'country')
 
-            percentage = self.get_attrib(country,'percentage', 'percentage')
-            percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
+            percentage = self.get_attrib(country,'percentage', 'percentage', None)
+            if percentage:
+                percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
 
             recipient_country, created = RecipientCountry.objects.get_or_create(
                 project=self.project,

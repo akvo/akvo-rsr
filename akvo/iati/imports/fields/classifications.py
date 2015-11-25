@@ -59,8 +59,9 @@ class Sectors(ImportHelper):
             text = self.get_element_text(sector, 'text')
             sector_code = self.get_attrib(sector, 'code', 'sector_code')
 
-            percentage = self.get_attrib(sector, 'percentage', 'percentage')
-            percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
+            percentage = self.get_attrib(sector, 'percentage', 'percentage', None)
+            if percentage:
+                percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
             if not percentage and len(self.parent_elem.findall('sector')) == 1:
                 percentage = Decimal(100.0)
 

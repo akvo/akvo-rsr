@@ -339,9 +339,10 @@ class CapitalSpend(ImportHelper):
         :return: List; contains fields that have changed
         """
         capital_spend_percentage = self.get_child_elem_attrib(
-                self.parent_elem, 'capital-spend', 'percentage', 'capital_spend_percentage')
-        capital_spend_percentage = self.cast_to_decimal(
-                capital_spend_percentage, 'capital-spend', 'capital_spend_percentage')
+                self.parent_elem, 'capital-spend', 'percentage', 'capital_spend_percentage', None)
+        if capital_spend_percentage:
+            capital_spend_percentage = self.cast_to_decimal(
+                    capital_spend_percentage, 'capital-spend', 'capital_spend_percentage')
 
         return self.update_project_field('capital_spend_percentage', capital_spend_percentage)
 

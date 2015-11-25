@@ -14,7 +14,7 @@ from .fields.contacts import Contacts
 from .fields.dates import ActualEndDate, ActualStartDate, PlannedEndDate, PlannedStartDate
 from .fields.defaults import (Conditions, Currency, CollaborationType, DefaultAidType,
         DefaultFinanceType, DefaultFlowType, DefaultTiedStatus, Hierarchy, Language, Scope, Status)
-from .fields.descriptions import Descriptions, CustomFields
+from .fields.descriptions import Descriptions, CustomFields, ICCODescriptions
 from .fields.financials import (
         Transactions, BudgetItems, PlannedDisbursements, CountryBudgetItems,  CapitalSpend)
 from .fields.links import CurrentImage, Links, Documents
@@ -101,7 +101,8 @@ CLASSES = [
     DefaultFinanceType,
     DefaultFlowType,
     DefaultTiedStatus,
-    Descriptions,
+    # Descriptions,
+    ICCODescriptions,
     Documents,
     FSSs,
     Hierarchy,

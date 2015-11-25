@@ -13,25 +13,28 @@ from ..utils import ImportHelper
 
 from django.conf import settings
 
-DescriptionStart = collections.namedtuple(
-        'DescriptionStart',
-        ['project_name', 'subtitle', 'project_plan_summary', 'background', 'current_status',
-         'project_plan', 'sustainability'])
-
-description_start = DescriptionStart(
-    project_name='Project name: ',
-    subtitle='Subtitle: ',
-    project_plan_summary='Project summary: ',
-    background='Background: ',
-    current_status='Baseline situation: ',
-    project_plan='Project plan: ',
-    sustainability='Sustainability: '
-)
-
-
+# project editor sections with text fields
 # TODO: fix this; there should exist one place where the sections are defined
 SECTION_ONE = 1
 SECTION_FOUR = 4
+
+TextFieldInfo = collections.namedtuple(
+        'TextFieldInfo',
+        ['akvo_type', 'order', 'cf_section']
+)
+
+project_text_fields = {
+    'title': TextFieldInfo(akvo_type=None, order=None, cf_section=SECTION_ONE),
+    'subtitle': TextFieldInfo(akvo_type=4, order=None, cf_section=SECTION_ONE),
+    'project_plan_summary': TextFieldInfo(akvo_type=5, order=1, cf_section=SECTION_FOUR),
+    'goals_overview': TextFieldInfo(akvo_type=8, order=None, cf_section=SECTION_FOUR),
+    'background': TextFieldInfo(akvo_type=6, order=2, cf_section=SECTION_FOUR),
+    'current_status': TextFieldInfo(akvo_type=9, order=3, cf_section=SECTION_FOUR),
+    'target_group': TextFieldInfo(akvo_type=3, order=None, cf_section=SECTION_FOUR),
+    'project_plan': TextFieldInfo(akvo_type=7, order=4, cf_section=None),
+    'sustainability': TextFieldInfo(akvo_type=10, order=5, cf_section=None),
+}
+
 
 class Descriptions(ImportHelper):
 
@@ -39,136 +42,138 @@ class Descriptions(ImportHelper):
         super(Descriptions, self).__init__(iati_import, parent_elem, project, globals)
         self.model = Project
 
-    def find_description(self, order):
-        count = 0
-        for description in self.parent_elem.findall("description"):
-            description_text = self.get_text(description)
-            if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
-                    and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
-                    and (not description_text.startswith(description_start)):
-                count += 1
-                if count == order:
-                    return description
+    def find_description_by_akvo_type(self, field):
+        type = project_text_fields[field].akvo_type
+        if type:
+            element = self.parent_elem.find(
+                    "description[@{{{}}}type='{}']".format(settings.AKVO_NS, type))
+
+    def find_description_by_order(self, field):
+        """
+        Helper method for finding the Nth description field where N is the order param
+        :param order: the description field ordinal
+        :return: the description element or None if there is no element that matches
+        """
+        order = project_text_fields[field].order
+        if order:
+            count = 0
+            for description in self.parent_elem.findall("description"):
+                description_text = self.get_text(description)
+                if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                        and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()):
+                    count += 1
+                    if count == order:
+                        return description
         return None
 
     def do_import(self):
-        # title
-        element = self.parent_elem.find('title')
-        title_text = self.get_text(element)
-        title = self.check_text_length_and_set_custom_field(
-                element, title_text, 'title', 'title', SECTION_ONE)
-
-        # subtitle
-        subtitle = ''
-        element = self.parent_elem.find("description[@{%s}type='4']" % settings.AKVO_NS)
-        if element is None:
-            for element in self.parent_elem.findall("description"):
-                description_text = self.get_text(element)
-                if description_text.startswith(description_start.subtitle):
-                    subtitle = description_text[len(description_start.subtitle):]
-                    break
-                elif description_text.startswith(description_start.project_name):
-                    subtitle = description_text[len(description_start.project_name):]
-                    break
-        if not subtitle:
-            subtitle = title_text
-
-        subtitle = self.check_text_length_and_set_custom_field(
-                element, subtitle, 'subtitle', 'subtitle', 1)
-
-        # project plan summary
-        project_plan_summary = ''
-        element = self.parent_elem.find("description[@{%s}type='5']" % settings.AKVO_NS)
-        if element is None:
-            for element in self.parent_elem.findall("description"):
-                description_text = self.get_text(element)
-                if description_text.startswith(description_start.project_plan_summary):
-                    project_plan_summary = description_text[
-                                           len(description_start.project_plan_summary):]
-                    break
-        if not project_plan_summary:
-            element = self.find_description(1)
-            if element is not None:
-                project_plan_summary = self.get_text(element)
-
-        project_plan_summary = self.check_text_length_and_set_custom_field(
-                element, project_plan_summary, 'project_plan_summary', 'project_plan_summary',
-                SECTION_FOUR)
-
-        # goals overview
-        goals_overview = self.get_child_element_text(
-                self.parent_elem, "description[@{%s}type='8']" % settings.AKVO_NS, 'goals_overview')
-        if not goals_overview:
-            goals_overview = self.get_child_element_text(
-                    self.parent_elem, "description[@type='2']", 'goals_overview')
-        if not goals_overview:
-            goals_overview = '\n'.join(
-                    ["- {}".format(
-                        self.get_text(title)
-                    ) for title in self.parent_elem.findall('result/title')]
-            )
-        if goals_overview:
-            goals_overview = self.check_text_length_and_set_custom_field(
-                    'description', goals_overview, 'goals_overview', 'goals_overview', SECTION_FOUR)
-
-        # background
-        background = self.get_child_element_text(
-            self.parent_elem, "description[@{%s}type='6']" % settings.AKVO_NS, 'background')
-        if not background:
-            element = self.find_description(2)
-        if element is not None:
-            background = self.get_text(element)
-            background = self.check_text_length_and_set_custom_field(
-                    element, background, 'background', 'background', SECTION_FOUR)
-
-        # current status
-        current_status = self.get_child_element_text(
-            self.parent_elem, "description[@{%s}type='9']" % settings.AKVO_NS, 'current_status')
-        if not current_status:
-            element = self.find_description(3)
-        if element is not None:
-            current_status = self.get_text(element)
-            current_status = self.check_text_length_and_set_custom_field(
-                'description', current_status, 'current_status', 'current_status', SECTION_FOUR)
-
-        # target group
-        target_group, element = self.get_child_element_text(
-                self.parent_elem, "description[@{%s}type='3']" % settings.AKVO_NS, 'target_group',
-                return_element=True)
-        if not target_group:
-            target_group, element = self.get_child_element_text(
-                    self.parent_elem, "description[@type='3']", 'target_group', return_element=True)
-        if target_group:
-            target_group = self.check_text_length_and_set_custom_field(
-                element, target_group, 'target_group', 'target_group', SECTION_FOUR)
-
-        # project plan
-        project_plan = self.get_child_element_text(
-            self.parent_elem, "description[@{%s}type='7']" % settings.AKVO_NS, 'project_plan')
-        if not project_plan:
-            element = self.find_description(4)
-        if element is not None:
-            project_plan = self.get_text(element)
-
-        # sustainability
-        sustainability = self.get_child_element_text(
-            self.parent_elem, "description[@{%s}type='10']" % settings.AKVO_NS, 'sustainability')
-        if not sustainability:
-            element = self.find_description(5)
-        if element is not None:
-            sustainability = self.get_text(element)
-
-        project_fields = ['title', 'subtitle', 'project_plan_summary', 'goals_overview',
-                'background', 'current_status', 'target_group', 'project_plan', 'sustainability',]
         project = self.project
         changes = []
-
-        for field in project_fields:
-            if getattr(project, field) != locals()[field]:
-                setattr(project, field, locals()[field])
-                changes.append(field)
-        project.save(update_fields=changes)
+        noop = lambda: None, ''
+        for field in project_text_fields.keys():
+            text = ''
+            # try to find the text by akvo type
+            element = self.find_description_by_akvo_type(field)
+            # then do any special handling if available
+            if element is None:
+                custom_method = getattr(self, "get_{}".format(field))
+                if custom_method:
+                    element, text = custom_method()
+                else:
+                    # last chance, find by iati type or order of description field
+                    element = self.find_description_by_order(field)
+            if element is not None:
+                if not text:
+                    text = self.get_text(element)
+                new_value = self.check_text_length_and_set_custom_field(
+                    element, text, field, project_text_fields[field].cf_section)
+                # is the currently saved value different from the newly found one?
+                if getattr(project, field) != new_value:
+                    setattr(project, field, new_value)
+                    changes.append(field)
+                    project.save(update_fields=changes)
         return changes
+
+    def get_title(self):
+        # title
+        element = self.parent_elem.find('title')
+        if element is not None:
+            return element, self.get_text(element)
+        return None, ''
+
+    def get_subtitle(self):
+        return self.get_title()
+
+    def get_goals_overview(self):
+        element = self.get_child_element_text(
+                self.parent_elem, "description[@type='2']", 'goals_overview')
+        if element is None:
+            text = '\n'.join(
+                ["- {}".format(
+                    self.get_text(title)
+                ) for title in self.parent_elem.findall('result/title')]
+            )
+            return self.parent_elem.findall('result/title'), text
+        return None, ''
+
+    def get_target_group(self):
+        text, element = self.get_child_element_text(
+                self.parent_elem, "description[@type='3']", 'target_group', return_element=True)
+        return element, text
+
+
+# Customizations for ICCO
+
+description_start = dict(
+    project_name='project name:',
+    subtitle='subtitle:',
+    project_plan_summary='project summary:',
+    background='background:',
+    current_status='baseline situation:',
+    project_plan='project plan:',
+    sustainability='sustainability:',
+)
+
+def _text_starts_with(text, start):
+    return text.lower().startswith(start)
+
+class ICCODescriptions(Descriptions):
+    """
+    Custom import rules for importing description fields from ICCO IATI XML. Here we look for
+    description fields prefixed with the description_start strings and match them to the respective
+    fields.
+    Note that this is not "mixable" with the default method of matching description fields by order
+    so if a description field is not prefixed it will not be included.
+    """
+
+    def _get_description(self, start_string):
+        for element in self.parent_elem.findall("description"):
+            text = self.get_text(element)
+            if _text_starts_with(text, start_string):
+                return element, text[len(start_string):].strip()
+        return None, ''
+
+    def get_subtitle(self):
+        element, text = self._get_description(description_start['subtitle'])
+        if element is None:
+            element, text = self._get_description(description_start['project_name'])
+        if element is not None:
+            return super(ICCODescriptions, self).get_subtitle()
+
+    def get_project_plan_summary(self):
+        return self._get_description(description_start['project_plan_summary'])
+
+    def get_background(self):
+        return self._get_description(description_start['background'])
+
+    def get_current_status(self):
+        return self._get_description(description_start['current_status'])
+
+    def get_project_plan(self):
+        return self._get_description(description_start['project_plan'])
+
+    def get_sustainability(self):
+        return self._get_description(description_start['sustainability'])
 
 
 class CustomFields(ImportHelper):
