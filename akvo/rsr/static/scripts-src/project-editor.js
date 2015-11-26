@@ -448,7 +448,7 @@ function deleteItem(itemId, itemType) {
             relatedObjDiv.parentNode.removeChild(relatedObjDiv);
 
             // Update the budget in case of removed budget
-            if (itemType === 'budget_item') {
+            if (itemType === 'budget-item') {
                 getTotalBudget();
             }
 
@@ -780,7 +780,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     selectorClass = document.querySelector('.' + childClass);
 
-    TypeaheadContainer = React.createClass({
+    TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
 
         getInitialState: function() {
             return ({focusClass: 'inactive'});
@@ -797,37 +797,37 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         },
         render: function() {
             return (
-                    <div className={this.state.focusClass}>
-                        <Typeahead
-                            placeholder=''
-                            options={typeaheadOptions}
-                            onOptionSelected={typeaheadCallback}
-                            maxVisible={10}
-                            displayOption={displayOption}
-                            filterOption={filterOption}
-                            childID={selector}
-                            onKeyUp={this.onKeyUp}
-                            onBlur={this.onBlur}
-                            customClasses={{
+                    React.DOM.div( {className:this.state.focusClass}, 
+                        Typeahead(
+                            {placeholder:"",
+                            options:typeaheadOptions,
+                            onOptionSelected:typeaheadCallback,
+                            maxVisible:10,
+                            displayOption:displayOption,
+                            filterOption:filterOption,
+                            childID:selector,
+                            onKeyUp:this.onKeyUp,
+                            onBlur:this.onBlur,
+                            customClasses:{
                               typeahead: "",
                               input: inputClass,
                               results: "",
                               listItem: "",
                               token: "",
                               customAdd: ""
-                            }}
-                            inputProps={{
+                            },
+                            inputProps:{
                                 name: selector,
                                 id: selector
-                            }} />
-                        <div className="addOrg" onMouseDown={addOrgModal}>+ {defaultValues.add_new_organisation}</div>
-                    </div>
+                            }} ),
+                        React.DOM.div( {className:"addOrg", onMouseDown:addOrgModal}, "+ ", defaultValues.add_new_organisation)
+                    )
             );
         }
     });
 
     React.render(
-        <TypeaheadContainer />,
+        TypeaheadContainer(null ),
         document.querySelector('.' + childClass)
     );
 
@@ -2023,30 +2023,30 @@ function setDatepickers() {
 
                 render: function () {
                     if (disableInput !== 'true') {
-                        return <div>
-                            <DatePicker
-                            locale = 'en'
-                            placeholderText = ''
-                            dateFormat = 'DD/MM/YYYY'
-                            selected = {this.state.initialDate}
-                            onChange = {this.handleDateChange}
-                            />
-                        </div>;
+                        return React.DOM.div(null, 
+                            DatePicker(
+                            {locale:  "en",
+                            placeholderText:  "",
+                            dateFormat:  "DD/MM/YYYY",
+                            selected:  this.state.initialDate,
+                            onChange:  this.handleDateChange}
+                            )
+                        );
                     } else {
-                        return <div>
-                            <DatePicker
-                            locale = 'en'
-                            placeholderText = ''
-                            dateFormat = 'DD/MM/YYYY'
-                            selected = {this.state.initialDate}
-                            />
-                        </div>;
+                        return React.DOM.div(null, 
+                            DatePicker(
+                            {locale:  "en",
+                            placeholderText:  "",
+                            dateFormat:  "DD/MM/YYYY",
+                            selected:  this.state.initialDate}
+                            )
+                        );
                     }
                 }
             });
 
 
-            React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
+            React.render(DatePickerComponent( {key:datepickerId} ), datepickerContainer);
 
             // Set id, name and saved value of datepicker input
             inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
@@ -2361,133 +2361,133 @@ function addOrgModal() {
         return result;
     }
 
-    Modal = React.createClass({
+    Modal = React.createClass({displayName: 'Modal',
         render: function() {
             var country_option_list = countryValues.map(function(country) {
               return (
-                  <option value={country.pk}>{country.name}</option>
+                  React.DOM.option( {value:country.pk}, country.name)
               );
             });
 
             return (
-                    <div className="modalParent">
-                        <div className="modalBackground">
-                        </div>
-                        <div className="modalContainer">
-                            <div className="orgModal">
-                                <div className="modalContents projectEdit">
-                                    <h4>{defaultValues.add_new_organisation}</h4>
-                                    <form id="addOrganisation">
-                                        <div className="row">
-                                            <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer newOrgName col-md-4">
-                                                <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
-                                                <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
-                                                <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
-                                            </div>
-                                            <div className="inputContainer newOrgLongName col-md-4">
-                                                <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
-                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
-                                            </div>
-                                            <div className="inputContainer newOrgIatiId col-md-4">
-                                                <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
-                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-12">
-                                                <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
-                                                <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="IATIOrgTypeContainer inputContainer col-md-6">
-                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
-                                                    <option value="10">10 - {defaultValues.government}</option>
-                                                    <option value="15">15 - {defaultValues.other_public_sector}</option>
-                                                    <option value="21">21 - {defaultValues.international_ngo}</option>
-                                                    <option value="22">22 - {defaultValues.national_ngo}</option>
-                                                    <option value="23">23 - {defaultValues.regional_ngo}</option>
-                                                    <option value="30">30 - {defaultValues.public_private_partnership}</option>
-                                                    <option value="40">40 - {defaultValues.multilateral}</option>
-                                                    <option value="60">60 - {defaultValues.foundation}</option>
-                                                    <option value="70">70 - {defaultValues.private_sector}</option>
-                                                    <option value="80">80 - {defaultValues.academic_training_research}</option>
-                                                </select>
-                                                <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-6">
-                                                <input name="url" id="url" type="text" className="form-control"/>
-                                                <label htmlFor="url" className="control-label">{defaultValues.website}</label>
-                                                <p className="help-block">{defaultValues.start_http}</p>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-4">
-                                                <input name="latitude" id="latitude" type="text" className="form-control"/>
-                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-4">
-                                                <input name="longitude" id="longitude" type="text"  className="form-control"/>
-                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-4">
-                                                <select name="country" id="country" className="form-control">
-                                                    <option value="">{defaultValues.country}:</option>
-                                                    {country_option_list}
-                                                </select>
-                                                <label htmlFor="country" className="control-label">{defaultValues.country}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-6">
-                                                <input name="contact_person" id="contact_person" type="text" className="form-control"/>
-                                                <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-6">
-                                                <input name="contact_email" id="contact_email" type="text" className="form-control"/>
-                                                <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-12">
-                                                <textarea id="description" className="form-control" name="description" rows="3"></textarea>
-                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <div className="controls">
-                                        <button className="modal-cancel btn btn-danger" onClick={cancelModal}>
-                                        <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
-                                        </button>
-                                        <button className="modal-save btn btn-success" onClick={submitModal}>
-                                            <span className="glyphicon glyphicon-plus"></span> {defaultValues.add_new_organisation}
-                                        </button>
-                                    </div>   
-                                </div>
-                            </div>                   
-                        </div>
-                    </div>
+                    React.DOM.div( {className:"modalParent"}, 
+                        React.DOM.div( {className:"modalBackground"}
+                        ),
+                        React.DOM.div( {className:"modalContainer"}, 
+                            React.DOM.div( {className:"orgModal"}, 
+                                React.DOM.div( {className:"modalContents projectEdit"}, 
+                                    React.DOM.h4(null, defaultValues.add_new_organisation),
+                                    React.DOM.form( {id:"addOrganisation"}, 
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {id:"addOrgGeneralError", className:"col-md-12 help-block-error"})
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer newOrgName col-md-4"}, 
+                                                React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
+                                                React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 25 ", defaultValues.characters)
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgLongName col-md-4"}, 
+                                                React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            ),
+                                            React.DOM.div( {className:"inputContainer newOrgIatiId col-md-4"}, 
+                                                React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
+                                                React.DOM.label( {htmlFor:"newOrgIatiId", className:"control-label"}, defaultValues.iati_org_id),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
+                                                React.DOM.input( {type:"file", className:"form-control", id:"org-logo", name:"org-logo", accept:"image/*"}),
+                                                React.DOM.label( {className:"control-label", for:"org-logo"}, defaultValues.org_logo)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6"}, 
+                                                React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
+                                                    React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
+                                                    React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
+                                                    React.DOM.option( {value:"21"}, "21 - ", defaultValues.international_ngo),
+                                                    React.DOM.option( {value:"22"}, "22 - ", defaultValues.national_ngo),
+                                                    React.DOM.option( {value:"23"}, "23 - ", defaultValues.regional_ngo),
+                                                    React.DOM.option( {value:"30"}, "30 - ", defaultValues.public_private_partnership),
+                                                    React.DOM.option( {value:"40"}, "40 - ", defaultValues.multilateral),
+                                                    React.DOM.option( {value:"60"}, "60 - ", defaultValues.foundation),
+                                                    React.DOM.option( {value:"70"}, "70 - ", defaultValues.private_sector),
+                                                    React.DOM.option( {value:"80"}, "80 - ", defaultValues.academic_training_research)
+                                                ),
+                                                React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory"}, "*")),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"url", id:"url", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"url", className:"control-label"}, defaultValues.website),
+                                                React.DOM.p( {className:"help-block"}, defaultValues.start_http)
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"latitude", id:"latitude", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.input( {name:"longitude", id:"longitude", type:"text",  className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-4"}, 
+                                                React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
+                                                    React.DOM.option( {value:""}, defaultValues.country,":"),
+                                                    country_option_list
+                                                ),
+                                                React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://mygeoposition.com/", target:"_blank"}, "http://mygeoposition.com/"), " ", defaultValues.coordinates)
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_person", id:"contact_person", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_person", className:"control-label"}, defaultValues.contact_person),
+                                                React.DOM.p( {className:"help-block"})
+                                            ),
+                                            React.DOM.div( {className:"inputContainer col-md-6"}, 
+                                                React.DOM.input( {name:"contact_email", id:"contact_email", type:"text", className:"form-control"}),
+                                                React.DOM.label( {htmlFor:"contact_email", className:"control-label"}, defaultValues.contact_email),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        ),
+                                        React.DOM.div( {className:"row"}, 
+                                            React.DOM.div( {className:"inputContainer col-md-12"}, 
+                                                React.DOM.textarea( {id:"description", className:"form-control", name:"description", rows:"3"}),
+                                                React.DOM.label( {className:"control-label", htmlFor:"description"}, defaultValues.description),
+                                                React.DOM.p( {className:"help-block"})
+                                            )
+                                        )
+                                    ),
+                                    React.DOM.div( {className:"controls"}, 
+                                        React.DOM.button( {className:"modal-cancel btn btn-danger", onClick:cancelModal}, 
+                                        React.DOM.span( {className:"glyphicon glyphicon-trash"}), " ", defaultValues.cancel
+                                        ),
+                                        React.DOM.button( {className:"modal-save btn btn-success", onClick:submitModal}, 
+                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " ", defaultValues.add_new_organisation
+                                        )
+                                    )   
+                                )
+                            )                   
+                        )
+                    )
             );
         }
     });
 
     React.render(
-        <Modal />,
+        Modal(null ),
 
         // Use the footer to prevent page scroll on injection
         document.querySelector('footer')
