@@ -20,10 +20,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-contact-information"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                        </div>
                     </div>
                 </div>
                 {% for customfield in custom_fields_section_2 %}

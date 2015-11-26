@@ -16,30 +16,30 @@
             <form role="form">
                 <h5>{% trans 'Links' %}</h5>
                 <div class="form-group">
-                    <div class="link-container" id="link-container">
+                    <div class="link-container">
                         {% for link in project.links.all %}
                             {% include "myrsr/project_editor/related_objects/link_input.html" %}
                         {% empty %}
                             {% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}
                         {% endfor %}
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                         <a href="#" class="add-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                 <a href="#" class="add-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <h5>{% trans 'Document links' %}</h5>
-                <div class="document-container" id="document-container">
+                <div class="document-container">
                     {% for document in project.documents.all %}
                         {% include "myrsr/project_editor/related_objects/document_input.html" %}
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                         <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                             <a href="#" class="add-document"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
+                        </div>
                     </div>
                 </div>
                 {% for customfield in custom_fields_section_9 %}

@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="related-project-item parent" id="related_project.{{ rp.pk|default:"new-0" }}">
+<div class="related-project-item parent" id="related_project.{{ rp|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=rp %}
     <div class="hide-partial {% if rp.pk %}hidden{% endif %}">
         <div class="row">

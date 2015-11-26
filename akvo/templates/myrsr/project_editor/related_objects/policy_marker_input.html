@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="policy-marker-item parent" id="policy_marker.{{ marker.pk|default:"new-0" }}">
+<div class="policy-marker-item parent" id="policy_marker.{{ marker|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=marker %}
     <div class="hide-partial {% if marker.pk %}hidden{% endif %}">
         <div class="row">

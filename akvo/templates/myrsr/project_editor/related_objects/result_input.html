@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="result-item parent" id="result.{{ result.pk|default:"new-0" }}">
+<div class="result-item parent" id="result.{{ result|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=result %}
     <div class="hide-partial {% if result.pk %}hidden{% endif %}">
         <div class="row">
@@ -36,10 +36,10 @@
                     {% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string|add:'_'|add:result_id_string %}
                 {% endwith %}
             {% endfor %}
-        </div>
-        <div class="row form-group">
-            <div class="col-md-12 text-center add-object-link">
-                <a href="#" class="add-indicator" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>
+            <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                    <a href="#" class="add-indicator"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>
+                </div>
             </div>
         </div>
     </div>

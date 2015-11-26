@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="recipient-region-input parent" id="recipient_region.{{ rr.pk|default:"new-0" }}">
+<div class="recipient-region-input parent" id="recipient_region.{{ rr|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=rr %}
     <div class="hide-partial {% if rr.pk %}hidden{% endif %}">
         {% include choice_input with obj=rr field='region' hidden=True %}

@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="document-item parent" id="project_document.{{ document.pk|default:"new-0" }}">
+<div class="document-item parent" id="project_document.{{ document|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=document %}
     <div class="hide-partial {% if document.pk %}hidden{% endif %}">
 {# TODO: Toggle document upload #}

@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="country-budget-item-item parent" id="country_budget_item.{{ item.pk|default:"new-0" }}">
+<div class="country-budget-item-item parent" id="country_budget_item.{{ item|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=item %}
     <div class="hide-partial {% if item.pk %}hidden{% endif %}">
         <div class="row">

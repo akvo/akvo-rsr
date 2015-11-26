@@ -51,7 +51,6 @@ var partials = ['related-project', 'budget-item', 'condition', 'contact-informat
     'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
     'related-project','result', 'sector', 'transaction', 'transaction-sector',
     'location-administrative', 'project-location', 'keyword'];
-var partialsCount = {};
 
 // Measure the percentage of completion for each panel and display the results to the user
 // Which elements count as inputs?
@@ -1003,33 +1002,36 @@ function setSubmitOnClicks() {
 
 function setPartialOnClicks() {
     for (var i=0; i < partials.length; i++) {
-        var pName = partials[i];
-        var buttonSelector = '.add-' + pName;
-        var buttons = document.querySelectorAll(buttonSelector);
+        var partial = partials[i];
+        var buttons = document.querySelectorAll('.add-' + partial);
 
         for (var j = 0; j < buttons.length; j++) {
             var el = buttons[j];
             var callback;
 
             if (elHasClass(el, 'has-onclick')) {
-
                 // already set the onclick, do nothing
                 continue;
             }
 
-            elAddClass(el, 'has-onclick');
-            callback = getOnClick(pName, el.parentNode.parentNode.parentNode);
+            if (partial === 'project-link') {
+                console.log(el);
+                console.log(partial + '-container');
+                console.log(findAncestorByClass(el, partial + '-container'));
+
+            }
+            callback = addPartial(partial, findAncestorByClass(el, partial + '-container'));
             el.addEventListener('click', callback);
+            elAddClass(el, 'has-onclick');
         }
     }
 
     var removeLinks = document.querySelectorAll('.delete-related-object');
     for (var k=0; k < removeLinks.length; k++) {
-        var removeLink = removeLinks[k];
-        removeLink.onclick = setRemovePartial(removeLink);
+        removeLinks[k].onclick = setRemovePartial(removeLinks[k]);
     }
 
-    var hidePartials = document.getElementsByClassName('hide-partial-click');
+    var hidePartials = document.querySelectorAll('.hide-partial-click');
     for (var l=0; l < hidePartials.length; l++) {
         hidePartials[l].onclick = togglePartial(hidePartials[l]);
     }
@@ -1054,101 +1056,89 @@ function togglePartial(hidePartial) {
     };
 }
 
-function getOnClick(pName, parentElement) {
-    var onclick = function(e) {
+function addPartial(partialName, partialContainer) {
+    return function(e) {
         e.preventDefault();
 
-        var markupSelector = '#' + pName + '-input';
-        var containerSelector = pName + '-container';
-        var container = parentElement.querySelector('#' + containerSelector);
+        // Get partial from partial templates and add it to DOM
+        var markupSelector = '#' + partialName + '-input';
+        var partialString = document.querySelector(markupSelector).innerHTML;
+        var domParser = new DOMParser();
+        var partial = domParser.parseFromString(partialString, "text/html").querySelector('.parent');
 
-        var markup = document.querySelector(markupSelector).innerHTML;
+        // Add partial to container, before the 'Add new ..' row
+        var addRow = partialContainer.querySelector('.add-' + partialName).parentNode.parentNode;
+        partialContainer.insertBefore(partial, addRow);
 
-        var partial = document.createElement('div');
-        partial.innerHTML = markup;
+        // New related objects are always appended with "new-0", so we should remove that first
+        // and add the newID (e.g. "new-5") to it
+        var newID = 'new-' + document.querySelectorAll('.' + partialName + '-item').length;
+        var oldPartialID = partial.getAttribute('id');
 
-        var parents = partial.querySelectorAll('div.parent');
+        // Set general ID of the partial
+        partial.setAttribute('id', oldPartialID.substring(0, oldPartialID.length - 5) + newID);
 
-        for (var i = 0; i < parents.length; i++) {
-            var parent = parents[i];
-            var oldID = parent.getAttribute('id');
-            var newID = oldID + '-add-' + partialsCount[pName];
-            parent.setAttribute('id', newID);
+        // Replace names and IDs of all input, select and textarea fields
+        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+            var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
+            for (var j = 0; j < partialInputs.length; j++) {
+                var oldFieldID = partialInputs[j].getAttribute('id');
+                partialInputs[j].setAttribute('id', oldFieldID.substring(0, oldFieldID.length - 5) + newID);
+                var oldFieldName = partialInputs[j].getAttribute('name');
+                partialInputs[j].setAttribute('name', oldFieldName.substring(0, oldFieldName.length - 5) + newID);
+            }
         }
 
-        var longSelector = 'input, select, textarea';
-
-        var elements = partial.querySelectorAll(longSelector);
-
-        for (var i = 0; i < elements.length; i++) {
-            var el = elements[i];
-
-            addCountToName(el);
-        }
-
-        var datePickerContainers = partial.querySelectorAll('.datepicker-container');
-
-        for (var i = 0; i < datePickerContainers.length; i++) {
-            var el = datePickerContainers[i];
-
-            addCountToDate(el);
-        }
-
+        // Replace names and IDs of all typeahead fields
         var typeaheadContainers = partial.querySelectorAll('.typeahead-container');
+        for (var k = 0; k < typeaheadContainers.length; k++) {
+            var typeaheadParent = typeaheadContainers[k].parentNode;
+            var typeaheadParentClassList = typeaheadParent.classList;
+            for (var l = 0; l < typeaheadParentClassList.length; l++) {
+                if (typeaheadParentClassList[l].indexOf('new') > -1) {
+                    typeaheadParentClassList.add(typeaheadParentClassList[l].substring(0, typeaheadParentClassList[l].length - 5) + newID);
+                    typeaheadParentClassList.remove(typeaheadParentClassList[l]);
+                }
+            }
 
-        for (var i = 0; i < typeaheadContainers.length; i++) {
-            var el = typeaheadContainers[i];
+            // Update the data-child-id attribute
+            var oldChildId = typeaheadContainers[k].getAttribute('data-child-id');
+            typeaheadContainers[k].setAttribute('data-child-id', oldChildId.substring(0, oldChildId.length - 5) + newID);
 
-            addCountToClass(el);
+            // Update the data-child-class attribute
+            var childClassList = typeaheadContainers[k].getAttribute('data-child-class').trim().split(' ');
+            for (var m = 0; m < childClassList.length; m++) {
+                if (childClassList[m].indexOf('new') > -1) {
+                    var newChildClass = childClassList[m].substring(0, childClassList[m].length - 5) + newID;
+                    childClassList.splice(m, 1);
+                    childClassList.push(newChildClass);
+                    break;
+                }
+            }
+            typeaheadContainers[k].setAttribute('data-child-class', childClassList.join(' '));
         }
-
-        function addCountToName(el) {
-            var oldName = el.getAttribute('name');
-            var newName = oldName + '-add-' + partialsCount[pName];
-
-            el.setAttribute('name', newName);
-
-            var oldID = el.getAttribute('id');
-            var newID = oldID + '-add-' + partialsCount[pName];
-
-            el.setAttribute('id', newID);
-        }
-
-        function addCountToDate(el) {
-            var oldID = el.getAttribute('data-id');
-            var newID = oldID + '-add-' + partialsCount[pName];
-
-            el.setAttribute('data-id', newID);
-        }
-
-        // The typeahead containers need to have the unique identifying appended
-        // to the class rather than the id, so handle that separately
-        function addCountToClass(el) {
-            var oldClass = el.getAttribute('data-count-class');
-            var newClass = oldClass + '-add-' + partialsCount[pName];
-
-            elRemoveClass(el, oldClass);
-            elAddClass(el, newClass);
-
-            el.setAttribute('data-child-id', newClass);
-        }
-
-        container.appendChild(partial);
-        partialsCount[pName] += 1;
-
-        // Add any datepickers and typeaheads, help icons and change listeners for the new project partial
-        setDatepickers();
         updateTypeaheads();
-        updateHelpIcons('.' + containerSelector);
-        setSectionChangeListener(findAncestorByClass(container, 'formStep'));
-        setSectionCompletionPercentage(findAncestorByClass(container, 'formStep'));
+
+        // Replace IDs of all date fields
+        var dateContainers = partial.querySelectorAll('.datepicker-container');
+        for (var n = 0; n < dateContainers.length; n++) {
+            // Update the data-id attribute
+            var oldDataId = dateContainers[n].getAttribute('data-id');
+            dateContainers[n].setAttribute('data-id', oldDataId.substring(0, oldDataId.length - 5) + newID);
+        }
+        setDatepickers();
+
+        // TODO: update labels
+
+        // Update help icons
+        updateHelpIcons('.' + partialName + '-container');
+        setSectionChangeListener(findAncestorByClass(partialContainer, 'formStep'));
+        setSectionCompletionPercentage(findAncestorByClass(partialContainer, 'formStep'));
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
         setPartialOnClicks();
     };
-
-    return onclick;
 }
 
 function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
@@ -1739,6 +1729,7 @@ function setRemovePartial(node) {
         e.preventDefault();
 
         var parentDiv = findAncestorByClass(node, "parent");
+        var parentParent = parentDiv.parentNode;
 
         // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
         var idArray = parentDiv.getAttributeNode("id").value.split(".");
@@ -1747,7 +1738,7 @@ function setRemovePartial(node) {
 
         if (objId.indexOf("new") > -1) {
             // New object, not saved to the DB, so partial can be directly deleted
-            parentDiv.parentNode.removeChild(parentDiv);
+            parentParent.removeChild(parentDiv);
 
         } else {
             // Show warning first
@@ -1778,7 +1769,7 @@ function setRemovePartial(node) {
         }
 
         // Update the progress bars to account for the removed inputs
-        setSectionCompletionPercentage(findAncestorByClass(parentDiv, "formStep"));
+        setSectionCompletionPercentage(findAncestorByClass(parentParent, "formStep"));
     };
 }
 
@@ -2627,13 +2618,6 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorageResponses = JSON.parse(localStorageResponses);
     } catch (error) {
         localStorageResponses = {};
-    }
-
-    // Keep count of how many of each partial we've injected
-    for (var i=0; i < partials.length; i++) {
-        var partialName = partials[i];
-
-        partialsCount[partialName] = 1;
     }
 
     setAllSectionsCompletionPercentage();

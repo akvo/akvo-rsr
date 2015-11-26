@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="indicator-item parent" id="indicator.{{ indicator.pk|default:"new-0" }}">
+<div class="indicator-item parent" id="indicator.{{ indicator|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=indicator %}
     <div class="hide-partial {% if indicator.pk %}hidden{% endif %}">
         <div class="row">
@@ -41,10 +41,10 @@
                     {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
                 {% endwith %}
             {% endfor %}
-        </div>
-        <div class="row form-group">
-            <div class="col-md-12 text-center add-object-link">
-                <a href="#" class="add-indicator-period" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+            <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                    <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+                </div>
             </div>
         </div>
     </div>

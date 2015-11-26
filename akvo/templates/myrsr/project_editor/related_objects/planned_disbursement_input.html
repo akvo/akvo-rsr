@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="planned-disbursement-item parent" id="planned_disbursement.{{ pd.pk|default:"new-0" }}">
+<div class="planned-disbursement-item parent" id="planned_disbursement.{{ pd|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=pd %}
     <div class="hide-partial {% if pd.pk %}hidden{% endif %}">
         <div class="row">

@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="transaction-item parent" id="transaction.{{ transaction.pk|default:"new-0" }}">
+<div class="transaction-item parent" id="transaction.{{ transaction|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=transaction %}
     <div class="hide-partial {% if transaction.pk %}hidden{% endif %}">
         <div class="row">
@@ -57,8 +57,8 @@
                 {% include choice_input with obj=transaction field='recipient_region_vocabulary' hidden=True %}
             </div>
         </div>
-        <h5 class="hidden hide-default">{% trans 'Transaction sectors' %}</h5>
-        <div class="transaction-sector-container hidden hide-default" id="transaction-sector-container">
+        <h5 class="hide-default {% if not advanced_editor %}hidden{% endif %}">{% trans 'Transaction sectors' %}</h5>
+        <div class="transaction-sector-container hide-default {% if not advanced_editor %}hidden{% endif %}" id="transaction-sector-container">
             {% for sector in transaction.sectors.all %}
                 {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
             {% empty %}
@@ -66,10 +66,10 @@
                     {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
                 {% endwith %}
             {% endfor %}
-        </div>
-        <div class="row form-group hidden hide-default">
-            <div class="col-md-12 text-center add-object-link">
-                 <a href="#" class="add-transaction-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
+            <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                     <a href="#" class="add-transaction-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
+                </div>
             </div>
         </div>
     </div>

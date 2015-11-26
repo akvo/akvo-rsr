@@ -32,6 +32,15 @@ def retrieve_id(obj):
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 
 @register.filter
+def obj_id(obj):
+    """
+    Generates the field's ID for a given model's field.
+
+    :returns "1234" or "1234_new-0"
+    """
+    return "{0}".format(retrieve_id(obj))
+
+@register.filter
 def field_id(obj, field):
     """
     Generates the field's ID for a given model's field.

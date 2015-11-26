@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="transaction-sector-item parent" id="transaction_sector.{{ sector.pk|default:"new-0" }}">
+<div class="transaction-sector-item parent" id="transaction_sector.{{ sector|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=sector %}
     <div class="hide-partial {% if sector.pk %}hidden{% endif %}">
         <div class="row">

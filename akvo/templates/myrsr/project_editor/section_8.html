@@ -25,10 +25,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                         <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                             <a href="#" class="add-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
+                        </div>
                     </div>
                 </div>
                 <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
@@ -39,10 +39,10 @@
                         {% empty %}
                             {% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}
                         {% endfor %}
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                             <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                 <a href="#" class="add-policy-marker"> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
+                            </div>
                         </div>
                     </div>
                 </div>

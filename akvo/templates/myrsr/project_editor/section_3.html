@@ -24,10 +24,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-partner"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
+                        </div>
                     </div>
                 </div>
                 {% for customfield in custom_fields_section_3 %}

@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="condition-item parent" id="project_condition.{{ condition.pk|default:"new-0" }}">
+<div class="condition-item parent" id="project_condition.{{ condition|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=condition %}
     <div class="hide-partial {% if condition.pk %}hidden{% endif %}">
         <div class="row">

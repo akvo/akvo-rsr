@@ -28,10 +28,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-result"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
+                        </div>
                     </div>
                 </div>
                 <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
@@ -41,10 +41,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group hidden hide-default">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                    <div class="row form-group hidden hide-default">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-condition"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                        </div>
                     </div>
                 </div>
                 {% for customfield in custom_fields_section_5 %}

@@ -27,10 +27,10 @@
                     {% empty %}
                         {% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}
                     {% endfor %}
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-related-project"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                        </div>
                     </div>
                 </div>
                 {% include choice_input with obj=project field="status" not_empty=True mandatory_rsr=True mandatory_iati=True %}

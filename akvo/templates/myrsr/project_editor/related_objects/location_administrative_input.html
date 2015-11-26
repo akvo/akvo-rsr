@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="location-administrative-input parent" id="administrative_location.{{ admin.pk|default:"new-0" }}">
+<div class="location-administrative-input parent" id="administrative_location.{{ admin|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=admin %}
     <div class="hide-partial {% if admin.pk %}hidden{% endif %}">
         <div class="row">

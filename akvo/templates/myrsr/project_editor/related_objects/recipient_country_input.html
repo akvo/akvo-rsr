@@ -1,6 +1,6 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
-<div class="recipient-country-item parent" id="recipient_country.{{ rc.pk|default:"new-0" }}">
+<div class="recipient-country-item parent" id="recipient_country.{{ rc|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=rc %}
     <div class="hide-partial {% if rc.pk %}hidden{% endif %}">
         <div class="row">
