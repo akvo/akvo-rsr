@@ -88,22 +88,31 @@ function serialize(form) {
 			continue;
 		}
 		switch (form.elements[i].nodeName) {
-		case 'INPUT':
-			switch (form.elements[i].type) {
-			case 'text':
-            case 'number':
-				q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
-				break;
-			case 'file':
-				break;
-			}
-			break;
-		case 'TEXTAREA':
-			q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
-			break;
-		case 'SELECT':
-            q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
-		    break;
+            case 'INPUT':
+                switch (form.elements[i].type) {
+                    case 'text':
+                        switch (form.elements[i].parentNode.className) {
+                            case 'typeahead':
+                                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].getAttribute('value')));
+                                break;
+                            default:
+                                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                                break;
+                        }
+                        break;
+                    case 'number':
+                        q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        break;
+                    case 'file':
+                        break;
+                }
+                break;
+            case 'TEXTAREA':
+                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                break;
+            case 'SELECT':
+                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                break;
 		}
 	}
 	return q.join("&");

@@ -589,23 +589,20 @@ def pre_process_data(key, data, errors):
         else:
             return None, errors
 
-    # TODO: Base on project or organisation ID
     # In case of a foreign key, we first check if this is a project or organisation foreign key.
     # Then the data should be converted to the related object.
     if isinstance(model_field, ForeignKey):
         if data:
             if 'project' in field:
                 try:
-                    project_id = int(data[-7:-1].split(' ')[1])
-                    return Project.objects.get(pk=project_id), errors
+                    return Project.objects.get(pk=int(data)), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
                     # TODO: Can't return None
                     return None, errors
             elif 'organisation' in field:
                 try:
-                    org_name = data.split('(')[0][:-1]
-                    return Organisation.objects.get(name=org_name), errors
+                    return Organisation.objects.get(pk=int(data)), errors
                 except Exception as e:
                     errors = add_error(errors, e, key)
                     # TODO: Can't return None
