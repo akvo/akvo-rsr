@@ -62,8 +62,13 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 var MEASURE_CLASS = '.mandatory-rsr';
 var MEASURE_CLASS_IATI = '.mandatory-iati';
 
-function findAncestor(el, cls) {
+function findAncestorByClass(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
+    return el;
+}
+
+function findAncestorByTag(el, tag) {
+    while ((el = el.parentElement) && el.tagName !== tag.toUpperCase());
     return el;
 }
 
@@ -74,7 +79,7 @@ function startSave(saveButton) {
 
     saveButton.setAttribute('disabled', '');
 
-    var save_message_div = findAncestor(saveButton, 'row').querySelector('.save-message');
+    var save_message_div = findAncestorByClass(saveButton, 'row').querySelector('.save-message');
     save_message_div.innerHTML = defaultValues.saving + '...';
 }
 
@@ -86,7 +91,7 @@ function finishSave(saveButton, success, message) {
 
     saveButton.removeAttribute('disabled');
 
-    var save_message_div = findAncestor(saveButton, 'row').querySelector('.save-message');
+    var save_message_div = findAncestorByClass(saveButton, 'row').querySelector('.save-message');
     var message_div = document.createElement('div');
     var icon = document.createElement('span');
 
@@ -351,7 +356,7 @@ function submitStep(saveButton) {
         var api_url, form, form_data, request, file_request, message;
 
         // Collect form data
-        form = findAncestor(saveButton, 'form');
+        form = findAncestorByTag(saveButton, 'form');
         form_data = serialize(form);
 
         // Remove existing errors and indicate that saving has started
@@ -396,7 +401,7 @@ function submitStep(saveButton) {
 //                saveDocuments(form, api_url, step, response.new_objects);
 //            }
 
-                var section = findAncestor(form, 'formStep');
+                var section = findAncestorByClass(form, 'formStep');
                 setSectionCompletionPercentage(section);
                 setPageCompletionPercentage();
 
@@ -428,18 +433,19 @@ function submitStep(saveButton) {
     }
 }
 
-function deleteItem(itemId, itemType, parentDiv) {
-    var request;
+function deleteItem(itemId, itemType) {
+    /* Delete an item through the API, and remove the associated related object div. */
 
-    // Create request
-    request = new XMLHttpRequest();
+    var relatedObjDiv = document.getElementById(itemType + '.' + itemId);
+
+    var request = new XMLHttpRequest();
     request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            parentDiv.parentNode.removeChild(parentDiv);
+            relatedObjDiv.parentNode.removeChild(relatedObjDiv);
 
             // Update the budget in case of removed budget
             if (itemType === 'budget_item') {
@@ -449,12 +455,14 @@ function deleteItem(itemId, itemType, parentDiv) {
             return false;
         } else {
             // We reached our target server, but it returned an error
+            // TODO: Show error message
             return false;
         }
     };
 
     request.onerror = function() {
         // There was a connection error of some sort
+        // TODO: Show error message
         return false;
     };
 
@@ -699,86 +707,42 @@ function getTotalBudget() {
     request.send();
 }
 
-function confirmRemove(idArray, parentDiv) {
+function confirmRemove(objId, apiEndpoint, parentDiv) {
     return function(e) {
         e.preventDefault();
 
-        var itemId, itemType;
+//        var itemId, itemType;
+//
+//        itemId = idArray[idArray.length - 1];
+//        idArray.pop();
+//        itemType = idArray.join();
+//
+//        if (itemType === 'keyword') {
+//            itemType = 'project/' + defaultValues.project_id + '/remove_keyword';
+//        }
 
-        itemId = idArray[idArray.length - 1];
-        idArray.pop();
-        itemType = idArray.join();
-
-        if (itemType === 'keyword') {
-            itemType = 'project/' + defaultValues.project_id + '/remove_keyword';
-        }
-
-        deleteItem(itemId, itemType, parentDiv);
+        deleteItem(objId, apiEndpoint, parentDiv);
     };
 }
 
-function dismissRemove(nodeClass, nodeId, parentNode, sureNode) {
+function dismissRemove(noNode) {
     return function(e) {
         e.preventDefault();
 
-        var node, trashCan;
-
+        var sureNode = noNode.parentNode;
+        var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
-        node = document.createElement('a');
-
-        node.setAttribute('class', nodeClass);
-        node.setAttribute('id', nodeId);
+        var node = document.createElement('a');
+        node.setAttribute('class', 'delete-related-object');
         node.onclick = setRemovePartial(node);
 
-        trashCan = document.createElement('span');
+        var trashCan = document.createElement('span');
         trashCan.setAttribute('class', 'glyphicon glyphicon-trash');
 
         node.appendChild(trashCan);
         parentNode.appendChild(node);
     };
-}
-
-function removePartial(node) {
-    var parentDiv, idArray, parentParent;
-
-    parentDiv = findAncestor(node, "parent");
-    idArray = parentDiv.getAttributeNode("id").value.split("-");
-    parentParent = parentDiv.parentNode;
-
-    if (idArray[idArray.length - 2] === 'add') {
-        // New object, not saved to the DB, so partial can be directly deleted
-        parentDiv.parentNode.removeChild(parentDiv);
-    } else {
-        // Show warning first
-        var nodeClass, nodeId, noNode, parentNode, sureNode, yesNode;
-
-        nodeClass = node.getAttribute('class');
-        nodeId = node.getAttribute('id');
-
-        parentNode = node.parentNode;
-        parentNode.removeChild(node);
-
-        sureNode = document.createElement('div');
-        sureNode.innerHTML = "Are you sure?";
-
-        yesNode = document.createElement('a');
-        yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
-        yesNode.onclick = confirmRemove(idArray, parentDiv);
-        yesNode.innerHTML = 'Yes';
-
-        noNode = document.createElement('a');
-        noNode.setAttribute('style', 'color: red; margin-left: 5px;');
-        noNode.onclick = dismissRemove(nodeClass, nodeId, parentNode, sureNode);
-        noNode.innerHTML = 'No';
-
-        sureNode.appendChild(yesNode);
-        sureNode.appendChild(noNode);
-        parentNode.appendChild(sureNode);
-    }
-
-    // Update the progress bars to account for the removed inputs
-    setSectionCompletionPercentage(findAncestor(parentParent, "formStep"));
 }
 
 function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType) {
@@ -1059,23 +1023,15 @@ function setPartialOnClicks() {
         }
     }
 
-    var removeLinks;
-
-    removeLinks = document.getElementsByClassName('delete-object-button');
-
-    for (var j=0; j < removeLinks.length; j++) {
-        var removeLink;
-
-        removeLink = removeLinks[j];
+    var removeLinks = document.querySelectorAll('.delete-related-object');
+    for (var k=0; k < removeLinks.length; k++) {
+        var removeLink = removeLinks[k];
         removeLink.onclick = setRemovePartial(removeLink);
     }
 
-    var hidePartials;
-
-    hidePartials = document.getElementsByClassName('hide-partial-click');
-
-    for (var k=0; k < hidePartials.length; k++) {
-        hidePartials[k].onclick = togglePartial(hidePartials[k]);
+    var hidePartials = document.getElementsByClassName('hide-partial-click');
+    for (var l=0; l < hidePartials.length; l++) {
+        hidePartials[l].onclick = togglePartial(hidePartials[l]);
     }
 }
 
@@ -1184,8 +1140,8 @@ function getOnClick(pName, parentElement) {
         setDatepickers();
         updateTypeaheads();
         updateHelpIcons('.' + containerSelector);
-        setSectionChangeListener(findAncestor(container, 'formStep'));
-        setSectionCompletionPercentage(findAncestor(container, 'formStep'));
+        setSectionChangeListener(findAncestorByClass(container, 'formStep'));
+        setSectionCompletionPercentage(findAncestorByClass(container, 'formStep'));
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
@@ -1782,7 +1738,47 @@ function setRemovePartial(node) {
     return function(e) {
         e.preventDefault();
 
-        removePartial(node);
+        var parentDiv = findAncestorByClass(node, "parent");
+
+        // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
+        var idArray = parentDiv.getAttributeNode("id").value.split(".");
+        var apiEndpoint = idArray[0];
+        var objId = idArray[1];
+
+        if (objId.indexOf("new") > -1) {
+            // New object, not saved to the DB, so partial can be directly deleted
+            parentDiv.parentNode.removeChild(parentDiv);
+
+        } else {
+            // Show warning first
+            var nodeClass, nodeId, noNode, parentNode, sureNode, yesNode;
+
+            nodeClass = node.getAttribute('class');
+            nodeId = node.getAttribute('id');
+
+            parentNode = node.parentNode;
+            parentNode.removeChild(node);
+
+            sureNode = document.createElement('div');
+            sureNode.innerHTML = defaultValues.sure_message;
+
+            yesNode = document.createElement('a');
+            yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
+            yesNode.onclick = confirmRemove(objId, apiEndpoint, parentDiv);
+            yesNode.innerHTML = defaultValues.yes;
+
+            noNode = document.createElement('a');
+            noNode.setAttribute('style', 'color: red; margin-left: 5px;');
+            noNode.onclick = dismissRemove(noNode);
+            noNode.innerHTML = defaultValues.no;
+
+            sureNode.appendChild(yesNode);
+            sureNode.appendChild(noNode);
+            parentNode.appendChild(sureNode);
+        }
+
+        // Update the progress bars to account for the removed inputs
+        setSectionCompletionPercentage(findAncestorByClass(parentDiv, "formStep"));
     };
 }
 

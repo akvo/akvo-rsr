@@ -86,6 +86,15 @@ def field_name(obj, field):
     return check_iati_in_name(retrieve_model(obj)._meta.get_field(field).verbose_name.capitalize())
 
 @register.filter
+def field_model_name(obj):
+    """
+    Retrieves the field's model name, and makes first character uppercase.
+
+    :returns "Related project"
+    """
+    return retrieve_model(obj)._meta.verbose_name.capitalize()
+
+@register.filter
 def help_text(obj, field):
     """
     Retrieves the help text for a given model's field.

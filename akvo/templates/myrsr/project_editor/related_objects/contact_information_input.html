@@ -1,14 +1,7 @@
 {% load i18n %}
 
 <div class="contact-information-item parent" id="project_contact.{{ contact.pk|default:'new-0' }}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if contact.pk %}+{% else %}-{% endif %}</span> {% trans 'Contact' %}: <span class="unicode">{% if contact %}{{ contact }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-contact{% if contact.pk %}-{{ contact.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=contact %}
     <div class="hide-partial {% if contact.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-8">

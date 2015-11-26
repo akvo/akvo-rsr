@@ -1723,7 +1723,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   display: block; }
 .projectEdit .myPanel {
   overflow: hidden;
-  cursor: pointer;
   line-height: 25px;
   position: relative; }
   .projectEdit .myPanel .formBlock {
@@ -1755,17 +1754,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     border-radius: 5px;
     display: block;
     width: 100%;
-    cursor: pointer;
     top: initial;
     padding: 5px 5px 5px 15px;
     transition: background 0.1s linear;
-    background: rgba(44, 42, 116, 0.1); }
+    background: rgba(44, 42, 116, 0.1);
+    cursor: pointer; }
     .projectEdit .formStep > div > label:hover {
       background: rgba(32, 32, 36, 0.05); }
     .projectEdit .formStep > div > label .info-icon {
       padding-left: 0.5em;
       cursor: pointer;
-      cursor: hand;
       font-size: 90%; }
       .projectEdit .formStep > div > label .info-icon.activated {
         color: rgba(44, 42, 116, 0.3); }
@@ -1830,7 +1828,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit .delete-object-button {
+.projectEdit .delete-related-object {
   color: #d9534f; }
 .projectEdit .delete-photo-button {
   color: #d9534f; }
@@ -1887,7 +1885,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border-radius: 10px;
   display: block;
   width: 100%;
-  cursor: pointer;
   top: initial;
   padding: 5px 15px 5px 15px;
   margin-top: 10px;
@@ -1899,7 +1896,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   color: #2c2a74;
   font-size: 12px;
   margin-top: 10px;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  cursor: pointer; }
 .projectEdit .save-message {
   text-align: center; }
 .projectEdit .save-button {

@@ -17,7 +17,7 @@
                 <p class="help-block">- {% trans 'DAC-3 sector codes which are more general. For reference see:' %} <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">http://iatistandard.org/201/codelists/SectorCategory/</a>.</p>
                 <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
             </div>
-            <form role="form" class="form">
+            <form role="form">
                 <h5>{% trans 'Sectors' %}</h5>
                 <div class="sector-container" id="sector-container">
                     {% for sector in project.sectors.all %}

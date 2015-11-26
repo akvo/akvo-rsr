@@ -1,25 +1,17 @@
 {% load i18n %}
 
-<div class="related-project-item parent" id="related_project.{{ rp.pk|default:'new-0' }}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if rp.pk %}+{% else %}-{% endif %}</span> {% trans 'Related project' %}: <span class="unicode">{% if rp.pk %}{{ rp }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-related-project{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="related-project-item parent" id="related_project.{{ rp.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=rp %}
     <div class="hide-partial {% if rp.pk %}hidden{% endif %}">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6">
-                    {% if advanced_editor %}
-                        {% include typeahead_input with obj=rp field="related_project" %}
-                        {% include text_input with obj=rp field="related_iati_id" %}
-                    {% else %}
-                        {% include typeahead_input with obj=rp field="related_project" %}
-                        {% include text_input with obj=rp field="related_iati_id" hidden=True %}
-                    {% endif %}
+        <div class="row">
+            <div class="col-md-6">
+                {% if advanced_editor %}
+                    {% include typeahead_input with obj=rp field="related_project" %}
+                    {% include text_input with obj=rp field="related_iati_id" %}
+                {% else %}
+                    {% include typeahead_input with obj=rp field="related_project" %}
+                    {% include text_input with obj=rp field="related_iati_id" hidden=True %}
+                {% endif %}
 {#                    <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">#}
 {#                        <p>#}
 {#                            <input type="checkbox" id="rp-toggle{% if key %}-{{ key }}{% endif %}" {% if rp.related_iati_id and not rp.related_project %}checked{% endif %} onchange="toggleRelatedProject(this)">#}
@@ -28,10 +20,9 @@
 {#                        </p>#}
 {#                        <span class="help-block hidden">{% trans 'Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project.' %}</span>#}
 {#                    </div>#}
-                </div>
-                <div class="col-md-6">
-                    {% include choice_input with obj=rp field="relation" %}
-                </div>
+            </div>
+            <div class="col-md-6">
+                {% include choice_input with obj=rp field="relation" %}
             </div>
         </div>
     </div>

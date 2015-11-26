@@ -1,14 +1,7 @@
 {% load i18n %}
 
-<div class="link-item parent" id="link{% if link.pk %}-{{ link.pk }}{% endif %}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if link.pk %}+{% else %}-{% endif %}</span> {% trans 'Link' %}: <span class="unicode">{% if link.pk %}{{ link|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-link{% if link.pk %}-{{ link.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="link-item parent" id="link.{{ link.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=link %}
     <div class="hide-partial {% if link.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-6">

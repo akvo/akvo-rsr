@@ -1,14 +1,7 @@
 {% load i18n %}
 
-<div class="document-item parent" id="project_document{% if document.pk %}-{{ document.pk }}{% endif %}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if document.pk %}+{% else %}-{% endif %}</span> {% trans 'Document link' %}: <span class="unicode">{% if document.pk %}{{ document|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-document{% if document.pk %}-{{ document.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="document-item parent" id="project_document.{{ document.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=document %}
     <div class="hide-partial {% if document.pk %}hidden{% endif %}">
 {# TODO: Toggle document upload #}
 {#        <div class="row">#}

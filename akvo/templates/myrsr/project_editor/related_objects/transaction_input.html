@@ -1,14 +1,7 @@
 {% load i18n %}
 
-<div class="transaction-item parent" id="transaction{% if transaction.pk %}-{{ transaction.pk }}{% endif %}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if transaction.pk %}+{% else %}-{% endif %}</span> {% trans 'Transaction' %}: <span class="unicode">{% if transaction.pk %}{{ transaction }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-transaction{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="transaction-item parent" id="transaction.{{ transaction.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=transaction %}
     <div class="hide-partial {% if transaction.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-12">

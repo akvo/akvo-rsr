@@ -2218,7 +2218,6 @@ body {
     }
     .myPanel {
         overflow: hidden;
-        cursor: pointer;
         line-height: 25px;
         position: relative;
         .formBlock {
@@ -2248,18 +2247,17 @@ body {
             @include border-radius(5px);
             display: block;
             width: 100%;
-            cursor: pointer;
             top: initial;
             padding: 5px 5px 5px 15px;
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
+            cursor: pointer;
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
             .info-icon {
                 padding-left: 0.5em;
                 cursor: pointer;
-                cursor: hand;
                 font-size: 90%;
                 &.activated {
                     color: rgba(44, 42, 116, 0.3);
@@ -2369,7 +2367,7 @@ body {
             font-weight: 600;
         }
     }
-    .delete-object-button {
+    .delete-related-object {
         color: $progressWarning;
     }
     .delete-photo-button {
@@ -2445,7 +2443,6 @@ body {
         border-radius: 10px;
         display: block;
         width: 100%;
-        cursor: pointer;
         top: initial;
         padding: 5px 15px 5px 15px;
         margin-top: 10px;
@@ -2459,6 +2456,7 @@ body {
         font-size: 12px;
         margin-top: 10px;
         margin-bottom: 10px;
+        cursor: pointer;
     }
     .save-message {
         text-align: center;

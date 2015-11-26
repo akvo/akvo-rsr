@@ -1,14 +1,7 @@
 {% load i18n %}
 
-<div class="policy-marker-item parent" id="policy_marker{% if marker.pk %}-{{ marker.pk }}{% endif %}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if marker.pk %}+{% else %}-{% endif %}</span> {% trans 'Policy marker' %}: <span class="unicode">{% if marker.pk %}{{ marker }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-policy-marker{% if marker.pk %}-{{ marker.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="policy-marker-item parent" id="policy_marker.{{ marker.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=marker %}
     <div class="hide-partial {% if marker.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">

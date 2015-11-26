@@ -15,7 +15,7 @@
             <p class="help-block hidden" id="step-1-helptext">
                 {% trans 'This section contains top-level information about your project which will be used in searches.' %}
             </p>
-            <form role="form" class="form">
+            <form role="form">
                 {% include text_input with obj=project field="title" mandatory_rsr=True mandatory_iati=True %}
                 {% include text_input with obj=project field="subtitle" mandatory_rsr=True %}
                 {% include text_input with obj=project field="iati_activity_id" mandatory_iati=True hidden=True %}

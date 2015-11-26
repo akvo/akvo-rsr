@@ -1,14 +1,7 @@
 {% load i18n %}
 
-<div class="sector-item parent" id="sector{% if sector.pk %}-{{ sector.pk }}{% endif %}">
-    <div class="row partial-header">
-        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if sector.pk %}+{% else %}-{% endif %}</span> {% trans 'Sector' %}: <span class="unicode">{% if sector.pk %}{{ sector }}{% else %}({% trans 'new' %}){% endif %}</span>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-sector{% if sector.pk %}-{{ sector.pk }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-    </div>
+<div class="sector-item parent" id="sector.{{ sector.pk|default:"new-0" }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=sector %}
     <div class="hide-partial {% if sector %}hidden{% endif %}">
         {% if not sector.vocabulary %}
             <p class="help-block">{% trans 'In order to select a sector code, please select a vocabulary first. For more information, visit these links: ' %}<a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">{% trans 'DAC-3 sector codes' %}</a> {% trans 'or' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">{% trans 'DAC-5 sector codes' %}</a>.</p>
