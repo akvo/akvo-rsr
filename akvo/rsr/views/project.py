@@ -40,7 +40,7 @@ from akvo.codelists.models import SectorCategory, Sector, Version
 
 def _published_projects():
     """Return all active projects."""
-    return Project.objects.published()
+    return Project.objects.public().published()
 
 
 def _page_projects(page):
@@ -151,6 +151,17 @@ def directory(request):
 ###############################################################################
 # Project main
 ###############################################################################
+
+def _check_project_viewing_permissions(user, project):
+    """
+    Checks if the user can view a project, otherwise raises a PermissionDenied exception.
+
+    A user can view any public project, but when a project is private or not published the user
+    should be logged in and able to make changes to the project (e.g. be an admin of the project).
+    """
+    if not ((project.is_public and project.is_published())
+            or user.has_perm('rsr.change_project', project)):
+        raise PermissionDenied
 
 
 def _get_accordion_data(project):
@@ -354,12 +365,9 @@ def main(request, project_id):
     except Project.DoesNotExist:
         raise Http404
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.is_anonymous() and \
-            not request.user.has_perm('rsr.change_project', project):
-        raise PermissionDenied
+    # Permissions
+    _check_project_viewing_permissions(request.user, project)
 
-    # Permissions: project admin
     if not request.user.is_anonymous() and (
             request.user.is_superuser or request.user.is_admin or
             True in [request.user.admin_of(partner) for partner in project.partners.all()]):
@@ -412,8 +420,7 @@ def hierarchy(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
-        raise PermissionDenied
+    _check_project_viewing_permissions(request.user, project)
 
     if not project.has_relations():
         raise Http404
@@ -463,8 +470,10 @@ def finance(request, project_id):
 
 def iati(request, project_id):
     """Generate the IATI file on-the-fly and return the XML."""
-    iati_activities = IatiXML(Project.objects.filter(pk=project_id)).iati_activities
-    xml_data = etree.tostring(etree.ElementTree(iati_activities))
+    project = get_object_or_404(Project, pk=project_id)
+    if not project.is_public:
+        raise PermissionDenied
+    xml_data = etree.tostring(etree.ElementTree(IatiXML([project]).iati_activities))
     return HttpResponse(xml_data, content_type="text/xml")
 
 
@@ -478,8 +487,10 @@ def widgets(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     selected_widget = request.GET.get('widget', None)
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+    # Do not show private projects, and non-editors are not allowed to view unpublished projects
+    if not project.is_public or \
+            (not project.is_published() and not request.user.is_anonymous() and
+             not request.user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
     context = {
@@ -501,9 +512,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     """."""
     project = get_object_or_404(Project, id=project_id)
 
-    # Non-editors are not allowed to view unpublished projects
-    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
-        raise PermissionDenied
+    # Permissions
+    _check_project_viewing_permissions(request.user, project)
 
     # Check if user is allowed to place updates for this project
     allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
@@ -540,17 +550,6 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     }
 
     return render(request, 'update_add.html', context)
-
-
-def search(request):
-    """."""
-    context = {'projects': Project.objects.published()}
-    return render(request, 'project_search.html', context)
-
-
-def donations_disabled(project):
-    """."""
-    return not project.donate_button
 
 
 def can_accept_donations(project):

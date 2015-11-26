@@ -602,9 +602,12 @@ nav.navbar-fixed-top {
 .myProjectList {
     tbody {
         tr {
-            background: rgba($akvoBlack, 0.1) !important;
-            &.isPublished {
-                background: white !important;
+            background: white !important;
+            &.notPublished {
+                background: rgba($progressWarning, 0.1) !important;
+            }
+            &.isPrivate {
+                background: rgba($progressNot, 0.1) !important;
             }
         }
     }

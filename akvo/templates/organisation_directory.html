@@ -84,9 +84,9 @@
         </div>
         <div class="col-sm-3 hidden-xs hidden-sm additionalInfo">
           <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
-          <div class=""><i class="fa fa-folder-o"></i> <span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
-          <div class=""><i class="fa fa-user"></i> <span>{{o.employees.count}} {% trans "users" %}</span></div>
-          <div class=""><i class="fa fa-camera-retro"></i> <span>{{o.all_updates.count}} {% trans "updates" %}</span></div>
+          <div class=""><i class="fa fa-folder-o"></i> <span>{{o.num_projects}} {% trans "projects" %}</span></div>
+          <div class=""><i class="fa fa-user"></i> <span>{{o.num_employees}} {% trans "users" %}</span></div>
+          <div class=""><i class="fa fa-camera-retro"></i> <span>{{o.num_updates}} {% trans "updates" %}</span></div>
         </div>
         {% if o.facebook or o.twitter or o.linkedin %}
           <div class="col-md-3 hidden-xs hidden-sm">

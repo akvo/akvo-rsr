@@ -36,7 +36,7 @@ class ProjectCondition(models.Model):
     )
 
     def __unicode__(self):
-        return self.text if self.text else "%s" % _(u'No condition specified')
+        return self.text if self.text else u'%s' % _(u'No condition specified')
 
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')
