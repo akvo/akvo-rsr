@@ -1,6 +1,6 @@
 {% load project_editor %}
 
-<div class="control {{ obj|field_class_id:field }}{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+<div class="form-group control {{ obj|field_class_id:field }}{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
     <div class="typeahead-container {{ obj|field_class:field }}"
         data-child-id="{{ obj|field_id:field }}"
         data-child-class="{{ obj|field_class_id:field }}

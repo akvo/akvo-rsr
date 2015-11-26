@@ -1,6 +1,6 @@
 {% load project_editor %}
 
-<div class="{% if hidden and not advanced_editor %}hide-default hidden{% endif %}">
+<div class="form-group {% if hidden and not advanced_editor %}hide-default hidden{% endif %}">
     <div class="input-group control">
         <input type="text"
                name="{{ obj|field_id:field }}"

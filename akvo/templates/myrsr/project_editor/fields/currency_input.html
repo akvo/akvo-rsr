@@ -1,6 +1,6 @@
 {% load project_editor %}
 
-<div class="{% if hidden and not advanced_editor %}hide-default hidden{% endif %}">
+<div class="form-group {% if hidden and not advanced_editor %}hide-default hidden{% endif %}">
     <div class="input-group control">
         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
         <input type="text"
