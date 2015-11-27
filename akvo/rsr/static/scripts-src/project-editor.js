@@ -213,96 +213,32 @@ function addErrors(errors) {
     }
 }
 
-function replaceNames(newObjects, excludeClass) {
-    for (var i = 0; i < newObjects.length; i++) {
-        var parentNode, newParentNodeId, otherParents, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
+function replaceNames(newObjects) {
+    /* Update the names and IDs of fields.
+       Also show the new unicode of related objects in the header. */
 
-        parentNode = document.getElementById(newObjects[i].div_id);
-        newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+    for (var i = 0; i < newObjects.length; i++) {
+        // Update parent node ID
+        var parentNode = document.getElementById(newObjects[i].old_id);
+        var newParentNodeId = newObjects[i].old_id.split('.')[0] + '.' + newObjects[i].new_id;
         parentNode.setAttribute("id", newParentNodeId);
 
-        otherParents = parentNode.querySelectorAll('.parent');
+        // Update unicode
+        var unicodeNode = parentNode.querySelector('.unicode');
+        unicodeNode.innerHTML = newObjects[i].unicode;
 
-        try {
-            var newUnicode, unicodeNode;
+        // Update IDs and names of all input fields
+        for (var j = 0; j < INPUT_ELEMENTS.length; j++) {
+            var inputElement = INPUT_ELEMENTS[j];
+            var relObjectElements = parentNode.querySelectorAll(inputElement);
 
-            newUnicode = newObjects[i].unicode;
-            unicodeNode = parentNode.getElementsByClassName('unicode')[0];
-
-            unicodeNode.innerHTML = newUnicode;
-        } catch (error) {
-            // No new unicode
-        }
-
-        if (excludeClass === undefined) {
-
-            inputs = parentNode.querySelectorAll('input');
-            selects = parentNode.querySelectorAll('select');
-            textareas = parentNode.querySelectorAll('textarea');
-
-            excludedInputs = [];
-            excludedSelects = [];
-            excludedTextareas = [];
-        } else {
-            inputs = parentNode.querySelectorAll('input:not(.' + excludeClass + ')');
-            selects = parentNode.querySelectorAll('select:not(.' + excludeClass + ')');
-            textareas = parentNode.querySelectorAll('textarea:not(.' + excludeClass + ')');
-
-            excludedInputs = parentNode.querySelectorAll('input.' + excludeClass);
-            excludedSelects = parentNode.querySelectorAll('select.' + excludeClass);
-            excludedTextareas = parentNode.querySelectorAll('textarea.' + excludeClass);
-        }
-
-        for (var j=0; j < inputs.length; j++) {
-            var newInputId = inputs[j].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
-            inputs[j].setAttribute("id", newInputId);
-            inputs[j].setAttribute("name", newInputId);
-        }
-
-        for (var k=0; k < selects.length; k++) {
-            var newSelectId = selects[k].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
-            selects[k].setAttribute("id", newSelectId);
-            selects[k].setAttribute("name", newSelectId);
-        }
-
-        for (var l=0; l < textareas.length; l++) {
-            var newTextareaId = textareas[l].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
-            textareas[l].setAttribute("id", newTextareaId);
-            textareas[l].setAttribute("name", newTextareaId);
-        }
-
-        for (var m=0; m < excludedInputs.length; m++) {
-            if (!(excludedInputs[m].hasAttribute(excludeClass))) {
-                var newExcludedInputId = excludedInputs[m].getAttributeNode("id").value + '-' + newObjects[i].new_id;
-                excludedInputs[m].setAttribute("id", newExcludedInputId);
-                excludedInputs[m].setAttribute("name", newExcludedInputId);
-                excludedInputs[m].setAttribute(excludeClass, "");
-            }
-        }
-
-        for (var n=0; n < excludedSelects.length; n++) {
-            if (!(excludedSelects[n].hasAttribute(excludeClass))) {
-                var newExcludedSelectId = excludedSelects[n].getAttributeNode("id").value + '-' + newObjects[i].new_id;
-                excludedSelects[n].setAttribute("id", newExcludedSelectId);
-                excludedSelects[n].setAttribute("name", newExcludedSelectId);
-                excludedSelects[n].setAttribute(excludeClass, "");
-            }
-        }
-
-        for (var o=0; o < excludedTextareas.length; o++) {
-            if (!(excludedTextareas[o].hasAttribute(excludeClass))) {
-                var newExcludedTextareaId = excludedTextareas[o].getAttributeNode("id").value + '-' + newObjects[i].new_id;
-                excludedTextareas[o].setAttribute("id", newExcludedTextareaId);
-                excludedTextareas[o].setAttribute("name", newExcludedTextareaId);
-                excludedTextareas[o].setAttribute(excludeClass, "");
-            }
-        }
-
-        for (var p=0; p < otherParents.length; p++) {
-            if (!(otherParents[p].hasAttribute(excludeClass))) {
-                var newOtherParentId = otherParents[p].getAttributeNode("id").value + '-' + newObjects[i].new_id;
-                otherParents[p].setAttribute("id", newOtherParentId);
-                otherParents[p].setAttribute(excludeClass, "");
+            for (var k = 0; k < relObjectElements.length; k++) {
+                var relObjectElement = relObjectElements[k];
+                var oldId = relObjectElement.getAttribute('id');
+                var idList = oldId.split('.');
+                var newId = [idList[0], idList[1], newObjects[i].new_id].join('.');
+                relObjectElement.setAttribute('id', newId);
+                relObjectElement.setAttribute('name', newId);
             }
         }
     }
@@ -443,8 +379,8 @@ function submitStep(saveButton) {
                     formElement.setAttribute('saved-value', response.changes[i][1]);
                 }
 
-                // TODO: Replace field names
-//            replaceNames(response.rel_objects, 'indicator');
+                // Replace field IDs, names and unicode
+                replaceNames(response.rel_objects);
 
                 var section = findAncestorByClass(form, 'formStep');
                 setSectionCompletionPercentage(section);
@@ -452,7 +388,7 @@ function submitStep(saveButton) {
 
                 return false;
             } else if (request.status === 403) {
-                // TODO: Not allowed to save
+                // TODO: Not allowed to save, add error message
                 finishSave(saveButton, message);
                 return false;
             } else {

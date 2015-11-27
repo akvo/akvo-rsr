@@ -620,7 +620,53 @@ def pre_process_data(key, data, errors):
             return None, errors
 
 
+def convert_related_objects(rel_objects):
+    """Convert related objects so that it can be used in the template."""
+    model_to_api = {
+        'relatedproject': 'related_project',
+        'projectcontact': 'project_contact',
+        'indicatorperiod': 'indicator_period',
+        'projectcondition': 'project_condition',
+        'budgetitem': 'budget_item',
+        'countrybudgetitem': 'country_budget_item',
+        'transactionsector': 'transaction_sector',
+        'planneddisbursement': 'planned_disbursement',
+        'projectlocation': 'project_location',
+        'administrativelocation': 'administrative_location',
+        'recipientcountry': 'recipient_country',
+        'recipientregion': 'recipient_region',
+        'policymarker': 'policy_marker',
+        'projectdocument': 'project_document',
+    }
+
+    new_rel_objects = []
+
+    for key in rel_objects.keys():
+        # First retrieve the unicode and create a new dict including the unicode
+        db_table, old_key = key.split('.')
+        Model = get_model(db_table.split('_')[0], db_table.split('_')[1])
+        unicode = Model.objects.get(pk=int(rel_objects[key])).__unicode__()
+        new_dict_response = {
+            'new_id': rel_objects[key],
+            'unicode': unicode
+        }
+
+        # remove the 'rsr_' part (e.g. a key can be 'rsr_relatedproject') and look up the db_table
+        # in the mapping, or take the default otherwise
+        db_table = db_table[4:]
+        if db_table in model_to_api.keys():
+            new_dict_response['old_id'] = '{0}.{1}'.format(model_to_api[db_table], old_key)
+        else:
+            new_dict_response['old_id'] = '{0}.{1}'.format(db_table, old_key)
+
+        new_rel_objects.append(new_dict_response)
+
+    return new_rel_objects
+
+
 def add_changes(changes, obj, field, field_name, orig_data):
+    """Add the changes to the changes list in the required format."""
+
     if not obj in [change[0] for change in changes]:
         changes.append([obj, [(field, field_name, orig_data)]])
     else:
@@ -631,19 +677,19 @@ def add_changes(changes, obj, field, field_name, orig_data):
     return changes
 
 
-def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes, errors):
+def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes, errors,
+                  rel_objects, related_obj_id):
     """Update an existing object."""
     try:
         obj = Model.objects.get(pk=obj_id)
         setattr(obj, field, obj_data)
-        # if isinstance(Model, Project):
         obj.full_clean(exclude=['primary_location',
                                 'primary_organisation',
                                 'last_update'])
-        # else:
-        #     obj.full_clean()
         obj.save(update_fields=[field])
         changes = add_changes(changes, obj, field, field_name, orig_data)
+        if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
+            rel_objects[related_obj_id] = obj.pk
 
     except Exception as e:
         if field in dict(e).keys():
@@ -651,7 +697,7 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         else:
             errors = add_error(errors, e, field_name)
 
-    return changes, errors
+    return changes, errors, rel_objects
 
 
 def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
@@ -710,19 +756,20 @@ def project_editor(request, pk=None):
             # We pre-process the data first. E.g. dates will be converted to datetime objects
             obj_data, errors = pre_process_data(key, data[key], errors)
 
-            # Retrieve the model
+            # Retrieve the model and related object ID (e.g. rsr_project.1234)
             Model = get_model(model[0], model[1])
+            related_obj_id = model[0] + '_' + model[1] + '.' + '_'.join(id_list)
 
             if len(id_list) == 1:
                 # Already existing object, update it
-                changes, errors = update_object(
-                    Model, id_list[0], field, obj_data, key, data[key], changes, errors
+                changes, errors, rel_objects = update_object(
+                    Model, id_list[0], field, obj_data, key, data[key], changes, errors,
+                    rel_objects, related_obj_id
                 )
                 data.pop(key, None)
 
             else:
                 # New object, with potentially a new parent as well
-                related_obj_id = model[0] + '_' + model[1] + '.' + '_'.join(id_list)
                 parent_id = '_'.join(id_list[:-1])
 
                 if not 'new' in parent_id:
@@ -751,9 +798,9 @@ def project_editor(request, pk=None):
                         data.pop(key, None)
                     else:
                         # Object was already created earlier in this script, update object
-                        changes, errors = update_object(
+                        changes, errors, rel_objects = update_object(
                             Model, rel_objects[related_obj_id], field, obj_data, key, data[key],
-                            changes, errors
+                            changes, errors, rel_objects, related_obj_id
                         )
                         data.pop(key, None)
 
@@ -790,9 +837,9 @@ def project_editor(request, pk=None):
                             data.pop(key, None)
                         else:
                             # Related object itself has also been created earlier, update it
-                            changes, errors = update_object(
+                            changes, errors, rel_objects = update_object(
                                 Model, rel_objects[related_obj_id], field, obj_data, key, data[key],
-                                changes, errors
+                                changes, errors, rel_objects, related_obj_id
                             )
                             data.pop(key, None)
 
@@ -819,17 +866,12 @@ def project_editor(request, pk=None):
     #         )
     #
     #         errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-    #
-    # # Log changes
-    # field_changes = log_changes(changes, user, project)
-
-    changes = log_changes(changes, user, project)
 
     return Response(
         {
-            'changes': changes,
+            'changes': log_changes(changes, user, project),
             'errors': errors,
-            'rel_objects': [rel_objects],
+            'rel_objects': convert_related_objects(rel_objects),
             'need_saving': [data],
         }
     )
