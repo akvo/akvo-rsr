@@ -204,51 +204,10 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         return Http404
 
+    if not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
+
     advanced_editor = request.GET.get('advanced', False)
-
-    budget_item_labels = BudgetItemLabel.objects.all()
-    countries = Country.objects.only('name').all()
-    keywords = Keyword.objects.all()
-
-    # IATI codelists
-    def get_codelist(codelist, version):
-        """Retrieve the codelist from the codelist models."""
-        return codelist.objects.only('code', 'name', 'version').filter(version=version)
-
-    iati_version = Version.objects.get(code=settings.IATI_VERSION)
-
-    activity_scopes = get_codelist(ActivityScope, iati_version)
-    aid_types = get_codelist(AidType, iati_version)
-    budget_identifiers = get_codelist(BudgetIdentifier, iati_version)
-    budget_identifier_vocabularies = get_codelist(BudgetIdentifierVocabulary, iati_version)
-    budget_types = get_codelist(BudgetType, iati_version)
-    collaboration_types = get_codelist(CollaborationType, iati_version)
-    condition_types = get_codelist(ConditionType, iati_version)
-    contact_types = get_codelist(ContactType, iati_version)
-    document_categories = get_codelist(DocumentCategory, iati_version)
-    disbursement_channels = get_codelist(DisbursementChannel, iati_version)
-    file_formats = get_codelist(FileFormat, iati_version)
-    finance_types = get_codelist(FinanceType, iati_version)
-    flow_types = get_codelist(FlowType, iati_version)
-    geographical_precisions = get_codelist(GeographicalPrecision, iati_version)
-    geographic_exactnesses = get_codelist(GeographicExactness, iati_version)
-    geographic_location_classes = get_codelist(GeographicLocationClass, iati_version)
-    geographic_location_reaches = get_codelist(GeographicLocationReach, iati_version)
-    geographic_vocabularies = get_codelist(GeographicVocabulary, iati_version)
-    iati_countries = get_codelist(IatiCountry, iati_version)
-    indicator_measures = get_codelist(IndicatorMeasure, iati_version)
-    languages = get_codelist(Language, iati_version)
-    location_types = get_codelist(LocationType, iati_version)
-    policy_markers = get_codelist(PolicyMarker, iati_version)
-    policy_significances = get_codelist(PolicySignificance, iati_version)
-    regions = get_codelist(Region, iati_version)
-    region_vocabularies = get_codelist(RegionVocabulary, iati_version)
-    result_types = get_codelist(ResultType, iati_version)
-    sector_codes = get_codelist(Sector, iati_version)
-    sector_category_codes = get_codelist(SectorCategory, iati_version)
-    sector_vocabularies = get_codelist(SectorVocabulary, iati_version)
-    tied_statuses = get_codelist(TiedStatus, iati_version)
-    transaction_types = get_codelist(TransactionType, iati_version)
 
     # Custom fields
     custom_fields_section_1 = project.custom_fields.filter(section=1).order_by('order', 'id')
@@ -267,65 +226,6 @@ def project_editor(request, project_id):
         'project': project,
         'projectmodel': Project,
         'advanced_editor': advanced_editor,
-
-        # RSR codes
-        'budget_item_labels': budget_item_labels,
-        'countries': countries,
-        'keywords': keywords,
-
-        # IATI codelists
-        'activity_scopes': activity_scopes,
-        'aid_types': aid_types,
-        'budget_identifiers': budget_identifiers,
-        'budget_identifier_vocabularies': budget_identifier_vocabularies,
-        'budget_types': budget_types,
-        'collaboration_types': collaboration_types,
-        'condition_types': condition_types,
-        'contact_types': contact_types,
-        'document_categories': document_categories,
-        'disbursement_channels': disbursement_channels,
-        'file_formats': file_formats.filter(code__in=[
-            'application/pdf',
-            'application/vnd.ms-excel',
-            'application/msword',
-            'text/html',
-            'application/rtf',
-            'application/vnd.ms-powerpoint',
-            'image/png',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'image/jpeg',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'image/tiff',
-            'application/vnd.oasis.opendocument.text',
-            'text/xml',
-            'application/octet-stream',
-            'image/gif',
-            'text/plain',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
-            'text/enriched',
-            'text/csv',
-            'application/zip']),
-        'finance_types': finance_types,
-        'flow_types': flow_types,
-        'geographical_precisions': geographical_precisions,
-        'geographic_exactnesses': geographic_exactnesses,
-        'geographic_location_classes': geographic_location_classes,
-        'geographic_location_reaches': geographic_location_reaches,
-        'geographic_vocabularies': geographic_vocabularies,
-        'iati_countries': iati_countries,
-        'indicator_measures': indicator_measures,
-        'languages': languages,
-        'location_types': location_types,
-        'policy_markers': policy_markers,
-        'policy_significances': policy_significances,
-        'regions': regions,
-        'region_vocabularies': region_vocabularies,
-        'result_types': result_types,
-        'tied_statuses': tied_statuses,
-        'sector_codes': sector_codes,
-        'sector_category_codes': sector_category_codes,
-        'sector_vocabularies': sector_vocabularies.filter(code__in=[1,2]),
-        'transaction_types': transaction_types,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,

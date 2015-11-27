@@ -234,11 +234,14 @@ function replaceNames(newObjects) {
 
             for (var k = 0; k < relObjectElements.length; k++) {
                 var relObjectElement = relObjectElements[k];
-                var oldId = relObjectElement.getAttribute('id');
-                var idList = oldId.split('.');
-                var newId = [idList[0], idList[1], newObjects[i].new_id].join('.');
-                relObjectElement.setAttribute('id', newId);
-                relObjectElement.setAttribute('name', newId);
+                // Prevent that the underlying objects get updated as well
+                if (findAncestorByClass(relObjectElement, 'parent') === parentNode) {
+                    var oldId = relObjectElement.getAttribute('id');
+                    var idList = oldId.split('.');
+                    var newId = [idList[0], idList[1], newObjects[i].new_id].join('.');
+                    relObjectElement.setAttribute('id', newId);
+                    relObjectElement.setAttribute('name', newId);
+                }
             }
         }
     }
