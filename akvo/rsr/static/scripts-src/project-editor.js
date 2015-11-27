@@ -77,47 +77,50 @@ function fieldIsHidden(node) {
 // Source: http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.js
 function serialize(form) {
     /* Serialize the form so that it can be sent through the API.
-       Modified to skip hidden fields and added / removed some field types. */
+       Modified to skip hidden fields and added / removed some field types.
+       Modified to only serialize fields that have been changed. */
 
 	if (!form || form.nodeName !== "FORM") {
 		return;
 	}
 	var  q = [];
 	for (var i = 0; i < form.elements.length; i++) {
-		if (form.elements[i].name === "" || !fieldIsHidden(form.elements[i])) {
+        var formField = form.elements[i];
+
+		if (formField.name === "" || !fieldIsHidden(formField) || !fieldChanged(formField)) {
 			continue;
 		}
-		switch (form.elements[i].nodeName) {
+
+		switch (formField.nodeName) {
             case 'INPUT':
-                switch (form.elements[i].type) {
+                switch (formField.type) {
                     case 'text':
-                        switch (form.elements[i].parentNode.className) {
+                        switch (formField.parentNode.className) {
                             case 'typeahead':
-                                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].getAttribute('value')));
+                                q.push(formField.name + "=" + encodeURIComponent(formField.getAttribute('value')));
                                 break;
                             default:
-                                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                                q.push(formField.name + "=" + encodeURIComponent(formField.value));
                                 break;
                         }
                         break;
                     case 'number':
-                        q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        q.push(formField.name + "=" + encodeURIComponent(formField.value));
                         break;
                     case 'file':
                         break;
                 }
                 break;
             case 'TEXTAREA':
-                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                q.push(formField.name + "=" + encodeURIComponent(formField.value));
                 break;
             case 'SELECT':
-                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                q.push(formField.name + "=" + encodeURIComponent(formField.value));
                 break;
 		}
 	}
 	return q.join("&");
 }
-
 
 function startSave(saveButton) {
     /* Indicate that saving has started:
@@ -432,27 +435,20 @@ function submitStep(saveButton) {
                     finishSave(saveButton, true, message);
                 }
 
-                // TODO: Replace saved values
-//            for (var i=0; i < response.changes.length; i++) {
-//                var formElement;
-//
-//                formElement = document.getElementById(response.changes[i][0]);
-//                formElement.setAttribute('saved-value', response.changes[i][1]);
-//            }
+                // Replace saved values
+                for (var i=0; i < response.changes.length; i++) {
+                    var formElement;
+
+                    formElement = document.getElementById(response.changes[i][0]);
+                    formElement.setAttribute('saved-value', response.changes[i][1]);
+                }
 
                 // TODO: Replace field names
 //            replaceNames(response.rel_objects, 'indicator');
 
-//            TODO: save documents
-//            if (step === '9') {
-//                saveDocuments(form, api_url, step, response.new_objects);
-//            }
-
                 var section = findAncestorByClass(form, 'formStep');
                 setSectionCompletionPercentage(section);
                 setPageCompletionPercentage();
-
-
 
                 return false;
             } else if (request.status === 403) {
@@ -2125,6 +2121,16 @@ function setDatepickers() {
 
             datepickerContainer.className += ' has-datepicker';
         }
+    }
+}
+
+function fieldChanged(inputField) {
+    /* Check if a field has changed, based on it's value and saved-value */
+
+    if (inputField.parentNode.className === 'typeahead') {
+        return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'))
+    } else {
+        return (inputField.value !== inputField.getAttribute('saved-value'))
     }
 }
 

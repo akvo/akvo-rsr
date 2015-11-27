@@ -507,10 +507,12 @@ def log_addition(obj, user):
 def split_key(key):
     """
     Helper function for splitting the keys of the form data. Key input will be a string like
-    'rsr_project.title.1234' and it will return a tuple as such: ('rsr', 'project'), 'title', '1234'
+    'rsr_relatedproject.relation.1234_new-0' and it will return a tuple as such:
+
+    ('rsr', 'relatedproject'), 'relation', ('1234', 'new-0')
     """
     key_info = key.split('.')
-    return key_info[0].split('_'), key_info[1], key_info[2]
+    return key_info[0].split('_'), key_info[1], key_info[2].split('_')
 
 
 def pre_process_data(key, data, errors):
@@ -593,36 +595,20 @@ def pre_process_data(key, data, errors):
     # Then the data should be converted to the related object.
     if isinstance(model_field, ForeignKey):
         if data:
-            if 'project' in field:
-                try:
+            try:
+                if 'project' in field:
                     return Project.objects.get(pk=int(data)), errors
-                except Exception as e:
-                    errors = add_error(errors, e, key)
-                    # TODO: Can't return None
-                    return None, errors
-            elif 'organisation' in field:
-                try:
+                elif 'organisation' in field:
                     return Organisation.objects.get(pk=int(data)), errors
-                except Exception as e:
-                    errors = add_error(errors, e, key)
-                    # TODO: Can't return None
-                    return None, errors
-            elif 'label' in field:
-                try:
+                elif 'label' in field:
                     return BudgetItemLabel.objects.get(pk=int(data)), errors
-                except Exception as e:
-                    errors = add_error(errors, e, key)
-                    # TODO: Can't return None
-                    return None, errors
-            elif 'country' in field:
-                try:
+                elif 'country' in field:
                     return Country.objects.get(pk=int(data)), errors
-                except Exception as e:
-                    errors = add_error(errors, e, key)
-                    # TODO: Can't return None
-                    return None, errors
+            except (Project.DoesNotExist, Organisation.DoesNotExist, BudgetItemLabel.DoesNotExist,
+                    Country.DoesNotExist) as e:
+                errors = add_error(errors, e, key)
+                return None, errors
         else:
-            # TODO: Can't return None
             return None, errors
 
     # Keywords is the only ManyToManyField
@@ -631,8 +617,60 @@ def pre_process_data(key, data, errors):
             return Keyword.objects.get(pk=int(data))
         except Exception as e:
             errors = add_error(errors, e, key)
-            # TODO: Can't return None
             return None, errors
+
+
+def add_changes(changes, obj, field, field_name, orig_data):
+    if not obj in [change[0] for change in changes]:
+        changes.append([obj, [(field, field_name, orig_data)]])
+    else:
+        for change in changes:
+            if obj == change[0]:
+                change[1].append((field, field_name, orig_data))
+                break
+    return changes
+
+
+def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes, errors):
+    """Update an existing object."""
+    try:
+        obj = Model.objects.get(pk=obj_id)
+        setattr(obj, field, obj_data)
+        # if isinstance(Model, Project):
+        obj.full_clean(exclude=['primary_location',
+                                'primary_organisation',
+                                'last_update'])
+        # else:
+        #     obj.full_clean()
+        obj.save(update_fields=[field])
+        changes = add_changes(changes, obj, field, field_name, orig_data)
+
+    except Exception as e:
+        if field in dict(e).keys():
+            errors = add_error(errors, str(dict(e)[field][0]), field_name)
+        else:
+            errors = add_error(errors, e, field_name)
+
+    return changes, errors
+
+
+def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
+                  related_obj_id):
+    """Create a new object."""
+    try:
+        obj = Model.objects.create(**kwargs)
+        obj.full_clean()
+        changes = add_changes(changes, obj, field, field_name, orig_data)
+        rel_objects[related_obj_id] = obj.pk
+
+    except Exception as e:
+        if field in dict(e).keys():
+            errors = add_error(errors, str(dict(e)[field][0]), field_name)
+        else:
+            errors = add_error(errors, e, field_name)
+
+    return changes, errors, rel_objects
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -650,39 +688,49 @@ def project_editor(request, pk=None):
     data = request.POST.copy()
     errors, changes, rel_objects = [], [], {}
 
-    # Run through the form data 3 times to be sure that all nested objects will be created
+    # Run through the form data 3 times to be sure that all nested objects will be created.
+    #
+    # Keys like this are possible: 'rsr_indicatorperiod.period_start.1234_new-0_new-0_new-0'
+    # Meaning that there is a new indicator period (the last id is 'new-0'), with a new indicator
+    # (second last id is also 'new-0'), with a new result (second id is also 'new-0'), on an
+    # existing project (project id is '1234').
+    # So this script runs 3 times, the first time it is at least able to connect the result to the
+    # project and create a result id, which will be stored in rel_objects. The second time it will
+    # definitely be able to create the indicator id, etc.
+    #
+    # In the end, rel_objects will could look like this:
+    # {'rsr_result.1234_new-0': 12, 'rsr_indicator.1234_new-0_new-0': 34, etc.}
+
     for i in range(3):
         for key in data.keys():
             # The keys in form data are of format "rsr_project.title.1234".
-            # Separated by .'s, the data contains the model name, field name and object id
-            model, field, obj_id = split_key(key)
+            # Separated by .'s, the data contains the model name, field name and object id list
+            model, field, id_list = split_key(key)
 
-            # We pre-process the data first. For example, dates will be converted to datetime
-            # objects.
+            # We pre-process the data first. E.g. dates will be converted to datetime objects
             obj_data, errors = pre_process_data(key, data[key], errors)
 
             # Retrieve the model
             Model = get_model(model[0], model[1])
 
-            if not '_' in obj_id:
+            if len(id_list) == 1:
                 # Already existing object, update it
-                obj = Model.objects.get(pk=obj_id)
-                setattr(obj, field, obj_data)
-                obj.save(update_fields=[field])
-                changes.append(field)
+                changes, errors = update_object(
+                    Model, id_list[0], field, obj_data, key, data[key], changes, errors
+                )
                 data.pop(key, None)
 
             else:
                 # New object, with potentially a new parent as well
-                related_obj_id = model[0] + '_' + model[1] + '.' + obj_id
-                id_list = obj_id.split('_')
+                related_obj_id = model[0] + '_' + model[1] + '.' + '_'.join(id_list)
                 parent_id = '_'.join(id_list[:-1])
 
                 if not 'new' in parent_id:
-                    # New object with existing parent
+                    # New object, but parent is already existing
                     parent_obj_id = id_list[-2]
 
                     if related_obj_id not in rel_objects.keys():
+                        # Related object has not yet been created (not added to rel_objects dict)
                         kwargs = dict()
                         kwargs[field] = obj_data
 
@@ -694,36 +742,33 @@ def project_editor(request, pk=None):
                             # Project is the related object
                             kwargs['project'] = Project.objects.get(pk=parent_obj_id)
 
-                        # Create new object
-                        obj = Model.objects.create(**kwargs)
-                        setattr(obj, field, obj_data)
-                        obj.save(update_fields=[field])
-                        changes.append(field)
-                        rel_objects[related_obj_id] = obj.pk
+                        # Add field data, create new object and add new id to rel_objects dict
+                        kwargs[field] = obj_data
+                        changes, errors, rel_objects = create_object(
+                            Model, kwargs, field, key, data[key], changes, errors, rel_objects,
+                            related_obj_id
+                        )
                         data.pop(key, None)
                     else:
-                        # Object was already created earlier, update it
-                        obj = Model.objects.get(pk=rel_objects[related_obj_id])
-                        setattr(obj, field, obj_data)
-                        obj.save(update_fields=[field])
-                        changes.append(field)
+                        # Object was already created earlier in this script, update object
+                        changes, errors = update_object(
+                            Model, rel_objects[related_obj_id], field, obj_data, key, data[key],
+                            changes, errors
+                        )
                         data.pop(key, None)
 
                 else:
-                    # New object with new parent
-                    # rsr_result.title.1205_new-0
-                    # rsr_result.title.1205_new-1
-                    # rsr_indicator.title.1205_new-0_new-0
-                    # rsr_indicator.title.1205_new-1_new-0
-                    # rsr_indicatorperiod.target_value.1205_new-0_new-0_new-0
+                    # New object, and parent is also new according to the key. However, it is
+                    # possible that the parent was already created earlier in the script. So we
+                    # first check if parent object was already created earlier.
 
-                    # Check if parent object was already created earlier
                     RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
                     if RelatedModel._meta.db_table + '.' + parent_id in rel_objects.keys():
-                        # Parent object has already been created
+                        # Parent object has already been created, fetch new parent object id
                         parent_obj_id = rel_objects[RelatedModel._meta.db_table + '.' + parent_id]
 
                         if related_obj_id not in rel_objects.keys():
+                            # Related object itself has not yet been created yet
                             kwargs = dict()
                             kwargs[field] = obj_data
 
@@ -735,26 +780,35 @@ def project_editor(request, pk=None):
                                 # Project is the related object
                                 kwargs['project'] = Project.objects.get(pk=parent_obj_id)
 
-                            # Create new object
-                            obj = Model.objects.create(**kwargs)
-                            setattr(obj, field, obj_data)
-                            obj.save(update_fields=[field])
-                            changes.append(field)
-                            rel_objects[related_obj_id] = obj.pk
+                            # Add field data, create new object and add new id to rel_objects dict
+                            kwargs[field] = obj_data
+                            changes, errors, rel_objects = create_object(
+                                Model, kwargs, field, key, data[key], changes, errors, rel_objects,
+                                related_obj_id
+                            )
+
                             data.pop(key, None)
                         else:
-                            # Object was already created earlier, update it
-                            obj = Model.objects.get(pk=rel_objects[related_obj_id])
-                            setattr(obj, field, obj_data)
-                            obj.save(update_fields=[field])
-                            changes.append(field)
+                            # Related object itself has also been created earlier, update it
+                            changes, errors = update_object(
+                                Model, rel_objects[related_obj_id], field, obj_data, key, data[key],
+                                changes, errors
+                            )
                             data.pop(key, None)
 
+                    else:
+                        # Parent object has not been created yet. We can't create the underlying
+                        # object without knowing to which parent it should be linked. Therefore the
+                        # key is not popped from the data, and this object will be
+                        # saved in one of the next iterations.
+                        continue
+
         if not data:
+            # If there are no more keys in data, we have processed all fields and no more iterations
+            # are needed.
             break
 
 
-    #
     #     # Custom fields
     #     elif 'custom-field-' in key:
     #         cf_id = key.split('-', 2)[2]
@@ -768,6 +822,8 @@ def project_editor(request, pk=None):
     #
     # # Log changes
     # field_changes = log_changes(changes, user, project)
+
+    changes = log_changes(changes, user, project)
 
     return Response(
         {
@@ -908,953 +964,6 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
         )
 
     return Response({})
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step2(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    # Related objects
-    for key in data.keys():
-
-        # Project contacts
-        if 'contact-type-' in key:
-            contact_id = key.split('-', 2)[2]
-
-            contact, errors, rel_objects, new_object = check_related_object(
-                contact_id, 'project_contact', ProjectContact, PROJECT_CONTACT_FIELDS,
-                {'project': project}, data, errors, rel_objects
-            )
-
-            if new_object:
-                log_addition(contact, user)
-
-            if contact:
-                for field in PROJECT_CONTACT_FIELDS:
-                    if field[0] == 'country':
-                        errors, changes = process_field(
-                            contact, data, field, errors, changes, contact_id, Country
-                        )
-                    else:
-                        errors, changes = process_field(contact, data, field, errors, changes,
-                                                        contact_id)
-
-                if rel_objects and rel_objects[-1]['new_id'] == str(contact.pk):
-                    rel_objects[-1]['unicode'] = contact.__unicode__()
-
-        # Custom fields
-        elif 'custom-field-' in key:
-            cf_id = key.split('-', 2)[2]
-
-            cf, errors, rel_objects, new_object = check_related_object(
-                cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,), {'project': project},
-                data, errors, rel_objects
-            )
-
-            errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step3(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    # Related objects
-    for key in data.keys():
-
-        # Participating organisations
-        if 'value-partner-' in key:
-            partner_id = key.split('-', 2)[2]
-
-            # Custom validation for partnership.organisation
-            if data[key]:
-                partner, errors, rel_objects, new_object = check_related_object(
-                    partner_id, 'partnership', Partnership, PARTNER_FIELDS, {'project': project},
-                    data, errors, rel_objects
-                )
-            else:
-                errors.append({'name': key.replace('value-', ''),
-                               'error': u'%s' % _(u"Project partner can't be blank.")})
-                new_object, partner = None, None
-
-            if new_object:
-                log_addition(partner, user)
-
-            if partner:
-                for field in PARTNER_FIELDS:
-                    if field[0] == 'organisation':
-                        errors, changes = process_field(
-                            partner, data, field, errors, changes, partner_id, Organisation
-                        )
-                    else:
-                        errors, changes = process_field(partner, data, field, errors, changes,
-                                                        partner_id)
-
-                if rel_objects and rel_objects[-1]['new_id'] == str(partner.pk):
-                    rel_objects[-1]['unicode'] = partner.__unicode__()
-
-        # Custom fields
-        elif 'custom-field-' in key:
-            cf_id = key.split('-', 2)[2]
-
-            cf, errors, rel_objects, new_object = check_related_object(
-                cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,), {'project': project},
-                data, errors, rel_objects
-            )
-
-            errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step4(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    # Project fields
-    for field in SECTION_FOUR_FIELDS:
-        errors, changes = process_field(project, data, field, errors, changes)
-
-    # Related objects
-    for key in data.keys():
-
-        # Custom fields
-        if 'custom-field-' in key:
-            cf_id = key.split('-', 2)[2]
-
-            cf, errors, rel_objects, new_object = check_related_object(
-                cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,), {'project': project},
-                data, errors, rel_objects
-            )
-
-            errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step5(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    if data['level'] == '1':
-
-        # Project fields
-        for field in SECTION_FIVE_FIELDS:
-            errors, changes = process_field(project, data, field, errors, changes)
-
-        # Related objects
-        for key in data.keys():
-
-            # Results
-            if 'result-title-' in key:
-                result_id = key.split('-', 2)[2]
-
-                result, errors, rel_objects, new_object = check_related_object(
-                    result_id, 'result', Result, RESULT_FIELDS, {'project': project}, data, errors,
-                    rel_objects
-                )
-
-                if new_object:
-                    log_addition(result, user)
-
-                if result:
-                    for field in RESULT_FIELDS:
-                        errors, changes = process_field(result, data, field, errors, changes,
-                                                        result_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(result.pk):
-                        rel_objects[-1]['unicode'] = result.__unicode__()
-
-            # Project Conditions
-            elif 'condition-type-' in key:
-                condition_id = key.split('-', 2)[2]
-
-                condition, errors, rel_objects, new_object = check_related_object(
-                    condition_id, 'project_condition', ProjectCondition, PROJECT_CONDITION_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(condition, user)
-
-                if condition:
-                    for field in PROJECT_CONDITION_FIELDS:
-                        errors, changes = process_field(condition, data, field, errors, changes,
-                                                        condition_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(condition.pk):
-                        rel_objects[-1]['unicode'] = condition.__unicode__()
-
-            # Custom fields
-            elif 'custom-field-' in key:
-                cf_id = key.split('-', 2)[2]
-
-                cf, errors, rel_objects, new_object = check_related_object(
-                    cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    if data['level'] == '2':
-
-        # Related objects
-        for key in data.keys():
-
-            # Indicators
-            if 'indicator-title-' in key:
-                ind_res_id = key.split('-', 2)[2]
-
-                try:
-                    if 'add' in ind_res_id and check_related_object_data(ind_res_id, data,
-                                                                         INDICATOR_FIELDS):
-                        result = Result.objects.get(pk=str(ind_res_id.split('-').pop()))
-
-                        indicator, errors, rel_objects, new_object = check_related_object(
-                            ind_res_id, 'indicator', Indicator, INDICATOR_FIELDS,
-                            {'result': result}, data, errors, rel_objects
-                        )
-
-                    else:
-                        indicator, errors, rel_objects, new_object = check_related_object(
-                            ind_res_id, 'indicator', Indicator, INDICATOR_FIELDS, None, data,
-                            errors, rel_objects
-                        )
-
-                    if new_object:
-                        log_addition(indicator, user)
-
-                except Exception as e:
-                    indicator = None
-                    error = str(e).capitalize()
-                    errors.append({'name': 'indicator-title-' + ind_res_id,
-                                   'error': error})
-
-                if indicator:
-                    for field in INDICATOR_FIELDS:
-                        errors, changes = process_field(indicator, data, field, errors, changes,
-                                                        ind_res_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(indicator.pk):
-                        rel_objects[-1]['unicode'] = indicator.__unicode__()
-
-    if data['level'] == '3':
-
-        # Related objects
-        for key in data.keys():
-
-            # Indicator periods
-            if 'indicator-period-target-value-comment-' in key:
-                ip_ind_id = key.split('-', 5)[5]
-
-                try:
-                    if 'add' in ip_ind_id and check_related_object_data(ip_ind_id, data,
-                                                                        INDICATOR_PERIOD_FIELDS):
-                        indicator = Indicator.objects.get(pk=str(ip_ind_id.split('-').pop()))
-
-                        ip, errors, rel_objects, new_object = check_related_object(
-                            ip_ind_id, 'indicator_period', IndicatorPeriod, INDICATOR_PERIOD_FIELDS,
-                            {'indicator': indicator}, data, errors, rel_objects
-                        )
-
-                    else:
-                        ip, errors, rel_objects, new_object = check_related_object(
-                            ip_ind_id, 'indicator_period', IndicatorPeriod, INDICATOR_PERIOD_FIELDS,
-                            None, data, errors, rel_objects
-                        )
-
-                    if new_object:
-                        log_addition(ip, user)
-
-                except Exception as e:
-                    ip = None
-                    error = str(e).capitalize()
-                    errors.append({'name': 'indicator-period-start-' + ip_ind_id,
-                                   'error': error})
-
-                if ip:
-                    for field in INDICATOR_PERIOD_FIELDS:
-                        errors, changes = process_field(ip, data, field, errors, changes, ip_ind_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(ip.pk):
-                        rel_objects[-1]['unicode'] = ip.__unicode__()
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step6(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    if data['level'] == '1':
-
-        # Project fields
-        for field in SECTION_SIX_FIELDS:
-            errors, changes = process_field(project, data, field, errors, changes)
-
-        # Related objects
-        for key in data.keys():
-
-            # Budget items
-            if 'budget-item-type-' in key:
-                budget_id = key.split('-', 3)[3]
-
-                budget, errors, rel_objects, new_object = check_related_object(
-                    budget_id, 'budget_item', BudgetItem, BUDGET_ITEM_FIELDS, {'project': project},
-                    data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(budget, user)
-
-                if budget:
-                    for field in BUDGET_ITEM_FIELDS:
-                        if field[0] == 'label':
-                            errors, changes = process_field(budget, data, field, errors, changes,
-                                                            budget_id, BudgetItemLabel)
-                        else:
-                            errors, changes = process_field(budget, data, field, errors, changes,
-                                                            budget_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(budget.pk):
-                        rel_objects[-1]['unicode'] = budget.__unicode__()
-
-            # Country budget items
-            elif 'country-budget-item-' in key:
-                cbi_id = key.split('-', 3)[3]
-
-                cbi, errors, rel_objects, new_object = check_related_object(
-                    cbi_id, 'country_budget_item', CountryBudgetItem, COUNTRY_BUDGET_ITEM_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(cbi, user)
-
-                if cbi:
-                    for field in COUNTRY_BUDGET_ITEM_FIELDS:
-                        errors, changes = process_field(cbi, data, field, errors, changes, cbi_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(cbi.pk):
-                        rel_objects[-1]['unicode'] = cbi.__unicode__()
-
-            # Transactions
-            elif 'transaction-value-date-' in key:
-                trans_id = key.split('-', 3)[3]
-
-                trans, errors, rel_objects, new_object = check_related_object(
-                    trans_id, 'transaction', Transaction, TRANSACTION_FIELDS, {'project': project},
-                    data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(trans, user)
-
-                if trans:
-                    for field in TRANSACTION_FIELDS:
-                        if field[0] in ['provider_organisation', 'receiver_organisation']:
-                            errors, changes = process_field(trans, data, field, errors, changes,
-                                                            trans_id, Organisation)
-                        else:
-                            errors, changes = process_field(trans, data, field, errors, changes,
-                                                            trans_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(trans.pk):
-                        rel_objects[-1]['unicode'] = trans.__unicode__()
-
-            # Planned disbursements
-            elif 'planned-disbursement-type-' in key:
-                pd_id = key.split('-', 3)[3]
-
-                pd, errors, rel_objects, new_object = check_related_object(
-                    pd_id, 'planned_disbursement', PlannedDisbursement, PLANNED_DISBURSEMENT_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(pd, user)
-
-                if pd:
-                    for field in PLANNED_DISBURSEMENT_FIELDS:
-                        errors, changes = process_field(pd, data, field, errors, changes, pd_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(pd.pk):
-                        rel_objects[-1]['unicode'] = pd.__unicode__()
-
-            # Custom fields
-            elif 'custom-field-' in key:
-                cf_id = key.split('-', 2)[2]
-
-                cf, errors, rel_objects, new_object = check_related_object(
-                    cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    elif data['level'] == '2':
-
-        # Related objects
-        for key in data.keys():
-
-            # Transaction sectors
-            if 'transaction-sector-vocabulary-' in key:
-                sector_trans_id = key.split('-', 3)[3]
-
-                try:
-                    if 'add' in sector_trans_id and \
-                            check_related_object_data(sector_trans_id, data,
-                                                      TRANSACTION_SECTOR_FIELDS):
-                        trans = Transaction.objects.get(pk=str(sector_trans_id.split('-').pop()))
-
-                        sector, errors, rel_objects, new_object = check_related_object(
-                            sector_trans_id, 'transaction_sector', TransactionSector,
-                            TRANSACTION_SECTOR_FIELDS, {'transaction': trans}, data, errors,
-                            rel_objects
-                        )
-
-                    else:
-                        sector, errors, rel_objects, new_object = check_related_object(
-                            sector_trans_id, 'transaction_sector', TransactionSector,
-                            TRANSACTION_SECTOR_FIELDS, None, data, errors, rel_objects
-                        )
-
-                    if new_object:
-                        log_addition(sector, user)
-
-                except Exception as e:
-                    sector = None
-                    error = str(e).capitalize()
-                    errors.append({'name': 'transaction-sector-vocabulary-' + sector_trans_id,
-                                   'error': error})
-
-                if sector:
-                    for field in TRANSACTION_SECTOR_FIELDS:
-                        errors, changes = process_field(sector, data, field, errors, changes,
-                                                        sector_trans_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(sector.pk):
-                        rel_objects[-1]['unicode'] = sector.__unicode__()
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-            'total_budget': "{:,}".format(int(project.budget)),
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step7(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    if data['level'] == '1':
-
-        # Project fields
-        for field in SECTION_SEVEN_FIELDS:
-            errors, changes = process_field(project, data, field, errors, changes)
-
-        # Related objects
-        for key in data.keys():
-
-            # Recipient countries
-            if 'recipient-country-percentage-' in key:
-                rc_id = key.split('-', 3)[3]
-
-                rc, errors, rel_objects, new_object = check_related_object(
-                    rc_id, 'recipient_country', RecipientCountry, RECIPIENT_COUNTRY_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(rc, user)
-
-                if rc:
-                    for field in RECIPIENT_COUNTRY_FIELDS:
-                        errors, changes = process_field(rc, data, field, errors, changes, rc_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(rc.pk):
-                        rel_objects[-1]['unicode'] = rc.__unicode__()
-
-            # Recipient regions
-            elif 'recipient-region-percentage-' in key:
-                rr_id = key.split('-', 3)[3]
-
-                rr, errors, rel_objects, new_object = check_related_object(
-                    rr_id, 'recipient_region', RecipientRegion, RECIPIENT_REGION_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(rr, user)
-
-                if rr:
-                    for field in RECIPIENT_REGION_FIELDS:
-                        errors, changes = process_field(rr, data, field, errors, changes, rr_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(rr.pk):
-                        rel_objects[-1]['unicode'] = rr.__unicode__()
-
-            # Locations
-            elif 'location-latitude-' in key:
-                loc_id = key.split('-', 2)[2]
-
-                loc, errors, rel_objects, new_object = check_related_object(
-                    loc_id, 'project_location', ProjectLocation, PROJECT_LOCATION_FIELDS,
-                    {'location_target': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(loc, user)
-
-                if loc:
-                    for field in PROJECT_LOCATION_FIELDS:
-                        if field[0] == 'country':
-                            errors, changes = process_field(loc, data, field, errors, changes,
-                                                            loc_id, Country)
-                        else:
-                            errors, changes = process_field(loc, data, field, errors, changes,
-                                                            loc_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(loc.pk):
-                        rel_objects[-1]['unicode'] = loc.__unicode__()
-
-            # Custom fields
-            elif 'custom-field-' in key:
-                cf_id = key.split('-', 2)[2]
-
-                cf, errors, rel_objects, new_object = check_related_object(
-                    cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    elif data['level'] == '2':
-
-        # Related objects
-        for key in data.keys():
-
-            # Location administratives
-            if 'location-administrative-code-' in key:
-                admin_loc_id = key.split('-', 3)[3]
-
-                try:
-                    if 'add' in admin_loc_id and \
-                            check_related_object_data(admin_loc_id, data,
-                                                      ADMINISTRATIVE_LOCATION_FIELDS):
-                        loc = ProjectLocation.objects.get(pk=str(admin_loc_id.split('-').pop()))
-
-                        admin, errors, rel_objects, new_object = check_related_object(
-                            admin_loc_id, 'administrative_location', AdministrativeLocation,
-                            ADMINISTRATIVE_LOCATION_FIELDS, {'location': loc}, data, errors,
-                            rel_objects
-                        )
-
-                    else:
-                        admin, errors, rel_objects, new_object = check_related_object(
-                            admin_loc_id, 'administrative_location', AdministrativeLocation,
-                            ADMINISTRATIVE_LOCATION_FIELDS, None, data, errors, rel_objects
-                        )
-
-                    if new_object:
-                        log_addition(admin, user)
-
-                except Exception as e:
-                    admin = None
-                    error = str(e).capitalize()
-                    errors.append({'name': 'location-administrative-code-' + admin_loc_id,
-                                   'error': error})
-
-                if admin:
-                    for field in ADMINISTRATIVE_LOCATION_FIELDS:
-                        errors, changes = process_field(admin, data, field, errors, changes,
-                                                        admin_loc_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(admin.pk):
-                        rel_objects[-1]['unicode'] = admin.__unicode__()
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step8(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    # Related objects
-    for key in data.keys():
-
-        # Sectors
-        if 'sector-code-' in key:
-            sector_id = key.split('-', 2)[2]
-
-            sector, errors, rel_objects, new_object = check_related_object(
-                sector_id, 'sector', Sector, SECTOR_FIELDS, {'project': project}, data, errors,
-                rel_objects
-            )
-
-            if new_object:
-                log_addition(sector, user)
-
-            if sector:
-                for field in SECTOR_FIELDS:
-                    errors, changes = process_field(sector, data, field, errors, changes, sector_id)
-
-                if rel_objects and rel_objects[-1]['new_id'] == str(sector.pk):
-                    rel_objects[-1]['unicode'] = sector.__unicode__()
-
-        # Policy markers
-        elif 'policy-marker-significance-' in key:
-            pm_id = key.split('-', 3)[3]
-
-            pm, errors, rel_objects, new_object = check_related_object(
-                pm_id, 'policy_marker', PolicyMarker, POLICY_MARKER_FIELDS, {'project': project},
-                data, errors, rel_objects
-            )
-
-            if new_object:
-                log_addition(pm, user)
-
-            if pm:
-                for field in POLICY_MARKER_FIELDS:
-                    errors, changes = process_field(pm, data, field, errors, changes, pm_id)
-
-                if rel_objects and rel_objects[-1]['new_id'] == str(pm.pk):
-                    rel_objects[-1]['unicode'] = pm.__unicode__()
-
-        # Custom fields
-        elif 'custom-field-' in key:
-            cf_id = key.split('-', 2)[2]
-
-            cf, errors, rel_objects, new_object = check_related_object(
-                cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                {'project': project}, data, errors, rel_objects
-            )
-
-            errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step9(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    files = request.FILES
-    errors = []
-    changes = []
-    rel_objects = []
-
-    if not files and not any(data_key.startswith('document-document-') for data_key in data.keys()):
-
-        # Related objects
-        for key in data.keys():
-
-            # Links
-            if 'link-url-' in key:
-                link_id = key.split('-', 2)[2]
-
-                link, errors, rel_objects, new_object = check_related_object(
-                    link_id, 'link', Link, LINK_FIELDS, {'project': project}, data, errors,
-                    rel_objects
-                )
-
-                if new_object:
-                    log_addition(link, user)
-
-                if link:
-                    for field in LINK_FIELDS:
-                        errors, changes = process_field(link, data, field, errors, changes, link_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(link.pk):
-                        rel_objects[-1]['unicode'] = link.__unicode__()
-
-            # Documents
-            elif 'document-url-' in key:
-                document_id = key.split('-', 2)[2]
-
-                document, errors, rel_objects, new_object = check_related_object(
-                    document_id, 'project_document', ProjectDocument, PROJECT_DOCUMENT_FIELDS,
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                if new_object:
-                    log_addition(document, user)
-
-                if document:
-                    for field in PROJECT_DOCUMENT_FIELDS:
-                        errors, changes = process_field(document, data, field, errors, changes,
-                                                        document_id)
-
-                    if rel_objects and rel_objects[-1]['new_id'] == str(document.pk):
-                        rel_objects[-1]['unicode'] = document.__unicode__()
-
-            # Custom fields
-            elif 'custom-field-' in key:
-                cf_id = key.split('-', 2)[2]
-
-                cf, errors, rel_objects, new_object = check_related_object(
-                    cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                    {'project': project}, data, errors, rel_objects
-                )
-
-                errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    elif any(file_key.startswith('document-document-') for file_key in files.keys()):
-        for key in files.keys():
-            document_id = key.split('-', 2)[2]
-
-            document, errors, rel_objects, new_object = check_related_object(
-                document_id, 'project_document', ProjectDocument, (PROJECT_DOCUMENT_FIELD,),
-                {'project': project}, files, errors, rel_objects
-            )
-
-            errors, changes = process_field(document, files, PROJECT_DOCUMENT_FIELD, errors,
-                                            changes, document_id)
-
-            # TODO: replace document right after saving
-            # if not errors:
-            #     new_image = get_thumbnail(
-            #         project.current_image, '250x250', format="PNG", upscale=True
-            #     ).url
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_step10(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    data = request.POST
-    errors = []
-    changes = []
-    rel_objects = []
-
-    # Project fields
-    for field in SECTION_TEN_FIELDS:
-        errors, changes = process_field(project, data, field, errors, changes)
-
-    # Related objects
-    for key in data.keys():
-
-        # Keywords
-        if 'keyword-id-' in key:
-            keyword_id = data[key] if data[key] else None
-            form_keyword_id = key.split('-', 2)[2]
-
-            if keyword_id:
-                try:
-                    keyword = Keyword.objects.get(pk=int(keyword_id))
-
-                    if keyword and (str(keyword_id) == form_keyword_id):
-                        # Keyword already added to project, and stayed the same
-                        rel_objects.append(
-                            {
-                                'old_id': str(keyword.pk),
-                                'new_id': str(keyword.pk),
-                                'div_id': 'keyword-' + str(keyword.pk),
-                                'unicode': keyword.__unicode__(),
-                            }
-                        )
-
-                    elif keyword_id and (str(keyword_id) != form_keyword_id):
-                        if not 'add' in form_keyword_id:
-                            # Keyword changed, delete old keyword
-                            old_keyword = Keyword.objects.get(pk=int(form_keyword_id))
-                            project.keywords.remove(old_keyword)
-
-                        project.keywords.add(keyword)
-
-                        if not project in [change[0] for change in changes]:
-                            changes.append([project, [('keyword', key, str(keyword.pk))]])
-                        else:
-                            for change in changes:
-                                if project == change[0]:
-                                    change[1].append(('keyword', key, str(keyword.pk)))
-
-                        rel_objects.append(
-                            {
-                                'old_id': key.split('-', 2)[2],
-                                'new_id': str(keyword.pk),
-                                'div_id': 'keyword-' + key.split('-', 2)[2],
-                                'unicode': keyword.__unicode__(),
-                            }
-                        )
-
-                except Exception as e:
-                    errors.append({'name': key, 'error': str(e).capitalize()})
-
-        # Custom fields
-        if 'custom-field-' in key:
-            cf_id = key.split('-', 2)[2]
-
-            cf, errors, rel_objects, new_object = check_related_object(
-                cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-                {'project': project}, data, errors, rel_objects
-            )
-
-            errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
-
-    # Log changes
-    field_changes = log_changes(changes, user, project)
-
-    return Response(
-        {
-            'changes': field_changes,
-            'errors': errors,
-            'rel_objects': rel_objects,
-        }
-    )
 
 
 @api_view(['POST'])
