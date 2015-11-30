@@ -70,8 +70,7 @@ function findAncestorByTag(el, tag) {
 
 function fieldIsHidden(node) {
     /* Checks if the field is hidden or not. */
-    var parentNode = findAncestorByClass(node, 'form-group');
-    return !parentNode.classList.contains('hidden');
+    return findAncestorByClass(node, 'form-group').classList.contains('hidden');
 }
 
 // Source: http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.js
@@ -80,14 +79,12 @@ function serialize(form) {
        Modified to skip hidden fields and added / removed some field types.
        Modified to only serialize fields that have been changed. */
 
-	if (!form || form.nodeName !== "FORM") {
-		return;
-	}
 	var  q = [];
+
 	for (var i = 0; i < form.elements.length; i++) {
         var formField = form.elements[i];
 
-		if (formField.name === "" || !fieldIsHidden(formField) || !fieldChanged(formField)) {
+		if (formField.name === "" || !fieldChanged(formField)) {
 			continue;
 		}
 
@@ -2165,9 +2162,12 @@ function setDatepickers() {
 }
 
 function fieldChanged(inputField) {
-    /* Check if a field has changed, based on it's value and saved-value */
+    /* Check if a field has changed, based on it's value and saved-value.
+    *  Ignores hidden fields and file fields. */
 
-    if (inputField.parentNode.className === 'typeahead') {
+    if (fieldIsHidden(inputField) || inputField.type === 'file') {
+        return false;
+    } else if (inputField.parentNode.className === 'typeahead') {
         return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'))
     } else {
         return (inputField.value !== inputField.getAttribute('saved-value'))
@@ -2175,42 +2175,16 @@ function fieldChanged(inputField) {
 }
 
 function checkUnsavedChangesForm(form) {
-    var inputs, selects, textareas;
+    /* Checks if a form has unsaved changes. Returns true if so and false otherwise. */
 
-    inputs = form.getElementsByTagName('input');
-    selects = form.getElementsByTagName('select');
-    textareas = form.getElementsByTagName('textarea');
-
-    for (var i = 0; i < inputs.length; i++) {
-        if (inputs[i].type == 'file') {
-            // Ignore file inputs for now.
-        } else if (inputs[i].type == 'checkbox') {
-            if (inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'False')) {
-                return true;
-            } else if (!inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'True')) {
+    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+        var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
+        for (var j = 0; j < inputElements.length; j++) {
+            if (fieldChanged(inputElements[j])) {
                 return true;
             }
-        } else if (inputs[i].parentNode.className.indexOf('typeahead') > -1) {
-            if (inputs[i].getAttribute('value') != inputs[i].getAttribute('saved-value')) {
-                return true;
-            }
-        } else if (inputs[i].value != inputs[i].getAttribute('saved-value')) {
-            return true;
         }
     }
-
-    for (var j=0; j < selects.length; j++) {
-        if (selects[j].value != selects[j].getAttribute('saved-value')) {
-            return true;
-        }
-    }
-
-    for (var k = 0; k < textareas.length; k++) {
-        if (textareas[k].value != textareas[k].getAttribute('saved-value')) {
-            return true;
-        }
-    }
-
     return false;
 }
 
