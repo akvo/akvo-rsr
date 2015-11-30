@@ -247,9 +247,10 @@ function replaceNames(newObjects) {
                     var relObjectParentElementId = relObjectParentElement.getAttribute('id');
                     var relObjectWillBeReplaced = false;
                     if (relObjectParentElementId.indexOf('new') > -1) {
+                        console.log(relObjectParentElementId);
                         for (var newObjectsKey in newObjects) {
                             if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
-                                newObjects[newObjectsKey] === relObjectParentElementId) {
+                                newObjects[newObjectsKey].old_id === relObjectParentElementId) {
                                 relObjectWillBeReplaced = true;
                                 break;
                             }
