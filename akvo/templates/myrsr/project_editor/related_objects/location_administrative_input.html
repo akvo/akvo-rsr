@@ -1,6 +1,6 @@
 {% load i18n project_editor %}
 
-<div class="location-administrative-input parent" id="administrative_location.{{ admin|obj_id }}">
+<div class="location-administrative-item parent" id="administrative_location.{{ admin|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=admin %}
     <div class="hide-partial {% if admin.pk %}hidden{% endif %}">
         <div class="row">
@@ -11,7 +11,6 @@
                 {% include choice_input with obj=admin field='vocabulary' hidden=True %}
             </div>
             <div class="col-md-4">
-                {# TODO: Saving not working? #}
                 {% include text_input with obj=admin field='level' number=True hidden=True %}
             </div>
         </div>

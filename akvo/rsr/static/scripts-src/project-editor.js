@@ -234,13 +234,42 @@ function replaceNames(newObjects) {
 
             for (var k = 0; k < relObjectElements.length; k++) {
                 var relObjectElement = relObjectElements[k];
-                // Prevent that the underlying objects get updated as well
-                if (findAncestorByClass(relObjectElement, 'parent') === parentNode) {
-                    var oldId = relObjectElement.getAttribute('id');
-                    var idList = oldId.split('.');
-                    var newId = [idList[0], idList[1], newObjects[i].new_id].join('.');
-                    relObjectElement.setAttribute('id', newId);
-                    relObjectElement.setAttribute('name', newId);
+                // Check if the input is an underlying partial or not
+                var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
+                var idList = relObjectElement.getAttribute('id').split('.');
+                if (relObjectParentElement === parentNode) {
+                    idList[2] = newObjects[i].new_id;
+                    relObjectElement.setAttribute('id', idList.join('.'));
+                    relObjectElement.setAttribute('name', idList.join('.'));
+                } else {
+                    // Update underlying objects if they're not going to be replaced later on or
+                    // already replaced (e.g. there's no 'new' in the ID)
+                    var relObjectParentElementId = relObjectParentElement.getAttribute('id');
+                    var relObjectWillBeReplaced = false;
+                    if (relObjectParentElementId.indexOf('new') > -1) {
+                        for (var newObjectsKey in newObjects) {
+                            if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
+                                newObjects[newObjectsKey] === relObjectParentElementId) {
+                                relObjectWillBeReplaced = true;
+                                break;
+                            }
+                        }
+                        if (!relObjectWillBeReplaced) {
+                            // Underlying object is not in newObjects, so we need to replace the IDs of
+                            // those inputs as well
+                            var indexToBeReplaced = newObjects[i].old_id.split('.')[1].split('_').length - 1;
+                            var newRelObjectParentElementIdList = idList[2].split('_');
+                            newRelObjectParentElementIdList[indexToBeReplaced] = newObjects[i].new_id;
+                            idList[2] = newRelObjectParentElementIdList.join('_');
+                            relObjectElement.setAttribute('id', idList.join('.'));
+                            relObjectElement.setAttribute('name', idList.join('.'));
+
+                            // And we need to update the parent ID of that partial too
+                            var relObjectParentElementIdList = relObjectParentElementId.split('.');
+                            relObjectParentElementIdList[1] = newRelObjectParentElementIdList.join('_');
+                            relObjectParentElement.setAttribute('id', relObjectParentElementIdList.join('.'));
+                        }
+                    }
                 }
             }
         }
@@ -975,11 +1004,6 @@ function setSubmitOnClicks() {
     for (var i=0; i < saveDivs.length; i++) {
         var saveButton = saveDivs[i].querySelector('button');
         saveButton.addEventListener('click', submitStep(saveButton));
-
-//        saveButton.onclick = function (e) {
-//            e.preventDefault();
-//            submitStep(saveButton);
-//        };
     }
 }
 
@@ -997,12 +1021,6 @@ function setPartialOnClicks() {
                 continue;
             }
 
-            if (partial === 'project-link') {
-                console.log(el);
-                console.log(partial + '-container');
-                console.log(findAncestorByClass(el, partial + '-container'));
-
-            }
             callback = addPartial(partial, findAncestorByClass(el, partial + '-container'));
             el.addEventListener('click', callback);
             elAddClass(el, 'has-onclick');
@@ -1039,9 +1057,90 @@ function togglePartial(hidePartial) {
     };
 }
 
+function updatePartialIDs(partial, newID) {
+    /* Function that updates all IDs and names of a partial to the new ID
+     * Fields will be in the form of '<model_name>.<field_name>.<new_ID>'
+     * The general ID will be in the form of '<model_name>.<new_ID>' */
+
+    // Set general ID of the partial
+    var oldIdList = partial.getAttribute('id').split('.');
+    partial.setAttribute('id', [oldIdList[0], newID].join('.'));
+
+    // Replace names and IDs of all input, select and textarea fields
+    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+        var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
+        for (var j = 0; j < partialInputs.length; j++) {
+            var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
+            partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+            partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+        }
+    }
+
+    // Replace names and IDs of all typeahead fields
+    var typeaheadContainers = partial.querySelectorAll('.typeahead-container');
+    for (var k = 0; k < typeaheadContainers.length; k++) {
+        // Update the data-child-id attribute
+        var oldChildIdList = typeaheadContainers[k].getAttribute('data-child-id').split('.');
+        var oldTypeaheadId = oldChildIdList[2];
+        typeaheadContainers[k].setAttribute('data-child-id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
+
+
+        var typeaheadParent = typeaheadContainers[k].parentNode;
+        var typeaheadParentClassList = typeaheadParent.classList;
+        for (var l = 0; l < typeaheadParentClassList.length; l++) {
+            if (typeaheadParentClassList[l].indexOf(oldTypeaheadId) > -1) {
+                typeaheadParentClassList.add([oldChildIdList[0], oldChildIdList[1], newID].join('_'));
+                typeaheadParentClassList.remove(typeaheadParentClassList[l]);
+            }
+        }
+
+        // Update the data-child-class attribute
+        var childClassList = typeaheadContainers[k].getAttribute('data-child-class').trim().split(' ');
+        for (var m = 0; m < childClassList.length; m++) {
+            if (childClassList[m].indexOf(oldTypeaheadId) > -1) {
+                var newChildClass = [oldChildIdList[0], oldChildIdList[1], newID].join('_');
+                childClassList.splice(m, 1);
+                childClassList.push(newChildClass);
+                break;
+            }
+        }
+        typeaheadContainers[k].setAttribute('data-child-class', childClassList.join(' '));
+    }
+
+    // Replace IDs of all date fields
+    var dateContainers = partial.querySelectorAll('.datepicker-container');
+    for (var n = 0; n < dateContainers.length; n++) {
+        // Update the data-id attribute
+        var oldDataIdList = dateContainers[n].getAttribute('data-id').split('.');
+        dateContainers[n].setAttribute('data-id', [oldDataIdList[0], oldDataIdList[1], newID].join('.'));
+    }
+}
+
 function addPartial(partialName, partialContainer) {
     return function(e) {
         e.preventDefault();
+
+        function findInHierachy(hierarchy, partialName) {
+            /* Find the partial in the hierarchy, and return the depth with the remaining
+             * partials in a list. Returns [-1, false] if not found. */
+            for (var i = 0; i < hierarchy.length; i++) {
+                for (var j = 0; j < hierarchy[i].length; j++) {
+                    if (hierarchy[i][j] === partialName) {
+                        hierarchy[i].splice(0, j + 1);
+                        return [j + 1, hierarchy[i]];
+                    }
+                }
+            }
+
+            return [-1, false]
+        }
+
+        // Indicate the hierarchy of partials
+        var partialHierarchy = [
+            ['result', 'indicator', 'indicator-period'],
+            ['transaction', 'transaction-sector'],
+            ['project-location', 'location-administrative']
+        ];
 
         // Get partial from partial templates and add it to DOM
         var markupSelector = '#' + partialName + '-input';
@@ -1053,67 +1152,68 @@ function addPartial(partialName, partialContainer) {
         var addRow = partialContainer.querySelector('.add-' + partialName).parentNode.parentNode;
         partialContainer.insertBefore(partial, addRow);
 
-        // New related objects are always appended with "new-0", so we should remove that first
-        // and add the newID (e.g. "new-5") to it
+        // Fetch the number of times the partial is already in the document, and add the count
+        // to "new-" to create the new partial id
         var newID = 'new-' + document.querySelectorAll('.' + partialName + '-item').length;
-        var oldPartialID = partial.getAttribute('id');
 
-        // Set general ID of the partial
-        partial.setAttribute('id', oldPartialID.substring(0, oldPartialID.length - 5) + newID);
+        // Look for the partial in the hierarchy
+        var hierarchyList = findInHierachy(partialHierarchy, partialName);
 
-        // Replace names and IDs of all input, select and textarea fields
-        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-            var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
-            for (var j = 0; j < partialInputs.length; j++) {
-                var oldFieldID = partialInputs[j].getAttribute('id');
-                partialInputs[j].setAttribute('id', oldFieldID.substring(0, oldFieldID.length - 5) + newID);
-                var oldFieldName = partialInputs[j].getAttribute('name');
-                partialInputs[j].setAttribute('name', oldFieldName.substring(0, oldFieldName.length - 5) + newID);
+        // Always update the partial's ID itself first
+        var oldPartialID = partial.getAttribute('id').split('.')[1];
+        newID = oldPartialID.substring(0, oldPartialID.length - 5) + newID;
+        updatePartialIDs(partial, newID);
+
+        var childContainer, relatedObjCount;
+        if (hierarchyList[0] === 1) {
+            // First level, with more related objects underneath, update second level
+            childContainer = partial.querySelector('.parent');
+            relatedObjCount = document.querySelectorAll('.' + hierarchyList[1][0] + '-item').length;
+            var childId = [newID, 'new-' + relatedObjCount.toString()].join('_');
+            updatePartialIDs(childContainer, childId);
+
+            // Check if there is a third level
+            if (hierarchyList[1].length > 1) {
+                var childChildContainer = childContainer.querySelector('.parent');
+                var childRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][1] + '-item').length;
+                updatePartialIDs(childChildContainer, [childId, 'new-' + childRelatedObjCount.toString()].join('_'));
+            }
+        } else if (hierarchyList[0] === 2 || hierarchyList[0] === 3) {
+            // Second or third level, fetch the ID from the parent item and add the new ID to it
+            parentContainer = findAncestorByClass(partialContainer, 'parent');
+            parentID = parentContainer.getAttribute('id').split('.')[1];
+            newID = 'new-' + document.querySelectorAll('.' + partialName + '-item').length;
+            if (parentID.indexOf('_') > -1) {
+                // Parent ID + new ID
+                newID = [parentID, newID].join('_');
+            } else {
+                if (hierarchyList[0] === 2) {
+                    // Parent ID is e.g. "5", but child ID must be "1205_5_new-1"
+                    newID = [defaultValues.project_id, parentID, newID].join('_');
+                } else {
+                    // Parent ID is e.g. "5", but child ID must be "1205_15_5_new-1"
+                    var parentParentContainer = findAncestorByClass(parentContainer, 'parent');
+                    var parentParentID = parentParentContainer.getAttribute('id').split('.')[1];
+                    newID = [defaultValues.project_id, parentParentID, parentID, newID].join('_');
+                }
+            }
+            updatePartialIDs(partial, newID);
+
+            // Check if there is a third level (only possible on level 2)
+            if (hierarchyList[1].length > 0) {
+                childContainer = partial.querySelector('.parent');
+                relatedObjCount = document.querySelectorAll('.' + hierarchyList[1][0] + '-item').length;
+                updatePartialIDs(childContainer, [newID, 'new-' + relatedObjCount.toString()].join('_'));
             }
         }
 
-        // Replace names and IDs of all typeahead fields
-        var typeaheadContainers = partial.querySelectorAll('.typeahead-container');
-        for (var k = 0; k < typeaheadContainers.length; k++) {
-            var typeaheadParent = typeaheadContainers[k].parentNode;
-            var typeaheadParentClassList = typeaheadParent.classList;
-            for (var l = 0; l < typeaheadParentClassList.length; l++) {
-                if (typeaheadParentClassList[l].indexOf('new') > -1) {
-                    typeaheadParentClassList.add(typeaheadParentClassList[l].substring(0, typeaheadParentClassList[l].length - 5) + newID);
-                    typeaheadParentClassList.remove(typeaheadParentClassList[l]);
-                }
-            }
+        var parentContainer, parentID;
 
-            // Update the data-child-id attribute
-            var oldChildId = typeaheadContainers[k].getAttribute('data-child-id');
-            typeaheadContainers[k].setAttribute('data-child-id', oldChildId.substring(0, oldChildId.length - 5) + newID);
-
-            // Update the data-child-class attribute
-            var childClassList = typeaheadContainers[k].getAttribute('data-child-class').trim().split(' ');
-            for (var m = 0; m < childClassList.length; m++) {
-                if (childClassList[m].indexOf('new') > -1) {
-                    var newChildClass = childClassList[m].substring(0, childClassList[m].length - 5) + newID;
-                    childClassList.splice(m, 1);
-                    childClassList.push(newChildClass);
-                    break;
-                }
-            }
-            typeaheadContainers[k].setAttribute('data-child-class', childClassList.join(' '));
-        }
+        // Update the typeaheads and datepickers
         updateTypeaheads();
-
-        // Replace IDs of all date fields
-        var dateContainers = partial.querySelectorAll('.datepicker-container');
-        for (var n = 0; n < dateContainers.length; n++) {
-            // Update the data-id attribute
-            var oldDataId = dateContainers[n].getAttribute('data-id');
-            dateContainers[n].setAttribute('data-id', oldDataId.substring(0, oldDataId.length - 5) + newID);
-        }
         setDatepickers();
 
-        // TODO: update labels
-
-        // Update help icons
+        // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
         setSectionChangeListener(findAncestorByClass(partialContainer, 'formStep'));
         setSectionCompletionPercentage(findAncestorByClass(partialContainer, 'formStep'));
@@ -2114,25 +2214,27 @@ function checkUnsavedChangesForm(form) {
 }
 
 function checkUnsavedChanges() {
-    var forms, unsavedForms;
+    var forms, formNames, unsavedForms;
 
     unsavedForms = [];
-    forms = [
-        ['1', '01 - General information'],
-        ['2', '02 - Contact information'],
-        ['3', '03 - Project partners'],
-        ['4', '04 - Project descriptions'],
-        ['5', '05 - Results and indicators'],
-        ['6', '06 - Finance'],
-        ['7', '07 - Project locations'],
-        ['8', '08 - Project focus'],
-        ['9', '09 - Links and documents'],
-        ['10', '10 - Project comments']
+    formNames = [
+        '01 - General information',
+        '02 - Contact information',
+        '03 - Project partners',
+        '04 - Project descriptions',
+        '05 - Results and indicators',
+        '06 - Finance',
+        '07 - Project locations',
+        '08 - Project focus',
+        '09 - Links and documents',
+        '10 - Project comments'
     ];
 
-    for (var i=0; i < forms.length; i++) {
-        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
-            unsavedForms.push(forms[i][1]);
+    forms = document.querySelectorAll('form');
+
+    for (var i = 0; i < forms.length; i++) {
+        if (checkUnsavedChangesForm(forms[i])) {
+            unsavedForms.push(formNames[i]);
         }
     }
 

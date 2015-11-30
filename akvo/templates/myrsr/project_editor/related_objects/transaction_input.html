@@ -66,7 +66,7 @@
                     {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
                 {% endwith %}
             {% endfor %}
-            <div class="row form-group">
+            <div class="row form-group hide-default {% if not advanced_editor %}hidden{% endif %}">
                 <div class="col-md-12 text-center add-object-link">
                      <a href="#" class="add-transaction-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
                 </div>

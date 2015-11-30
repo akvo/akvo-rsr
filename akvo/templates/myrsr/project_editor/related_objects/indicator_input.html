@@ -37,7 +37,7 @@
             {% for period in indicator.periods.all %}
                 {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
             {% empty %}
-                {% with result_id_string=indicate.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+                {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
                     {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
                 {% endwith %}
             {% endfor %}

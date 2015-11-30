@@ -226,20 +226,20 @@
 
         {# Section 5 #}
         <script type="text/template" id="result-input">{% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}</script>
-        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.1205' %}</script>
-        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.1205' %}</script>
-        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.1205' %}</script>
+        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string result_id_string="new-0" %}</script>
+        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string %}</script>
+        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}</script>
 
         {# Section 6 #}
         <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/related_objects/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}</script>
         <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/related_objects/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}</script>
         <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/related_objects/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}</script>
-        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.1205'%}</script>
+        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string %}</script>
         <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/related_objects/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}</script>
 
         {# Section 7 #}
         <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}</script>
-        <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.1205' %}</script>
+        <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string %}</script>
         <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}</script>
         <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}</script>
 
