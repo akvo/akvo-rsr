@@ -918,12 +918,12 @@ class Project(TimestampsMixin, models.Model):
         """
         This method tries to return the "managing" partner organisation.
         """
-        # Pick the partner that can publish the project first
-        if self.publishing_orgs:
-            return self.publishing_orgs[0]
-        # Otherwise, if we have a reporting-org then we choose that
+        # Pick the reporting org first
         if self.reporting_org:
             return self.reporting_org
+        # Otherwise, pick the partner that can publish the project
+        if self.publishing_orgs:
+            return self.publishing_orgs[0]
         # Otherwise, grab the first accountable partner we find
         elif self.support_partners():
             return self.support_partners()[0]
