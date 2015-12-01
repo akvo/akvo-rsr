@@ -622,7 +622,11 @@ def pre_process_data(key, data, errors):
 
 
 def convert_related_objects(rel_objects):
-    """Convert related objects so that it can be used in the template."""
+    """
+    Converts related objects (db_table without 'rsr_') to the API endpoint so that it can be used
+    in the template.
+    """
+
     model_to_api = {
         'relatedproject': 'related_project',
         'projectcontact': 'project_contact',
@@ -750,17 +754,15 @@ def project_editor(request, pk=None):
     errors, changes, rel_objects = [], [], {}
 
     # Run through the form data 3 times to be sure that all nested objects will be created.
-    #
+
     # Keys like this are possible: 'rsr_indicatorperiod.period_start.1234_new-0_new-0_new-0'
     # Meaning that there is a new indicator period (the last id is 'new-0'), with a new indicator
     # (second last id is also 'new-0'), with a new result (second id is also 'new-0'), on an
     # existing project (project id is '1234').
-    # So this script runs 3 times, the first time it is at least able to connect the result to the
-    # project and create a result id, which will be stored in rel_objects. The second time it will
-    # definitely be able to create the indicator id, etc.
-    #
-    # In the end, rel_objects will could look like this:
-    # {'rsr_result.1234_new-0': 12, 'rsr_indicator.1234_new-0_new-0': 34, etc.}
+
+    # This script runs 3 times if needed, the first time it is at least able to connect the result
+    # to the project and create a result id, which will be stored in rel_objects. The second time
+    # it will definitely be able to create the indicator id, etc.
 
     for i in range(3):
         for key in data.keys():
@@ -872,18 +874,6 @@ def project_editor(request, pk=None):
             # If there are no more keys in data, we have processed all fields and no more iterations
             # are needed.
             break
-
-
-    #     # Custom fields
-    #     elif 'custom-field-' in key:
-    #         cf_id = key.split('-', 2)[2]
-    #
-    #         cf, errors, rel_objects, new_object = check_related_object(
-    #             cf_id, 'custom_field', ProjectCustomField, (CUSTOM_FIELD,),
-    #             {'project': project}, data, errors, rel_objects
-    #         )
-    #
-    #         errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     return Response(
         {
