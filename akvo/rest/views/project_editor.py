@@ -24,6 +24,7 @@ from django.db.models import (get_model, BooleanField, DateField, DecimalField, 
 from django.http import HttpResponseForbidden
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.decorators import api_view, permission_classes
@@ -681,23 +682,30 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
                   rel_objects, related_obj_id):
     """Update an existing object."""
     try:
-        obj = Model.objects.get(pk=obj_id)
+        obj = Model.objects.get(pk=int(obj_id))
         setattr(obj, field, obj_data)
+    except (Model.DoesNotExist, ValueError) as e:
+        errors = add_error(errors, str(e), field_name)
+        return changes, errors, rel_objects
+
+    try:
         obj.full_clean(exclude=['primary_location',
                                 'primary_organisation',
                                 'last_update'])
+    except ValidationError as e:
+        if field in dict(e).keys():
+            errors = add_error(errors, str(dict(e)[field][0]), field_name)
+        else:
+            errors = add_error(errors, str(e), field_name)
+    except Exception as e:
+        errors = add_error(errors, str(e), field_name)
+    else:
         obj.save(update_fields=[field])
         changes = add_changes(changes, obj, field, field_name, orig_data)
         if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
-
-    except Exception as e:
-        if field in dict(e).keys():
-            errors = add_error(errors, str(dict(e)[field][0]), field_name)
-        else:
-            errors = add_error(errors, e, field_name)
-
-    return changes, errors, rel_objects
+    finally:
+        return changes, errors, rel_objects
 
 
 def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
@@ -706,16 +714,23 @@ def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, 
     try:
         obj = Model.objects.create(**kwargs)
         obj.full_clean()
-        changes = add_changes(changes, obj, field, field_name, orig_data)
-        rel_objects[related_obj_id] = obj.pk
-
-    except Exception as e:
+    except ValidationError as e:
         if field in dict(e).keys():
             errors = add_error(errors, str(dict(e)[field][0]), field_name)
         else:
-            errors = add_error(errors, e, field_name)
-
-    return changes, errors, rel_objects
+            errors = add_error(errors, str(e), field_name)
+    except MultipleObjectsReturned:
+        # Special message for multiple reporting organisations
+        message = unicode(_(u'There can be only one reporting organisation'))
+        errors = add_error(errors, str(message), field_name)
+        obj.delete()
+    except Exception as e:
+        errors = add_error(errors, str(e), field_name)
+    else:
+        changes = add_changes(changes, obj, field, field_name, orig_data)
+        rel_objects[related_obj_id] = obj.pk
+    finally:
+        return changes, errors, rel_objects
 
 
 @api_view(['POST'])
@@ -755,6 +770,9 @@ def project_editor(request, pk=None):
 
             # We pre-process the data first. E.g. dates will be converted to datetime objects
             obj_data, errors = pre_process_data(key, data[key], errors)
+            if key in [error['name'] for error in errors]:
+                data.pop(key, None)
+                continue
 
             # Retrieve the model and related object ID (e.g. rsr_project.1234)
             Model = get_model(model[0], model[1])

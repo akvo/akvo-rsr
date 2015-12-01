@@ -73,7 +73,11 @@ function fieldIsHidden(node) {
     return findAncestorByClass(node, 'form-group').classList.contains('hidden');
 }
 
-// Source: http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.js
+function hasParent(node) {
+    /* Checks if a node is part of a partial. */
+    return findAncestorByClass(node, 'parent') !== null;
+}
+
 function serialize(form) {
     /* Serialize the form so that it can be sent through the API.
        Modified to skip hidden fields and added / removed some field types.
@@ -84,37 +88,21 @@ function serialize(form) {
 	for (var i = 0; i < form.elements.length; i++) {
         var formField = form.elements[i];
 
-		if (formField.name === "" || !fieldChanged(formField)) {
-			continue;
-		}
-
-		switch (formField.nodeName) {
-            case 'INPUT':
-                switch (formField.type) {
-                    case 'text':
-                        switch (formField.parentNode.className) {
-                            case 'typeahead':
-                                q.push(formField.name + "=" + encodeURIComponent(formField.getAttribute('value')));
-                                break;
-                            default:
-                                q.push(formField.name + "=" + encodeURIComponent(formField.value));
-                                break;
-                        }
-                        break;
-                    case 'number':
+		if (formField.name !== "" && fieldChanged(formField)) {
+            // Form field has a name and is changed (and not hidden), only then process it
+            if (formField.nodeName === 'INPUT') {
+                if (formField.type === 'text' || formField.type === 'number') {
+                    if (formField.parentNode.classList.contains('typeahead')) {
+                        // Special case for typeaheads, the ID of the object is stored in the value attribute
+                        q.push(formField.name + "=" + encodeURIComponent(formField.getAttribute('value')));
+                    } else {
                         q.push(formField.name + "=" + encodeURIComponent(formField.value));
-                        break;
-                    case 'file':
-                        break;
+                    }
                 }
-                break;
-            case 'TEXTAREA':
+            } else if (formField.nodeName === 'TEXTAREA' || formField.nodeName === 'SELECT') {
                 q.push(formField.name + "=" + encodeURIComponent(formField.value));
-                break;
-            case 'SELECT':
-                q.push(formField.name + "=" + encodeURIComponent(formField.value));
-                break;
-		}
+            }
+        }
 	}
 	return q.join("&");
 }
@@ -149,6 +137,10 @@ function finishSave(saveButton, success, message) {
         icon.classList.add('glyphicon-ok-circle');
         message_div.classList.add('save-success');
         message_div.appendChild(icon);
+
+        setTimeout(function () {
+            save_message_div.innerHTML = '';
+        }, 5000);
     } else {
         icon.classList.add('glyphicon-remove-circle');
         message_div.classList.add('help-block-error');
@@ -160,17 +152,19 @@ function finishSave(saveButton, success, message) {
 }
 
 function removeErrors(form) {
-    var error_elements, form_elements;
+    var errorElements, formElements;
 
-    error_elements = form.querySelectorAll('.help-block-error');
-    form_elements = form.querySelectorAll('.has-error');
+    errorElements = form.querySelectorAll('.help-block-error');
+    formElements = form.querySelectorAll('.has-error');
 
-    while (error_elements.length > 0) {
-        error_elements[0].parentNode.removeChild(error_elements[0]);
+    for (var i = errorElements.length; i > 0; i--) {
+        var errorElement = errorElements[i - 1];
+        errorElement.parentNode.removeChild(errorElement);
     }
 
-    while (form_elements.length > 0) {
-        form_elements[0].className = form_elements[0].className.replace('has-error', '');
+    for (var j = formElements.length; j > 0; j--) {
+        var FormElement = formElements[j - 1];
+        FormElement.className = FormElement.className.replace('has-error', '');
     }
 }
 
@@ -180,25 +174,26 @@ function addErrors(errors) {
             var error, errorNode, textnode;
 
             error = errors[i];
-
             errorNode = document.getElementById(error.name);
-
-            if (errorNode.className.indexOf('-container') === -1) {
-                errorNode = errorNode.parentNode;
-
-            }
-
-            if (errorNode.className.indexOf('input-group') > -1) {
-                errorNode = errorNode.parentNode;
-            }
-
-            errorNode.className += ' has-error';
+            errorNode = findAncestorByClass(errorNode, 'form-group');
+            errorNode.classList.add('has-error');
 
             var pNode = document.createElement("p");
             pNode.className = "help-block help-block-error";
             textnode = document.createTextNode(error.error);
             pNode.appendChild(textnode);
             errorNode.appendChild(pNode);
+
+            var parentExists = hasParent(errorNode);
+            var partialNode = errorNode;
+            while (parentExists) {
+                partialNode = findAncestorByClass(partialNode, 'parent');
+                if (partialNode.querySelector('.hide-partial').classList.contains('hidden')) {
+                    // Open partial to show error
+                    partialNode.querySelector('.hide-partial-click').click();
+                }
+                parentExists = hasParent(partialNode);
+            }
 
             if (i === 0) {
                 document.getElementById(error.name).scrollIntoView();
@@ -208,6 +203,15 @@ function addErrors(errors) {
             // Can't find attribute, probably due to a name change
         }
     }
+}
+
+function successSave(node) {
+    /* Add a 5 second green border to the element to indicate that it has been saved successfully */
+    var parentNode = findAncestorByClass(node, 'form-group');
+    parentNode.classList.add('has-success');
+    setTimeout(function () {
+        parentNode.classList.remove('has-success');
+    }, 5000);
 }
 
 function replaceNames(newObjects) {
@@ -401,40 +405,39 @@ function submitStep(saveButton) {
                     finishSave(saveButton, true, message);
                 }
 
-                // Replace saved values
+                // Replace saved values and show that it updated
                 for (var i=0; i < response.changes.length; i++) {
-                    var formElement;
-
-                    formElement = document.getElementById(response.changes[i][0]);
+                    var formElement = document.getElementById(response.changes[i][0]);
                     formElement.setAttribute('saved-value', response.changes[i][1]);
+                    successSave(formElement);
                 }
 
                 // Replace field IDs, names and unicode
                 replaceNames(response.rel_objects);
 
+                // Update progress bars
                 var section = findAncestorByClass(form, 'formStep');
                 setSectionCompletionPercentage(section);
                 setPageCompletionPercentage();
 
                 return false;
             } else if (request.status === 403) {
-                // TODO: Not allowed to save, add error message
-                finishSave(saveButton, message);
+                // Not allowed to save
+                message = defaultValues.save_forbidden;
+                finishSave(saveButton, false, message);
                 return false;
             } else {
                 // We reached our target server, but it returned an error
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
-
-                finishSave(saveButton, message);
+                message = defaultValues.save_general_error;
+                finishSave(saveButton, false, message);
                 return false;
             }
         };
 
         request.onerror = function () {
             // There was a connection error of some sort
-            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
-
-            finishSave(saveButton, message);
+            message = defaultValues.connection_error;
+            finishSave(saveButton, false, message);
             return false;
         };
 
@@ -2167,7 +2170,7 @@ function fieldChanged(inputField) {
 
     if (fieldIsHidden(inputField) || inputField.type === 'file') {
         return false;
-    } else if (inputField.parentNode.className === 'typeahead') {
+    } else if (inputField.parentNode.classList.contains('typeahead')) {
         return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'))
     } else {
         return (inputField.value !== inputField.getAttribute('saved-value'))
