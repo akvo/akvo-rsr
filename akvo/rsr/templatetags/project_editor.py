@@ -141,8 +141,13 @@ def value(obj, field):
         default = retrieve_model(obj)._meta.get_field(field).default
         return default if default != NOT_PROVIDED else ''
     else:
-        default = getattr(obj, field)
-        return default or '' if not hasattr(default, 'pk') else default.pk
+        field_value = getattr(obj, field)
+        if hasattr(field_value, 'pk'):
+            return field_value.pk
+        elif hasattr(field_value, 'url'):
+            return field_value.url
+        else:
+            return field_value
 
 @register.filter
 def choices(obj, field):

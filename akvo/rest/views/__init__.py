@@ -31,9 +31,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
-                             project_editor_delete_document,
-                             project_editor_delete_photo,
-                             project_editor_upload_photo,
+                             project_editor_upload_file,
                              project_editor_import_results,
                              project_editor_remove_keyword,
                              project_editor_organisation_logo)
@@ -108,11 +106,9 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
-    'project_editor_delete_document',
-    'project_editor_delete_photo',
-    'project_editor_upload_photo',
-    'project_editor_import_results',
     'project_editor',
+    'project_editor_upload_file',
+    'project_editor_import_results',
     'project_editor_organisation_logo',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',

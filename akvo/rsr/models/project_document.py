@@ -67,8 +67,11 @@ class ProjectDocument(models.Model):
 
     def clean(self):
         # Check if the user has at least uploaded a document or indicated an URL.
-        if not (self.url or self.document):
-            raise ValidationError(_(u'It is required to upload a document or indicate an URL.'))
+        if not (self.url or self.document or self.title):
+            raise ValidationError(
+                _(u'It is required to have at least a title, an uploaded document or indicate an '
+                  u'URL.')
+            )
 
         # Check for non-unicode characters
         if self.document:

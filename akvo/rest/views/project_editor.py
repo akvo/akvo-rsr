@@ -280,12 +280,10 @@ KEYWORD_FIELDS = (
 )
 
 ## Custom fields ##
-
 CUSTOM_FIELD = ('value', 'custom-field-', 'text')
 ORGANISATION_LOGO_FIELD = ('logo', 'logo', 'none')
 
-## Special mappings for related objects ##
-
+# Special mapping for related objects without a 'project' field
 RELATED_OBJECTS_MAPPING = {
     Indicator: (Result, 'result'),
     IndicatorPeriod: (Indicator, 'indicator'),
@@ -296,7 +294,11 @@ RELATED_OBJECTS_MAPPING = {
 
 
 def add_error(errors, message, field_name):
-    errors.append({'name': field_name, 'error': str(message).capitalize()})
+    """Appends a new error to the errors list."""
+    errors.append(
+        {'name': field_name,
+         'error': str(message).capitalize()}
+    )
     return errors
 
 
@@ -670,40 +672,62 @@ def convert_related_objects(rel_objects):
 
 
 def add_changes(changes, obj, field, field_name, orig_data):
-    """Add the changes to the changes list in the required format."""
-
+    """
+    Add the changes to the changes list in the required format. The changes list contains a list
+    per related object, so we need to check if the object is already in the changes list and
+    append the new changes to it.
+    """
     if not obj in [change[0] for change in changes]:
-        changes.append([obj, [(field, field_name, orig_data)]])
+        # Object not yet in changes list
+        changes.append([obj, [[field, field_name, orig_data]]])
     else:
+        # Object in changes list, look it up and append the new changes
         for change in changes:
             if obj == change[0]:
-                change[1].append((field, field_name, orig_data))
+                change[1].append([field, field_name, orig_data])
                 break
     return changes
 
 
 def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes, errors,
                   rel_objects, related_obj_id):
-    """Update an existing object."""
+    """
+    Update an existing object. First tries to retrieve the object and set the new value of the
+    field, then it performs object and field validations and finally returns the changes or errors
+    of this process.
+    """
     try:
+        # Retrieve object and set new value of field
         obj = Model.objects.get(pk=int(obj_id))
         setattr(obj, field, obj_data)
     except (Model.DoesNotExist, ValueError) as e:
+        # If object does not exist or 'obj_id' is not an integer, add an error and do not process
+        # the object
         errors = add_error(errors, str(e), field_name)
         return changes, errors, rel_objects
 
     try:
+        # The object has been retrieved, perform validations
         obj.full_clean(exclude=['primary_location',
                                 'primary_organisation',
                                 'last_update'])
     except ValidationError as e:
         if field in dict(e).keys():
+            # Since we save the object per field, display the (first) error of this field on the
+            # field itself.
             errors = add_error(errors, str(dict(e)[field][0]), field_name)
         else:
+            # Somewhere else in the model a validation error occurred (or a combination of fields).
+            # We display this nonetheless and do not save the field.
             errors = add_error(errors, str(e), field_name)
     except Exception as e:
+        # Just in case any other error will occur, this will also be displayed underneath the field
+        # in the project editor.
         errors = add_error(errors, str(e), field_name)
     else:
+        # No validation errors. Save the field and append the changes to the changes list.
+        # In case of a non-Project object, add the object to the related objects list, so that the
+        # ID will be replaced (in case of a new object) and the unicode will be replaced.
         obj.save(update_fields=[field])
         changes = add_changes(changes, obj, field, field_name, orig_data)
         if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
@@ -714,23 +738,36 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
 
 def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
                   related_obj_id):
-    """Create a new object."""
+    """
+    Create a new object. Either an error can occur while creating the object, or during the
+    full_clean() function. In any case, catch the error and display it in the project editor.
+    """
     try:
+        # Retrieve the object with the new value and perform validations.
         obj = Model.objects.create(**kwargs)
         obj.full_clean()
     except ValidationError as e:
         if field in dict(e).keys():
+            # Since we save the object per field, display the (first) error of this field on the
+            # field itself.
             errors = add_error(errors, str(dict(e)[field][0]), field_name)
         else:
+            # Somewhere else in the model a validation error occurred (or a combination of fields).
+            # We display this nonetheless and do not save the field.
             errors = add_error(errors, str(e), field_name)
     except MultipleObjectsReturned:
-        # Special message for multiple reporting organisations
+        # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
+        # exception. In this case, display a nice error message and delete the created partnership.
         message = unicode(_(u'There can be only one reporting organisation'))
         errors = add_error(errors, str(message), field_name)
         obj.delete()
     except Exception as e:
+        # Just in case any other error will occur, this will also be displayed underneath the field
+        # in the project editor.
         errors = add_error(errors, str(e), field_name)
     else:
+        # No validation errors. Save the field and append the changes to the changes list.
+        # Add the object to the related objects list, so that the ID and unicode will be replaced.
         changes = add_changes(changes, obj, field, field_name, orig_data)
         rel_objects[related_obj_id] = obj.pk
     finally:
@@ -886,6 +923,65 @@ def project_editor(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor_upload_file(request, pk=None):
+    """Special API call for directly uploading a file."""
+
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    errors, changes, rel_objects, new_file_url = [], [], {}, ''
+    field_id = request.POST.copy()['field_id']
+    file = request.FILES['file']
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    # Retrieve field information first
+    model, field, id_list = split_key(field_id)
+
+    # Retrieve the model and related object ID (e.g. rsr_projectdocument.1234_new-0)
+    Model = get_model(model[0], model[1])
+    related_obj_id = model[0] + '_' + model[1] + '.' + '_'.join(id_list)
+
+    if len(id_list) == 1:
+        # Either the photo or an already existing project document
+        changes, errors, rel_objects = update_object(
+            Model, id_list[0], field, file, field_id, '', changes, errors,
+            rel_objects, related_obj_id
+        )
+    else:
+        # A non-existing project document
+        kwargs = dict()
+        kwargs[field] = file
+        kwargs['project'] = project
+
+        # Add field data, create new object and add new id to rel_objects dict
+        changes, errors, rel_objects = create_object(
+            Model, kwargs, field, field_id, '', changes, errors, rel_objects,
+            related_obj_id
+        )
+
+    for change in changes:
+        # If the file is successfully saved, replace the value with the URL of the new file
+        obj = change[0]
+        field = change[1][0][0]
+        if isinstance(obj, Project):
+            change[1][0][2] = get_thumbnail(
+                getattr(obj, field), '250x250', format="PNG", upscale=True
+            ).url
+        else:
+            change[1][0][2] = getattr(getattr(obj, field), 'url')
+
+    return Response(
+        {
+            'errors': errors,
+            'changes': log_changes(changes, user, project),
+            'rel_objects': convert_related_objects(rel_objects),
+        }
+    )
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
@@ -896,97 +992,6 @@ def project_editor_import_results(request, project_pk=None):
     status_code, message = project.import_results()
 
     return Response({'code': status_code, 'message': message})
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_delete_document(request, project_pk=None, document_pk=None):
-    project = Project.objects.get(pk=project_pk)
-    document = ProjectDocument.objects.get(pk=document_pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    errors, changes = save_field(
-        document, 'document', 'document-document-' + str(document_pk), '', '', [], []
-    )
-
-    if changes:
-        change_message = u'%s (id: %s): %s.' % (_(u'Project editor, changed: Project document'),
-                                                str(document_pk),
-                                                _(u'document'))
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=project.__unicode__(),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(document).pk,
-            object_id=document.pk,
-            object_repr=document.__unicode__(),
-            action_flag=CHANGE,
-            change_message=u'%s' % _(u'Project editor, deleted: document.')
-        )
-
-    return Response({'errors': errors})
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_upload_photo(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    new_image = None
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    errors, changes = process_field(project, request.FILES, CURRENT_IMAGE_FIELD, [], [])
-    log_changes(changes, user, project)
-
-    if not errors:
-        new_image = get_thumbnail(
-            project.current_image, '250x250', format="PNG", upscale=True
-        ).url
-
-    return Response(
-        {
-            'errors': errors,
-            'new_image': new_image
-        }
-    )
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def project_editor_delete_photo(request, pk=None):
-    project = Project.objects.get(pk=pk)
-    user = request.user
-
-    if not user.has_perm('rsr.change_project', project):
-        return HttpResponseForbidden()
-
-    errors, changes = save_field(project, 'current_image', 'photo', '', '', [], [])
-
-    if changes:
-        change_message = u'%s' % _(u'Project editor, deleted: current_image.')
-
-        LogEntry.objects.log_action(
-            user_id=user.pk,
-            content_type_id=ContentType.objects.get_for_model(project).pk,
-            object_id=project.pk,
-            object_repr=project.__unicode__(),
-            action_flag=CHANGE,
-            change_message=change_message
-        )
-
-    return Response({'errors': errors})
-
 
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated, ))

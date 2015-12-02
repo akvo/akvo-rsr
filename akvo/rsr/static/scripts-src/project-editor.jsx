@@ -248,7 +248,6 @@ function replaceNames(newObjects) {
                     var relObjectParentElementId = relObjectParentElement.getAttribute('id');
                     var relObjectWillBeReplaced = false;
                     if (relObjectParentElementId.indexOf('new') > -1) {
-                        console.log(relObjectParentElementId);
                         for (var newObjectsKey in newObjects) {
                             if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
                                 newObjects[newObjectsKey].old_id === relObjectParentElementId) {
@@ -278,94 +277,11 @@ function replaceNames(newObjects) {
     }
 }
 
-function replacePhoto(photo) {
-    if (photo !== null) {
-        var img_photo, photo_container, add_html;
-
-        img_photo = document.querySelector('#img-photo');
-
-        if (img_photo !== null) {
-            var delete_link;
-
-            img_photo.parentNode.removeChild(img_photo);
-            delete_link = document.querySelector('#delete-photo');
-
-            if (delete_link !== null) {
-                delete_link.parentNode.removeChild(delete_link);
-            }
-        }
-
-        photo_container = document.querySelector('#photo-container');
-        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
-
-        photo_container.innerHTML = add_html + photo_container.innerHTML;
-
-        setDeletePhoto();
-    }
-}
-
 function replaceTotalBudget(total_budget) {
     var totalBudgetNode;
 
     totalBudgetNode = document.getElementById('total-budget');
     totalBudgetNode.innerHTML = total_budget;
-}
-
-function saveDocuments(form, api_url, step, new_objects) {
-    var documentFormData, documents, file_request;
-
-    documentFormData = new FormData();
-    documents = form.querySelectorAll('*[id^="document-document-"]');
-
-    for (var i=0; i < documents.length; i++) {
-        var document_id, document_files;
-        document_id = documents[i].getAttribute("id");
-        document_files = document.getElementById(document_id).files;
-
-        if (document_files !== undefined) {
-            documentFormData.append(document_id, document_files[0]);
-        }
-    }
-
-    file_request = new XMLHttpRequest();
-    file_request.open("POST", api_url);
-    file_request.setRequestHeader("X-CSRFToken", csrftoken);
-
-    file_request.onload = function() {
-        var message;
-
-        if (file_request.status >= 200 && file_request.status < 400) {
-            var response;
-
-            response = JSON.parse(file_request.responseText);
-            addErrors(response.errors);
-
-            if (response.errors.length > 0) {
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving document</div>';
-                finishSave(step, message);
-            }
-
-            return false;
-        } else {
-            // We reached our target server, but it returned an error
-            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong with your request</div>';
-
-            finishSave(step, message);
-            return false;
-        }
-    };
-
-    file_request.onerror = function() {
-        // There was a connection error of some sort
-        var message;
-
-        message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
-
-        finishSave(step, message);
-        return false;
-    };
-
-    file_request.send(documentFormData);
 }
 
 function submitStep(saveButton) {
@@ -481,207 +397,326 @@ function deleteItem(itemId, itemType) {
     request.send();
 }
 
-/* Check the size of a file. MaxSize is specified in MB. */
-function checkFileSize(file, maxSize) {
-    return file.size < maxSize * 1024 * 1024;
-}
-
 function setDeletePhoto() {
-    try {
-        var deletePhotoButton;
+    var deletePhotoButton = document.getElementById('delete-photo');
 
-        deletePhotoButton = document.getElementById('delete-photo');
-        deletePhotoButton.onclick = getDeletePhoto();
+    if (deletePhotoButton !== null) {
+        deletePhotoButton.onclick = function (e) {
+            e.preventDefault();
 
-    } catch (error) {
-        // No delete photo button
-        return false;
+            // Remove 'delete' button
+            var deletePhotoContainer = deletePhotoButton.parentNode;
+            deletePhotoContainer.removeChild(deletePhotoButton);
+
+            // Remove any existing errors
+            var inputNode = document.getElementById('rsr_project.current_image.' + defaultValues.project_id);
+            findAncestorByClass(inputNode, 'form-group').classList.remove('has-error');
+            var errorNode = findAncestorByClass(inputNode, 'form-group').querySelector('.help-block-error');
+            if (errorNode !== null) {
+                errorNode.parentNode.removeChild(errorNode);
+            }
+
+            // Create request
+            var api_url = '/rest/v1/project/' + defaultValues.project_id + '/?format=json';
+            var request = new XMLHttpRequest();
+            request.open('PATCH', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/json");
+
+            request.onload = function () {
+                if (request.status >= 200 && request.status < 400) {
+                    var imgNode = document.getElementById('img-photo');
+                    imgNode.parentNode.removeChild(imgNode);
+                    inputNode.setAttribute('saved-value', '');
+                    inputNode.value = '';
+
+                    setSectionCompletionPercentage(findAncestorByClass(inputNode, 'formStep'));
+                    setPageCompletionPercentage();
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    deletePhotoContainer.appendChild(deletePhotoButton);
+                    addErrors([
+                        {"name": "rsr_project.current_image." + defaultValues.project_id,
+                          "error": defaultValues.file_delete_error}
+                    ]);
+                    return false;
+                }
+            };
+
+            request.onerror = function () {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send('{"current_image": null}');
+        };
     }
 }
 
-function getDeletePhoto() {
+function setDeleteDocument(documentInput) {
+    var deleteDocumentButton = documentInput.parentNode.querySelector('.delete-document');
+
+    if (deleteDocumentButton !== null) {
+        deleteDocumentButton.onclick = function (e) {
+            e.preventDefault();
+
+            // Remove 'delete' button
+            var deleteDocumentContainer = deleteDocumentButton.parentNode;
+            deleteDocumentContainer.removeChild(deleteDocumentButton);
+
+            // Remove any existing errors
+            var inputNode = deleteDocumentContainer.querySelector('input');
+            findAncestorByClass(inputNode, 'form-group').classList.remove('has-error');
+            var errorNode = findAncestorByClass(inputNode, 'form-group').querySelector('.help-block-error');
+            if (errorNode !== null) {
+                errorNode.parentNode.removeChild(errorNode);
+            }
+
+            // Get document ID
+            var documentId = inputNode.getAttribute('id').split('.').pop();
+
+            // Create request
+            var api_url = '/rest/v1/project_document/' + documentId + '/?format=json';
+            var request = new XMLHttpRequest();
+            request.open('PATCH', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/json");
+
+            request.onload = function () {
+                if (request.status >= 200 && request.status < 400) {
+                    var preview = deleteDocumentContainer.querySelector('.document-preview');
+                    preview.parentNode.removeChild(preview);
+                    inputNode.setAttribute('saved-value', '');
+                    inputNode.value = '';
+
+                    setSectionCompletionPercentage(findAncestorByClass(inputNode, 'formStep'));
+                    setPageCompletionPercentage();
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    deleteDocumentContainer.appendChild(deleteDocumentButton);
+                    addErrors([
+                        {"name": inputNode.getAttribute('id'),
+                         "error": defaultValues.file_delete_error}
+                    ]);
+                    return false;
+                }
+            };
+
+            request.onerror = function () {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send('{"document": null}');
+        };
+    }
+}
+
+function replacePhoto(photo) {
+    if (photo !== null) {
+        var img_photo, photo_container, add_html;
+
+        img_photo = document.querySelector('#img-photo');
+
+        if (img_photo !== null) {
+            var delete_link;
+
+            img_photo.parentNode.removeChild(img_photo);
+            delete_link = document.querySelector('#delete-photo');
+
+            if (delete_link !== null) {
+                delete_link.parentNode.removeChild(delete_link);
+            }
+        }
+
+        photo_container = document.querySelector('#photo-container');
+        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
+
+        photo_container.innerHTML = add_html + photo_container.innerHTML;
+
+        setDeletePhoto();
+    }
+}
+
+function replaceDocument(documentUrl, documentInput) {
+    if (documentUrl !== null) {
+
+        var documentContainer = documentInput.parentNode;
+        var documentPreview = documentContainer.querySelector('.document-preview');
+
+        if (documentPreview !== null) {
+            var delete_link;
+
+            documentPreview.parentNode.removeChild(documentPreview);
+            delete_link = document.querySelector('.delete-document');
+
+            if (delete_link !== null) {
+                delete_link.parentNode.removeChild(delete_link);
+            }
+        }
+
+        var documentUrlNode = document.createElement('a');
+        documentUrlNode.setAttribute('class', 'document-preview');
+        documentUrlNode.setAttribute('target', '_blank');
+        documentUrlNode.setAttribute('href', documentUrl);
+        var documentUrlTextNode = document.createTextNode(defaultValues.uploaded_document);
+        documentUrlNode.appendChild(documentUrlTextNode);
+        documentContainer.appendChild(documentUrlNode);
+
+        var deleteDocumentNode = document.createElement('a');
+        deleteDocumentNode.setAttribute('class', 'delete-document');
+        var deleteButton = document.createElement('span');
+        deleteButton.setAttribute('class', 'glyphicon glyphicon-remove');
+        deleteDocumentNode.appendChild(deleteButton);
+        documentContainer.appendChild(deleteDocumentNode);
+
+        setDeleteDocument(documentInput);
+    }
+}
+
+function setFileUploads() {
+    var inputs = document.querySelectorAll('input');
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type === 'file') {
+            if (inputs[i].getAttribute('id') === 'rsr_project.current_image.' + defaultValues.project_id) {
+                // Project.current_image uploads
+                inputs[i].onchange = uploadFile(inputs[i], 2, 'photo');
+                setDeletePhoto();
+            } else {
+                // ProjectDocument.document uploads
+                inputs[i].onchange = uploadFile(inputs[i], 5, 'document');
+                setDeleteDocument(inputs[i]);
+            }
+        }
+    }
+    return false;
+}
+
+function uploadFile(fileInput, maxFileSize, fileType) {
     return function(e) {
         e.preventDefault();
-        deletePhoto();
-    };
-}
 
-function deletePhoto() {
-    var api_url, request;
+        function checkFileSize(file, maxSize) {
+            /* Check the size of a file. MaxSize is specified in MB. */
+            return file.size < maxSize * 1024 * 1024;
+        }
 
-    // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/delete_photo/?format=json';
+        // Remove error indications
+        var errorHelpNodes = fileInput.parentNode.querySelectorAll('.help-block-error');
+        for (var i = 0; i < errorHelpNodes.length; i++) {
+            errorHelpNodes[i].parentNode.removeChild(errorHelpNodes[i])
+        }
+        fileInput.parentNode.classList.remove('has-error');
 
-    request = new XMLHttpRequest();
-    request.open('POST', api_url, true);
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // Get file
+        var file = fileInput.files[0];
 
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var imgNode, aNode, inputNode;
+        // Check file size first
+        if (!checkFileSize(file, maxFileSize)) {
+            var errorText, uploadFileSize;
 
-            imgNode = document.getElementById('img-photo');
-            imgNode.parentNode.removeChild(imgNode);
+            uploadFileSize = file.size / 1024 / 1024;
 
-            aNode = document.getElementById('delete-photo');
-            aNode.parentNode.removeChild(aNode);
+            errorText = defaultValues.file_size + ': ' + uploadFileSize.toFixed(2) + ' MB. ';
+            errorText += defaultValues.file_size_allowed + ' ' + maxFileSize.toString() + ' MB.';
 
-            inputNode = document.getElementById('rsr_project.current_image.' + defaultValues.project_id);
-            inputNode.setAttribute('default', '');
-
-            setAllSectionsCompletionPercentage();
-
-            return false;
-        } else {
-            // We reached our target server, but it returned an error
+            addErrors([{"name": fileInput.getAttribute('id'),
+                        "error": errorText}]);
             return false;
         }
-    };
 
-    request.onerror = function() {
-        // There was a connection error of some sort
-        return false;
-    };
+        // Check if file is image, supported formats are: jpg, jpeg, png, gif
+        if (fileType === 'photo' && !file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            addErrors([{"name": fileInput.getAttribute('id'),
+                        "error": defaultValues.image_file_format + ": jpg, jpeg, png, gif"}]);
+            return false;
+        }
 
-    request.send();
-}
+        var api_url = '/rest/v1/project/' + defaultValues.project_id + '/upload_file/?format=json';
 
-function setPhotoUpload() {
-    try {
-        var photoInput;
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("field_id", fileInput.getAttribute('id'));
 
-        photoInput = document.getElementById('rsr_project.current_image.' + defaultValues.project_id);
-        photoInput.onchange = function(e) {
-            e.preventDefault();
-            uploadPhoto(photoInput);
+        var request = new XMLHttpRequest();
+
+        var progressBarContainer = findAncestorByClass(fileInput, 'form-group').querySelector('.file-progress');
+
+        if (request.upload) {
+            // Show upload progress bar
+            progressBarContainer.classList.remove('hidden');
+
+            // Upload progress bar
+            request.upload.addEventListener("progress", function(e) {
+                var progressBar = progressBarContainer.querySelector('.progress-bar');
+                var percentage = parseInt(100 - (e.loaded / e.total * 100));
+                progressBar.setAttribute('aria-valuenow', percentage);
+                progressBar.style.width = percentage + '%';
+                progressBar.innerHTML = percentage + '%';
+            }, false);
+        }
+
+        request.open("POST", api_url);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+
+        request.onload = function() {
+            // Remove upload progress bar
+            progressBarContainer.classList.add('hidden');
+
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+
+                // Check for errors
+                if (response.errors.length > 0) {
+                    addErrors(response.errors);
+                }
+
+                // Replace saved values and show that it updated
+                for (var i=0; i < response.changes.length; i++) {
+                    if (fileType === 'photo') {
+                        // Show photo
+                        replacePhoto(response.changes[i][1]);
+                    } else {
+                        // Show document
+                        replaceDocument(response.changes[i][1], fileInput);
+                    }
+
+                    var formElement = document.getElementById(response.changes[i][0]);
+                    formElement.setAttribute('saved-value', response.changes[i][1]);
+                    successSave(formElement);
+                }
+
+                // Replace field IDs, names and unicode
+                replaceNames(response.rel_objects);
+
+                // Update progress bars
+                var section = findAncestorByClass(fileInput, 'formStep');
+                setSectionCompletionPercentage(section);
+                setPageCompletionPercentage();
+            } else {
+                // Could not save file
+                addErrors([{"name": fileInput.getAttribute('id'),
+                            "error": defaultValues.save_general_error}]);
+            }
+            return false;
         };
 
-    } catch (error) {
-        // No photo input found
-        return false;
-    }
-}
+        request.onerror = function() {
+            // Remove progress bar
+            progressBarContainer.classList.add('hidden');
 
-function uploadPhoto(photoInput) {
-    var formData, progressBarContainer, request, uploadFile, url;
-
-    // Remove error indications
-    var errorHelpNodes = photoInput.parentNode.querySelectorAll('.help-block-error');
-    for (var i=0; i<errorHelpNodes.length; i++) {
-        errorHelpNodes[i].parentNode.removeChild(errorHelpNodes[i])
-    }
-    photoInput.parentNode.classList.remove('has-error');
-
-    // Get photo
-    uploadFile = photoInput.files[0];
-
-    // Check file size first
-    if (!checkFileSize(uploadFile, 2)) {
-        var errorText, uploadFileSize;
-
-        uploadFileSize = uploadFile.size / 1024 / 1024;
-
-        errorText = defaultValues.file_size + ': ' + uploadFileSize.toFixed(2) + ' MB. ';
-        errorText += defaultValues.file_size_allowed + ' 2 MB.';
-
-        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
-                    "error": errorText}]);
-        return false;
-    }
-
-    // Check if file is image, supported formats are: jpg, jpeg, png, gif
-    if (!uploadFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
-                    "error": defaultValues.image_file_format + ": jpg, jpeg, png, gif"}]);
-        return false;
-    }
-
-    url = '/rest/v1/project/' + defaultValues.project_id + '/upload_photo/?format=json';
-
-    formData = new FormData();
-    formData.append("photo", uploadFile);
-
-    request = new XMLHttpRequest();
-
-    progressBarContainer = document.getElementById('rsr_project.current_image.' + defaultValues.project_id + '.progress');
-
-    if (request.upload) {
-        // Show progress bar
-        progressBarContainer.classList.remove('hidden');
-
-        // progress bar
-		request.upload.addEventListener("progress", function(e) {
-            var progressBar = progressBarContainer.querySelector('.progress-bar');
-			var percentage = parseInt(100 - (e.loaded / e.total * 100));
-            progressBar.setAttribute('aria-valuenow', percentage);
-            progressBar.style.width = percentage + '%';
-            progressBar.innerHTML = percentage + '%';
-		}, false);
-    }
-
-    request.open("POST", url);
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var response = JSON.parse(request.responseText);
-            replacePhoto(response.new_image);
-        }
-
-        // Remove progress bar
-        progressBarContainer.classList.add('hidden');
-
-        return false;
-    };
-
-    request.onerror = function() {
-        // Remove progress bar
-        progressBarContainer.classList.add('hidden');
-
-        addErrors([{"name": "rsr_project.current_image." + defaultValues.project_id,
-                    "error": defaultValues.connection_error}]);
-
-        return false;
-    };
-
-    request.send(formData);
-}
-
-function deleteDocument(document_id) {
-    var api_url, request;
-
-    // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/delete_document/' + document_id + '/?format=json';
-
-    request = new XMLHttpRequest();
-    request.open('POST', api_url, true);
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var docNode, aNode;
-
-            docNode = document.querySelector('#document-document-url-' + document_id);
-            docNode.parentNode.removeChild(docNode);
-
-            aNode = document.querySelector('#delete-document-document-' + document_id);
-            aNode.parentNode.removeChild(aNode);
+            addErrors([{"name": fileInput.getAttribute('id'),
+                        "error": defaultValues.connection_error}]);
 
             return false;
-        } else {
-            // We reached our target server, but it returned an error
-            return false;
-        }
-    };
+        };
 
-    request.onerror = function() {
-        // There was a connection error of some sort
-        return false;
-    };
-
-    request.send();
+        request.send(formData);
+    }
 }
 
 function getTotalBudget() {
@@ -1222,6 +1257,7 @@ function addPartial(partialName, partialContainer) {
 
         // Set onClicks for partials again in case this partial contains other partials
         setPartialOnClicks();
+        setFileUploads();
     };
 }
 
@@ -1424,15 +1460,9 @@ function setSectionCompletionPercentage(section) {
     var numInputsCompleted = inputResults[1];
 
     if (numInputs === 0) {
-        if (elHasClass(section, 'stepEight')) {
-            // Section 8 without mandatory fields (no sectors) should still display empty
-            renderCompletionPercentage(0, 1, section);
-            return;
-        } else {
-            // There are no mandatory fields, show the section as complete
-            renderCompletionPercentage(1, 1, section);
-            return;
-        }
+        // There are no mandatory fields, show the section as complete
+        renderCompletionPercentage(1, 1, section);
+        return;
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
@@ -1477,33 +1507,26 @@ function getInputResults(section, measureClass) {
     var numInputsCompleted = 0;
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var selector, sectionResults;
+        var selector = INPUT_ELEMENTS[i] + measureClass;
+        var mandatoryFields = section.querySelectorAll(selector);
 
-        selector = INPUT_ELEMENTS[i] + measureClass;
-        sectionResults = section.querySelectorAll(selector);
+        for (var j = 0; j < mandatoryFields.length; j++ ) {
+            var field = mandatoryFields[j];
 
-        for (var j = 0; j < sectionResults.length; j++ ) {
-            var result = sectionResults[j];
-
-            if (result.getAttribute('name') === 'step') {
-                // This is a progress bar input, ignore it
-                continue;
-            }
-
-            if (result.getAttribute('disabled') !== null) {
-                // This is a disabled input, ignore it
+            if (field.getAttribute('disabled') !== null) {
+                // Ignore disabled fields
                 continue;
             }
 
             numInputs += 1;
 
-            if (result.getAttribute('name') === 'projectStatus' && result.value === 'N') {
-                // Ignore project status 'None'
-                continue;
-            } else if (result.value !== '') {
+            if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id &&
+                field.value === 'N') {
+                // Do not count project status 'None'
+            } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
+                // Custom code for file inputs
                 numInputsCompleted += 1;
-            } else if (result.getAttribute('name') === 'rsr_project.current_image.' + defaultValues.project_id && result.getAttribute('default') !== '' && result.getAttribute('default') !== null) {
-                // Custom code for project photo
+            } else if (field.value !== '') {
                 numInputsCompleted += 1;
             }
         }
@@ -1912,16 +1935,12 @@ function getImportResults(importButton) {
 }
 
 function setPublishOnClick() {
-    try {
-        var publishButton;
-
-        publishButton = document.getElementById('publishProject');
+    var publishButton = document.getElementById('publishProject');
+    if (publishButton !== null) {
         publishButton.onclick = getProjectPublish(defaultValues.publishing_status_id, publishButton);
-
-    } catch (error) {
-        // No publish button
-        return false;
     }
+
+    return false;
 }
 
 function getProjectPublish(publishingStatusId, publishButton) {
@@ -2680,8 +2699,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setSubmitOnClicks();
     setPartialOnClicks();
     setCurrencyOnChange();
-    setPhotoUpload();
-    setDeletePhoto();
+    setFileUploads();
     setImportResults();
 
     setValidationListeners();
