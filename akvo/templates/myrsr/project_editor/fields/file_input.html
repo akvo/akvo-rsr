@@ -1,6 +1,6 @@
 {% load project_editor i18n %}
 
-<div class="form-group control">
+<div class="form-group control{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
     <input type="file"
            name="{{ obj|field_id:field }}"
            id="{{ obj|field_id:field }}"

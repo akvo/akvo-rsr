@@ -1096,9 +1096,37 @@ function setPartialOnClicks() {
     for (var n = 0; n < specialInfoIcons.length; n++) {
         specialInfoIcons[n].onclick = toggleHelpText(specialInfoIcons[n]);
     }
+
+    // Set the document file upload toggle
+    var documentToggles = document.querySelectorAll('.document-toggle');
+    for (var o = 0; o < documentToggles.length; o++) {
+        documentToggles[o].onchange = toggleDocumentUpload(documentToggles[o])
+    }
+}
+
+function toggleDocumentUpload(toggleNode) {
+    /* It is possible to switch between entering a document URL and uploading a file */
+    return function(e) {
+        e.preventDefault();
+
+        var parent = findAncestorByClass(toggleNode, 'parent');
+        var urlFormGroup = findAncestorByClass(parent.querySelectorAll('input')[0], 'form-group');
+        var fileFormGroup = findAncestorByClass(parent.querySelectorAll('input')[1], 'form-group');
+
+        if (toggleNode.checked) {
+            // Show the file upload
+            fileFormGroup.classList.remove('hidden');
+            urlFormGroup.classList.add('hidden');
+        } else {
+            // Show the URL field
+            fileFormGroup.classList.add('hidden');
+            urlFormGroup.classList.remove('hidden');
+        }
+    };
 }
 
 function toggleHelpText(helpIconNode) {
+    /* For several help texts we show an info icon (different from those in the labels of fields) */
     return function(e) {
         e.preventDefault();
         e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
