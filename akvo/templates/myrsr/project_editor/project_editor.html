@@ -329,36 +329,6 @@
         [{% for country in countries %}{"pk": "{{ country.pk }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
-    <script type="application/javascript">
-        function toggleRelatedProject(node) {
-            var relatedProject, IatiIdentifier, parentNode;
-
-            parentNode = node.parentNode.parentNode.parentNode;
-            relatedProject = parentNode.querySelectorAll('.related-project-input')[0];
-            IatiIdentifier = parentNode.querySelectorAll('.related-project-iati-identifier-container')[0];
-
-            if (node.checked) {
-                // User wants to indicate IATI identifier
-                if (relatedProject.className.indexOf('hidden') === -1) {
-                    relatedProject.className += ' hidden';
-                }
-
-                if (IatiIdentifier.className.indexOf('hidden') > -1) {
-                    IatiIdentifier.className = IatiIdentifier.className.replace('hidden', '');
-                }
-            } else {
-                // User wants to link to related project
-                if (IatiIdentifier.className.indexOf('hidden') === -1) {
-                    IatiIdentifier.className += ' hidden';
-                }
-
-                if (relatedProject.className.indexOf('hidden') > -1) {
-                    relatedProject.className = relatedProject.className.replace('hidden', '');
-                }
-            }
-        }
-    </script>
-
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 
     {% compressed_css 'react_datepicker_style' %}

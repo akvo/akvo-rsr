@@ -1102,6 +1102,33 @@ function setPartialOnClicks() {
     for (var o = 0; o < documentToggles.length; o++) {
         documentToggles[o].onchange = toggleDocumentUpload(documentToggles[o])
     }
+
+    // Set the related project toggle
+    var relatedProjectToggles = document.querySelectorAll('.related-project-toggle');
+    for (var p = 0; p < relatedProjectToggles.length; p++) {
+        relatedProjectToggles[p].onchange = toggleRelatedProject(relatedProjectToggles[p])
+    }
+}
+
+function toggleRelatedProject(toggleNode) {
+    /* It is possible to switch between entering an RSR project and an IATI identifier */
+    return function(e) {
+        e.preventDefault();
+
+        var parent = findAncestorByClass(toggleNode, 'parent');
+        var relatedProjectFormGroup = findAncestorByClass(parent.querySelectorAll('input')[0], 'form-group');
+        var iatiIdFormGroup = findAncestorByClass(parent.querySelectorAll('input')[1], 'form-group');
+
+        if (toggleNode.checked) {
+            // Show the IATI identifier
+            iatiIdFormGroup.classList.remove('hidden');
+            relatedProjectFormGroup.classList.add('hidden');
+        } else {
+            // Show the URL field
+            iatiIdFormGroup.classList.add('hidden');
+            relatedProjectFormGroup.classList.remove('hidden');
+        }
+    };
 }
 
 function toggleDocumentUpload(toggleNode) {

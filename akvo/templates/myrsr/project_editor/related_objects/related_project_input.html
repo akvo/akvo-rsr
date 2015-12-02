@@ -5,21 +5,19 @@
     <div class="hide-partial {% if rp.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-6">
-                {% if advanced_editor %}
-                    {% include typeahead_input with obj=rp field="related_project" %}
+                {% if rp.related_iati_id and not rp.related_project %}
+                    {% include typeahead_input with obj=rp field="related_project" hidden=True %}
                     {% include text_input with obj=rp field="related_iati_id" %}
                 {% else %}
                     {% include typeahead_input with obj=rp field="related_project" %}
                     {% include text_input with obj=rp field="related_iati_id" hidden=True %}
                 {% endif %}
-{#                    <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">#}
-{#                        <p>#}
-{#                            <input type="checkbox" id="rp-toggle{% if key %}-{{ key }}{% endif %}" {% if rp.related_iati_id and not rp.related_project %}checked{% endif %} onchange="toggleRelatedProject(this)">#}
-{#                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Related project is not present in RSR' %}</span>#}
-{#                            <span style="font-size: 0.9em;" class="glyphicon glyphicon-info-sign info-icon" onclick="toggleRelatedProjectHelptext(this);"></span>#}
-{#                        </p>#}
-{#                        <span class="help-block hidden">{% trans 'Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project.' %}</span>#}
-{#                    </div>#}
+                <p>
+                    <input type="checkbox" {% if rp.related_iati_id and not rp.related_project %}checked{% endif %} class="related-project-toggle">
+                    <span class="toggle-help">{% trans 'Related project is not present in RSR' %}</span>
+                    <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="related-project-toggle-helptext-{{ rp|obj_id }}"></span>
+                </p>
+                <span class="help-block hidden" id="related-project-toggle-helptext-{{ rp|obj_id }}">{% trans 'Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project.' %}</span>
             </div>
             <div class="col-md-6">
                 {% include choice_input with obj=rp field="relation" %}
