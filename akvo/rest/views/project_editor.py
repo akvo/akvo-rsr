@@ -5,26 +5,22 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country,
-                             CountryBudgetItem, Indicator, IndicatorPeriod, Keyword, Link,
-                             Organisation, Partnership, PlannedDisbursement, PolicyMarker, Project,
-                             ProjectCondition, ProjectContact, ProjectCustomField, ProjectDocument,
-                             ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
-                             Result, Sector, Transaction, TransactionSector)
-
-from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
-                             ValidXMLCharField, ValidXMLTextField)
-
 import datetime
 import decimal
 
+from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
+                             ValidXMLCharField, ValidXMLTextField)
+from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, Indicator,
+                             IndicatorPeriod, Keyword, Organisation, Project, ProjectLocation,
+                             Result, Transaction, TransactionSector)
+
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
 from django.http import HttpResponseForbidden
-from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.decorators import api_view, permission_classes
@@ -33,258 +29,9 @@ from rest_framework.response import Response
 
 from sorl.thumbnail import get_thumbnail
 
-## Section 1 ##
 
-SECTION_ONE_FIELDS = (
-    ('title', 'projectTitle', 'text'),
-    ('subtitle', 'projectSubTitle', 'text'),
-    ('iati_activity_id', 'iatiId', 'none'),
-    ('status', 'projectStatus', 'text'),
-    ('date_start_planned', 'eventFromPlanned', 'date'),
-    ('date_end_planned', 'eventEndPlanned', 'date'),
-    ('date_start_actual', 'eventFromActual', 'date'),
-    ('date_end_actual', 'eventEndActual', 'date'),
-    ('language', 'projectLanguage', 'text'),
-    ('hierarchy', 'projectHierarchy', 'none'),
-    ('current_image_caption', 'photoCaption', 'text'),
-    ('current_image_credit', 'photoCredit', 'text'),
-    ('currency', 'projectCurrency', 'text'),
-    ('default_aid_type', 'defaultAidType', 'text'),
-    ('default_flow_type', 'defaultFlowType', 'text'),
-    ('default_tied_status', 'defaultTiedStatus', 'text'),
-    ('collaboration_type', 'collaborationType', 'text'),
-    ('default_finance_type', 'defaultFinanceType', 'text'),
-)
-
-CURRENT_IMAGE_FIELD = ('current_image', 'photo', 'none')
-
-RELATED_PROJECT_FIELDS = (
-    ('related_project', 'value-related-project-project-', 'related-object'),
-    ('related_iati_id', 'related-project-iati-identifier-', 'text'),
-    ('relation', 'related-project-relation-', 'text'),
-)
-
-## Section 2 ##
-
-PROJECT_CONTACT_FIELDS = (
-    ('person_name', 'contact-name-', 'text'),
-    ('organisation', 'contact-organisation-', 'text'),
-    ('job_title', 'contact-job-title-', 'text'),
-    ('type', 'contact-type-', 'text'),
-    ('email', 'contact-email-', 'text'),
-    ('telephone', 'contact-phone-', 'text'),
-    ('mailing_address', 'contact-address-', 'text'),
-    ('department', 'contact-department-', 'text'),
-    ('website', 'contact-website-', 'text'),
-)
-
-## Section 3 ##
-
-PARTNER_FIELDS = (
-    ('organisation', 'value-partner-', 'related-object'),
-    ('iati_organisation_role', 'partner-role-', 'integer'),
-    ('funding_amount', 'funding-amount-', 'decimal'),
-)
-
-## Section 4 ##
-
-SECTION_FOUR_FIELDS = (
-    ('project_plan_summary', 'summary', 'text'),
-    ('goals_overview', 'goalsOverview', 'text'),
-    ('background', 'background', 'text'),
-    ('current_status', 'currentSituation', 'text'),
-    ('target_group', 'targetGroup', 'text'),
-    ('project_plan', 'projectPlan', 'text'),
-    ('sustainability', 'sustainability', 'text'),
-)
-
-## Section 5 ##
-
-SECTION_FIVE_FIELDS = (
-    ('is_impact_project', 'impactProject', 'boolean'),
-)
-
-RESULT_FIELDS = (
-    ('title', 'result-title-', 'text'),
-    ('type', 'result-type-', 'text'),
-    ('aggregation_status', 'result-aggregation-status-', 'none-boolean'),
-    ('description', 'result-description-', 'text'),
-)
-
-INDICATOR_FIELDS = (
-    ('title', 'indicator-title-', 'text'),
-    ('measure', 'indicator-measure-', 'text'),
-    ('ascending', 'indicator-ascending-', 'none-boolean'),
-    ('description', 'indicator-description-', 'text'),
-    ('baseline_value', 'indicator-baseline-value-', 'text'),
-    ('baseline_comment', 'indicator-baseline-comment-', 'text'),
-    ('baseline_year', 'indicator-baseline-year-', 'none'),
-)
-
-INDICATOR_PERIOD_FIELDS = (
-    ('period_start', 'indicator-period-start-', 'date'),
-    ('period_end', 'indicator-period-end-', 'date'),
-    ('target_value', 'indicator-period-target-value-', 'text'),
-    ('target_comment', 'indicator-period-target-value-comment-', 'text'),
-    ('actual_value', 'indicator-period-actual-value-', 'text'),
-    ('actual_comment', 'indicator-period-actual-value-comment-', 'text'),
-)
-
-PROJECT_CONDITION_FIELDS = (
-    ('type', 'condition-type-', 'text'),
-    ('text', 'condition-text-', 'text'),
-)
-
-## Section 6 ##
-
-SECTION_SIX_FIELDS = (
-    ('capital_spend_percentage', 'capital-spend-percentage', 'decimal'),
-    ('country_budget_vocabulary', 'country-budget-vocabulary', 'text'),
-    ('donate_button', 'donateButton', 'boolean'),
-)
-
-BUDGET_ITEM_FIELDS = (
-    ('amount', 'budget-item-value-', 'decimal'),
-    ('type', 'budget-item-type-', 'text'),
-    ('other_extra', 'budget-item-other-', 'text'),
-    ('label', 'budget-item-label-', 'related-object'),
-    ('value_date', 'budget-item-value-date-', 'date'),
-    ('period_start', 'budget-item-period-start-', 'date'),
-    ('period_end', 'budget-item-period-end-', 'date'),
-)
-
-COUNTRY_BUDGET_ITEM_FIELDS = (
-    ('code', 'country-budget-item-', 'text'),
-    ('description', 'country-budget-description-', 'text'),
-    ('percentage', 'country-budget-percentage-', 'decimal'),
-)
-
-TRANSACTION_FIELDS = (
-    ('transaction_type', 'transaction-type-', 'text'),
-    ('value', 'transaction-value-', 'decimal'),
-    ('transaction_date', 'transaction-date-', 'date'),
-    ('value_date', 'transaction-value-date-', 'date'),
-    ('reference', 'transaction-reference-', 'text'),
-    ('description', 'transaction-description-', 'text'),
-    ('provider_organisation', 'value-transaction-provider-org-', 'related-object'),
-    ('provider_organisation_activity', 'transaction-provider-org-activity-', 'text'),
-    ('receiver_organisation', 'value-transaction-receiver-org-', 'related-object'),
-    ('receiver_organisation_activity', 'transaction-receiver-org-activity-', 'text'),
-    ('aid_type', 'transaction-aid-type-', 'text'),
-    ('disbursement_channel', 'transaction-disbursement-channel-', 'text'),
-    ('finance_type', 'transaction-finance-type-', 'text'),
-    ('flow_type', 'transaction-flow-type-', 'text'),
-    ('tied_status', 'transaction-tied-status-', 'text'),
-    ('recipient_country', 'transaction-recipient-country-', 'text'),
-    ('recipient_region', 'transaction-recipient-region-', 'text'),
-    ('recipient_region_vocabulary', 'transaction-recipient-region-vocabulary-', 'text'),
-)
-
-TRANSACTION_SECTOR_FIELDS = (
-    ('code', 'transaction-sector-', 'text'),
-    ('vocabulary', 'transaction-sector-vocabulary-', 'text'),
-    ('text', 'transaction-sector-description-', 'text'),
-)
-
-PLANNED_DISBURSEMENT_FIELDS = (
-    ('value', 'planned-disbursement-value-', 'decimal'),
-    ('value_date', 'planned-disbursement-value-date-', 'date'),
-    ('type', 'planned-disbursement-type-', 'text'),
-    ('period_start', 'planned-disbursement-period-start-', 'date'),
-    ('period_end', 'planned-disbursement-period-end-', 'date'),
-)
-
-## Section 7 ##
-
-SECTION_SEVEN_FIELDS = (
-    ('project_scope', 'scope', 'text'),
-)
-
-RECIPIENT_COUNTRY_FIELDS = (
-    ('country', 'recipient-country-', 'text'),
-    ('percentage', 'recipient-country-percentage-', 'decimal'),
-    ('text', 'recipient-country-description-', 'text'),
-)
-
-RECIPIENT_REGION_FIELDS = (
-    ('region', 'recipient-region-', 'text'),
-    ('percentage', 'recipient-region-percentage-', 'decimal'),
-    ('text', 'recipient-region-description-', 'text'),
-    ('region_vocabulary', 'recipient-region-vocabulary-', 'text'),
-)
-
-PROJECT_LOCATION_FIELDS = (
-    ('latitude', 'location-latitude-', 'decimal'),
-    ('longitude', 'location-longitude-', 'decimal'),
-    ('country', 'location-country-', 'related-object'),
-    ('city', 'location-city-', 'text'),
-    ('postcode', 'location-postal-code-', 'text'),
-    ('state', 'location-state-', 'text'),
-    ('address_1', 'location-address1-', 'text'),
-    ('address_2', 'location-address2-', 'text'),
-    ('reference', 'location-reference-', 'text'),
-    ('location_code', 'location-code-', 'text'),
-    ('description', 'location-description-', 'text'),
-    ('activity_description', 'location-activity-description-', 'text'),
-    ('exactness', 'location-exactness-', 'text'),
-    ('location_reach', 'location-reach-', 'text'),
-    ('location_class', 'location-class-', 'text'),
-    ('feature_designation', 'location-feature-designation-', 'text'),
-)
-
-ADMINISTRATIVE_LOCATION_FIELDS = (
-    ('code', 'location-administrative-code-', 'text'),
-    ('vocabulary', 'location-administrative-vocabulary-', 'text'),
-    ('level', 'location-administrative-level-', 'integer'),
-)
-
-## Section 8 ##
-
-SECTOR_FIELDS = (
-    ('sector_code', 'sector-code-', 'text'),
-    ('percentage', 'sector-percentage-', 'decimal'),
-    ('vocabulary', 'sector-vocabulary-', 'text'),
-)
-
-POLICY_MARKER_FIELDS = (
-    ('policy_marker', 'policy-marker-', 'text'),
-    ('significance', 'policy-marker-significance-', 'text'),
-    ('description', 'policy-marker-description-', 'text'),
-)
-
-## Section 9 ##
-
-LINK_FIELDS = (
-    ('url', 'link-url-', 'text'),
-    ('caption', 'link-caption-', 'text'),
-)
-
-PROJECT_DOCUMENT_FIELDS = (
-    ('url', 'document-url-', 'text'),
-    ('title', 'document-title-', 'text'),
-    ('format', 'document-format-', 'text'),
-    ('category', 'document-category-', 'text'),
-    ('language', 'document-language-', 'text'),
-)
-
-PROJECT_DOCUMENT_FIELD = ('document', 'document-document-', 'none')
-
-## Section 10 ##
-
-SECTION_TEN_FIELDS = (
-    ('notes', 'projectComments', 'text'),
-)
-
-KEYWORD_FIELDS = (
-    ('label', 'project-keyword-', 'related-objects')
-)
-
-## Custom fields ##
-CUSTOM_FIELD = ('value', 'custom-field-', 'text')
-ORGANISATION_LOGO_FIELD = ('logo', 'logo', 'none')
-
-# Special mapping for related objects without a 'project' field
 RELATED_OBJECTS_MAPPING = {
+    # Special mapping for related objects without a 'project' field
     Indicator: (Result, 'result'),
     IndicatorPeriod: (Indicator, 'indicator'),
     TransactionSector: (Transaction, 'transaction'),
@@ -302,146 +49,8 @@ def add_error(errors, message, field_name):
     return errors
 
 
-def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
-    obj_data = getattr(obj, field)
-
-    if form_field[:6] == 'value-':
-        form_field = form_field[6:]
-
-    if isinstance(obj_data, int):
-        obj_data = str(obj_data)
-    elif isinstance(obj_data, datetime.date):
-        obj_data = obj_data.strftime("%Y-%m-%d")
-
-    if obj_data != form_data:
-        setattr(obj, field, form_data)
-        has_error = False
-
-        try:
-            obj.full_clean()
-        except Exception as e:
-            if field in dict(e).keys():
-                has_error = True
-                errors = add_error(errors, str(dict(e)[field][0]), form_field)
-
-        if not has_error:
-            try:
-                obj.save(update_fields=[field])
-
-                if not obj in [change[0] for change in changes]:
-                    changes.append([obj, [(field, form_field, orig_data)]])
-                else:
-                    for change in changes:
-                        if obj == change[0]:
-                            change[1].append((field, form_field, orig_data))
-                            break
-
-            except Exception as e:
-                errors = add_error(errors, e, form_field)
-
-    return errors, changes
-
-
-def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_obj_type=None):
-    field_name = field[1] + form_obj_id
-    orig_data = form_data[field_name] if not field[2] == 'boolean' else None
-
-    if field[2] == 'date':
-        if orig_data:
-            try:
-                field_data = datetime.datetime.strptime(orig_data, "%d/%m/%Y").strftime("%Y-%m-%d")
-            except ValueError as e:
-                errors = add_error(errors, e, field_name)
-                field_data = None
-        else:
-            field_data = None
-
-    elif field[2] == 'integer':
-        try:
-            field_data = int(orig_data) if orig_data else None
-        except ValueError as e:
-            errors = add_error(errors, e, field_name)
-            field_data = None
-
-    elif field[2] == 'decimal':
-        try:
-            field_data = decimal.Decimal(orig_data) if orig_data else None
-        except decimal.InvalidOperation as e:
-            if orig_data and ',' in orig_data:
-                # Specific error message for commas
-                e = u'%s' % _(u'It is not allowed to use a comma, use a period to denote decimals.')
-            errors = add_error(errors, e, field_name)
-            field_data = None
-
-    elif field[2] == 'related-object':
-        if orig_data:
-            try:
-                field_data = getattr(getattr(rel_obj_type, 'objects'), 'get')(pk=orig_data)
-            except rel_obj_type.DoesNotExist as e:
-                errors = add_error(errors, e, field_name)
-                field_data = None
-        else:
-            field_data = None
-
-    elif field[2] == 'boolean':
-        field_data = 'True' if field_name in form_data.keys() else 'False'
-        orig_data = field_data
-
-    elif field[2] == 'none-boolean':
-        field_data = True if orig_data == '1' else False if orig_data == '2' else None
-
-    elif field[2] == 'none':
-        field_data = orig_data if orig_data else None
-
-    else:
-        field_data = orig_data
-
-    return save_field(obj, field[0], field_name, field_data, orig_data, errors, changes)
-
-
-def check_related_object_data(obj_id, form_data, fields):
-    for field in fields:
-        if form_data[field[1] + obj_id]:
-            return True
-    return False
-
-
-def check_related_object(obj_id, obj_name, obj_type, obj_fields, parent_args, form_data, errors,
-                         rel_objects):
-    obj = None
-    new_object = False
-
-    if 'add' in obj_id and check_related_object_data(obj_id, form_data, obj_fields):
-        obj = getattr(getattr(obj_type, 'objects'), 'create')(**parent_args)
-        rel_objects.append(
-            {
-                'old_id': obj_id,
-                'new_id': str(obj.pk),
-                'div_id': obj_name + '-' + obj_id,
-            }
-        )
-
-        new_object = True
-
-    elif not 'add' in obj_id:
-        try:
-            obj = getattr(getattr(obj_type, 'objects'), 'get')(pk=int(obj_id))
-
-            rel_objects.append(
-                {
-                    'old_id': str(obj.pk),
-                    'new_id': str(obj.pk),
-                    'div_id': obj_name + '-' + str(obj.pk),
-                }
-            )
-        except Exception as e:
-            error = str(e).capitalize()
-            errors.append({'name': 'test', 'error': error})
-
-    return obj, errors, rel_objects, new_object
-
-
 def log_changes(changes, user, project):
+    """Logs all changes to Django's LogEntry model."""
     if changes:
         change_message = u''
         first_part = u'%s' % _(u'Project editor, changed: ')
@@ -492,19 +101,6 @@ def log_changes(changes, user, project):
         return field_changes
 
     return []
-
-
-def log_addition(obj, user):
-    change_message = u'%s' % _(u'Project editor, added.')
-
-    LogEntry.objects.log_action(
-        user_id=user.pk,
-        content_type_id=ContentType.objects.get_for_model(obj).pk,
-        object_id=obj.pk,
-        object_repr=obj.__unicode__(),
-        action_flag=ADDITION,
-        change_message=change_message
-    )
 
 
 def split_key(key):
@@ -931,7 +527,7 @@ def project_editor_upload_file(request, pk=None):
 
     errors, changes, rel_objects, new_file_url = [], [], {}, ''
     field_id = request.POST.copy()['field_id']
-    file = request.FILES['file']
+    upload_file = request.FILES['file']
 
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
@@ -946,13 +542,13 @@ def project_editor_upload_file(request, pk=None):
     if len(id_list) == 1:
         # Either the photo or an already existing project document
         changes, errors, rel_objects = update_object(
-            Model, id_list[0], field, file, field_id, '', changes, errors,
+            Model, id_list[0], field, upload_file, field_id, '', changes, errors,
             rel_objects, related_obj_id
         )
     else:
         # A non-existing project document
         kwargs = dict()
-        kwargs[field] = file
+        kwargs[field] = upload_file
         kwargs['project'] = project
 
         # Add field data, create new object and add new id to rel_objects dict
@@ -1032,10 +628,13 @@ def project_editor_organisation_logo(request, pk=None):
 
     files = request.FILES
     logo = None
-    errors = []
+    errors, changes, rel_objects = [], [], {}
 
     if 'logo' in files.keys():
-        errors, changes = process_field(org, files, ORGANISATION_LOGO_FIELD, errors, [])
+        changes, errors, rel_objects = update_object(
+            Organisation, pk, 'logo', files['logo'], '', '', changes, errors,
+            rel_objects, 'rsr_organisation.' + str(pk)
+        )
 
         if not errors:
             logo = get_thumbnail(
