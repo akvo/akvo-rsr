@@ -12,7 +12,7 @@
     <!--*************************************** Project editor header **********************************************-->
     <div class="row">
         <div class="col-md-8">
-            <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'editorHelptext');"></span></h3>
+            <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
         </div>
         <div class="col-md-4">
             <div class="editDate">
@@ -338,21 +338,7 @@
     </script>
 
     <script type="application/javascript">
-        function toggleId(e, helpIconNode, nodeId) {
-            e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
 
-            var node;
-
-            node = document.getElementById(nodeId);
-
-            if (node.className.indexOf("hidden") > -1) {
-                node.className = node.className.replace('hidden', '');
-                helpIconNode.className += ' activated';
-            } else {
-                node.className += ' hidden';
-                helpIconNode.className = helpIconNode.className.replace('activated', '');
-            }
-        }
 
         function toggleSectors(node) {
             var optionNode, sectorCodeId, sectorCodeNode, sectorCode, sectorCodes;

@@ -3,7 +3,7 @@
 <div class="myPanel borderBottom" id="panel3">
     <div class="formStep stepThree">
         <div class="toggleSection">
-            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
+            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special hidden" toggleid="step-3-helptext"></span></h4></label>
         </div>
         <input type="radio" name="step" id="stepThree">
         <div class="progress section-progress">
@@ -16,7 +16,7 @@
                 {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
             </p>
             <form role="form">
-                <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
+                <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special activated" toggleid="partners-helptext"></span></h5>
                 <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
                 <div class="partner-container" id="partner-container">
                     {% for ps in project.partnerships.all %}

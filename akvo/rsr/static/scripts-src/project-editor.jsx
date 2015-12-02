@@ -1090,6 +1090,30 @@ function setPartialOnClicks() {
             selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
         }
     }
+
+    // Set the special info icons
+    var specialInfoIcons = document.querySelectorAll('.info-icon-special');
+    for (var n = 0; n < specialInfoIcons.length; n++) {
+        specialInfoIcons[n].onclick = toggleHelpText(specialInfoIcons[n]);
+    }
+}
+
+function toggleHelpText(helpIconNode) {
+    return function(e) {
+        e.preventDefault();
+        e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
+
+        var toggleNode = document.getElementById(helpIconNode.getAttribute('toggleid'));
+
+        if (toggleNode.classList.contains('hidden')) {
+            toggleNode.classList.remove('hidden');
+            helpIconNode.classList.add('activated');
+        } else {
+            console.log('not hidden');
+            toggleNode.classList.add('hidden');
+            helpIconNode.classList.remove('activated');
+        }
+    };
 }
 
 function toggleOtherLabel(selectNode) {
