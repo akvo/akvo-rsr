@@ -5,11 +5,10 @@
     <div class="hide-partial {% if item.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">
-                {% include choice_input with obj=item field='label' mandatory_rsr=True %} {# TODO: onchange="toggleOtherLabel(this)" #}
+                {% include choice_input with obj=item field='label' mandatory_rsr=True %}
             </div>
             <div class="col-md-4">
-                {# TODO: Toggle + make mandatory #}
-                {% include text_input with obj=item field='other_extra' %}
+                {% include text_input with obj=item field='other_extra' mandatory_rsr=True %}
             </div>
             <div class="col-md-4">
                 {% include currency_input with obj=item field='amount' mandatory_rsr=True %}

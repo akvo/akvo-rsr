@@ -2338,18 +2338,12 @@ body {
         & + span + label,
         & + ul + label {
             position: absolute;
-            top: 10px;
+            top: 0px;
             transition: top 0.7s ease, opacity 0.7s ease;
-            opacity: 0;
+            opacity: 1;
             // Some nice styling
             font-size: $label-font-size;
             font-weight: 600;
-        }
-        &:valid + label,
-        &:valid + span + label,
-        &:valid + ul + label {
-            opacity: 1;
-            top: 0px;
         }
         &:focus + label,
         &:focus + span + label,
@@ -2376,7 +2370,7 @@ body {
     .delete-photo-button {
         color: $progressWarning;
     }
-    .delete-document-button {
+    .delete-document {
         color: $progressWarning;
     }
     .info-icon {

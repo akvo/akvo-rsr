@@ -338,22 +338,6 @@
     </script>
 
     <script type="application/javascript">
-        function toggleOtherLabel(node) {
-            var otherLabelNode, parentNode;
-
-            parentNode = node.parentNode.parentNode.parentNode;
-            otherLabelNode = parentNode.getElementsByTagName("input")[0];
-
-            if (node.options[node.selectedIndex].text === 'Other') {
-                otherLabelNode.removeAttribute('disabled');
-                otherLabelNode.className += ' mandatory-rsr';
-            } else {
-                otherLabelNode.value = '';
-                otherLabelNode.setAttribute('disabled', '');
-                otherLabelNode.className = otherLabelNode.className.replace('mandatory-rsr', '');
-            }
-        }
-
         function toggleId(e, helpIconNode, nodeId) {
             e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
 

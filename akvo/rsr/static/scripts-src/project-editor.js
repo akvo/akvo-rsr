@@ -1044,6 +1044,9 @@ function setSubmitOnClicks() {
 }
 
 function setPartialOnClicks() {
+    /* Set all onclicks and onchanges of a partial */
+
+    // Set the 'Add new ...' button onclicks
     for (var i=0; i < partials.length; i++) {
         var partial = partials[i];
         var buttons = document.querySelectorAll('.add-' + partial);
@@ -1063,11 +1066,13 @@ function setPartialOnClicks() {
         }
     }
 
+    // Set the delete object button onclicks
     var removeLinks = document.querySelectorAll('.delete-related-object');
     for (var k = 0; k < removeLinks.length; k++) {
         removeLinks[k].onclick = setRemovePartial(removeLinks[k]);
     }
 
+    // Set the hide or show partial onclick
     var hidePartials = document.querySelectorAll('.hide-partial-click');
     for (var l = 0; l < hidePartials.length; l++) {
         hidePartials[l].onclick = togglePartial(hidePartials[l]);
@@ -1076,10 +1081,34 @@ function setPartialOnClicks() {
     var selectInputs = document.querySelectorAll('select');
     for (var m = 0; m < selectInputs.length; m++) {
         var selectInputId = selectInputs[m].getAttribute('id').split('.');
-        if (selectInputId[1] == 'iati_organisation_role') {
+        // Set the organisation role onchange
+        if (selectInputId[0] == 'rsr_partnership' && selectInputId[1] == 'iati_organisation_role') {
             selectInputs[m].onchange = toggleFunding(selectInputs[m]);
         }
+        // Set the budget item labels onchange
+        if (selectInputId[0] == 'rsr_budgetitem' && selectInputId[1] == 'label') {
+            selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
+        }
     }
+}
+
+function toggleOtherLabel(selectNode) {
+    /* The 'Other' label for budget items can only be filled in when the budget item is 'Other' */
+    return function(e) {
+        e.preventDefault();
+
+        var parent = findAncestorByClass(selectNode, 'parent');
+        var nodeIdList = selectNode.getAttribute('id').split('.');
+        var labelNodeId = [nodeIdList[0], 'other_extra', nodeIdList[2]].join('.');
+        var labelNode = document.getElementById(labelNodeId);
+
+        if (selectNode.options[selectNode.selectedIndex].text === 'Other' && labelNode.hasAttribute('disabled')) {
+            labelNode.removeAttribute('disabled');
+        } else if (selectNode.options[selectNode.selectedIndex].text !== 'Other' && !(labelNode.hasAttribute('disabled'))) {
+            labelNode.setAttribute('disabled', '');
+            labelNode.value = '';
+        }
+    };
 }
 
 function toggleFunding(selectNode) {
@@ -1665,11 +1694,10 @@ function setAllSectionsChangeListerner() {
 function setValidationListeners() {
     var inputs = document.querySelectorAll('input');
     var textareas = document.querySelectorAll('textarea');
+    var inputListener, focusOutListener;
 
     for (var i = 0; i < inputs.length; i++) {
         var input = inputs[i];
-        var inputListener;
-        var focusOutListener;
 
         if (elHasClass(input, 'validation-listener')) {
 
@@ -1687,10 +1715,8 @@ function setValidationListeners() {
 
     }
 
-    for (var i = 0; i < textareas.length; i++) {
-        var textarea = textareas[i];
-        var inputListener;
-        var focusOutListener;
+    for (var j = 0; j < textareas.length; j++) {
+        var textarea = textareas[j];
 
         if (elHasClass(textarea, 'validation-listener')) {
 
@@ -1708,7 +1734,7 @@ function setValidationListeners() {
     }
 
     function getLengthListener(el) {
-            var output = function() {
+        return function() {
             var maxLength, currentLength, charsLeft, charMessage;
 
             maxLength = parseInt(el.getAttribute('maxlength'), 10);
@@ -1731,8 +1757,6 @@ function setValidationListeners() {
             el.parentNode.querySelector('.charsLeft').style.display = '';
             el.parentNode.querySelector('.charsLeft').textContent = charsLeft + charMessage;
         };
-
-        return output;
     }
 
     function getHideCharsListener(el) {
