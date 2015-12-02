@@ -1064,14 +1064,41 @@ function setPartialOnClicks() {
     }
 
     var removeLinks = document.querySelectorAll('.delete-related-object');
-    for (var k=0; k < removeLinks.length; k++) {
+    for (var k = 0; k < removeLinks.length; k++) {
         removeLinks[k].onclick = setRemovePartial(removeLinks[k]);
     }
 
     var hidePartials = document.querySelectorAll('.hide-partial-click');
-    for (var l=0; l < hidePartials.length; l++) {
+    for (var l = 0; l < hidePartials.length; l++) {
         hidePartials[l].onclick = togglePartial(hidePartials[l]);
     }
+
+    var selectInputs = document.querySelectorAll('select');
+    for (var m = 0; m < selectInputs.length; m++) {
+        var selectInputId = selectInputs[m].getAttribute('id').split('.');
+        if (selectInputId[1] == 'iati_organisation_role') {
+            selectInputs[m].onchange = toggleFunding(selectInputs[m]);
+        }
+    }
+}
+
+function toggleFunding(selectNode) {
+    /* The funding amount can only be filled in when a partner is a funding parter */
+    return function(e) {
+        e.preventDefault();
+
+        var parent = findAncestorByClass(selectNode, 'parent');
+        var nodeIdList = selectNode.getAttribute('id').split('.');
+        var fundingNodeId = [nodeIdList[0], 'funding_amount', nodeIdList[2]].join('.');
+        var fundingNode = document.getElementById(fundingNodeId);
+
+        if (selectNode.value === '1' && fundingNode.hasAttribute('disabled')) {
+            fundingNode.removeAttribute('disabled');
+        } else if (selectNode.value !== '1' && !(fundingNode.hasAttribute('disabled'))) {
+            fundingNode.setAttribute('disabled', '');
+            fundingNode.value = '';
+        }
+    };
 }
 
 function togglePartial(hidePartial) {
@@ -1730,7 +1757,7 @@ function setValidationListeners() {
     // Mark mandatory fields with an asterisk
     function markMandatoryFields() {
         var existingMarkers = document.querySelectorAll('.mandatory');
-        var elementsToMark = document.querySelectorAll(MEASURE_CLASS + ' ~ label');
+        var elementsToMark = document.querySelectorAll(MEASURE_CLASS);
 
         // Clear any existing markers
         for (var i = 0; i < existingMarkers.length; i++) {
@@ -1739,14 +1766,15 @@ function setValidationListeners() {
             el.parentNode.removeChild(el);
         }
 
-        for (var i = 0; i < elementsToMark.length; i++) {
-            var el = elementsToMark[i];
-            var markContainer = document.createElement('span');
+        for (var j = 0; j < elementsToMark.length; j++) {
+            var markElement = elementsToMark[j];
+            var elementLabel = findAncestorByClass(markElement, 'form-group').querySelector('label');
 
-            elAddClass(markContainer, 'mandatory');
+            var markContainer = document.createElement('span');
+            markContainer.setAttribute('class', 'mandatory');
             markContainer.textContent = '*';
 
-            el.appendChild(markContainer);
+            elementLabel.appendChild(markContainer);
         }
     }
 

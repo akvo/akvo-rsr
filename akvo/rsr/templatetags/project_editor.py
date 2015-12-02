@@ -138,8 +138,9 @@ def value(obj, field):
     :returns 1234 (in case of related object)
     """
     if isinstance(obj, basestring):
-        default = retrieve_model(obj)._meta.get_field(field).default
-        return default if default != NOT_PROVIDED else ''
+        # default = retrieve_model(obj)._meta.get_field(field).default
+        # return default if default != NOT_PROVIDED else ''
+        return ''
     else:
         field_value = getattr(obj, field)
         if hasattr(field_value, 'pk'):
@@ -147,7 +148,7 @@ def value(obj, field):
         elif hasattr(field_value, 'url'):
             return field_value.url
         else:
-            return field_value
+            return field_value or ''
 
 @register.filter
 def choices(obj, field):

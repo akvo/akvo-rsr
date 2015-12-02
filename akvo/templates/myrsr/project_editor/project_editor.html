@@ -338,34 +338,6 @@
     </script>
 
     <script type="application/javascript">
-        function toggleFunding(node) {
-            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes, span;
-
-            parentNode = node.parentNode.parentNode.parentNode;
-            fundingInputNode = parentNode.getElementsByTagName("input")[1];
-            fundingNode = fundingInputNode.parentNode.parentNode;
-
-            if (node.options[node.selectedIndex].value === '1') {
-                fundingInputNode.removeAttribute('disabled');
-                fundingInputNode.className += ' mandatory-rsr';
-
-                labelNode = fundingNode.getElementsByTagName('label')[0];
-                span = document.createElement('span');
-                span.className = 'mandatory';
-                span.innerHTML = '*';
-                labelNode.insertBefore(span, labelNode.getElementsByTagName('span')[0]);
-            } else {
-                fundingInputNode.value = '';
-                fundingInputNode.setAttribute('disabled', '');
-                fundingInputNode.className = fundingInputNode.className.replace('mandatory-rsr', '');
-
-                mandatoryNodes = fundingNode.getElementsByClassName('mandatory');
-                if (mandatoryNodes.length > 0) {
-                    mandatoryNodes[0].parentNode.removeChild(mandatoryNodes[0]);
-                }
-            }
-        }
-
         function toggleOtherLabel(node) {
             var otherLabelNode, parentNode;
 
