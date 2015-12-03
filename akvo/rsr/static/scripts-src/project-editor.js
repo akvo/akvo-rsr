@@ -237,6 +237,7 @@ function replaceNames(newObjects) {
                 var relObjectElement = relObjectElements[k];
                 // Check if the input is an underlying partial or not
                 var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
+                // TODO: Error when saving related projects
                 var idList = relObjectElement.getAttribute('id').split('.');
                 if (relObjectParentElement === parentNode) {
                     idList[2] = newObjects[i].new_id;
@@ -359,46 +360,6 @@ function submitStep(saveButton) {
 
         request.send(form_data);
     }
-}
-
-function deleteItem(itemId, itemType) {
-    /* Delete an item through the API, and remove the associated related object div. */
-
-    var relatedObjDiv = document.getElementById(itemType + '.' + itemId);
-
-    var request = new XMLHttpRequest();
-    if (itemType === 'keyword') {
-        request.open('DELETE', '/rest/v1/project/' + defaultValues.project_id + '/remove_keyword/' + itemId + '/?format=json', true);
-    } else {
-        request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
-    }
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            relatedObjDiv.parentNode.removeChild(relatedObjDiv);
-
-            // Update the budget in case of removed budget
-            if (itemType === 'budget-item') {
-                getTotalBudget();
-            }
-
-            return false;
-        } else {
-            // We reached our target server, but it returned an error
-            // TODO: Show error message
-            return false;
-        }
-    };
-
-    request.onerror = function() {
-        // There was a connection error of some sort
-        // TODO: Show error message
-        return false;
-    };
-
-    request.send();
 }
 
 function setDeletePhoto() {
@@ -758,31 +719,134 @@ function getTotalBudget() {
     request.send();
 }
 
-function confirmRemove(objId, apiEndpoint, parentDiv) {
-    return function(e) {
-        e.preventDefault();
+function returnRemoveButton(parentNode, error) {
+    var container = parentNode.querySelector('.delete-related-object-container');
 
-        deleteItem(objId, apiEndpoint);
+    if (error) {
+        var errorNode = document.createElement('div');
+        errorNode.setAttribute('style', 'color: red; margin-left: 5px;');
+        errorNode.innerHTML = defaultValues.delete_error;
+        container.appendChild(errorNode);
+    }
+
+    var node = document.createElement('a');
+    node.setAttribute('class', 'delete-related-object');
+    node.onclick = setRemovePartial(node);
+
+    var trashCan = document.createElement('span');
+    trashCan.setAttribute('class', 'glyphicon glyphicon-trash');
+
+    node.appendChild(trashCan);
+    container.appendChild(node);
+}
+
+function deleteItem(itemId, itemType) {
+    /* Delete an item through the API, and remove the associated related object div. */
+
+    var relatedObjDiv = document.getElementById(itemType + '.' + itemId);
+    var form = findAncestorByTag(relatedObjDiv, 'form');
+
+    var request = new XMLHttpRequest();
+    if (itemType === 'keyword') {
+        request.open('DELETE', '/rest/v1/project/' + defaultValues.project_id + '/remove_keyword/' + itemId + '/?format=json', true);
+    } else {
+        request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+    }
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            relatedObjDiv.parentNode.removeChild(relatedObjDiv);
+
+            // Update the budget in case of removed budget
+            if (itemType === 'budget-item') {
+                getTotalBudget();
+            }
+
+            // Update progress bars
+            var section = findAncestorByClass(form, 'formStep');
+            setSectionCompletionPercentage(section);
+            setPageCompletionPercentage();
+
+            return false;
+        } else {
+            // We reached our target server, but it returned an error
+            returnRemoveButton(relatedObjDiv, true);
+            return false;
+        }
     };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        returnRemoveButton(relatedObjDiv, true);
+        return false;
+    };
+
+    request.send();
 }
 
 function dismissRemove(noNode) {
     return function(e) {
         e.preventDefault();
-
         var sureNode = noNode.parentNode;
         var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
-        var node = document.createElement('a');
-        node.setAttribute('class', 'delete-related-object');
-        node.onclick = setRemovePartial(node);
+        returnRemoveButton(findAncestorByClass(parentNode, 'parent'), false);
+    };
+}
 
-        var trashCan = document.createElement('span');
-        trashCan.setAttribute('class', 'glyphicon glyphicon-trash');
+function confirmRemove(yesNode, objId, apiEndpoint) {
+    return function(e) {
+        e.preventDefault();
+        var sureNode = yesNode.parentNode;
+        var parentNode = sureNode.parentNode;
+        parentNode.removeChild(sureNode);
 
-        node.appendChild(trashCan);
-        parentNode.appendChild(node);
+        deleteItem(objId, apiEndpoint);
+    };
+}
+
+function setRemovePartial(node) {
+    return function(e) {
+        e.preventDefault();
+
+        var parentDiv = findAncestorByClass(node, "parent");
+        var parentParent = parentDiv.parentNode;
+
+        // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
+        var idArray = parentDiv.getAttributeNode("id").value.split(".");
+        var apiEndpoint = idArray[0];
+        var objId = idArray[1];
+
+        if (objId.indexOf("new") > -1) {
+            // New object, not saved to the DB, so partial can be directly deleted
+            parentParent.removeChild(parentDiv);
+
+        } else {
+            // Show warning first
+            var parentNode = node.parentNode;
+            parentNode.removeChild(node);
+
+            var sureNode = document.createElement('div');
+            sureNode.setAttribute('class', 'sure-message');
+            sureNode.innerHTML = defaultValues.sure_message;
+
+            var yesNode = document.createElement('a');
+            yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
+            yesNode.onclick = confirmRemove(yesNode, objId, apiEndpoint);
+            yesNode.innerHTML = defaultValues.yes;
+
+            var noNode = document.createElement('a');
+            noNode.setAttribute('style', 'color: red; margin-left: 5px;');
+            noNode.onclick = dismissRemove(noNode);
+            noNode.innerHTML = defaultValues.no;
+
+            sureNode.appendChild(yesNode);
+            sureNode.appendChild(noNode);
+            parentNode.appendChild(sureNode);
+        }
     };
 }
 
@@ -1234,6 +1298,7 @@ function updatePartialIDs(partial, newID) {
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < partialInputs.length; j++) {
+            // TODO: Error when adding related project
             var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
             partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
             partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
@@ -1952,50 +2017,6 @@ function toggleSection(node) {
             formBlock.className += ' hidden';
             infoIcon.className += ' hidden';
         }
-    };
-}
-
-function setRemovePartial(node) {
-    return function(e) {
-        e.preventDefault();
-
-        var parentDiv = findAncestorByClass(node, "parent");
-        var parentParent = parentDiv.parentNode;
-
-        // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
-        var idArray = parentDiv.getAttributeNode("id").value.split(".");
-        var apiEndpoint = idArray[0];
-        var objId = idArray[1];
-
-        if (objId.indexOf("new") > -1) {
-            // New object, not saved to the DB, so partial can be directly deleted
-            parentParent.removeChild(parentDiv);
-
-        } else {
-            // Show warning first
-            var parentNode = node.parentNode;
-            parentNode.removeChild(node);
-
-            var sureNode = document.createElement('div');
-            sureNode.innerHTML = defaultValues.sure_message;
-
-            var yesNode = document.createElement('a');
-            yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
-            yesNode.onclick = confirmRemove(objId, apiEndpoint);
-            yesNode.innerHTML = defaultValues.yes;
-
-            var noNode = document.createElement('a');
-            noNode.setAttribute('style', 'color: red; margin-left: 5px;');
-            noNode.onclick = dismissRemove(noNode);
-            noNode.innerHTML = defaultValues.no;
-
-            sureNode.appendChild(yesNode);
-            sureNode.appendChild(noNode);
-            parentNode.appendChild(sureNode);
-        }
-
-        // Update the progress bars to account for the removed inputs
-        setSectionCompletionPercentage(findAncestorByClass(parentParent, "formStep"));
     };
 }
 
@@ -2728,13 +2749,11 @@ function getAllProjects() {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlHttp.status == 200){
+            if (xmlHttp.status == 200) {
                 var response = JSON.parse(xmlHttp.responseText);
                 responses[url] = response;
                 updateLocalStorage(url, response);
                 updateProjectTypeaheads();
-            } else {
-                // TODO: display error message
             }
         } else {
             return false;
@@ -2752,13 +2771,11 @@ function getAllOrganisations() {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlHttp.status == 200){
+            if (xmlHttp.status == 200) {
                 var response = JSON.parse(xmlHttp.responseText);
                 responses[url] = response;
                 updateLocalStorage(url, response);
                 updateOrganisationTypeaheads();
-            } else {
-                // TODO: display error message
             }
         } else {
             return false;
