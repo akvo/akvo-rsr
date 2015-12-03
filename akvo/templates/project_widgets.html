@@ -44,20 +44,22 @@
                         <span class="small">({% trans "170 pixels wide by 312 pixels high" %})</span>
                     </label>
                 </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="widget" value="map">
-                        {% trans "Project map widget" %}<br>
-                        <span class="small">({% trans "Custom size, shows a map of all projects of an organisation" %})</span>
-                    </label>
-                </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="widget" value="list">
-                        {% trans "Project list widget" %}<br>
-                        <span class="small">({% trans "730 pixels wide by 745 pixels high, shows a list of projects from your organisation" %})</span>
-                    </label>
-                </div>
+                {% if project.find_primary_organisation %}
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="widget" value="map">
+                            {% trans "Project map widget" %}<br>
+                            <span class="small">({% trans "Custom size, shows a map of all projects of an organisation" %})</span>
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="widget" value="list">
+                            {% trans "Project list widget" %}<br>
+                            <span class="small">({% trans "730 pixels wide by 745 pixels high, shows a list of projects from your organisation" %})</span>
+                        </label>
+                    </div>
+                {% endif %}
                 <button type="submit" class="btn btn-primary">{% trans "Select and proceed" %}</button>
                 </form>
             </div>

@@ -14,5 +14,5 @@ from ..viewsets import BaseRSRViewSet
 class BudgetItemLabelViewSet(BaseRSRViewSet):
     """
     """
-    queryset = BudgetItemLabel.objects.all()
+    queryset = BudgetItemLabel.objects.filter(budgetitem__project__is_public=True)
     serializer_class = BudgetItemLabelSerializer

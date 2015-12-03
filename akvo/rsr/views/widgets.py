@@ -86,7 +86,7 @@ class ProjectListView(BaseWidgetView):
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         order_by = self.request.GET.get('order_by', 'title')
-        org_id = self.request.GET.get('organisation_id', '0')
+        org_id = self.request.GET.get('organisation_id')
         organisation = get_object_or_404(Organisation, pk=org_id)
         projects = Project.objects.select_related(
             'publishingstatus__status',
@@ -125,7 +125,7 @@ class ProjectMapView(BaseWidgetView):
         context['widthpx'] = str(context['width']) + 'px'
         context['style'] = self.request.GET.get('style', 'dark')
         context['state'] = self.request.GET.get('state', 'dynamic')
-        org_id = self.request.GET.get('organisation_id', '0')
+        org_id = self.request.GET.get('organisation_id')
         org = get_object_or_404(Organisation, pk=org_id)
         context['projects'] = org.published_projects()
         return context

@@ -33,26 +33,33 @@ Indicator = React.createClass({displayName: 'Indicator',
     var target_value = this.props.indicator.target_value;
     var actual_value = this.props.indicator.actual_value;
     var value = "";
-    if (actual_value !== "") {
+    if (actual_value !== undefined && actual_value !== "") {
         value += actual_value + " (" + i18n.actual_text + ")";
-        if (target_value !== "") {
+        if (target_value !== undefined && target_value !== "") {
             value += " / ";
         }
     }
-    if (target_value !== "") {
+    if (target_value !== undefined && target_value !== "") {
         value += target_value + " (" + i18n.target_text + ")";
     }
 
-    return (
-      React.DOM.div(null, 
-        React.DOM.dt(null, 
-            this.props.indicator.title, " ", periods
-        ),
-        React.DOM.dd(null, 
-            value
-        )
-      )
-    );
+    if (this.props.indicator.title && periods !== "") {
+        return (
+                React.DOM.div(null, 
+                    this.props.indicator.title, " ", periods,": ", React.DOM.i(null, value)
+                )
+            );
+    } else if (this.props.indicator.title) {
+        return (
+                React.DOM.div(null, 
+                    this.props.indicator.title
+                )
+            );
+    } else {
+        return (
+            React.DOM.div(null)
+        );
+    }
   }
 });
 
@@ -65,8 +72,8 @@ Result = React.createClass({displayName: 'Result',
     });
     return (
       React.DOM.span(null, 
-        React.DOM.li(null, React.DOM.i( {className:"fa fa-check"}), " ", this.props.result.title),
-        React.DOM.dl( {className:"indicators"}, indicators)
+        React.DOM.li(null, React.DOM.i( {className:"fa fa-check"}), " ", React.DOM.strong(null, this.props.result.title)),
+        React.DOM.dl( {className:"indicator-descriptions"}, indicators)
       )
     );
   }
@@ -80,7 +87,7 @@ ResultList = React.createClass({displayName: 'ResultList',
       );
     });
     return (
-      React.DOM.ul( {className:"results list-unstyled"}, results)
+      React.DOM.ul( {className:"list-unstyled"}, results)
     );
   }
 });
@@ -104,7 +111,7 @@ AccordionInstance = React.createClass({displayName: 'AccordionInstance',
       var result_list = indicators.map(function(indicator) {
           i = i + 1;
           return (
-              React.DOM.dl( {className:"indicators"}, 
+              React.DOM.dl( {className:"indicators-description"}, 
                   React.DOM.dt(null, 
                       React.DOM.i( {className:"fa fa-check"}), " ", result.title
                   ),
@@ -120,9 +127,9 @@ AccordionInstance = React.createClass({displayName: 'AccordionInstance',
       var result_list = results.map(function(result) {
           i = i + 1;
           return (
-              React.DOM.dl( {className:"results"}, 
+              React.DOM.dl( {className:"results-description"}, 
                   React.DOM.dt(null, 
-                      React.DOM.i( {className:"fa fa-check"}), " ", result.title
+                      React.DOM.i( {className:"fa fa-check"}), " ", React.DOM.strong(null, result.title)
                   ),
                   React.DOM.dd(null),
                     this.getIndicators(result.indicators)
