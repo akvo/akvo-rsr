@@ -652,7 +652,6 @@ def project_editor_organisation_logo(request, pk=None):
         return HttpResponseForbidden()
 
     files = request.FILES
-    logo = None
     errors, changes, rel_objects = [], [], {}
 
     if 'logo' in files.keys():
@@ -661,14 +660,4 @@ def project_editor_organisation_logo(request, pk=None):
             rel_objects, 'rsr_organisation.' + str(pk)
         )
 
-        if not errors:
-            logo = get_thumbnail(
-                org.logo, '250x250', format="PNG", upscale=True
-            ).url
-
-    return Response(
-        {
-            'errors': errors,
-            'logo': logo,
-        }
-    )
+    return Response({'errors': errors})
