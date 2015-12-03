@@ -77,10 +77,6 @@ def directory(request):
     # Get related objects of page at once
     page.object_list = page.object_list.select_related(
         'primary_location__country',
-    ).annotate(
-        num_employees=Count('employees', distinct=True),
-        num_projects=Count('projects', distinct=True),
-        num_updates=Count('projects__project_updates', distinct=True),
     )
 
     return render(request, 'organisation_directory.html', {
