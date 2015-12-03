@@ -2608,30 +2608,30 @@ function addOrgModal() {
                                             <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer newOrgName col-md-4">
+                                            <div className="inputContainer newOrgName col-md-4 form-group">
                                                 <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
                                                 <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
                                                 <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
                                             </div>
-                                            <div className="inputContainer newOrgLongName col-md-4">
+                                            <div className="inputContainer newOrgLongName col-md-4 form-group">
                                                 <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
                                                 <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
                                                 <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
-                                            <div className="inputContainer newOrgIatiId col-md-4">
+                                            <div className="inputContainer newOrgIatiId col-md-4 form-group">
                                                 <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
                                                 <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
                                                 <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer col-md-12">
+                                            <div className="inputContainer col-md-12 form-group">
                                                 <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
                                                 <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="IATIOrgTypeContainer inputContainer col-md-6">
+                                            <div className="IATIOrgTypeContainer inputContainer col-md-6 form-group">
                                                 <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
                                                     <option value="10">10 - {defaultValues.government}</option>
                                                     <option value="15">15 - {defaultValues.other_public_sector}</option>
@@ -2647,24 +2647,24 @@ function addOrgModal() {
                                                 <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
-                                            <div className="inputContainer col-md-6">
+                                            <div className="inputContainer col-md-6 form-group">
                                                 <input name="url" id="url" type="text" className="form-control"/>
                                                 <label htmlFor="url" className="control-label">{defaultValues.website}</label>
                                                 <p className="help-block">{defaultValues.start_http}</p>
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer col-md-4">
+                                            <div className="inputContainer col-md-4 form-group">
                                                 <input name="latitude" id="latitude" type="text" className="form-control"/>
                                                 <label htmlFor="latitude" className="control-label">{defaultValues.latitude}</label>
                                                 <p className="help-block"></p>
                                             </div>
-                                            <div className="inputContainer col-md-4">
+                                            <div className="inputContainer col-md-4 form-group">
                                                 <input name="longitude" id="longitude" type="text"  className="form-control"/>
                                                 <label htmlFor="longitude" className="control-label">{defaultValues.longitude}</label>
                                                 <p className="help-block"></p>
                                             </div>
-                                            <div className="inputContainer col-md-4">
+                                            <div className="inputContainer col-md-4 form-group">
                                                 <select name="country" id="country" className="form-control">
                                                     <option value="">{defaultValues.country}:</option>
                                                     {country_option_list}
@@ -2677,19 +2677,19 @@ function addOrgModal() {
                                             <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer col-md-6">
+                                            <div className="inputContainer col-md-6 form-group">
                                                 <input name="contact_person" id="contact_person" type="text" className="form-control"/>
                                                 <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
                                                 <p className="help-block"></p>
                                             </div>
-                                            <div className="inputContainer col-md-6">
+                                            <div className="inputContainer col-md-6 form-group">
                                                 <input name="contact_email" id="contact_email" type="text" className="form-control"/>
                                                 <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
                                                 <p className="help-block"></p>
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="inputContainer col-md-12">
+                                            <div className="inputContainer col-md-12 form-group">
                                                 <textarea id="description" className="form-control" name="description" rows="3"></textarea>
                                                 <label className="control-label" htmlFor="description">{defaultValues.description}</label>
                                                 <p className="help-block"></p>
