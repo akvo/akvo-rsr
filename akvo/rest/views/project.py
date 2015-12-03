@@ -136,7 +136,7 @@ class ProjectUpViewSet(ProjectViewSet):
         'partners',
     ).prefetch_related(
         'publishingstatus',
-        'updates',
+        'project_updates',
     )
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'

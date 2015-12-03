@@ -23,11 +23,3 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     permission_classes = (DjangoObjectPermissions, )
     filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter, )
     ordering_fields = '__all__'
-
-    def get_queryset(self):
-        """Filter out any private projects."""
-        for related_obj in self.queryset.model._meta.get_all_related_objects():
-            if related_obj.model == Project:
-                self.queryset = self.queryset.filter(project__is_public=True)
-                break
-        return super(BaseRSRViewSet, self).get_queryset()
