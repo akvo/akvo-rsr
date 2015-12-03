@@ -17,14 +17,14 @@ The report has one parameter, TheProjectId, which is created on the RS as a Data
 https://reporting.test.akvo-ops.org/reportserver/reportserver/httpauthexport?key=project_results&user=user1&password=unicorns&format=pdf&download=false&p_TheProjectId=2081
 
 Since this exposes a password, even if just a dummy one, it should be hidden behind the rsr nginx proxy which can append the key/username/password query parameters. A proxy rule like this should do it, as the original query parameters will be copied over:
-
+```
 location /report/project {
 	 proxy_pass https://reporting.test.akvo-ops.org;
 	 rewrite ^(.*)$ /reportserver/reportserver/httpauthexport?key=project_results&username=user1&password=unicorns break;
 }
-
+```
 The URL will then become something like
-https://rsr.akvo.org/report/project/2849?format=pdf
+``` https://rsr.akvo.org/report/project/2849?format=pdf ```
 where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
 
 
