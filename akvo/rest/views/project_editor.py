@@ -39,6 +39,11 @@ RELATED_OBJECTS_MAPPING = {
     AdministrativeLocation: (ProjectLocation, 'location')
 }
 
+MANY_TO_MANY_FIELDS = {
+    # Special mapping for many to many fields
+    Keyword: 'keywords',
+}
+
 
 def add_error(errors, message, field_name):
     """Appends a new error to the errors list."""
@@ -413,7 +418,27 @@ def project_editor(request, pk=None):
             Model = get_model(model[0], model[1])
             related_obj_id = model[0] + '_' + model[1] + '.' + '_'.join(id_list)
 
-            if len(id_list) == 1:
+            if Model in MANY_TO_MANY_FIELDS.keys():
+                # This field is a many to many field, which need special handling
+                m2m_relation = getattr(project, MANY_TO_MANY_FIELDS[Model])
+                try:
+                    m2m_object = Model.objects.get(pk=int(obj_data))
+                    if len(id_list) == 1:
+                        # If there already was an appointed object in the many to many relation,
+                        # remove the old object first
+                        old_m2m_object = Model.objects.get(pk=int(id_list[0]))
+                        if old_m2m_object in m2m_relation.all():
+                            m2m_relation.remove(old_m2m_object)
+                    # Add the new many to many object to the project
+                    m2m_relation.add(m2m_object)
+                    changes = add_changes(changes, m2m_object, field, key, obj_data)
+                    if not related_obj_id in rel_objects.keys():
+                        rel_objects[related_obj_id] = obj_data
+                except Model.DoesNotExist as e:
+                    errors = add_error(errors, str(e), key)
+                data.pop(key, None)
+
+            elif len(id_list) == 1:
                 # Already existing object, update it
                 changes, errors, rel_objects = update_object(
                     Model, id_list[0], field, obj_data, key, data[key], changes, errors,

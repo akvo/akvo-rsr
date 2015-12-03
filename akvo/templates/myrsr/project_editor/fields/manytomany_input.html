@@ -7,13 +7,13 @@
                 class="form-control
                        {% if mandatory_rsr %}mandatory-rsr{% endif %}
                        {% if mandatory_iati %}mandatory-iati{% endif %}"
-                saved-value="{{ obj|value:field }}"
+                saved-value="{{ obj|manytomany_value }}"
                 {% if disabled %}disabled{% endif %}>
             {% if not not_empty %}
-                <option value=""{% if not obj|value:field %} selected="selected"{% endif %}></option>
+                <option value=""{% if not obj|manytomany_value %} selected="selected"{% endif %}></option>
             {% endif %}
-            {% for choice in obj|choices:field %}
-                <option value="{{ choice.0 }}"{% if obj|value:field == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
+            {% for choice in obj|manytomany_choices:field %}
+                <option value="{{ choice.0 }}"{% if obj|manytomany_value == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
             {% endfor %}
         </select>
         <label for="{{ obj|field_id:field }}" class="control-label">

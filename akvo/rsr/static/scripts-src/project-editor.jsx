@@ -367,7 +367,11 @@ function deleteItem(itemId, itemType) {
     var relatedObjDiv = document.getElementById(itemType + '.' + itemId);
 
     var request = new XMLHttpRequest();
-    request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+    if (itemType === 'keyword') {
+        request.open('DELETE', '/rest/v1/project/' + defaultValues.project_id + '/remove_keyword/' + itemId + '/?format=json', true);
+    } else {
+        request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+    }
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -758,17 +762,7 @@ function confirmRemove(objId, apiEndpoint, parentDiv) {
     return function(e) {
         e.preventDefault();
 
-//        var itemId, itemType;
-//
-//        itemId = idArray[idArray.length - 1];
-//        idArray.pop();
-//        itemType = idArray.join();
-//
-//        if (itemType === 'keyword') {
-//            itemType = 'project/' + defaultValues.project_id + '/remove_keyword';
-//        }
-
-        deleteItem(objId, apiEndpoint, parentDiv);
+        deleteItem(objId, apiEndpoint);
     };
 }
 
@@ -1164,7 +1158,6 @@ function toggleHelpText(helpIconNode) {
             toggleNode.classList.remove('hidden');
             helpIconNode.classList.add('activated');
         } else {
-            console.log('not hidden');
             toggleNode.classList.add('hidden');
             helpIconNode.classList.remove('activated');
         }
@@ -1980,23 +1973,18 @@ function setRemovePartial(node) {
 
         } else {
             // Show warning first
-            var nodeClass, nodeId, noNode, parentNode, sureNode, yesNode;
-
-            nodeClass = node.getAttribute('class');
-            nodeId = node.getAttribute('id');
-
-            parentNode = node.parentNode;
+            var parentNode = node.parentNode;
             parentNode.removeChild(node);
 
-            sureNode = document.createElement('div');
+            var sureNode = document.createElement('div');
             sureNode.innerHTML = defaultValues.sure_message;
 
-            yesNode = document.createElement('a');
+            var yesNode = document.createElement('a');
             yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
-            yesNode.onclick = confirmRemove(objId, apiEndpoint, parentDiv);
+            yesNode.onclick = confirmRemove(objId, apiEndpoint);
             yesNode.innerHTML = defaultValues.yes;
 
-            noNode = document.createElement('a');
+            var noNode = document.createElement('a');
             noNode.setAttribute('style', 'color: red; margin-left: 5px;');
             noNode.onclick = dismissRemove(noNode);
             noNode.innerHTML = defaultValues.no;

@@ -186,7 +186,7 @@
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">
-        {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+        {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
             <fieldset>
                 {% include "myrsr/project_editor/section_1.html" %}
                 {% include "myrsr/project_editor/section_2.html" %}
@@ -214,7 +214,7 @@
 {% block js %}
     {{ block.super }}
 
-    {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" %}
+    {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
 

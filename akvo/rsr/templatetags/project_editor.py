@@ -155,7 +155,7 @@ def choices(obj, field):
     """
     Retrieves the choices of a given object's field.
 
-    :returns ((1, "Core Activity"), (2, "Sub Activity), (3, "Lower Sub Activity"))
+    :returns ((1, "Core Activity"), (2, "Sub Activity"), (3, "Lower Sub Activity"))
     """
     model_field = retrieve_model(obj)._meta.get_field(field)
     if not isinstance(model_field, models.ForeignKey):
@@ -168,3 +168,22 @@ def choices(obj, field):
             (isinstance(obj, basestring) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
         return get_model('rsr', 'country').objects.all().values_list('id', 'name')
+
+@register.filter
+def manytomany_value(obj):
+    """
+    Retrieves the id of a given object's field.
+
+    :returns ((1, "Akvo/Chum"), (2, "Yep"))
+    """
+    return '' if isinstance(obj, basestring) else obj.pk
+
+
+@register.filter
+def manytomany_choices(obj, field):
+    """
+    Retrieves the choices of a given object's Model. All objects of that Model should be displayed.
+
+    :returns ((1, "Akvo/Chum"), (2, "Yep"))
+    """
+    return retrieve_model(obj).objects.all().values_list('id', field)
