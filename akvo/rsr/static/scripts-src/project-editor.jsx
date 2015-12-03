@@ -2304,9 +2304,9 @@ function setDatepickers() {
 
 function fieldChanged(inputField) {
     /* Check if a field has changed, based on it's value and saved-value.
-    *  Ignores hidden fields and file fields. */
+    *  Ignores file fields, checkboxes and hidden fields. */
 
-    if (fieldIsHidden(inputField) || inputField.type === 'file') {
+    if (inputField.type === 'file' || inputField.type === 'checkbox' || fieldIsHidden(inputField)) {
         return false;
     } else if (inputField.parentNode.classList.contains('typeahead')) {
         return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'))
