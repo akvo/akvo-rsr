@@ -235,41 +235,43 @@ function replaceNames(newObjects) {
 
             for (var k = 0; k < relObjectElements.length; k++) {
                 var relObjectElement = relObjectElements[k];
-                // Check if the input is an underlying partial or not
-                var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
-                // TODO: Error when saving related projects
-                var idList = relObjectElement.getAttribute('id').split('.');
-                if (relObjectParentElement === parentNode) {
-                    idList[2] = newObjects[i].new_id;
-                    relObjectElement.setAttribute('id', idList.join('.'));
-                    relObjectElement.setAttribute('name', idList.join('.'));
-                } else {
-                    // Update underlying objects if they're not going to be replaced later on or
-                    // already replaced (e.g. there's no 'new' in the ID)
-                    var relObjectParentElementId = relObjectParentElement.getAttribute('id');
-                    var relObjectWillBeReplaced = false;
-                    if (relObjectParentElementId.indexOf('new') > -1) {
-                        for (var newObjectsKey in newObjects) {
-                            if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
-                                newObjects[newObjectsKey].old_id === relObjectParentElementId) {
-                                relObjectWillBeReplaced = true;
-                                break;
-                            }
-                        }
-                        if (!relObjectWillBeReplaced) {
-                            // Underlying object is not in newObjects, so we need to replace the IDs of
-                            // those inputs as well
-                            var indexToBeReplaced = newObjects[i].old_id.split('.')[1].split('_').length - 1;
-                            var newRelObjectParentElementIdList = idList[2].split('_');
-                            newRelObjectParentElementIdList[indexToBeReplaced] = newObjects[i].new_id;
-                            idList[2] = newRelObjectParentElementIdList.join('_');
-                            relObjectElement.setAttribute('id', idList.join('.'));
-                            relObjectElement.setAttribute('name', idList.join('.'));
 
-                            // And we need to update the parent ID of that partial too
-                            var relObjectParentElementIdList = relObjectParentElementId.split('.');
-                            relObjectParentElementIdList[1] = newRelObjectParentElementIdList.join('_');
-                            relObjectParentElement.setAttribute('id', relObjectParentElementIdList.join('.'));
+                if (relObjectElement.type !== 'checkbox') {
+                    // Check if the input is an underlying partial or not
+                    var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
+                    var idList = relObjectElement.getAttribute('id').split('.');
+                    if (relObjectParentElement === parentNode) {
+                        idList[2] = newObjects[i].new_id;
+                        relObjectElement.setAttribute('id', idList.join('.'));
+                        relObjectElement.setAttribute('name', idList.join('.'));
+                    } else {
+                        // Update underlying objects if they're not going to be replaced later on or
+                        // already replaced (e.g. there's no 'new' in the ID)
+                        var relObjectParentElementId = relObjectParentElement.getAttribute('id');
+                        var relObjectWillBeReplaced = false;
+                        if (relObjectParentElementId.indexOf('new') > -1) {
+                            for (var newObjectsKey in newObjects) {
+                                if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
+                                    newObjects[newObjectsKey].old_id === relObjectParentElementId) {
+                                    relObjectWillBeReplaced = true;
+                                    break;
+                                }
+                            }
+                            if (!relObjectWillBeReplaced) {
+                                // Underlying object is not in newObjects, so we need to replace the IDs of
+                                // those inputs as well
+                                var indexToBeReplaced = newObjects[i].old_id.split('.')[1].split('_').length - 1;
+                                var newRelObjectParentElementIdList = idList[2].split('_');
+                                newRelObjectParentElementIdList[indexToBeReplaced] = newObjects[i].new_id;
+                                idList[2] = newRelObjectParentElementIdList.join('_');
+                                relObjectElement.setAttribute('id', idList.join('.'));
+                                relObjectElement.setAttribute('name', idList.join('.'));
+
+                                // And we need to update the parent ID of that partial too
+                                var relObjectParentElementIdList = relObjectParentElementId.split('.');
+                                relObjectParentElementIdList[1] = newRelObjectParentElementIdList.join('_');
+                                relObjectParentElement.setAttribute('id', relObjectParentElementIdList.join('.'));
+                            }
                         }
                     }
                 }
@@ -1298,10 +1300,11 @@ function updatePartialIDs(partial, newID) {
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < partialInputs.length; j++) {
-            // TODO: Error when adding related project
-            var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
-            partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
-            partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+            if (partialInputs[j].type !== 'checkbox') {
+                var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
+                partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+                partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+            }
         }
     }
 
@@ -2342,7 +2345,7 @@ function checkUnsavedChangesForm(form) {
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < inputElements.length; j++) {
-            if (fieldChanged(inputElements[j])) {
+            if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
                 return true;
             }
         }
