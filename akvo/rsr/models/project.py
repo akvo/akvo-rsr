@@ -23,8 +23,8 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus,
-                                   BudgetIdentifierVocabulary)
+from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
+                                   TiedStatus)
 from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
@@ -43,6 +43,7 @@ from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
+from .ruleset import RuleSet
 
 
 def image_path(instance, file_name):
@@ -323,8 +324,13 @@ class Project(TimestampsMixin, models.Model):
                     u'BudgetIdentifierVocabulary/</a>.')
     )
 
+    # Project editor settings
+    ruleset = models.ForeignKey(
+        RuleSet, verbose_name=_(u'ruleset'), related_name='projects', null=True,
+        on_delete=models.SET_NULL
+    )
+
     # denormalized data
-    # =================
     budget = models.DecimalField(
         _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0

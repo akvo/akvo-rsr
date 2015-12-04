@@ -14,6 +14,25 @@ from django.db.models.fields import NOT_PROVIDED
 
 register = template.Library()
 
+RSR_MANDATORY = [
+    "rsr_project.title",
+    "rsr_project.subtitle",
+    "rsr_project.status",
+    "rsr_project.date_start_planned",
+    "rsr_project.current_image",
+    "rsr_project.project_plan_summary",
+    "rsr_project.goals_overview",
+    "rsr_partnership.organisation",
+    "rsr_partnership.iati_organisation_role",
+    "rsr_partnership.funding_amount",
+    "rsr_budgetitem.label",
+    "rsr_budgetitem.other_extra",
+    "rsr_budgetitem.amount",
+    "rsr_projectlocation.latitude",
+    "rsr_projectlocation.longitude",
+    "rsr_projectlocation.country",
+]
+
 
 def retrieve_model(obj):
     """
@@ -31,6 +50,7 @@ def retrieve_id(obj):
     else:
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 
+
 @register.filter
 def obj_id(obj):
     """
@@ -39,6 +59,7 @@ def obj_id(obj):
     :returns "1234" or "1234_new-0"
     """
     return "{0}".format(retrieve_id(obj))
+
 
 @register.filter
 def field_id(obj, field):
@@ -53,6 +74,7 @@ def field_id(obj, field):
         retrieve_id(obj)
     )
 
+
 @register.filter
 def field_class(obj, field):
     """
@@ -65,6 +87,7 @@ def field_class(obj, field):
         retrieve_model(obj)._meta.db_table,
         field
     )
+
 
 @register.filter
 def field_class_id(obj, field):
@@ -80,6 +103,7 @@ def field_class_id(obj, field):
         retrieve_id(obj)
     )
 
+
 @register.filter
 def field_name(obj, field):
     """
@@ -94,6 +118,7 @@ def field_name(obj, field):
 
     return check_iati_in_name(retrieve_model(obj)._meta.get_field(field).verbose_name.capitalize())
 
+
 @register.filter
 def field_model_name(obj):
     """
@@ -102,6 +127,7 @@ def field_model_name(obj):
     :returns "Related project"
     """
     return retrieve_model(obj)._meta.verbose_name.capitalize()
+
 
 @register.filter
 def help_text(obj, field):
@@ -113,6 +139,7 @@ def help_text(obj, field):
     """
     return retrieve_model(obj)._meta.get_field(field).help_text
 
+
 @register.filter
 def max_length(obj, field):
     """
@@ -121,6 +148,7 @@ def max_length(obj, field):
     :returns 100
     """
     return retrieve_model(obj)._meta.get_field(field).max_length
+
 
 @register.filter
 def value(obj, field):
@@ -150,6 +178,7 @@ def value(obj, field):
         else:
             return field_value or ''
 
+
 @register.filter
 def choices(obj, field):
     """
@@ -169,6 +198,7 @@ def choices(obj, field):
         # The ForeignKey field on locations is the countries
         return get_model('rsr', 'country').objects.all().values_list('id', 'name')
 
+
 @register.filter
 def manytomany_value(obj):
     """
@@ -187,3 +217,27 @@ def manytomany_choices(obj, field):
     :returns ((1, "Akvo/Chum"), (2, "Yep"))
     """
     return retrieve_model(obj).objects.all().values_list('id', field)
+
+
+@register.filter
+def mandatory(obj, args):
+    """
+    Retrieves the mandatory fields for RSR and custom ruleset, if one is selected for the project.
+    Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
+
+    :returns "mandatory-rsr mandatory-custom"
+    """
+    field, project_id = args.split(',')
+
+    model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
+    ruleset = get_model('rsr', 'Project').objects.get(pk=project_id).ruleset
+    mandatory_indications = ''
+
+    if model_field in RSR_MANDATORY:
+        mandatory_indications += 'mandatory-rsr'
+    if ruleset:
+        for rule in ruleset.rules.filter(action=1):
+            if model_field in rule.rule:
+                return mandatory_indications + ' mandatory-custom'
+
+    return mandatory_indications

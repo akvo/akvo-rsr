@@ -71,18 +71,20 @@
                     </div>
                 </div>
             </div>
-            <div class="iati-progress {% if not advanced_editor %}hidden hide-default{% endif %}">
-                <hr/>
-                <div class="row help-block">
-                    <div class="col-md-12"><strong>{% trans 'International Aid Transparency Initiative' %}</strong></div>
-                    <div class="col-md-12">{% trans 'This progress bar indicates the number of completed mandatory fields for IATI. When this bar is green, it is possible to export a valid IATI XML file of this project from Akvo RSR.' %}</div>
-                </div>
-                <div class="progress overview">
-                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                        <span class="sr-only"></span><span class="progress-percentage"></span>
+            {% if project.ruleset %}
+                <div class="custom-progress">
+                    <hr/>
+                    <div class="row help-block">
+                        <div class="col-md-12"><strong>{{ project.ruleset.name }}</strong></div>
+                        <div class="col-md-12">{{ project.ruleset.description }}</div>
+                    </div>
+                    <div class="progress overview">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only"></span><span class="progress-percentage"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 

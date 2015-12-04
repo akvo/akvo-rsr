@@ -16,8 +16,8 @@
                 {% trans 'This section contains top-level information about your project which will be used in searches.' %}
             </p>
             <form role="form">
-                {% include text_input with obj=project field="title" mandatory_rsr=True mandatory_iati=True %}
-                {% include text_input with obj=project field="subtitle" mandatory_rsr=True %}
+                {% include text_input with obj=project field="title" %}
+                {% include text_input with obj=project field="subtitle" %}
                 {% include text_input with obj=project field="iati_activity_id" mandatory_iati=True hidden=True %}
                 <h5>{% trans 'Related projects' %}</h5>
                 {% include choice_input with obj=project field="hierarchy" hidden=True %}
@@ -33,10 +33,10 @@
                         </div>
                     </div>
                 </div>
-                {% include choice_input with obj=project field="status" not_empty=True mandatory_rsr=True mandatory_iati=True %}
+                {% include choice_input with obj=project field="status" not_empty=True mandatory_iati=True %}
                 <div class="row">
                     <div class="col-md-6">
-                        {% include date_input with obj=project field="date_start_planned" mandatory_rsr=True mandatory_iati=True %}
+                        {% include date_input with obj=project field="date_start_planned" mandatory_iati=True %}
                         {% include date_input with obj=project field="date_start_actual" %}
                     </div>
                     <div class="col-md-6">
@@ -57,7 +57,7 @@
                         {% endif %}
                     </div>
                 </div>
-                {% include file_input with obj=project field="current_image" mandatory_rsr=True accept="image/*" %}
+                {% include file_input with obj=project field="current_image" accept="image/*" %}
                 <div class="row">
                     <div class="col-md-6">
                         {% include text_input with obj=project field="current_image_caption" %}

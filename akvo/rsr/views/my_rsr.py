@@ -21,19 +21,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import (Country, Organisation, Employment, Keyword, Project, BudgetItemLabel,
-                      OrganisationCustomField)
-
-from akvo.codelists.models import (
-    ActivityScope, AidType, BudgetIdentifier, BudgetIdentifierVocabulary, BudgetType,
-    CollaborationType, ConditionType, ContactType, DisbursementChannel, DocumentCategory,
-    FileFormat, FinanceType, FlowType, GeographicExactness, GeographicLocationClass,
-    GeographicLocationReach, GeographicalPrecision, GeographicVocabulary, IndicatorMeasure,
-    Language, LocationType, PolicyMarker, PolicySignificance, Region, RegionVocabulary, ResultType,
-    Sector, SectorCategory, SectorVocabulary, TiedStatus, TransactionType, Version
-)
-
-from akvo.codelists.models import Country as IatiCountry
+from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project, RuleSet)
 
 import json
 
@@ -372,3 +360,18 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
+
+
+@login_required
+def editor_settings(request):
+    """Directory of rulesets, only visible to superusers."""
+    user = request.user
+
+    if not user.is_superuser:
+        raise PermissionDenied
+
+    context = {
+        'rulesets': RuleSet.objects.all()
+    }
+
+    return render(request, 'myrsr/editor_settings.html', context)

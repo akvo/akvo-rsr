@@ -60,6 +60,7 @@ from .publishing_status import PublishingStatus
 from .region import RecipientRegion
 from .related_project import RelatedProject
 from .result import Result
+from .ruleset import Rule, RuleSet
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
@@ -116,6 +117,8 @@ __all__ = [
     'RecipientRegion',
     'RelatedProject',
     'Result',
+    'Rule',
+    'RuleSet',
     'Sector',
     'Transaction',
     'TransactionSector',

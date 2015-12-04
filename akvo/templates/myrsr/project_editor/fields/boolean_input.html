@@ -5,8 +5,9 @@
         <select name="{{ obj|field_id:field }}"
                 id="{{ obj|field_id:field }}"
                 class="form-control
-                       {% if mandatory_rsr %}mandatory-rsr{% endif %}
-                       {% if mandatory_iati %}mandatory-iati{% endif %}"
+                       {% with field_plus_project=field|add:","|add:project_id_string %}
+                         {{ obj|mandatory:field_plus_project }}
+                       {% endwith %}"
                 saved-value="{% if obj|value:field == True %}1{% elif obj|value:field == False %}2{% endif %}"
                 {% if disabled %}disabled{% endif %}>
             {% if nullboolean %}

@@ -8,13 +8,13 @@
                 {% include typeahead_input with obj=ps field="organisation" %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=ps field="iati_organisation_role" mandatory_rsr=True mandatory_iati=True  %}
+                {% include choice_input with obj=ps field="iati_organisation_role" mandatory_iati=True  %}
             </div>
             <div class="col-md-4">
                 {% if ps.iati_organisation_role and ps.iati_organisation_role == 1 %}
-                    {% include currency_input with obj=ps field="funding_amount" mandatory_rsr=True mandatory_iati=True %}
+                    {% include currency_input with obj=ps field="funding_amount" mandatory_iati=True %}
                 {% else %}
-                    {% include currency_input with obj=ps field="funding_amount" mandatory_rsr=True mandatory_iati=True disabled=True %}
+                    {% include currency_input with obj=ps field="funding_amount" mandatory_iati=True disabled=True %}
                 {% endif %}
             </div>
         </div>

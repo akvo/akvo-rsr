@@ -5,8 +5,9 @@
            name="{{ obj|field_id:field }}"
            id="{{ obj|field_id:field }}"
            class="form-control
-                  {% if mandatory_rsr %}mandatory-rsr{% endif %}
-                  {% if mandatory_iati %}mandatory-iati{% endif %}"
+                  {% with field_plus_project=field|add:","|add:project_id_string %}
+                    {{ obj|mandatory:field_plus_project }}
+                  {% endwith %}"
            {% if obj|max_length:field %}
                maxlength="{{ obj|max_length:field }}"
            {% endif %}

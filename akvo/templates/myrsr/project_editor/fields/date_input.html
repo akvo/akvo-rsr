@@ -7,8 +7,9 @@
          data-child="{{ obj|value:field|date:"d/m/Y" }}"
          data-label="{{ obj|field_name:field }}"
          data-helptext="{{ obj|help_text:field }}"
-         data-classes="{% if mandatory_rsr %}mandatory-rsr{% endif %}
-                       {% if mandatory_iati %}mandatory-iati{% endif %}"
+         data-classes="{% with field_plus_project=field|add:","|add:project_id_string %}
+                         {{ obj|mandatory:field_plus_project }}
+                       {% endwith %}"
          {% if disabled %}data-disabled="true"{% endif %}>
     </div>
 </div>

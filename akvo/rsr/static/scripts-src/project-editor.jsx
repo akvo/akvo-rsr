@@ -56,7 +56,7 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 // Add a class selector here if you only want inputs with a certain class to count
 // towards the completion percentage. If left blank, all inputs will count.
 var MEASURE_CLASS = '.mandatory-rsr';
-var MEASURE_CLASS_IATI = '.mandatory-iati';
+var MEASURE_CLASS_CUSTOM = '.mandatory-custom';
 
 function findAncestorByClass(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
@@ -883,9 +883,9 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         }
         return short + ' (' + long + ')';
     }
-    inputClass = selector + " form-control " + childClass;
+    inputClass = "form-control " + childClass;
 
-    selectorClass = document.querySelector('.' + childClass);
+    selectorClass = document.getElementById(selector);
 
     TypeaheadContainer = React.createClass({
 
@@ -935,10 +935,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     React.render(
         <TypeaheadContainer />,
-        document.querySelector('.' + childClass)
+        selectorClass
     );
 
-    typeaheadInput = document.querySelector('.' + childClass + ' .typeahead' + ' input');
+    selectorClass.removeAttribute('id');
+
+    typeaheadInput = selectorClass.querySelector('.typeahead input');
     typeaheadInput.setAttribute('autocomplete', 'off');
     typeaheadInput.setAttribute('id', selector);
 
@@ -1074,9 +1076,7 @@ function updateLocalStorage(url, response) {
 function processResponse(response, selector, childClass, valueId, label, help, filterOption, inputType) {
     var typeaheadOptions = response.results;
     var typeaheadCallback = function(option) {
-        var el;
-
-        el = document.querySelector('input.' + childClass);
+        var el = document.getElementById(selector);
         el.setAttribute('value', option.id);
     };
     var displayOption = function(option, index) {
@@ -1691,11 +1691,12 @@ function setPageCompletionPercentage() {
         }
     }
 
-    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_IATI);
-    numInputs = inputResults[0];
-    numInputsCompleted = inputResults[1];
-
-    renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.iati-progress'));
+      // TODO: Custom progress bar
+//    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_IATI);
+//    numInputs = inputResults[0];
+//    numInputsCompleted = inputResults[1];
+//
+//    renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.iati-progress'));
 }
 
 function getInputResults(section, measureClass) {
@@ -1779,23 +1780,24 @@ function setSectionChangeListener(section) {
             el.addEventListener('change', listener);
         }
 
-        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_IATI;
-        elements = section.querySelectorAll(selector);
-
-        for (var z = 0; z < elements.length; z++) {
-            var listener_iati;
-            var el_iati = elements[z];
-
-            if (elHasClass(el_iati, 'has-listener')) {
-
-                // We have already added a class for this listener
-                // do nothing
-                continue;
-            }
-
-            listener_iati = getChangeListener(section, this);
-            el_iati.addEventListener('change', listener_iati);
-        }
+          // TODO: Custom progress bar
+//        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_IATI;
+//        elements = section.querySelectorAll(selector);
+//
+//        for (var z = 0; z < elements.length; z++) {
+//            var listener_iati;
+//            var el_iati = elements[z];
+//
+//            if (elHasClass(el_iati, 'has-listener')) {
+//
+//                // We have already added a class for this listener
+//                // do nothing
+//                continue;
+//            }
+//
+//            listener_iati = getChangeListener(section, this);
+//            el_iati.addEventListener('change', listener_iati);
+//        }
     }
 }
 

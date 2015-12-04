@@ -5,17 +5,17 @@
     <div class="hide-partial {% if item.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">
-                {% include choice_input with obj=item field='label' mandatory_rsr=True %}
+                {% include choice_input with obj=item field='label' %}
             </div>
             <div class="col-md-4">
                 {% if item.label.label == 'Other' %}
-                    {% include text_input with obj=item field='other_extra' mandatory_rsr=True %}
+                    {% include text_input with obj=item field='other_extra' %}
                 {% else %}
-                    {% include text_input with obj=item field='other_extra' mandatory_rsr=True disabled=True %}
+                    {% include text_input with obj=item field='other_extra' disabled=True %}
                 {% endif %}
             </div>
             <div class="col-md-4">
-                {% include currency_input with obj=item field='amount' mandatory_rsr=True %}
+                {% include currency_input with obj=item field='amount' %}
             </div>
         </div>
         {% include choice_input with obj=item field='type' hidden=True %}
