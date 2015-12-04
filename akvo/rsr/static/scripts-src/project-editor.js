@@ -985,7 +985,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     updateHelpIcons('.' + childClass);
     markMandatoryFields(MEASURE_CLASS_CUSTOM);
     setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListerner();
+    setAllSectionsChangeListener();
     setPageCompletionPercentage();
 }
 
@@ -1642,8 +1642,14 @@ function updateAllHelpIcons() {
     updateHelpIcons(pageContainer);
 }
 
+function getMeasureClass() {
+    /* Get the measure class of the page, based on the selection on top of the page */
+    var rsrRuleSet = document.getElementById('rsr-progress');
+    return (rsrRuleSet !== null && elHasClass(rsrRuleSet, 'active-ruleset')) ? MEASURE_CLASS : MEASURE_CLASS_CUSTOM;
+}
+
 function setSectionCompletionPercentage(section) {
-    var inputResults = getInputResults(section, MEASURE_CLASS);
+    var inputResults = getInputResults(section, getMeasureClass());
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
 
@@ -1657,17 +1663,28 @@ function setSectionCompletionPercentage(section) {
 }
 
 function setPageCompletionPercentage() {
-    var inputResults, numInputs, numInputsCompleted, completionPercentage, publishButton;
+    var inputResults, numInputs, numInputsCompleted, rsrCompletionPercentage, publishButton;
+
+    var rsrProgress = document.getElementById('rsr-progress');
+    var customProgress = document.getElementById('custom-progress');
 
     inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS);
     numInputs = inputResults[0];
     numInputsCompleted = inputResults[1];
 
-    completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs,
-                                            document.querySelector('.rsr-progress'));
+    rsrCompletionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, rsrProgress);
+
+    // Custom progress bar
+    if (customProgress !== null) {
+        inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_CUSTOM);
+        numInputs = inputResults[0];
+        numInputsCompleted = inputResults[1];
+
+        renderCompletionPercentage(numInputsCompleted, numInputs, customProgress);
+    }
 
     // Enable publishing when all is filled in
-    if (completionPercentage === 100) {
+    if (rsrCompletionPercentage === 100) {
         try {
             publishButton = document.getElementById('publishProject');
             publishButton.removeAttribute('disabled');
@@ -1682,13 +1699,6 @@ function setPageCompletionPercentage() {
             // Do nothing, no publish button
         }
     }
-
-      // TODO: Custom progress bar
-//    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_IATI);
-//    numInputs = inputResults[0];
-//    numInputsCompleted = inputResults[1];
-//
-//    renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.iati-progress'));
 }
 
 function getInputResults(section, measureClass) {
@@ -1772,24 +1782,23 @@ function setSectionChangeListener(section) {
             el.addEventListener('change', listener);
         }
 
-          // TODO: Custom progress bar
-//        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_IATI;
-//        elements = section.querySelectorAll(selector);
-//
-//        for (var z = 0; z < elements.length; z++) {
-//            var listener_iati;
-//            var el_iati = elements[z];
-//
-//            if (elHasClass(el_iati, 'has-listener')) {
-//
-//                // We have already added a class for this listener
-//                // do nothing
-//                continue;
-//            }
-//
-//            listener_iati = getChangeListener(section, this);
-//            el_iati.addEventListener('change', listener_iati);
-//        }
+        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_CUSTOM;
+        elements = section.querySelectorAll(selector);
+
+        for (var z = 0; z < elements.length; z++) {
+            var listener_iati;
+            var el_iati = elements[z];
+
+            if (elHasClass(el_iati, 'has-listener')) {
+
+                // We have already added a class for this listener
+                // do nothing
+                continue;
+            }
+
+            listener_iati = getChangeListener(section, this);
+            el_iati.addEventListener('change', listener_iati);
+        }
     }
 }
 
@@ -1800,6 +1809,8 @@ function getChangeListener(section, el) {
         var currentSection;
         currentSection = section;
 
+        // TODO: 2 change listeners (section + page)
+        // TODO: has-listener not needed
         setSectionCompletionPercentage(currentSection);
         elAddClass(el, 'has-listener');
         setPageCompletionPercentage();
@@ -1815,12 +1826,42 @@ function setAllSectionsCompletionPercentage() {
     }
 }
 
-function setAllSectionsChangeListerner() {
+function setAllSectionsChangeListener() {
     var formSteps = document.querySelectorAll('.formStep');
 
     for (var i = 0; i < formSteps.length; i++) {
         setSectionChangeListener(formSteps[i]);
     }
+}
+
+function switchMandatoryFields(switchTo) {
+    /* Switch between RSR and custom mandatory fields */
+    return function(e) {
+        e.preventDefault();
+
+        var rsrRuleSet = document.getElementById('rsr-progress');
+        var customRuleSet = document.getElementById('custom-progress');
+
+        if (switchTo === 'rsr') {
+            elRemoveClass(customRuleSet, 'active-ruleset');
+            //customRuleSet.querySelector('input').removeAttribute('checked');
+            customRuleSet.querySelector('input').checked = false;
+            elAddClass(rsrRuleSet, 'active-ruleset');
+            //rsrRuleSet.querySelector('input').setAttribute('checked', '');
+            rsrRuleSet.querySelector('input').checked = true;
+        } else {
+            elRemoveClass(rsrRuleSet, 'active-ruleset');
+            //rsrRuleSet.querySelector('input').removeAttribute('checked');
+            rsrRuleSet.querySelector('input').checked = false;
+            elAddClass(customRuleSet, 'active-ruleset');
+            //customRuleSet.querySelector('input').setAttribute('checked', '');
+            customRuleSet.querySelector('input').checked = true;
+        }
+
+        // Mark new mandatory fields and set new change listeners
+        markMandatoryFields();
+        setAllSectionsChangeListener();
+    };
 }
 
 function markMandatoryField(element) {
@@ -1834,10 +1875,9 @@ function markMandatoryField(element) {
     elementLabel.appendChild(markContainer);
 }
 
-function markMandatoryFields(measure_class) {
+function markMandatoryFields() {
     /* Mark mandatory fields with an asterisk */
     var existingMarkers = document.querySelectorAll('.mandatory');
-    var elementsToMark = document.querySelectorAll(measure_class);
 
     // Clear any existing markers
     for (var i = 0; i < existingMarkers.length; i++) {
@@ -1845,6 +1885,7 @@ function markMandatoryFields(measure_class) {
     }
 
     // Mark the new elements
+    var elementsToMark = document.querySelectorAll(getMeasureClass());
     for (var j = 0; j < elementsToMark.length; j++) {
         markMandatoryField(elementsToMark[j]);
     }
@@ -1937,7 +1978,14 @@ function setValidationListeners() {
         return outputTimeout;
     }
 
-    markMandatoryFields(MEASURE_CLASS_CUSTOM);
+    var rsrRuleSet = document.getElementById('select-rsr-ruleset');
+    var customRuleSet = document.getElementById('select-custom-ruleset');
+    if (rsrRuleSet!== null && customRuleSet !== null) {
+        rsrRuleSet.onchange = switchMandatoryFields('rsr');
+        customRuleSet.onchange = switchMandatoryFields('custom');
+    }
+
+    markMandatoryFields();
 }
 
 function setCurrencyOnChange() {
@@ -2845,7 +2893,8 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorageResponses = {};
     }
 
-    setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListerner();
     setPageCompletionPercentage();
+    setAllSectionsCompletionPercentage();
+    // TODO: switch between change listeners
+    setAllSectionsChangeListener();
 });

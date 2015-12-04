@@ -1914,6 +1914,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .legenda .mandatory {
     color: #d9534f; }
 
+.progress-radio {
+  top: 25px; }
+
 .info-icon {
   padding-left: 0.5em;
   cursor: pointer;
