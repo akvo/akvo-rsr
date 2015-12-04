@@ -983,6 +983,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     }
 
     updateHelpIcons('.' + childClass);
+    markMandatoryFields(MEASURE_CLASS_CUSTOM);
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
@@ -1550,8 +1551,7 @@ function updateTypeaheads(forceReloadOrg) {
 }
 
 function updateHelpIcons(container) {
-    // Add an "info" glyphicon to each label
-    // Clicking the glyphicon shows the help text
+    /* Add an "info" glyphicon to each label and clicking the glyphicon shows the help text */
     var labels = document.querySelectorAll(container + ' label.control-label');
 
     for (var i = 0; i < labels.length; i++) {
@@ -1559,7 +1559,6 @@ function updateHelpIcons(container) {
         var output, helpBlockIsLabelSibling, iconClasses, helpBlockFromLabel;
 
         if (elHasClass(label, 'has-icon')) {
-
             // We've already processed this label. Do nothing.
             continue;
         }
@@ -1601,10 +1600,8 @@ function updateHelpIcons(container) {
 
         var infoIcons = label.querySelectorAll('.info-icon');
 
-        for (var i = 0; i < infoIcons.length; i++) {
-            var el = infoIcons[i];
-            var listener = getInfoIconListener(el, helpBlockIsLabelSibling);
-            el.onclick = listener;
+        for (var j = 0; j < infoIcons.length; j++) {
+            infoIcons[j].onclick = getInfoIconListener(infoIcons[j], helpBlockIsLabelSibling);
         }
 
         // Mark the label as processed to avoid adding extra help icons to it later
@@ -1613,11 +1610,10 @@ function updateHelpIcons(container) {
 }
 
 function getInfoIconListener(el, helpBlockIsLabelSibling) {
-    var output = function(e) {
-        var helpBlock;
-
+    return function(e) {
         e.preventDefault();
 
+        var helpBlock;
         if (helpBlockIsLabelSibling) {
             helpBlock = el.parentNode.parentNode.querySelector('.help-block');
         } else {
@@ -1625,12 +1621,10 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
         }
 
         if (elHasClass(el, 'activated')) {
-
             // Hide the helpblock
             elRemoveClass(el, 'activated');
             helpBlock.style.display = 'none';
         } else {
-
             // Show the helpblock
             elAddClass(el, 'activated');
             if (elHasClass(helpBlock, 'hidden')) {
@@ -1639,8 +1633,6 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
             helpBlock.style.display = 'block';
         }
     };
-
-    return output;
 }
 
 function updateAllHelpIcons() {
@@ -1831,9 +1823,36 @@ function setAllSectionsChangeListerner() {
     }
 }
 
-// Validate all inputs with the given class
-// Display validation status to the user in real time
+function markMandatoryField(element) {
+    /* Mark a field as mandatory */
+    var elementLabel = findAncestorByClass(element, 'form-group').querySelector('label');
+
+    var markContainer = document.createElement('span');
+    markContainer.setAttribute('class', 'mandatory');
+    markContainer.textContent = '*';
+
+    elementLabel.appendChild(markContainer);
+}
+
+function markMandatoryFields(measure_class) {
+    /* Mark mandatory fields with an asterisk */
+    var existingMarkers = document.querySelectorAll('.mandatory');
+    var elementsToMark = document.querySelectorAll(measure_class);
+
+    // Clear any existing markers
+    for (var i = 0; i < existingMarkers.length; i++) {
+        existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
+    }
+
+    // Mark the new elements
+    for (var j = 0; j < elementsToMark.length; j++) {
+        markMandatoryField(elementsToMark[j]);
+    }
+}
+
 function setValidationListeners() {
+    /* Validate all inputs with the given class and display validation status to the user
+     * in real time */
     var inputs = document.querySelectorAll('input');
     var textareas = document.querySelectorAll('textarea');
     var inputListener, focusOutListener;
@@ -1842,7 +1861,6 @@ function setValidationListeners() {
         var input = inputs[i];
 
         if (elHasClass(input, 'validation-listener')) {
-
             // We've already set the listener for this element, do nothing
             continue;
         }
@@ -1861,7 +1879,6 @@ function setValidationListeners() {
         var textarea = textareas[j];
 
         if (elHasClass(textarea, 'validation-listener')) {
-
             // We've already set the listener for this element, do nothing
             continue;
         }
@@ -1920,31 +1937,7 @@ function setValidationListeners() {
         return outputTimeout;
     }
 
-    // Mark mandatory fields with an asterisk
-    function markMandatoryFields() {
-        var existingMarkers = document.querySelectorAll('.mandatory');
-        var elementsToMark = document.querySelectorAll(MEASURE_CLASS);
-
-        // Clear any existing markers
-        for (var i = 0; i < existingMarkers.length; i++) {
-            var el = existingMarkers[i];
-
-            el.parentNode.removeChild(el);
-        }
-
-        for (var j = 0; j < elementsToMark.length; j++) {
-            var markElement = elementsToMark[j];
-            var elementLabel = findAncestorByClass(markElement, 'form-group').querySelector('label');
-
-            var markContainer = document.createElement('span');
-            markContainer.setAttribute('class', 'mandatory');
-            markContainer.textContent = '*';
-
-            elementLabel.appendChild(markContainer);
-        }
-    }
-
-    markMandatoryFields();
+    markMandatoryFields(MEASURE_CLASS_CUSTOM);
 }
 
 function setCurrencyOnChange() {
