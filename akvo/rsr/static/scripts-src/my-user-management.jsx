@@ -22,19 +22,52 @@ var ApproveModal,
     initial_data,
     i18n;
 
+InviteRow = React.createClass({
+
+  render: function() {
+    return (
+      <tr>
+        <td><input type="text" placeholder={i18n.email_text} /></td>
+        <td>another thing</td>
+        <td>another thing</td>
+        <td>Button</td>
+      </tr>
+    )
+  }
+});
+
+
+InviteTable = React.createClass({
+  render: function() {
+    return (
+      <Table striped>
+          <thead>
+              <tr>
+                  <th>{i18n.email_text}</th>
+                  <th className="text-right">{i18n.organisations_text}</th>
+                  <th className="text-right">Group</th>
+                  <th>Add</th>
+              </tr>
+          </thead>
+          <tbody><InviteRow /></tbody>
+      </Table>
+    );
+  }
+});
+
 
 InviteModal = React.createClass({
   sendInvite: function() {},
   render: function() {
     // TODO i18n
     return (
-      <Modal title="Testing modal">
+      <Modal bsSize="large" title="Invite Users">
       <div classname="modal-body">
-      There is going to be text here, I promise
+      <InviteTable />
       </div>
       <div className="modal-footer">
       <Button onClick={this.props.onRequestHide}>{i18n.close_text}</Button>
-      <Button onClick={this.sendInvite} bsStyle="success">This is great</Button>
+      <Button onClick={this.sendInvite} bsStyle="success">Invite Users</Button>
       </div>
       </Modal>
     );

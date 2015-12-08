@@ -22,19 +22,52 @@ var ApproveModal,
     initial_data,
     i18n;
 
+InviteRow = React.createClass({displayName: 'InviteRow',
+
+  render: function() {
+    return (
+      React.DOM.tr(null, 
+        React.DOM.td(null, React.DOM.input( {type:"text", placeholder:i18n.email_text} )),
+        React.DOM.td(null, "another thing"),
+        React.DOM.td(null, "another thing"),
+        React.DOM.td(null, "Button")
+      )
+    )
+  }
+});
+
+
+InviteTable = React.createClass({displayName: 'InviteTable',
+  render: function() {
+    return (
+      Table( {striped:true}, 
+          React.DOM.thead(null, 
+              React.DOM.tr(null, 
+                  React.DOM.th(null, i18n.email_text),
+                  React.DOM.th( {className:"text-right"}, i18n.organisations_text),
+                  React.DOM.th( {className:"text-right"}, "Group"),
+                  React.DOM.th(null, "Add")
+              )
+          ),
+          React.DOM.tbody(null, InviteRow(null ))
+      )
+    );
+  }
+});
+
 
 InviteModal = React.createClass({displayName: 'InviteModal',
   sendInvite: function() {},
   render: function() {
     // TODO i18n
     return (
-      Modal( {title:"Testing modal"}, 
+      Modal( {bsSize:"large", title:"Invite Users"}, 
       React.DOM.div( {classname:"modal-body"}, 
-      "There is going to be text here, I promise"
+      InviteTable(null )
       ),
       React.DOM.div( {className:"modal-footer"}, 
       Button( {onClick:this.props.onRequestHide}, i18n.close_text),
-      Button( {onClick:this.sendInvite, bsStyle:"success"}, "This is great")
+      Button( {onClick:this.sendInvite, bsStyle:"success"}, "Invite Users")
       )
       )
     );
