@@ -25,14 +25,24 @@ var ApproveModal,
 InviteRow = React.createClass({
 
   render: function() {
+    var orgs = organisation_data.map(function(org) {
+        return (
+            <MenuItem>{org.name}</MenuItem>
+        );
+    });
+    var groups = group_data.map(function(group) {
+        return (
+           <MenuItem>{group.name}</MenuItem>
+        );
+    });
     return (
       <tr>
         <td><input type="text" placeholder={i18n.email_text} /></td>
-        <td>another thing</td>
-        <td>another thing</td>
+        <td><DropdownButton>{orgs}</DropdownButton></td>
+        <td><DropdownButton>{groups}</DropdownButton></td>
         <td><Button bsStyle="success">+</Button></td>
       </tr>
-    )
+    );
   }
 });
 
@@ -378,8 +388,10 @@ InviteButton = React.createClass({
 
 
 initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
+group_data = JSON.parse(document.getElementById("group-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(<UserTable source={initial_employment_data} />,
                       document.getElementById('user_table'));
-React.renderComponent(<InviteButton />, document.getElementById('invite_button'));
+React.renderComponent(<InviteButton organisations={organisation_data} groups={group_data}/>, document.getElementById('invite_button'));

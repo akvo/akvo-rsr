@@ -25,14 +25,24 @@ var ApproveModal,
 InviteRow = React.createClass({displayName: 'InviteRow',
 
   render: function() {
+    var orgs = organisation_data.map(function(org) {
+        return (
+            MenuItem(null, org.name)
+        );
+    });
+    var groups = group_data.map(function(group) {
+        return (
+           MenuItem(null, group.name)
+        );
+    });
     return (
       React.DOM.tr(null, 
         React.DOM.td(null, React.DOM.input( {type:"text", placeholder:i18n.email_text} )),
-        React.DOM.td(null, "another thing"),
-        React.DOM.td(null, "another thing"),
+        React.DOM.td(null, DropdownButton(null, orgs)),
+        React.DOM.td(null, DropdownButton(null, groups)),
         React.DOM.td(null, Button( {bsStyle:"success"}, "+"))
       )
-    )
+    );
   }
 });
 
@@ -369,10 +379,8 @@ UserTable = React.createClass({displayName: 'UserTable',
 InviteButton = React.createClass({displayName: 'InviteButton',
   render: function() {
     return (ModalTrigger( {modal:InviteModal(null )}, 
-            React.DOM.div( {class:"input-group-btn"}, 
-            React.DOM.button( {class:"btn btn-default", type:"submit"}, 
-              React.DOM.i( {class:"glyphicon glyphicon-user"})
-            )
+            Button( {title:"Invite Users"}, 
+            React.DOM.i( {className:"glyphicon glyphicon-user"}),"+"
             )
             ));
   }
@@ -380,8 +388,10 @@ InviteButton = React.createClass({displayName: 'InviteButton',
 
 
 initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
+group_data = JSON.parse(document.getElementById("group-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_employment_data} ),
                       document.getElementById('user_table'));
-React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));
+React.renderComponent(InviteButton( {organisations:organisation_data, groups:group_data}), document.getElementById('invite_button'));
