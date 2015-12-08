@@ -23,6 +23,25 @@ var ApproveModal,
     i18n;
 
 
+InviteModal = React.createClass({displayName: 'InviteModal',
+  sendInvite: function() {},
+  render: function() {
+    // TODO i18n
+    return (
+      Modal( {title:"Testing modal"}, 
+      React.DOM.div( {classname:"modal-body"}, 
+      "There is going to be text here, I promise"
+      ),
+      React.DOM.div( {className:"modal-footer"}, 
+      Button( {onClick:this.props.onRequestHide}, i18n.close_text),
+      Button( {onClick:this.sendInvite, bsStyle:"success"}, "This is great")
+      )
+      )
+    );
+  }
+});
+
+
 DeleteModal = React.createClass({displayName: 'DeleteModal',
   deleteEmployment: function() {
     $.ajax({
@@ -136,9 +155,7 @@ TriggerModal = React.createClass({displayName: 'TriggerModal',
       );
     }
   }
-
 });
-
 
 DropDownItem = React.createClass({displayName: 'DropDownItem',
   setGroup: function() {
@@ -316,8 +333,22 @@ UserTable = React.createClass({displayName: 'UserTable',
 });
 
 
+InviteButton = React.createClass({displayName: 'InviteButton',
+  render: function() {
+    return (ModalTrigger( {modal:InviteModal(null )}, 
+            React.DOM.div( {class:"input-group-btn"}, 
+            React.DOM.button( {class:"btn btn-default", type:"submit"}, 
+              React.DOM.i( {class:"glyphicon glyphicon-user"})
+            )
+            )
+            ));
+  }
+});
+
+
 initial_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_data} ),
                       document.getElementById('user_table'));
+React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));

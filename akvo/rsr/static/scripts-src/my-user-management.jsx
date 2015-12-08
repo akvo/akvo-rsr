@@ -23,6 +23,25 @@ var ApproveModal,
     i18n;
 
 
+InviteModal = React.createClass({
+  sendInvite: function() {},
+  render: function() {
+    // TODO i18n
+    return (
+      <Modal title="Testing modal">
+      <div classname="modal-body">
+      There is going to be text here, I promise
+      </div>
+      <div className="modal-footer">
+      <Button onClick={this.props.onRequestHide}>{i18n.close_text}</Button>
+      <Button onClick={this.sendInvite} bsStyle="success">This is great</Button>
+      </div>
+      </Modal>
+    );
+  }
+});
+
+
 DeleteModal = React.createClass({
   deleteEmployment: function() {
     $.ajax({
@@ -136,9 +155,7 @@ TriggerModal = React.createClass({
       );
     }
   }
-
 });
-
 
 DropDownItem = React.createClass({
   setGroup: function() {
@@ -316,8 +333,22 @@ UserTable = React.createClass({
 });
 
 
+InviteButton = React.createClass({
+  render: function() {
+    return (<ModalTrigger modal={<InviteModal />}>
+            <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-user"></i>
+            </button>
+            </div>
+            </ModalTrigger>);
+  }
+});
+
+
 initial_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(<UserTable source={initial_data} />,
                       document.getElementById('user_table'));
+React.renderComponent(<InviteButton />, document.getElementById('invite_button'));
