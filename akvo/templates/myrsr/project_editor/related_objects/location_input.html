@@ -40,29 +40,29 @@
         <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
             <div class="row">
                 <div class="col-md-4">
-                    {% include text_input with obj=location field='name' hidden=True %}
+                    {% include text_input with obj=location field='name' %}
                 </div>
                 <div class="col-md-4">
-                    {% include text_input with obj=location field='reference' hidden=True %}
+                    {% include text_input with obj=location field='reference' %}
                 </div>
                 <div class="col-md-4">
-                    {% include text_input with obj=location field='location_code' hidden=True %}
+                    {% include text_input with obj=location field='location_code' %}
                 </div>
             </div>
-            {% include textarea_input with obj=location field='description' hidden=True %}
-            {% include textarea_input with obj=location field='activity_description' hidden=True %}
+            {% include textarea_input with obj=location field='description' %}
+            {% include textarea_input with obj=location field='activity_description' %}
             <div class="row">
                 <div class="col-md-3">
-                    {% include choice_input with obj=location field='exactness' hidden=True %}
+                    {% include choice_input with obj=location field='exactness' %}
                 </div>
                 <div class="col-md-3">
-                    {% include choice_input with obj=location field='location_reach' hidden=True %}
+                    {% include choice_input with obj=location field='location_reach' %}
                 </div>
                 <div class="col-md-3">
-                    {% include choice_input with obj=location field='location_class' hidden=True %}
+                    {% include choice_input with obj=location field='location_class' %}
                 </div>
                 <div class="col-md-3">
-                    {% include choice_input with obj=location field='feature_designation' hidden=True %}
+                    {% include choice_input with obj=location field='feature_designation' %}
                 </div>
             </div>
             <h5>{% trans 'Location administratives' %}</h5>

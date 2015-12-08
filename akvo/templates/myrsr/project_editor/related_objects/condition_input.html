@@ -5,10 +5,10 @@
     <div class="hide-partial {% if condition.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-3">
-                {% include choice_input with obj=condition field='type' hidden=True %}
+                {% include choice_input with obj=condition field='type' %}
             </div>
             <div class="col-md-9">
-                {% include textarea_input with obj=condition field='text' hidden=True %}
+                {% include textarea_input with obj=condition field='text' %}
             </div>
         </div>
     </div>

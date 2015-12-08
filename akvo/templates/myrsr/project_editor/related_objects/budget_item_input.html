@@ -18,16 +18,16 @@
                 {% include currency_input with obj=item field='amount' %}
             </div>
         </div>
-        {% include choice_input with obj=item field='type' hidden=True %}
+        {% include choice_input with obj=item field='type' %}
         <div class="row">
             <div class="col-md-4">
-                {% include date_input with obj=item field='period_start' hidden=True %}
+                {% include date_input with obj=item field='period_start' %}
             </div>
             <div class="col-md-4">
-                {% include date_input with obj=item field='period_end' hidden=True %}
+                {% include date_input with obj=item field='period_end' %}
             </div>
             <div class="col-md-4">
-                {% include date_input with obj=item field='value_date' hidden=True %}
+                {% include date_input with obj=item field='value_date' %}
             </div>
         </div>
     </div>

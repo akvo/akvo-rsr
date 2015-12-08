@@ -23,7 +23,7 @@
                 <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
                 <div class="row">
                     <div class="col-md-12">
-                        {% include percentage_input with obj=project field='capital_spend_percentage' hidden=True %}
+                        {% include percentage_input with obj=project field='capital_spend_percentage' %}
                     </div>
                 </div>
                 <div class="budget-item-container" id="budget-item-container">
@@ -40,7 +40,7 @@
                 </div>
                 <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
                     <h5>{% trans 'Country budget items' %}</h5>
-                    {% include choice_input with obj=project field='country_budget_vocabulary' hidden=True %}
+                    {% include choice_input with obj=project field='country_budget_vocabulary' %}
                     <div class="country-budget-item-container" id="country-budget-item-container">
                         {% for item in project.country_budget_items.all %}
                             {% include "myrsr/project_editor/related_objects/country_budget_item_input.html" %}

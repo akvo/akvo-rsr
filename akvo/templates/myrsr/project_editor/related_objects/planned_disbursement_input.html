@@ -5,21 +5,21 @@
     <div class="hide-partial {% if pd.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">
-                {% include currency_input with obj=pd field='value' hidden=True %}
+                {% include currency_input with obj=pd field='value' %}
             </div>
             <div class="col-md-4">
-                {% include date_input with obj=pd field='value_date' hidden=True %}
+                {% include date_input with obj=pd field='value_date' %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=pd field='type' hidden=True %}
+                {% include choice_input with obj=pd field='type' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {% include date_input with obj=pd field='period_start' hidden=True %}
+                {% include date_input with obj=pd field='period_start' %}
             </div>
             <div class="col-md-6">
-                {% include date_input with obj=pd field='period_end' hidden=True %}
+                {% include date_input with obj=pd field='period_end' %}
             </div>
         </div>
     </div>

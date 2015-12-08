@@ -1664,6 +1664,7 @@ function setHiddenFields() {
             }
         }
 
+        // Hide fields that should be hidden according to the validation set
         var hideElements = document.querySelectorAll(INPUT_ELEMENTS[i] + measureClass);
         for (var k = 0; k < hideElements.length; k++) {
             var hideFormGroupNode = findAncestorByClass(hideElements[k], 'form-group');

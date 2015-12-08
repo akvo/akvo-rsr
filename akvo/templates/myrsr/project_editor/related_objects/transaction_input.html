@@ -5,56 +5,56 @@
     <div class="hide-partial {% if transaction.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-12">
-                {% include choice_input with obj=transaction field='transaction_type' hidden=True %}
+                {% include choice_input with obj=transaction field='transaction_type' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                {% include currency_input with obj=transaction field='value' hidden=True %}
+                {% include currency_input with obj=transaction field='value' %}
             </div>
             <div class="col-md-4">
-                {% include date_input with obj=transaction field='transaction_date' hidden=True %}
+                {% include date_input with obj=transaction field='transaction_date' %}
             </div>
             <div class="col-md-4">
-                {% include date_input with obj=transaction field='value_date' hidden=True %}
+                {% include date_input with obj=transaction field='value_date' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {% include typeahead_input with obj=transaction field='provider_organisation' hidden=True %}
+                {% include typeahead_input with obj=transaction field='provider_organisation' %}
             </div>
             <div class="col-md-6">
-                {% include typeahead_input with obj=transaction field='receiver_organisation' hidden=True %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {% include text_input with obj=transaction field='provider_organisation_activity' hidden=True %}
-            </div>
-            <div class="col-md-6">
-                {% include text_input with obj=transaction field='receiver_organisation_activity' hidden=True %}
+                {% include typeahead_input with obj=transaction field='receiver_organisation' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {% include text_input with obj=transaction field='reference' hidden=True %}
+                {% include text_input with obj=transaction field='provider_organisation_activity' %}
             </div>
             <div class="col-md-6">
-                {% include text_input with obj=transaction field='description' hidden=True %}
+                {% include text_input with obj=transaction field='receiver_organisation_activity' %}
             </div>
         </div>
-        {% include choice_input with obj=transaction field='aid_type' hidden=True %}
-        {% include choice_input with obj=transaction field='disbursement_channel' hidden=True %}
-        {% include choice_input with obj=transaction field='finance_type' hidden=True %}
-        {% include choice_input with obj=transaction field='flow_type' hidden=True %}
-        {% include choice_input with obj=transaction field='tied_status' hidden=True %}
-        {% include choice_input with obj=transaction field='recipient_country' hidden=True %}
         <div class="row">
             <div class="col-md-6">
-                {% include choice_input with obj=transaction field='recipient_region' hidden=True %}
+                {% include text_input with obj=transaction field='reference' %}
             </div>
             <div class="col-md-6">
-                {% include choice_input with obj=transaction field='recipient_region_vocabulary' hidden=True %}
+                {% include text_input with obj=transaction field='description' %}
+            </div>
+        </div>
+        {% include choice_input with obj=transaction field='aid_type' %}
+        {% include choice_input with obj=transaction field='disbursement_channel' %}
+        {% include choice_input with obj=transaction field='finance_type' %}
+        {% include choice_input with obj=transaction field='flow_type' %}
+        {% include choice_input with obj=transaction field='tied_status' %}
+        {% include choice_input with obj=transaction field='recipient_country' %}
+        <div class="row">
+            <div class="col-md-6">
+                {% include choice_input with obj=transaction field='recipient_region' %}
+            </div>
+            <div class="col-md-6">
+                {% include choice_input with obj=transaction field='recipient_region_vocabulary' %}
             </div>
         </div>
         <h5 class="hide-default {% if not advanced_editor %}hidden{% endif %}">{% trans 'Transaction sectors' %}</h5>

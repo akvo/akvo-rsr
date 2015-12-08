@@ -18,9 +18,9 @@
             <form role="form">
                 {% include text_input with obj=project field="title" %}
                 {% include text_input with obj=project field="subtitle" %}
-                {% include text_input with obj=project field="iati_activity_id" mandatory_iati=True hidden=True %}
+                {% include text_input with obj=project field="iati_activity_id" %}
                 <h5>{% trans 'Related projects' %}</h5>
-                {% include choice_input with obj=project field="hierarchy" hidden=True %}
+                {% include choice_input with obj=project field="hierarchy" %}
                 <div class="related-project-container">
                     {% for rp in project.related_projects.all %}
                         {% include "myrsr/project_editor/related_objects/related_project_input.html" %}
@@ -33,10 +33,10 @@
                         </div>
                     </div>
                 </div>
-                {% include choice_input with obj=project field="status" not_empty=True mandatory_iati=True %}
+                {% include choice_input with obj=project field="status" not_empty=True %}
                 <div class="row">
                     <div class="col-md-6">
-                        {% include date_input with obj=project field="date_start_planned" mandatory_iati=True %}
+                        {% include date_input with obj=project field="date_start_planned" %}
                         {% include date_input with obj=project field="date_end_planned" %}
                     </div>
                     <div class="col-md-6">
@@ -66,11 +66,11 @@
                         {% include text_input with obj=project field="current_image_credit" %}
                     </div>
                 </div>
-                {% include choice_input with obj=project field="default_aid_type" hidden=True %}
-                {% include choice_input with obj=project field="default_flow_type" hidden=True %}
-                {% include choice_input with obj=project field="default_tied_status" hidden=True %}
-                {% include choice_input with obj=project field="collaboration_type" hidden=True %}
-                {% include choice_input with obj=project field="default_finance_type" hidden=True %}
+                {% include choice_input with obj=project field="default_aid_type" %}
+                {% include choice_input with obj=project field="default_flow_type" %}
+                {% include choice_input with obj=project field="default_tied_status" %}
+                {% include choice_input with obj=project field="collaboration_type" %}
+                {% include choice_input with obj=project field="default_finance_type" %}
                 {% for customfield in custom_fields_section_1 %}
                     {% include custom_field_input %}
                 {% endfor %}
@@ -80,8 +80,3 @@
         </div>
     </div>
 </div>
-
-{#<p>#}
-{#    <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">#}
-{#    <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>#}
-{#</p>#}

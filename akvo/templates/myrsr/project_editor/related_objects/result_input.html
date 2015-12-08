@@ -21,10 +21,10 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                {% include textarea_input with obj=result field='description' hidden=True %}
+                {% include textarea_input with obj=result field='description' %}
             </div>
             <div class="col-md-4">
-                {% include boolean_input with obj=result field='aggregation_status' hidden=True nullboolean=True %}
+                {% include boolean_input with obj=result field='aggregation_status' nullboolean=True %}
             </div>
         </div>
         <h5>{% trans 'Indicators' %}</h5>

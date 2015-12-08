@@ -17,7 +17,7 @@
                 <p class="help-block">{% trans 'Also add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}</p>
             </div>
             <form role="form">
-                {% include choice_input with obj=project field='project_scope' hidden=True %}
+                {% include choice_input with obj=project field='project_scope' %}
 
                 <h5>{% trans 'Project locations' %}</h5>
                 <div class="project-location-container" id="project-location-container">

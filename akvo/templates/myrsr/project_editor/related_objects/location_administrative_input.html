@@ -5,13 +5,13 @@
     <div class="hide-partial {% if admin.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-4">
-                {% include text_input with obj=admin field='code' hidden=True %}
+                {% include text_input with obj=admin field='code' %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=admin field='vocabulary' hidden=True %}
+                {% include choice_input with obj=admin field='vocabulary' %}
             </div>
             <div class="col-md-4">
-                {% include text_input with obj=admin field='level' number=True hidden=True %}
+                {% include text_input with obj=admin field='level' number=True %}
             </div>
         </div>
     </div>

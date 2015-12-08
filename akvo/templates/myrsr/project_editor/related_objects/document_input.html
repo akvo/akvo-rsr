@@ -28,13 +28,13 @@
         <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
             <div class="row">
                 <div class="col-md-4">
-                    {% include choice_input with obj=document field='format' hidden=True %}
+                    {% include choice_input with obj=document field='format' %}
                 </div>
                 <div class="col-md-4">
-                    {% include choice_input with obj=document field='category' hidden=True %}
+                    {% include choice_input with obj=document field='category' %}
                 </div>
                 <div class="col-md-4">
-                    {% include choice_input with obj=document field='language' hidden=True %}
+                    {% include choice_input with obj=document field='language' %}
                 </div>
             </div>
         </div>
