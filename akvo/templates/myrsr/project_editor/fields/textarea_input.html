@@ -1,10 +1,12 @@
 {% load project_editor %}
 
-<div class="form-group control{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+<div class="form-group control">
     <textarea name="{{ obj|field_id:field }}"
               id="{{ obj|field_id:field }}"
               {% with field_plus_project=field|add:","|add:project_id_string %}
-                  class="form-control {{ obj|mandatory:field_plus_project }}"
+                  class="form-control
+                         {{ obj|mandatory:field_plus_project }}
+                         {{ obj|hidden:field_plus_project }}"
                   mandatory-or="{{ obj|mandatory_or:field_plus_project }}"
               {% endwith %}
               {% if obj|max_length:field %}

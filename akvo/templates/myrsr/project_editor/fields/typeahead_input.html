@@ -1,12 +1,13 @@
 {% load project_editor %}
 
-<div class="form-group control {{ obj|field_class_id:field }}{% if hidden and not advanced_editor %} hide-default hidden{% endif %}"
+<div class="form-group control {{ obj|field_class_id:field }}{% if always_hidden %} always-hidden hidden{% endif %}"
      id="{{ obj|field_id:field }}">
     <div class="typeahead-container {{ obj|field_class:field }}"
         data-child-id="{{ obj|field_id:field }}"
         data-child-class="{{ obj|field_class_id:field }}
                           {% with field_plus_project=field|add:","|add:project_id_string %}
                             {{ obj|mandatory:field_plus_project }}
+                            {{ obj|hidden:field_plus_project }}
                           {% endwith %}"
         data-value="{{ obj|value:field }}"
         {% with field_plus_project=field|add:","|add:project_id_string %}

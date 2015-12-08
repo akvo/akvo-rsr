@@ -6,11 +6,11 @@
         <div class="row">
             <div class="col-md-6">
                 {% if rp.related_iati_id and not rp.related_project %}
-                    {% include typeahead_input with obj=rp field="related_project" hidden=True %}
+                    {% include typeahead_input with obj=rp field="related_project" always_hidden=True %}
                     {% include text_input with obj=rp field="related_iati_id" %}
                 {% else %}
                     {% include typeahead_input with obj=rp field="related_project" %}
-                    {% include text_input with obj=rp field="related_iati_id" hidden=True %}
+                    {% include text_input with obj=rp field="related_iati_id" always_hidden=True %}
                 {% endif %}
                 <p>
                     <input type="checkbox" {% if rp.related_iati_id and not rp.related_project %}checked{% endif %} class="related-project-toggle">

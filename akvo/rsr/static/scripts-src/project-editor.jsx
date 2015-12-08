@@ -1650,6 +1650,30 @@ function getMeasureClass() {
     }
 }
 
+function setHiddenFields() {
+    /* Hide fields based on the selected measure class. */
+    var measureClass = '.hidden-' + getMeasureClass().split('-')[1];
+
+    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+        // Show all fields
+        var allElements = document.querySelectorAll(INPUT_ELEMENTS[i]);
+        for (var j = 0; j < allElements.length; j++) {
+            var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
+            if (formGroupNode !== null && !elHasClass(formGroupNode, 'always-hidden')) {
+                elRemoveClass(formGroupNode, 'hidden');
+            }
+        }
+
+        var hideElements = document.querySelectorAll(INPUT_ELEMENTS[i] + measureClass);
+        for (var k = 0; k < hideElements.length; k++) {
+            var hideFormGroupNode = findAncestorByClass(hideElements[k], 'form-group');
+            if (hideFormGroupNode !== null && !elHasClass(hideFormGroupNode, 'always-hidden')) {
+                elAddClass(hideFormGroupNode, 'hidden');
+            }
+        }
+    }
+}
+
 function setSectionCompletionPercentage(section) {
     var inputResults = getInputResults(section, getMeasureClass());
     var numInputs = inputResults[0];
@@ -1870,6 +1894,7 @@ function switchMandatoryFields(switchTo) {
         }
 
         // Mark new mandatory fields and set new change listeners
+        setHiddenFields();
         markMandatoryFields();
         setAllSectionsCompletionPercentage();
         setAllSectionsChangeListener();
@@ -2017,6 +2042,7 @@ function setValidationListeners() {
     }
 
     markMandatoryFields();
+    setHiddenFields();
 }
 
 function setCurrencyOnChange() {

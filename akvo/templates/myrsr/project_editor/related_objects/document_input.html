@@ -6,11 +6,11 @@
         <div class="row">
             <div class="col-md-6">
                 {% if document.document %}
-                    {% include text_input with obj=document field='url' hidden=True %}
+                    {% include text_input with obj=document field='url' always_hidden=True %}
                     {% include file_input with obj=document field='document' %}
                 {% else %}
                     {% include text_input with obj=document field='url' %}
-                    {% include file_input with obj=document field='document' hidden=True %}
+                    {% include file_input with obj=document field='document' always_hidden=True %}
                 {% endif %}
                 <p>
                     <input type="checkbox" class="document-toggle" {% if document.document %}checked{% endif %}>

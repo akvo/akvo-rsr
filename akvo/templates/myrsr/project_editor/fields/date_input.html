@@ -1,6 +1,6 @@
 {% load project_editor %}
 
-<div class="form-group{% if hidden and not advanced_editor %} hide-default hidden{% endif %}">
+<div class="form-group">
     <div class="control datepicker-container"
          id="planned-start-date-container"
          data-id="{{ obj|field_id:field }}"
@@ -9,6 +9,7 @@
          data-helptext="{{ obj|help_text:field }}"
          data-classes="{% with field_plus_project=field|add:","|add:project_id_string %}
                          {{ obj|mandatory:field_plus_project }}
+                         {{ obj|hidden:field_plus_project }}
                        {% endwith %}"
          {% with field_plus_project=field|add:","|add:project_id_string %}
             mandatory-or="{{ obj|mandatory_or:field_plus_project }}"
