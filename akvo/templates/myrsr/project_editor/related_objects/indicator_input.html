@@ -32,20 +32,25 @@
             </div>
         </div>
         {% include textarea_input with obj=indicator field='baseline_comment' %}
-        <h5>{% trans 'Indicator periods' %}</h5>
-        <div class="indicator-period-container" id="indicator-period-container">
-            {% for period in indicator.periods.all %}
-                {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
-            {% empty %}
-                {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
-                    {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
-                {% endwith %}
-            {% endfor %}
-            <div class="row form-group">
-                <div class="col-md-12 text-center add-object-link">
-                    <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+
+        {% with related_obj_string="rsr_indicatorperiod,"|add:project_id_string %}
+            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                <h5>{% trans 'Indicator periods' %}</h5>
+                <div class="indicator-period-container" id="indicator-period-container">
+                    {% for period in indicator.periods.all %}
+                        {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
+                    {% empty %}
+                        {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+                            {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                        {% endwith %}
+                    {% endfor %}
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endwith %}
     </div>
 </div>

@@ -280,11 +280,11 @@ def hidden(obj, args):
 
     model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
     validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
-    mandatory_indications = ''
+    hidden_indications = ''
 
     for validation_set in validations:
         for rule in validation_set.validations.filter(action=2):
-            if model_field in rule.validation:
-                mandatory_indications += 'hidden-{0} '.format(str(validation_set.pk))
+            if model_field in rule.validation or field == rule.validation:
+                hidden_indications += 'hidden-{0} '.format(str(validation_set.pk))
 
-    return mandatory_indications
+    return hidden_indications

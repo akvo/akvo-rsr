@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n project_editor %}
 
 <div class="myPanel borderBottom" id="panel7">
     <div class="formStep stepSeven">
@@ -19,47 +19,60 @@
             <form role="form">
                 {% include choice_input with obj=project field='project_scope' %}
 
-                <h5>{% trans 'Project locations' %}</h5>
-                <div class="project-location-container" id="project-location-container">
-                    {% for location in project.locations.all %}
-                        {% include "myrsr/project_editor/related_objects/location_input.html" %}
-                    {% empty %}
-                        {% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}
-                    {% endfor %}
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                             <a href="#" class="add-project-location"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
-                    <h5>{% trans 'Recipient countries' %}</h5>
-                    <div class="recipient-country-container" id="recipient-country-container">
-                        {% for rc in project.recipient_countries.all %}
-                            {% include "myrsr/project_editor/related_objects/recipient_country_input.html" %}
-                        {% empty %}
-                            {% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}
-                        {% endfor %}
-                        <div class="row form-group">
-                            <div class="col-md-12 text-center add-object-link">
-                                 <a href="#" class="add-recipient-country"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
+                {% with related_obj_string="rsr_projectlocation,"|add:project_id_string %}
+                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                        <h5>{% trans 'Project locations' %}</h5>
+                        <div class="project-location-container" id="project-location-container">
+                            {% for location in project.locations.all %}
+                                {% include "myrsr/project_editor/related_objects/location_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-project-location"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <h5>{% trans 'Recipient regions' %}</h5>
-                    <div class="recipient-region-container" id="recipient-region-container">
-                        {% for rr in project.recipient_regions.all %}
-                            {% include "myrsr/project_editor/related_objects/recipient_region_input.html" %}
-                        {% empty %}
-                            {% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}
-                        {% endfor %}
-                        <div class="row form-group">
-                            <div class="col-md-12 text-center add-object-link">
-                                 <a href="#" class="add-recipient-region"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
+                {% endwith %}
+
+                {% with related_obj_string="rsr_recipientcountry,"|add:project_id_string %}
+                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                        <h5>{% trans 'Recipient countries' %}</h5>
+                        <div class="recipient-country-container" id="recipient-country-container">
+                            {% for rc in project.recipient_countries.all %}
+                                {% include "myrsr/project_editor/related_objects/recipient_country_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-recipient-country"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% endwith %}
+
+                {% with related_obj_string="rsr_recipientregion,"|add:project_id_string %}
+                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                        <h5>{% trans 'Recipient regions' %}</h5>
+                        <div class="recipient-region-container" id="recipient-region-container">
+                            {% for rr in project.recipient_regions.all %}
+                                {% include "myrsr/project_editor/related_objects/recipient_region_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-recipient-region"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+
                 {% for customfield in custom_fields_section_7 %}
                     {% include custom_field_input %}
                 {% endfor %}

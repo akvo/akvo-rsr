@@ -27,20 +27,24 @@
                 {% include boolean_input with obj=result field='aggregation_status' nullboolean=True %}
             </div>
         </div>
-        <h5>{% trans 'Indicators' %}</h5>
-        <div class="indicator-container" id="indicator-container">
-            {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" %}
-                {% for indicator in result.indicators.all %}
-                    {% include "myrsr/project_editor/related_objects/indicator_input.html" %}
-                {% empty %}
-                    {% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string|add:'_'|add:result_id_string %}
-                {% endfor %}
-            {% endwith %}
-            <div class="row form-group">
-                <div class="col-md-12 text-center add-object-link">
-                    <a href="#" class="add-indicator"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>
+        {% with related_obj_string="rsr_indicator,"|add:project_id_string %}
+            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                <h5>{% trans 'Indicators' %}</h5>
+                <div class="indicator-container" id="indicator-container">
+                    {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" %}
+                        {% for indicator in result.indicators.all %}
+                            {% include "myrsr/project_editor/related_objects/indicator_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string|add:'_'|add:result_id_string %}
+                        {% endfor %}
+                    {% endwith %}
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-indicator"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endwith %}
     </div>
 </div>

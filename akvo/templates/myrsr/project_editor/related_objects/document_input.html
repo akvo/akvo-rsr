@@ -25,17 +25,15 @@
                 {% include text_input with obj=document field='title' %}
             </div>
         </div>
-        <div class="hide-default {% if not advanced_editor %}hidden{% endif %}">
-            <div class="row">
-                <div class="col-md-4">
-                    {% include choice_input with obj=document field='format' %}
-                </div>
-                <div class="col-md-4">
-                    {% include choice_input with obj=document field='category' %}
-                </div>
-                <div class="col-md-4">
-                    {% include choice_input with obj=document field='language' %}
-                </div>
+        <div class="row">
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='format' %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='category' %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='language' %}
             </div>
         </div>
     </div>

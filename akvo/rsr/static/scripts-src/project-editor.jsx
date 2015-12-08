@@ -1673,6 +1673,20 @@ function setHiddenFields() {
             }
         }
     }
+
+    // See if there's any related objects that should be hidden
+    var relatedObjectContainers = document.querySelectorAll('.related-object-container');
+    for (var l = 0; l < relatedObjectContainers.length; l++) {
+        if (elHasClass(relatedObjectContainers[l], measureClass.substr(1))) {
+            if (!elHasClass(relatedObjectContainers[l], 'hidden')) {
+                elAddClass(relatedObjectContainers[l], 'hidden');
+            }
+        } else {
+            if (elHasClass(relatedObjectContainers[l], 'hidden')) {
+                elRemoveClass(relatedObjectContainers[l], 'hidden');
+            }
+        }
+    }
 }
 
 function setSectionCompletionPercentage(section) {

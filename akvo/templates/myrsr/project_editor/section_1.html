@@ -1,4 +1,4 @@
-{% load i18n thumbnail %}
+{% load i18n thumbnail project_editor %}
 
 <div class="myPanel borderBottom" id="panel1">
     <div class="formStep stepOne">
@@ -19,21 +19,28 @@
                 {% include text_input with obj=project field="title" %}
                 {% include text_input with obj=project field="subtitle" %}
                 {% include text_input with obj=project field="iati_activity_id" %}
-                <h5>{% trans 'Related projects' %}</h5>
-                {% include choice_input with obj=project field="hierarchy" %}
-                <div class="related-project-container">
-                    {% for rp in project.related_projects.all %}
-                        {% include "myrsr/project_editor/related_objects/related_project_input.html" %}
-                    {% empty %}
-                        {% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}
-                    {% endfor %}
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                            <a href="#" class="add-related-project"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+
+                {% with related_obj_string="rsr_relatedproject,"|add:project_id_string %}
+                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                        <h5>{% trans 'Related projects' %}</h5>
+                        <div class="related-project-container">
+                            {% for rp in project.related_projects.all %}
+                                {% include "myrsr/project_editor/related_objects/related_project_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-related-project"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endwith %}
+
+                {% include choice_input with obj=project field="hierarchy" %}
                 {% include choice_input with obj=project field="status" not_empty=True %}
+
                 <div class="row">
                     <div class="col-md-6">
                         {% include date_input with obj=project field="date_start_planned" %}
@@ -46,18 +53,25 @@
                 </div>
                 {% include choice_input with obj=project field="currency" not_empty=True %}
                 {% include choice_input with obj=project field="language" %}
-                <h5>{% trans 'Project photo' %}</h5>
-                <div class="row">
-                    <div class="col-md-12 text-center" id="photo-container">
-                        {% if project.current_image %}
-                            {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
-                                <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
-                            {% endthumbnail %}
-                            <a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
-                        {% endif %}
+
+                {% with related_obj_string="rsr_project.current_image,"|add:project_id_string %}
+                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                        <h5>{% trans 'Project photo' %}</h5>
+                        <div class="row">
+                            <div class="col-md-12 text-center" id="photo-container">
+                                {% if project.current_image %}
+                                    {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                        <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                                    {% endthumbnail %}
+                                    <a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% include file_input with obj=project field="current_image" accept="image/*" %}
                     </div>
-                </div>
-                {% include file_input with obj=project field="current_image" accept="image/*" %}
+                {% endwith %}
+
                 <div class="row">
                     <div class="col-md-6">
                         {% include text_input with obj=project field="current_image_caption" %}
@@ -66,6 +80,7 @@
                         {% include text_input with obj=project field="current_image_credit" %}
                     </div>
                 </div>
+
                 {% include choice_input with obj=project field="default_aid_type" %}
                 {% include choice_input with obj=project field="default_flow_type" %}
                 {% include choice_input with obj=project field="default_tied_status" %}
