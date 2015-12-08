@@ -979,8 +979,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     updateHelpIcons('.' + childClass);
     markMandatoryFields();
-//    setAllSectionsCompletionPercentage();
-//    setAllSectionsChangeListener();
+    setAllSectionsCompletionPercentage();
+    setAllSectionsChangeListener();
     setPageCompletionPercentage();
 }
 
@@ -1445,8 +1445,9 @@ function addPartial(partialName, partialContainer) {
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
-        setSectionChangeListener(findAncestorByClass(partialContainer, 'formStep'));
-        setSectionCompletionPercentage(findAncestorByClass(partialContainer, 'formStep'));
+        setPageCompletionPercentage();
+        setAllSectionsCompletionPercentage();
+        setAllSectionsChangeListener();
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
@@ -1549,6 +1550,8 @@ function updateTypeaheads(forceReloadOrg) {
 
 function updateHelpIcons(container) {
     /* Add an "info" glyphicon to each label and clicking the glyphicon shows the help text */
+    // TODO: Fix, not working (add partnership)
+
     var labels = document.querySelectorAll(container + ' label.control-label');
 
     for (var i = 0; i < labels.length; i++) {
@@ -1764,6 +1767,18 @@ function getInputResults(section, measureClass) {
         return null;
     }
 
+    function partialFilled(parentNode) {
+        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+            var inputElements = parentNode.querySelectorAll(INPUT_ELEMENTS[i]);
+            for (var j = 0; j < inputElements.length; j++) {
+                if (inputCompleted(inputElements[j])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     var numInputs = 0;
     var numInputsCompleted = 0;
     var processedFields = [];
@@ -1777,6 +1792,12 @@ function getInputResults(section, measureClass) {
 
             if (field.getAttribute('disabled') !== null) {
                 // Ignore disabled fields
+                continue;
+            }
+
+            var parentNode = findAncestorByClass(field, 'parent');
+            if (parentNode !== null && !partialFilled(parentNode)) {
+                // Ignore fields in underlying empty partials
                 continue;
             }
 
@@ -1811,6 +1832,23 @@ function getInputResults(section, measureClass) {
             processedFields.push(field);
         }
     }
+
+    var relatedObjectContainers = section.querySelectorAll('.related-object-container');
+    for (var k = 0; k < relatedObjectContainers.length; k++) {
+        if (elHasClass(relatedObjectContainers[k], measureClass.substr(1))) {
+            numInputs += 1;
+
+            var parents = relatedObjectContainers[k].querySelectorAll('.parent');
+            for (var l = 0; l < parents.length; l++) {
+                var partialParentNode = parents[l];
+                if (partialFilled(partialParentNode)) {
+                    numInputsCompleted += 1;
+                    break;
+                }
+            }
+        }
+    }
+
     return [numInputs, numInputsCompleted];
 }
 
@@ -1842,11 +1880,7 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
 
 function setSectionChangeListener(section) {
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var selector;
-        var elements;
-
-        selector = INPUT_ELEMENTS[i] + getMeasureClass();
-        elements = section.querySelectorAll(selector);
+        var elements = section.querySelectorAll(INPUT_ELEMENTS[i]);
 
         for (var y = 0; y < elements.length; y++) {
             var listener;
@@ -1912,7 +1946,6 @@ function switchMandatoryFields(switchTo) {
         setHiddenFields();
         markMandatoryFields();
         setAllSectionsCompletionPercentage();
-        setAllSectionsChangeListener();
     };
 }
 
