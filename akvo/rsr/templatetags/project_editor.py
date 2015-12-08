@@ -229,7 +229,7 @@ def mandatory(obj, args):
     Retrieves the mandatory fields for project editor validations.
     Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
 
-    :returns "mandatory-rsr mandatory-custom"
+    :returns "mandatory-1 mandatory-2-or-title"
     """
     field, project_id = args.split(',')
 
@@ -243,3 +243,27 @@ def mandatory(obj, args):
                 mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
 
     return mandatory_indications
+
+@register.filter
+def mandatory_or(obj, args):
+    """
+    Retrieves the mandatory OR fields for project editor validations.
+    Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
+
+    :returns "mandatory-1 mandatory-2-or-title"
+    """
+    field, project_id = args.split(',')
+
+    model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
+    validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
+    or_indications = ''
+
+    for validation_set in validations:
+        for rule in validation_set.validations.filter(action=1):
+            if model_field in rule.validation and '||' in rule.validation:
+                or_list = rule.validation.split('||')
+                or_list.remove(model_field)
+                for or_indication in or_list:
+                    or_indications += '{0}-{1} '.format(str(validation_set.pk), or_indication)
+
+    return or_indications

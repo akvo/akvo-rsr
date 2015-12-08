@@ -1840,11 +1840,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
-.projectEdit .mandatory {
+.projectEdit .mandatory, .projectEdit .mandatory-block {
   color: #d9534f;
   font-size: 125%;
   margin-left: 4px;
   margin-right: -4px; }
+.projectEdit .mandatory-block {
+  font-size: 90%;
+  margin-left: 0px;
+  margin-right: 0px; }
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
@@ -1911,7 +1915,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border-radius: 5px;
   padding: 5px 15px 5px 15px;
   margin: 15px 15px 15px 15px; }
-  .legenda .mandatory {
+  .legenda .mandatory, .legenda .projectEdit .mandatory-block, .projectEdit .legenda .mandatory-block {
     color: #d9534f; }
 
 .progress-radio {

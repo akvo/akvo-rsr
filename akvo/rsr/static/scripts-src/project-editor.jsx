@@ -1675,6 +1675,7 @@ function setPageCompletionPercentage() {
         renderCompletionPercentage(numInputsCompleted, numInputs, progressBars[i]);
     }
 
+    // TODO: publish button
 //    var rsrCompletionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, rsrProgress);
 //    var publishButton = document.getElementById('publishProject');
 //
@@ -1695,8 +1696,36 @@ function setPageCompletionPercentage() {
 }
 
 function getInputResults(section, measureClass) {
+    function inputCompleted(field) {
+        if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
+            // Do not count project status 'None'
+        } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
+            // Custom code for file inputs
+            return true;
+        } else if (field.value !== '') {
+            return true;
+        }
+        return false;
+    }
+
+    function getOrField(field) {
+        if (field.hasAttribute('mandatory-or') && field.getAttribute('mandatory-or').trim() !== '') {
+            var orList = field.getAttribute('mandatory-or').trim().split(' ');
+            for (var k = 0; k < orList.length; k++) {
+                if (orList[k].split('-')[0] === measureClass.split('-')[1]) {
+                    var otherFieldName = orList[k].split('-')[1].split('.')[1];
+                    var fieldIdList = field.getAttribute('id').split('.');
+                    var otherFieldId = [fieldIdList[0], otherFieldName, fieldIdList[2]].join('.');
+                    return document.getElementById(otherFieldId);
+                }
+            }
+        }
+        return null;
+    }
+
     var numInputs = 0;
     var numInputsCompleted = 0;
+    var processedFields = [];
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
         var selector = INPUT_ELEMENTS[i] + measureClass;
@@ -1712,15 +1741,33 @@ function getInputResults(section, measureClass) {
 
             numInputs += 1;
 
-            if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id &&
-                field.value === 'N') {
-                // Do not count project status 'None'
-            } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
-                // Custom code for file inputs
-                numInputsCompleted += 1;
-            } else if (field.value !== '') {
-                numInputsCompleted += 1;
+            // Check if there is an 'Or' mandatory field
+            var orField = getOrField(field);
+            if (orField === null) {
+                // Regular processing, check if the input is completed
+                if (inputCompleted(field)) {
+                    numInputsCompleted += 1;
+                }
+            } else {
+                // There is an 'Or' mandatory field specified
+                if (processedFields.indexOf(orField) > -1) {
+                    if (inputCompleted(orField)) {
+                        // The 'Or' field has already been processed and was filled
+                        numInputsCompleted += 1;
+                    } else if (inputCompleted(field)) {
+                        // The 'Or' field has already been processed and was not filled, but this
+                        // field is, so add 2 inputs completed
+                        numInputsCompleted += 2;
+                    }
+                } else {
+                    // Regular processing, check if the input is completed
+                    if (inputCompleted(field)) {
+                        numInputsCompleted += 1;
+                    }
+                }
             }
+
+            processedFields.push(field);
         }
     }
     return [numInputs, numInputsCompleted];
@@ -1827,6 +1874,17 @@ function switchMandatoryFields(switchTo) {
     };
 }
 
+function markMandatoryOrField(element, otherField) {
+    /* Mark a field as an OR mandatory field */
+    var formGroupNode = findAncestorByClass(element, 'form-group');
+
+    var markContainer = document.createElement('span');
+    markContainer.setAttribute('class', 'mandatory-block mandatory');
+    markContainer.textContent = '*' + defaultValues.or_mandatory_1 + ' ' + otherField.split('.')[1].replace('_', ' ') + ' ' + defaultValues.or_mandatory_2 + '.';
+
+    formGroupNode.appendChild(markContainer);
+}
+
 function markMandatoryField(element) {
     /* Mark a field as mandatory */
     var elementLabel = findAncestorByClass(element, 'form-group').querySelector('label');
@@ -1848,9 +1906,19 @@ function markMandatoryFields() {
     }
 
     // Mark the new elements
-    var elementsToMark = document.querySelectorAll(getMeasureClass());
+    var measureClass = getMeasureClass();
+    var elementsToMark = document.querySelectorAll(measureClass);
     for (var j = 0; j < elementsToMark.length; j++) {
         markMandatoryField(elementsToMark[j]);
+
+        if (elementsToMark[j].hasAttribute('mandatory-or') && elementsToMark[j].getAttribute('mandatory-or').trim() !== '') {
+            var mandatoryOrList = elementsToMark[j].getAttribute('mandatory-or').trim().split(' ');
+            for (var k = 0; k < mandatoryOrList.length; k++) {
+                if (mandatoryOrList[k].split('-')[0] === measureClass.split('-')[1]) {
+                    markMandatoryOrField(elementsToMark[j], mandatoryOrList[k].split('-')[1]);
+                }
+            }
+        }
     }
 }
 
