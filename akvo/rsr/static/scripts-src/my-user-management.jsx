@@ -369,11 +369,9 @@ UserTable = React.createClass({
 InviteButton = React.createClass({
   render: function() {
     return (<ModalTrigger modal={<InviteModal />}>
-            <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <i class="glyphicon glyphicon-user"></i>
-            </button>
-            </div>
+            <Button title="Invite Users">
+            <i className="glyphicon glyphicon-user"></i>+
+            </Button>
             </ModalTrigger>);
   }
 });
