@@ -11,8 +11,13 @@
 
     <!--*************************************** Project editor header **********************************************-->
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-4">
             <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'project-main' project.pk %}" target="_blank">
+                <button class="btn btn-primary viewProject" id="viewProject"><span class="glyphicon glyphicon-expand"></span> {% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
+            </a>
         </div>
         <div class="col-md-4">
             <div class="editDate">
@@ -33,184 +38,8 @@
         <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>.
     </div>
 
-    <!--*************************************** Project editor progress **********************************************-->
-    <div class="panel panel-success formProgress">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                {% trans 'Project progress' %}
-            </h3>
-        </div>
-        <div class="panel-body">
-            <div class="row help-block">
-                <div class="col-md-12"><strong>{% trans 'Legenda' %}</strong></div>
-                <div class="row">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-1"><span class="redLegenda">{% trans 'legend' %}</span></div>
-                    <div class="col-xs-8 col-xs-offset-1">{% trans 'No mandatory fields completed' %}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-1"><span class="orangeLegenda">{% trans 'legend' %}</span><br/></div>
-                    <div class="col-xs-8 col-xs-offset-1">{% trans 'Some mandatory fields completed' %}</div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-1"><span class="greenLegenda">{% trans 'legend' %}</span></div>
-                    <div class="col-xs-8 col-xs-offset-1">{% trans 'All mandatory fields completed' %}</div>
-                </div>
-            </div>
-            <hr/>
-            {% if not project.ruleset %}
-                <div id="rsr-progress" class="active-ruleset">
-                    <div class="row help-block">
-                        <div class="col-md-12"><strong>{% trans 'Akvo RSR' %}</strong></div>
-                        <div class="col-md-12">{% trans 'This progress bar indicates the number of completed mandatory fields for Akvo RSR. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. Mandatory fields for Akvo RSR are marked with a' %} <span class="mandatoryIndicator">*</span>.</div>
-                    </div>
-                    <div class="progress overview">
-                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only"></span><span class="progress-percentage"></span>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div id="rsr-progress">
-                    <div class="row">
-                        <div class="col-xs-1 progress-radio">
-                            <input id="select-rsr-ruleset" type="radio">
-                        </div>
-                        <div class="col-xs-11">
-                            <div class="row help-block">
-                                <div class="col-md-12"><strong>{% trans 'Akvo RSR' %}</strong></div>
-                                <div class="col-md-12">{% trans 'This progress bar indicates the number of completed mandatory fields for Akvo RSR. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. Mandatory fields for Akvo RSR are marked with a' %} <span class="mandatoryIndicator">*</span>.</div>
-                            </div>
-                            <div class="progress overview">
-                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                    <span class="sr-only"></span><span class="progress-percentage"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-                <div id="custom-progress" class="active-ruleset">
-                    <div class="row">
-                        <div class="col-xs-1 progress-radio">
-                            <input id="select-custom-ruleset" type="radio" checked>
-                        </div>
-                        <div class="col-xs-11">
-                            <div class="row help-block">
-                                <div class="col-md-12"><strong>{{ project.ruleset.name }}</strong></div>
-                                <div class="col-md-12">{{ project.ruleset.description }}</div>
-                            </div>
-                            <div class="progress overview">
-                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                    <span class="sr-only"></span><span class="progress-percentage"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!--*************************************** Project editor options **********************************************-->
-    <div class="panel panel-info formOverviewInfo">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                {% trans 'Project editor options' %}
-            </h3>
-        </div>
-        <div class="panel-body">
-            {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
-            {% if can_publish %}
-                <div class="row">
-                    <div class="col-md-3">
-                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
-                            {% if project.is_published %}
-                                <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish project' %}
-                            {% else %}
-                                <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish project' %}
-                            {% endif %}
-                        </button>
-                    </div>
-                    <div class="col-md-9 help-block">
-                        {% trans 'This project is:' %}
-                        {% if project.is_published %}
-                            <span class="published" id="publishingStatus">{% trans 'published' %}</span>.
-                        {% else %}
-                            <span class="notPublished" id="publishingStatus">{% trans 'not published' %}</span>.
-                        {% endif %}
-                        {% trans 'It is only possible to publish this project when the above progress bar is green and fully filled. This means that all mandatory fields for this project have been completed.' %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9 help-block" id="publishErrors"></div>
-                </div>
-                <hr/>
-            {% endif %}
-            <div class="show-default {% if advanced_editor %}hidden{% endif %}">
-                <div class="row show-default">
-                    <div class="col-md-3">
-                        <button class="btn btn-primary" id="showAdvancedFields"><span class="glyphicon glyphicon-resize-full"></span> {% trans 'Advanced editor' %}</button>
-                    </div>
-                    <div class="col-md-9 help-block">
-                        {% trans 'Enabling this option will allow you to see and use all available fields in RSR, specifically the fields which are available in IATI but used for specific purposes. In addition, another progress bar for the IATI fields will be added to the project progress section on top.' %}
-                    </div>
-                </div>
-                <hr/>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="{% url 'project-main' project.pk %}" target="_blank">
-                        <button class="btn btn-primary viewProject" id="viewProject"><span class="glyphicon glyphicon-expand"></span> {% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
-                    </a>
-                </div>
-                <div class="col-md-9 help-block">
-                    {% trans 'View the project page in a new tab. In case the project is not published yet, a preview of the project page will be shown, which is only visible to admins and project editors of this project.' %}
-                </div>
-                {% if user.is_superuser %}<hr/>{% endif %}
-            </div>
-            {% if user.is_superuser %}
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label for="impactProject" class="control-label">
-                                    <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
-                                        {% trans 'RSR Impact project' %}
-                                </label>
-                            </div>
-                        </div>
-                        {% if project.parents.count == 1 and project.is_impact_project %}
-                            <div class="col-xs-6 col-sm-4" style="text-align: right;">
-                                <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-9 help-block">
-                        {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
-                    </div>
-                    <hr/>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label for="donateButton" class="control-label">
-                                    <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-9 help-block">
-                        {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    {% include "myrsr/project_editor/project_editor_options.html" %}
+    {% include "myrsr/project_editor/project_editor_progress.html" %}
 
     <!--*************************************** Project editor sections **********************************************-->
     <section class="panels projectEdit">

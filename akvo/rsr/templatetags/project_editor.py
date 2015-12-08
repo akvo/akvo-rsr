@@ -222,7 +222,7 @@ def manytomany_choices(obj, field):
 @register.filter
 def mandatory(obj, args):
     """
-    Retrieves the mandatory fields for RSR and custom ruleset, if one is selected for the project.
+    Retrieves the mandatory fields for project editor validations.
     Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
 
     :returns "mandatory-rsr mandatory-custom"
@@ -230,14 +230,12 @@ def mandatory(obj, args):
     field, project_id = args.split(',')
 
     model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
-    ruleset = get_model('rsr', 'Project').objects.get(pk=project_id).ruleset
+    validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
     mandatory_indications = ''
 
-    if model_field in RSR_MANDATORY:
-        mandatory_indications += 'mandatory-rsr'
-    if ruleset:
-        for rule in ruleset.rules.filter(action=1):
-            if model_field in rule.rule:
-                return mandatory_indications + ' mandatory-custom'
+    for validation_set in validations:
+        for rule in validation_set.validations.filter(action=1):
+            if model_field in rule.validation:
+                mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
 
     return mandatory_indications

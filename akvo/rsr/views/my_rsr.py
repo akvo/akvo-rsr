@@ -21,7 +21,8 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project, RuleSet)
+from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project,
+                      ProjectEditorValidationSet)
 
 import json
 
@@ -360,18 +361,3 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
-
-
-@login_required
-def editor_settings(request):
-    """Directory of rulesets, only visible to superusers."""
-    user = request.user
-
-    if not user.is_superuser:
-        raise PermissionDenied
-
-    context = {
-        'rulesets': RuleSet.objects.all()
-    }
-
-    return render(request, 'myrsr/editor_settings.html', context)

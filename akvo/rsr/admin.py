@@ -580,9 +580,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('ruleset', 'title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy', 'is_public'),
+                       'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1150,15 +1150,15 @@ class IatiImportAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
 
 
-class RuleSetAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'RuleSet')
+class ValidationSetAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ProjectEditorValidationSet')
     list_display = ('name', 'created_by')
 
-admin.site.register(get_model('rsr', 'RuleSet'), RuleSetAdmin)
+admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
 
 
-class RuleAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'Rule')
-    list_display = ('ruleset', 'rule', 'action')
+class ValidationAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ProjectEditorValidation')
+    list_display = ('validation_set', 'validation', 'action')
 
-admin.site.register(get_model('rsr', 'Rule'), RuleAdmin)
+admin.site.register(get_model('rsr', 'ProjectEditorValidation'), ValidationAdmin)

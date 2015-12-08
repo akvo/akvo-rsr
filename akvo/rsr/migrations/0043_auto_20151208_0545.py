@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import sorl.thumbnail.fields
 import akvo.rsr.models.project
-import django.db.models.deletion
 from django.conf import settings
 import akvo.rsr.fields
 import django.core.validators
@@ -18,45 +17,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='Rule',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('rule', models.CharField(max_length=255, verbose_name='rule')),
-                ('action', models.PositiveSmallIntegerField(db_index=True, verbose_name='option', choices=[(1, 'Mandatory'), (2, 'Hidden'), (3, 'Read only')])),
-            ],
-            options={
-                'verbose_name': 'rule',
-                'verbose_name_plural': 'rules',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='RuleSet',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=255, verbose_name='name', blank=True)),
-                ('description', models.TextField(max_length=1000, verbose_name='description', blank=True)),
-                ('created_by', models.ForeignKey(related_name='created_rules', verbose_name='created by', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name': 'ruleset',
-                'verbose_name_plural': 'rulesets',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.AddField(
-            model_name='rule',
-            name='ruleset',
-            field=models.ForeignKey(related_name='rules', verbose_name='ruleset', to='rsr.RuleSet'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='project',
-            name='ruleset',
-            field=models.ForeignKey(related_name='projects', on_delete=django.db.models.deletion.SET_NULL, verbose_name='ruleset', to='rsr.RuleSet', null=True),
-            preserve_default=True,
-        ),
         migrations.AlterField(
             model_name='administrativelocation',
             name='code',
@@ -78,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='budgetitem',
             name='label',
-            field=models.ForeignKey(verbose_name='budget item', to='rsr.BudgetItemLabel', help_text='Select the budget item(s) to indicate how the project budget is divided. Use the \u2018Other\u2019 fields to add custom budget items.', null=True),
+            field=models.ForeignKey(blank=True, to='rsr.BudgetItemLabel', help_text='Select the budget item(s) to indicate how the project budget is divided. Use the \u2018Other\u2019 fields to add custom budget items.', null=True, verbose_name='budget item'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -270,7 +230,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnership',
             name='iati_organisation_role',
-            field=models.PositiveSmallIntegerField(help_text='Select the role of the organisation within the project:<br/>- Funding organisation: a government or organisation that provides funds to the project<br/>- Implementing organisation: an organisation involved in carrying out the activity or intervention<br/>- Accountable organisation: an organisation responsible for oversight of the project and its outcomes<br/>- Extending organisation: an organisation that manages the budget and direction of a project on behalf of the funding organisation<br/>- Reporting organisation: an organisation that will report this project in an IATI file', null=True, verbose_name='organisation role', db_index=True, choices=[(1, 'Funding partner'), (2, 'Accountable partner'), (3, 'Extending partner'), (4, 'Implementing partner'), (100, 'Sponsor partner'), (101, 'Reporting organisation')]),
+            field=models.PositiveSmallIntegerField(choices=[(1, 'Funding partner'), (2, 'Accountable partner'), (3, 'Extending partner'), (4, 'Implementing partner'), (100, 'Sponsor partner'), (101, 'Reporting organisation')], blank=True, help_text='Select the role of the organisation within the project:<br/>- Funding organisation: a government or organisation that provides funds to the project<br/>- Implementing organisation: an organisation involved in carrying out the activity or intervention<br/>- Accountable organisation: an organisation responsible for oversight of the project and its outcomes<br/>- Extending organisation: an organisation that manages the budget and direction of a project on behalf of the funding organisation<br/>- Reporting organisation: an organisation that will report this project in an IATI file', null=True, verbose_name='organisation role', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='partnership',
+            name='organisation',
+            field=models.ForeignKey(related_name='partnerships', blank=True, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True, verbose_name='organisation'),
             preserve_default=True,
         ),
         migrations.AlterField(

@@ -1,0 +1,76 @@
+{% load i18n rules project_editor %}
+
+{% if user.is_superuser %}
+    <div class="panel panel-warning formOverviewInfo">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans 'Superuser options' %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
+            {% if can_publish %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
+                            {% if project.is_published %}
+                                <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish project' %}
+                            {% else %}
+                                <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish project' %}
+                            {% endif %}
+                        </button>
+                    </div>
+                    <div class="col-md-9 help-block">
+                        {% trans 'This project is:' %}
+                        {% if project.is_published %}
+                            <span class="published" id="publishingStatus">{% trans 'published' %}</span>.
+                        {% else %}
+                            <span class="notPublished" id="publishingStatus">{% trans 'not published' %}</span>.
+                        {% endif %}
+                        {% trans 'It is only possible to publish this project when the above progress bar is green and fully filled. This means that all mandatory fields for this project have been completed.' %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9 help-block" id="publishErrors"></div>
+                </div>
+                <hr/>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="impactProject" class="control-label">
+                                <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                    {% trans 'RSR Impact project' %}
+                            </label>
+                        </div>
+                    </div>
+                    {% if project.parents.count == 1 and project.is_impact_project %}
+                        <div class="col-xs-6 col-sm-4" style="text-align: right;">
+                            <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-9 help-block">
+                    {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
+                </div>
+                <hr/>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="donateButton" class="control-label">
+                                <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 help-block">
+                    {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

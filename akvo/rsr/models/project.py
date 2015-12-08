@@ -42,8 +42,8 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
+from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
-from .ruleset import RuleSet
 
 
 def image_path(instance, file_name):
@@ -325,9 +325,8 @@ class Project(TimestampsMixin, models.Model):
     )
 
     # Project editor settings
-    ruleset = models.ForeignKey(
-        RuleSet, verbose_name=_(u'ruleset'), related_name='projects', null=True,
-        on_delete=models.SET_NULL
+    validations = models.ManyToManyField(
+        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects',
     )
 
     # denormalized data

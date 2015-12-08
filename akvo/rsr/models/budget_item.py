@@ -37,7 +37,7 @@ class BudgetItem(models.Model):
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='budget_items')
     label = models.ForeignKey(
-        BudgetItemLabel, verbose_name=_(u'budget item'), null=True,
+        BudgetItemLabel, verbose_name=_(u'budget item'), null=True, blank=True,
         help_text=_(u'Select the budget item(s) to indicate how the project budget is divided. '
                     u'Use the ‘Other’ fields to add custom budget items.')
     )

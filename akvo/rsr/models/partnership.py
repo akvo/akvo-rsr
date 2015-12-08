@@ -89,12 +89,12 @@ class Partnership(models.Model):
 
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
-        blank=False, help_text=_(u'Select an organisation that is taking an active role in the '
-                                 u'project.')
+        blank=True,
+        help_text=_(u'Select an organisation that is taking an active role in the project.')
     )
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
-        _(u'organisation role'), choices=IATI_ROLES, db_index=True, null=True,
+        _(u'organisation role'), choices=IATI_ROLES, db_index=True, null=True, blank=True,
         help_text=_(u'Select the role of the organisation within the project:<br/>'
                     u'- Funding organisation: a government or organisation that provides funds to '
                     u'the project<br/>'

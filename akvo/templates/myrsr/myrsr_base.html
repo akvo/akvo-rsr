@@ -17,9 +17,6 @@
                     {% if '/myrsr/project_editor/' in current_path %}
                         <li><a href="#" class="active" onclick="return false;">{% trans 'Project editor' %}</a></li>
                     {% endif %}
-                    {% if user.is_superuser %}
-                        <li><a href="{% url 'editor_settings' %}" class="{% if '/myrsr/editor_settings/' in current_path %}active{% endif %}">{% trans 'Project editor settings' %}</a></li>
-                    {% endif %}
                     {% has_perm 'rsr.iati_management' user as can_manage_iati %}
                     {% if can_manage_iati %}
                         <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>

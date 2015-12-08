@@ -53,11 +53,6 @@ var partials = ['related-project', 'budget-item', 'condition', 'contact-informat
 // Which elements count as inputs?
 var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 
-// Add a class selector here if you only want inputs with a certain class to count
-// towards the completion percentage. If left blank, all inputs will count.
-var MEASURE_CLASS = '.mandatory-rsr';
-var MEASURE_CLASS_CUSTOM = '.mandatory-custom';
-
 function findAncestorByClass(el, cls) {
     while ((el = el.parentElement) && !el.classList.contains(cls));
     return el;
@@ -966,26 +961,26 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     elAddClass(selectorClass, 'has-typeahead');
 
     // Set mandatory markers before help icons
-    var mandatoryMarkers = selectorClass.querySelectorAll('.mandatory');
-
-    for (var i = 0; i < mandatoryMarkers.length; i++) {
-        mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
-    }
-
-    var mandatoryLabels = selectorClass.querySelectorAll(MEASURE_CLASS + ' ~ label');
-    var markerSpan = document.createElement('span');
-
-    elAddClass(markerSpan, 'mandatory');
-    markerSpan.textContent = '*';
-
-    for (var i = 0; i < mandatoryLabels.length; i++) {
-        mandatoryLabels[i].appendChild(markerSpan);
-    }
+//    var mandatoryMarkers = selectorClass.querySelectorAll('.mandatory');
+//
+//    for (var i = 0; i < mandatoryMarkers.length; i++) {
+//        mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
+//    }
+//
+//    var mandatoryLabels = selectorClass.querySelectorAll(getMeasureClass() + ' ~ label');
+//    var markerSpan = document.createElement('span');
+//
+//    elAddClass(markerSpan, 'mandatory');
+//    markerSpan.textContent = '*';
+//
+//    for (var i = 0; i < mandatoryLabels.length; i++) {
+//        mandatoryLabels[i].appendChild(markerSpan);
+//    }
 
     updateHelpIcons('.' + childClass);
-    markMandatoryFields(MEASURE_CLASS_CUSTOM);
-    setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListener();
+    markMandatoryFields();
+//    setAllSectionsCompletionPercentage();
+//    setAllSectionsChangeListener();
     setPageCompletionPercentage();
 }
 
@@ -1644,8 +1639,13 @@ function updateAllHelpIcons() {
 
 function getMeasureClass() {
     /* Get the measure class of the page, based on the selection on top of the page */
-    var rsrRuleSet = document.getElementById('rsr-progress');
-    return (rsrRuleSet !== null && elHasClass(rsrRuleSet, 'active-ruleset')) ? MEASURE_CLASS : MEASURE_CLASS_CUSTOM;
+    var activeValidation = document.querySelector('.active-validation');
+
+    if (activeValidation !== null) {
+        return '.mandatory-' + activeValidation.getAttribute('id').split('-')[1];
+    } else {
+        return '.mandatory-0';
+    }
 }
 
 function setSectionCompletionPercentage(section) {
@@ -1663,42 +1663,35 @@ function setSectionCompletionPercentage(section) {
 }
 
 function setPageCompletionPercentage() {
-    var inputResults, numInputs, numInputsCompleted, rsrCompletionPercentage, publishButton;
+    var progressBars = document.querySelectorAll('.validation-progress');
 
-    var rsrProgress = document.getElementById('rsr-progress');
-    var customProgress = document.getElementById('custom-progress');
+    for (var i = 0; i < progressBars.length; i++) {
+        var validationSetId = progressBars[i].getAttribute('id').split('-')[1];
+        var measureClass = '.mandatory-' + validationSetId;
+        var inputResults = getInputResults(document.querySelector('.projectEdit'), measureClass);
+        var numInputs = inputResults[0];
+        var numInputsCompleted = inputResults[1];
 
-    inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS);
-    numInputs = inputResults[0];
-    numInputsCompleted = inputResults[1];
-
-    rsrCompletionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, rsrProgress);
-
-    // Custom progress bar
-    if (customProgress !== null) {
-        inputResults = getInputResults(document.querySelector('.projectEdit'), MEASURE_CLASS_CUSTOM);
-        numInputs = inputResults[0];
-        numInputsCompleted = inputResults[1];
-
-        renderCompletionPercentage(numInputsCompleted, numInputs, customProgress);
+        renderCompletionPercentage(numInputsCompleted, numInputs, progressBars[i]);
     }
 
-    // Enable publishing when all is filled in
-    if (rsrCompletionPercentage === 100) {
-        try {
-            publishButton = document.getElementById('publishProject');
-            publishButton.removeAttribute('disabled');
-        } catch (error) {
-            // Do nothing, no publish button
-        }
-    } else {
-        try {
-            publishButton = document.getElementById('publishProject');
-            publishButton.setAttribute('disabled', '');
-        } catch (error) {
-            // Do nothing, no publish button
-        }
-    }
+//    var rsrCompletionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, rsrProgress);
+//    var publishButton = document.getElementById('publishProject');
+//
+//    // Enable publishing when all is filled in
+//    if (rsrCompletionPercentage === 100) {
+//        try {
+//            publishButton.removeAttribute('disabled');
+//        } catch (error) {
+//            // Do nothing, no publish buttonm
+//        }
+//    } else {
+//        try {
+//            publishButton.setAttribute('disabled', '');
+//        } catch (error) {
+//            // Do nothing, no publish button
+//        }
+//    }
 }
 
 function getInputResults(section, measureClass) {
@@ -1764,7 +1757,7 @@ function setSectionChangeListener(section) {
         var selector;
         var elements;
 
-        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+        selector = INPUT_ELEMENTS[i] + getMeasureClass();
         elements = section.querySelectorAll(selector);
 
         for (var y = 0; y < elements.length; y++) {
@@ -1781,41 +1774,18 @@ function setSectionChangeListener(section) {
             listener = getChangeListener(section, this);
             el.addEventListener('change', listener);
         }
-
-        selector = INPUT_ELEMENTS[i] + MEASURE_CLASS_CUSTOM;
-        elements = section.querySelectorAll(selector);
-
-        for (var z = 0; z < elements.length; z++) {
-            var listener_iati;
-            var el_iati = elements[z];
-
-            if (elHasClass(el_iati, 'has-listener')) {
-
-                // We have already added a class for this listener
-                // do nothing
-                continue;
-            }
-
-            listener_iati = getChangeListener(section, this);
-            el_iati.addEventListener('change', listener_iati);
-        }
     }
 }
 
 function getChangeListener(section, el) {
-    var listener;
-
-    listener = function() {
+    return function() {
         var currentSection;
         currentSection = section;
 
-        // TODO: 2 change listeners (section + page)
-        // TODO: has-listener not needed
         setSectionCompletionPercentage(currentSection);
         elAddClass(el, 'has-listener');
         setPageCompletionPercentage();
     };
-    return listener;
 }
 
 function setAllSectionsCompletionPercentage() {
@@ -1835,31 +1805,24 @@ function setAllSectionsChangeListener() {
 }
 
 function switchMandatoryFields(switchTo) {
-    /* Switch between RSR and custom mandatory fields */
+    /* Switch between validation sets */
     return function(e) {
         e.preventDefault();
 
-        var rsrRuleSet = document.getElementById('rsr-progress');
-        var customRuleSet = document.getElementById('custom-progress');
-
-        if (switchTo === 'rsr') {
-            elRemoveClass(customRuleSet, 'active-ruleset');
-            //customRuleSet.querySelector('input').removeAttribute('checked');
-            customRuleSet.querySelector('input').checked = false;
-            elAddClass(rsrRuleSet, 'active-ruleset');
-            //rsrRuleSet.querySelector('input').setAttribute('checked', '');
-            rsrRuleSet.querySelector('input').checked = true;
-        } else {
-            elRemoveClass(rsrRuleSet, 'active-ruleset');
-            //rsrRuleSet.querySelector('input').removeAttribute('checked');
-            rsrRuleSet.querySelector('input').checked = false;
-            elAddClass(customRuleSet, 'active-ruleset');
-            //customRuleSet.querySelector('input').setAttribute('checked', '');
-            customRuleSet.querySelector('input').checked = true;
+        var progressBars = document.querySelectorAll('.validation-progress');
+        for (var i = 0; i < progressBars.length; i++) {
+            if (progressBars[i].getAttribute('id') === 'progress-' + switchTo) {
+                progressBars[i].querySelector('input').checked = true;
+                elAddClass(progressBars[i], 'active-validation');
+            } else {
+                progressBars[i].querySelector('input').checked = false;
+                elRemoveClass(progressBars[i], 'active-validation');
+            }
         }
 
         // Mark new mandatory fields and set new change listeners
         markMandatoryFields();
+        setAllSectionsCompletionPercentage();
         setAllSectionsChangeListener();
     };
 }
@@ -1894,45 +1857,6 @@ function markMandatoryFields() {
 function setValidationListeners() {
     /* Validate all inputs with the given class and display validation status to the user
      * in real time */
-    var inputs = document.querySelectorAll('input');
-    var textareas = document.querySelectorAll('textarea');
-    var inputListener, focusOutListener;
-
-    for (var i = 0; i < inputs.length; i++) {
-        var input = inputs[i];
-
-        if (elHasClass(input, 'validation-listener')) {
-            // We've already set the listener for this element, do nothing
-            continue;
-        }
-
-        // Max character counts for text inputs
-        if (input.getAttribute('type') === 'text' && input.hasAttribute('maxlength')) {
-            inputListener = getLengthListener(input);
-            focusOutListener = getHideCharsListener(input);
-            input.addEventListener('input', inputListener);
-            input.addEventListener('focusout', focusOutListener);
-        }
-
-    }
-
-    for (var j = 0; j < textareas.length; j++) {
-        var textarea = textareas[j];
-
-        if (elHasClass(textarea, 'validation-listener')) {
-            // We've already set the listener for this element, do nothing
-            continue;
-        }
-
-        // Max character counts for textareas
-        if (textarea.hasAttribute('maxlength')) {
-            inputListener = getLengthListener(textarea);
-            focusOutListener = getHideCharsListener(textarea);
-            textarea.addEventListener('input', inputListener);
-            textarea.addEventListener('focusout', focusOutListener);
-        }
-    }
-
     function getLengthListener(el) {
         return function() {
             var maxLength, currentLength, charsLeft, charMessage;
@@ -1978,11 +1902,48 @@ function setValidationListeners() {
         return outputTimeout;
     }
 
-    var rsrRuleSet = document.getElementById('select-rsr-ruleset');
-    var customRuleSet = document.getElementById('select-custom-ruleset');
-    if (rsrRuleSet!== null && customRuleSet !== null) {
-        rsrRuleSet.onchange = switchMandatoryFields('rsr');
-        customRuleSet.onchange = switchMandatoryFields('custom');
+    var inputs = document.querySelectorAll('input');
+    var textareas = document.querySelectorAll('textarea');
+    var inputListener, focusOutListener;
+
+    for (var i = 0; i < inputs.length; i++) {
+        var input = inputs[i];
+
+        if (elHasClass(input, 'validation-listener')) {
+            // We've already set the listener for this element, do nothing
+            continue;
+        }
+
+        // Max character counts for text inputs
+        if (input.getAttribute('type') === 'text' && input.hasAttribute('maxlength')) {
+            inputListener = getLengthListener(input);
+            focusOutListener = getHideCharsListener(input);
+            input.addEventListener('input', inputListener);
+            input.addEventListener('focusout', focusOutListener);
+        }
+
+    }
+
+    for (var j = 0; j < textareas.length; j++) {
+        var textarea = textareas[j];
+
+        if (elHasClass(textarea, 'validation-listener')) {
+            // We've already set the listener for this element, do nothing
+            continue;
+        }
+
+        // Max character counts for textareas
+        if (textarea.hasAttribute('maxlength')) {
+            inputListener = getLengthListener(textarea);
+            focusOutListener = getHideCharsListener(textarea);
+            textarea.addEventListener('input', inputListener);
+            textarea.addEventListener('focusout', focusOutListener);
+        }
+    }
+
+    var progressSwitch = document.querySelectorAll('.validation-switch');
+    for (var k = 0; k < progressSwitch.length; k++) {
+        progressSwitch[k].onchange = switchMandatoryFields(progressSwitch[k].getAttribute('id').split('-')[2]);
     }
 
     markMandatoryFields();
@@ -2763,30 +2724,6 @@ function addOrgModal() {
     );    
 }
 
-/* Set the onclick() for switching to the advanced editor */
-function setAdvancedFieldsOnClick () {
-    var advancedFieldsButton;
-
-    advancedFieldsButton = document.getElementById('showAdvancedFields');
-    advancedFieldsButton.onclick = function(e) {
-        e.preventDefault();
-
-        var advancedFields = document.getElementsByClassName("hide-default");
-        for (var i=0; i < advancedFields.length; i++){
-            if (advancedFields[i].classList.contains("hidden")) {
-                advancedFields[i].classList.remove("hidden");
-            }
-        }
-
-        var hideFields = document.getElementsByClassName("show-default");
-        for (var j=0; j < hideFields.length; j++){
-            if (!hideFields[j].classList.contains("hidden")) {
-                hideFields[j].classList.add("hidden");
-            }
-        }
-    };
-}
-
 
 /* Retrieve all projects for the typeaheads and store in the responses global variable */
 function getAllProjects() {
@@ -2873,7 +2810,6 @@ document.addEventListener('DOMContentLoaded', function() {
     getAllOrganisations();
     getAllProjects();
 
-    setAdvancedFieldsOnClick();
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();
@@ -2895,6 +2831,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setPageCompletionPercentage();
     setAllSectionsCompletionPercentage();
-    // TODO: switch between change listeners
     setAllSectionsChangeListener();
 });

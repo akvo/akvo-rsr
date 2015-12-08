@@ -1917,6 +1917,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress-radio {
   top: 25px; }
 
+.viewProject {
+  margin-top: 15px; }
+
 .info-icon {
   padding-left: 0.5em;
   cursor: pointer;

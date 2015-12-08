@@ -55,12 +55,12 @@ from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
 from .project_document import ProjectDocument
+from .project_editor_validation import ProjectEditorValidation, ProjectEditorValidationSet
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
 from .related_project import RelatedProject
 from .result import Result
-from .ruleset import Rule, RuleSet
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
@@ -112,13 +112,13 @@ __all__ = [
     'ProjectContact',
     'ProjectCustomField',
     'ProjectDocument',
+    'ProjectEditorValidation',
+    'ProjectEditorValidationSet',
     'ProjectUpdate',
     'PublishingStatus',
     'RecipientRegion',
     'RelatedProject',
     'Result',
-    'Rule',
-    'RuleSet',
     'Sector',
     'Transaction',
     'TransactionSector',
@@ -191,6 +191,12 @@ rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_projecteditorvalidation', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_projecteditorvalidation', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_projecteditorvalidationset', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_projecteditorvalidationset', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
