@@ -61,6 +61,8 @@
     {% if employments %}
     {# App data #}
     <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
+    <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
+    <script type="application/json" id="group-data">{{ groups|safe }}</script>
 
     {# Translation strings #}
     <script type="application/json" id="user-management-text">

@@ -378,16 +378,27 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
+    # TODO Difference between admin and org admin? Will this only allow RSR
+    # admins, or will this only allow org admins to add to all orgs and all
+    # groups?
     if user.is_admin or user.is_superuser:
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        organisations = Organisation.objects.all()
+        # TODO This might not be correct. It's showing groups like "Full REST
+        # API Access"
+        can_invite_groups = Group.objects.all()
     else:
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
                 org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
+        # TODO Are these the same organisations we want to allow the user to
+        # send invites for?
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        can_invite_groups = [ Group.objects.get(name='Users'),
+                              Group.objects.get(name='User Managers') ]
 
     q = request.GET.get('q')
     if q:
@@ -434,9 +445,22 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
+    organisations_list = []
+    for organisation in organisations:
+        organisation_dict = {'id': organisation.id, 'name': organisation.name}
+        organisations_list.append(organisation_dict)
+
+    groups_list = []
+    for group in can_invite_groups:
+        groups_dict = {'id': group.id, 'name': group.name}
+        groups_list.append(groups_dict)
+
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
+    # TODO is this correct? can orgs ever be null?
+    context['organisations'] = json.dumps(organisations_list)
+    context['groups'] = json.dumps(groups_list)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range

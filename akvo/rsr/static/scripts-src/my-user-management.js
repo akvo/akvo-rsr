@@ -379,9 +379,9 @@ InviteButton = React.createClass({displayName: 'InviteButton',
 });
 
 
-initial_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
-React.renderComponent(UserTable( {source:initial_data} ),
+React.renderComponent(UserTable( {source:initial_employment_data} ),
                       document.getElementById('user_table'));
 React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));
