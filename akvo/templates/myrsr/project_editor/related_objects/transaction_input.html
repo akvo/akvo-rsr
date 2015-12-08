@@ -58,7 +58,9 @@
             </div>
         </div>
         {% with related_obj_string="rsr_transactionsector,"|add:project_id_string %}
-            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+            <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                 <h5>{% trans 'Transaction sectors' %}</h5>
                 <div class="transaction-sector-container" id="transaction-sector-container">
                     {% for sector in transaction.sectors.all %}

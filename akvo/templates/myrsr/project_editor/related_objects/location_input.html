@@ -66,7 +66,9 @@
         </div>
 
         {% with related_obj_string="rsr_locationadministrative,"|add:project_id_string %}
-            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+            <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                 <h5>{% trans 'Location administratives' %}</h5>
                 <div class="location-administrative-container" id="location-administrative-container">
                     {% for admin in location.administratives.all %}

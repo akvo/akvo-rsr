@@ -22,7 +22,9 @@
             </div>
             <form role="form">
                 {% with related_obj_string="rsr_result,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Results' %}</h5>
                         <div class="result-container" id="result-container">
                             {% for result in project.results.all %}
@@ -40,7 +42,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_projectcondition,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Project conditions' %}</h5>
                         <div class="condition-container" id="condition-container">
                             {% for condition in project.conditions.all %}

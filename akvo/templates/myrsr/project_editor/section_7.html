@@ -20,7 +20,9 @@
                 {% include choice_input with obj=project field='project_scope' %}
 
                 {% with related_obj_string="rsr_projectlocation,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Project locations' %}</h5>
                         <div class="project-location-container" id="project-location-container">
                             {% for location in project.locations.all %}
@@ -38,7 +40,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_recipientcountry,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Recipient countries' %}</h5>
                         <div class="recipient-country-container" id="recipient-country-container">
                             {% for rc in project.recipient_countries.all %}
@@ -56,7 +60,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_recipientregion,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Recipient regions' %}</h5>
                         <div class="recipient-region-container" id="recipient-region-container">
                             {% for rr in project.recipient_regions.all %}

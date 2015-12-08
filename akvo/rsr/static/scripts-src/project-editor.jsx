@@ -1929,7 +1929,16 @@ function markMandatoryOrField(element, otherField) {
 
 function markMandatoryField(element) {
     /* Mark a field as mandatory */
-    var elementLabel = findAncestorByClass(element, 'form-group').querySelector('label');
+    var formGroupNode = findAncestorByClass(element, 'form-group');
+
+    var elementLabel;
+    if (formGroupNode !== null) {
+        elementLabel = formGroupNode.querySelector('label');
+    } else {
+        // This happens for mandatory related objects
+        elementLabel = element.querySelector('h5');
+    }
+
 
     var markContainer = document.createElement('span');
     markContainer.setAttribute('class', 'mandatory');

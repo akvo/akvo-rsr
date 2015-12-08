@@ -28,7 +28,9 @@
             </div>
         </div>
         {% with related_obj_string="rsr_indicator,"|add:project_id_string %}
-            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+            <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                 <h5>{% trans 'Indicators' %}</h5>
                 <div class="indicator-container" id="indicator-container">
                     {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" %}

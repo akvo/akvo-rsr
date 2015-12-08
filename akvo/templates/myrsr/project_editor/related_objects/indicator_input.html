@@ -34,7 +34,9 @@
         {% include textarea_input with obj=indicator field='baseline_comment' %}
 
         {% with related_obj_string="rsr_indicatorperiod,"|add:project_id_string %}
-            <div class="related-object-container {{ project|hidden:related_obj_string }}">
+            <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                 <h5>{% trans 'Indicator periods' %}</h5>
                 <div class="indicator-period-container" id="indicator-period-container">
                     {% for period in indicator.periods.all %}

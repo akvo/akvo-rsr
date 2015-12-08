@@ -21,7 +21,9 @@
                 {% include text_input with obj=project field="iati_activity_id" %}
 
                 {% with related_obj_string="rsr_relatedproject,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Related projects' %}</h5>
                         <div class="related-project-container">
                             {% for rp in project.related_projects.all %}
@@ -55,7 +57,8 @@
                 {% include choice_input with obj=project field="language" %}
 
                 {% with related_obj_string="rsr_project.current_image,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}">
                         <h5>{% trans 'Project photo' %}</h5>
                         <div class="row">
                             <div class="col-md-12 text-center" id="photo-container">

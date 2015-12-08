@@ -17,7 +17,9 @@
                 {% include textarea_input with obj=project field='notes' %}
 
                 {% with related_obj_string="rsr_keyword,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Keywords' %}</h5>
                         <div class="form-group">
                             <div class="keyword-container">

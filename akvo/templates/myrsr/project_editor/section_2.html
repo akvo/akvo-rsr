@@ -15,7 +15,9 @@
             <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
             <form role="form">
                 {% with related_obj_string="rsr_projectcontact,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Project contacts' %}</h5>
                         <div class="contact-information-container" id="contact-information-container">
                             {% for contact in project.contacts.all %}

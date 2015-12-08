@@ -20,7 +20,9 @@
                 {% include boolean_input with obj=project field='donate_button' %}
 
                 {% with related_obj_string="rsr_budgetitem,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Budget items' %}</h5>
                         <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
                         <div class="row">
@@ -44,7 +46,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_countrybudgetitem,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Country budget items' %}</h5>
                         {% include choice_input with obj=project field='country_budget_vocabulary' %}
                         <div class="country-budget-item-container" id="country-budget-item-container">
@@ -63,7 +67,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_transaction,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Transactions' %}</h5>
                         <div class="transaction-container" id="transaction-container">
                             {% for transaction in project.transactions.all %}
@@ -81,7 +87,9 @@
                 {% endwith %}
 
                 {% with related_obj_string="rsr_planneddisbursement,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Planned disbursements' %}</h5>
                         <div class="planned-disbursement-container" id="planned-disbursement-container">
                             {% for pd in project.planned_disbursements.all %}

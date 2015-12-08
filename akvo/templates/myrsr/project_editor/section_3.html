@@ -17,7 +17,9 @@
             </p>
             <form role="form">
                 {% with related_obj_string="rsr_partnership,"|add:project_id_string %}
-                    <div class="related-object-container {{ project|hidden:related_obj_string }}">
+                    <div class="related-object-container
+                                {{ project|hidden:related_obj_string }}
+                                {{ project|mandatory:related_obj_string }}">
                         <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special activated" toggleid="partners-helptext"></span></h5>
                         <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
                         <div class="partner-container" id="partner-container">
