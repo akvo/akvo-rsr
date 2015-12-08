@@ -10,6 +10,9 @@
          data-classes="{% with field_plus_project=field|add:","|add:project_id_string %}
                          {{ obj|mandatory:field_plus_project }}
                        {% endwith %}"
+         {% with field_plus_project=field|add:","|add:project_id_string %}
+            mandatory-or="{{ obj|mandatory_or:field_plus_project }}"
+         {% endwith %}
          {% if disabled %}data-disabled="true"{% endif %}>
     </div>
 </div>

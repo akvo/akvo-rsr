@@ -2314,6 +2314,8 @@ function setDatepickers() {
                 initialDate = null;
             }
 
+            var mandatoryOr = datepickerContainer.getAttribute('mandatory-or');
+
             DatePickerComponent = React.createClass({
                 displayName: datepickerId,
 
@@ -2370,15 +2372,7 @@ function setDatepickers() {
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
 
             // Set addtional attributes of input
-            extraAttributes = datepickerContainer.getAttribute('data-attributes');
-            if (extraAttributes !== null) {
-                var extraAttributesList = extraAttributes.split(' ');
-                for (var j = 0; j < extraAttributesList.length; j++) {
-                    if (extraAttributesList[j] !== '') {
-                        inputNode.setAttribute(extraAttributesList[j], '');
-                    }
-                }
-            }
+            inputNode.setAttribute('mandatory-or', mandatoryOr);
 
             // Set label of datepicker
             label = document.createElement('label');
