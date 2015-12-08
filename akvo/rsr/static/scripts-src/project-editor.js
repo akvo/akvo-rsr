@@ -1312,6 +1312,8 @@ function updatePartialIDs(partial, newID) {
         var oldTypeaheadId = oldChildIdList[2];
         typeaheadContainers[k].setAttribute('data-child-id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
+        // Update the parent's id
+        typeaheadContainers[k].parentNode.setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
         var typeaheadParent = typeaheadContainers[k].parentNode;
         var typeaheadParentClassList = typeaheadParent.classList;
