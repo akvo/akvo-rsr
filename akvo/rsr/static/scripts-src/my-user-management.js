@@ -30,7 +30,7 @@ InviteRow = React.createClass({displayName: 'InviteRow',
         React.DOM.td(null, React.DOM.input( {type:"text", placeholder:i18n.email_text} )),
         React.DOM.td(null, "another thing"),
         React.DOM.td(null, "another thing"),
-        React.DOM.td(null, "Button")
+        React.DOM.td(null, Button( {bsStyle:"success"}, "+"))
       )
     )
   }
@@ -44,8 +44,8 @@ InviteTable = React.createClass({displayName: 'InviteTable',
           React.DOM.thead(null, 
               React.DOM.tr(null, 
                   React.DOM.th(null, i18n.email_text),
-                  React.DOM.th( {className:"text-right"}, i18n.organisations_text),
-                  React.DOM.th( {className:"text-right"}, "Group"),
+                  React.DOM.th(null, i18n.organisations_text),
+                  React.DOM.th(null, "Group"),
                   React.DOM.th(null, "Add")
               )
           ),

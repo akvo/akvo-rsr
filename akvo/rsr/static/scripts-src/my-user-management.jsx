@@ -30,7 +30,7 @@ InviteRow = React.createClass({
         <td><input type="text" placeholder={i18n.email_text} /></td>
         <td>another thing</td>
         <td>another thing</td>
-        <td>Button</td>
+        <td><Button bsStyle="success">+</Button></td>
       </tr>
     )
   }
@@ -44,8 +44,8 @@ InviteTable = React.createClass({
           <thead>
               <tr>
                   <th>{i18n.email_text}</th>
-                  <th className="text-right">{i18n.organisations_text}</th>
-                  <th className="text-right">Group</th>
+                  <th>{i18n.organisations_text}</th>
+                  <th>Group</th>
                   <th>Add</th>
               </tr>
           </thead>
