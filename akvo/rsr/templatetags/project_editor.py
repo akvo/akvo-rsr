@@ -14,24 +14,24 @@ from django.db.models.fields import NOT_PROVIDED
 
 register = template.Library()
 
-RSR_MANDATORY = [
-    "rsr_project.title",
-    "rsr_project.subtitle",
-    "rsr_project.status",
-    "rsr_project.date_start_planned",
-    "rsr_project.current_image",
-    "rsr_project.project_plan_summary",
-    "rsr_project.goals_overview",
-    "rsr_partnership.organisation",
-    "rsr_partnership.iati_organisation_role",
-    "rsr_partnership.funding_amount",
-    "rsr_budgetitem.label",
-    "rsr_budgetitem.other_extra",
-    "rsr_budgetitem.amount",
-    "rsr_projectlocation.latitude",
-    "rsr_projectlocation.longitude",
-    "rsr_projectlocation.country",
-]
+# RSR_MANDATORY = [
+#     "rsr_project.title",
+#     "rsr_project.subtitle",
+#     "rsr_project.status",
+#     "rsr_project.date_start_planned",
+#     "rsr_project.current_image",
+#     "rsr_project.project_plan_summary",
+#     "rsr_project.goals_overview",
+#     "rsr_partnership.organisation",
+#     "rsr_partnership.iati_organisation_role",
+#     "rsr_partnership.funding_amount",
+#     "rsr_budgetitem.label",
+#     "rsr_budgetitem.other_extra",
+#     "rsr_budgetitem.amount",
+#     "rsr_projectlocation.latitude",
+#     "rsr_projectlocation.longitude",
+#     "rsr_projectlocation.country",
+# ]
 
 
 def retrieve_model(obj):
@@ -175,6 +175,10 @@ def value(obj, field):
             return field_value.pk
         elif hasattr(field_value, 'url'):
             return field_value.url
+        elif field_value is True:
+            return '1'
+        elif field_value is False:
+            return '2'
         else:
             return field_value or ''
 

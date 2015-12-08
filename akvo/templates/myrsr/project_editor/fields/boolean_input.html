@@ -8,13 +8,13 @@
                        {% with field_plus_project=field|add:","|add:project_id_string %}
                          {{ obj|mandatory:field_plus_project }}
                        {% endwith %}"
-                saved-value="{% if obj|value:field == True %}1{% elif obj|value:field == False %}2{% endif %}"
+                  saved-value="{{ obj|value:field }}"
                 {% if disabled %}disabled{% endif %}>
             {% if nullboolean %}
                 <option value=""{% if not obj|value:field %} selected="selected"{% endif %}></option>
             {% endif %}
-            <option value="1"{% if obj|value:field == True %} selected="selected"{% endif %}>{% trans 'Yes' %}</option>
-            <option value="2"{% if obj|value:field == False %} selected="selected"{% endif %}>{% trans 'No' %}</option>
+            <option value="1"{% if obj|value:field == '1' %} selected="selected"{% endif %}>{% trans 'Yes' %}</option>
+            <option value="2"{% if obj|value:field == '2' %} selected="selected"{% endif %}>{% trans 'No' %}</option>
         </select>
         <label for="{{ obj|field_id:field }}" class="control-label">
             {{ obj|field_name:field }}
