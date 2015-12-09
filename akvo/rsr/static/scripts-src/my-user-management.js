@@ -37,7 +37,7 @@ InviteRow = React.createClass({displayName: 'InviteRow',
     });
     return (
       React.DOM.tr(null, 
-        React.DOM.td(null, React.DOM.input( {type:"text", placeholder:i18n.email_text} )),
+        React.DOM.td(null, React.DOM.input( {type:"email", placeholder:i18n.email_text, maxLength:"254", required:"required"} )),
         React.DOM.td(null, DropdownButton(null, orgs)),
         React.DOM.td(null, DropdownButton(null, groups)),
         React.DOM.td(null, Button( {bsStyle:"success"}, "+"))
