@@ -1150,15 +1150,22 @@ class IatiImportAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
 
 
+class ValidationInline(admin.TabularInline):
+    model = get_model('rsr', 'ProjectEditorValidation')
+    fields = ('validation', 'action', )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.validations.count() == 0 else 0
+        else:
+            return 1
+
+
 class ValidationSetAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'ProjectEditorValidationSet')
     list_display = ('name', 'created_by')
+    fields = ('name', 'description')
+    readonly_fields = ('created_by', )
+    inlines = (ValidationInline, )
 
 admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
-
-
-class ValidationAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'ProjectEditorValidation')
-    list_display = ('validation_set', 'validation', 'action')
-
-admin.site.register(get_model('rsr', 'ProjectEditorValidation'), ValidationAdmin)

@@ -14,10 +14,11 @@ class ProjectEditorValidationSet(Model):
     A set of project editor validations, with a name and description. The name and description will
     be displayed together with the progress bar in the project editor.
     """
-    name = CharField(_(u'name'), max_length=255, blank=True)
-    description = TextField(_(u'description'), max_length=5000, blank=True)
+    name = CharField(_(u'name'), max_length=255)
+    description = TextField(_(u'description'), max_length=5000)
     created_by = ForeignKey(
-        'User', verbose_name=_(u'created by'), related_name='created_validations'
+        'User', verbose_name=_(u'created by'), related_name='created_validations', null=True,
+        blank=True
     )
 
     def __unicode__(self):

@@ -29,9 +29,9 @@ class Migration(migrations.Migration):
             name='ProjectEditorValidationSet',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=255, verbose_name='name', blank=True)),
-                ('description', models.TextField(max_length=5000, verbose_name='description', blank=True)),
-                ('created_by', models.ForeignKey(related_name='created_validations', verbose_name='created by', to=settings.AUTH_USER_MODEL)),
+                ('name', models.CharField(max_length=255, verbose_name='name')),
+                ('description', models.TextField(max_length=5000, verbose_name='description')),
+                ('created_by', models.ForeignKey(related_name='created_validations', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'verbose_name': 'project editor validation set',
