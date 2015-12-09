@@ -356,7 +356,7 @@ function submitStep(saveButton) {
         };
 
         request.send(form_data);
-    }
+    };
 }
 
 function setDeletePhoto() {
@@ -570,7 +570,7 @@ function uploadFile(fileInput, maxFileSize, fileType) {
         // Remove error indications
         var errorHelpNodes = fileInput.parentNode.querySelectorAll('.help-block-error');
         for (var i = 0; i < errorHelpNodes.length; i++) {
-            errorHelpNodes[i].parentNode.removeChild(errorHelpNodes[i])
+            errorHelpNodes[i].parentNode.removeChild(errorHelpNodes[i]);
         }
         fileInput.parentNode.classList.remove('has-error');
 
@@ -678,7 +678,7 @@ function uploadFile(fileInput, maxFileSize, fileType) {
         };
 
         request.send(formData);
-    }
+    };
 }
 
 function getTotalBudget() {
@@ -960,24 +960,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorTypeahead.appendChild(help);
     elAddClass(selectorClass, 'has-typeahead');
 
-    // Set mandatory markers before help icons
-//    var mandatoryMarkers = selectorClass.querySelectorAll('.mandatory');
-//
-//    for (var i = 0; i < mandatoryMarkers.length; i++) {
-//        mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
-//    }
-//
-//    var mandatoryLabels = selectorClass.querySelectorAll(getMeasureClass() + ' ~ label');
-//    var markerSpan = document.createElement('span');
-//
-//    elAddClass(markerSpan, 'mandatory');
-//    markerSpan.textContent = '*';
-//
-//    for (var i = 0; i < mandatoryLabels.length; i++) {
-//        mandatoryLabels[i].appendChild(markerSpan);
-//    }
-
-    updateHelpIcons('.' + childClass);
+//    updateHelpIcons('.' + childClass);;;
+    updateAllHelpIcons();
     markMandatoryFields();
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
@@ -1156,13 +1140,13 @@ function setPartialOnClicks() {
     // Set the document file upload toggle
     var documentToggles = document.querySelectorAll('.document-toggle');
     for (var o = 0; o < documentToggles.length; o++) {
-        documentToggles[o].onchange = toggleDocumentUpload(documentToggles[o])
+        documentToggles[o].onchange = toggleDocumentUpload(documentToggles[o]);
     }
 
     // Set the related project toggle
     var relatedProjectToggles = document.querySelectorAll('.related-project-toggle');
     for (var p = 0; p < relatedProjectToggles.length; p++) {
-        relatedProjectToggles[p].onchange = toggleRelatedProject(relatedProjectToggles[p])
+        relatedProjectToggles[p].onchange = toggleRelatedProject(relatedProjectToggles[p]);
     }
 }
 
@@ -1212,7 +1196,11 @@ function toggleHelpText(helpIconNode) {
     /* For several help texts we show an info icon (different from those in the labels of fields) */
     return function(e) {
         e.preventDefault();
-        e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        } else {
+            e.cancelBubble = true;
+        }
 
         var toggleNode = document.getElementById(helpIconNode.getAttribute('toggleid'));
 
@@ -1362,7 +1350,7 @@ function addPartial(partialName, partialContainer) {
                 }
             }
 
-            return [-1, false]
+            return [-1, false];
         }
 
         // Indicate the hierarchy of partials
@@ -1550,8 +1538,6 @@ function updateTypeaheads(forceReloadOrg) {
 
 function updateHelpIcons(container) {
     /* Add an "info" glyphicon to each label and clicking the glyphicon shows the help text */
-    // TODO: Fix, not working (add partnership)
-
     var labels = document.querySelectorAll(container + ' label.control-label');
 
     for (var i = 0; i < labels.length; i++) {
@@ -1592,9 +1578,9 @@ function updateHelpIcons(container) {
 
         output = document.createElement('span');
 
-        iconClasses.forEach(function(el) {
-            elAddClass(output, el);
-        });
+        for (var k = 0; k < iconClasses.length; k++) {
+            elAddClass(output, iconClasses[k]);
+        }
 
         label.appendChild(output);
 
@@ -2231,7 +2217,7 @@ function getImportResults(importButton) {
         };
 
         request.send();
-    }
+    };
 }
 
 function setPublishOnClick() {
@@ -2484,9 +2470,9 @@ function fieldChanged(inputField) {
     if (inputField.type === 'file' || inputField.type === 'checkbox' || fieldIsHidden(inputField)) {
         return false;
     } else if (inputField.parentNode.classList.contains('typeahead')) {
-        return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'))
+        return (inputField.getAttribute('value') !== inputField.getAttribute('saved-value'));
     } else {
-        return (inputField.value !== inputField.getAttribute('saved-value'))
+        return (inputField.value !== inputField.getAttribute('saved-value'));
     }
 }
 
