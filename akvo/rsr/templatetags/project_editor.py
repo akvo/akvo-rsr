@@ -208,7 +208,7 @@ def mandatory_or_hidden(validations, field):
     """
     Retrieves the mandatory and hidden fields for project editor validations.
 
-    :returns "mandatory-1 mandatory-2-or-subtitle hidden-3"
+    :returns "mandatory-1 mandatory-or-2-subtitle hidden-3"
     """
     indications = ''
 
@@ -217,9 +217,16 @@ def mandatory_or_hidden(validations, field):
         field_name_list = field.split('.')
         new_field_name = '.'.join([field_name_list[0], field_name_list[1]])
         for validation in validations.filter(validation__contains=new_field_name):
-            if validation.action == 1:
-                # TODO: Or..
+            if validation.action == 1  and not field == 'rsr_project.current_image':
                 indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+                if '||' in validation.validation:
+                    or_list = validation.validation.split('||')
+                    or_list.remove(new_field_name)
+                    for or_indication in or_list:
+                        indications += 'mandatory-{0}-or-{1} '.format(
+                            str(validation.validation_set.pk),
+                            or_indication.split('.')[1]
+                        )
             elif validation.action == 2:
                 indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
     else:
@@ -232,76 +239,3 @@ def mandatory_or_hidden(validations, field):
 
     return indications
 
-
-@register.filter
-def mandatory(obj, args):
-    """
-    Retrieves the mandatory fields for project editor validations.
-    Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
-
-    :returns "mandatory-1 mandatory-2"
-    """
-    field, project_id = args.split(',')
-
-    model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
-    # validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
-    mandatory_indications = ''
-
-    all_validations = get_model('rsr', 'ProjectEditorValidation').objects.all()
-    for validation in all_validations.filter(validation__contains=model_field, action=1):
-        mandatory_indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
-
-    for validation in all_validations.filter(validation=field, action=1):
-        mandatory_indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
-
-    # for validation_set in validations:
-    #     for rule in validation_set.validations.filter(action=1):
-    #         if model_field in rule.validation.split('||') or field == rule.validation:
-    #             mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
-
-    return mandatory_indications
-
-@register.filter
-def mandatory_or(obj, args):
-    """
-    Retrieves the mandatory OR fields for project editor validations.
-    Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
-
-    :returns "2-title"
-    """
-    field, project_id = args.split(',')
-
-    model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
-    validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
-    or_indications = ''
-
-    for validation_set in validations:
-        for rule in validation_set.validations.filter(action=1):
-            if model_field in rule.validation and '||' in rule.validation:
-                or_list = rule.validation.split('||')
-                or_list.remove(model_field)
-                for or_indication in or_list:
-                    or_indications += '{0}-{1} '.format(str(validation_set.pk), or_indication)
-
-    return or_indications
-
-@register.filter
-def hidden(obj, args):
-    """
-    Retrieves the hidden fields for project editor validations.
-    Args is a comma separated list of field name (e.g. "title") and project id (e.g. "1234").
-
-    :returns "hidden-1"
-    """
-    field, project_id = args.split(',')
-
-    model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
-    validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
-    hidden_indications = ''
-
-    for validation_set in validations:
-        for rule in validation_set.validations.filter(action=2):
-            if model_field in rule.validation.split('||') or field == rule.validation:
-                hidden_indications += 'hidden-{0} '.format(str(validation_set.pk))
-
-    return hidden_indications

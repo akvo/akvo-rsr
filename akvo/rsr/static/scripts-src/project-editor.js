@@ -1746,17 +1746,18 @@ function getInputResults(section, measureClass) {
     }
 
     function getOrField(field) {
-        if (field.hasAttribute('mandatory-or') && field.getAttribute('mandatory-or').trim() !== '') {
-            var orList = field.getAttribute('mandatory-or').trim().split(' ');
-            for (var k = 0; k < orList.length; k++) {
-                if (orList[k].split('-')[0] === measureClass.split('-')[1]) {
-                    var otherFieldName = orList[k].split('-')[1].split('.')[1];
-                    var fieldIdList = field.getAttribute('id').split('.');
-                    var otherFieldId = [fieldIdList[0], otherFieldName, fieldIdList[2]].join('.');
-                    return document.getElementById(otherFieldId);
-                }
+        var orMeasureClass = measureClass.replace('.', '') + '-or-';
+        var fieldClassList = field.classList;
+
+        for (var i = 0; i < fieldClassList.length; i++) {
+            if (fieldClassList[i].indexOf(orMeasureClass) > -1) {
+                var otherFieldName = fieldClassList[i].replace(orMeasureClass, '');
+                var fieldIdList = field.getAttribute('id').split('.');
+                var otherFieldId = [fieldIdList[0], otherFieldName, fieldIdList[2]].join('.');
+                return document.getElementById(otherFieldId);
             }
         }
+
         return null;
     }
 
@@ -1956,7 +1957,7 @@ function markMandatoryOrField(element, otherField) {
 
     var markContainer = document.createElement('span');
     markContainer.setAttribute('class', 'mandatory-block mandatory');
-    markContainer.textContent = '*' + defaultValues.or_mandatory_1 + ' ' + otherField.split('.')[1].replace('_', ' ') + ' ' + defaultValues.or_mandatory_2 + '.';
+    markContainer.textContent = '*' + defaultValues.or_mandatory_1 + ' ' + otherField + ' ' + defaultValues.or_mandatory_2 + '.';
 
     formGroupNode.appendChild(markContainer);
 }
@@ -1972,7 +1973,6 @@ function markMandatoryField(element) {
         // This happens for mandatory related objects
         elementLabel = element.querySelector('h5');
     }
-
 
     var markContainer = document.createElement('span');
     markContainer.setAttribute('class', 'mandatory');
@@ -1996,12 +1996,13 @@ function markMandatoryFields() {
     for (var j = 0; j < elementsToMark.length; j++) {
         markMandatoryField(elementsToMark[j]);
 
-        if (elementsToMark[j].hasAttribute('mandatory-or') && elementsToMark[j].getAttribute('mandatory-or').trim() !== '') {
-            var mandatoryOrList = elementsToMark[j].getAttribute('mandatory-or').trim().split(' ');
-            for (var k = 0; k < mandatoryOrList.length; k++) {
-                if (mandatoryOrList[k].split('-')[0] === measureClass.split('-')[1]) {
-                    markMandatoryOrField(elementsToMark[j], mandatoryOrList[k].split('-')[1]);
-                }
+        var orMeasureClass = measureClass.replace('.', '') + '-or-';
+        var fieldClassList = elementsToMark[j].classList;
+
+        for (var k = 0; k < fieldClassList.length; k++) {
+            if (fieldClassList[k].indexOf(orMeasureClass) > -1) {
+                var otherFieldName = fieldClassList[k].replace(orMeasureClass, '').replace(/_/g, ' ');
+                markMandatoryOrField(elementsToMark[j], otherFieldName);
             }
         }
     }
