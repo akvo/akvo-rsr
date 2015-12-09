@@ -28,6 +28,7 @@ class ProjectEditorValidationSet(Model):
         app_label = 'rsr'
         verbose_name = _(u'project editor validation set')
         verbose_name_plural = _(u'project editor validation sets')
+        ordering = ('id', )
 
 
 class ProjectEditorValidation(Model):

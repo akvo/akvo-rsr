@@ -762,9 +762,8 @@ function deleteItem(itemId, itemType) {
             }
 
             // Update progress bars
-            var section = findAncestorByClass(form, 'formStep');
-            setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
+            setAllSectionsCompletionPercentage();
 
             return false;
         } else {
@@ -821,6 +820,8 @@ function setRemovePartial(node) {
             // New object, not saved to the DB, so partial can be directly deleted
             parentParent.removeChild(parentDiv);
 
+            setPageCompletionPercentage();
+            setAllSectionsCompletionPercentage();
         } else {
             // Show warning first
             var parentNode = node.parentNode;
@@ -1729,6 +1730,10 @@ function getInputResults(section, measureClass) {
     function inputCompleted(field) {
         if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
             // Do not count project status 'None'
+            return false;
+        } else if (field.type === 'checkbox') {
+            // Do not count checkboxes
+            return false;
         } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
             // Custom code for file inputs
             return true;
@@ -1822,11 +1827,19 @@ function getInputResults(section, measureClass) {
     var relatedObjectContainers = section.querySelectorAll('.related-object-container');
     for (var k = 0; k < relatedObjectContainers.length; k++) {
         if (elHasClass(relatedObjectContainers[k], measureClass.substr(1))) {
-            numInputs += 1;
+            // Check first if there is a filled parent above
+            var parent = findAncestorByClass(relatedObjectContainers[k], 'parent');
+            if (parent !== null) {
+                if (partialFilled(parent)) {
+                    numInputs += 1;
+                }
+            } else {
+                numInputs += 1;
+            }
 
-            var parents = relatedObjectContainers[k].querySelectorAll('.parent');
-            for (var l = 0; l < parents.length; l++) {
-                var partialParentNode = parents[l];
+            var underlyingPartials = relatedObjectContainers[k].querySelectorAll('.parent');
+            for (var l = 0; l < underlyingPartials.length; l++) {
+                var partialParentNode = underlyingPartials[l];
                 if (partialFilled(partialParentNode)) {
                     numInputsCompleted += 1;
                     break;

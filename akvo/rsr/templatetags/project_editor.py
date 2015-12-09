@@ -239,7 +239,7 @@ def mandatory(obj, args):
 
     for validation_set in validations:
         for rule in validation_set.validations.filter(action=1):
-            if model_field in rule.validation or field == rule.validation:
+            if model_field in rule.validation.split('||') or field == rule.validation:
                 mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
 
     return mandatory_indications
@@ -284,7 +284,7 @@ def hidden(obj, args):
 
     for validation_set in validations:
         for rule in validation_set.validations.filter(action=2):
-            if model_field in rule.validation or field == rule.validation:
+            if model_field in rule.validation.split('||') or field == rule.validation:
                 hidden_indications += 'hidden-{0} '.format(str(validation_set.pk))
 
     return hidden_indications
