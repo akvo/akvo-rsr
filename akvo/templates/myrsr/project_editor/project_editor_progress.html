@@ -48,11 +48,35 @@
                             </div>
                             <div class="col-md-12">{{ validation_set.description|safe }}</div>
                         </div>
-                        <div class="progress overview">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                        {% if validation_set.pk == 1 and user.can_create_project %}
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="progress overview">
+                                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                            <span class="sr-only"></span><span class="progress-percentage"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
+                                        {% if project.is_published %}
+                                            <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish' %}
+                                        {% else %}
+                                            <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish' %}
+                                        {% endif %}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="help-block-error" id="publishErrors"></div>
+                            </div>
+                        {% else %}
+                            <div class="progress overview">
+                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                    <span class="sr-only"></span><span class="progress-percentage"></span>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

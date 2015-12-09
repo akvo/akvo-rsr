@@ -8,40 +8,12 @@
             </h3>
         </div>
         <div class="panel-body">
-            {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
-            {% if can_publish %}
-                <div class="row">
-                    <div class="col-md-3">
-                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
-                            {% if project.is_published %}
-                                <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish project' %}
-                            {% else %}
-                                <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish project' %}
-                            {% endif %}
-                        </button>
-                    </div>
-                    <div class="col-md-9 help-block">
-                        {% trans 'This project is:' %}
-                        {% if project.is_published %}
-                            <span class="published" id="publishingStatus">{% trans 'published' %}</span>.
-                        {% else %}
-                            <span class="notPublished" id="publishingStatus">{% trans 'not published' %}</span>.
-                        {% endif %}
-                        {% trans 'It is only possible to publish this project when the above progress bar is green and fully filled. This means that all mandatory fields for this project have been completed.' %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9 help-block" id="publishErrors"></div>
-                </div>
-                <hr/>
-            {% endif %}
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         <div class="checkbox">
                             <label for="impactProject" class="control-label">
-                                <input id="impactProject" type="checkbox" name="impactProject" class="priority2" {% if project.is_impact_project %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                <input id="impactProject" type="checkbox" name="impactProject"{% if project.is_impact_project %} checked{% endif %}>
                                     {% trans 'RSR Impact project' %}
                             </label>
                         </div>

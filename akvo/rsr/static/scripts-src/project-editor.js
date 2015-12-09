@@ -1705,27 +1705,19 @@ function setPageCompletionPercentage() {
         var numInputs = inputResults[0];
         var numInputsCompleted = inputResults[1];
 
-        renderCompletionPercentage(numInputsCompleted, numInputs, progressBars[i]);
-    }
+        var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, progressBars[i]);
 
-    // TODO: publish button
-//    var rsrCompletionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, rsrProgress);
-//    var publishButton = document.getElementById('publishProject');
-//
-//    // Enable publishing when all is filled in
-//    if (rsrCompletionPercentage === 100) {
-//        try {
-//            publishButton.removeAttribute('disabled');
-//        } catch (error) {
-//            // Do nothing, no publish buttonm
-//        }
-//    } else {
-//        try {
-//            publishButton.setAttribute('disabled', '');
-//        } catch (error) {
-//            // Do nothing, no publish button
-//        }
-//    }
+        if (validationSetId === '1') {
+            var publishButton = document.getElementById('publishProject');
+            if (publishButton !== null) {
+                if (completionPercentage !== 100 && publishButton.getAttribute('status') === 'unpublished') {
+                    publishButton.setAttribute('disabled', '');
+                } else {
+                    publishButton.removeAttribute('disabled');
+                }
+            }
+        }
+    }
 }
 
 function getInputResults(section, measureClass) {
@@ -2297,27 +2289,46 @@ function getProjectPublish(publishingStatusId, publishButton) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 // Succesfully (un)published project!
-                var publishingStatusNode, viewProjectButton;
-                publishingStatusNode = document.getElementById('publishingStatus');
-                viewProjectButton = document.getElementById('viewProject');
+                var viewProjectButton = document.getElementById('viewProject');
 
-                // Change the project's status indicator
                 // Change the view project page button to "View project" or "Preview project"
                 // Update the button's status and appearance
+
+                var iconElement, textElement, otherTextElement, otherIconElement;
                 if (status === 'unpublished') {
-                    publishingStatusNode.className = "published";
-                    publishingStatusNode.innerHTML = "published";
-                    viewProjectButton.innerHTML = defaultValues.view_project;
+                    viewProjectButton.innerHTML = '';
+                    iconElement = document.createElement('span');
+                    iconElement.className = "glyphicon glyphicon-expand";
+                    textElement = document.createTextNode(' ' + defaultValues.view_project);
+                    viewProjectButton.appendChild(iconElement);
+                    viewProjectButton.appendChild(textElement);
+
                     publishButton.setAttribute('status', 'published');
-                    publishButton.innerHTML = "Unpublish project";
+                    otherTextElement = document.createTextNode(' ' + defaultValues.unpublish);
+                    otherIconElement = document.createElement('span');
+                    otherIconElement.className = "glyphicon glyphicon-remove";
+                    publishButton.innerHTML = '';
                     publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
+
+                    publishButton.appendChild(otherIconElement);
+                    publishButton.appendChild(otherTextElement);
                 } else {
-                    publishingStatusNode.className = "notPublished";
-                    publishingStatusNode.innerHTML = "unpublished";
-                    viewProjectButton.innerHTML = defaultValues.preview_project;
+                    viewProjectButton.innerHTML = '';
+                    iconElement = document.createElement('span');
+                    iconElement.className = "glyphicon glyphicon-expand";
+                    textElement = document.createTextNode(' ' + defaultValues.preview_project);
+                    viewProjectButton.appendChild(iconElement);
+                    viewProjectButton.appendChild(textElement);
+
                     publishButton.setAttribute('status', 'unpublished');
-                    publishButton.innerHTML = "Publish project";
+                    otherTextElement = document.createTextNode(' ' + defaultValues.publish);
+                    otherIconElement = document.createElement('span');
+                    otherIconElement.className = "glyphicon glyphicon-ok";
+                    publishButton.innerHTML = '';
                     publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
+
+                    publishButton.appendChild(otherIconElement);
+                    publishButton.appendChild(otherTextElement);
                 }
 
                 publishButton.removeAttribute('disabled');

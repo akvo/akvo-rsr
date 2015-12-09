@@ -1934,6 +1934,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
 
+#publishProject {
+  margin-top: -7px; }
+
 #editor-feedback a {
   display: block;
   position: fixed;
