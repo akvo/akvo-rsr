@@ -33,6 +33,8 @@ from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
                              project_editor_upload_file,
                              project_editor_import_results,
+                             project_editor_add_validation,
+                             project_editor_remove_validation,
                              project_editor_remove_keyword,
                              project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
@@ -108,6 +110,8 @@ __all__ = [
     'ProjectViewSet',
     'project_editor',
     'project_editor_upload_file',
+    'project_editor_add_validation',
+    'project_editor_remove_validation',
     'project_editor_import_results',
     'project_editor_organisation_logo',
     'PublishingStatusViewSet',

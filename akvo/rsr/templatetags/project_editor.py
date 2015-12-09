@@ -10,28 +10,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django import template
 from django.db import models
 from django.db.models import get_model
-from django.db.models.fields import NOT_PROVIDED
 
 register = template.Library()
-
-# RSR_MANDATORY = [
-#     "rsr_project.title",
-#     "rsr_project.subtitle",
-#     "rsr_project.status",
-#     "rsr_project.date_start_planned",
-#     "rsr_project.current_image",
-#     "rsr_project.project_plan_summary",
-#     "rsr_project.goals_overview",
-#     "rsr_partnership.organisation",
-#     "rsr_partnership.iati_organisation_role",
-#     "rsr_partnership.funding_amount",
-#     "rsr_budgetitem.label",
-#     "rsr_budgetitem.other_extra",
-#     "rsr_budgetitem.amount",
-#     "rsr_projectlocation.latitude",
-#     "rsr_projectlocation.longitude",
-#     "rsr_projectlocation.country",
-# ]
 
 
 def retrieve_model(obj):
@@ -224,6 +204,36 @@ def manytomany_choices(obj, field):
 
 
 @register.filter
+def mandatory_or_hidden(validations, field):
+    """
+    Retrieves the mandatory and hidden fields for project editor validations.
+
+    :returns "mandatory-1 mandatory-2-or-subtitle hidden-3"
+    """
+    indications = ''
+
+    if '.' in field:
+        # Model fields like 'rsr_relatedproject.12.relation'
+        field_name_list = field.split('.')
+        new_field_name = '.'.join([field_name_list[0], field_name_list[1]])
+        for validation in validations.filter(validation__contains=new_field_name):
+            if validation.action == 1:
+                # TODO: Or..
+                indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+            elif validation.action == 2:
+                indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
+    else:
+        # Full models like 'rsr_relatedproject'
+        for validation in validations.filter(validation=field):
+            if validation.action == 1:
+                indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+            elif validation.action == 2:
+                indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
+
+    return indications
+
+
+@register.filter
 def mandatory(obj, args):
     """
     Retrieves the mandatory fields for project editor validations.
@@ -234,13 +244,20 @@ def mandatory(obj, args):
     field, project_id = args.split(',')
 
     model_field = "{0}.{1}".format(retrieve_model(obj)._meta.db_table, field)
-    validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
+    # validations = get_model('rsr', 'Project').objects.get(pk=project_id).validations.all()
     mandatory_indications = ''
 
-    for validation_set in validations:
-        for rule in validation_set.validations.filter(action=1):
-            if model_field in rule.validation.split('||') or field == rule.validation:
-                mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
+    all_validations = get_model('rsr', 'ProjectEditorValidation').objects.all()
+    for validation in all_validations.filter(validation__contains=model_field, action=1):
+        mandatory_indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+
+    for validation in all_validations.filter(validation=field, action=1):
+        mandatory_indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+
+    # for validation_set in validations:
+    #     for rule in validation_set.validations.filter(action=1):
+    #         if model_field in rule.validation.split('||') or field == rule.validation:
+    #             mandatory_indications += 'mandatory-{0} '.format(str(validation_set.pk))
 
     return mandatory_indications
 

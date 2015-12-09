@@ -14,25 +14,22 @@
         <div class="formBlock hidden">
             <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
             <form role="form">
-                {% with related_obj_string="rsr_projectcontact,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Project contacts' %}</h5>
-                        <div class="contact-information-container" id="contact-information-container">
-                            {% for contact in project.contacts.all %}
-                                {% include "myrsr/project_editor/related_objects/contact_information_input.html" %}
-                            {% empty %}
-                                {% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-contact-information"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
-                                </div>
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_projectcontact" }}">
+                    <h5>{% trans 'Project contacts' %}</h5>
+                    <div class="contact-information-container" id="contact-information-container">
+                        {% for contact in project.contacts.all %}
+                            {% include "myrsr/project_editor/related_objects/contact_information_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact="ProjectContact."|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-contact-information"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
+
                 {% for customfield in custom_fields_section_2 %}
                     {% include custom_field_input %}
                 {% endfor %}

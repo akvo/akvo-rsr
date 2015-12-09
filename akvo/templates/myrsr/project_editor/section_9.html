@@ -14,48 +14,39 @@
         <div class="formBlock hidden">
             <p class="help-block hidden" id="step-9-helptext">{% trans 'You can add any additional supporting documents to your project or links to external websites here. This could be in the form of annual reports, baseline surveys, contextual information or any other report that can help users understand more about the project’s activities.' %}</p>
             <form role="form">
-                {% with related_obj_string="rsr_link,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Links' %}</h5>
-                        <div class="form-group">
-                            <div class="link-container">
-                                {% for link in project.links.all %}
-                                    {% include "myrsr/project_editor/related_objects/link_input.html" %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}
-                                {% endfor %}
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endwith %}
-
-                {% with related_obj_string="rsr_projectdocument,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Document links' %}</h5>
-                        <div class="document-container">
-                            {% for document in project.documents.all %}
-                                {% include "myrsr/project_editor/related_objects/document_input.html" %}
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_link" }}">
+                    <h5>{% trans 'Links' %}</h5>
+                    <div class="form-group">
+                        <div class="link-container">
+                            {% for link in project.links.all %}
+                                {% include "myrsr/project_editor/related_objects/link_input.html" %}
                             {% empty %}
-                                {% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}
+                                {% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}
                             {% endfor %}
                             <div class="row form-group">
                                 <div class="col-md-12 text-center add-object-link">
-                                     <a href="#" class="add-document"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
+                                     <a href="#" class="add-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
 
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_projectdocument" }}">
+                    <h5>{% trans 'Document links' %}</h5>
+                    <div class="document-container">
+                        {% for document in project.documents.all %}
+                            {% include "myrsr/project_editor/related_objects/document_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                 <a href="#" class="add-document"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {% for customfield in custom_fields_section_9 %}
                     {% include custom_field_input %}

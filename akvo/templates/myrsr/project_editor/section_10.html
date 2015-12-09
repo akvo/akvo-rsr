@@ -16,27 +16,23 @@
             <form role="form">
                 {% include textarea_input with obj=project field='notes' %}
 
-                {% with related_obj_string="rsr_keyword,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Keywords' %}</h5>
-                        <div class="form-group">
-                            <div class="keyword-container">
-                                {% for keyword in project.keywords.all %}
-                                    {% include "myrsr/project_editor/related_objects/keyword_input.html" %}
-                                {% empty %}
-                                    {% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}
-                                {% endfor %}
-                                <div class="row form-group">
-                                    <div class="col-md-12 text-center add-object-link">
-                                         <a href="#" class="add-keyword"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
-                                    </div>
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_keyword" }}">
+                    <h5>{% trans 'Keywords' %}</h5>
+                    <div class="form-group">
+                        <div class="keyword-container">
+                            {% for keyword in project.keywords.all %}
+                                {% include "myrsr/project_editor/related_objects/keyword_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-keyword"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
 
                 {% for customfield in custom_fields_section_10 %}
                     {% include custom_field_input %}

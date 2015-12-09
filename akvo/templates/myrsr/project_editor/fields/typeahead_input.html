@@ -1,17 +1,12 @@
 {% load project_editor %}
 
-<div class="form-group control {{ obj|field_class_id:field }}{% if always_hidden %} always-hidden hidden{% endif %}"
-     id="{{ obj|field_id:field }}">
-    <div class="typeahead-container {{ obj|field_class:field }}"
-        data-child-id="{{ obj|field_id:field }}"
-        data-child-class="{{ obj|field_class_id:field }}
-                          {% with field_plus_project=field|add:","|add:project_id_string %}
-                            {{ obj|mandatory:field_plus_project }}
-                            {{ obj|hidden:field_plus_project }}
-                          {% endwith %}"
-        data-value="{{ obj|value:field }}"
-        {% with field_plus_project=field|add:","|add:project_id_string %}
-            mandatory-or="{{ obj|mandatory_or:field_plus_project }}"
-        {% endwith %}>
+{% with obj_field_id=obj|field_id:field obj_field_class_id=obj|field_class_id:field obj_value=obj|value:field %}
+    <div id="{{ obj_field_id }}"
+         class="form-group control {{ obj_field_class_id }}{% if always_hidden %} always-hidden hidden{% endif %}" >
+        <div class="typeahead-container {{ obj|field_class:field }}"
+            data-child-id="{{ obj_field_id }}"
+            data-child-class="{{ obj_field_class_id }} {{ validations|mandatory_or_hidden:obj_field_id }}"
+            data-value="{{ obj_value }}">
+        </div>
     </div>
-</div>
+{% endwith %}

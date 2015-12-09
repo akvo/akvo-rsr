@@ -22,7 +22,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
 from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project,
-                      ProjectEditorValidationSet)
+                      ProjectEditorValidation, ProjectEditorValidationSet)
 
 import json
 
@@ -188,15 +188,12 @@ def project_editor(request, project_id):
             'publishingstatus__status',
             'primary_location',
             'primary_location__country'
-            'partnerships__organisation',
         ).get(pk=project_id)
     except Project.DoesNotExist:
         return Http404
 
     if not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
-
-    advanced_editor = request.GET.get('advanced', False)
 
     # Custom fields
     custom_fields_section_1 = project.custom_fields.filter(section=1).order_by('order', 'id')
@@ -209,12 +206,18 @@ def project_editor(request, project_id):
     custom_fields_section_8 = project.custom_fields.filter(section=8).order_by('order', 'id')
     custom_fields_section_9 = project.custom_fields.filter(section=9).order_by('order', 'id')
     custom_fields_section_10 = project.custom_fields.filter(section=10).order_by('order', 'id')
-    
+
+    validations = ProjectEditorValidation.objects.select_related('validation_set')
+    validation_sets = ProjectEditorValidationSet.objects.all()
+    project_validation_sets = project.validations.all()
+
     context = {
         'id': project_id,
         'project': project,
         'projectmodel': Project,
-        'advanced_editor': advanced_editor,
+        'validations': validations,
+        'validation_sets': validation_sets,
+        'project_validation_sets': project_validation_sets,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,

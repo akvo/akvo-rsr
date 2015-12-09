@@ -65,26 +65,22 @@
             </div>
         </div>
 
-        {% with related_obj_string="rsr_locationadministrative,"|add:project_id_string %}
-            <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                <h5>{% trans 'Location administratives' %}</h5>
-                <div class="location-administrative-container" id="location-administrative-container">
-                    {% for admin in location.administratives.all %}
-                        {% include "myrsr/project_editor/related_objects/location_administrative_input.html" %}
-                    {% empty %}
-                        {% with location_id_string=location.pk|default:"new-0"|stringformat:"s" %}
-                            {% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string|add:'_'|add:location_id_string %}
-                        {% endwith %}
-                    {% endfor %}
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                             <a href="#" class="add-location-administrative"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another administrative' %}</a>
-                        </div>
+        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_locationadministrative" }}">
+            <h5>{% trans 'Location administratives' %}</h5>
+            <div class="location-administrative-container" id="location-administrative-container">
+                {% for admin in location.administratives.all %}
+                    {% include "myrsr/project_editor/related_objects/location_administrative_input.html" %}
+                {% empty %}
+                    {% with location_id_string=location.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string|add:'_'|add:location_id_string %}
+                    {% endwith %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                         <a href="#" class="add-location-administrative"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another administrative' %}</a>
                     </div>
                 </div>
             </div>
-        {% endwith %}
+        </div>
     </div>
 </div>

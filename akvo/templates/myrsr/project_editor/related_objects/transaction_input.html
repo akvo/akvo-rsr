@@ -57,26 +57,24 @@
                 {% include choice_input with obj=transaction field='recipient_region_vocabulary' %}
             </div>
         </div>
-        {% with related_obj_string="rsr_transactionsector,"|add:project_id_string %}
-            <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                <h5>{% trans 'Transaction sectors' %}</h5>
-                <div class="transaction-sector-container" id="transaction-sector-container">
-                    {% for sector in transaction.sectors.all %}
-                        {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
-                    {% empty %}
-                        {% with transaction_id_string=transaction.pk|default:"new-0"|stringformat:"s" %}
-                            {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
-                        {% endwith %}
-                    {% endfor %}
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                             <a href="#" class="add-transaction-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
-                        </div>
+
+        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_transactionsector" }}">
+            <h5>{% trans 'Transaction sectors' %}</h5>
+            <div class="transaction-sector-container" id="transaction-sector-container">
+                {% for sector in transaction.sectors.all %}
+                    {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
+                {% empty %}
+                    {% with transaction_id_string=transaction.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
+                    {% endwith %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                         <a href="#" class="add-transaction-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
                     </div>
                 </div>
             </div>
-        {% endwith %}
+        </div>
+
     </div>
 </div>

@@ -1121,14 +1121,16 @@ function setPartialOnClicks() {
 
     var selectInputs = document.querySelectorAll('select');
     for (var m = 0; m < selectInputs.length; m++) {
-        var selectInputId = selectInputs[m].getAttribute('id').split('.');
-        // Set the organisation role onchange
-        if (selectInputId[0] == 'rsr_partnership' && selectInputId[1] == 'iati_organisation_role') {
-            selectInputs[m].onchange = toggleFunding(selectInputs[m]);
-        }
-        // Set the budget item labels onchange
-        if (selectInputId[0] == 'rsr_budgetitem' && selectInputId[1] == 'label') {
-            selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
+        if (selectInputs[m].getAttribute('id') !== 'progress-bar-select') {
+            var selectInputId = selectInputs[m].getAttribute('id').split('.');
+            // Set the organisation role onchange
+            if (selectInputId[0] == 'rsr_partnership' && selectInputId[1] == 'iati_organisation_role') {
+                selectInputs[m].onchange = toggleFunding(selectInputs[m]);
+            }
+            // Set the budget item labels onchange
+            if (selectInputId[0] == 'rsr_budgetitem' && selectInputId[1] == 'label') {
+                selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
+            }
         }
     }
 
@@ -2870,6 +2872,48 @@ function addOrgModal() {
     );    
 }
 
+/* Add the progress bar */
+function addProgressBar(validationSetId) {
+
+}
+
+/* Add a validation set to project */
+function addValidationSetToProject(selectLink) {
+    return function (e) {
+        e.preventDefault();
+
+        var validationSetId = selectLink.parentNode.querySelector('select').value;
+        if (validationSetId !== '') {
+            var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/add_validation/' + validationSetId + '/?format=json';
+
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.open("POST", addValidationUrl);
+            xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                    if (xmlHttp.status == 200) {
+                        addProgressBar(validationSetId);
+                    }
+                } else {
+                    return false;
+                }
+            };
+
+            xmlHttp.send();
+        }
+    };
+}
+
+/* Set the link for adding a new validation set */
+function setAddProgressBar() {
+    var selectLink = document.getElementById('add-progress-bar-link');
+    if (selectLink !== null) {
+        selectLink.addEventListener('click', addValidationSetToProject(selectLink));
+    }
+}
 
 /* Retrieve all projects for the typeaheads and store in the responses global variable */
 function getAllProjects() {
@@ -2956,6 +3000,7 @@ document.addEventListener('DOMContentLoaded', function() {
     getAllOrganisations();
     getAllProjects();
 
+    setAddProgressBar();
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();

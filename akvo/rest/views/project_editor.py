@@ -11,8 +11,9 @@ import decimal
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
 from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, Indicator,
-                             IndicatorPeriod, Keyword, Organisation, Project, ProjectLocation,
-                             Result, Transaction, TransactionSector)
+                             IndicatorPeriod, Keyword, Organisation, Project,
+                             ProjectEditorValidationSet, ProjectLocation, Result, Transaction,
+                             TransactionSector)
 
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
@@ -613,6 +614,63 @@ def project_editor_import_results(request, project_pk=None):
     status_code, message = project.import_results()
 
     return Response({'code': status_code, 'message': message})
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_add_validation(request, project_pk=None, validation_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    if not validation_set in project.validations.all():
+        project.validations.add(validation_set)
+
+        change_message = u'%s %s.' % (_(u'Project editor, added: validation set'),
+                                      validation_set.__unicode__())
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(project).pk,
+            object_id=project.pk,
+            object_repr=project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=change_message
+        )
+
+    return Response({})
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_remove_validation(request, project_pk=None, validation_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    validation_set = ProjectEditorValidationSet.objects.get(pk=validation_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    if validation_set in project.validations.all():
+        project.validations.remove(validation_set)
+
+        change_message = u'%s %s.' % (_(u'Project editor, deleted: validation set'),
+                                      validation_set.__unicode__())
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(project).pk,
+            object_id=project.pk,
+            object_repr=project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=change_message
+        )
+
+    return Response({})
+
 
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated, ))

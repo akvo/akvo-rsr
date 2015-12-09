@@ -16,26 +16,22 @@
                 {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
             </p>
             <form role="form">
-                {% with related_obj_string="rsr_partnership,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special activated" toggleid="partners-helptext"></span></h5>
-                        <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
-                        <div class="partner-container" id="partner-container">
-                            {% for ps in project.partnerships.all %}
-                                {% include "myrsr/project_editor/related_objects/partner_input.html" %}
-                            {% empty %}
-                                {% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                    <a href="#" class="add-partner"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
-                                </div>
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_partnership" }}">
+                    <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special activated" toggleid="partners-helptext"></span></h5>
+                    <p class="help-block" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please use the "Add a new organisation" button to add a new organisation to the database.' %}</p>
+                    <div class="partner-container" id="partner-container">
+                        {% for ps in project.partnerships.all %}
+                            {% include "myrsr/project_editor/related_objects/partner_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-partner"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
 
                 {% for customfield in custom_fields_section_3 %}
                     {% include custom_field_input %}

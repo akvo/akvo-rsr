@@ -18,45 +18,37 @@
                 <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
             </div>
             <form role="form">
-                {% with related_obj_string="rsr_sector,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Sectors' %}</h5>
-                        <div class="sector-container" id="sector-container">
-                            {% for sector in project.sectors.all %}
-                                {% include "myrsr/project_editor/related_objects/sector_input.html" %}
-                            {% empty %}
-                                {% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                     <a href="#" class="add-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
-                                </div>
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_sector" }}">
+                    <h5>{% trans 'Sectors' %}</h5>
+                    <div class="sector-container" id="sector-container">
+                        {% for sector in project.sectors.all %}
+                            {% include "myrsr/project_editor/related_objects/sector_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                 <a href="#" class="add-sector"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
 
-                {% with related_obj_string="rsr_policymarker,"|add:project_id_string %}
-                    <div class="related-object-container
-                                {{ project|hidden:related_obj_string }}
-                                {{ project|mandatory:related_obj_string }}">
-                        <h5>{% trans 'Policy markers' %}</h5>
-                        <div class="policy-marker-container" id="policy-marker-container">
-                            {% for marker in project.policy_markers.all %}
-                                {% include "myrsr/project_editor/related_objects/policy_marker_input.html" %}
-                            {% empty %}
-                                {% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}
-                            {% endfor %}
-                            <div class="row form-group">
-                                <div class="col-md-12 text-center add-object-link">
-                                     <a href="#" class="add-policy-marker"> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
-                                </div>
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_policymarker" }}">
+                    <h5>{% trans 'Policy markers' %}</h5>
+                    <div class="policy-marker-container" id="policy-marker-container">
+                        {% for marker in project.policy_markers.all %}
+                            {% include "myrsr/project_editor/related_objects/policy_marker_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                 <a href="#" class="add-policy-marker"> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
                             </div>
                         </div>
                     </div>
-                {% endwith %}
+                </div>
 
                 {% for customfield in custom_fields_section_8 %}
                     {% include custom_field_input %}
