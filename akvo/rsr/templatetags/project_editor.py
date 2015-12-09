@@ -217,18 +217,23 @@ def mandatory_or_hidden(validations, field):
         field_name_list = field.split('.')
         new_field_name = '.'.join([field_name_list[0], field_name_list[1]])
         for validation in validations.filter(validation__contains=new_field_name):
-            if validation.action == 1  and not field == 'rsr_project.current_image':
-                indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
-                if '||' in validation.validation:
-                    or_list = validation.validation.split('||')
-                    or_list.remove(new_field_name)
-                    for or_indication in or_list:
-                        indications += 'mandatory-{0}-or-{1} '.format(
-                            str(validation.validation_set.pk),
-                            or_indication.split('.')[1]
-                        )
-            elif validation.action == 2:
-                indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
+            validation_list = validation.validation.split('||')
+            validation_action = validation.action
+
+            if new_field_name in validation_list:
+                if validation_action == 1 and not field == 'rsr_project.current_image':
+                    indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
+
+                    if len(validation_list) > 1:
+                        validation_list.remove(new_field_name)
+                        for or_indication in validation_list:
+                            indications += 'mandatory-{0}-or-{1} '.format(
+                                str(validation.validation_set.pk),
+                                or_indication.split('.')[1]
+                            )
+                elif validation_action == 2:
+                    indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
+
     else:
         # Full models like 'rsr_relatedproject'
         for validation in validations.filter(validation=field):

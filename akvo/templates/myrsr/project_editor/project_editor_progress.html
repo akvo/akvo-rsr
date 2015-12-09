@@ -26,17 +26,26 @@
             </div>
         </div>
         {% for validation_set in validation_sets %}
-            <div id="progress-{{ validation_set.pk }}" class="validation-progress
-                                                              {% if forloop.first %} active-validation{% endif %}
-                                                              {% if not validation_set in project_validation_sets %} hidden{% endif %}">
+            <div id="progress-{{ validation_set.pk }}"
+                 class="validation-progress
+                        {% if forloop.first %} active-validation{% endif %}
+                        {% if not validation_set in project_validation_sets %} hidden{% endif %}">
                 <hr/>
                 <div class="row">
                     <div class="col-xs-1 progress-radio">
-                        <input id="select-validation-{{ validation_set.pk }}" class="validation-switch" type="radio"{% if forloop.first %} checked{% endif %}>
+                        <input id="select-validation-{{ validation_set.pk }}"
+                               class="validation-switch"
+                               type="radio"
+                               {% if forloop.first %} checked{% endif %}>
                     </div>
                     <div class="col-xs-11">
                         <div class="row help-block">
-                            <div class="col-md-12"><strong>{{ validation_set.name }}</strong></div>
+                            <div class="col-md-12">
+                                <strong>{{ validation_set.name }}</strong>
+                                {% if user.can_create_project and validation_set.pk != 1 %}
+                                    <a class="remove-progress-bar-link" id="remove-progress-bar-link-{{ validation_set.pk }}"><span class="glyphicon glyphicon-remove"></span></a>
+                                {% endif %}
+                            </div>
                             <div class="col-md-12">{{ validation_set.description|safe }}</div>
                         </div>
                         <div class="progress overview">
@@ -48,34 +57,32 @@
                 </div>
             </div>
         {% endfor %}
-        {% if user.is_superuser or user.is_admin %}
-            {% if validation_sets.count !=  project_validation_sets.count %}
-                <div id="add-progress">
-                    <hr/>
-                    <div class="row">
-                        <div class="col-xs-1"></div>
-                        <div class="col-xs-11">
-                            <div class="row help-block">
-                                <div class="col-md-12"><strong>{% trans 'Add new progress bar' %}</strong></div>
-                                <div class="col-md-12">{% trans 'It is possible to add additional progress bars to your project. Do keep in mind that these progress bars will be visible to everyone editing this project.' %}</div>
-                                <div class="col-md-12">
-                                    <div class="select-group control">
-                                        <select id="progress-bar-select">
-                                            <option value="" selected="selected"></option>
-                                            {% for validation_set in validation_sets %}
-                                                {% if validation_set not in project_validation_sets %}
-                                                    <option value="{{ validation_set.pk }}">{{ validation_set.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                        <a href="#" id="add-progress-bar-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add progress bar' %}</a>
-                                    </div>
+        {% if user.can_create_project and validation_sets.count != project_validation_sets.count %}
+            <div id="add-progress">
+                <hr/>
+                <div class="row">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-11">
+                        <div class="row help-block">
+                            <div class="col-md-12"><strong>{% trans 'Add new progress bar' %}</strong></div>
+                            <div class="col-md-12">{% trans 'It is possible to add additional progress bars to your project. Do keep in mind that these progress bars will be visible to everyone editing this project.' %}</div>
+                            <div class="col-md-12">
+                                <div class="select-group control">
+                                    <select id="progress-bar-select">
+                                        <option value="" selected="selected"></option>
+                                        {% for validation_set in validation_sets %}
+                                            {% if validation_set not in project_validation_sets %}
+                                                <option value="{{ validation_set.pk }}">{{ validation_set.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <a href="#" id="add-progress-bar-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add progress bar' %}</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         {% endif %}
     </div>
 </div>

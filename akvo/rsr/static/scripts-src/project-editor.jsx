@@ -1929,25 +1929,28 @@ function setAllSectionsChangeListener() {
 }
 
 function switchMandatoryFields(switchTo) {
+    var progressBars = document.querySelectorAll('.validation-progress');
+    for (var i = 0; i < progressBars.length; i++) {
+        if (progressBars[i].getAttribute('id') === 'progress-' + switchTo) {
+            progressBars[i].querySelector('input').checked = true;
+            elAddClass(progressBars[i], 'active-validation');
+        } else {
+            progressBars[i].querySelector('input').checked = false;
+            elRemoveClass(progressBars[i], 'active-validation');
+        }
+    }
+
+    // Mark new mandatory fields and set new change listeners
+    setHiddenFields();
+    markMandatoryFields();
+    setAllSectionsCompletionPercentage();
+}
+
+function setSwitchMandatoryFields(switchTo) {
     /* Switch between validation sets */
     return function(e) {
         e.preventDefault();
-
-        var progressBars = document.querySelectorAll('.validation-progress');
-        for (var i = 0; i < progressBars.length; i++) {
-            if (progressBars[i].getAttribute('id') === 'progress-' + switchTo) {
-                progressBars[i].querySelector('input').checked = true;
-                elAddClass(progressBars[i], 'active-validation');
-            } else {
-                progressBars[i].querySelector('input').checked = false;
-                elRemoveClass(progressBars[i], 'active-validation');
-            }
-        }
-
-        // Mark new mandatory fields and set new change listeners
-        setHiddenFields();
-        markMandatoryFields();
-        setAllSectionsCompletionPercentage();
+        switchMandatoryFields(switchTo);
     };
 }
 
@@ -2097,7 +2100,7 @@ function setValidationListeners() {
 
     var progressSwitch = document.querySelectorAll('.validation-switch');
     for (var k = 0; k < progressSwitch.length; k++) {
-        progressSwitch[k].onchange = switchMandatoryFields(progressSwitch[k].getAttribute('id').split('-')[2]);
+        progressSwitch[k].onchange = setSwitchMandatoryFields(progressSwitch[k].getAttribute('id').split('-')[2]);
     }
 
     markMandatoryFields();
@@ -2875,7 +2878,66 @@ function addOrgModal() {
 
 /* Add the progress bar */
 function addProgressBar(validationSetId) {
+    // Remove option from select
+    var selectProgressBar = document.getElementById('progress-bar-select');
+    var selectOptions = selectProgressBar.querySelectorAll('option');
+    for (var i = 0; i < selectOptions.length; i++) {
+        if (selectOptions[i].getAttribute('value') === validationSetId) {
+            selectOptions[i].parentNode.removeChild(selectOptions[i]);
+        }
+    }
 
+    if (selectProgressBar.querySelectorAll('option').length === 1) {
+        var addProgress = document.getElementById('add-progress');
+        addProgress.parentNode.removeChild(addProgress);
+    }
+
+    // Show progress bar
+    var progressBarContainer = document.getElementById('progress-' + validationSetId);
+    elRemoveClass(progressBarContainer, 'hidden');
+
+    // Switch to new progress bar
+    switchMandatoryFields(validationSetId);
+}
+
+/* Remove a validation set from project */
+function removeValidationSetFromProject(removeLink) {
+    return function (e) {
+        e.preventDefault();
+
+        var validationSetId = removeLink.getAttribute('id').replace('remove-progress-bar-link-', '');
+        var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/remove_validation/' + validationSetId + '/?format=json';
+
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open("DELETE", addValidationUrl);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                if (xmlHttp.status == 200) {
+                    // Remove progress bar
+                    var progressBarContainer = document.getElementById('progress-' + validationSetId);
+                    progressBarContainer.parentNode.removeChild(progressBarContainer);
+
+                    // Switch to first progress bar
+                    var progressBars = document.querySelectorAll('.validation-progress');
+                    for (var i = 0; i < progressBars.length; i++) {
+                        if (!elHasClass(progressBars[i], 'hidden')) {
+                            var newValidationSetId = progressBars[i].getAttribute('id').replace('progress-', '');
+                            switchMandatoryFields(newValidationSetId);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+        };
+
+        xmlHttp.send();
+    };
 }
 
 /* Add a validation set to project */
@@ -2909,10 +2971,15 @@ function addValidationSetToProject(selectLink) {
 }
 
 /* Set the link for adding a new validation set */
-function setAddProgressBar() {
+function setProgressBarLinks() {
     var selectLink = document.getElementById('add-progress-bar-link');
     if (selectLink !== null) {
         selectLink.addEventListener('click', addValidationSetToProject(selectLink));
+    }
+
+    var removeLinks = document.querySelectorAll('.remove-progress-bar-link');
+    for (var i = 0; i < removeLinks.length; i++) {
+        removeLinks[i].onclick = removeValidationSetFromProject(removeLinks[i]);
     }
 }
 
@@ -3001,7 +3068,7 @@ document.addEventListener('DOMContentLoaded', function() {
     getAllOrganisations();
     getAllProjects();
 
-    setAddProgressBar();
+    setProgressBarLinks();
     setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();
