@@ -1,0 +1,13 @@
+{% load i18n %}
+
+{% blocktrans with user_name=user.get_full_name org_name=organisation.long_name %}
+Dear {{user_name}},
+
+You have been added to organisation: {{org_name}}.
+
+Please visit the MyRSR section to view your projects and add updates to the projects here:
+http://{{ site }}/myrsr/
+
+Thank you,
+Akvo.org
+{% endblocktrans %}
