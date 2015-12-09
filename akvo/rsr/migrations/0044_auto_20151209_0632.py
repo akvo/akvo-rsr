@@ -36,6 +36,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'project editor validation set',
                 'verbose_name_plural': 'project editor validation sets',
+                'ordering': ('id',),
             },
             bases=(models.Model,),
         ),

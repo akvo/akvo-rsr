@@ -200,13 +200,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='organisationlocation',
             name='latitude',
-            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='latitude', db_index=True),
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='latitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='organisationlocation',
             name='longitude',
-            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='longitude', db_index=True),
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -590,7 +590,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='The country or countries that benefit(s) from the activity.', null=True),
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='The country or countries that benefit(s) from the activity.', blank=True, null=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -614,7 +614,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='latitude',
-            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='latitude', db_index=True),
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='latitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -638,7 +638,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='longitude',
-            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='longitude', db_index=True),
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -686,13 +686,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectupdatelocation',
             name='latitude',
-            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='latitude', db_index=True),
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='latitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='projectupdatelocation',
             name='longitude',
-            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', null=True, verbose_name='longitude', db_index=True),
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text='Use a period to denote decimals.', blank=True, null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(

@@ -19,11 +19,11 @@ from akvo.utils import codelist_choices, codelist_value
 
 class BaseLocation(models.Model):
     latitude = LatitudeField(
-        _(u'latitude'), null=True, db_index=True, default=0,
+        _(u'latitude'), null=True, blank=True, db_index=True, default=0,
         help_text=_(u'Use a period to denote decimals.')
     )
     longitude = LongitudeField(
-        _(u'longitude'), null=True, db_index=True, default=0,
+        _(u'longitude'), null=True, blank=True, db_index=True, default=0,
         help_text=_(u'Use a period to denote decimals.')
     )
     city = ValidXMLCharField(_(u'city'), blank=True, max_length=255)
@@ -71,7 +71,7 @@ class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', related_name='locations')
     country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), null=True,
+        'Country', verbose_name=_(u'country'), null=True, blank=True,
         help_text=_(u'The country or countries that benefit(s) from the activity.')
     )
 
