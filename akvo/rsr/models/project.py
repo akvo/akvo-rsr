@@ -385,6 +385,11 @@ class Project(TimestampsMixin, models.Model):
 
         super(Project, self).save(*args, **kwargs)
 
+        # Add RSR validation set to projects that don't have that set
+        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
+        if not rsr_validation_set in self.validations.all():
+            self.validations.add(rsr_validation_set)
+
     def clean(self):
         # Don't allow a start date before an end date
         if self.date_start_planned and self.date_end_planned and \
@@ -407,6 +412,7 @@ class Project(TimestampsMixin, models.Model):
         # In order for the IATI activity IDs not be unique, we set them to None when they're empty
         if not self.iati_activity_id:
             self.iati_activity_id = None
+
 
     @models.permalink
     def get_absolute_url(self):
