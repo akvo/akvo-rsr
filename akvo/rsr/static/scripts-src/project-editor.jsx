@@ -961,7 +961,6 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorTypeahead.appendChild(help);
     elAddClass(selectorClass, 'has-typeahead');
 
-//    updateHelpIcons('.' + childClass);;;
     updateAllHelpIcons();
     markMandatoryFields();
     setAllSectionsCompletionPercentage();
@@ -1304,7 +1303,8 @@ function updatePartialIDs(partial, newID) {
         typeaheadContainers[k].setAttribute('data-child-id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
         // Update the parent's id
-        typeaheadContainers[k].parentNode.setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
+        // OLD: typeaheadContainers[k].parentNode.setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
+        typeaheadContainers[k].setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
         var typeaheadParent = typeaheadContainers[k].parentNode;
         var typeaheadParentClassList = typeaheadParent.classList;
@@ -1463,6 +1463,8 @@ function updateTypeahead(els, filterOption, labelText, helpText, API, inputType,
                 // Remove the existing typeahead, then build a new one with the reloaded API response
                 var child = el.querySelector('div');
                 el.removeChild(child);
+                el.setAttribute('id', el.getAttribute('data-child-id'));
+
             } else {
                 // Typeahead exists and we don't need to reload the API response. Do nothing.
                 continue;
@@ -2800,6 +2802,7 @@ function addOrgModal() {
                                         <div className="row">
                                             <div className="IATIOrgTypeContainer inputContainer col-md-6 form-group">
                                                 <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
+                                                    <option value=""></option>
                                                     <option value="10">10 - {defaultValues.government}</option>
                                                     <option value="15">15 - {defaultValues.other_public_sector}</option>
                                                     <option value="21">21 - {defaultValues.international_ngo}</option>
@@ -2823,20 +2826,20 @@ function addOrgModal() {
                                         <div className="row">
                                             <div className="inputContainer col-md-4 form-group">
                                                 <input name="latitude" id="latitude" type="text" className="form-control"/>
-                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}</label>
+                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
                                             <div className="inputContainer col-md-4 form-group">
                                                 <input name="longitude" id="longitude" type="text"  className="form-control"/>
-                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}</label>
+                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
                                             <div className="inputContainer col-md-4 form-group">
                                                 <select name="country" id="country" className="form-control">
-                                                    <option value="">{defaultValues.country}:</option>
+                                                    <option value=""></option>
                                                     {country_option_list}
                                                 </select>
-                                                <label htmlFor="country" className="control-label">{defaultValues.country}</label>
+                                                <label htmlFor="country" className="control-label">{defaultValues.country}<span className="mandatory">*</span></label>
                                                 <p className="help-block"></p>
                                             </div>
                                         </div>

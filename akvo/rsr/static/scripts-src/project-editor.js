@@ -961,7 +961,6 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorTypeahead.appendChild(help);
     elAddClass(selectorClass, 'has-typeahead');
 
-//    updateHelpIcons('.' + childClass);;;
     updateAllHelpIcons();
     markMandatoryFields();
     setAllSectionsCompletionPercentage();
@@ -1304,7 +1303,8 @@ function updatePartialIDs(partial, newID) {
         typeaheadContainers[k].setAttribute('data-child-id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
         // Update the parent's id
-        typeaheadContainers[k].parentNode.setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
+        // OLD: typeaheadContainers[k].parentNode.setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
+        typeaheadContainers[k].setAttribute('id', [oldChildIdList[0], oldChildIdList[1], newID].join('.'));
 
         var typeaheadParent = typeaheadContainers[k].parentNode;
         var typeaheadParentClassList = typeaheadParent.classList;
@@ -1463,6 +1463,8 @@ function updateTypeahead(els, filterOption, labelText, helpText, API, inputType,
                 // Remove the existing typeahead, then build a new one with the reloaded API response
                 var child = el.querySelector('div');
                 el.removeChild(child);
+                el.setAttribute('id', el.getAttribute('data-child-id'));
+
             } else {
                 // Typeahead exists and we don't need to reload the API response. Do nothing.
                 continue;
@@ -2800,6 +2802,7 @@ function addOrgModal() {
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6 form-group"}, 
                                                 React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
+                                                    React.DOM.option( {value:""}),
                                                     React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
                                                     React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
                                                     React.DOM.option( {value:"21"}, "21 - ", defaultValues.international_ngo),
@@ -2823,20 +2826,20 @@ function addOrgModal() {
                                         React.DOM.div( {className:"row"}, 
                                             React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
                                                 React.DOM.input( {name:"latitude", id:"latitude", type:"text", className:"form-control"}),
-                                                React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude),
+                                                React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"})
                                             ),
                                             React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
                                                 React.DOM.input( {name:"longitude", id:"longitude", type:"text",  className:"form-control"}),
-                                                React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude),
+                                                React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"})
                                             ),
                                             React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
                                                 React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
-                                                    React.DOM.option( {value:""}, defaultValues.country,":"),
+                                                    React.DOM.option( {value:""}),
                                                     country_option_list
                                                 ),
-                                                React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country),
+                                                React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country,React.DOM.span( {className:"mandatory"}, "*")),
                                                 React.DOM.p( {className:"help-block"})
                                             )
                                         ),

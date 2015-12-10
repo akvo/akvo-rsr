@@ -207,9 +207,14 @@ def project_editor(request, project_id):
     custom_fields_section_9 = project.custom_fields.filter(section=9).order_by('order', 'id')
     custom_fields_section_10 = project.custom_fields.filter(section=10).order_by('order', 'id')
 
+    # Validations / progress bars
     validations = ProjectEditorValidation.objects.select_related('validation_set')
     validation_sets = ProjectEditorValidationSet.objects.all()
     project_validation_sets = project.validations.all()
+
+    # Countries
+    countries = Country.objects.all()
+
 
     context = {
         'id': project_id,
@@ -218,6 +223,7 @@ def project_editor(request, project_id):
         'validations': validations,
         'validation_sets': validation_sets,
         'project_validation_sets': project_validation_sets,
+        'countries': countries,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,
