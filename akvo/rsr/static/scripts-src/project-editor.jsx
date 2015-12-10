@@ -2178,17 +2178,45 @@ function toggleSection(node) {
     };
 }
 
-function setImportResults() {
-    try {
-        var importButton;
-
-        importButton = document.getElementById('import-results');
-        importButton.onclick = getImportResults(importButton);
-
-    } catch (error) {
-        // No import results button
-        return false;
+function setImpactProject() {
+    // Set RSR Impact switch
+    var impactProject = document.getElementById('impact-project');
+    if (impactProject !== null) {
+        impactProject.onchange = impactProjectSwitch(impactProject);
     }
+
+    // Set import button
+    var importButton = document.getElementById('import-results');
+    if (importButton !== null) {
+        importButton.onclick = getImportResults(importButton);
+    }
+}
+
+function impactProjectSwitch(impactProject) {
+    return function(e) {
+        e.preventDefault();
+
+        var api_url = '/rest/v1/project/' + defaultValues.project_id + '/?format=json';
+
+        var request = new XMLHttpRequest();
+        request.open('PATCH', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                if (impactProject.hasAttribute('checked')) {
+                    impactProject.removeAttribute('checked');
+                } else {
+                    impactProject.setAttribute('checked', '');
+                }
+            }
+        };
+
+        var changeImpact = impactProject.hasAttribute('checked') ? '{"is_impact_project": false}' : '{"is_impact_project": true}';
+
+        request.send(changeImpact);
+    };
 }
 
 function getImportResults(importButton) {
@@ -3090,7 +3118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setPartialOnClicks();
     setCurrencyOnChange();
     setFileUploads();
-    setImportResults();
+    setImpactProject();
 
     setValidationListeners();
     updateAllHelpIcons();
