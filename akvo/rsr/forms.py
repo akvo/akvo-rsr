@@ -110,6 +110,72 @@ class RegisterForm(forms.Form):
         return new_user
 
 
+class InviteForm(forms.Form):
+    email = forms.EmailField(
+        label=_(u'Email'),
+        max_length=254,
+        widget=forms.TextInput(
+            attrs={'placeholder': _(u'Email')}
+        ),
+    )
+    organization = forms.CharField(
+        label=_(u'Organization'),
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': _(u'Organization')}
+        ),
+    )
+    group = forms.CharField(
+        label=_(u'Group'),
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': _(u'Group')}
+        ),
+    )
+
+    def email_exists(self):
+        """
+        Determine if the email already exists on a users account.
+        """
+        email = self.cleaned_data['email']
+        if get_user_model().objects.filter(email__iexact=email).exists():
+            return True
+        return False
+
+    def save(self, request):
+        """
+        Create the new User and RegistrationProfile if email is not registered.
+        Otherwise, add the organization to the user. Sends email user welcoming
+        them to the organization to which they were added.
+
+        TODO(jesse): Returns the User?
+
+        This is essentially a light wrapper around
+        RegistrationProfile.objects.create_inactive_user(), feeding it the form data and
+        a profile callback (see the documentation on create_inactive_user() for details)
+        if supplied. Modified to set user.is_active = False and add User object creation.
+        """
+        if email_exists():
+            # TODO(jesse): send organization add email
+            rsr_send_mail(["test@test.com"])
+        else:
+            # TODO(jesse): register user
+            # site = get_current_site(request)
+            # new_user = RegistrationProfile.objects.create_inactive_user(
+            #     username=self.cleaned_data['email'],
+            #     email=self.cleaned_data['email'],
+            #     password=self.cleaned_data['password1'],
+            #     site=site,
+            # )
+            # new_user.first_name = self.cleaned_data['first_name']
+            # new_user.last_name = self.cleaned_data['last_name']
+            # new_user.is_active = False
+            # new_user.save()
+            # return new_user
+            # TODO(jesse): send new user and organization email
+            rsr_send_mail(["test@test.com"])
+
+
 class ProfileForm(forms.Form):
     email = forms.EmailField(
         label='',

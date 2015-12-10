@@ -17,6 +17,8 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
+from akvo.rsr.forms import InviteForm
+
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
@@ -469,3 +471,18 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
+
+
+@login_required
+def invite(request):
+    """Invite form."""
+    # TODO(jesse): modeled after akvo/rsr/views/account.py:register()
+    context = RequestContext(request)
+    if request.method == 'POST':
+        form = InviteForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save(request)
+    else:
+        form = InviteForm()
+    return render_to_response('myrsr/user_management.html', {'form': form},
+                              context_instance=context)
