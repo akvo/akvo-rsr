@@ -3,7 +3,6 @@
 {% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
     <div class="form-group">
         <div class="control datepicker-container"
-{#             id="planned-start-date-container"#}
              data-id="{{ obj_field_id }}"
              data-child="{{ obj_value|date:"d/m/Y" }}"
              data-label="{{ obj|field_name:field }}"

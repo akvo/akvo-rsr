@@ -1,7 +1,7 @@
 {% load project_editor %}
 
 {% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
-    <div class="form-group">
+    <div class="form-group{% if always_hidden %} always-hidden hidden{% endif %}">
         <div class="input-group control">
             <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
             <input type="text"

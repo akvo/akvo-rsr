@@ -13,8 +13,13 @@
             <div class="col-md-4">
                 {% if ps.iati_organisation_role and ps.iati_organisation_role == 1 %}
                     {% include currency_input with obj=ps field="funding_amount" %}
+                    {% include boolean_input with obj=ps field="is_secondary_reporter" nullboolean=True always_hidden=True %}
+                {% elif ps.iati_organisation_role and ps.iati_organisation_role == 101 %}
+                    {% include currency_input with obj=ps field="funding_amount" disabled=True always_hidden=True %}
+                    {% include boolean_input with obj=ps field="is_secondary_reporter" nullboolean=True %}
                 {% else %}
                     {% include currency_input with obj=ps field="funding_amount" disabled=True %}
+                    {% include boolean_input with obj=ps field="is_secondary_reporter" nullboolean=True always_hidden=True %}
                 {% endif %}
             </div>
         </div>

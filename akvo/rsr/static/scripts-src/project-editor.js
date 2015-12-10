@@ -1124,7 +1124,7 @@ function setPartialOnClicks() {
             var selectInputId = selectInputs[m].getAttribute('id').split('.');
             // Set the organisation role onchange
             if (selectInputId[0] == 'rsr_partnership' && selectInputId[1] == 'iati_organisation_role') {
-                selectInputs[m].onchange = toggleFunding(selectInputs[m]);
+                selectInputs[m].onchange = togglePartner(selectInputs[m]);
             }
             // Set the budget item labels onchange
             if (selectInputId[0] == 'rsr_budgetitem' && selectInputId[1] == 'label') {
@@ -1235,21 +1235,41 @@ function toggleOtherLabel(selectNode) {
     };
 }
 
-function toggleFunding(selectNode) {
-    /* The funding amount can only be filled in when a partner is a funding parter */
+function togglePartner(selectNode) {
+    /* The funding amount can only be filled in when a partner is a funding partner
+     * The secondary reporter can only be filled in when a partner is a reporting partner */
     return function(e) {
         e.preventDefault();
 
         var parent = findAncestorByClass(selectNode, 'parent');
         var nodeIdList = selectNode.getAttribute('id').split('.');
+
         var fundingNodeId = [nodeIdList[0], 'funding_amount', nodeIdList[2]].join('.');
         var fundingNode = document.getElementById(fundingNodeId);
+        var fundingFormGroup = findAncestorByClass(fundingNode, 'form-group');
 
-        if (selectNode.value === '1' && fundingNode.hasAttribute('disabled')) {
-            fundingNode.removeAttribute('disabled');
-        } else if (selectNode.value !== '1' && !(fundingNode.hasAttribute('disabled'))) {
-            fundingNode.setAttribute('disabled', '');
-            fundingNode.value = '';
+        var secondaryNodeId = [nodeIdList[0], 'is_secondary_reporter', nodeIdList[2]].join('.');
+        var secondaryNode = document.getElementById(secondaryNodeId);
+        var secondaryFormGroup = findAncestorByClass(secondaryNode, 'form-group');
+
+        if (selectNode.value !== '101') {
+            if (selectNode.value === '1' && fundingNode.hasAttribute('disabled')) {
+                fundingNode.removeAttribute('disabled');
+            } else if (selectNode.value !== '1') {
+                fundingNode.setAttribute('disabled', '');
+                fundingNode.value = '';
+            }
+            if (elHasClass(fundingFormGroup, 'hidden')) {
+                elRemoveClass(fundingFormGroup, 'hidden');
+                elRemoveClass(fundingFormGroup, 'always-hidden');
+                elAddClass(secondaryFormGroup, 'hidden');
+                elAddClass(secondaryFormGroup, 'always-hidden');
+            }
+        } else if (elHasClass(secondaryFormGroup, 'hidden')) {
+            elRemoveClass(secondaryFormGroup, 'hidden');
+            elRemoveClass(secondaryFormGroup, 'always-hidden');
+            elAddClass(fundingFormGroup, 'hidden');
+            elAddClass(fundingFormGroup, 'always-hidden');
         }
     };
 }
