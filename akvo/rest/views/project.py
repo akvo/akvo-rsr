@@ -108,7 +108,7 @@ class ProjectExtraViewSet(ProjectViewSet):
     __publishingstatus\__status__ (filter on publishing status)
     """
 
-    queryset = Project.objects.public().prefetch_related(
+    queryset = Project.objects.prefetch_related(
         'publishingstatus',
         'sectors',
         'partnerships',
@@ -129,7 +129,7 @@ class ProjectUpViewSet(ProjectViewSet):
     __publishingstatus\__status__ (filter on publishing status)
     """
 
-    queryset = Project.objects.public().select_related(
+    queryset = Project.objects.select_related(
         'primary_location',
         'categories',
         'keywords',

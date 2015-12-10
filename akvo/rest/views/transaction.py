@@ -23,6 +23,6 @@ class TransactionViewSet(BaseRSRViewSet):
 class TransactionSectorViewSet(BaseRSRViewSet):
     """Transaction sector resource."""
 
-    queryset = TransactionSector.objects.filter(transaction__project__is_public=False)
+    queryset = TransactionSector.objects.all()
     serializer_class = TransactionSectorSerializer
     filter_fields = ('transaction', 'code')

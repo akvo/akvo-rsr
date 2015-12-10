@@ -21,7 +21,7 @@ class ProjectLocationViewSet(BaseRSRViewSet):
 class AdministrativeLocationViewSet(BaseRSRViewSet):
     """
     """
-    queryset = AdministrativeLocation.objects.filter(location__location_target__is_public=True)
+    queryset = AdministrativeLocation.objects.all()
     serializer_class = AdministrativeLocationSerializer
     filter_fields = ('location', 'code', )
 
