@@ -2827,119 +2827,119 @@ function addOrgModal() {
             });
 
             return (
-                    <div className="modalParent">
-                        <div className="modalBackground">
-                        </div>
-                        <div className="modalContainer">
-                            <div className="orgModal">
-                                <div className="modalContents projectEdit">
-                                    <h4>{defaultValues.add_new_organisation}</h4>
-                                    <form id="addOrganisation">
-                                        <div className="row">
-                                            <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
+                <div className="modalParent">
+                    <div className="modalBackground">
+                    </div>
+                    <div className="modalContainer">
+                        <div className="orgModal">
+                            <div className="modalContents projectEdit">
+                                <h4>{defaultValues.add_new_organisation}</h4>
+                                <form id="addOrganisation">
+                                    <div className="row">
+                                        <div id="addOrgGeneralError" className="col-md-12 help-block-error"></div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="inputContainer newOrgName col-md-4 form-group">
+                                            <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
+                                            <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
+                                            <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
                                         </div>
-                                        <div className="row">
-                                            <div className="inputContainer newOrgName col-md-4 form-group">
-                                                <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
-                                                <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
-                                                <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
-                                            </div>
-                                            <div className="inputContainer newOrgLongName col-md-4 form-group">
-                                                <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
-                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
-                                            </div>
-                                            <div className="inputContainer newOrgIatiId col-md-4 form-group">
-                                                <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
-                                                <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
-                                                <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
-                                            </div>
+                                        <div className="inputContainer newOrgLongName col-md-4 form-group">
+                                            <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
+                                            <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
+                                            <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                         </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-12 form-group">
-                                                <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
-                                                <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
-                                            </div>
+                                        <div className="inputContainer newOrgIatiId col-md-4 form-group">
+                                            <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
+                                            <label htmlFor="newOrgIatiId" className="control-label">{defaultValues.iati_org_id}</label>
+                                            <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
                                         </div>
-                                        <div className="row">
-                                            <div className="IATIOrgTypeContainer inputContainer col-md-6 form-group">
-                                                <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
-                                                    <option value=""></option>
-                                                    <option value="10">10 - {defaultValues.government}</option>
-                                                    <option value="15">15 - {defaultValues.other_public_sector}</option>
-                                                    <option value="21">21 - {defaultValues.international_ngo}</option>
-                                                    <option value="22">22 - {defaultValues.national_ngo}</option>
-                                                    <option value="23">23 - {defaultValues.regional_ngo}</option>
-                                                    <option value="30">30 - {defaultValues.public_private_partnership}</option>
-                                                    <option value="40">40 - {defaultValues.multilateral}</option>
-                                                    <option value="60">60 - {defaultValues.foundation}</option>
-                                                    <option value="70">70 - {defaultValues.private_sector}</option>
-                                                    <option value="80">80 - {defaultValues.academic_training_research}</option>
-                                                </select>
-                                                <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-6 form-group">
-                                                <input name="url" id="url" type="text" className="form-control"/>
-                                                <label htmlFor="url" className="control-label">{defaultValues.website}</label>
-                                                <p className="help-block">{defaultValues.start_http}</p>
-                                            </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="inputContainer col-md-12 form-group">
+                                            <input type="file" className="form-control" id="org-logo" name="org-logo" accept="image/*"/>
+                                            <label className="control-label" for="org-logo">{defaultValues.org_logo}</label>
                                         </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-4 form-group">
-                                                <input name="latitude" id="latitude" type="text" className="form-control"/>
-                                                <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory">*</span></label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-4 form-group">
-                                                <input name="longitude" id="longitude" type="text"  className="form-control"/>
-                                                <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory">*</span></label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-4 form-group">
-                                                <select name="country" id="country" className="form-control">
-                                                    <option value=""></option>
-                                                    {country_option_list}
-                                                </select>
-                                                <label htmlFor="country" className="control-label">{defaultValues.country}<span className="mandatory">*</span></label>
-                                                <p className="help-block"></p>
-                                            </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="IATIOrgTypeContainer inputContainer col-md-6 form-group">
+                                            <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
+                                                <option value=""></option>
+                                                <option value="10">10 - {defaultValues.government}</option>
+                                                <option value="15">15 - {defaultValues.other_public_sector}</option>
+                                                <option value="21">21 - {defaultValues.international_ngo}</option>
+                                                <option value="22">22 - {defaultValues.national_ngo}</option>
+                                                <option value="23">23 - {defaultValues.regional_ngo}</option>
+                                                <option value="30">30 - {defaultValues.public_private_partnership}</option>
+                                                <option value="40">40 - {defaultValues.multilateral}</option>
+                                                <option value="60">60 - {defaultValues.foundation}</option>
+                                                <option value="70">70 - {defaultValues.private_sector}</option>
+                                                <option value="80">80 - {defaultValues.academic_training_research}</option>
+                                            </select>
+                                            <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
+                                            <p className="help-block"></p>
                                         </div>
-                                        <div className="row">
-                                            <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                        <div className="inputContainer col-md-6 form-group">
+                                            <input name="url" id="url" type="text" className="form-control"/>
+                                            <label htmlFor="url" className="control-label">{defaultValues.website}</label>
+                                            <p className="help-block">{defaultValues.start_http}</p>
                                         </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-6 form-group">
-                                                <input name="contact_person" id="contact_person" type="text" className="form-control"/>
-                                                <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
-                                                <p className="help-block"></p>
-                                            </div>
-                                            <div className="inputContainer col-md-6 form-group">
-                                                <input name="contact_email" id="contact_email" type="text" className="form-control"/>
-                                                <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
-                                                <p className="help-block"></p>
-                                            </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="inputContainer col-md-4 form-group">
+                                            <input name="latitude" id="latitude" type="text" className="form-control"/>
+                                            <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory">*</span></label>
+                                            <p className="help-block"></p>
                                         </div>
-                                        <div className="row">
-                                            <div className="inputContainer col-md-12 form-group">
-                                                <textarea id="description" className="form-control" name="description" rows="3"></textarea>
-                                                <label className="control-label" htmlFor="description">{defaultValues.description}</label>
-                                                <p className="help-block"></p>
-                                            </div>
+                                        <div className="inputContainer col-md-4 form-group">
+                                            <input name="longitude" id="longitude" type="text"  className="form-control"/>
+                                            <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory">*</span></label>
+                                            <p className="help-block"></p>
                                         </div>
-                                    </form>
-                                    <div className="controls">
-                                        <button className="modal-cancel btn btn-danger" onClick={cancelModal}>
-                                        <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
-                                        </button>
-                                        <button className="modal-save btn btn-success" onClick={submitModal}>
-                                            <span className="glyphicon glyphicon-floppy-disk"></span> {defaultValues.save}
-                                        </button>
-                                    </div>   
+                                        <div className="inputContainer col-md-4 form-group">
+                                            <select name="country" id="country" className="form-control">
+                                                <option value=""></option>
+                                                {country_option_list}
+                                            </select>
+                                            <label htmlFor="country" className="control-label">{defaultValues.country}<span className="mandatory">*</span></label>
+                                            <p className="help-block"></p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                    </div>
+                                    <div className="row">
+                                        <div className="inputContainer col-md-6 form-group">
+                                            <input name="contact_person" id="contact_person" type="text" className="form-control"/>
+                                            <label htmlFor="contact_person" className="control-label">{defaultValues.contact_person}</label>
+                                            <p className="help-block"></p>
+                                        </div>
+                                        <div className="inputContainer col-md-6 form-group">
+                                            <input name="contact_email" id="contact_email" type="text" className="form-control"/>
+                                            <label htmlFor="contact_email" className="control-label">{defaultValues.contact_email}</label>
+                                            <p className="help-block"></p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="inputContainer col-md-12 form-group">
+                                            <textarea id="description" className="form-control" name="description" rows="3"></textarea>
+                                            <label className="control-label" htmlFor="description">{defaultValues.description}</label>
+                                            <p className="help-block"></p>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div className="controls">
+                                    <button className="modal-cancel btn btn-danger" onClick={cancelModal}>
+                                    <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
+                                    </button>
+                                    <button className="modal-save btn btn-success" onClick={submitModal}>
+                                        <span className="glyphicon glyphicon-floppy-disk"></span> {defaultValues.save}
+                                    </button>
                                 </div>
-                            </div>                   
+                            </div>
                         </div>
                     </div>
+                </div>
             );
         }
     });

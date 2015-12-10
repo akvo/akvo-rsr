@@ -31,6 +31,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
+                             log_project_addition,
                              project_editor_upload_file,
                              project_editor_import_results,
                              project_editor_add_validation,
@@ -109,6 +110,7 @@ __all__ = [
     'ProjectUpViewSet',
     'ProjectViewSet',
     'project_editor',
+    'log_project_addition',
     'project_editor_upload_file',
     'project_editor_add_validation',
     'project_editor_remove_validation',
