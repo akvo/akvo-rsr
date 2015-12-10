@@ -2933,7 +2933,7 @@ function addOrgModal() {
                                         React.DOM.span( {className:"glyphicon glyphicon-trash"}), " ", defaultValues.cancel
                                         ),
                                         React.DOM.button( {className:"modal-save btn btn-success", onClick:submitModal}, 
-                                            React.DOM.span( {className:"glyphicon glyphicon-plus"}), " ", defaultValues.add_new_organisation
+                                            React.DOM.span( {className:"glyphicon glyphicon-floppy-disk"}), " ", defaultValues.save
                                         )
                                     )   
                                 )

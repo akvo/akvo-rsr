@@ -2933,7 +2933,7 @@ function addOrgModal() {
                                         <span className="glyphicon glyphicon-trash"></span> {defaultValues.cancel}
                                         </button>
                                         <button className="modal-save btn btn-success" onClick={submitModal}>
-                                            <span className="glyphicon glyphicon-plus"></span> {defaultValues.add_new_organisation}
+                                            <span className="glyphicon glyphicon-floppy-disk"></span> {defaultValues.save}
                                         </button>
                                     </div>   
                                 </div>
