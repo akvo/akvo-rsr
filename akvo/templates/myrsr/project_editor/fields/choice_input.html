@@ -1,6 +1,6 @@
 {% load project_editor %}
 
-{% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
+{% with obj_field_id=obj|field_id:field obj_value=obj|value:field obj_choices=obj|choices:field %}
     <div class="form-group">
         <div class="select-group control">
             <select name="{{ obj_field_id }}"
@@ -11,9 +11,12 @@
                 {% if not not_empty %}
                     <option value=""{% if not obj_value %} selected="selected"{% endif %}></option>
                 {% endif %}
-                {% for choice in obj|choices:field %}
-                    <option value="{{ choice.0 }}"{% if obj|value:field == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
+                {% for choice in obj_choices.0 %}
+                    <option value="{{ choice.0 }}"{% if obj_value == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
                 {% endfor %}
+                {% if obj_value and obj_value not in obj_choices.1 %}
+                    <option value="{{ obj_value }}" selected="selected">{{ obj_value }}</option>
+                {% endif %}
             </select>
             <label for="{{ obj_field_id }}" class="control-label">
                 {{ obj|field_name:field }}

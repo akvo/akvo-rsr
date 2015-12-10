@@ -172,15 +172,18 @@ def choices(obj, field):
     """
     model_field = retrieve_model(obj)._meta.get_field(field)
     if not isinstance(model_field, models.ForeignKey):
-        return model_field.choices
+        return [model_field.choices, [choice[0] for choice in model_field.choices]]
     elif isinstance(obj, get_model('rsr', 'BudgetItem')) or \
             (isinstance(obj, basestring) and 'BudgetItem' in obj):
         # The ForeignKey field on budget items is the budget item labels
-        return get_model('rsr', 'budgetitemlabel').objects.all().values_list('id', 'label')
+        all_budget_labels = get_model('rsr', 'budgetitemlabel').objects.all()
+        return [all_budget_labels.values_list('id', 'label'),
+                [label.pk for label in all_budget_labels]]
     elif isinstance(obj, get_model('rsr', 'ProjectLocation')) or \
             (isinstance(obj, basestring) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
-        return get_model('rsr', 'country').objects.all().values_list('id', 'name')
+        all_countries = get_model('rsr', 'country').objects.all()
+        return [all_countries.values_list('id', 'name'), [country.pk for country in all_countries]]
 
 
 @register.filter
