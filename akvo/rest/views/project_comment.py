@@ -8,12 +8,15 @@
 from akvo.rsr.models import ProjectComment
 
 from ..serializers import ProjectCommentSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class ProjectCommentViewSet(BaseRSRViewSet):
+class ProjectCommentViewSet(PublicProjectViewSet):
     """
     """
     queryset = ProjectComment.objects.all()
     serializer_class = ProjectCommentSerializer
     filter_fields = ('project', 'user', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(ProjectCommentViewSet, self).get_queryset(related_to)

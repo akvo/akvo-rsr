@@ -8,10 +8,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rest.serializers.project import ProjectUpSerializer
 from akvo.rsr.models import Project
 from ..serializers import ProjectSerializer, ProjectExtraSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
 
 
-class ProjectViewSet(BaseRSRViewSet):
+class ProjectViewSet(PublicProjectViewSet):
 
     """
     Viewset providing Project data.
@@ -84,17 +84,18 @@ class ProjectViewSet(BaseRSRViewSet):
         'publishingstatus__status': ['exact', ],
     }
 
-    def get_queryset(self):
+    def get_queryset(self, related_to=''):
         """
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
-        queryset = self.queryset
         sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
         if sync_owner:
-            queryset = queryset.filter(partnerships__iati_organisation_role=101,
-                                       partnerships__organisation__pk=sync_owner)
-        return queryset.distinct()
+            self.queryset = self.queryset.filter(
+                partnerships__iati_organisation_role=101,
+                partnerships__organisation__pk=sync_owner
+            ).distinct()
+        return super(ProjectViewSet, self).get_queryset(related_to)
 
 
 class ProjectExtraViewSet(ProjectViewSet):

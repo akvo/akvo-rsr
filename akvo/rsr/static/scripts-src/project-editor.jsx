@@ -2178,6 +2178,41 @@ function toggleSection(node) {
     };
 }
 
+function setPrivateProject() {
+    // Set private project switch
+    var privateProject = document.getElementById('private-project');
+    if (privateProject !== null) {
+        privateProject.onchange = privateProjectSwitch(privateProject);
+    }
+}
+
+function privateProjectSwitch(privateProject) {
+    return function(e) {
+        e.preventDefault();
+
+        var api_url = '/rest/v1/project/' + defaultValues.project_id + '/?format=json';
+
+        var request = new XMLHttpRequest();
+        request.open('PATCH', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                if (privateProject.hasAttribute('checked')) {
+                    privateProject.removeAttribute('checked');
+                } else {
+                    privateProject.setAttribute('checked', '');
+                }
+            }
+        };
+
+        var changePrivate = privateProject.hasAttribute('checked') ? '{"is_public": true}' : '{"is_public": false}';
+
+        request.send(changePrivate);
+    };
+}
+
 function setImpactProject() {
     // Set RSR Impact switch
     var impactProject = document.getElementById('impact-project');
@@ -3119,6 +3154,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setCurrencyOnChange();
     setFileUploads();
     setImpactProject();
+    setPrivateProject();
 
     setValidationListeners();
     updateAllHelpIcons();

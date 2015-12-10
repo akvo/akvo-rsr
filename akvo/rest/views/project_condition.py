@@ -8,12 +8,15 @@
 from akvo.rsr.models import ProjectCondition
 
 from ..serializers import ProjectConditionSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class ProjectConditionViewSet(BaseRSRViewSet):
+class ProjectConditionViewSet(PublicProjectViewSet):
     """
     """
     queryset = ProjectCondition.objects.all()
     serializer_class = ProjectConditionSerializer
     filter_fields = ('project', 'type', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(ProjectConditionViewSet, self).get_queryset(related_to)

@@ -8,10 +8,13 @@
 from akvo.rsr.models import Benchmarkname
 
 from ..serializers import BenchmarknameSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
-class BenchmarknameViewSet(BaseRSRViewSet):
+class BenchmarknameViewSet(PublicProjectViewSet):
     """
     """
     queryset = Benchmarkname.objects.all()
     serializer_class = BenchmarknameSerializer
+
+    def get_queryset(self, related_to='benchmark__project__'):
+        return super(BenchmarknameViewSet, self).get_queryset(related_to)

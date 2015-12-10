@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label for="privateProject" class="control-label">
-                                <input id="privateProject" type="checkbox" name="privateProject"{% if not project.is_public %} checked{% endif %}>
+                                <input id="private-project" type="checkbox" name="private-project"{% if not project.is_public %} checked{% endif %}>
                                     {% trans 'Private project' %}
                             </label>
                         </div>
