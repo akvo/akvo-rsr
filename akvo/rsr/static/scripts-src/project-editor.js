@@ -765,6 +765,8 @@ function deleteItem(itemId, itemType) {
             setPageCompletionPercentage();
             setAllSectionsCompletionPercentage();
 
+            checkPartnerships();
+
             return false;
         } else {
             // We reached our target server, but it returned an error
@@ -822,6 +824,7 @@ function setRemovePartial(node) {
 
             setPageCompletionPercentage();
             setAllSectionsCompletionPercentage();
+            checkPartnerships();
         } else {
             // Show warning first
             var parentNode = node.parentNode;
@@ -1235,6 +1238,78 @@ function toggleOtherLabel(selectNode) {
     };
 }
 
+function checkPartnerships() {
+    /* Hides the trash can if there's only one partnership. */
+
+    var partnerContainer = document.getElementById('partner-container');
+    var trashCan;
+
+    if (partnerContainer !== null) {
+        var partnerPartials = partnerContainer.querySelectorAll('.parent');
+        if (partnerPartials.length === 1) {
+            trashCan = partnerPartials[0].querySelector('.delete-related-object');
+            if (!elHasClass(trashCan, 'hidden')) {
+                elAddClass(trashCan, 'hidden');
+            }
+        } else {
+            var reportingSelected = false;
+            var options, partialId, roleNode;
+
+            for (var i = 0; i < partnerPartials.length; i++) {
+                partialId = partnerPartials[i].getAttribute('id').split('.')[1];
+                roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+
+                if (roleNode.value === '101') {
+                    reportingSelected = true;
+                }
+
+                trashCan = partnerPartials[i].querySelector('.delete-related-object');
+                if (elHasClass(trashCan, 'hidden')) {
+                    elRemoveClass(trashCan, 'hidden');
+                }
+            }
+
+            if (reportingSelected === true) {
+                for (var j = 0; j < partnerPartials.length; j++) {
+                    partialId = partnerPartials[j].getAttribute('id').split('.')[1];
+                    roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+
+                    if (roleNode.value !== '101') {
+                        options = roleNode.querySelectorAll('option');
+                        for (var k = 0; k < options.length; k++) {
+                            if (options[k].getAttribute('value') === '101') {
+                                options[k].parentNode.removeChild(options[k]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (var l = 0; l < partnerPartials.length; l++) {
+                    partialId = partnerPartials[l].getAttribute('id').split('.')[1];
+                    roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+                    var hasReportingOption = false;
+
+                    options = roleNode.querySelectorAll('option');
+                    for (var m = 0; m < options.length; m++) {
+                        if (options[m].getAttribute('value') === '101') {
+                            hasReportingOption = true;
+                        }
+                    }
+
+                    if (hasReportingOption === false) {
+                        var reportingOption = document.createElement('option');
+                        reportingOption.setAttribute('value', '101');
+                        var reportingOptionText = document.createTextNode(defaultValues.reporting_org);
+                        reportingOption.appendChild(reportingOptionText);
+                        roleNode.appendChild(reportingOption);
+                    }
+                }
+            }
+
+        }
+    }
+}
+
 function togglePartner(selectNode) {
     /* The funding amount can only be filled in when a partner is a funding partner
      * The secondary reporter can only be filled in when a partner is a reporting partner */
@@ -1271,6 +1346,8 @@ function togglePartner(selectNode) {
             elAddClass(fundingFormGroup, 'hidden');
             elAddClass(fundingFormGroup, 'always-hidden');
         }
+
+        checkPartnerships();
     };
 }
 
@@ -1463,6 +1540,7 @@ function addPartial(partialName, partialContainer) {
         // Set onClicks for partials again in case this partial contains other partials
         setPartialOnClicks();
         setFileUploads();
+        checkPartnerships();
     };
 }
 
@@ -3158,28 +3236,30 @@ document.addEventListener('DOMContentLoaded', function() {
     getAllOrganisations();
     getAllProjects();
 
-    setProgressBarLinks();
     setUnsavedChangesMessage();
-    setDatepickers();
-    setToggleSectionOnClick();
+    setImpactProject();
+    setPrivateProject();
+    setProgressBarLinks();
     setPublishOnClick();
     setSubmitOnClicks();
+
+    setDatepickers();
+    setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
     setFileUploads();
-    setImpactProject();
-    setPrivateProject();
+    checkPartnerships();
 
     setValidationListeners();
     updateAllHelpIcons();
+
+    setPageCompletionPercentage();
+    setAllSectionsCompletionPercentage();
+    setAllSectionsChangeListener();
 
     try {
         localStorageResponses = JSON.parse(localStorageResponses);
     } catch (error) {
         localStorageResponses = {};
     }
-
-    setPageCompletionPercentage();
-    setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListener();
 });
