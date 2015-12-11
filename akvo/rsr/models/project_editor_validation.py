@@ -16,10 +16,6 @@ class ProjectEditorValidationSet(Model):
     """
     name = CharField(_(u'name'), max_length=255)
     description = TextField(_(u'description'), max_length=5000)
-    created_by = ForeignKey(
-        'User', verbose_name=_(u'created by'), related_name='created_validations', null=True,
-        blank=True
-    )
 
     def save(self, *args, **kwargs):
         if not self.pk == 1:

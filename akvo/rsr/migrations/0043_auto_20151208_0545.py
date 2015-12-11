@@ -290,7 +290,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='background',
-            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.', verbose_name='background', blank=True),
+            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.', max_length=1000, verbose_name='background', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -332,7 +332,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='current_status',
-            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Describe the situation at the start of the project.', verbose_name='baseline situation', blank=True),
+            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Describe the situation at the start of the project.', max_length=600, verbose_name='baseline situation', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -386,7 +386,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='goals_overview',
-            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Provide a brief description of the overall project goals.', verbose_name='goals overview', blank=True),
+            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Provide a brief description of the overall project goals.', max_length=600, verbose_name='goals overview', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -428,7 +428,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='project_plan_summary',
-            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Enter a brief summary. The summary should explain:<br>- Why the project is being carried out;<br>- Where it is taking place;<br>- Who will benefit and/or participate;<br>- What it specifically hopes to accomplish;<br>- How those specific goals will be reached', verbose_name='summary of project plan', blank=True),
+            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Enter a brief summary. The summary should explain:<br>- Why the project is being carried out;<br>- Where it is taking place;<br>- Who will benefit and/or participate;<br>- What it specifically hopes to accomplish;<br>- How those specific goals will be reached', max_length=400, verbose_name='summary of project plan', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -452,7 +452,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='target_group',
-            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='This should include information about the people, organisations or resources that are being impacted by this project.', verbose_name='target group', blank=True),
+            field=akvo.rsr.fields.ProjectLimitedTextField(help_text='This should include information about the people, organisations or resources that are being impacted by this project.', max_length=600, verbose_name='target group', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(

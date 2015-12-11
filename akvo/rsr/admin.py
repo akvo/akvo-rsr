@@ -1163,9 +1163,8 @@ class ValidationInline(admin.TabularInline):
 
 class ValidationSetAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'ProjectEditorValidationSet')
-    list_display = ('name', 'created_by')
+    list_display = ('name', 'description')
     fields = ('name', 'description')
-    readonly_fields = ('created_by', )
     inlines = (ValidationInline, )
 
 admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
