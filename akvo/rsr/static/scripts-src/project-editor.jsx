@@ -2121,14 +2121,10 @@ function setValidationListeners() {
 }
 
 function setCurrencyOnChange() {
-    try {
-        var currencyDropdown;
+    var currencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id);
 
-        currencyDropdown = document.getElementById('projectCurrency');
+    if (currencyDropdown !== null) {
         currencyDropdown.onchange = updateCurrency(currencyDropdown);
-    } catch (error) {
-        // No currency dropdown
-        return false;
     }
 }
 
@@ -2136,10 +2132,8 @@ function updateCurrency(currencyDropdown) {
     return function(e) {
         e.preventDefault();
 
-        var currencyDisplays, currency;
-
-        currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
-        currencyDisplays = document.getElementsByClassName('currency-display');
+        var currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
+        var currencyDisplays = document.querySelectorAll('.currency-display');
 
         for (var i=0; i < currencyDisplays.length; i++) {
             currencyDisplays[i].innerHTML = currency;
