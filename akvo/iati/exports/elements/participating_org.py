@@ -6,13 +6,6 @@
 
 from lxml import etree
 
-TYPE_TO_CODE = {
-    'funding': '1',
-    'support': '2',
-    'sponsor': '3',
-    'field': '4',
-}
-
 
 def participating_org(project):
     """
@@ -26,25 +19,27 @@ def participating_org(project):
     from akvo.rsr.models import Partnership
 
     for partnership in project.partnerships.all():
-        org = partnership.organisation
-        element = etree.Element("participating-org")
+        # Don't include reporting orgs or sponsor partners
+        if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4]:
+            org = partnership.organisation
+            element = etree.Element("participating-org")
 
-        if org.iati_org_id:
-            element.attrib['ref'] = org.iati_org_id
+            if org.iati_org_id:
+                element.attrib['ref'] = org.iati_org_id
 
-        if org.new_organisation_type:
-            element.attrib['type'] = str(org.new_organisation_type)
-        # don't include old akvo sponsor partner value when checking
-        if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:-1]:
-            element.attrib['role'] = str(partnership.iati_organisation_role)
+            if org.new_organisation_type:
+                element.attrib['type'] = str(org.new_organisation_type)
 
-        narrative_element = etree.SubElement(element, "narrative")
+            if partnership.iati_organisation_role:
+                element.attrib['role'] = str(partnership.iati_organisation_role)
 
-        if org.long_name:
-            narrative_element.text = org.long_name
-        elif org.name:
-            narrative_element.text = org.name
+            narrative_element = etree.SubElement(element, "narrative")
 
-        partnership_elements.append(element)
+            if org.long_name:
+                narrative_element.text = org.long_name
+            elif org.name:
+                narrative_element.text = org.name
+
+            partnership_elements.append(element)
 
     return partnership_elements
