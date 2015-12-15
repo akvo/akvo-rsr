@@ -10,7 +10,7 @@ def add_rsr_validations(apps, schema_editor):
     ProjectEditorValidation = apps.get_model("rsr", "ProjectEditorValidation")
 
     rsr_validation_set = ProjectEditorValidationSet.objects.create(
-        pk=1,
+        # pk=1,
         name='RSR',
         description='This progress bar indicates the number of completed mandatory fields for Akvo '
                     'RSR. It is only possible to publish a project when this progress bar is green '
