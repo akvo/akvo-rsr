@@ -37,26 +37,39 @@ class BudgetItem(models.Model):
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='budget_items')
     label = models.ForeignKey(
-        BudgetItemLabel, verbose_name=_(u'project budget'), null=True,
-        help_text=_(u'Select the budget item. Use the \'Other\' fields to custom budget items.')
+        BudgetItemLabel, verbose_name=_(u'budget item'), null=True, blank=True,
+        help_text=_(u'Select the budget item(s) to indicate how the project budget is divided. '
+                    u'Use the ‘Other’ fields to add custom budget items.')
     )
     other_extra = ValidXMLCharField(
-        max_length=30, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
-        help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
+        max_length=30, null=True, blank=True, verbose_name=_(u'other label extra info'),
+        help_text=_(u'Enter a description for an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currency (€ or $)
     amount = models.DecimalField(
-        _(u'amount'), max_digits=14, decimal_places=2, null=True, blank=True
+        _(u'budget item value'), max_digits=14, decimal_places=2, null=True, blank=True,
+        help_text=_(u'Enter the amount of budget that is set aside for this specific budget item. '
+                    u'Use a period to denote decimals.')
     )
 
     # Extra IATI fields
     type = ValidXMLCharField(
         _(u'budget type'), blank=True, max_length=1, choices=codelist_choices(BUDGET_TYPE),
-        help_text=_(u'Select whether this is a planned or actual budget of the project.')
+        help_text=_(u'Select whether this is an original or revised budget of the project.')
     )
-    period_start = models.DateField(_(u'period start'), null=True, blank=True)
-    period_end = models.DateField(_(u'period end'), null=True, blank=True)
-    value_date = models.DateField(_(u'value date'), null=True, blank=True)
+    period_start = models.DateField(
+        _(u'budget item period start'), null=True, blank=True,
+        help_text=_(u'Enter the start date (DD/MM/YYYY) for the budget period.')
+    )
+    period_end = models.DateField(
+        _(u'budget item period end'), null=True, blank=True,
+        help_text=_(u'Enter the end date (DD/MM/YYYY) for the budget period.')
+    )
+    value_date = models.DateField(
+        _(u'budget item value date'), null=True, blank=True,
+        help_text=_(u'Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for '
+                    u'currency conversions.')
+    )
     currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True,
                                  choices=codelist_choices(CURRENCY))
 
@@ -115,14 +128,21 @@ class BudgetItem(models.Model):
 class CountryBudgetItem(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='country_budget_items')
     code = ValidXMLCharField(
-        _(u'budget item'), max_length=6, blank=True, choices=codelist_choices(BUDGET_IDENTIFIER)
+        _(u'country budget item'), max_length=6, blank=True,
+        choices=codelist_choices(BUDGET_IDENTIFIER),
+        help_text=_(u'This item encodes the alignment of activities with both the functional and '
+                    u'administrative classifications used in the recipient country’s Chart of '
+                    u'Accounts. This applies to both on- and off-budget activities.')
     )
     description = ValidXMLCharField(
-        _(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
+        _(u'country budget item description'), max_length=100, blank=True,
     )
     percentage = models.DecimalField(
-        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'country budget item percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'If more than one identifier is reported, the percentage share must be '
+                    u'reported and all percentages should add up to 100 percent. Use a period to '
+                    u'denote decimals.')
     )
 
     def __unicode__(self):

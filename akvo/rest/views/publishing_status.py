@@ -8,12 +8,15 @@
 from akvo.rsr.models import PublishingStatus
 
 from ..serializers import PublishingStatusSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class PublishingStatusViewSet(BaseRSRViewSet):
+class PublishingStatusViewSet(PublicProjectViewSet):
     """
     """
     queryset = PublishingStatus.objects.all()
     serializer_class = PublishingStatusSerializer
     filter_fields = ('project', 'status', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(PublishingStatusViewSet, self).get_queryset(related_to)

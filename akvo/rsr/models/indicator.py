@@ -19,32 +19,36 @@ from akvo.utils import codelist_choices, codelist_value
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
     title = ValidXMLCharField(
-        _(u'title'), blank=True, max_length=255,
-        help_text=_(u'Enter the title for the indicator from the project result. (255 characters)')
+        _(u'indicator title'), blank=True, max_length=255,
+        help_text=_(u'Within each result indicators can be defined. Indicators should be items '
+                    u'that can be counted and evaluated as the project continues and is completed.')
     )
     measure = ValidXMLCharField(
-        _(u'measure'), blank=True, max_length=1, choices=codelist_choices(INDICATOR_MEASURE),
-        help_text=_(u'Select whether the indicator counts units or evaluates a percentage.')
+        _(u'indicator measure'), blank=True, max_length=1,
+        choices=codelist_choices(INDICATOR_MEASURE),
+        help_text=_(u'Choose how the indicator will be measured (in percentage or units).')
     )
     ascending = models.NullBooleanField(
         _(u'ascending'), blank=True,
-        help_text=_(u'Is the aim of the project to increase or decrease the value of the '
-                    u'indicator?'))
+        help_text=_(u'Choose ascending if the target value of the indicator is higher than the '
+                    u'baseline value (eg. people with access to sanitation). Choose descending if '
+                    u'the target value of the indicator is lower than the baseline value '
+                    u'(eg. people with diarrhea).'))
     description = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=2000,
-        help_text=_(u'You can further define the indicator here. (2000 characters)')
+        _(u'indicator description'), blank=True, max_length=2000,
+        help_text=_(u'You can provide further information of the indicator here.')
     )
     baseline_year = models.PositiveIntegerField(
         _(u'baseline year'), blank=True, null=True, max_length=4,
-        help_text=_(u'Enter the year that the baseline information was obtained.')
+        help_text=_(u'The year the baseline value was taken.')
     )
     baseline_value = ValidXMLCharField(
         _(u'baseline value'), blank=True, max_length=50,
-        help_text=_(u'Enter the value of the baseline indicator. (50 characters)')
+        help_text=_(u'The value of the baseline at the start of the project.')
     )
     baseline_comment = ValidXMLCharField(
         _(u'baseline comment'), blank=True, max_length=2000,
-        help_text=_(u'You can further define the baseline here. (2000 characters)')
+        help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
 
     def __unicode__(self):
@@ -197,29 +201,28 @@ class IndicatorPeriod(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')
     period_start = models.DateField(
         _(u'period start'), null=True, blank=True,
-        help_text=_(u'Enter the start date of the period the indicator is being tracked within.')
+        help_text=_(u'The start date of the reporting period for this indicator.')
     )
     period_end = models.DateField(
         _(u'period end'), null=True, blank=True,
-        help_text=_(u'Enter the end date of the period the indicator is being tracked within.')
+        help_text=_(u'The end date of the reporting period for this indicator.')
     )
     target_value = ValidXMLCharField(
         _(u'target value'), blank=True, max_length=50,
-        help_text=_(u'Enter the value of the indicator that the project is intending to reach. '
-                    u'(50 characters)')
+        help_text=_(u'The target value for the above period.')
     )
     target_comment = ValidXMLCharField(
-        _(u'target comment'), blank=True, max_length=2000,
-        help_text=_(u'You can comment on the target value here. (2000 characters)')
+        _(u'target value comment'), blank=True, max_length=2000,
+        help_text=_(u'Here you can provide extra information on the target value, if needed.')
     )
     actual_value = ValidXMLCharField(
         _(u'actual value'), blank=True, max_length=50,
-        help_text=_(u'Enter the value of the indicator that the project has reached. '
-                    u'(50 characters)')
+        help_text=_(u'A record of the achieved result for this period.')
     )
     actual_comment = ValidXMLCharField(
-        _(u'actual comment'), blank=True, max_length=2000,
-        help_text=_(u'You can comment on the actual value here. (2000 characters)')
+        _(u'actual value comment'), blank=True, max_length=2000,
+        help_text=_(u'Here you can provide extra information on the actual value, if needed '
+                    u'(for instance, why the actual value differs from the target value).')
     )
 
     def __unicode__(self):

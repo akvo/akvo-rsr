@@ -1,0 +1,40 @@
+{% load i18n project_editor %}
+
+<div class="document-item parent" id="project_document.{{ document|obj_id }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=document %}
+    <div class="hide-partial {% if document.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% if document.document %}
+                    {% include text_input with obj=document field='url' always_hidden=True %}
+                    {% include file_input with obj=document field='document' %}
+                {% else %}
+                    {% include text_input with obj=document field='url' %}
+                    {% include file_input with obj=document field='document' always_hidden=True %}
+                {% endif %}
+                <p>
+                    <input type="checkbox" class="document-toggle" {% if document.document %}checked{% endif %}>
+                    <span class="toggle-help">{% trans 'I would like to upload a document (max 5 MB)' %}</span>
+                    <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="document-help-{{ document|obj_id }}"></span>
+                </p>
+                <p class="help-block hidden" id="document-help-{{ document|obj_id }}">
+                    {% trans 'You can upload a document to your project. We kindly request you not to upload files larger than 5 MB. These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight into your project activities. Only use this function when your document is not already available online. To upload multiple documents, click "Add another document".' %}
+                </p>
+            </div>
+            <div class="col-md-6">
+                {% include text_input with obj=document field='title' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='format' %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='category' %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='language' %}
+            </div>
+        </div>
+    </div>
+</div>

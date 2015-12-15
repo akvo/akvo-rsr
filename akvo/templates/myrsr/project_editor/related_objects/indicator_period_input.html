@@ -1,0 +1,43 @@
+{% load i18n project_editor %}
+
+<div class="indicator-period-item parent" id="indicator_period.{{ period|obj_id }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=period %}
+    <div class="hide-partial {% if period.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% if period.is_child_period %}
+                    {% include date_input with obj=period field='period_start' disabled=True %}
+                {% else %}
+                    {% include date_input with obj=period field='period_start' %}
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                {% if period.is_child_period %}
+                    {% include date_input with obj=period field='period_end' disabled=True %}
+                {% else %}
+                    {% include date_input with obj=period field='period_end' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=period field='target_value' %}
+            </div>
+            <div class="col-md-6">
+                {% if not project.is_impact_project %}
+                    {% include text_input with obj=period field='actual_value' %}
+                {% else %}
+                    {% include text_input with obj=period field='actual_value' disabled=True %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include textarea_input with obj=period field='target_comment' %}
+            </div>
+            <div class="col-md-6">
+                {% include textarea_input with obj=period field='actual_comment' %}
+            </div>
+        </div>
+    </div>
+</div>

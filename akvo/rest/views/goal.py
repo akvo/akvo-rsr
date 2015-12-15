@@ -8,12 +8,15 @@
 from akvo.rsr.models import Goal
 
 from ..serializers import GoalSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class GoalViewSet(BaseRSRViewSet):
+class GoalViewSet(PublicProjectViewSet):
     """
     """
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
     filter_fields = ('project', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(GoalViewSet, self).get_queryset(related_to)

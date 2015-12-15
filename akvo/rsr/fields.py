@@ -73,7 +73,10 @@ class LimitedTextField(ValidXMLTextField):
     description = "A TextField that honors the max_length param"
 
     def __init__(self, *args, **kwargs):
-        max_length = kwargs.pop('max_length', None)
+        try:
+            max_length = kwargs['max_length']
+        except KeyError:
+            max_length = None
         super(LimitedTextField, self).__init__(*args, **kwargs)
         if max_length:
             self.validators += [MaxLengthValidator(max_length)]
