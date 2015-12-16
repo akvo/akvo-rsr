@@ -18,9 +18,6 @@ class BudgetItemViewSet(PublicProjectViewSet):
     serializer_class = BudgetItemSerializer
     filter_fields = ('project', 'label', 'type', )
 
-    def get_queryset(self, related_to='project__'):
-        return super(BudgetItemViewSet, self).get_queryset(related_to)
-
 
 class CountryBudgetItemViewSet(PublicProjectViewSet):
     """
@@ -28,6 +25,3 @@ class CountryBudgetItemViewSet(PublicProjectViewSet):
     queryset = CountryBudgetItem.objects.all()
     serializer_class = CountryBudgetItemSerializer
     filter_fields = ('project', 'code', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(CountryBudgetItemViewSet, self).get_queryset(related_to)

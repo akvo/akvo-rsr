@@ -17,6 +17,3 @@ class ProjectDocumentViewSet(PublicProjectViewSet):
     queryset = ProjectDocument.objects.all()
     serializer_class = ProjectDocumentSerializer
     filter_fields = ('project', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(ProjectDocumentViewSet, self).get_queryset(related_to)

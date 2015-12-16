@@ -17,6 +17,3 @@ class LegacyDataViewSet(PublicProjectViewSet):
     queryset = LegacyData.objects.all()
     serializer_class = LegacyDataSerializer
     filter_fields = ('project', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(LegacyDataViewSet, self).get_queryset(related_to)
