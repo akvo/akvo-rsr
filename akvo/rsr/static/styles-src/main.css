@@ -534,9 +534,11 @@ nav.navbar-fixed-top {
         background-size: 5px auto; }
 
 .myProjectList tbody tr {
-  background: rgba(32, 32, 36, 0.1) !important; }
-  .myProjectList tbody tr.isPublished {
-    background: white !important; }
+  background: white !important; }
+  .myProjectList tbody tr.notPublished {
+    background: rgba(217, 83, 79, 0.1) !important; }
+  .myProjectList tbody tr.isPrivate {
+    background: rgba(240, 173, 78, 0.1) !important; }
 @media only screen and (min-width: 1200px) {
   .myProjectList div.twoColumns.clearfix {
     min-width: 170px; } }
@@ -570,10 +572,6 @@ div.paginationWrap {
   margin-bottom: 15px; }
   .editDate span {
     color: rgba(32, 32, 36, 0.3); }
-  .editDate span.published {
-    color: #5cb85c; }
-  .editDate span.notPublished {
-    color: #e31b23; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1701,24 +1699,24 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress .progress-bar .progress-percentage {
   display: none; }
 
-.formOverviewInfo .progress .progress-bar .progress-percentage {
+.formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
-.formOverviewInfo .info-icon {
-  padding-left: 0.5em;
-  cursor: pointer;
-  cursor: hand;
-  color: #2c2a74; }
-  .formOverviewInfo .info-icon.activated {
-    color: rgba(44, 42, 116, 0.3); }
+.formProgress .redLegenda {
+  background: #d9534f;
+  color: #d9534f; }
+.formProgress .orangeLegenda {
+  background: #f0ad4e;
+  color: #f0ad4e; }
+.formProgress .greenLegenda {
+  background: #5cb85c;
+  color: #5cb85c; }
+.formProgress .mandatoryIndicator {
+  color: #d9534f; }
 
-.formOverviewInfo {
-  border: 1px solid rgba(52, 52, 56, 0.1);
-  padding: 20px;
-  margin-bottom: 15px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
+.formOverviewInfo span.published {
+  color: #5cb85c; }
+.formOverviewInfo span.notPublished {
+  color: #e31b23; }
 
 .projectEdit h2 {
   font-weight: normal;
@@ -1727,7 +1725,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   display: block; }
 .projectEdit .myPanel {
   overflow: hidden;
-  cursor: pointer;
   line-height: 25px;
   position: relative; }
   .projectEdit .myPanel .formBlock {
@@ -1759,21 +1756,20 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     border-radius: 5px;
     display: block;
     width: 100%;
-    cursor: pointer;
     top: initial;
     padding: 5px 5px 5px 15px;
     transition: background 0.1s linear;
-    background: rgba(44, 42, 116, 0.1); }
+    background: rgba(44, 42, 116, 0.1);
+    cursor: pointer; }
     .projectEdit .formStep > div > label:hover {
       background: rgba(32, 32, 36, 0.05); }
     .projectEdit .formStep > div > label .info-icon {
       padding-left: 0.5em;
       cursor: pointer;
-      cursor: hand;
       font-size: 90%; }
       .projectEdit .formStep > div > label .info-icon.activated {
         color: rgba(44, 42, 116, 0.3); }
-  .projectEdit .formStep .progress {
+  .projectEdit .formStep .section-progress {
     position: absolute;
     width: 30%;
     top: 15px;
@@ -1817,14 +1813,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   /* Modern Browsers */ }
 .projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
   position: absolute;
-  top: 10px;
+  top: 0px;
   transition: top 0.7s ease, opacity 0.7s ease;
-  opacity: 0;
+  opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit input:valid + label, .projectEdit input:valid + span + label, .projectEdit input:valid + ul + label, .projectEdit textarea:valid + label, .projectEdit textarea:valid + span + label, .projectEdit textarea:valid + ul + label, .projectEdit select:valid + label, .projectEdit select:valid + span + label, .projectEdit select:valid + ul + label {
-  opacity: 1;
-  top: 0px; }
 .projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
   color: #2c2a74; }
 .projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
@@ -1834,11 +1827,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit .delete-object-button {
+.projectEdit .delete-related-object {
   color: #d9534f; }
 .projectEdit .delete-photo-button {
   color: #d9534f; }
-.projectEdit .delete-document-button {
+.projectEdit .delete-document {
   color: #d9534f; }
 .projectEdit .info-icon {
   padding-left: 0.5em;
@@ -1847,11 +1840,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
-.projectEdit .mandatory {
+.projectEdit .mandatory, .projectEdit .mandatory-block {
   color: #d9534f;
   font-size: 125%;
   margin-left: 4px;
   margin-right: -4px; }
+.projectEdit .mandatory-block {
+  font-size: 90%;
+  margin-left: 0px;
+  margin-right: 0px; }
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
@@ -1891,7 +1888,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border-radius: 10px;
   display: block;
   width: 100%;
-  cursor: pointer;
   top: initial;
   padding: 5px 15px 5px 15px;
   margin-top: 10px;
@@ -1903,7 +1899,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   color: #2c2a74;
   font-size: 12px;
   margin-top: 10px;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  cursor: pointer; }
+.projectEdit .save-message {
+  text-align: center; }
+.projectEdit .save-button {
+  text-align: right; }
+.projectEdit .toggle-help {
+  font-size: 0.9em;
+  color: rgba(44, 42, 116, 0.5); }
 
 .legenda {
   border: 1px solid rgba(44, 42, 116, 0.5);
@@ -1911,17 +1915,17 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border-radius: 5px;
   padding: 5px 15px 5px 15px;
   margin: 15px 15px 15px 15px; }
-  .legenda .redLegenda {
-    background: #d9534f;
+  .legenda .mandatory, .legenda .projectEdit .mandatory-block, .projectEdit .legenda .mandatory-block {
     color: #d9534f; }
-  .legenda .orangeLegenda {
-    background: #f0ad4e;
-    color: #f0ad4e; }
-  .legenda .greenLegenda {
-    background: #5cb85c;
-    color: #5cb85c; }
-  .legenda .mandatory {
-    color: #d9534f; }
+
+.progress-radio {
+  top: 25px; }
+
+.remove-progress-bar-link {
+  color: #d9534f; }
+
+.viewProject {
+  margin-top: 15px; }
 
 .info-icon {
   padding-left: 0.5em;
@@ -1929,6 +1933,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   cursor: hand; }
   .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+
+#publishProject {
+  margin-top: -7px; }
 
 #editor-feedback a {
   display: block;
@@ -1943,13 +1950,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
-
-#publishProject.btn {
-  margin-top: -6px; }
-  @media only screen and (max-width: 1200px) {
-    @media only screen and (min-width: 992px) {
-      #publishProject.btn {
-        margin-left: -1.25em; } } }
 
 /* New concatenated project page */
 .tab-menu {

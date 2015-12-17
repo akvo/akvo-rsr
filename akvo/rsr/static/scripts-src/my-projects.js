@@ -90,16 +90,24 @@ function addCustomFieldsToProject(projectId) {
 }
 
 function setCreateProjectOnClick() {
-    try {
-        var createProjectNode;
+    var createProjectNode = document.getElementById('createProject');
 
-        createProjectNode = document.getElementById('createProject');
+    if (createProjectNode !== null) {
         createProjectNode.onclick = getCreateProject(createProjectNode);
-
-    } catch (error) {
-        // No create project button
-        return false;
     }
+}
+
+function logAddProject(projectId) {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/project/' + projectId + '/log_project_addition/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/json");
+    request.send();
 }
 
 function getCreateProject(createProjectNode) {
@@ -134,6 +142,7 @@ function getCreateProject(createProjectNode) {
                     }
 
                     addCustomFieldsToProject(projectId);
+                    logAddProject(projectId);
                 } catch (error) {
                     // Something went wrong while parsing the response
                     createProjectNode.removeAttribute('disabled');
@@ -157,6 +166,6 @@ function getCreateProject(createProjectNode) {
     };
 }
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     setCreateProjectOnClick();
 });

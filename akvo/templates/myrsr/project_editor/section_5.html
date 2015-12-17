@@ -1,0 +1,64 @@
+{% load i18n project_editor %}
+
+<div class="myPanel borderBottom" id="panel5">
+    <div class="formStep stepFive">
+        <div class="toggleSection">
+            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special hidden" toggleid="step-5-helptext"></span></h4></label>
+        </div>
+        <input type="radio" name="step" id="stepFive">
+        <div class="progress section-progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+        <div class="formBlock hidden">
+            <div class="hidden" id="step-5-helptext">
+                <p class="help-block">{% trans 'In the results and indicators section you can define which results you plan to achieve and how you will measure these to be able to monitor and evaluate your project. There are three main types of results. Outputs are usually very practical. For example to organise a particular type of training. An indicator can be the number of trainings given. This is easy to measure. Outcome results occur when users use outputs, for example when people portray different behaviour because of the training they took part in. Impact is a broader result such as empowered citizens.' %}</p>
+                <p class="help-block">{% trans 'Indicators help us to measure progress on these various types of results. They are usually easy to determine for outputs (e.g. 9 trainings), harder for outcomes (e.g. number of policy documents written) and hardest (or near to impossible) for impacts. You can set a target value (e.g. 9 trainings) and later add the actual value (e.g. 8 trainings took place). This gives you progress information against set targets for monitoring and evaluation purposes. Sometimes baseline values are used to measure against (e.g. average income level at project start).' %}</p>
+                <p class="help-block">{% trans 'Lastly, indicators can be separated per period. Especially for longer projects this is helpful to track progress during the project. For example, you can set a target of 3 trainings per year for a 3 year project. When you don’t add a period for an indicator, it is assumed that the indicator (and the target and actual values) applies to the full project period. A full example:' %}</p>
+                <p class="help-block"><i>{% trans 'Result: "Organise training sessions for staff"' %}<br/>
+                <span class="tab"></span>{% trans 'Indicator: "Organise 10 training sessions"' %}<br/>
+                <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
+            </div>
+            <form role="form">
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_result" }}">
+                    <h5>{% trans 'Results' %}</h5>
+                    <div class="result-container" id="result-container">
+                        {% for result in project.results.all %}
+                            {% include "myrsr/project_editor/related_objects/result_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-result"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_projectcondition" }}">
+                    <h5>{% trans 'Project conditions' %}</h5>
+                    <div class="condition-container" id="condition-container">
+                        {% for condition in project.conditions.all %}
+                            {% include "myrsr/project_editor/related_objects/condition_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-condition"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% for customfield in custom_fields_section_5 %}
+                    {% include custom_field_input %}
+                {% endfor %}
+
+                {% include "myrsr/project_editor/partials/save_row.html" %}
+            </form>
+        </div>
+    </div>
+</div>

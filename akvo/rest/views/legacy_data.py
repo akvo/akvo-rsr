@@ -8,12 +8,15 @@
 from akvo.rsr.models import LegacyData
 
 from ..serializers import LegacyDataSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class LegacyDataViewSet(BaseRSRViewSet):
+class LegacyDataViewSet(PublicProjectViewSet):
     """
     """
     queryset = LegacyData.objects.all()
     serializer_class = LegacyDataSerializer
     filter_fields = ('project', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(LegacyDataViewSet, self).get_queryset(related_to)

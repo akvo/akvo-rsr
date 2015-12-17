@@ -12,6 +12,7 @@ from django.test import Client, TestCase
 from django.test.client import RequestFactory
 from akvo.rsr.middleware import _is_rsr_host, _is_naked_app_host, _partner_site
 from akvo.rsr.models import PartnerSite, Organisation
+from akvo.codelists.models import Version
 
 STOCK_RSR_NETLOC = "http://{}".format(settings.RSR_DOMAIN)
 AKVOAPP_NETLOC = "http://{}".format(settings.AKVOAPP_DOMAIN)
@@ -128,6 +129,8 @@ class ValidAkvoPageTestCase(TestCase):
         o1.save()
         ps1 = PartnerSite(organisation=o1, hostname='partner1', cname='projects.partner1.org')
         ps1.save()
+        iati_version = Version(code=settings.IATI_VERSION)
+        iati_version.save()
 
     def test_partner_site(self):
         """."""
@@ -155,6 +158,8 @@ class ValidCnameAkvoPageTestCase(TestCase):
         o1.save()
         ps1 = PartnerSite(organisation=o1, hostname='partner1', cname=self.cname)
         ps1.save()
+        iati_version = Version(code=settings.IATI_VERSION)
+        iati_version.save()
 
     def test_partner_site(self):
         """."""

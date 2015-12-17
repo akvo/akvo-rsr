@@ -8,18 +8,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import ProjectUpdate
 
 from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-class ProjectUpdateViewSet(BaseRSRViewSet):
+class ProjectUpdateViewSet(PublicProjectViewSet):
 
     """."""
-
-    # queryset = ProjectUpdate.objects.all()
     queryset = ProjectUpdate.objects.select_related('project',
                                                     'user').prefetch_related('locations')
     serializer_class = ProjectUpdateSerializer
@@ -34,36 +32,35 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
-    def get_queryset(self):
+    def get_queryset(self, related_to='project__'):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        queryset = self.queryset
         created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
         if created_at__gt is not None:
-            queryset = queryset.filter(created_at__gt=created_at__gt)
+            self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
         created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
         if created_at__lt is not None:
-            queryset = queryset.filter(created_at__lt=created_at__lt)
+            self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
         last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
         if last_modified_at__gt is not None:
-            queryset = queryset.filter(last_modified_at__gt=last_modified_at__gt)
+            self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
         last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
         if last_modified_at__lt is not None:
-            queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
+            self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
         project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
         if project__partners:
-            queryset = queryset.filter(project__partners=project__partners)
+            self.queryset = self.queryset.filter(project__partners=project__partners)
         user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
         if user__organisations:
-            queryset = queryset.filter(user__organisations=user__organisations)
-        return queryset
+            self.queryset = self.queryset.filter(user__organisations=user__organisations)
+        return super(ProjectUpdateViewSet, self).get_queryset(related_to)
 
 
-class ProjectUpdateExtraViewSet(BaseRSRViewSet):
+class ProjectUpdateExtraViewSet(PublicProjectViewSet):
 
     """Project update extra resource."""
 
@@ -102,33 +99,32 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
     }
 
-    def get_queryset(self):
+    def get_queryset(self, related_to='project__'):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        queryset = self.queryset
         created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
         if created_at__gt is not None:
-            queryset = queryset.filter(created_at__gt=created_at__gt)
+            self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
         created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
         if created_at__lt is not None:
-            queryset = queryset.filter(created_at__lt=created_at__lt)
+            self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
         last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
         if last_modified_at__gt is not None:
-            queryset = queryset.filter(last_modified_at__gt=last_modified_at__gt)
+            self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
         last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
         if last_modified_at__lt is not None:
-            queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
+            self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
         project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
         if project__partners:
-            queryset = queryset.filter(project__partners=project__partners)
+            self.queryset = self.queryset.filter(project__partners=project__partners)
         user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
         if user__organisations:
-            queryset = queryset.filter(user__organisations=user__organisations)
-        return queryset
+            self.queryset = self.queryset.filter(user__organisations=user__organisations)
+        return super(ProjectUpdateExtraViewSet, self).get_queryset()
 
 
 @api_view(['POST'])

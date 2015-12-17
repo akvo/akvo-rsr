@@ -6,12 +6,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rest.serializers.project import ProjectUpSerializer
-from akvo.rsr.models import Project, PublishingStatus
+from akvo.rsr.models import Project
 from ..serializers import ProjectSerializer, ProjectExtraSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
 
 
-class ProjectViewSet(BaseRSRViewSet):
+class ProjectViewSet(PublicProjectViewSet):
 
     """
     Viewset providing Project data.
@@ -47,11 +47,12 @@ class ProjectViewSet(BaseRSRViewSet):
     __publishingstatus\__status__.
     """
     queryset = Project.objects.select_related(
-        'publishingstatus'
-        ).prefetch_related(
-            'categories',
-            'keywords',
-            'partners')
+        'categories',
+        'keywords',
+        'partners',
+    ).prefetch_related(
+        'publishingstatus',
+    )
 
     serializer_class = ProjectSerializer
     filter_fields = {
@@ -83,17 +84,18 @@ class ProjectViewSet(BaseRSRViewSet):
         'publishingstatus__status': ['exact', ],
     }
 
-    def get_queryset(self):
+    def get_queryset(self, related_to=''):
         """
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
-        queryset = self.queryset
         sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
         if sync_owner:
-            queryset = queryset.filter(partnerships__iati_organisation_role=101,
-                                       partnerships__organisation__pk=sync_owner)
-        return queryset.distinct()
+            self.queryset = self.queryset.filter(
+                partnerships__iati_organisation_role=101,
+                partnerships__organisation__pk=sync_owner
+            ).distinct()
+        return super(ProjectViewSet, self).get_queryset(related_to)
 
 
 class ProjectExtraViewSet(ProjectViewSet):
@@ -107,9 +109,11 @@ class ProjectExtraViewSet(ProjectViewSet):
     __publishingstatus\__status__ (filter on publishing status)
     """
 
-    queryset = Project.objects.select_related(
-        'publishing_status').prefetch_related(
-            'sectors', 'partnerships')
+    queryset = Project.objects.prefetch_related(
+        'publishingstatus',
+        'sectors',
+        'partnerships',
+    )
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
     filter_fields = ('partnerships__organisation', 'publishingstatus__status')
@@ -128,12 +132,13 @@ class ProjectUpViewSet(ProjectViewSet):
 
     queryset = Project.objects.select_related(
         'primary_location',
-        'updates',
-        'publishingstatus'
-        ).prefetch_related(
-            'categories',
-            'keywords',
-            'partners')
+        'categories',
+        'keywords',
+        'partners',
+    ).prefetch_related(
+        'publishingstatus',
+        'project_updates',
+    )
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 100

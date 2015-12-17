@@ -8,22 +8,21 @@
 from akvo.rsr.models import Partnership
 
 from ..serializers import PartnershipSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class PartnershipViewSet(BaseRSRViewSet):
+class PartnershipViewSet(PublicProjectViewSet):
     """
     """
     queryset = Partnership.objects.all()
     serializer_class = PartnershipSerializer
     filter_fields = ('project', 'organisation', 'iati_organisation_role', )
 
-    def get_queryset(self):
+    def get_queryset(self, related_to='project__'):
         """Allow filtering on partner_type."""
-        queryset = self.queryset
         partner_type = self.request.QUERY_PARAMS.get('partner_type', None)
         if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP.keys():
-            queryset = queryset.filter(
+            self.queryset = self.queryset.filter(
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
-            )
-        return queryset
+            ).distinct()
+        return super(PartnershipViewSet, self).get_queryset(related_to)

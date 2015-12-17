@@ -23,8 +23,8 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus,
-                                   BudgetIdentifierVocabulary)
+from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
+                                   TiedStatus)
 from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
@@ -42,6 +42,7 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
+from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
 
 
@@ -81,7 +82,7 @@ class Project(TimestampsMixin, models.Model):
     STATUS_CANCELLED = 'L'
     STATUS_ARCHIVED = 'R'
     STATUSES = (
-        (STATUS_NONE, _(u'None')),
+        (STATUS_NONE, ''),
         (STATUS_NEEDS_FUNDING, _(u'Needs funding')),
         (STATUS_ACTIVE, _(u'Active')),
         (STATUS_COMPLETE, _(u'Complete')),
@@ -98,23 +99,19 @@ class Project(TimestampsMixin, models.Model):
         STATUS_ARCHIVED: 'grey',
     }
 
-    title = ValidXMLCharField(
-        _(u'title'), max_length=45, db_index=True, blank=True,
-        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
-                    u'Use them to attract attention to what you are doing. (45 characters)')
-    )
-    subtitle = ValidXMLCharField(
-        _(u'subtitle'), max_length=75, blank=True,
-        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
-                    u'Use them to attract attention to what you are doing. (75 characters)')
-    )
+    title = ValidXMLCharField(_(u'project title'), max_length=45, db_index=True, blank=True)
+    subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=75, blank=True)
     status = ValidXMLCharField(
         _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
-        help_text=_(u'There are four different project statuses:<br>'
-                    u'1) Needs funding: projects that still need funding.<br>'
-                    u'2) Active: projects that started with the implementation phase.<br>'
-                    u'3) Completed: projects that have been finished.<br>'
-                    u'4) Cancelled: projects that were never fully implemented or carried out.')
+        help_text=_(u'There are five different project statuses:<br/>'
+                    u'1) Needs funding: this project still needs funding and implementation has '
+                    u'not yet started.<br/>'
+                    u'2) Active: the implementation phase has begun.<br/>'
+                    u'3) Completed: the project has been completed.<br/>'
+                    u'4) Cancelled: the project never took place or work stopped before it was '
+                    u'fully implemented.<br/>'
+                    u'5) Archived: projects are archived when the reporting partner no longer uses '
+                    u'RSR.')
     )
     categories = models.ManyToManyField(
         'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
@@ -125,7 +122,7 @@ class Project(TimestampsMixin, models.Model):
     )
     project_plan_summary = ProjectLimitedTextField(
         _(u'summary of project plan'), max_length=400, blank=True,
-        help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
+        help_text=_(u'Enter a brief summary. The summary should explain:<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
                     u'- Who will benefit and/or participate;<br>'
@@ -134,56 +131,55 @@ class Project(TimestampsMixin, models.Model):
     )
 
     current_image = ImageField(
-        _('project photo'), blank=True, upload_to=image_path,
-        help_text=_(u'Add your project photo here. You can only add one photo. '
-                    u'If you have more, you can add them via RSR updates when your project is '
-                    u'published.<br>'
-                    u'The photo should be about 1 MB in size, and should preferably be in '
-                    u'JPG format.'),
+        _('photo'), blank=True, upload_to=image_path,
+        help_text=_(u'Add your project photo here. You can only add one photo. If you have more, '
+                    u'you can add them via RSR updates when your project is published. A photo '
+                    u'album will feature on the project page. The photo should not be larger '
+                    u'than 2 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
-        help_text=_(u'Briefly describe what is happening in the photo. (50 characters)')
+        help_text=_(u'Briefly describe who or what you see in the photo.')
     )
     current_image_credit = ValidXMLCharField(
         _(u'photo credit'), blank=True, max_length=50,
-        help_text=_(u'Who took the photo? (50 characters)')
+        help_text=_(u'Enter who took the photo.')
     )
 
     goals_overview = ProjectLimitedTextField(
         _(u'goals overview'), max_length=600, blank=True,
-        help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
+        help_text=_(u'Provide a brief description of the overall project goals.')
     )
     current_status = ProjectLimitedTextField(
-        _(u'current situation'), blank=True, max_length=600,
-        help_text=_(u'Describe the current situation of the project: (600 characters)<br>'
-                    u'- What is the starting point of the project?<br>'
-                    u'- What is happening at the moment?')
+        _(u'baseline situation'), blank=True, max_length=600,
+        help_text=_(u'Describe the situation at the start of the project.')
     )
     project_plan = ValidXMLTextField(
         _(u'project plan'), blank=True,
-        help_text=_(
-            u'This should include detailed information about the '
-            u'project and plans for implementing: the what, how, who and when. (unlimited)'
-        )
+        help_text=_(u'Detailed information about the implementation of the project: the what, how, '
+                    u'who and when.')
     )
     sustainability = ValidXMLTextField(
         _(u'sustainability'), blank=True,
-        help_text=_(u'Describe plans for sustaining/maintaining results after '
-                    u'implementation is complete. (unlimited)')
+        help_text=_(u'Describe how you aim to guarantee sustainability of the project until 10 '
+                    u'years after project implementation. Think about the institutional setting, '
+                    u'capacity-building, a cost recovery plan, products used, feasible '
+                    u'arrangements for operation and maintenance, anticipation of environmental '
+                    u'impact and social integration.')
     )
     background = ProjectLimitedTextField(
         _(u'background'), blank=True, max_length=1000,
         help_text=_(
-            u'Include relevant background information, including geographic, political, '
-            u'environmental, social and/or cultural issues. (1000 characters)'
+            u'This should describe the geographical, political, environmental, social and/or '
+            u'cultural context of the project, and any related activities that have already taken '
+            u'place or are underway.'
         )
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True, max_length=600,
         help_text=_(
             u'This should include information about the people, organisations or resources that '
-            u'are being impacted by this project. (600 characters)'
+            u'are being impacted by this project.'
         )
     )
 
@@ -192,16 +188,25 @@ class Project(TimestampsMixin, models.Model):
                                             help_text=_(u'Determines whether this project is an '
                                                         u'RSR Impact project.'))
 
+    # Private projects
+    is_public = models.BooleanField(
+        _(u'is public project'), default=True,
+        help_text=_(u'Determines whether this project is a public project.')
+    )
+
     # project meta info
     language = ValidXMLCharField(
         max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
-        help_text=_(u'The main language of the project.')
+        help_text=_(u'Enter the language used when entering the details for this project.')
     )
     notes = ValidXMLTextField(
-        _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
+        _(u'project comments'), blank=True,
+        help_text=_(u'The project comments are only for internal use and will not be displayed '
+                    u'anywhere on the project page.')
     )
     keywords = models.ManyToManyField(
-        'Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True
+        'Keyword', verbose_name=_(u'keyword'), related_name='projects', blank=True,
+        help_text=_(u'Choose a keyword to link to this project.')
     )
 
     # budget
@@ -212,19 +217,19 @@ class Project(TimestampsMixin, models.Model):
     )
     date_start_planned = models.DateField(
         _(u'start date (planned)'), null=True, blank=True,
-        help_text=_(u'Enter the planned start date of the project.')
+        help_text=_(u'Enter the original start date of the project (DD/MM/YYYY).')
     )
     date_start_actual = models.DateField(
         _(u'start date (actual)'), null=True, blank=True,
-        help_text=_(u'Enter the actual start date of the project.')
+        help_text=_(u'Enter the actual start date of the project (DD/MM/YYYY).')
     )
     date_end_planned = models.DateField(
         _(u'end date (planned)'), null=True, blank=True,
-        help_text=_(u'Enter the planned end date of the project.')
+        help_text=_(u'Enter the original end date of the project (DD/MM/YYYY).')
     )
     date_end_actual = models.DateField(
         _(u'end date (actual)'), null=True, blank=True,
-        help_text=_(u'Enter the actual end date of the project.')
+        help_text=_(u'Enter the actual end date of the project (DD/MM/YYYY).')
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
@@ -240,22 +245,21 @@ class Project(TimestampsMixin, models.Model):
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True, null=True,
-        unique=True,
-        help_text=_(u'This should be the official unique IATI Identifier for the project. '
-                    u'The identifier consists of the IATI organisation identifier and the '
-                    u'(organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. '
-                    u'(100 characters)<br>'
-                    u'Note that \'projects\' in this form are the same as \'activities\' in '
-                    u'IATI.<br>'
-                    u'<a href="http://iatistandard.org/activity-standard/iati-activities/'
-                    u'iati-activity/iati-identifier" target="_blank">How to create</a>')
+        _(u'IATI identifier'), max_length=100, blank=True, db_index=True, null=True, unique=True,
+        help_text=_(u'This is a globally unique identifier for this activity. It is a requirement '
+                    u'to be compliant with the IATI standard. This code consists of: '
+                    u'[country code]-[Chamber of Commerce number]-[organisation’s internal project '
+                    u'code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more '
+                    u'information see') + ' <a href="http://iatistandard.org/201/activity-standard/'
+                                          'iati-activities/iati-activity/iati-identifier/'
+                                          '#definition" target="_blank">http://iatistandard.org/'
+                                          '201/activity-standard/iati-activities/iati-activity/'
+                                          'iati-identifier/#definition</a>'
     )
     hierarchy = models.PositiveIntegerField(
         _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS,
         help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify '
-                    u'whether this is a core or sub-project here.<br>'
-                    u'So for example: is this project part of a larger project or programme.')
+                    u'whether this is a core, sub, or lower sub activity here.')
     )
     project_scope = ValidXMLCharField(
         _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ACTIVITY_SCOPE),
@@ -263,25 +267,69 @@ class Project(TimestampsMixin, models.Model):
     )
     capital_spend_percentage = models.DecimalField(
         _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'The percentage of the total commitment allocated to or planned for capital '
+                    u'expenditure. Content must be a positive decimal number between 0 and 100, '
+                    u'with no percentage sign. Use a period to denote decimals.')
     )
-    collaboration_type = ValidXMLCharField(_(u'collaboration type'), blank=True, max_length=1,
-                                           choices=codelist_choices(COLLABORATION_TYPE))
-    default_aid_type = ValidXMLCharField(_(u'default aid type'), blank=True, max_length=3,
-                                         choices=codelist_choices(AID_TYPE))
-    default_finance_type = ValidXMLCharField(_(u'default finance type'), blank=True, max_length=3,
-                                             choices=codelist_choices(FINANCE_TYPE))
-    default_flow_type = ValidXMLCharField(_(u'default flow type'), blank=True, max_length=2,
-                                          choices=codelist_choices(FLOW_TYPE))
-    default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
-                                            choices=codelist_choices(TIED_STATUS))
+    collaboration_type = ValidXMLCharField(
+        _(u'collaboration type'), blank=True, max_length=1,
+        choices=codelist_choices(COLLABORATION_TYPE),
+        help_text=_(u'This is the IATI identifier for the type of collaboration involved. For '
+                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
+                    u'CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'CollaborationType/</a>.')
+    )
+    default_aid_type = ValidXMLCharField(
+        _(u'default aid type'), blank=True, max_length=3, choices=codelist_choices(AID_TYPE),
+        help_text=_(u'This is the IATI identifier for the type of aid being supplied or activity '
+                    u'being undertaken. This element specifies a default for all the project’s '
+                    u'financial transactions. This can be overridden at the individual transaction '
+                    u'level. For reference, please visit: <a href="http://iatistandard.org/201/'
+                    u'codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'AidType/</a>.')
+    )
+    default_finance_type = ValidXMLCharField(
+        _(u'default finance type'), blank=True, max_length=3,
+        choices=codelist_choices(FINANCE_TYPE),
+        help_text=_(u'This is the IATI identifier for the type of finance. This element specifies '
+                    u'a default for all the transactions in the project’s activity report; it can '
+                    u'be overridden at the individual transaction level. For reference visit: '
+                    u'<a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">'
+                    u'http://iatistandard.org/201/codelists/FinanceType/</a>.')
+    )
+    default_flow_type = ValidXMLCharField(
+        _(u'default flow type'), blank=True, max_length=2, choices=codelist_choices(FLOW_TYPE),
+        help_text=_(u'This is the IATI identifier for how the activity (project) is funded. For '
+                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
+                    u'FlowType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'FlowType/</a>.')
+    )
+    default_tied_status = ValidXMLCharField(
+        _(u'default tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS),
+        help_text=_(u'This element specifies a default for all the activity’s financial '
+                    u'transactions; it can be overridden at the individual transaction level. For '
+                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
+                    u'TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'TiedStatus/</a>.')
+    )
     country_budget_vocabulary = ValidXMLCharField(
         _(u'country budget vocabulary'), blank=True, max_length=1,
-        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY)
+        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY),
+        help_text=_(u'Enter an IATI code for the common functional classification or country '
+                    u'system (this allows for common codes, country-specific codes, or any other '
+                    u'classification agreed between countries and donors) see: '
+                    u'<a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" '
+                    u'target="_blank">http://iatistandard.org/201/codelists/'
+                    u'BudgetIdentifierVocabulary/</a>.')
+    )
+
+    # Project editor settings
+    validations = models.ManyToManyField(
+        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects',
     )
 
     # denormalized data
-    # =================
     budget = models.DecimalField(
         _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0
@@ -337,6 +385,11 @@ class Project(TimestampsMixin, models.Model):
 
         super(Project, self).save(*args, **kwargs)
 
+        # Add RSR validation set to projects that don't have that set
+        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
+        if not rsr_validation_set in self.validations.all():
+            self.validations.add(rsr_validation_set)
+
     def clean(self):
         # Don't allow a start date before an end date
         if self.date_start_planned and self.date_end_planned and \
@@ -359,6 +412,7 @@ class Project(TimestampsMixin, models.Model):
         # In order for the IATI activity IDs not be unique, we set them to None when they're empty
         if not self.iati_activity_id:
             self.iati_activity_id = None
+
 
     @models.permalink
     def get_absolute_url(self):
@@ -534,9 +588,7 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
-
     class QuerySet(DjangoQuerySet):
-
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
@@ -553,6 +605,12 @@ class Project(TimestampsMixin, models.Model):
 
         def unpublished(self):
             return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
+
+        def private(self):
+            return self.filter(is_public=False)
+
+        def public(self):
+            return self.filter(is_public=True)
 
         def status_none(self):
             return self.filter(status__exact=Project.STATUS_NONE)
@@ -871,12 +929,12 @@ class Project(TimestampsMixin, models.Model):
         """
         This method tries to return the "managing" partner organisation.
         """
-        # Pick the partner that can publish the project first
-        if self.publishing_orgs:
-            return self.publishing_orgs[0]
-        # Otherwise, if we have a reporting-org then we choose that
+        # Pick the reporting org first
         if self.reporting_org:
             return self.reporting_org
+        # Otherwise, pick the partner that can publish the project
+        if self.publishing_orgs:
+            return self.publishing_orgs[0]
         # Otherwise, grab the first accountable partner we find
         elif self.support_partners():
             return self.support_partners()[0]

@@ -582,7 +582,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy'),
+                       'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -598,15 +598,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': (),
         }),
-        # (_(u'Reporting Organisation'), {
-        #     'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-        #         u'Indicate the reporting organisation of this project. This organisation must be existing '
-        #         u'already in Akvo RSR. If the organisation does not exist in the system, please send the details of '
-        #         u'the organisation including Name, Address, Logo, Contact Person and Website to '
-        #         u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
-        #     ),
-        #     'fields': ('sync_owner', 'sync_owner_secondary_reporter'),
-        # }),
         (_(u'Project Partners'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add each of the partners you are working with on your project. These organisations must be existing '
@@ -906,14 +897,24 @@ class UserAdmin(DjangoUserAdmin):
             return ['is_admin', 'is_support', 'is_superuser', 'last_login', 'date_joined']
 
     def get_queryset(self, request):
+        # Superusers or RSR Admins can see all users
         if request.user.is_superuser or request.user.is_admin:
             return super(UserAdmin, self).get_queryset(request)
 
-        qs = get_user_model().objects.filter(pk__in=[request.user.pk, ])
-        for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'User Managers']):
-                qs = qs.distinct() | employment.organisation.all_users().distinct()
-        return qs.distinct()
+        else:
+            # Retrieve the organisations of which the user is an approved Admin or User manager
+            user_manager_groups = Group.objects.filter(name__in=['Admins', 'User Managers'])
+            managing_orgs = request.user.organisations.filter(
+                employees__user__pk=request.user.pk,
+                employees__is_approved=True,
+                employees__group__in=user_manager_groups
+            )
+            if managing_orgs:
+                # Return all users of the organisations that the user manages
+                return managing_orgs.users()
+            else:
+                # User doesn't manage any organisation, only return the user itself
+                return get_user_model().objects.filter(pk=request.user.pk)
 
 admin.site.register(get_user_model(), UserAdmin)
 
@@ -1147,3 +1148,23 @@ class IatiImportAdmin(admin.ModelAdmin):
     exclude = ('status', 'start_date', 'end_date')
 
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
+
+
+class ValidationInline(admin.TabularInline):
+    model = get_model('rsr', 'ProjectEditorValidation')
+    fields = ('validation', 'action', )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.validations.count() == 0 else 0
+        else:
+            return 1
+
+
+class ValidationSetAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ProjectEditorValidationSet')
+    list_display = ('name', 'description')
+    fields = ('name', 'description')
+    inlines = (ValidationInline, )
+
+admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)

@@ -21,19 +21,19 @@ def apply_keywords(page, project_qs):
     else:
         return project_qs.filter(keywords__in=page.keywords.all())
 
+
 def org_projects(organisation):
     """."""
-    return organisation.published_projects().select_related(
-            'partners',
-            'categories',
-            'primary_location',
-            'primary_location__country',
-            # TODO: remove
-            # 'sync_owner'
-        ).prefetch_related(
-            'categories',
-            'partners'
-        ).order_by('-id')
+    return organisation.published_projects().public().select_related(
+        'partners',
+        'categories',
+        'primary_location',
+        'primary_location__country',
+    ).prefetch_related(
+        'categories',
+        'partners'
+    ).order_by('-id')
+
 
 def show_filter_class(qs, filters):
     """To simplify template, instead of bool adhere to bootstrap class name."""

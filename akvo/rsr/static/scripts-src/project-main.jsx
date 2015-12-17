@@ -33,26 +33,33 @@ Indicator = React.createClass({
     var target_value = this.props.indicator.target_value;
     var actual_value = this.props.indicator.actual_value;
     var value = "";
-    if (actual_value !== "") {
+    if (actual_value !== undefined && actual_value !== "") {
         value += actual_value + " (" + i18n.actual_text + ")";
-        if (target_value !== "") {
+        if (target_value !== undefined && target_value !== "") {
             value += " / ";
         }
     }
-    if (target_value !== "") {
+    if (target_value !== undefined && target_value !== "") {
         value += target_value + " (" + i18n.target_text + ")";
     }
 
-    return (
-      <div>
-        <dt>
-            {this.props.indicator.title} {periods}
-        </dt>
-        <dd>
-            {value}
-        </dd>
-      </div>
-    );
+    if (this.props.indicator.title && periods !== "") {
+        return (
+                <div>
+                    {this.props.indicator.title} {periods}: <i>{value}</i>
+                </div>
+            );
+    } else if (this.props.indicator.title) {
+        return (
+                <div>
+                    {this.props.indicator.title}
+                </div>
+            );
+    } else {
+        return (
+            <div/>
+        );
+    }
   }
 });
 
@@ -65,8 +72,8 @@ Result = React.createClass({
     });
     return (
       <span>
-        <li><i className="fa fa-check"></i> {this.props.result.title}</li>
-        <dl className="indicators">{indicators}</dl>
+        <li><i className="fa fa-check"></i> <strong>{this.props.result.title}</strong></li>
+        <dl className="indicator-descriptions">{indicators}</dl>
       </span>
     );
   }
@@ -80,7 +87,7 @@ ResultList = React.createClass({
       );
     });
     return (
-      <ul className="results list-unstyled">{results}</ul>
+      <ul className="list-unstyled">{results}</ul>
     );
   }
 });
@@ -104,7 +111,7 @@ AccordionInstance = React.createClass({
       var result_list = indicators.map(function(indicator) {
           i = i + 1;
           return (
-              <dl className="indicators">
+              <dl className="indicators-description">
                   <dt>
                       <i className="fa fa-check"></i> {result.title}
                   </dt>
@@ -120,9 +127,9 @@ AccordionInstance = React.createClass({
       var result_list = results.map(function(result) {
           i = i + 1;
           return (
-              <dl className="results">
+              <dl className="results-description">
                   <dt>
-                      <i className="fa fa-check"></i> {result.title}
+                      <i className="fa fa-check"></i> <strong>{result.title}</strong>
                   </dt>
                   <dd></dd>
                     {this.getIndicators(result.indicators)}

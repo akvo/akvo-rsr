@@ -7,23 +7,29 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import ProjectLocation, AdministrativeLocation
 from ..serializers import (ProjectLocationSerializer, AdministrativeLocationSerializer,
                            MapProjectLocationSerializer)
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
 
 
-class ProjectLocationViewSet(BaseRSRViewSet):
+class ProjectLocationViewSet(PublicProjectViewSet):
     """
     """
     queryset = ProjectLocation.objects.all()
     serializer_class = ProjectLocationSerializer
     filter_fields = ('location_target', 'country', )
 
+    def get_queryset(self, related_to='location_target__'):
+        return super(ProjectLocationViewSet, self).get_queryset(related_to)
 
-class AdministrativeLocationViewSet(BaseRSRViewSet):
+
+class AdministrativeLocationViewSet(PublicProjectViewSet):
     """
     """
     queryset = AdministrativeLocation.objects.all()
     serializer_class = AdministrativeLocationSerializer
     filter_fields = ('location', 'code', )
+
+    def get_queryset(self, related_to='location__location_target__'):
+        return super(AdministrativeLocationViewSet, self).get_queryset(related_to)
 
 
 class MapProjectLocationViewSet(BaseRSRViewSet):
@@ -44,10 +50,10 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
     )
     max_paginate_by = 500
     paginate_by = 100
-    queryset = ProjectLocation.objects.select_related(
-        'location_target', 'country').only(
+    queryset = ProjectLocation.objects.select_related('location_target', 'country').only(
             'id', 'latitude', 'longitude',
             'location_target__id', 'location_target__title',
             'location_target__current_image',
-            'country')
+            'country'
+    )
     serializer_class = MapProjectLocationSerializer
