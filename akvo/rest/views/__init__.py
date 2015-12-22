@@ -71,6 +71,7 @@ from .typeahead import (typeahead_country,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
+from .user_management import invite_user
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -89,6 +90,7 @@ __all__ = [
     'IndicatorPeriodViewSet',
     'IndicatorViewSet',
     'InternalOrganisationIDViewSet',
+    'invite_user',
     'InvoiceViewSet',
     'KeywordViewSet',
     'LegacyDataViewSet',

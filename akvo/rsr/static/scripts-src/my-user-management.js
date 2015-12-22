@@ -22,66 +22,182 @@ var ApproveModal,
     initial_data,
     i18n;
 
-InviteRow = React.createClass({displayName: 'InviteRow',
+// CSRF TOKEN
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
-  render: function() {
-    var orgs = organisation_data.map(function(org) {
+var csrftoken = getCookie('csrftoken');
+
+InviteRow = React.createClass({displayName: 'InviteRow',
+    getInitialState: function() {
+        return {
+            button_text: '+',
+            button_style: 'success'
+        };
+    },
+
+    handleRowClick: function() {
+        if (this.state.button_style === 'success') {
+            this.props.addRow();
+            this.setState({
+                button_text: 'x',
+                button_style: 'danger'
+            });
+        } else {
+            this.props.deleteRow(this.props.rowKey);
+        }
+    },
+
+    render: function() {
+        var orgs = organisation_data.map(function(org) {
+            return (
+                React.DOM.option( {key:org.id, value:org.id}, org.name)
+            );
+        });
+
+        var groups = group_data.map(function(group) {
+            return (
+                React.DOM.option( {key:group.id, value:group.id}, group.name)
+            );
+        });
+
         return (
-            MenuItem(null, org.name)
+            React.DOM.tr( {className:"invite-row"}, 
+                React.DOM.td(null, 
+                    React.DOM.input( {className:"form-control", type:"email", placeholder:i18n.email_text, maxLength:"254", required:"required"} )
+                ),
+                React.DOM.td(null, 
+                    React.DOM.select( {className:"form-control org-select", defaultValue:""}, 
+                        React.DOM.option( {key:"", value:""}, i18n.select_org_text),
+                        orgs
+                    )
+                ),
+                React.DOM.td(null, 
+                    React.DOM.select( {className:"form-control group-select", defaultValue:""}, 
+                        React.DOM.option( {key:"", value:""}, i18n.select_group_text),
+                        groups
+                    )
+                ),
+                React.DOM.td(null, 
+                    Button( {bsStyle:this.state.button_style, onClick:this.handleRowClick}, this.state.button_text)
+                )
+            )
         );
-    });
-    var groups = group_data.map(function(group) {
-        return (
-           MenuItem(null, group.name)
-        );
-    });
-    return (
-      React.DOM.tr(null, 
-        React.DOM.td(null, React.DOM.input( {type:"email", placeholder:i18n.email_text, maxLength:"254", required:"required"} )),
-        React.DOM.td(null, DropdownButton(null, orgs)),
-        React.DOM.td(null, DropdownButton(null, groups)),
-        React.DOM.td(null, Button( {bsStyle:"success"}, "+"))
-      )
-    );
-  }
+    }
 });
 
-
 InviteTable = React.createClass({displayName: 'InviteTable',
-  render: function() {
-    return (
-      Table( {striped:true}, 
-          React.DOM.thead(null, 
-              React.DOM.tr(null, 
-                  React.DOM.th(null, i18n.email_text),
-                  React.DOM.th(null, i18n.organisations_text),
-                  React.DOM.th(null, "Group"),
-                  React.DOM.th(null, "Add")
-              )
-          ),
-          React.DOM.tbody(null, InviteRow(null ))
-      )
-    );
-  }
+    getInitialState: function() {
+        return {
+            rowKey: 0
+        };
+    },
+
+    componentDidMount: function() {
+        if (this.isMounted()) {
+            this.addRow();
+        }
+    },
+
+    addRow: function () {
+        this.setState({
+            rowKey: this.state.rowKey + 1
+        });
+
+        var inviteTableBody = document.getElementById('invite-table').querySelector('tbody');
+        var newRow = document.createElement('tr');
+        newRow.setAttribute('id', 'row-' + this.state.rowKey);
+        newRow.className = "invite-row";
+        inviteTableBody.appendChild(newRow);
+        React.renderComponent(InviteRow( {rowKey:this.state.rowKey, addRow:this.addRow, deleteRow:this.deleteRow} ), newRow);
+    },
+
+    deleteRow: function(rowKey) {
+        var row = document.getElementById('row-' + rowKey);
+        row.parentNode.removeChild(row);
+    },
+
+    render: function() {
+        return (
+            Table( {striped:true}, 
+                React.DOM.thead(null, 
+                    React.DOM.tr(null, 
+                        React.DOM.th(null, i18n.email_text),
+                        React.DOM.th(null, i18n.organisations_text),
+                        React.DOM.th(null, i18n.group_text),
+                        React.DOM.th(null,  " " )
+                    )
+                ),
+                React.DOM.tbody(null,  " " )
+            )
+        );
+    }
 });
 
 
 InviteModal = React.createClass({displayName: 'InviteModal',
-  sendInvite: function() {},
-  render: function() {
-    // TODO i18n
-    return (
-      Modal( {bsSize:"large", title:"Invite Users"}, 
-      React.DOM.div( {classname:"modal-body"}, 
-      InviteTable(null )
-      ),
-      React.DOM.div( {className:"modal-footer"}, 
-      Button( {onClick:this.props.onRequestHide}, i18n.close_text),
-      Button( {onClick:this.sendInvite, bsStyle:"success"}, "Invite Users")
-      )
-      )
-    );
-  }
+    inviteApiCall: function(email, org, group) {
+        if (email === "" || org === "" || group === "") {
+            console.log('Not enough data');
+        } else {
+            // Create request
+            var url = '/rest/v1/invite_user/?format=json';
+
+            var request = new XMLHttpRequest();
+            request.open('POST', url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            // TODO: emails with strange tokens (e.g. '+')
+            var data = "user_data=" + JSON.stringify({
+                email: email,
+                organisation: org,
+                group: group
+            });
+
+            request.send(data);
+        }
+    },
+
+    sendInvite: function() {
+        // TODO: change to React.js instead of javascript
+        var inviteTable = document.getElementById('invite-table');
+        var inviteRows = inviteTable.querySelectorAll('.invite-row');
+        for (var i = 0; i < inviteRows.length; i++) {
+            var inviteRow = inviteRows[i];
+            var emailInput = inviteRow.querySelector('input').value;
+            var orgInput = inviteRow.querySelector('.org-select').value;
+            var groupInput = inviteRow.querySelector('.group-select').value;
+            this.inviteApiCall(emailInput, orgInput, groupInput);
+        }
+    },
+
+    render: function() {
+        return this.transferPropsTo(
+            Modal( {bsSize:"large", title:"Invite Users"}, 
+                React.DOM.div( {className:"modal-body", id:"invite-table"}, 
+                    InviteTable(null )
+                ),
+                React.DOM.div( {className:"modal-footer"}, 
+                    Button( {onClick:this.props.onRequestHide}, i18n.close_text),
+                    Button( {onClick:this.sendInvite, bsStyle:"success"}, i18n.invite_users_text)
+                )
+            )
+        );
+    }
 });
 
 
@@ -380,7 +496,7 @@ InviteButton = React.createClass({displayName: 'InviteButton',
   render: function() {
     return (ModalTrigger( {modal:InviteModal(null )}, 
             Button( {title:"Invite Users"}, 
-            React.DOM.i( {className:"glyphicon glyphicon-user"}),"+"
+            React.DOM.i( {className:"glyphicon glyphicon-user"}), " +"
             )
             ));
   }
@@ -394,4 +510,5 @@ i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_employment_data} ),
                       document.getElementById('user_table'));
-React.renderComponent(InviteButton( {organisations:organisation_data, groups:group_data}), document.getElementById('invite_button'));
+React.renderComponent(InviteButton( {organisations:organisation_data, groups:group_data}),
+                      document.getElementById('invite_button'));

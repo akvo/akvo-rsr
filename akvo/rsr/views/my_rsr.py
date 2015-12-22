@@ -17,8 +17,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
-from akvo.rsr.forms import InviteForm
-
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
@@ -380,27 +378,23 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    # TODO Difference between admin and org admin? Will this only allow RSR
-    # admins, or will this only allow org admins to add to all orgs and all
-    # groups?
     if user.is_admin or user.is_superuser:
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
-        # TODO This might not be correct. It's showing groups like "Full REST
-        # API Access"
-        can_invite_groups = Group.objects.all()
+        can_invite_groups = Group.objects.exclude(name="Full REST API Access")
     else:
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
-                org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
-        # TODO Are these the same organisations we want to allow the user to
-        # send invites for?
+            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
+        ]
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
-        can_invite_groups = [ Group.objects.get(name='Users'),
-                              Group.objects.get(name='User Managers') ]
+        if user.get_is_org_admin():
+            can_invite_groups = Group.objects.exclude(name="Full REST API Access")
+        else:
+            can_invite_groups = Group.objects.filter(name__in=['Users', 'User Managers'])
 
     q = request.GET.get('q')
     if q:
@@ -460,7 +454,6 @@ def user_management(request):
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
-    # TODO is this correct? can orgs ever be null?
     context['organisations'] = json.dumps(organisations_list)
     context['groups'] = json.dumps(groups_list)
     context['page'] = page
