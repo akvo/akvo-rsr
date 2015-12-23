@@ -149,9 +149,16 @@ InviteTable = React.createClass({
 
 
 InviteModal = React.createClass({
-    inviteApiCall: function(email, org, group) {
-        if (email === "" || org === "" || group === "") {
-            console.log('Not enough data');
+    getInitialState: function() {
+        return {
+            disable: false,
+            successes: 0
+        }
+    },
+
+    inviteApiCall: function(email, org, group, row) {
+        if (email === "" && org === "" && group === "") {
+            // Row without any data, ignore
         } else {
             // Create request
             var url = '/rest/v1/invite_user/?format=json';
@@ -160,6 +167,44 @@ InviteModal = React.createClass({
             request.open('POST', url, true);
             request.setRequestHeader("X-CSRFToken", csrftoken);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                var status = request.status;
+                var response = JSON.parse(request.responseText);
+
+                if (status === 201) {
+                    // Remove row
+                    row.classList.add('has-success');
+                    var button = row.querySelector('button');
+                    button.parentNode.removeChild(button);
+                    setTimeout(function() {
+                        if (row.parentNode.querySelectorAll('tr').length === 1) {
+                            // Only one row left, hack to close modal
+                            var modalParent = document.querySelector('.modal').parentNode;
+                            modalParent.innerHTML = '';
+                            modalParent.appendChild(document.createElement('span'));
+                        }
+                        row.parentNode.removeChild(row);
+                    }, 3000);
+                } else if (status === 400) {
+                    // Missing data
+                    var missingData = response['missing_data'];
+                    for (var i = 0; i < missingData.length; i++) {
+                        var fields = row.querySelectorAll('td');
+                        var field = missingData[i];
+                        if (field === 'email') {
+                            fields[0].classList.add('has-error');
+                        } else if (field === 'organisation') {
+                            fields[1].classList.add('has-error');
+                        } else if (field === 'group') {
+                            fields[2].classList.add('has-error');
+                        }
+                    }
+                } else if (status === 403) {
+                    // Forbidden
+                    row.classList.add('has-error');
+                }
+            };
 
             // TODO: emails with strange tokens (e.g. '+')
             var data = "user_data=" + JSON.stringify({
@@ -173,7 +218,11 @@ InviteModal = React.createClass({
     },
 
     sendInvite: function() {
-        // TODO: change to React.js instead of javascript
+        // Disable invite button
+        this.setState({
+            disable: true
+        });
+
         var inviteTable = document.getElementById('invite-table');
         var inviteRows = inviteTable.querySelectorAll('.invite-row');
         for (var i = 0; i < inviteRows.length; i++) {
@@ -181,8 +230,15 @@ InviteModal = React.createClass({
             var emailInput = inviteRow.querySelector('input').value;
             var orgInput = inviteRow.querySelector('.org-select').value;
             var groupInput = inviteRow.querySelector('.group-select').value;
-            this.inviteApiCall(emailInput, orgInput, groupInput);
+            this.inviteApiCall(emailInput, orgInput, groupInput, inviteRow)
         }
+
+        // TODO: Show how many invites were sent
+
+        // Enable invite button again
+        this.setState({
+            disable: false
+        });
     },
 
     render: function() {
@@ -192,8 +248,8 @@ InviteModal = React.createClass({
                     <InviteTable />
                 </div>
                 <div className="modal-footer">
-                    <Button onClick={this.props.onRequestHide}>{i18n.close_text}</Button>
-                    <Button onClick={this.sendInvite} bsStyle="success">{i18n.invite_users_text}</Button>
+                    <Button onClick={this.props.onRequestHide} id="close-invite-modal">{i18n.close_text}</Button>
+                    <Button onClick={this.sendInvite} bsStyle="success" disabled={this.state.disable}>{i18n.invite_users_text}</Button>
                 </div>
             </Modal>
         );

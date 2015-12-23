@@ -12,14 +12,15 @@ import re
 from lxml import etree
 from tastypie.models import ApiKey
 
-from akvo.rsr.forms import RegisterForm
+from akvo.rsr.forms import RegisterForm, InvitedUserForm
 
 from django.conf import settings
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect, render, render_to_response
 from django.template import RequestContext
 
 from registration.models import RegistrationProfile
@@ -85,6 +86,51 @@ def activate(request, activation_key, extra_context=None):
         },
         context_instance=context
     )
+
+
+def invite_activate(request, pk, token_date, token):
+    """
+    Activate a user that has been invited to use RSR.
+
+    :param request: the request
+    :param pk: the invited user's primary key
+    :param token_date: the first part of the token
+    :param token: the second part of the token
+    """
+    user = get_user_model().objects.get(pk=pk)
+    if user.is_active:
+        user = authenticate(username=user.username, no_password=True)
+        login(request, user)
+        return redirect('my_details')
+
+    expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
+
+    bad_signature, signature_expired = False, False
+    try:
+        TimestampSigner().unsign(':'.join([user.email, token_date, token]),
+                                 max_age=expiration_days * 24 * 60 * 60)
+    except SignatureExpired:
+        signature_expired = True
+    except BadSignature:
+        bad_signature = True
+
+    if request.method == 'POST':
+        form = InvitedUserForm(user=user, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save(request)
+            user = authenticate(username=user.username, no_password=True)
+            login(request, user)
+            return redirect('my_details')
+    else:
+        form = InvitedUserForm(user=user)
+
+    context = {
+        'form': form,
+        'expiration_days': expiration_days,
+        'bad_signature': bad_signature,
+        'signature_expired': signature_expired
+    }
+    return render(request, 'registration/invite_activate.html', context)
 
 
 def sign_in(request):

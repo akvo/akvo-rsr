@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% blocktrans with user_name=user.get_full_name invite_user_pk=invited_user.pk org_name=organisation.long_name %}
+Dear Sir or Madam,
+
+You have been invited to use Akvo RSR by {{ user_name }} linked to the following organisation: {{ org_name }}.
+
+Please click the following link to activate your account and start using Akvo RSR:
+http://{{ site }}/activate_invite/{{ invite_user_pk }}/{{ token_date }}/{{ token }}/
+
+If you believe this mail was not intended for you, you don't need to do anything; you won't receive any more email from us, and the account will expire automatically in {{ expiration_days }} days.
+
+Thank you,
+Akvo.org
+{% endblocktrans %}

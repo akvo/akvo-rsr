@@ -172,6 +172,70 @@ class PasswordForm(PasswordChangeForm):
     )
 
 
+class InvitedUserForm(forms.Form):
+    first_name = forms.CharField(
+        label=_(u'First name'),
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': _(u'First name')}
+        ),
+    )
+    last_name = forms.CharField(
+        label=_(u'Last name'),
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': _(u'Last name')}
+        ),
+    )
+    password1 = forms.CharField(
+        label=_(u'Password'),
+        widget=forms.PasswordInput(
+            attrs={'placeholder': _(u'Password')},
+            render_value=False
+        )
+    )
+    password2 = forms.CharField(
+        label=_(u'Repeat password'),
+        widget=forms.PasswordInput(
+            attrs={'placeholder': _(u'Repeat password')},
+            render_value=False
+        )
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        """Add the user to the form."""
+        super(InvitedUserForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def clean(self):
+        """
+        Verify that the values entered into the two password fields match.
+        Note that an error here will end up in non_field_errors() because it doesn't
+        apply to a single field.
+        """
+        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+                raise forms.ValidationError(
+                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                )
+        return self.cleaned_data
+
+    def save(self, request):
+        """
+        Create the new User and RegistrationProfile, and returns the User.
+
+        This is essentially a light wrapper around
+        RegistrationProfile.objects.create_inactive_user(), feeding it the form data and
+        a profile callback (see the documentation on create_inactive_user() for details)
+        if supplied. Modified to set user.is_active = False and add User object creation.
+        """
+        self.user.is_active = True
+        self.user.first_name = self.cleaned_data['first_name']
+        self.user.last_name = self.cleaned_data['last_name']
+        self.user.set_password(self.cleaned_data['password1'])
+        self.user.save()
+
+
 class UserOrganisationForm(forms.Form):
     organisation = forms.ModelChoiceField(
         queryset=Organisation.objects.all(),
@@ -213,7 +277,6 @@ class UserOrganisationForm(forms.Form):
         """
         Link user to organisation.
         """
-        # TODO: The approval process of users
         request.user.organisations.add(self.cleaned_data['organisation'])
 
 
