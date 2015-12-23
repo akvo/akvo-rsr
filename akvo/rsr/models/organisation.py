@@ -379,7 +379,8 @@ class Organisation(TimestampsMixin, models.Model):
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        return Organisation.objects.filter(content_owner=self).content_owned_organisations()
+        content_own = Organisation.objects.filter(content_owner=self).content_owned_organisations()
+        return content_own or Organisation.objects.filter(pk=self.pk)
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

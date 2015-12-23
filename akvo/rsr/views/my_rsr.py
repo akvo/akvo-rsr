@@ -382,7 +382,9 @@ def user_management(request):
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
-        can_invite_groups = Group.objects.exclude(name="Full REST API Access")
+        can_invite_groups = Group.objects.filter(
+            name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+        )
     else:
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
@@ -391,8 +393,11 @@ def user_management(request):
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
-        if user.get_is_org_admin():
-            can_invite_groups = Group.objects.exclude(name="Full REST API Access")
+        admin_group = Group.objects.get(name='Admins')
+        if Employment.objects.filter(user=user, group=admin_group).exists():
+            can_invite_groups = Group.objects.filter(
+                name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+            )
         else:
             can_invite_groups = Group.objects.filter(name__in=['Users', 'User Managers'])
 
@@ -464,18 +469,3 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
-
-
-@login_required
-def invite(request):
-    """Invite form."""
-    # TODO(jesse): modeled after akvo/rsr/views/account.py:register()
-    context = RequestContext(request)
-    if request.method == 'POST':
-        form = InviteForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save(request)
-    else:
-        form = InviteForm()
-    return render_to_response('myrsr/user_management.html', {'form': form},
-                              context_instance=context)

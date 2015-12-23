@@ -10,7 +10,10 @@ import json
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.core.signing import TimestampSigner
+from django.core.validators import validate_email
+from django.db import IntegrityError
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -29,6 +32,13 @@ def invite_user(request):
 
     :param request; request.DATA is a JSON string containing email, organisation and group data
     """
+    def valid_email(email_address):
+        try:
+            validate_email(email_address)
+            return True
+        except ValidationError:
+            return False
+
     user = request.user
     if not user.has_perm('rsr.user_management'):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
@@ -42,9 +52,8 @@ def invite_user(request):
         data = json.loads(data)
 
     # Check email
-    # TODO: increase email checks (e.g. '@' in email)
     email = data['email'].lower().strip()
-    if not email:
+    if not (email and valid_email(email) and user.email != email):
         missing_data.append('email')
 
     # Check organisation
@@ -66,8 +75,12 @@ def invite_user(request):
     try:
         invited_user = get_user_model().objects.get(email=email)
     except get_user_model().DoesNotExist:
-        invited_user = get_user_model().objects.create_user(email, email=email)
-        invited_user.set_is_active(False)
+        try:
+            invited_user = get_user_model().objects.create_user(email, email=email)
+            invited_user.set_is_active(False)
+        except IntegrityError:
+            return Response({'error': 'Trying to create a user that already exists'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # Link user to organisation
     employment, empl_created = Employment.objects.get_or_create(

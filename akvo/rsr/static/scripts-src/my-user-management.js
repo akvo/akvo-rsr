@@ -153,7 +153,7 @@ InviteModal = React.createClass({displayName: 'InviteModal',
         return {
             disable: false,
             successes: 0
-        }
+        };
     },
 
     inviteApiCall: function(email, org, group, row) {
@@ -188,7 +188,7 @@ InviteModal = React.createClass({displayName: 'InviteModal',
                     }, 3000);
                 } else if (status === 400) {
                     // Missing data
-                    var missingData = response['missing_data'];
+                    var missingData = response.missing_data;
                     for (var i = 0; i < missingData.length; i++) {
                         var fields = row.querySelectorAll('td');
                         var field = missingData[i];
@@ -200,13 +200,12 @@ InviteModal = React.createClass({displayName: 'InviteModal',
                             fields[2].classList.add('has-error');
                         }
                     }
-                } else if (status === 403) {
-                    // Forbidden
+                } else {
+                    // Forbidden or general error
                     row.classList.add('has-error');
                 }
             };
 
-            // TODO: emails with strange tokens (e.g. '+')
             var data = "user_data=" + JSON.stringify({
                 email: email,
                 organisation: org,
@@ -230,10 +229,8 @@ InviteModal = React.createClass({displayName: 'InviteModal',
             var emailInput = inviteRow.querySelector('input').value;
             var orgInput = inviteRow.querySelector('.org-select').value;
             var groupInput = inviteRow.querySelector('.group-select').value;
-            this.inviteApiCall(emailInput, orgInput, groupInput, inviteRow)
+            this.inviteApiCall(emailInput, orgInput, groupInput, inviteRow);
         }
-
-        // TODO: Show how many invites were sent
 
         // Enable invite button again
         this.setState({
