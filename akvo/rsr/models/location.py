@@ -189,9 +189,8 @@ class AdministrativeLocation(models.Model):
                     u'GeographicVocabulary/" target="_blank">http://iatistandard.org/201/codelists/'
                     u'GeographicVocabulary/</a>.')
     )
-    level = models.PositiveSmallIntegerField(
-        _(u'administrative level'), blank=True, null=True, max_length=1,
-    )
+
+    level = models.PositiveSmallIntegerField(_(u'administrative level'), blank=True, null=True)
 
     def __unicode__(self):
         return str(self.code) if self.code else u'%s' % _(u'No code specified')

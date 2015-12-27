@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import BudgetIdentifier, BudgetType, Currency
-from akvo.codelists.store.codelists_v201 import BUDGET_IDENTIFIER,BUDGET_TYPE, CURRENCY
+from akvo.codelists.store.codelists_v201 import BUDGET_IDENTIFIER, BUDGET_TYPE, CURRENCY
 from akvo.utils import codelist_choices, codelist_value
 
 
