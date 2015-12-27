@@ -4,15 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.models.budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
-from ....rsr.models.iati_import_log import IatiImportLog
-from ....rsr.models.planned_disbursement import PlannedDisbursement
-from ....rsr.models.transaction import Transaction, TransactionSector
-
-from ..utils import get_or_create_organisation, ImportHelper
-
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
+
+from ....rsr.models.budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
+from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
+from ....rsr.models.planned_disbursement import PlannedDisbursement
+from ....rsr.models.transaction import Transaction, TransactionSector
+from .. import ImportMapper
 
 TYPE_TO_CODE = {
     'C': '2',
@@ -27,10 +26,12 @@ TYPE_TO_CODE = {
     'CG': '10'
 }
 
-class Transactions(ImportHelper):
+class Transactions(ImportMapper):
 
-    def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
-        super(Transactions, self).__init__(iati_import, parent_element, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Transactions, self).__init__(
+            iati_import_job, parent_elem, project, globals)
         self.model = Transaction
 
     def do_import(self):
@@ -68,7 +69,7 @@ class Transactions(ImportHelper):
 
             prov_org_element = transaction.find('provider-org')
             if prov_org_element is not None:
-                transaction_provider_org = get_or_create_organisation(
+                transaction_provider_org = self.get_or_create_organisation(
                         prov_org_element.get('ref', ''), self.get_text(prov_org_element))
                 provider_organisation_activity = self.get_child_elem_attrib(
                         transaction, 'provider-org', 'provider-activity-id',
@@ -79,7 +80,7 @@ class Transactions(ImportHelper):
 
             rec_org_element = transaction.find('receiver-org')
             if rec_org_element is not None:
-                transaction_receiver_org = get_or_create_organisation(
+                transaction_receiver_org = self.get_or_create_organisation(
                         rec_org_element.get('ref'), self.get_text(rec_org_element))
                 receiver_organisation_activity = self.get_child_elem_attrib(
                         transaction, 'receiver-org', 'receiver-activity-id',
@@ -142,8 +143,8 @@ class Transactions(ImportHelper):
 
                 # Process transaction sectors
                 transaction_sectors = TransactionsSectors(
-                        self.iati_import, transaction, self.project, self.globals,
-                        related_obj=transaction_obj)
+                        self.iati_import_job, transaction, self.project,
+                        self.globals, related_obj=transaction_obj)
                 for sector_change in transaction_sectors.do_import():
                     changes.append(sector_change)
 
@@ -152,11 +153,12 @@ class Transactions(ImportHelper):
         return changes
 
 
-class TransactionsSectors(ImportHelper):
+class TransactionsSectors(ImportMapper):
 
-    def __init__(self, iati_import, parent_element, project, globals, related_obj):
-        super(TransactionsSectors, self).__init__(
-                iati_import, parent_element, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj):
+        super(TransactionsSectors, self).__init__(iati_import_job, parent_elem, project, globals,
+                                                  related_obj)
         self.model = TransactionSector
 
     def do_import(self):
@@ -191,10 +193,10 @@ class TransactionsSectors(ImportHelper):
         return changes
 
 
-class BudgetItems(ImportHelper):
+class BudgetItems(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(BudgetItems, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
+        super(BudgetItems, self).__init__(iati_import_job, parent_elem, project, globals)
         self.model = BudgetItem
 
     def do_import(self):
@@ -233,7 +235,7 @@ class BudgetItems(ImportHelper):
                     label = BudgetItemLabel.objects.get(pk=int(akvo_budget_type))
                 except (ValueError, ObjectDoesNotExist) as e:
                     self.add_log('budget[@type]', 'budget_item_label', str(e),
-                            IatiImportLog.VALUE_PARTLY_SAVED)
+                                 LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
 
             akvo_budget_label = budget.attrib.get('{%s}label' % settings.AKVO_NS)
             if akvo_budget_label:
@@ -241,7 +243,7 @@ class BudgetItems(ImportHelper):
                 if len(other_extra) > 30:
                     self.add_log('budget[@label]', 'budget_item_label',
                             'label too long (30 characters allowed)',
-                            IatiImportLog.VALUE_PARTLY_SAVED)
+                             LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
                     other_extra = other_extra[:30]
 
             period_start = self.get_child_as_date(
@@ -281,10 +283,12 @@ class BudgetItems(ImportHelper):
         return changes
 
 
-class CountryBudgetItems(ImportHelper):
+class CountryBudgetItems(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(CountryBudgetItems, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(CountryBudgetItems, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = CountryBudgetItem
 
     def do_import(self):
@@ -319,7 +323,8 @@ class CountryBudgetItems(ImportHelper):
                     percentage=percentage
                 )
                 if created:
-                    changes.append(u'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
+                    changes.append(
+                            u'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
                 imported_cbis.append(cbi_obj)
 
             changes += self.delete_objects(self.project.country_budget_items, imported_cbis,
@@ -329,7 +334,7 @@ class CountryBudgetItems(ImportHelper):
         return changes
 
 
-class CapitalSpend(ImportHelper):
+class CapitalSpend(ImportMapper):
 
     def do_import(self):
         """
@@ -347,10 +352,12 @@ class CapitalSpend(ImportHelper):
         return self.update_project_field('capital_spend_percentage', capital_spend_percentage)
 
 
-class PlannedDisbursements(ImportHelper):
+class PlannedDisbursements(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(PlannedDisbursements, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(PlannedDisbursements, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = PlannedDisbursement
 
     def do_import(self):

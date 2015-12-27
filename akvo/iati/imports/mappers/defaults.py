@@ -7,7 +7,7 @@
 from ....rsr.models.project import Project
 from ....rsr.models.project_condition import ProjectCondition
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 CODE_TO_STATUS = {
     '1': 'H',
@@ -19,7 +19,7 @@ CODE_TO_STATUS = {
 }
 
 
-class Language(ImportHelper):
+class Language(ImportMapper):
 
     def do_import(self):
         """
@@ -36,7 +36,7 @@ class Language(ImportHelper):
         return self.update_project_field('language', language)
 
 
-class Currency(ImportHelper):
+class Currency(ImportMapper):
 
     def do_import(self):
         """
@@ -52,7 +52,7 @@ class Currency(ImportHelper):
         return self.update_project_field('currency', currency)
 
 
-class Hierarchy(ImportHelper):
+class Hierarchy(ImportMapper):
 
     def do_import(self):
         """
@@ -72,7 +72,7 @@ class Hierarchy(ImportHelper):
         return self.update_project_field('hierarchy', hierarchy)
 
 
-class Scope(ImportHelper):
+class Scope(ImportMapper):
 
     def do_import(self):
         """
@@ -88,7 +88,7 @@ class Scope(ImportHelper):
         return self.update_project_field('project_scope', project_scope)
 
 
-class CollaborationType(ImportHelper):
+class CollaborationType(ImportMapper):
 
     def do_import(self):
         """
@@ -105,7 +105,7 @@ class CollaborationType(ImportHelper):
         return self.update_project_field('collaboration_type', collaboration_type)
 
 
-class DefaultFlowType(ImportHelper):
+class DefaultFlowType(ImportMapper):
 
     def do_import(self):
         """
@@ -121,7 +121,7 @@ class DefaultFlowType(ImportHelper):
         return self.update_project_field('default_flow_type', default_flow_type)
 
 
-class DefaultFinanceType(ImportHelper):
+class DefaultFinanceType(ImportMapper):
 
     def do_import(self):
         """
@@ -138,7 +138,7 @@ class DefaultFinanceType(ImportHelper):
         return self.update_project_field('default_finance_type', default_finance_type)
 
 
-class DefaultAidType(ImportHelper):
+class DefaultAidType(ImportMapper):
 
     def do_import(self):
         """
@@ -154,7 +154,7 @@ class DefaultAidType(ImportHelper):
         return self.update_project_field('default_aid_type', default_aid_type)
 
 
-class DefaultTiedStatus(ImportHelper):
+class DefaultTiedStatus(ImportMapper):
 
     def do_import(self):
         """
@@ -171,7 +171,7 @@ class DefaultTiedStatus(ImportHelper):
         return self.update_project_field('default_tied_status', default_tied_status)
 
 
-class Status(ImportHelper):
+class Status(ImportMapper):
 
     def do_import(self):
         """
@@ -193,10 +193,12 @@ class Status(ImportHelper):
         return self.update_project_field('status', status)
 
 
-class Conditions(ImportHelper):
+class Conditions(ImportMapper):
 
-    def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
-        super(Conditions, self).__init__(iati_import, parent_element, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Conditions, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = ProjectCondition
 
     def do_import(self):

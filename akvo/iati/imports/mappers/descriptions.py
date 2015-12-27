@@ -9,7 +9,7 @@ import collections
 from ....rsr.models.custom_field import ProjectCustomField
 from ....rsr.models.project import Project
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 from django.conf import settings
 
@@ -36,16 +36,18 @@ project_text_fields = {
 }
 
 
-class Descriptions(ImportHelper):
+class Descriptions(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Descriptions, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Descriptions, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = Project
 
     def find_description_by_akvo_type(self, field):
         type = project_text_fields[field].akvo_type
         if type:
-            element = self.parent_elem.find(
+            return self.parent_elem.find(
                     "description[@{{{}}}type='{}']".format(settings.AKVO_NS, type))
 
     def find_description_by_order(self, field):
@@ -69,14 +71,15 @@ class Descriptions(ImportHelper):
     def do_import(self):
         project = self.project
         changes = []
-        noop = lambda: None, ''
+
         for field in project_text_fields.keys():
             text = ''
             # try to find the text by akvo type
             element = self.find_description_by_akvo_type(field)
             # then do any special handling if available
             if element is None:
-                custom_method = getattr(self, "get_{}".format(field))
+
+                custom_method = getattr(self, "get_{}".format(field), None)
                 if custom_method:
                     element, text = custom_method()
                 else:
@@ -93,6 +96,7 @@ class Descriptions(ImportHelper):
                     changes.append(field)
                     project.save(update_fields=changes)
         return changes
+
 
     def get_title(self):
         # title
@@ -123,63 +127,65 @@ class Descriptions(ImportHelper):
 
 
 # Customizations for ICCO
+#
+# description_start = dict(
+#     project_name='project name:',
+#     subtitle='subtitle:',
+#     project_plan_summary='project summary:',
+#     background='background:',
+#     current_status='baseline situation:',
+#     project_plan='project plan:',
+#     sustainability='sustainability:',
+# )
+#
+# def _text_starts_with(text, start):
+#     return text.lower().startswith(start)
+#
+# class ICCO_Descriptions(Descriptions):
+#     """
+#     Custom import rules for importing description fields from ICCO IATI XML. Here we look for
+#     description fields prefixed with the description_start strings and match them to the respective
+#     fields.
+#     Note that this is not "mixable" with the default method of matching description fields by order
+#     so if a description field is not prefixed it will not be included.
+#     """
+#
+#     def _get_description(self, start_string):
+#         for element in self.parent_elem.findall("description"):
+#             text = self.get_text(element)
+#             if _text_starts_with(text, start_string):
+#                 return element, text[len(start_string):].strip()
+#         return None, ''
+#
+#     def get_subtitle(self):
+#         element, text = self._get_description(description_start['subtitle'])
+#         if element is None:
+#             element, text = self._get_description(description_start['project_name'])
+#         if element is not None:
+#             return super(ICCODescriptions, self).get_subtitle()
+#
+#     def get_project_plan_summary(self):
+#         return self._get_description(description_start['project_plan_summary'])
+#
+#     def get_background(self):
+#         return self._get_description(description_start['background'])
+#
+#     def get_current_status(self):
+#         return self._get_description(description_start['current_status'])
+#
+#     def get_project_plan(self):
+#         return self._get_description(description_start['project_plan'])
+#
+#     def get_sustainability(self):
+#         return self._get_description(description_start['sustainability'])
+#
 
-description_start = dict(
-    project_name='project name:',
-    subtitle='subtitle:',
-    project_plan_summary='project summary:',
-    background='background:',
-    current_status='baseline situation:',
-    project_plan='project plan:',
-    sustainability='sustainability:',
-)
+class CustomFields(ImportMapper):
 
-def _text_starts_with(text, start):
-    return text.lower().startswith(start)
-
-class ICCODescriptions(Descriptions):
-    """
-    Custom import rules for importing description fields from ICCO IATI XML. Here we look for
-    description fields prefixed with the description_start strings and match them to the respective
-    fields.
-    Note that this is not "mixable" with the default method of matching description fields by order
-    so if a description field is not prefixed it will not be included.
-    """
-
-    def _get_description(self, start_string):
-        for element in self.parent_elem.findall("description"):
-            text = self.get_text(element)
-            if _text_starts_with(text, start_string):
-                return element, text[len(start_string):].strip()
-        return None, ''
-
-    def get_subtitle(self):
-        element, text = self._get_description(description_start['subtitle'])
-        if element is None:
-            element, text = self._get_description(description_start['project_name'])
-        if element is not None:
-            return super(ICCODescriptions, self).get_subtitle()
-
-    def get_project_plan_summary(self):
-        return self._get_description(description_start['project_plan_summary'])
-
-    def get_background(self):
-        return self._get_description(description_start['background'])
-
-    def get_current_status(self):
-        return self._get_description(description_start['current_status'])
-
-    def get_project_plan(self):
-        return self._get_description(description_start['project_plan'])
-
-    def get_sustainability(self):
-        return self._get_description(description_start['sustainability'])
-
-
-class CustomFields(ImportHelper):
-
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(CustomFields, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(CustomFields, self).__init__(iati_import_job, parent_elem,
+                                           project, globals, related_obj)
         self.model = ProjectCustomField
 
     def do_import(self):

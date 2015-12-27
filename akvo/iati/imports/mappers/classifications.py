@@ -7,7 +7,7 @@
 from ....rsr.models.policy_marker import PolicyMarker
 from ....rsr.models.sector import Sector
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 from decimal import Decimal
 
@@ -37,11 +37,12 @@ POLICY_MARKER_TO_CODE = {
     'WB': ''
 }
 
+class Sectors(ImportMapper):
 
-class Sectors(ImportHelper):
-
-    def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
-        super(Sectors, self).__init__(iati_import, parent_element, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Sectors, self).__init__(iati_import_job, parent_elem,
+                                      project, globals)
         self.model = Sector
 
     def do_import(self):
@@ -84,10 +85,12 @@ class Sectors(ImportHelper):
         return changes
 
 
-class PolicyMarkers(ImportHelper):
+class PolicyMarkers(ImportMapper):
 
-    def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
-        super(PolicyMarkers, self).__init__(iati_import, parent_element, project, globals)
+    def __init__(self, iati_import_job, parent_elem,
+                 project, globals, related_obj=None):
+        super(PolicyMarkers, self).__init__(iati_import_job, parent_elem,
+                                            project, globals)
         self.model = PolicyMarker
 
     def do_import(self):
@@ -121,5 +124,6 @@ class PolicyMarkers(ImportHelper):
                         u'added policy marker (id: {}): {}'.format(policy_marker.pk, policy_marker))
             imported_markers.append(policy_marker)
 
-        changes += self.delete_objects(self.project.policy_markers, imported_markers, 'policy marker')
+        changes += self.delete_objects(
+                self.project.policy_markers, imported_markers, 'policy marker')
         return changes

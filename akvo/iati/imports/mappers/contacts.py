@@ -6,13 +6,15 @@
 
 from ....rsr.models.project_contact import ProjectContact
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 
-class Contacts(ImportHelper):
+class Contacts(ImportMapper):
 
-    def __init__(self, iati_import, parent_element, project, globals, related_obj=None):
-        super(Contacts, self).__init__(iati_import, parent_element, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Contacts, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = ProjectContact
 
     def do_import(self):

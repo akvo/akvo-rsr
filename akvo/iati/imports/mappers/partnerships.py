@@ -6,7 +6,7 @@
 
 from ....rsr.models.partnership import Partnership
 
-from ..utils import get_or_create_organisation, ImportHelper
+from .. import ImportMapper
 
 from django.conf import settings
 
@@ -18,10 +18,12 @@ ROLE_TO_CODE = {
 }
 
 
-class Partnerships(ImportHelper):
+class Partnerships(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Partnerships, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Partnerships, self).__init__(
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = Partnership
 
     def do_import(self):
@@ -42,7 +44,7 @@ class Partnerships(ImportHelper):
 
             org_ref = self.get_attrib(partnership, 'ref', None)
             org_name = self.get_text(partnership)
-            organisation = get_or_create_organisation(org_ref, org_name)
+            organisation = self.get_or_create_organisation(org_ref, org_name)
 
             organisation_role = partnership.get('role', None)
             if organisation_role and organisation_role.lower() in ROLE_TO_CODE:
@@ -57,6 +59,7 @@ class Partnerships(ImportHelper):
             funding_amount = self.get_attrib(
                     partnership, '{%s}funding-amount' % settings.AKVO_NS, 'funding_amount', None)
             if funding_amount:
+                funding_amount_present = True
                 funding_amount = self.cast_to_decimal(
                         funding_amount, 'participating-org', 'funding_amount')
 
@@ -77,7 +80,8 @@ class Partnerships(ImportHelper):
             imported_partnerships.append(partnership_obj)
 
         changes += self.delete_objects(
-                self.project.partnerships, imported_partnerships, 'partnership')
+                self.project.partnerships.filter(iati_organisation_role__lt=100),
+                imported_partnerships, 'partnership')
 
         if not funding_amount_present:
             funding_partners = self.project.partnerships.filter(iati_organisation_role=1)

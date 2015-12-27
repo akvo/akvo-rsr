@@ -8,15 +8,17 @@ from ....rsr.models.country import Country, RecipientCountry
 from ....rsr.models.location import AdministrativeLocation, ProjectLocation
 from ....rsr.models.region import RecipientRegion
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class Locations(ImportHelper):
+class Locations(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Locations, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Locations, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = ProjectLocation
 
     def do_import(self):
@@ -56,8 +58,10 @@ class Locations(ImportHelper):
             else:
                 coordinates = location.find('coordinates')
                 if coordinates is not None:
-                    latitude = self.get_child_elem_attrib(coordinates, 'latitude', 'latitude', 0)
-                    longitude = self.get_child_elem_attrib(coordinates, 'longitude', 'longitude', 0)
+                    latitude = self.get_child_elem_attrib(
+                            location, 'coordinates', 'latitude', 'latitude', 0)
+                    longitude = self.get_child_elem_attrib(
+                            location, 'coordinates', 'longitude', 'longitude', 0)
                 else:
                     latitude = None
                     longitude = None
@@ -110,7 +114,7 @@ class Locations(ImportHelper):
 
                 # Process location administratives
                 administratives = Administratives(
-                        self.iati_import, self.parent_elem, self.project, self.globals,
+                        self.iati_import_job, location, self.project, self.globals,
                         related_obj=loc)
                 for admin_change in administratives.do_import():
                     changes.append(admin_change)
@@ -119,11 +123,12 @@ class Locations(ImportHelper):
         return changes
 
 
-class Administratives(ImportHelper):
+class Administratives(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
         super(Administratives, self).__init__(
-                iati_import, parent_elem, project, globals, related_obj)
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = AdministrativeLocation
 
     def do_import(self):
@@ -155,7 +160,7 @@ class Administratives(ImportHelper):
                 level=level
             )
             if created:
-                changes.append(u'added location administrative (id: {): {}'.format(admin.pk, admin))
+                changes.append(u'added location administrative (id: {}): {}'.format(admin.pk, admin))
             imported_admins.append(admin)
 
         changes += self.delete_objects(
@@ -163,10 +168,11 @@ class Administratives(ImportHelper):
         return changes
 
 
-class RecipientCountries(ImportHelper):
+class RecipientCountries(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(RecipientCountries, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(RecipientCountries, self).__init__(iati_import_job, parent_elem, project, globals)
         self.model = RecipientCountry
 
     def do_import(self):
@@ -204,10 +210,12 @@ class RecipientCountries(ImportHelper):
         return changes
 
 
-class RecipientRegions(ImportHelper):
+class RecipientRegions(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(RecipientRegions, self).__init__(iati_import, parent_elem, project, globals)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(RecipientRegions, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = RecipientRegion
 
     def do_import(self):

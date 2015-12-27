@@ -9,7 +9,7 @@ from django.core import files
 from ....rsr.models.link import Link
 from ....rsr.models.project_document import ProjectDocument
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 from django.conf import settings
 from django.core.files import File
@@ -30,10 +30,12 @@ def file_info_from_url(url):
     return filename, extension
 
 
-class CurrentImage(ImportHelper):
+class CurrentImage(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(CurrentImage, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(CurrentImage, self).__init__(iati_import_job, parent_elem,
+                                           project, globals, related_obj)
 
     def do_import(self):
         """
@@ -46,6 +48,7 @@ class CurrentImage(ImportHelper):
 
         :return: List; contains fields that have changed
         """
+
         changes = []
         image_meta_changes = []
 
@@ -94,17 +97,19 @@ class CurrentImage(ImportHelper):
         return changes + image_meta_changes
 
 
-class Links(ImportHelper):
+class Links(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Links, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Links, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = Link
 
     def do_import(self):
         """
         Retrieve and store the links.
-        The conditions will be extracted from the 'activity-website' elements, and the 'document-link'
-        elements with format 'application/http'. Links to RSR itself will be skipped.
+        The conditions will be extracted from the 'activity-website' elements, and the
+        'document-link' elements with format 'application/http'. Links to RSR itself will be skipped.
 
         :return: List; contains fields that have changed
         """
@@ -150,10 +155,12 @@ class Links(ImportHelper):
         return changes
 
 
-class Documents(ImportHelper):
+class Documents(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Documents, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Documents, self).__init__(
+                iati_import_job, parent_elem, project, globals)
         self.model = ProjectDocument
 
     def do_import(self):

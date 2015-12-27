@@ -8,15 +8,17 @@ from ....rsr.models.crs_add import CrsAdd, CrsAddOtherFlag
 from ....rsr.models.fss import Fss, FssForecast
 from ....rsr.models.legacy_data import LegacyData
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class LegacyDatas(ImportHelper):
+class LegacyDatas(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(LegacyDatas, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(LegacyDatas, self).__init__(
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = LegacyData
 
     def do_import(self):
@@ -49,10 +51,12 @@ class LegacyDatas(ImportHelper):
         return changes
 
 
-class CrsAdds(ImportHelper):
+class CrsAdds(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(CrsAdds, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(CrsAdds, self).__init__(iati_import_job, parent_elem,
+                                      project, globals, related_obj)
         self.model = CrsAdd
 
     def do_import(self):
@@ -80,9 +84,11 @@ class CrsAdds(ImportHelper):
                 commitment_date = self.get_child_as_date(
                         loan_terms_element, 'commitment-date', 'iso-date', 'commitment_date')
                 repayment_first_date = self.get_child_as_date(
-                        loan_terms_element, 'repayment-first-date', 'iso-date', 'repayment_first_date')
+                        loan_terms_element, 'repayment-first-date', 'iso-date',
+                        'repayment_first_date')
                 repayment_final_date = self.get_child_as_date(
-                        loan_terms_element, 'repayment-final-date', 'iso-date', 'repayment_final_date')
+                        loan_terms_element, 'repayment-final-date', 'iso-date',
+                        'repayment_final_date')
 
             else:
                 loan_terms_rate1 = None
@@ -175,10 +181,12 @@ class CrsAdds(ImportHelper):
         return changes
 
 
-class FSSs(ImportHelper):
+class FSSs(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(FSSs, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(FSSs, self).__init__(iati_import_job, parent_elem, project,
+                                   globals, related_obj)
         self.model = Fss
 
     def do_import(self):

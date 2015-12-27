@@ -7,13 +7,13 @@
 from ....rsr.models.indicator import Indicator, IndicatorPeriod
 from ....rsr.models.result import Result
 
-from ..utils import ImportHelper
+from .. import ImportMapper
 
 
-class Results(ImportHelper):
+class Results(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Results, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
+        super(Results, self).__init__(iati_import_job, parent_elem, project, globals, related_obj)
         self.model = Result
 
     def do_import(self):
@@ -49,8 +49,8 @@ class Results(ImportHelper):
                 imported_results.append(result_obj)
 
                 # Process indicators
-                indicators = Indicators(
-                    self.iati_import, result, self.project, self.globals, related_obj=result_obj)
+                indicators = Indicators(self.iati_import_job, result,
+                                        self.project, self.globals, related_obj=result_obj)
                 for indicator_change in indicators.do_import():
                     changes.append(indicator_change)
 
@@ -58,10 +58,12 @@ class Results(ImportHelper):
         return changes
 
 
-class Indicators(ImportHelper):
+class Indicators(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(Indicators, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(Indicators, self).__init__(iati_import_job, parent_elem,
+                                         project, globals, related_obj)
         self.model = Indicator
 
     def do_import(self):
@@ -91,8 +93,8 @@ class Indicators(ImportHelper):
                 baseline_comment = self.get_child_element_text(
                         baseline_element, 'comment', 'baseline_comment')
             else:
-                baseline_year = None,
-                baseline_value = '',
+                baseline_year = None
+                baseline_value = ''
                 baseline_comment = ''
 
             indicator_obj, created = Indicator.objects.get_or_create(
@@ -114,19 +116,22 @@ class Indicators(ImportHelper):
 
                 # Process indicator periods
                 indicator_periods = IndicatorPeriods(
-                    self.iati_import, indicator, self.project, self.globals,
-                    related_obj=indicator_obj)
+                    self.iati_import_job, indicator, self.project,
+                    self.globals, related_obj=indicator_obj)
                 for period_change in indicator_periods.do_import():
                     changes.append(period_change)
 
-        changes += self.delete_objects(self.related_obj.indicators, imported_indicators, 'indicator')
+        changes += self.delete_objects(
+                self.related_obj.indicators, imported_indicators, 'indicator')
         return changes
 
 
-class IndicatorPeriods(ImportHelper):
+class IndicatorPeriods(ImportMapper):
 
-    def __init__(self, iati_import, parent_elem, project, globals, related_obj=None):
-        super(IndicatorPeriods, self).__init__(iati_import, parent_elem, project, globals, related_obj)
+    def __init__(self, iati_import_job, parent_elem, project, globals,
+                 related_obj=None):
+        super(IndicatorPeriods, self).__init__(
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = IndicatorPeriod
 
     def do_import(self):
@@ -177,5 +182,6 @@ class IndicatorPeriods(ImportHelper):
                         period_obj.pk, period_obj))
             imported_periods.append(period_obj)
 
-        changes += self.delete_objects(self.related_obj.periods, imported_periods, 'indicator period')
+        changes += self.delete_objects(
+                self.related_obj.periods, imported_periods, 'indicator period')
         return changes
