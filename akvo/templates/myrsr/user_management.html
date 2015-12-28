@@ -62,7 +62,7 @@
     {# App data #}
     <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
     <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
-    <script type="application/json" id="group-data">{{ groups|safe }}</script>
+    <script type="application/json" id="role-data">{{ roles|safe }}</script>
 
     {# Translation strings #}
     <script type="application/json" id="user-management-text">
@@ -83,9 +83,9 @@
             "last_name_text": "{% trans 'Last name' %}",
             "invite_users_text": "{% trans 'Invite users' %}",
             "organisations_text": "{% trans 'Organisation' %}",
-            "group_text": "{% trans 'Group' %}",
+            "role_text": "{% trans 'Role' %}",
             "select_org_text": "{% trans 'Select organisation' %}",
-            "select_group_text": "{% trans 'Select group' %}"
+            "select_role_text": "{% trans 'Select role' %}"
         }
     </script>
 

@@ -68,9 +68,9 @@ InviteRow = React.createClass({
             );
         });
 
-        var groups = group_data.map(function(group) {
+        var roles = role_data.map(function(role) {
             return (
-                <option key={group.id} value={group.id}>{group.name}</option>
+                <option key={role.id} value={role.id}>{role.name}</option>
             );
         });
 
@@ -86,9 +86,9 @@ InviteRow = React.createClass({
                     </select>
                 </td>
                 <td>
-                    <select className="form-control group-select" defaultValue="">
-                        <option key="" value="">{i18n.select_group_text}</option>
-                        {groups}
+                    <select className="form-control role-select" defaultValue="">
+                        <option key="" value="">{i18n.select_role_text}</option>
+                        {roles}
                     </select>
                 </td>
                 <td>
@@ -137,7 +137,7 @@ InviteTable = React.createClass({
                     <tr>
                         <th>{i18n.email_text}</th>
                         <th>{i18n.organisations_text}</th>
-                        <th>{i18n.group_text}</th>
+                        <th>{i18n.role_text}</th>
                         <th> </th>
                     </tr>
                 </thead>
@@ -156,8 +156,8 @@ InviteModal = React.createClass({
         };
     },
 
-    inviteApiCall: function(email, org, group, row) {
-        if (email === "" && org === "" && group === "") {
+    inviteApiCall: function(email, org, role, row) {
+        if (email === "" && org === "" && role === "") {
             // Row without any data, ignore
         } else {
             // Create request
@@ -209,7 +209,7 @@ InviteModal = React.createClass({
             var data = "user_data=" + JSON.stringify({
                 email: email,
                 organisation: org,
-                group: group
+                group: role
             });
 
             request.send(data);
@@ -228,8 +228,8 @@ InviteModal = React.createClass({
             var inviteRow = inviteRows[i];
             var emailInput = inviteRow.querySelector('input').value;
             var orgInput = inviteRow.querySelector('.org-select').value;
-            var groupInput = inviteRow.querySelector('.group-select').value;
-            this.inviteApiCall(emailInput, orgInput, groupInput, inviteRow);
+            var roleInput = inviteRow.querySelector('.role-select').value;
+            this.inviteApiCall(emailInput, orgInput, roleInput, inviteRow);
         }
 
         // Enable invite button again
@@ -546,22 +546,23 @@ UserTable = React.createClass({
 
 
 InviteButton = React.createClass({
-  render: function() {
-    return (<ModalTrigger modal={<InviteModal />}>
-            <Button title="Invite Users">
-            <i className="glyphicon glyphicon-user"></i> +
-            </Button>
-            </ModalTrigger>);
-  }
+    render: function() {
+        return (
+            <ModalTrigger modal={<InviteModal />}>
+                <Button title={i18n.invite_users_text}>
+                    <i className="glyphicon glyphicon-user"></i> +
+                </Button>
+            </ModalTrigger>
+        );
+    }
 });
 
 
 initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
-group_data = JSON.parse(document.getElementById("group-data").innerHTML);
+role_data = JSON.parse(document.getElementById("role-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(<UserTable source={initial_employment_data} />,
                       document.getElementById('user_table'));
-React.renderComponent(<InviteButton organisations={organisation_data} groups={group_data}/>,
-                      document.getElementById('invite_button'));
+React.renderComponent(<InviteButton />, document.getElementById('invite_button'));

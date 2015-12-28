@@ -372,17 +372,25 @@ def my_iati(request):
 
 @login_required
 def user_management(request):
-    """Directory of users connected to the user."""
+    """
+    Show the user management page. It is possible to manage employments on this page, e.g. approve
+    an employment or change the group of a certain employment. Also allows users to invite other
+    users.
+
+    :param request; a Django request.
+    """
     user = request.user
 
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
+    # Inviting users
     if user.is_admin or user.is_superuser:
+        # Superusers or RSR Admins can invite someone for any organisation, and with any role
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
-        can_invite_groups = Group.objects.filter(
+        roles = Group.objects.filter(
             name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
         )
     else:
@@ -393,7 +401,7 @@ def user_management(request):
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
-        can_invite_groups = Group.objects.filter(name__in=['Users', 'Project Editors'])
+        roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
     if q:
@@ -445,16 +453,16 @@ def user_management(request):
         organisation_dict = {'id': organisation.id, 'name': organisation.name}
         organisations_list.append(organisation_dict)
 
-    groups_list = []
-    for group in can_invite_groups:
-        groups_dict = {'id': group.id, 'name': group.name}
-        groups_list.append(groups_dict)
+    roles_list = []
+    for role in roles:
+        roles_dict = {'id': role.id, 'name': role.name}
+        roles_list.append(roles_dict)
 
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
     context['organisations'] = json.dumps(organisations_list)
-    context['groups'] = json.dumps(groups_list)
+    context['roles'] = json.dumps(roles_list)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range

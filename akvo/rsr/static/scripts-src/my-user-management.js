@@ -68,9 +68,9 @@ InviteRow = React.createClass({displayName: 'InviteRow',
             );
         });
 
-        var groups = group_data.map(function(group) {
+        var roles = role_data.map(function(role) {
             return (
-                React.DOM.option( {key:group.id, value:group.id}, group.name)
+                React.DOM.option( {key:role.id, value:role.id}, role.name)
             );
         });
 
@@ -86,9 +86,9 @@ InviteRow = React.createClass({displayName: 'InviteRow',
                     )
                 ),
                 React.DOM.td(null, 
-                    React.DOM.select( {className:"form-control group-select", defaultValue:""}, 
-                        React.DOM.option( {key:"", value:""}, i18n.select_group_text),
-                        groups
+                    React.DOM.select( {className:"form-control role-select", defaultValue:""}, 
+                        React.DOM.option( {key:"", value:""}, i18n.select_role_text),
+                        roles
                     )
                 ),
                 React.DOM.td(null, 
@@ -137,7 +137,7 @@ InviteTable = React.createClass({displayName: 'InviteTable',
                     React.DOM.tr(null, 
                         React.DOM.th(null, i18n.email_text),
                         React.DOM.th(null, i18n.organisations_text),
-                        React.DOM.th(null, i18n.group_text),
+                        React.DOM.th(null, i18n.role_text),
                         React.DOM.th(null,  " " )
                     )
                 ),
@@ -156,8 +156,8 @@ InviteModal = React.createClass({displayName: 'InviteModal',
         };
     },
 
-    inviteApiCall: function(email, org, group, row) {
-        if (email === "" && org === "" && group === "") {
+    inviteApiCall: function(email, org, role, row) {
+        if (email === "" && org === "" && role === "") {
             // Row without any data, ignore
         } else {
             // Create request
@@ -209,7 +209,7 @@ InviteModal = React.createClass({displayName: 'InviteModal',
             var data = "user_data=" + JSON.stringify({
                 email: email,
                 organisation: org,
-                group: group
+                group: role
             });
 
             request.send(data);
@@ -228,8 +228,8 @@ InviteModal = React.createClass({displayName: 'InviteModal',
             var inviteRow = inviteRows[i];
             var emailInput = inviteRow.querySelector('input').value;
             var orgInput = inviteRow.querySelector('.org-select').value;
-            var groupInput = inviteRow.querySelector('.group-select').value;
-            this.inviteApiCall(emailInput, orgInput, groupInput, inviteRow);
+            var roleInput = inviteRow.querySelector('.role-select').value;
+            this.inviteApiCall(emailInput, orgInput, roleInput, inviteRow);
         }
 
         // Enable invite button again
@@ -546,22 +546,23 @@ UserTable = React.createClass({displayName: 'UserTable',
 
 
 InviteButton = React.createClass({displayName: 'InviteButton',
-  render: function() {
-    return (ModalTrigger( {modal:InviteModal(null )}, 
-            Button( {title:"Invite Users"}, 
-            React.DOM.i( {className:"glyphicon glyphicon-user"}), " +"
+    render: function() {
+        return (
+            ModalTrigger( {modal:InviteModal(null )}, 
+                Button( {title:i18n.invite_users_text}, 
+                    React.DOM.i( {className:"glyphicon glyphicon-user"}), " +"
+                )
             )
-            ));
-  }
+        );
+    }
 });
 
 
 initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
-group_data = JSON.parse(document.getElementById("group-data").innerHTML);
+role_data = JSON.parse(document.getElementById("role-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_employment_data} ),
                       document.getElementById('user_table'));
-React.renderComponent(InviteButton( {organisations:organisation_data, groups:group_data}),
-                      document.getElementById('invite_button'));
+React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));
