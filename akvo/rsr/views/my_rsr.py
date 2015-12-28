@@ -384,9 +384,8 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    # Inviting users
     if user.is_admin or user.is_superuser:
-        # Superusers or RSR Admins can invite someone for any organisation, and with any role
+        # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
@@ -394,6 +393,8 @@ def user_management(request):
             name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
         )
     else:
+        # Others can only manage or invite users to their own organisation, or the
+        # organisations that they content own
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
             org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)

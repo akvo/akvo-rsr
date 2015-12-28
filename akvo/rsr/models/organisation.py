@@ -303,15 +303,27 @@ class Organisation(TimestampsMixin, models.Model):
             Returns a list of Organisations of which these organisations are the content owner.
             Includes self, is recursive.
             """
+            queryset = self
 
+            # If one of the organisations is a paying partner, add all implementing partners to
+            # the queryset
+            if queryset.filter(can_create_projects=True).exists():
+                field_partners = queryset.all_projects().field_partners().\
+                    exclude(can_create_projects=True)
+                queryset = Organisation.objects.filter(
+                    Q(pk__in=queryset.values_list('pk', flat=True)) |
+                    Q(pk__in=field_partners.values_list('pk', flat=True))
+                )
+
+            # If the organisations content own other organisations, add those to the queryset
             kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
             if kids:
                 return Organisation.objects.filter(
-                    Q(pk__in=self.values_list('pk', flat=True)) |
+                    Q(pk__in=queryset.values_list('pk', flat=True)) |
                     Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
                 )
-            else:
-                return self
+
+            return queryset
 
     def __unicode__(self):
         return self.name
@@ -364,6 +376,13 @@ class Organisation(TimestampsMixin, models.Model):
         in common with, excluding self"""
         return self.published_projects().support_partners().exclude(id__exact=self.id)
 
+    def field_partners(self):
+        """
+        Returns an Organisation queryset of field partners of which self has at least
+        one project in common with.
+        """
+        return self.all_projects().field_partners().distinct()
+
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
         return [
@@ -379,9 +398,7 @@ class Organisation(TimestampsMixin, models.Model):
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        content_own = Organisation.objects.filter(content_owner=self).content_owned_organisations()
-        return Organisation.objects.filter(Q(pk=self.pk) |
-                                           Q(pk__in=content_own.values_list('pk', flat=True)))
+        return Organisation.objects.filter(pk=self.pk).content_owned_organisations()
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
