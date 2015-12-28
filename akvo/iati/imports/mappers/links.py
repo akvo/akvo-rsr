@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.core import files
-
 from ....rsr.models.link import Link
 from ....rsr.models.project_document import ProjectDocument
 
@@ -14,8 +12,6 @@ from .. import ImportMapper
 from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-
-import urllib2
 
 VALID_IMAGE_EXTENSIONS = ['.gif', '.jpg', '.jpeg', '.png', '.tiff']
 
@@ -59,7 +55,7 @@ class CurrentImage(ImportMapper):
                 if extension not in VALID_IMAGE_EXTENSIONS:
                     continue
                 # get content length of uncompressed cargo
-                header_query = requests.head(url,headers={'Accept-Encoding': 'identity'})
+                header_query = requests.head(url, headers={'Accept-Encoding': 'identity'})
                 content_length = int(header_query.headers.get('content-length', '0'))
                 # If we have no image or the size of the image URL differs from the stored one,
                 # we go get. This _may_ in unlucky cases lead to a new image not being fetched.
