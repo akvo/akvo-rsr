@@ -380,7 +380,8 @@ class Organisation(TimestampsMixin, models.Model):
         Includes self and is recursive.
         """
         content_own = Organisation.objects.filter(content_owner=self).content_owned_organisations()
-        return content_own or Organisation.objects.filter(pk=self.pk)
+        return Organisation.objects.filter(Q(pk=self.pk) |
+                                           Q(pk__in=content_own.values_list('pk', flat=True)))
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

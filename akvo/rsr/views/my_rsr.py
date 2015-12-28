@@ -393,13 +393,7 @@ def user_management(request):
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
-        admin_group = Group.objects.get(name='Admins')
-        if Employment.objects.filter(user=user, group=admin_group).exists():
-            can_invite_groups = Group.objects.filter(
-                name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
-            )
-        else:
-            can_invite_groups = Group.objects.filter(name__in=['Users', 'User Managers'])
+        can_invite_groups = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
     if q:
