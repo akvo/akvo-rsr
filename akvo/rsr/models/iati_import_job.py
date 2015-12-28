@@ -15,6 +15,7 @@ import inspect
 import urllib2
 
 from datetime import datetime
+import zipfile
 from lxml import etree
 
 from django.conf import settings
@@ -179,31 +180,41 @@ class IatiImportJob(models.Model):
             self.add_log('No version specified', LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
+    def parse_xml(self, xml_file=None):
+        """
+        :param xml_file: optional file like object with the XML to parse if not using
+                         self.iati_xml_file
+        :return: ElementTree root of the XML document if all went well, False if not
+        """
+        if not xml_file:
+            xml_file = self.iati_xml_file
+        try:
+            parsed_xml = etree.parse(xml_file)
+        except Exception as e:
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+                         LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            return False
+
+        activities = parsed_xml.getroot()
+        if activities.tag == 'iati-activities':
+            self.add_log(
+                'Retrieved {} activities'.format(len(activities.findall('iati-activity'))),
+                LOG_ENTRY_TYPE.INFORMATIONAL)
+            return activities
+        else:
+            self.add_log('Not a valid IATI XML file, '
+                         'iati-activities not root of document.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            return False
+
     def get_activities(self):
         """
-        Get the activities from iati_import.local_file.
-
+        Parse self.iati_xml_file. Real work made in parse_xml() so sub-classes can supply
+        custom xml file
         :return: ElementTree; the root node of the XML or False when a critical error precludes the
                  continuation of the import
         """
         if self.iati_xml_file:
-            try:
-                parsed_xml = etree.parse(self.iati_xml_file)
-            except Exception as e:
-                self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
-                             LOG_ENTRY_TYPE.CRITICAL_ERROR)
-                return False
-
-            activities = parsed_xml.getroot()
-            if activities.tag == 'iati-activities':
-                self.add_log(
-                        'Retrieved {} activities'.format(len(activities.findall('iati-activity'))),
-                        LOG_ENTRY_TYPE.INFORMATIONAL)
-                return activities
-            else:
-                self.add_log('Not a valid IATI XML file, '
-                             'iati-activities not root of document.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
-                return False
+            return self.parse_xml()
         else:
             self.add_log('No file found', LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
@@ -280,8 +291,9 @@ class IatiImportJob(models.Model):
 
     def run(self):
         """
+        Main loop method. Gets and checks the IATI activites file and imports the activities if
+        all's well.
         """
-
         from akvo.rsr.models.iati_activity_import import IatiActivityImport
 
         # Start initialize
@@ -315,3 +327,56 @@ class IatiImportJob(models.Model):
                 self.add_log(u'Import finished.', LOG_ENTRY_TYPE.STATUS_COMPLETED)
         self.send_mail()
         self.add_log(u'Job finished.', LOG_ENTRY_TYPE.INFORMATIONAL)
+
+
+class CordaidZipIatiImportJob(IatiImportJob):
+    """
+    Custom job for Coradiad's ZIP archive IATI delivery
+    """
+
+    class Meta:
+        proxy = True
+
+    def run(self):
+        #TODO: import organisations before running the activities import
+        super(CordaidZipIatiImportJob, self).run()
+
+    def get_activities_file(self):
+        """
+        Find and return the Cordaid archive contains the iati-activities.xml file
+        """
+        CORDAID_ACTIVITIES_FILENAME = 'iati-activities.xml'
+        if self.iati_xml_file and zipfile.is_zipfile(self.iati_xml_file):
+            zip = zipfile.ZipFile(self.iati_xml_file, 'r')
+            try:
+                return zip.open(CORDAID_ACTIVITIES_FILENAME)
+            except KeyError:
+                self.add_log('iati-activities.xml file not found in ZIP.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
+                return None
+
+    def get_activities(self):
+        """
+        Get the XML from the Cordaid ZIP and then call parse_xml() to try parsing it
+
+        :return: ElementTree; the root node of the XML or False when a critical error precludes the
+                 continuation of the import
+        """
+        xml = self.get_activities_file()
+        if xml:
+            return self.parse_xml(xml)
+        else:
+            return False
+
+    def check_file(self):
+        """
+        Check that the Cordaid archive contains the iati-activities.xml file
+        """
+        file = self.get_activities_file()
+        if file:
+            # Cordaid zip delivery found, let's get the iati activities
+            self.add_log('Using iati-activities.xml from the Cordaid ZIP: {}'.format(self.iati_xml_file),
+                         LOG_ENTRY_TYPE.INFORMATIONAL)
+            return True
+
+        self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+        return False

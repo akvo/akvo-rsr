@@ -10,7 +10,9 @@ from importlib import import_module
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
+
+from .iati_import_job import IatiImportJob
+from .iati_import_log import LOG_ENTRY_TYPE
 
 
 class IatiImport(models.Model):
@@ -118,6 +120,14 @@ class IatiImport(models.Model):
 
         return klasses
 
+    def job_model(self):
+        """
+        Look for a proxy model for IatiImportJob based on the mapper_prefix
+        """
+        model_name = "{}IatiImportJob".format(self.mapper_prefix)
+        module = import_module('akvo.rsr.models.iati_import_job')
+        return getattr(module, model_name, IatiImportJob)
+
     def set_next_execution(self):
         """
         Set self.next_execution to the next time the import is going to be run. If run_on_save is
@@ -160,12 +170,13 @@ class IatiImport(models.Model):
         from .iati_import_job import IatiImportJob
         from .iati_import_log import IatiImportLog
 
+        job_model = self.job_model()
         try:
-            job = IatiImportJob.objects.get(iati_import=self, status=LOG_ENTRY_TYPE.STATUS_PENDING)
-        except IatiImportJob.DoesNotExist:
+            job = job_model.objects.get(iati_import=self, status=LOG_ENTRY_TYPE.STATUS_PENDING)
+        except job_model.DoesNotExist:
             job = None
-        except IatiImportJob.MultipleObjectsReturned:
-            for job in IatiImportJob.objects.filter(
+        except job_model.MultipleObjectsReturned:
+            for job in job_model.objects.filter(
                     iati_import=self, status=LOG_ENTRY_TYPE.STATUS_PENDING):
                 IatiImportLog.objects.create(
                     iati_import_job=job,
@@ -184,7 +195,7 @@ class IatiImport(models.Model):
         :param job: IatiImportJob object; if present this is a manually initiated execution
         :return:
         """
-        from .iati_import_job import IatiImportJob
+        # from .iati_import_job import IatiImportJob
         from .iati_import_log import IatiImportLog
 
         # safe-guard against running the same import in parallel
@@ -196,7 +207,8 @@ class IatiImport(models.Model):
         try:
             self.set_next_execution()
             if not job:
-                job = IatiImportJob(iati_import=self)
+                job_model = self.job_model()
+                job = job_model(iati_import=self)
                 job.save()
             job.run()
             job.save()

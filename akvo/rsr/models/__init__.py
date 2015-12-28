@@ -35,7 +35,7 @@ from .goal import Goal
 from .iati_activity_import import IatiActivityImport
 from .iati_export import IatiExport
 from .iati_import import IatiImport
-from .iati_import_job import IatiImportJob
+from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
@@ -87,6 +87,7 @@ __all__ = [
     'IatiExport',
     'IatiImport',
     'IatiImportJob',
+    'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
     'IndicatorPeriod',
