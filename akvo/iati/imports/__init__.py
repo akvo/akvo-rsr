@@ -7,6 +7,7 @@
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields import FieldDoesNotExist
 from akvo.rsr.models import InternalOrganisationID
@@ -18,6 +19,15 @@ from ...rsr.models.project import Project
 
 TRUE_VALUES = ['true', '1', 't', 'yes']
 FALSE_VALUES = ['false', '0', 'f', 'no']
+
+def akvo_ns(tag_or_attr):
+    """
+    Add Akvo namespace to a tag or attribute identifier. E.g. tag_or_attr = 'budget-item' will
+    return '{http://akvo.org/iati-activities}budget-item'
+    :param tag_or_attr: string
+    :return: the string prefixed with the akvo namespace
+    """
+    return "{{{}}}{}".format(settings.AKVO_NS, tag_or_attr)
 
 
 class ImportMapper(object):

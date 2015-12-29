@@ -5,10 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.partnership import Partnership
+from .. import ImportMapper, akvo_ns
 
-from .. import ImportMapper
-
-from django.conf import settings
 
 ROLE_TO_CODE = {
     'accountable': 2,
@@ -57,7 +55,7 @@ class Partnerships(ImportMapper):
                     self.add_log('role', 'iati_organisation_role', str(e))
 
             funding_amount = self.get_attrib(
-                    partnership, '{%s}funding-amount' % settings.AKVO_NS, 'funding_amount', None)
+                    partnership, akvo_ns('funding-amount'), 'funding_amount', None)
             if funding_amount:
                 funding_amount_present = True
                 funding_amount = self.cast_to_decimal(

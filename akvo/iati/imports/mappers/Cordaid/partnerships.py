@@ -8,6 +8,7 @@ from django.conf import settings
 
 from .....rsr.models.organisation import Organisation
 from .....rsr.models.partnership import Partnership
+from ... import akvo_ns
 from ..partnerships import Partnerships
 from .financials import BudgetItems
 
@@ -102,7 +103,7 @@ class Partnerships(Partnerships):
             self.get_or_create_partnership(organisation, organisation_role, None)
 
         business_unit = self.get_attrib(
-                self.parent_elem, '{{{}}}business-unit-id'.format(settings.AKVO_NS), 'organisation')
+                self.parent_elem, akvo_ns('business-unit-id'), 'organisation')
         business_unit = Organisation.objects.get(pk=business_units[business_unit])
         self.get_or_create_partnership(business_unit, Partnership.AKVO_SPONSOR_PARTNER)
 

@@ -9,9 +9,7 @@ import collections
 from ....rsr.models.custom_field import ProjectCustomField
 from ....rsr.models.project import Project
 
-from .. import ImportMapper
-
-from django.conf import settings
+from .. import ImportMapper, akvo_ns
 
 # project editor sections with text fields
 # TODO: fix this; there should exist one place where the sections are defined
@@ -48,7 +46,7 @@ class Descriptions(ImportMapper):
         type = project_text_fields[field].akvo_type
         if type:
             return self.parent_elem.find(
-                    "description[@{{{}}}type='{}']".format(settings.AKVO_NS, type))
+                    "description[@{}='{}']".format(akvo_ns('type'), type))
 
     def find_description_by_order(self, field):
         """
@@ -62,7 +60,7 @@ class Descriptions(ImportMapper):
             for description in self.parent_elem.findall("description"):
                 description_text = self.get_text(description)
                 if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
-                        and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()):
+                        and (not akvo_ns('type') in description.attrib.keys()):
                     count += 1
                     if count == order:
                         return description
@@ -126,60 +124,6 @@ class Descriptions(ImportMapper):
         return element, text
 
 
-# Customizations for ICCO
-#
-# description_start = dict(
-#     project_name='project name:',
-#     subtitle='subtitle:',
-#     project_plan_summary='project summary:',
-#     background='background:',
-#     current_status='baseline situation:',
-#     project_plan='project plan:',
-#     sustainability='sustainability:',
-# )
-#
-# def _text_starts_with(text, start):
-#     return text.lower().startswith(start)
-#
-# class ICCO_Descriptions(Descriptions):
-#     """
-#     Custom import rules for importing description fields from ICCO IATI XML. Here we look for
-#     description fields prefixed with the description_start strings and match them to the respective
-#     fields.
-#     Note that this is not "mixable" with the default method of matching description fields by order
-#     so if a description field is not prefixed it will not be included.
-#     """
-#
-#     def _get_description(self, start_string):
-#         for element in self.parent_elem.findall("description"):
-#             text = self.get_text(element)
-#             if _text_starts_with(text, start_string):
-#                 return element, text[len(start_string):].strip()
-#         return None, ''
-#
-#     def get_subtitle(self):
-#         element, text = self._get_description(description_start['subtitle'])
-#         if element is None:
-#             element, text = self._get_description(description_start['project_name'])
-#         if element is not None:
-#             return super(ICCODescriptions, self).get_subtitle()
-#
-#     def get_project_plan_summary(self):
-#         return self._get_description(description_start['project_plan_summary'])
-#
-#     def get_background(self):
-#         return self._get_description(description_start['background'])
-#
-#     def get_current_status(self):
-#         return self._get_description(description_start['current_status'])
-#
-#     def get_project_plan(self):
-#         return self._get_description(description_start['project_plan'])
-#
-#     def get_sustainability(self):
-#         return self._get_description(description_start['sustainability'])
-#
-
 class CustomFields(ImportMapper):
 
     def __init__(self, iati_import_job, parent_elem, project, globals,
@@ -197,39 +141,39 @@ class CustomFields(ImportMapper):
         """
         imported_fields = []
         changes = []
-        AKVO_NS = settings.AKVO_NS
-        for custom_field in self.parent_elem.findall("description[@{%s}type='99']" % AKVO_NS):
+        custom_description = "description[@{}='99']".format(akvo_ns('type'))
+        for custom_field in self.parent_elem.findall(custom_description):
 
             value = self.get_text(custom_field)
-            name = self.get_attrib(custom_field, '{%s}label' % AKVO_NS, 'name', 'Custom field')
+            name = self.get_attrib(custom_field, akvo_ns('label'), 'name', 'Custom field')
 
-            section = self.get_attrib(custom_field, '{%s}section' % AKVO_NS, 'section')
+            section = self.get_attrib(custom_field, akvo_ns('section'), 'section')
             try:
                 section = int(section)
                 if section < 1 or section > 10:
-                    self.add_log("description[@{%s}type='99']" % AKVO_NS, 'section',
+                    self.add_log(custom_description, 'section',
                                  'section should be a number between 1 and 10')
             except ValueError as e:
-                self.add_log("description[@{%s}type='99']" % AKVO_NS, 'section', str(e))
+                self.add_log(custom_description, 'section', str(e))
 
             max_characters = self.get_attrib(
-                    custom_field, '{%s}max-characters' % AKVO_NS, 'max_characters')
+                    custom_field, akvo_ns('max-characters'), 'max_characters')
             try:
                 max_characters = int(max_characters)
             except ValueError as e:
-                self.add_log("description[@{%s}type='99']" % AKVO_NS, 'max_characters', str(e))
+                self.add_log(custom_description, 'max_characters', str(e))
 
-            help_text = self.get_attrib(custom_field, '{%s}help-text' % AKVO_NS, 'help_text')
+            help_text = self.get_attrib(custom_field, akvo_ns('help-text'), 'help_text')
 
             mandatory = self.get_attrib(
-                    custom_field, '{%s}mandatory' % AKVO_NS, 'mandatory', 'false')
+                    custom_field, akvo_ns('mandatory'), 'mandatory', 'false')
             mandatory = self.to_boolean(mandatory)
 
-            order = self.get_attrib(custom_field, '{%s}order' % AKVO_NS, 'order', 0)
+            order = self.get_attrib(custom_field, akvo_ns('order'), 'order', 0)
             try:
                 order = int(order)
             except ValueError as e:
-                self.add_log("description[@{%s}type='99']" % AKVO_NS, 'order', str(e))
+                self.add_log(custom_description, 'order', str(e))
 
             custom_field_obj, created = ProjectCustomField.objects.get_or_create(
                 project=self.project,

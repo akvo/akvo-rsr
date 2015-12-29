@@ -4,20 +4,21 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.models.link import Link
-from ....rsr.models.project_document import ProjectDocument
+import requests
 
-from .. import ImportMapper
+from os.path import basename, splitext
+from urlparse import urlparse
 
-from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
+from ....rsr.models.link import Link
+from ....rsr.models.project_document import ProjectDocument
+from .. import ImportMapper, akvo_ns
+
+
 VALID_IMAGE_EXTENSIONS = ['.gif', '.jpg', '.jpeg', '.png', '.tiff']
 
-from urlparse import urlparse
-from os.path import basename, splitext
-import requests
 
 def file_info_from_url(url):
     parsed_url = urlparse(url)
@@ -82,7 +83,7 @@ class CurrentImage(ImportMapper):
                     self.project.current_image_caption = current_image_caption
                     image_meta_changes.append('current_image_caption')
                 current_image_credit = self.get_attrib(
-                        document_link_element, '{%s}photo-credit' % settings.AKVO_NS,
+                        document_link_element, akvo_ns('photo-credit'),
                         'current_image_credit')
                 if current_image_credit:
                     self.project.current_image_credit = current_image_credit

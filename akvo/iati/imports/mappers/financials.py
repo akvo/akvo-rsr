@@ -4,14 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.conf import settings
 from django.db.models import ObjectDoesNotExist
 
 from ....rsr.models.budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
-from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
+from ....rsr.models.iati_import_log import LOG_ENTRY_TYPE
 from ....rsr.models.planned_disbursement import PlannedDisbursement
 from ....rsr.models.transaction import Transaction, TransactionSector
-from .. import ImportMapper
+from .. import ImportMapper, akvo_ns
 
 TYPE_TO_CODE = {
     'C': '2',
@@ -229,7 +228,7 @@ class BudgetItems(ImportMapper):
                 label = BudgetItemLabel.objects.get(label='Total')
                 other_extra = ''
 
-            akvo_budget_type = budget.attrib.get('{%s}type' % settings.AKVO_NS)
+            akvo_budget_type = budget.attrib.get(akvo_ns('type'))
             if akvo_budget_type:
                 try:
                     label = BudgetItemLabel.objects.get(pk=int(akvo_budget_type))
@@ -237,7 +236,7 @@ class BudgetItems(ImportMapper):
                     self.add_log('budget[@type]', 'budget_item_label', str(e),
                                  LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
 
-            akvo_budget_label = budget.attrib.get('{%s}label' % settings.AKVO_NS)
+            akvo_budget_label = budget.attrib.get(akvo_ns('label'))
             if akvo_budget_label:
                 other_extra = akvo_budget_label
                 if len(other_extra) > 30:
