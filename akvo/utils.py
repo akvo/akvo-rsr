@@ -9,6 +9,7 @@ import random
 import logging
 from urlparse import urljoin
 from datetime import datetime
+import zipfile
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -497,3 +498,17 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
 def check_auth_groups(group_names):
     for group_name in group_names:
         Group.objects.get_or_create(name=group_name)
+
+
+def file_from_zip_archive(zip, file_name):
+    """
+    Return a file from a zip archive
+    :param zip: zip file or file name
+    :param file_name: name of the file to retrieve from the archive
+    :return: the file or None
+    """
+    zip = zipfile.ZipFile(zip, 'r')
+    try:
+        return zip.open(file_name)
+    except KeyError:
+        return None

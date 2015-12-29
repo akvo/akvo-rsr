@@ -26,7 +26,7 @@ from django.db import models, transaction, IntegrityError
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE, IatiImportLogCollector
-from akvo.utils import rsr_send_mail
+from akvo.utils import rsr_send_mail, file_from_zip_archive
 
 
 def file_path(self, filename):
@@ -333,7 +333,6 @@ class CordaidZipIatiImportJob(IatiImportJob):
     """
     Custom job for Coradiad's ZIP archive IATI delivery
     """
-
     class Meta:
         proxy = True
 
@@ -347,10 +346,10 @@ class CordaidZipIatiImportJob(IatiImportJob):
         """
         CORDAID_ACTIVITIES_FILENAME = 'iati-activities.xml'
         if self.iati_xml_file and zipfile.is_zipfile(self.iati_xml_file):
-            zip = zipfile.ZipFile(self.iati_xml_file, 'r')
-            try:
-                return zip.open(CORDAID_ACTIVITIES_FILENAME)
-            except KeyError:
+            iati_xml_file = file_from_zip_archive(self.iati_xml_file, CORDAID_ACTIVITIES_FILENAME)
+            if iati_xml_file:
+                return iati_xml_file
+            else:
                 self.add_log('iati-activities.xml file not found in ZIP.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
                 return None
 
