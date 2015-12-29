@@ -242,6 +242,8 @@ InviteModal = React.createClass({
         return this.transferPropsTo(
             <Modal bsSize="large" title="Invite Users">
                 <div className="modal-body" id="invite-table">
+                    {i18n.invite_users_heading}
+                    <hr/>
                     <InviteTable />
                 </div>
                 <div className="modal-footer">
