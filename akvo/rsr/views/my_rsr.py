@@ -132,7 +132,7 @@ def my_projects(request):
     page, paginator, page_range = pagination(page, projects, 10)
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related('primary_location__country').\
+    page.object_list = page.object_list.select_related('validations').\
         prefetch_related('publishingstatus')
 
     # Add custom fields in case user adds a new project

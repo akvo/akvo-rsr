@@ -8,7 +8,9 @@
             {% else %}
             <div class="col-sm-8">
             {% endif %}
-                <h1><a href="{% url 'project-main' project.pk %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
+                <h1>
+                    <a href="{% url 'project-main' project.pk %}"><i class="fa {% if not project.is_public %}fa-lock{% else %}fa-folder-o{% endif %}"></i> {{project.title}}</a>
+                </h1>
                 <p>{{project.subtitle}}</p>
                 <div class="projectLocation">
                     <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">{% trans 'Show map' %} +</a></p>
