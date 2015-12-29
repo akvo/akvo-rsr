@@ -4,13 +4,11 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.conf import settings
-
 from .....rsr.models.organisation import Organisation
 from .....rsr.models.partnership import Partnership
+from ... import akvo_ns
 from ..partnerships import Partnerships
 from .financials import BudgetItems
-
 
 ROLE_TO_CODE = {
     'accountable': 2,
@@ -23,6 +21,7 @@ CORDAID = 'Cordaid'
 CORDAID_ORG_ID = 273
 OTHERS = 'Others'
 OTHERS_ORG_ID = 1653
+
 
 class Partnerships(Partnerships):
 
@@ -46,6 +45,15 @@ class Partnerships(Partnerships):
         self._imported_partnerships.append(partnership_obj)
 
     def add_funding_partner(self, budget_from):
+        """
+        The funding partners for Cordaid are based on one or two <budget> tags.
+        They are distinguished via the avko:budget-from attribute to determine if the funing partner
+        is Cordaid (CORDAID_ORG_ID) Others (OTHERS_ORG_ID)
+        :param budget_from: string; "Cordaid" or "Others"
+        :return:
+        """
+        assert budget_from == "Cordaid" or budget_from == "Others", (
+                "akvo:budget-from value incorrect: {}".format(budget_from))
 
         budget_items = BudgetItems(self.iati_import_job, self.parent_elem, self.project,
                                    self.globals)
@@ -59,7 +67,7 @@ class Partnerships(Partnerships):
 
     def do_import(self):
         """
-
+        Set up the custom Cordaid partnerships.
         :return: List; contains fields that have changed
         """
         business_units = {
@@ -76,7 +84,7 @@ class Partnerships(Partnerships):
             "K6040": 955,
             "K6050": 960,
         }
-
+        # "Regular" partners
         for partnership in self.parent_elem.findall('participating-org'):
 
             # TODO: add internal-org-ref lookup
@@ -101,11 +109,14 @@ class Partnerships(Partnerships):
 
             self.get_or_create_partnership(organisation, organisation_role, None)
 
+        # Cordaid business unit set up as a sponsor partner
+        # TODO: fix this, we wanna get rid of sponsor partners!
         business_unit = self.get_attrib(
-                self.parent_elem, '{{{}}}business-unit-id'.format(settings.AKVO_NS), 'organisation')
+                self.parent_elem, akvo_ns('business-unit-id'), 'organisation')
         business_unit = Organisation.objects.get(pk=business_units[business_unit])
         self.get_or_create_partnership(business_unit, Partnership.AKVO_SPONSOR_PARTNER)
 
+        # Cordaid funding partners.
         self.add_funding_partner(CORDAID)
         self.add_funding_partner(OTHERS)
 

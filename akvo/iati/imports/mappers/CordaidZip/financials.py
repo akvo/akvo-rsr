@@ -4,11 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.conf import settings
-
 from .....rsr.models.budget_item import BudgetItem, BudgetItemLabel
+from ... import akvo_ns
 from ..financials import BudgetItems
-
 
 
 class BudgetItems(BudgetItems):
@@ -20,7 +18,7 @@ class BudgetItems(BudgetItems):
                                 other_extra = '',)
 
         budget = budget_item_data['budget'] = activity.find(
-            'budget[@{{{}}}budget-from="{}"]'.format(settings.AKVO_NS, budget_from))
+                'budget[@{}="{}"]'.format(akvo_ns('budget-from'), budget_from))
 
         if budget is not None:
             budget_item_data['type'] = self.get_attrib(budget, 'type', 'type')

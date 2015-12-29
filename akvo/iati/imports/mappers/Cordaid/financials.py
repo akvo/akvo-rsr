@@ -18,7 +18,7 @@ class BudgetItems(BudgetItems):
                                 other_extra = '',)
 
         budget = budget_item_data['budget'] = activity.find(
-            'budget[@{}="{}"]'.format(akvo_ns('budget-from'), budget_from))
+                'budget[@{}="{}"]'.format(akvo_ns('budget-from'), budget_from))
 
         if budget is not None:
             budget_item_data['type'] = self.get_attrib(budget, 'type', 'type')
