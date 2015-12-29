@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% load i18n %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      body {
+        font-family: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.42857;
+        color: #394c50;
+      }
+      table, td, th {
+        border: 1px solid #2C2A74;
+      }
+      th {
+        background-color: #2C2A74;
+        color: white;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        color: #2C2A74;
+      }
+    </style>
+  </head>
+  <body>
+      {% blocktrans with inviting_user_name=inviting_user.get_full_name invited_user_name=invited_user.get_full_name invited_user_email=invited_user.email invited_user_first_name=invited_user.first_name invited_user_last_name=invited_user.last_name org_name=organisation.long_name %}
+          <p>Dear {{inviting_user_name }},</p>
+          <p>{{ invited_user_name }} has accepted your invitation to use Akvo RSR, and activated his or her account with the following details:</p>
+          <ul>
+              <li>Email address: {{ invited_user_email }}</li>
+              <li>First name: {{ invited_user_first_name }}</li>
+              <li>Last name: {{ invited_user_last_name }}</li>
+              <li>Organisation: {{ org_name }}</li>
+          </ul>
+          <p>
+              Thank you,<br/>
+              Akvo.org
+          </p>
+      {% endblocktrans %}
+  </body>
+</html>

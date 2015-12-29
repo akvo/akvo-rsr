@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% blocktrans with inviting_user_name=inviting_user.get_full_name invited_user_name=invited_user.get_full_name invited_user_email=invited_user.email invited_user_first_name=invited_user.first_name invited_user_last_name=invited_user.last_name org_name=organisation.long_name %}
+Dear {{ inviting_user_name }},
+
+{{ invited_user_name }} has accepted your invitation to use Akvo RSR, and activated his or her account with the following details:
+
+- Email address: {{ invited_user_email }}
+- First name: {{ invited_user_first_name }}
+- Last name: {{ invited_user_last_name }}
+- Organisation: {{ org_name }}
+
+Thank you,
+Akvo.org
+{% endblocktrans %}

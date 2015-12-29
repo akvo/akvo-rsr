@@ -13,6 +13,7 @@ from lxml import etree
 from tastypie.models import ApiKey
 
 from akvo.rsr.forms import RegisterForm, InvitedUserForm
+from akvo.utils import rsr_send_mail
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
@@ -88,36 +89,59 @@ def activate(request, activation_key, extra_context=None):
     )
 
 
-def invite_activate(request, pk, token_date, token):
+def invite_activate(request, inviting_pk, pk, token_date, token):
     """
     Activate a user that has been invited to use RSR.
 
     :param request: the request
+    :param inviting_pk: the invitee user's primary key
     :param pk: the invited user's primary key
     :param token_date: the first part of the token
     :param token: the second part of the token
     """
-    user = get_user_model().objects.get(pk=pk)
-    if user.is_active:
+    bad_link, signature_expired, user, inviting_user = False, False, None, None
+
+    try:
+        user = get_user_model().objects.get(pk=pk)
+        inviting_user = get_user_model().objects.get(pk=inviting_pk)
+    except get_user_model().DoesNotExist:
+        bad_link = True
+
+    if user and user.is_active:
         user = authenticate(username=user.username, no_password=True)
         login(request, user)
         return redirect('my_details')
 
     expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
 
-    bad_signature, signature_expired = False, False
     try:
         TimestampSigner().unsign(':'.join([user.email, token_date, token]),
                                  max_age=expiration_days * 24 * 60 * 60)
     except SignatureExpired:
         signature_expired = True
     except BadSignature:
-        bad_signature = True
+        bad_link = True
 
     if request.method == 'POST':
         form = InvitedUserForm(user=user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save(request)
+            if inviting_user:
+                # Send notification email to inviting user
+                rsr_send_mail(
+                    [inviting_user.email],
+                    subject='registration/invited_user_notification_subject.txt',
+                    message='registration/invited_user_notification_message.txt',
+                    html_message='registration/invited_user_notification_message.html',
+                    subject_context={
+                        'user': user,
+                    },
+                    msg_context={
+                        'invited_user': user,
+                        'inviting_user': inviting_user,
+                        'organisation': user.organisations.first(),
+                    }
+                )
             user = authenticate(username=user.username, no_password=True)
             login(request, user)
             return redirect('my_details')
@@ -127,7 +151,7 @@ def invite_activate(request, pk, token_date, token):
     context = {
         'form': form,
         'expiration_days': expiration_days,
-        'bad_signature': bad_signature,
+        'bad_link': bad_link,
         'signature_expired': signature_expired
     }
     return render(request, 'registration/invite_activate.html', context)
