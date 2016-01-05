@@ -1701,6 +1701,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
+.formProgress .progress-and-publish {
+  top: 20px; }
 .formProgress .redLegenda {
   background: #d9534f;
   color: #d9534f; }
@@ -1712,6 +1714,14 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   color: #5cb85c; }
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
+.formProgress .legenda {
+  border: 1px solid rgba(44, 42, 116, 0.5);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px;
+  margin: 15px 15px 15px 15px; }
+  .formProgress .legenda .mandatory, .formProgress .legenda .projectEdit .mandatory-block, .projectEdit .formProgress .legenda .mandatory-block {
+    color: #d9534f; }
 
 .formOverviewInfo span.published {
   color: #5cb85c; }
@@ -1908,21 +1918,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .projectEdit .toggle-help {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
-
-.legenda {
-  border: 1px solid rgba(44, 42, 116, 0.5);
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  padding: 5px 15px 5px 15px;
-  margin: 15px 15px 15px 15px; }
-  .legenda .mandatory, .legenda .projectEdit .mandatory-block, .projectEdit .legenda .mandatory-block {
-    color: #d9534f; }
-
-.progress-radio {
-  top: 25px; }
-
-.remove-progress-bar-link {
-  color: #d9534f; }
 
 .viewProject {
   margin-top: 15px; }

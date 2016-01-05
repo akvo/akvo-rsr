@@ -2186,6 +2186,9 @@ body {
             }
         }
     }
+    .progress-and-publish {
+        top: 20px;
+    }
     .redLegenda {
         background: $progressWarning;
         color: $progressWarning;
@@ -2200,6 +2203,16 @@ body {
     }
     .mandatoryIndicator {
         color: $progressWarning;
+    }
+    .legenda {
+        border: 1px solid rgba($akvoPurple, 0.5);
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        padding: 5px 15px 5px 15px;
+        margin: 15px 15px 15px 15px;
+        .mandatory {
+            color: $progressWarning;
+        }
     }
 }
 
@@ -2473,25 +2486,6 @@ body {
     }
 }
 
-.legenda {
-    border: 1px solid rgba($akvoPurple, 0.5);
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    padding: 5px 15px 5px 15px;
-    margin: 15px 15px 15px 15px;
-    .mandatory {
-        color: $progressWarning;
-    }
-}
-
-.progress-radio {
-    top: 25px;
-}
-
-.remove-progress-bar-link {
-    color: $progressWarning;
-}
-
 .viewProject {
     margin-top: 15px;
 }
@@ -2571,11 +2565,11 @@ body {
     .border-transition {
         @include transition(border 0.25s ease-in-out);
     }
-    .bg-border-transition { 
+    .bg-border-transition {
         -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;         
+        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     }
     .opacity-transition {
         @include transition(opacity 0.25s ease-in-out);
@@ -3140,11 +3134,11 @@ body {
                 background-color: #ececec;
                 &:first-child {
                     border-left: 4px solid #ae0922;
-                }       
+                }
                 &.edit-in-progress {
                     background-color: #D1E6D1;
                     border-left: none;
-                }             
+                }
                 .update-exceed-target {
                     margin: 3em 0 1em 0;
                     text-align: right;
@@ -3183,7 +3177,7 @@ body {
                         color: #B5B5B5;
                         border: 1px solid #B5B5B5;
                         background-color: #ececec;
-                        cursor: pointer;                     
+                        cursor: pointer;
                         .progress-hover-text {
                             content: '';
                             opacity: 0;

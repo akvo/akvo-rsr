@@ -4,48 +4,49 @@
     <div class="panel panel-info formOverviewInfo">
         <div class="panel-heading">
             <h3 class="panel-title">
-                {% trans 'Superuser options' %}
+{#                {% trans 'Superuser options' %}#}
+                <i class="fa fa-wrench"></i> {% trans 'Project settings' %}
             </h3>
         </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="impactProject" class="control-label">
-                                <input id="impact-project" type="checkbox" name="impact-project"{% if project.is_impact_project %} checked{% endif %}>
-                                    {% trans 'RSR Impact project' %}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-9 help-block">
-                    {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}
-                </div>
-            </div>
-            {% if project.parents.count == 1 and project.is_impact_project %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
-                    </div>
-                </div>
-            {% endif %}
-            <hr/>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label for="privateProject" class="control-label">
-                                <input id="private-project" type="checkbox" name="private-project"{% if not project.is_public %} checked{% endif %}>
-                                    {% trans 'Private project' %}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-9 help-block">
-                    {% trans 'Indicate whether this is a private project. Private projects do not appear in any public lists, and can only be viewed in MyRSR if a user has permissions to edit the project.' %}
-                </div>
-            </div>
-        </div>
+{#        <div class="panel-body">#}
+{#            <div class="row">#}
+{#                <div class="col-md-3">#}
+{#                    <div class="form-group">#}
+{#                        <div class="checkbox">#}
+{#                            <label for="impactProject" class="control-label">#}
+{#                                <input id="impact-project" type="checkbox" name="impact-project"{% if project.is_impact_project %} checked{% endif %}>#}
+{#                                    {% trans 'RSR Impact project' %}#}
+{#                            </label>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-9 help-block">#}
+{#                    {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates.' %}#}
+{#                </div>#}
+{#            </div>#}
+{#            {% if project.parents.count == 1 and project.is_impact_project %}#}
+{#                <div class="row">#}
+{#                    <div class="col-md-12">#}
+{#                        <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#            <hr/>#}
+{#            <div class="row">#}
+{#                <div class="col-md-3">#}
+{#                    <div class="form-group">#}
+{#                        <div class="checkbox">#}
+{#                            <label for="privateProject" class="control-label">#}
+{#                                <input id="private-project" type="checkbox" name="private-project"{% if not project.is_public %} checked{% endif %}>#}
+{#                                    {% trans 'Private project' %}#}
+{#                            </label>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-9 help-block">#}
+{#                    {% trans 'Indicate whether this is a private project. Private projects do not appear in any public lists, and can only be viewed in MyRSR if a user has permissions to edit the project.' %}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 {% endif %}
