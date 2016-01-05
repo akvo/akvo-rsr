@@ -1,162 +1,77 @@
 {% load i18n %}
 
-<div class="panel panel-success formProgress">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            <i class="fa fa-tasks"></i> {% trans 'Project progress' %}
-        </h3>
-    </div>
-    <div class="panel-body">
-        <div class="row help-block">
-            <div class="col-md-12"><strong>{% trans 'Legenda' %}</strong></div>
-            <div class="row">
-                <div class="col-xs-1"></div>
-                <div class="col-xs-1"><span class="redLegenda">{% trans 'legend' %}</span></div>
-                <div class="col-xs-8 col-xs-offset-1">{% trans 'No mandatory fields completed' %}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-1"></div>
-                <div class="col-xs-1"><span class="orangeLegenda">{% trans 'legend' %}</span><br/></div>
-                <div class="col-xs-8 col-xs-offset-1">{% trans 'Some mandatory fields completed' %}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-1"></div>
-                <div class="col-xs-1"><span class="greenLegenda">{% trans 'legend' %}</span></div>
-                <div class="col-xs-8 col-xs-offset-1">{% trans 'All mandatory fields completed' %}</div>
-            </div>
+<div class="formProgress">
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <i class="fa fa-tasks"></i> {% trans 'Project progress' %}
+            </h3>
         </div>
-        <hr/>
-        <div id="progress-bar" validation-sets="{% for validation_set in project_validation_sets %}{{ validation_set.pk }}{% if not forloop.last %}-{% endif %}{% endfor %}">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="row help-block">
-                        <div class="col-md-12">
-                            <strong>{% trans 'Project progress' %}</strong>
-{#                            {% if user.can_create_project and validation_set.pk != 1 %}#}
-{#                                <a class="remove-progress-bar-link" id="remove-progress-bar-link-{{ validation_set.pk }}"><span class="glyphicon glyphicon-remove"></span></a>#}
-{#                            {% endif %}#}
-                        </div>
-                        <div class="col-md-12">
-                            {% trans 'This progress bar indicates the number of completed mandatory fields. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. A mandatory field is indicated with a ' %}<span class="mandatoryIndicator">*</span>.
-                        </div>
-                        <div class="col-md-12 progress-and-publish">
-                        {% if user.can_create_project %}
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <div class="progress overview">
-                                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                            <span class="sr-only"></span><span class="progress-percentage"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 text-center">
-                                    <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
-                                        {% if project.is_published %}
-                                            <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish' %}
-                                        {% else %}
-                                            <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish' %}
-                                        {% endif %}
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="help-block-error" id="publishErrors"></div>
-                            </div>
-                        {% else %}
-                            <div class="progress overview">
-                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                    <span class="sr-only"></span><span class="progress-percentage"></span>
-                                </div>
-                            </div>
-                        {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-{#        {% for validation_set in validation_sets %}#}
-{#            <div id="progress-{{ validation_set.pk }}"#}
-{#                 class="validation-progress#}
-{#                        {% if forloop.first %} active-validation{% endif %}#}
-{#                        {% if not validation_set in project_validation_sets %} hidden{% endif %}">#}
-{#                <hr/>#}
-{#                <div class="row">#}
-{#                    <div class="col-xs-1 progress-radio">#}
-{#                        <input id="select-validation-{{ validation_set.pk }}"#}
-{#                               class="validation-switch"#}
-{#                               type="radio"#}
-{#                               {% if forloop.first %} checked{% endif %}>#}
-{#                    </div>#}
-{#                    <div class="col-xs-11">#}
-{#                        <div class="row help-block">#}
-{#                            <div class="col-md-12">#}
-{#                                <strong>{{ validation_set.name }}</strong>#}
-{#                                {% if user.can_create_project and validation_set.pk != 1 %}#}
-{#                                    <a class="remove-progress-bar-link" id="remove-progress-bar-link-{{ validation_set.pk }}"><span class="glyphicon glyphicon-remove"></span></a>#}
-{#                                {% endif %}#}
-{#                            </div>#}
-{#                            <div class="col-md-12">{{ validation_set.description|safe }}</div>#}
-{#                        </div>#}
-{#                        {% if validation_set.pk == 1 and user.can_create_project %}#}
-{#                            <div class="row">#}
-{#                                <div class="col-md-9">#}
-{#                                    <div class="progress overview">#}
-{#                                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">#}
-{#                                            <span class="sr-only"></span><span class="progress-percentage"></span>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="col-md-3 text-center">#}
-{#                                    <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">#}
-{#                                        {% if project.is_published %}#}
-{#                                            <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish' %}#}
-{#                                        {% else %}#}
-{#                                            <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish' %}#}
-{#                                        {% endif %}#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="row">#}
-{#                                <div class="help-block-error" id="publishErrors"></div>#}
-{#                            </div>#}
-{#                        {% else %}#}
-{#                            <div class="progress overview">#}
-{#                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">#}
-{#                                    <span class="sr-only"></span><span class="progress-percentage"></span>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        {% endfor %}#}
-        {% if user.can_create_project and validation_sets.count != project_validation_sets.count %}
-            <div id="add-progress">
-                <hr/>
+        <div class="panel-body">
+            <div class="row help-block">
+                <div class="col-md-12"><strong>{% trans 'Legenda' %}</strong></div>
                 <div class="row">
                     <div class="col-xs-1"></div>
-                    <div class="col-xs-11">
+                    <div class="col-xs-1"><span class="redLegenda">{% trans 'legend' %}</span></div>
+                    <div class="col-xs-8 col-xs-offset-1">{% trans 'No mandatory fields completed' %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-1"><span class="orangeLegenda">{% trans 'legend' %}</span><br/></div>
+                    <div class="col-xs-8 col-xs-offset-1">{% trans 'Some mandatory fields completed' %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-1"><span class="greenLegenda">{% trans 'legend' %}</span></div>
+                    <div class="col-xs-8 col-xs-offset-1">{% trans 'All mandatory fields completed' %}</div>
+                </div>
+            </div>
+            <hr/>
+            <div id="progress-bar" validation-sets="{% for validation_set in project_validation_sets %}{{ validation_set.pk }}{% if not forloop.last %}-{% endif %}{% endfor %}">
+                <div class="row">
+                    <div class="col-xs-12">
                         <div class="row help-block">
-                            <div class="col-md-12"><strong>{% trans 'Add new progress bar' %}</strong></div>
-                            <div class="col-md-12">{% trans 'It is possible to add additional progress bars to your project. Do keep in mind that these progress bars will be visible to everyone editing this project.' %}</div>
                             <div class="col-md-12">
-                                <div class="select-group control">
-                                    <select id="progress-bar-select">
-                                        <option value="" selected="selected"></option>
-                                        {% for validation_set in validation_sets %}
-                                            {% if validation_set not in project_validation_sets %}
-                                                <option value="{{ validation_set.pk }}">{{ validation_set.name }}</option>
+                                <strong>{% trans 'Project progress' %}</strong>
+                            </div>
+                            <div class="col-md-12">
+                                {% trans 'This progress bar indicates the number of completed mandatory fields. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. A mandatory field is indicated with a ' %}<span class="mandatoryIndicator">*</span>.
+                            </div>
+                            <div class="col-md-12 progress-and-publish">
+                            {% if user.can_create_project %}
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="progress overview">
+                                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
+                                            {% if project.is_published %}
+                                                <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish' %}
+                                            {% else %}
+                                                <span class="glyphicon glyphicon-ok"></span> {% trans 'Publish' %}
                                             {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                    <a href="#" id="add-progress-bar-link"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add progress bar' %}</a>
+                                        </button>
+                                    </div>
                                 </div>
+                                <div class="row">
+                                    <div class="help-block-error" id="publishErrors"></div>
+                                </div>
+                            {% else %}
+                                <div class="progress overview">
+                                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                        <span class="sr-only"></span><span class="progress-percentage"></span>
+                                    </div>
+                                </div>
+                            {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        {% endif %}
+        </div>
     </div>
 </div>

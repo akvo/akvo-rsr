@@ -1396,7 +1396,7 @@ div.textBlock {
   .tooltip .tooltip-inner {
     max-width: 350px;
     padding: 15px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.95);
     border: thin solid rgba(32, 32, 36, 0.15);
     color: #202024;
     -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
@@ -1699,6 +1699,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress .progress-bar .progress-percentage {
   display: none; }
 
+.formProgress .panel-heading {
+  cursor: pointer;
+  transition: background 0.1s linear; }
+  .formProgress .panel-heading:hover {
+    background: rgba(92, 184, 92, 0.1); }
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
 .formProgress .progress-and-publish {
@@ -1714,18 +1719,17 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   color: #5cb85c; }
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
-.formProgress .legenda {
-  border: 1px solid rgba(44, 42, 116, 0.5);
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  padding: 5px 15px 5px 15px;
-  margin: 15px 15px 15px 15px; }
-  .formProgress .legenda .mandatory, .formProgress .legenda .projectEdit .mandatory-block, .projectEdit .formProgress .legenda .mandatory-block {
-    color: #d9534f; }
 
-.formOverviewInfo span.published {
+.formOverviewInfo .panel-heading {
+  cursor: pointer;
+  transition: background 0.1s linear; }
+  .formOverviewInfo .panel-heading:hover {
+    background: rgba(114, 205, 255, 0.1); }
+.formOverviewInfo label {
+  color: rgba(44, 42, 116, 0.5); }
+.formOverviewInfo .published {
   color: #5cb85c; }
-.formOverviewInfo span.notPublished {
+.formOverviewInfo .notPublished {
   color: #e31b23; }
 
 .projectEdit h2 {

@@ -1730,7 +1730,7 @@ div.textBlock {
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
-        background: rgba(white, 0.55);
+        background: rgba(white, 0.95);
         border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
         @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
@@ -2179,6 +2179,13 @@ body {
 }
 
 .formProgress {
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($progressSuccess, 0.1);
+        }
+    }
     .progress {
         .progress-bar {
             .progress-percentage {
@@ -2204,23 +2211,23 @@ body {
     .mandatoryIndicator {
         color: $progressWarning;
     }
-    .legenda {
-        border: 1px solid rgba($akvoPurple, 0.5);
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-        padding: 5px 15px 5px 15px;
-        margin: 15px 15px 15px 15px;
-        .mandatory {
-            color: $progressWarning;
-        }
-    }
 }
 
 .formOverviewInfo {
-    span.published {
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($rsrBlue2, 0.1);
+        }
+    }
+    label {
+        color: rgba($akvoPurple, 0.5);
+    }
+    .published {
         color: $progressSuccess;
     }
-    span.notPublished {
+    .notPublished {
         color: $secondary2;
     }
 }
