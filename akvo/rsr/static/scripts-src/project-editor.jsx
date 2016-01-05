@@ -615,7 +615,7 @@ function uploadFile(fileInput, maxFileSize, fileType) {
             // Upload progress bar
             request.upload.addEventListener("progress", function(e) {
                 var progressBar = progressBarContainer.querySelector('.progress-bar');
-                var percentage = parseInt(100 - (e.loaded / e.total * 100));
+                var percentage = parseInt(e.loaded / e.total * 100);
                 progressBar.setAttribute('aria-valuenow', percentage);
                 progressBar.style.width = percentage + '%';
                 progressBar.innerHTML = percentage + '%';
