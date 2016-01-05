@@ -2211,6 +2211,12 @@ body {
     .mandatoryIndicator {
         color: $progressWarning;
     }
+    .published {
+        color: $progressSuccess;
+    }
+    .notPublished {
+        color: $secondary2;
+    }
 }
 
 .formOverviewInfo {
@@ -2223,12 +2229,6 @@ body {
     }
     label {
         color: rgba($akvoPurple, 0.5);
-    }
-    .published {
-        color: $progressSuccess;
-    }
-    .notPublished {
-        color: $secondary2;
     }
 }
 

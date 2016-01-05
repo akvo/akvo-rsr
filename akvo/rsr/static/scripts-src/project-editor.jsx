@@ -2479,19 +2479,15 @@ function getProjectPublish(publishingStatusId, publishButton) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 // Succesfully (un)published project!
-                var viewProjectButton = document.getElementById('viewProject');
+                var publishIndicator = document.getElementById('publish-indicator');
 
                 // Change the view project page button to "View project" or "Preview project"
                 // Update the button's status and appearance
 
                 var iconElement, textElement, otherTextElement, otherIconElement;
                 if (status === 'unpublished') {
-                    viewProjectButton.innerHTML = '';
-                    iconElement = document.createElement('span');
-                    iconElement.className = "glyphicon glyphicon-expand";
-                    textElement = document.createTextNode(' ' + defaultValues.view_project);
-                    viewProjectButton.appendChild(iconElement);
-                    viewProjectButton.appendChild(textElement);
+                    publishIndicator.className = 'published';
+                    publishIndicator.innerHTML = defaultValues.published;
 
                     publishButton.setAttribute('status', 'published');
                     otherTextElement = document.createTextNode(' ' + defaultValues.unpublish);
@@ -2503,12 +2499,8 @@ function getProjectPublish(publishingStatusId, publishButton) {
                     publishButton.appendChild(otherIconElement);
                     publishButton.appendChild(otherTextElement);
                 } else {
-                    viewProjectButton.innerHTML = '';
-                    iconElement = document.createElement('span');
-                    iconElement.className = "glyphicon glyphicon-expand";
-                    textElement = document.createTextNode(' ' + defaultValues.preview_project);
-                    viewProjectButton.appendChild(iconElement);
-                    viewProjectButton.appendChild(textElement);
+                    publishIndicator.className = 'notPublished';
+                    publishIndicator.innerHTML = defaultValues.not_published;
 
                     publishButton.setAttribute('status', 'unpublished');
                     otherTextElement = document.createTextNode(' ' + defaultValues.publish);
@@ -3086,7 +3078,7 @@ function removeFromProgressBar(validationSetId) {
 
     if (index > -1) {
         currentValidationSets.splice(index, 1);
-        progressBar.setAttribute('validation-sets', currentValidationSets);
+        progressBar.setAttribute('validation-sets', currentValidationSets.join('-'));
 
         setValidationListeners();
         setPageCompletionPercentage();
