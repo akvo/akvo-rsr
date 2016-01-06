@@ -10,6 +10,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import get_model, Max, Sum
@@ -1179,8 +1180,11 @@ def default_validation_set(sender, **kwargs):
             project.validations.add(rsr_validation_set)
     except ProjectEditorValidationSet.DoesNotExist:
         # RSR validation set does not exist, should not happen..
-        # TODO: Send mail to RSR administrators
-        pass
+        send_mail('RSR validation set missing',
+                  'This is a notification to inform the RSR admins that the RSR validation set '
+                  '(pk=1) is missing.',
+                  getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                  getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
 
 
 @receiver(post_save, sender=ProjectUpdate)
