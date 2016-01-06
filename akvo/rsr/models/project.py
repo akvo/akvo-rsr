@@ -385,11 +385,6 @@ class Project(TimestampsMixin, models.Model):
 
         super(Project, self).save(*args, **kwargs)
 
-        # Add RSR validation set to projects that don't have that set
-        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
-        if not rsr_validation_set in self.validations.all():
-            self.validations.add(rsr_validation_set)
-
     def clean(self):
         # Don't allow a start date before an end date
         if self.date_start_planned and self.date_end_planned and \
@@ -1172,6 +1167,20 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
+
+
+@receiver(post_save, sender=Project)
+def default_validation_set(sender, **kwargs):
+    """If the project has no validation sets, add the RSR validation (pk=1) to the project."""
+    project = kwargs['instance']
+    try:
+        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
+        if not project.validations.all():
+            project.validations.add(rsr_validation_set)
+    except ProjectEditorValidationSet.DoesNotExist:
+        # RSR validation set does not exist, should not happen..
+        # TODO: Send mail to RSR administrators
+        pass
 
 
 @receiver(post_save, sender=ProjectUpdate)
