@@ -966,6 +966,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     updateAllHelpIcons();
     markMandatoryFields();
+    setHiddenFields();
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
     setPageCompletionPercentage();
@@ -1763,41 +1764,60 @@ function partialFilled(parentNode) {
     return false;
 }
 
-function setHiddenFields() {
-    /* Hide fields based on the selected measure class. */
-    var measureClass = '.hidden-'; //+ getMeasureClass().split('-')[1];
+function shouldBeHidden(el) {
+    /* A field should be hidden when all selected validation sets have set the field to hidden */
+    var validationSets = getValidationSets();
+    var hideAccordingToValidationSet = [];
 
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        // Show all fields
-        var allElements = document.querySelectorAll(INPUT_ELEMENTS[i]);
-        for (var j = 0; j < allElements.length; j++) {
-            var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
-            if (formGroupNode !== null && !elHasClass(formGroupNode, 'always-hidden')) {
-                elRemoveClass(formGroupNode, 'hidden');
-            }
-        }
+    for (var i = 0; i < validationSets.length; i++) {
+        var validationSet = validationSets[i];
 
-        // Hide fields that should be hidden according to the validation set
-        var hideElements = document.querySelectorAll(INPUT_ELEMENTS[i] + measureClass);
-        for (var k = 0; k < hideElements.length; k++) {
-            var hideFormGroupNode = findAncestorByClass(hideElements[k], 'form-group');
-            if (hideFormGroupNode !== null && !elHasClass(hideFormGroupNode, 'always-hidden')) {
-                elAddClass(hideFormGroupNode, 'hidden');
+        if (elHasClass(el, 'hidden-' + validationSet)) {
+            // Check if the field itself should be hidden
+            hideAccordingToValidationSet.push(validationSet);
+        } else {
+            // Check if the parent object(s) should be hidden
+            var relatedObject = findAncestorByClass(el, 'related-object-container');
+            while (relatedObject !== null) {
+                if (elHasClass(relatedObject, 'hidden-' + validationSet)) {
+                    hideAccordingToValidationSet.push(validationSet);
+                    relatedObject = null;
+                } else {
+                    relatedObject = findAncestorByClass(relatedObject, 'related-object-container');
+                }
             }
         }
     }
 
-    // See if there's any related objects that should be hidden
+    return validationSets.length === hideAccordingToValidationSet.length;
+}
+
+function setHiddenFields() {
+    /* Hide fields based on the selected validation sets. */
+
+    // Check per field if it should be hidden or not
+    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+        var allElements = document.querySelectorAll(INPUT_ELEMENTS[i]);
+        for (var j = 0; j < allElements.length; j++) {
+            var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
+            if (formGroupNode !== null) {
+                if (!(shouldBeHidden(allElements[j]) || elHasClass(formGroupNode, 'always-hidden'))) {
+                    elRemoveClass(formGroupNode, 'hidden');
+                } else {
+                    elAddClass(formGroupNode, 'hidden');
+                }
+            }
+        }
+    }
+
+    // Also check the related objects if they should be hidden or not
     var relatedObjectContainers = document.querySelectorAll('.related-object-container');
-    for (var l = 0; l < relatedObjectContainers.length; l++) {
-        if (elHasClass(relatedObjectContainers[l], measureClass.substr(1))) {
-            if (!elHasClass(relatedObjectContainers[l], 'hidden')) {
-                elAddClass(relatedObjectContainers[l], 'hidden');
-            }
+    for (var k = 0; k < relatedObjectContainers.length; k++) {
+        var relatedObjectContainer = relatedObjectContainers[k];
+        if (!shouldBeHidden(relatedObjectContainer)) {
+            elRemoveClass(relatedObjectContainer, 'hidden');
         } else {
-            if (elHasClass(relatedObjectContainers[l], 'hidden')) {
-                elRemoveClass(relatedObjectContainers[l], 'hidden');
-            }
+            elAddClass(relatedObjectContainer, 'hidden');
         }
     }
 }
@@ -1860,7 +1880,7 @@ function getInputResults(section) {
 
     for (var i = 0; i < mandatoryFields.length; i++) {
         // Ignore the 'OR' indications
-        if (mandatoryFields[i].className.indexOf('mandatory-block') > -1) {
+        if (elHasClass(mandatoryFields[i], 'mandatory-block')) {
             continue;
         }
 
@@ -2022,32 +2042,6 @@ function setAllSectionsChangeListener() {
     }
 }
 
-function switchMandatoryFields(switchTo) {
-    var progressBars = document.querySelectorAll('.validation-progress');
-    for (var i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('id') === 'progress-' + switchTo) {
-            progressBars[i].querySelector('input').checked = true;
-            elAddClass(progressBars[i], 'active-validation');
-        } else {
-            progressBars[i].querySelector('input').checked = false;
-            elRemoveClass(progressBars[i], 'active-validation');
-        }
-    }
-
-    // Mark new mandatory fields and set new change listeners
-    setHiddenFields();
-    markMandatoryFields();
-    setAllSectionsCompletionPercentage();
-}
-
-function setSwitchMandatoryFields(switchTo) {
-    /* Switch between validation sets */
-    return function(e) {
-        e.preventDefault();
-        switchMandatoryFields(switchTo);
-    };
-}
-
 function markMandatoryOrField(element, otherField) {
     /* Mark a field as an OR mandatory field */
     var formGroupNode = findAncestorByClass(element, 'form-group');
@@ -2198,11 +2192,6 @@ function setValidationListeners() {
             textarea.addEventListener('input', inputListener);
             textarea.addEventListener('focusout', focusOutListener);
         }
-    }
-
-    var progressSwitch = document.querySelectorAll('.validation-switch');
-    for (var k = 0; k < progressSwitch.length; k++) {
-        progressSwitch[k].onchange = setSwitchMandatoryFields(progressSwitch[k].getAttribute('id').split('-')[2]);
     }
 
     markMandatoryFields();
