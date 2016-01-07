@@ -58,7 +58,7 @@ var Employment = React.createClass({
             if (xmlHttp.readyState == XMLHttpRequest.DONE) {
                 thisEmployment.setState({deleting: false});
                 if (xmlHttp.status >= 200 && xmlHttp.status < 400){
-                    thisEmployment.setState({visible: false});
+                    thisEmployment.props.removeEmployment(thisEmployment.props.employment.id);
                     return false;
                 }
             }
@@ -100,8 +100,9 @@ var Employment = React.createClass({
 
 var EmploymentList = React.createClass({
     render: function() {
+        var thisEmploymentList = this;
         var employments = this.props.employments.map(function(job) {
-            return React.createElement(Employment, {key: job.organisation_full.id, employment: job});
+            return React.createElement(Employment, {key: job.organisation_full.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
         });
 
         return React.createElement("ul", null, employments);
@@ -116,7 +117,7 @@ var OrganisationInput = React.createClass({
     render: function() {
         var inputProps = {id: 'organisationInput'};
         if (this.props.loading) {
-            inputProps['disabled'] = true;
+            inputProps.disabled = true;
         }
         var orgTypeahead = React.createElement(Typeahead, {
             placeholder: i18n.organisation_text,
@@ -152,7 +153,7 @@ var CountryInput = React.createClass({
     render: function() {
         var inputProps = {id: 'countryInput'};
         if (this.props.loading) {
-            inputProps['disabled'] = true;
+            inputProps.disabled = true;
         }
         var countryTypeahead = React.createElement(Typeahead, {
             placeholder: i18n.country_text,
@@ -174,7 +175,7 @@ var JobTitleInput = React.createClass({
         var input = React.createFactory('input');
         var inputProps = {className: 'form-control', type: 'text', 'placeholder': i18n.job_title_text, id: "jobtitleInput"};
         if (this.props.loading) {
-            inputProps['disabled'] = true;
+            inputProps.disabled = true;
         }
         var jobTitleInput = input(inputProps);
         var div = React.createFactory('div');
@@ -362,11 +363,22 @@ var EmploymentApp = React.createClass({
         );
     },
 
+    removeEmployment: function(employmentId) {
+        for (var i=0; i < this.state.employments.length; i++) {
+            if (this.state.employments[i].id === employmentId) {
+                var employments = this.state.employments;
+                employments.splice(i, 1);
+                this.setState({employments: employments});
+                break;
+            }
+        }
+    },
+
     render: function() {
         var icon = React.createFactory("i");
         var headingIcon = icon({className: 'fa fa-users'});
         var heading = React.createElement("h3", null, headingIcon, ' ', i18n.my_organisations_text);
-        var employmentList = React.createElement(EmploymentList, {employments: this.state.employments});
+        var employmentList = React.createElement(EmploymentList, {employments: this.state.employments, removeEmployment: this.removeEmployment});
         var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment, existingEmployment: this.existingEmployment});
         return React.createElement("span", null, heading, employmentList, addEmploymentForm);
     }
