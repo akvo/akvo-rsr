@@ -42,7 +42,30 @@ var csrftoken = getCookie('csrftoken');
 
 var Employment = React.createClass({displayName: 'Employment',
     getInitialState: function() {
-        return {visible: true };
+        return {
+            visible: true,
+            deleting: false
+        };
+    },
+
+    handleDelete: function() {
+        // Delete current employment
+        this.setState({deleting: true});
+
+        var xmlHttp = new XMLHttpRequest();
+        var thisEmployment = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                thisEmployment.setState({deleting: false});
+                if (xmlHttp.status >= 200 && xmlHttp.status < 400){
+                    thisEmployment.setState({visible: false});
+                    return false;
+                }
+            }
+        };
+        xmlHttp.open("DELETE", "/rest/v1/employment/" + this.props.employment.id + "/", true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.send();
     },
 
     render: function() {
@@ -50,14 +73,28 @@ var Employment = React.createClass({displayName: 'Employment',
             return React.createElement("li", {key: this.props.key});
         }
 
+        var deleteButton;
+        if (!this.state.deleting) {
+            var buttonStyle = {cursor: 'pointer'};
+            deleteButton = React.createElement("i", {
+                className: 'fa fa-times help-block-error',
+                style: buttonStyle,
+                onClick: this.handleDelete
+            });
+        } else {
+            deleteButton = React.createElement("i", {className: 'fa fa-spinner fa-spin'});
+        }
+
         if (this.props.employment.is_approved) {
-            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name);
+            var groupName = React.createElement("i", null, '(', this.props.employment.group.name.slice(0, -1), ')');
+            var employmentNode = React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
+            return React.createElement("b", null, employmentNode);
         } else {
             var notApproved = React.createElement("i", null, '(', i18n.not_approved_text, ')');
-            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', notApproved);
+            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
         }
-    }
 
+    }
 });
 
 
@@ -151,6 +188,7 @@ var FormButton = React.createClass({displayName: 'FormButton',
     },
 
     render: function() {
+        var loadingIcon = React.createElement("i", {className: 'fa fa-spinner fa-spin'});
         var button = React.createFactory('button');
         if (this.props.loading) {
             return button(
@@ -160,6 +198,8 @@ var FormButton = React.createClass({displayName: 'FormButton',
                     type: "button",
                     disabled: true
                 },
+                loadingIcon,
+                ' ',
                 i18n.sending_request_text
             );
         } else {
