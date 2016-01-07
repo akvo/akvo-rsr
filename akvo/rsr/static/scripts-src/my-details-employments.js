@@ -47,14 +47,14 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         if (!this.state.visible) {
-            return React.createElement("li");
+            return React.createElement("li", {key: this.props.key});
         }
 
         if (this.props.employment.is_approved) {
-            return React.createElement("li", null, this.props.employment.organisation_full.name);
+            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name);
         } else {
             var notApproved = React.createElement("i", null, '(', i18n.not_approved_text, ')');
-            return React.createElement("li", null, this.props.employment.organisation_full.name, ' ', notApproved);
+            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', notApproved);
         }
     }
 
@@ -77,6 +77,10 @@ var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
     },
 
     render: function() {
+        var inputProps = {id: 'organisationInput'};
+        if (this.props.loading) {
+            inputProps['disabled'] = true;
+        }
         var orgTypeahead = React.createElement(Typeahead, {
             placeholder: i18n.organisation_text,
             maxVisible: 10,
@@ -85,11 +89,21 @@ var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
             displayOption: 'displayOption',
             filterOption: 'filterOption',
             customClasses: {input: 'form-control'},
-            inputProps: {id: 'organisationInput'}
+            inputProps: inputProps
         });
         var div = React.createFactory('div');
         var formGroupClass = this.props.orgError ? 'form-group has-error' : 'form-group';
         return div({className: formGroupClass}, orgTypeahead);
+    }
+});
+
+var ErrorNode = React.createClass({displayName: 'ErrorNode',
+    render: function() {
+        if (this.props.visible) {
+            return React.createElement("div", {className: 'help-block-error'}, '* ' + this.props.errorText);
+        } else {
+            return React.createElement("span");
+        }
     }
 });
 
@@ -99,7 +113,10 @@ var CountryInput = React.createClass({displayName: 'CountryInput',
     },
 
     render: function() {
-        var div = React.createFactory('div');
+        var inputProps = {id: 'countryInput'};
+        if (this.props.loading) {
+            inputProps['disabled'] = true;
+        }
         var countryTypeahead = React.createElement(Typeahead, {
             placeholder: i18n.country_text,
             maxVisible: 5,
@@ -108,8 +125,9 @@ var CountryInput = React.createClass({displayName: 'CountryInput',
             displayOption: 'name',
             filterOption: 'name',
             customClasses: {input: 'form-control'},
-            inputProps: {id: 'countryInput'}
+            inputProps: inputProps
         });
+        var div = React.createFactory('div');
         return div({className: 'form-group'}, countryTypeahead);
     }
 });
@@ -117,9 +135,43 @@ var CountryInput = React.createClass({displayName: 'CountryInput',
 var JobTitleInput = React.createClass({displayName: 'JobTitleInput',
     render: function() {
         var input = React.createFactory('input');
+        var inputProps = {className: 'form-control', type: 'text', 'placeholder': i18n.job_title_text, id: "jobtitleInput"};
+        if (this.props.loading) {
+            inputProps['disabled'] = true;
+        }
+        var jobTitleInput = input(inputProps);
         var div = React.createFactory('div');
-        var jobTitleInput = input({className: 'form-control', type: 'text', 'placeholder': i18n.job_title_text, id: "jobtitleInput"});
         return div({className: 'form-group'}, jobTitleInput);
+    }
+});
+
+var FormButton = React.createClass({displayName: 'FormButton',
+    handleAddEmployment: function () {
+        this.props.addEmployment();
+    },
+
+    render: function() {
+        var button = React.createFactory('button');
+        if (this.props.loading) {
+            return button(
+                {
+                    onClick: this.handleAddEmployment,
+                    className: 'btn btn-primary',
+                    type: "button",
+                    disabled: true
+                },
+                i18n.sending_request_text
+            );
+        } else {
+            return button(
+                {
+                    onClick: this.handleAddEmployment,
+                    className: 'btn btn-primary',
+                    type: "button"
+                },
+                i18n.request_join_text
+            );
+        }
     }
 });
 
@@ -128,7 +180,8 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         return {
             buttonText: i18n.request_join_text,
             loading: false,
-            orgError: false
+            showError: false,
+            errorText: ''
         };
     },
 
@@ -136,6 +189,9 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         this.props.addEmployment(employment);
     },
 
+    checkExistingEmployment: function(organisationId) {
+        return this.props.existingEmployment(organisationId);
+    },
 
     getFormData: function () {
         var orgValue = document.getElementById('organisationInput').getAttribute('value');
@@ -150,50 +206,89 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
     },
 
     addEmployment: function () {
-        this.setState({orgError: false});
-
+        // Retrieve form data
         var formData = this.getFormData();
+
+        // Disable button and form
+        this.setState({
+            loading: true,
+            showError: false,
+            errorText: ''
+        });
+
+        // Check if organisation is filled in
         if (formData.organisation === '') {
-            this.setState({orgError: true});
-        } else {
-            var xmlHttp = new XMLHttpRequest();
-            var thisForm = this;
-            xmlHttp.onreadystatechange = function() {
-                if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-                    var response = JSON.parse(xmlHttp.responseText);
-                    if (xmlHttp.status == 200){
-                        thisForm.handleAddEmployment(response);
-                        return false;
-                    } else if (xmlHttp.status == 409) {
-                        thisForm.setState({
-                            title: i18n.request_failed_text,
-                            response: i18n.already_connected_text
-                        });
-                        return false;
-                    } else {
-                        thisForm.setState({
-                            title: i18n.request_failed_text,
-                            response: i18n.not_connected_text
-                        });
-                        return false;
-                    }
-                }
-            };
-            xmlHttp.open("POST", this.props.link + "?format=json", true);
-            xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-            xmlHttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-            xmlHttp.send(JSON.stringify(formData));
+            this.setState({
+                loading: false,
+                showError: true,
+                errorText: i18n.required_text
+            });
+            return false;
         }
+
+        // Check if organisation is a valid Integer and if an employment with that organisation
+        // already exists
+        try {
+            var organisationId = parseInt(formData.organisation);
+            if (this.checkExistingEmployment(organisationId)) {
+                this.setState({
+                    loading: false,
+                    showError: true,
+                    errorText: i18n.already_connected_text
+                });
+                return false;
+            }
+        } catch (err) {
+            this.setState({
+                loading: false,
+                showError: true,
+                errorText: i18n.not_connected_text
+            });
+            return false;
+        }
+
+        // POST a new employment record
+        var xmlHttp = new XMLHttpRequest();
+        var thisForm = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                thisForm.setState({loading: false});
+                var response = JSON.parse(xmlHttp.responseText);
+                if (xmlHttp.status == 200){
+                    thisForm.setState({loading: false, showError: false, errorText: ''});
+                    thisForm.handleAddEmployment(response);
+                    return false;
+                } else if (xmlHttp.status == 409) {
+                    thisForm.setState({
+                        loading: false,
+                        showError: true,
+                        errorText: i18n.already_connected_text
+                    });
+                    return false;
+                } else {
+                    thisForm.setState({
+                        loading: false,
+                        showError: true,
+                        errorText: i18n.not_connected_text
+                    });
+                    return false;
+                }
+            }
+        };
+        xmlHttp.open("POST", this.props.link + "?format=json", true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        xmlHttp.send(JSON.stringify(formData));
     },
 
     render: function() {
         var heading = React.createElement("h4", null, i18n.connect_employer_text);
-        var orgInput = React.createElement(OrganisationInput, {orgError: this.state.orgError});
-        var countryInput = React.createElement(CountryInput);
-        var jobTitleInput = React.createElement(JobTitleInput);
-        var button = React.createFactory('button');
-        var formButton = button({onClick: this.addEmployment, className: 'btn btn-primary', type: "button"}, i18n.request_join_text);
-        var form = React.createElement("form", null, orgInput, countryInput, jobTitleInput, formButton);
+        var errorMessage = React.createElement(ErrorNode, {visible: this.state.showError, errorText: this.state.errorText});
+        var orgInput = React.createElement(OrganisationInput, {orgError: this.state.showError, loading: this.state.loading});
+        var countryInput = React.createElement(CountryInput, {loading: this.state.loading});
+        var jobTitleInput = React.createElement(JobTitleInput, {loading: this.state.loading});
+        var formButton = React.createElement(FormButton, {addEmployment: this.addEmployment, loading: this.state.loading});
+        var form = React.createElement("form", null, errorMessage, orgInput, countryInput, jobTitleInput, formButton);
         return React.createElement("span", null, heading, form);
     }
 
@@ -212,6 +307,15 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
         }
     },
 
+    existingEmployment: function(organisationId) {
+        for (var i=0; i < this.state.employments.length; i++) {
+            if (this.state.employments[i].organisation_full.id === organisationId) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     addEmployment: function(employment) {
         this.setState(
             {employments: this.state.employments.concat([employment])}
@@ -223,7 +327,7 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
         var headingIcon = icon({className: 'fa fa-users'});
         var heading = React.createElement("h3", null, headingIcon, ' ', i18n.my_organisations_text);
         var employmentList = React.createElement(EmploymentList, {employments: this.state.employments});
-        var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment});
+        var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment, existingEmployment: this.existingEmployment});
         return React.createElement("span", null, heading, employmentList, addEmploymentForm);
     }
 });
