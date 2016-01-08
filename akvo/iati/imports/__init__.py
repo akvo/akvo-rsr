@@ -10,10 +10,10 @@ from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields import FieldDoesNotExist
-from akvo.rsr.models import InternalOrganisationID
 
 from ...rsr.models.custom_field import ProjectCustomField
-from ...rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE, IatiImportLogCollector
+from ...rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
+from ...rsr.models.internal_organisation_id import InternalOrganisationID
 from ...rsr.models.organisation import Organisation, ORG_TYPE_NGO
 from ...rsr.models.project import Project
 

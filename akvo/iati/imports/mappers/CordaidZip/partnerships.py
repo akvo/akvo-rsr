@@ -17,11 +17,6 @@ ROLE_TO_CODE = {
     'implementing': 4
 }
 
-CORDAID = 'Cordaid'
-CORDAID_ORG_ID = 273
-OTHERS = 'Others'
-OTHERS_ORG_ID = 1653
-
 
 class Partnerships(Partnerships):
 
@@ -52,6 +47,8 @@ class Partnerships(Partnerships):
         :param budget_from: string; "Cordaid" or "Others"
         :return:
         """
+        from . import CORDAID_ORG_ID, OTHERS_ORG_ID, CORDAID
+
         assert budget_from == "Cordaid" or budget_from == "Others", (
                 "akvo:budget-from value incorrect: {}".format(budget_from))
 
@@ -70,6 +67,7 @@ class Partnerships(Partnerships):
         Set up the custom Cordaid partnerships.
         :return: List; contains fields that have changed
         """
+        from . import CORDAID, OTHERS
         business_units = {
             "27239": 273,
             "K6020": 959,

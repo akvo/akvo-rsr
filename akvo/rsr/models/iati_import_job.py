@@ -4,12 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-# -*- coding: utf-8 -*-
-
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
 import hashlib
 import inspect
 import urllib2
@@ -19,13 +13,17 @@ import zipfile
 from lxml import etree
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models, transaction, IntegrityError
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE, IatiImportLogCollector
+from akvo.iati.imports.mappers.CordaidZip.organisations import Organisations
+from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
+from akvo.rsr.models.organisation import Organisation
 from akvo.utils import rsr_send_mail, file_from_zip_archive
 
 
@@ -333,25 +331,116 @@ class CordaidZipIatiImportJob(IatiImportJob):
     """
     Custom job for Coradiad's ZIP archive IATI delivery
     """
+
     class Meta:
         proxy = True
 
-    def run(self):
-        #TODO: import organisations before running the activities import
-        super(CordaidZipIatiImportJob, self).run()
+    def import_organisations(self):
+        ORGANISATIONS_FILENAME = 'akvo-organizations.xml'
+        ORGANISATIONS_ROOT = 'Relations'
+        ORGANISATIONS_CHILDREN = 'object'
+        CORDAID_ORG_ID = 273
+        self.add_log(u'CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
+        organisations_xml = self.get_xml_file(ORGANISATIONS_FILENAME)
+        organisations = self.parse_xml(
+                organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN)
+        cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
+        if organisations:
+            for object in organisations.findall(ORGANISATIONS_CHILDREN):
+                try:
+                    org_mapper = Organisations(self, object, None, {'cordaid': cordaid})
+                    organisation, changes, created = org_mapper.do_import()
+                    if created:
+                        self.log_creation(organisation)
+                    else:
+                        self.log_changes(organisation, changes)
+                except Exception as e:
+                    self.add_log(
+                            u'CordaidZip: Critical error when importing '
+                            u'organisations: {}'.format(e.message),
+                            LOG_ENTRY_TYPE.CRITICAL_ERROR)
+
+        self.add_log(u'CordaidZip: Organisations import done.', LOG_ENTRY_TYPE.INFORMATIONAL)
+
+    def create_log_entry(self, organisation, action_flag=LOG_ENTRY_TYPE.ACTION_UPDATE,
+                         change_message=''):
+        """
+        Create a record in the django_admin_log table recording the addition or change of a project
+        :param action_flag: django.contrib.admin.models ADDITION or CHANGE
+        :param change_message: The log message
+        """
+        LogEntry.objects.log_action(
+            user_id=self.iati_import.user.pk,
+            content_type_id=ContentType.objects.get_for_model(organisation).pk,
+            object_id=organisation.pk,
+            object_repr=organisation.__unicode__(),
+            action_flag=action_flag,
+            change_message=change_message
+        )
+
+    def log_changes(self, organisation, changes):
+        """
+        Log the changes that have been made to the organisation in the LogEntry model.
+        The changes list holds the names of the changed fields
+        """
+        if changes:
+            message = u"CordaidZip: IATI activity import, changed organisation: {}.".format(
+                u", ".join([change for change in changes])
+            )
+            self.create_log_entry(organisation, LOG_ENTRY_TYPE.ACTION_UPDATE, message)
+
+    def log_creation(self, organisation):
+        """
+        Log the creation of an organisation in the LogEntry model.
+        """
+        message = u"CordaidZip: IATI activity import, created organisation: {}.".format(
+                organisation.__unicode__())
+        self.create_log_entry(organisation, LOG_ENTRY_TYPE.ACTION_CREATE, message)
+
+    def parse_xml(self, xml_file, root_tag='', children_tag=''):
+        """
+        :param xml_file: optional file like object with the XML to parse if not using
+                         self.iati_xml_file
+        :return: ElementTree root of the XML document if all went well, False if not
+        """
+        try:
+            parsed_xml = etree.parse(xml_file)
+        except Exception as e:
+            self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
+                         LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            return False
+
+        objects = parsed_xml.getroot()
+        if objects.tag == root_tag:
+            self.add_log(
+                    'CordaidZip: Retrieved {} <{}> objects'.format(
+                        len(objects.findall(children_tag)), children_tag),
+                    LOG_ENTRY_TYPE.INFORMATIONAL)
+            return objects
+        else:
+            self.add_log('CordaidZip Not a valid XML file, '
+                         '{} not root of document.'.format(root_tag), LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            return False
+
+    def get_xml_file(self, file_name):
+        """
+        Find and return the named XML file from the Cordaid Zip archive
+        """
+        if self.iati_xml_file and zipfile.is_zipfile(self.iati_xml_file):
+            xml_file = file_from_zip_archive(self.iati_xml_file, file_name)
+            if xml_file:
+                return xml_file
+            else:
+                self.add_log('CordaidZip: {} file not found in ZIP.'.format(file_name),
+                             LOG_ENTRY_TYPE.CRITICAL_ERROR)
+                return None
 
     def get_activities_file(self):
         """
         Find and return the Cordaid archive contains the iati-activities.xml file
         """
-        CORDAID_ACTIVITIES_FILENAME = 'iati-activities.xml'
-        if self.iati_xml_file and zipfile.is_zipfile(self.iati_xml_file):
-            iati_xml_file = file_from_zip_archive(self.iati_xml_file, CORDAID_ACTIVITIES_FILENAME)
-            if iati_xml_file:
-                return iati_xml_file
-            else:
-                self.add_log('iati-activities.xml file not found in ZIP.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
-                return None
+        ACTIVITIES_FILENAME = 'iati-activities.xml'
+        return self.get_xml_file(ACTIVITIES_FILENAME)
 
     def get_activities(self):
         """
@@ -360,9 +449,11 @@ class CordaidZipIatiImportJob(IatiImportJob):
         :return: ElementTree; the root node of the XML or False when a critical error precludes the
                  continuation of the import
         """
+        IATI_XML_ACTIVITIES = 'iati-activities'
+        IATI_XML_ACTIVITY = 'iati-activity'
         xml = self.get_activities_file()
         if xml:
-            return self.parse_xml(xml)
+            return self.parse_xml(xml, IATI_XML_ACTIVITIES, IATI_XML_ACTIVITY)
         else:
             return False
 
@@ -379,3 +470,8 @@ class CordaidZipIatiImportJob(IatiImportJob):
 
         self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
         return False
+
+    def run(self):
+        self.import_organisations()
+        super(CordaidZipIatiImportJob, self).run()
+

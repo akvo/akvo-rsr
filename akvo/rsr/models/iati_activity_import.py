@@ -22,6 +22,8 @@ from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
 from akvo.rsr.models.organisation import Organisation
 from akvo.rsr.models.project import Project, MultipleReportingOrgs
+from akvo.utils import get_sha1_hash
+
 
 class IatiIdNotFoundException(Exception):
     pass
@@ -72,9 +74,7 @@ class IatiActivityImport(TimestampsMixin):
         verbose_name_plural = _(u'IATI activity imports')
 
     def set_sha1_hexdigest(self):
-        hash = hashlib.sha1()
-        hash.update(self.activity_xml)
-        self.sha1_hexdigest = hash.hexdigest()
+        self.sha1_hexdigest = get_sha1_hash(self.activity_xml)
 
     def set_status(self, status):
         """

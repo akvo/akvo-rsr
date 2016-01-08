@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # utility functions for RSR
 
+import hashlib
 import inspect
-from os.path import splitext
+import pytz
 import random
 import logging
-from urlparse import urljoin
-from datetime import datetime
 import zipfile
 
-logger = logging.getLogger('akvo.rsr')
-
-import pytz
-
+from BeautifulSoup import BeautifulSoup
+from datetime import datetime
+from os.path import splitext
+from urlparse import urljoin
 from workflows.models import State
 from workflows.utils import get_state
 
@@ -30,15 +32,12 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext, get_language, activate
 
-from BeautifulSoup import BeautifulSoup
-
-from notification.models import (
-    Notice, NoticeType, get_notification_language, should_send,
-    LanguageStoreNotAvailable, get_formatted_messages
-)
+from notification.models import (Notice, NoticeType, get_notification_language, should_send,
+                                 LanguageStoreNotAvailable, get_formatted_messages)
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
+logger = logging.getLogger('akvo.rsr')
 
 RSR_LIMITED_CHANGE = u'rsr_limited_change'
 
@@ -512,3 +511,10 @@ def file_from_zip_archive(zip, file_name):
         return zip.open(file_name)
     except KeyError:
         return None
+
+
+def get_sha1_hash(s):
+    """ return the sha1 hash of the string you call with"""
+    hash = hashlib.sha1()
+    hash.update(s)
+    return hash.hexdigest()
