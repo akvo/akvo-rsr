@@ -7,7 +7,6 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -17,6 +16,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
+from akvo.rsr.reports import FORMATS, REPORTS
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
@@ -293,6 +293,36 @@ def my_iati(request):
     }
 
     return render(request, 'myrsr/my_iati.html', context)
+
+
+@login_required
+def my_reports(request):
+    """My reports section."""
+    user = request.user
+
+    if not user.can_create_project():
+        raise PermissionDenied
+
+    organisations_data, projects_data = [], []
+    for employment in user.approved_employments():
+        org = employment.organisation
+        organisations_data.append({'id': org.pk,
+                                   'name': '{0} ({1})'.format(org.name, org.long_name)})
+        for project in org.all_projects():
+            if project.pk not in [project_data['id'] for project_data in projects_data]:
+                projects_data.append({'id': project.pk,
+                                      'name': '{0} (id: {1})'.format(project.title,
+                                                                     str(project.pk))})
+
+    context = {
+        'reports_data': json.dumps(REPORTS),
+        'organisations_data': json.dumps(organisations_data),
+        'projects_data': json.dumps(projects_data),
+        'formats_data': json.dumps(FORMATS),
+        'user_data': json.dumps([{'is_admin': user.is_superuser or user.is_admin}])
+    }
+
+    return render(request, 'myrsr/my_reports.html', context)
 
 
 @login_required

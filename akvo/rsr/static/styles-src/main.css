@@ -2850,3 +2850,23 @@ div.active .addOrg {
           margin-right: 1em; }
         .modalContainer .orgModal .controls button.modal-save {
           margin-right: 1.5em; }
+
+/* My reports section */
+div#my-reports .dropdown .dropdown-toggle {
+  width: 100%;
+  margin-bottom: 10px; }
+div#my-reports .dropdown .dropdown-menu {
+  width: 100%;
+  top: 35px; }
+div#my-reports .input-group {
+  min-height: 100px;
+  margin-bottom: 10px; }
+  div#my-reports .input-group .form-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px; }
+    div#my-reports .input-group .form-control .fa {
+      font-size: 75px; }
+    div#my-reports .input-group .form-control:hover {
+      background: rgba(32, 32, 36, 0.05); }
