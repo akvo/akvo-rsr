@@ -319,7 +319,7 @@ def my_reports(request):
         'organisations_data': json.dumps(organisations_data),
         'projects_data': json.dumps(projects_data),
         'formats_data': json.dumps(FORMATS),
-        'user_data': json.dumps([{'is_admin': user.is_superuser or user.is_admin}])
+        'user_data': json.dumps({'is_admin': user.is_superuser or user.is_admin})
     }
 
     return render(request, 'myrsr/my_reports.html', context)

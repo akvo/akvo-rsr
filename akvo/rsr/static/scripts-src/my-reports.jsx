@@ -5,7 +5,28 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n, formats, organisations, projects, reports, user;
+var i18n, formats, organisations, projects, reports, isAdmin;
+var Typeahead = ReactTypeahead.Typeahead;
+var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
+var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
+
+// CSRF TOKEN
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
 
 var DownloadButton = React.createClass({
     generateReport: function() {
@@ -26,7 +47,7 @@ var DownloadButton = React.createClass({
         this.generateReport();
         setTimeout(function() {
             thisDownloadButton.props.setDownload(false);
-        }, 5000)
+        }, 5000);
     },
 
     checkAllFilled: function() {
@@ -173,6 +194,29 @@ var ProjectOption = React.createClass({
     }
 });
 
+var ProjectTypeahead = React.createClass({
+    selectProject: function(project) {
+        this.props.setProject(project.id);
+    },
+
+    render: function() {
+        return (
+            <div className="form-group">
+                {React.createElement(Typeahead, {
+                    placeholder: i18n.select_a_project,
+                    maxVisible: 10,
+                    options: projects,
+                    onOptionSelected: this.selectProject,
+                    displayOption: 'displayOption',
+                    filterOption: 'filterOption',
+                    inputProps: {disabled: this.props.downloading},
+                    customClasses: {input: 'form-control'}
+                })}
+            </div>
+        );
+    }
+});
+
 var ProjectsDropdown = React.createClass({
     getInitialState: function() {
         return {
@@ -188,22 +232,33 @@ var ProjectsDropdown = React.createClass({
     },
 
     render: function() {
-        var thisProjectsDropdown = this;
-        var projects_data = projects.map(function(project) {
-            return (
-                <li key={project.id}>
-                    {React.createElement(ProjectOption, {project: project, selectProject: thisProjectsDropdown.selectProject})}
-                </li>
-            );
-        });
-        var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+        if (!isAdmin) {
+            var thisProjectsDropdown = this;
+            var projects_data = projects.map(function(project) {
+                return (
+                    <li key={project.id}>
+                        {React.createElement(ProjectOption, {
+                            project: project,
+                            selectProject: thisProjectsDropdown.selectProject
+                        })}
+                    </li>
+                );
+            });
+            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+            var button;
+            if (!this.props.downloading) {
+                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        </button>;
+            } else {
+                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
+                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        </button>;
+            }
 
-        if (!this.props.downloading) {
             return (
                 <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
+                    {button}
                     <ul className="dropdown-menu" aria-labelledby="select-project">
                         {projects_data}
                     </ul>
@@ -211,14 +266,14 @@ var ProjectsDropdown = React.createClass({
             );
         } else {
             return (
-                <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
+                <div className="project-typeahead">
+                    {React.createElement(ProjectTypeahead, {
+                        setProject: this.props.setProject,
+                        downloading: this.props.downloading
+                    })}
                 </div>
             );
         }
-
     }
 });
 
@@ -265,6 +320,29 @@ var OrganisationOption = React.createClass({
     }
 });
 
+var OrganisationTypeahead = React.createClass({
+    selectOrg: function(org) {
+        this.props.setOrganisation(org.id);
+    },
+
+    render: function() {
+        return (
+            <div className="form-group">
+                {React.createElement(Typeahead, {
+                    placeholder: i18n.select_an_organisation,
+                    maxVisible: 10,
+                    options: organisations,
+                    onOptionSelected: this.selectOrg,
+                    displayOption: 'displayOption',
+                    filterOption: 'filterOption',
+                    inputProps: {disabled: this.props.downloading},
+                    customClasses: {input: 'form-control'}
+                })}
+            </div>
+        );
+    }
+});
+
 var OrganisationsDropdown = React.createClass({
     getInitialState: function() {
         return {
@@ -280,22 +358,33 @@ var OrganisationsDropdown = React.createClass({
     },
 
     render: function() {
-        var thisOrganisationsDropdown = this;
-        var organisations_data = organisations.map(function(org) {
-            return (
-                <li key={org.id}>
-                    {React.createElement(OrganisationOption, {org: org, selectOrg: thisOrganisationsDropdown.selectOrg})}
-                </li>
-            );
-        });
-        var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+        if (!isAdmin) {
+            var thisOrganisationsDropdown = this;
+            var organisations_data = organisations.map(function(org) {
+                return (
+                    <li key={org.id}>
+                        {React.createElement(OrganisationOption, {
+                            org: org,
+                            selectOrg: thisOrganisationsDropdown.selectOrg
+                        })}
+                    </li>
+                );
+            });
+            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+            var button;
+            if (!this.props.downloading) {
+                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        </button>;
+            } else {
+                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
+                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        </button>;
+            }
 
-        if (!this.props.downloading) {
             return (
                 <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
+                    {button}
                     <ul className="dropdown-menu" aria-labelledby="select-organisation">
                         {organisations_data}
                     </ul>
@@ -303,10 +392,11 @@ var OrganisationsDropdown = React.createClass({
             );
         } else {
             return (
-                <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
+                <div className="org-typeahead">
+                    {React.createElement(OrganisationTypeahead, {
+                        setOrganisation: this.props.setOrganisation,
+                        downloading: this.props.downloading
+                    })}
                 </div>
             );
         }
@@ -386,27 +476,25 @@ var ReportsDropdown = React.createClass({
             );
         });
         var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
-
+        var button;
         if (!this.props.downloading) {
-            return (
-                <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
-                    <ul className="dropdown-menu" aria-labelledby="select-report-type">
-                        {reports_data}
-                    </ul>
-                </div>
-            );
+                    </button>;
         } else {
-            return (
-                <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
+            button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
                         {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
-                    </button>
-                </div>
-            );
+                    </button>;
         }
+
+        return (
+            <div className="dropdown">
+                {button}
+                <ul className="dropdown-menu" aria-labelledby="select-report-type">
+                    {reports_data}
+                </ul>
+            </div>
+        );
     }
 });
 
@@ -515,13 +603,85 @@ function initializeApp() {
     );
 }
 
+/* Process projects results */
+function processProjects(projectResults) {
+    projectResults.forEach(function (p) {
+        p.filterOption = p.title + ' ' + p.id;
+        p.displayOption = p.title + ' (id: ' + p.id + ')';
+    });
+    return projectResults;
+}
+
+/* Process organisations results */
+function processOrgs(orgResults) {
+    function getDisplayOption(short, long) {
+        if (short === long) {
+            return short;
+        }
+        if (!long) {
+            return short;
+        }
+        return short + ' (' + long + ')';
+    }
+
+    orgResults.forEach(function (o) {
+        var newName = getDisplayOption(o.name, o.long_name);
+
+        o.filterOption = o.name + ' ' + o.long_name;
+        o.displayOption = newName;
+    });
+
+    return orgResults;
+}
+
+/* Retrieve all projects for the project typeahead */
+function getAllProjects() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+            var projectResults = JSON.parse(xmlHttp.responseText);
+            projects = processProjects(projectResults.results);
+        }
+    };
+    xmlHttp.open("GET", projectsAPIUrl, true);
+    xmlHttp.send();
+}
+
+/* Retrieve all organisations for the organisation typeahead */
+function getAllOrganisations() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+            var orgResults = JSON.parse(xmlHttp.responseText);
+            organisations = processOrgs(orgResults.results);
+        }
+    };
+    xmlHttp.open("GET", orgsAPIUrl, true);
+    xmlHttp.send();
+}
+
 /* Retrieve report information and translation strings */
 function getInitialData() {
+    // Retrieve report information
     reports = JSON.parse(document.getElementById('reports-data').innerHTML);
-    organisations = JSON.parse(document.getElementById('organisations-data').innerHTML);
-    projects = JSON.parse(document.getElementById('projects-data').innerHTML);
+
+    // Check if user is an admin (Superuser or RSR admin)
+    isAdmin = JSON.parse(document.getElementById('user-data').innerHTML).is_admin;
+    if (!isAdmin) {
+        // If the user isn't an admin, retrieve the projects and organisations that the user is
+        // linked to
+        organisations = JSON.parse(document.getElementById('organisations-data').innerHTML);
+        projects = JSON.parse(document.getElementById('projects-data').innerHTML);
+    } else {
+        // If the user is an admin, get ALL organisations and projects from the Typeahead APIs
+        getAllOrganisations();
+        getAllProjects();
+    }
+
+    // Retrieve the available formats (e.g. PDF, Excel, Word, HTML, etc)
     formats = JSON.parse(document.getElementById('formats-data').innerHTML);
-    user = JSON.parse(document.getElementById('user-data').innerHTML);
+
+    // Retrieve translations
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
 }
 

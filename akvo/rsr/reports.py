@@ -17,9 +17,9 @@ from django.utils.translation import ugettext_lazy as _
 REPORTS = [
     {
         'key': 'results-framework',
-        'title': unicode(_('Results overview')),
-        'description': unicode(_('The results overview shows all results, indicators and indicator '
-                                 'periods for the selected project.')),
+        'title': unicode(_('Results and indicators overview')),
+        'description': unicode(_('This report gives an overview of the status of your project\'s '
+                                 'results and indicators.')),
         'formats': ['pdf', 'word', 'excel', 'html'],
         'parameters': ['project', ],
         'url': '/en/reports/project_results/{project}?format={format}&download=true'
@@ -27,20 +27,19 @@ REPORTS = [
     {
         'key': 'projects-overview',
         'title': unicode(_('Projects overview')),
-        'description': unicode(_('The projects overview shows all projects of the selected '
-                                 'organisation, and the basic information for each of the '
-                                 'projects.')),
+        'description': unicode(_('This report provides information about your organisation\'s '
+                                 'projects: amount of updates, country, total budgets, project '
+                                 'statuses, start- and end dates.')),
         'formats': ['excel', 'word'],
         'parameters': ['organisation', ],
         'url': '/en/reports/projects_overview/{organisation}?format={format}&download=true'
     },
     {
         'key': 'data-quality',
-        'title': unicode(_('Data quality check')),
-        'description': unicode(_('The data quality check performs multiple checks for every '
-                                 'project of an organisation, including checks on the status and '
-                                 'end date for each project, and which projects haven\'t been '
-                                 'updated for longer than 3 months.')),
+        'title': unicode(_('Data quality overview')),
+        'description': unicode(_('This report gives an overview of your organisation\'s projects '
+                                 'that have passed the planned end date, need funding or that '
+                                 'haven\'t been edited or updated for 3 months.')),
         'formats': ['excel', 'word'],
         'parameters': ['organisation', ],
         'url': '/en/reports/data_quality/{organisation}?format={format}&download=true'
