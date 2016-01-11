@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 # - description: The description of the report, as displayed on the 'My reports' page
 # - formats: The available formats for the report, see options below
 # - parameters: The available parameters for the report, options; ['project', 'organisation']
-# - url: The URL where the report is available. Parameter(s) should be indicated in between <..>'s.
+# - url: The URL where the report is available. Parameter(s) should be indicated in between {..}'s.
 
 REPORTS = [
     {
@@ -22,7 +22,7 @@ REPORTS = [
                                  'periods for the selected project.')),
         'formats': ['pdf', 'word', 'excel', 'html'],
         'parameters': ['project', ],
-        'url': '/en/reports/project_results/<project>?format=<format>&download=true'
+        'url': '/en/reports/project_results/{project}?format={format}&download=true'
     },
     {
         'key': 'projects-overview',
@@ -32,7 +32,7 @@ REPORTS = [
                                  'projects.')),
         'formats': ['excel', 'word'],
         'parameters': ['organisation', ],
-        'url': '/en/reports/projects_overview/<organisation>?format=<format>&download=true'
+        'url': '/en/reports/projects_overview/{organisation}?format={format}&download=true'
     },
     {
         'key': 'data-quality',
@@ -43,7 +43,7 @@ REPORTS = [
                                  'updated for longer than 3 months.')),
         'formats': ['excel', 'word'],
         'parameters': ['organisation', ],
-        'url': '/en/reports/data_quality/<organisation>?format=<format>&download=true'
+        'url': '/en/reports/data_quality/{organisation}?format={format}&download=true'
     }
 ]
 

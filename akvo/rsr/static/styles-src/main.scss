@@ -3633,6 +3633,7 @@ div#my-reports {
     .input-group {
         min-height: 100px;
         margin-bottom: 10px;
+        cursor: pointer;
         .form-control {
             display: flex;
             justify-content: center;
@@ -3640,11 +3641,20 @@ div#my-reports {
             min-height: 100px;
             .fa {
                 font-size: 75px;
-                //line-height: 85px;
             }
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
         }
+    }
+    .report-title {
+        font-weight: bold;
+    }
+    .report-description {
+        white-space: pre-wrap;
+       white-space: -moz-pre-wrap;
+       white-space: -pre-wrap;
+       white-space: -o-pre-wrap;
+       word-wrap: break-word;
     }
 }

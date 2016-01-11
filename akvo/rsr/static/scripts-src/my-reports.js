@@ -16,8 +16,13 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
 
     generateReport: function() {
         var url = this.props.report.url;
-        url = url.replace('<format>', this.props.format);
-        url = url.replace('<project>', this.props.project);
+        url = url.replace('{format}', this.props.format);
+        if (this.props.project !== null) {
+            url = url.replace('{project}', this.props.project);
+        }
+        if (this.props.organisation !== null) {
+            url = url.replace('{organisation}', this.props.organisation);
+        }
         window.location.assign(url);
     },
 
@@ -313,8 +318,12 @@ var ReportOption = React.createClass({displayName: 'ReportOption',
     render: function() {
         return (
             React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                React.DOM.strong(null, this.props.report.title),React.DOM.br(null),
-                this.props.report.description
+                React.DOM.div( {className:"report-title"}, 
+                    this.props.report.title
+                ),
+                React.DOM.div( {className:"report-description"}, 
+                    this.props.report.description
+                )
             )
         );
     }
@@ -423,19 +432,31 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
         return (
             React.DOM.div( {id:"my-reports"}, 
                 React.DOM.h3(null, i18n.download_new_report),
-                React.createElement(SelectReport, {setReport: this.setReport}),
-                React.createElement(SelectOrganisation, {report: this.state.report,
-                                                          setOrganisation: this.setOrganisation}),
-                React.createElement(SelectProject, {report: this.state.report,
-                                                     setProject: this.setProject}),
-                React.createElement(SelectFormat, {report: this.state.report,
-                                                    setFormat: this.setFormat}),
-                React.createElement(DownloadNotice, {visible: this.state.noticeVisible}),
-                React.createElement(DownloadButton, {report: this.state.report,
-                                                      organisation: this.state.organisation,
-                                                      project: this.state.project,
-                                                      format: this.state.format,
-                                                      showNotice: this.showNotice})
+                React.createElement(SelectReport, {
+                    setReport: this.setReport
+                }),
+                React.createElement(SelectOrganisation, {
+                    report: this.state.report,
+                    setOrganisation: this.setOrganisation
+                }),
+                React.createElement(SelectProject, {
+                    report: this.state.report,
+                    setProject: this.setProject
+                }),
+                React.createElement(SelectFormat, {
+                    report: this.state.report,
+                    setFormat: this.setFormat
+                }),
+                React.createElement(DownloadNotice, {
+                    visible: this.state.noticeVisible
+                }),
+                React.createElement(DownloadButton, {
+                    report: this.state.report,
+                    organisation: this.state.organisation,
+                    project: this.state.project,
+                    format: this.state.format,
+                    showNotice: this.showNotice
+                })
             )
         );
     }
