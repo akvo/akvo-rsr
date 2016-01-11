@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -120,7 +120,18 @@
                     <text-property name="heading">project_url</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -265,7 +276,7 @@ FROM rsr_project p1
   LEFT JOIN rsr_country ON rsr_country.id = rsr_projectlocation.country_id
   LEFT JOIN rsr_projectupdate ON p1.id = rsr_projectupdate.project_id
 
-WHERE rsr_partnership.organisation_id =42
+WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
       AND p1.date_end_planned::date < now()::date
       AND p1.status = 'A'
@@ -274,6 +285,23 @@ GROUP BY rsr_country.name, p1.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -542,7 +570,18 @@ GROUP BY rsr_country.name, p1.id]]></xml-property>
                     <text-property name="heading">project_url</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">org_id</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -694,11 +733,32 @@ FROM rsr_project p1
   LEFT JOIN rsr_country ON rsr_country.id = rsr_projectlocation.country_id
   LEFT JOIN rsr_projectupdate ON p1.id = rsr_projectupdate.project_id
 
-WHERE rsr_partnership.organisation_id =42
+WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
       AND p1.funds_needed > '5'
 
 GROUP BY rsr_country.name, p1.id]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Not edited last 3 months" id="155">
             <list-property name="columnHints">
@@ -936,7 +996,7 @@ FROM rsr_project p1
   LEFT JOIN rsr_country ON rsr_country.id = rsr_projectlocation.country_id
   LEFT JOIN rsr_projectupdate ON p1.id = rsr_projectupdate.project_id
 
-WHERE rsr_partnership.organisation_id =?
+WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
       AND p1.last_modified_at < now() - '3 month'::interval
 
