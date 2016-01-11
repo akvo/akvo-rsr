@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">72</property>
     <parameters>
         <scalar-parameter name="ID" id="179">
+            <text-property name="helpText">Numerical ID of the organisation</text-property>
             <text-property name="promptText">Organisation ID</text-property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">42</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -1341,7 +1345,7 @@ and rsr_publishingstatus.status = 'published';]]></xml-property>
 from rsr_project
 left join rsr_publishingstatus on rsr_project.id = rsr_publishingstatus.project_id
 left join rsr_partnership on rsr_project.id = rsr_partnership.project_id
-left join rsr_projectlocation on rsr_projectlocation.location_target_id = project.id
+left join rsr_projectlocation on rsr_projectlocation.location_target_id = rsr_project.id
 left join rsr_country on rsr_country.id = rsr_projectlocation.country_id
 Where rsr_partnership.organisation_id = 42
 and rsr_publishingstatus.status = 'published';]]></xml-property>
@@ -2723,131 +2727,122 @@ GROUP BY rsr_country.name
         </simple-master-page>
     </page-setup>
     <body>
-        <table id="386">
-            <property name="fontFamily">"Calibri"</property>
-            <property name="dataSet">Total budget</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">sum</property>
-                    <text-property name="displayName">sum</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["sum"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
-            <column id="403"/>
-            <column id="404"/>
-            <column id="405"/>
-            <header>
-                <row id="518">
-                    <cell id="519">
-                        <label id="549">
-                            <property name="fontSize">14pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Statistics</text-property>
-                        </label>
-                        <label id="522">
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Name</text-property>
-                        </label>
-                    </cell>
-                    <cell id="520">
-                        <label id="550">
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Name</text-property>
-                        </label>
-                        <label id="551">
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Count</text-property>
-                        </label>
-                    </cell>
-                    <cell id="521"/>
-                </row>
-                <row id="439">
-                    <cell id="440">
-                        <label id="438">
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Total of published projects</text-property>
-                        </label>
-                    </cell>
-                    <cell id="441">
+        <grid id="568">
+            <property name="width">5.270833333333333in</property>
+            <column id="569">
+                <property name="width">2.65625in</property>
+            </column>
+            <column id="570">
+                <property name="width">2.6145833333333335in</property>
+            </column>
+            <row id="571">
+                <cell id="572">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <label id="586">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
-                        <data id="525">
-                            <property name="dataSet"># of projects</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">project_count</property>
-                                    <text-property name="displayName">project_count</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">project_count</property>
-                        </data>
-                    </cell>
-                    <cell id="442"/>
-                </row>
-                <row id="387">
-                    <cell id="388">
-                        <label id="406">
-                            <property name="textAlign">left</property>
-                            <text-property name="text">Total budget</text-property>
-                        </label>
-                    </cell>
-                    <cell id="389">
-                        <data id="407">
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">€#,##0.00{RoundingMode=HALF_UP}</property>
+                        <text-property name="text">Statistics</text-property>
+                    </label>
+                </cell>
+            </row>
+            <row id="574">
+                <cell id="575">
+                    <label id="587">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">Name</text-property>
+                    </label>
+                </cell>
+                <cell id="576">
+                    <label id="594">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">Count</text-property>
+                    </label>
+                </cell>
+            </row>
+            <row id="577">
+                <cell id="578">
+                    <label id="591">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">Total of published projects</text-property>
+                    </label>
+                </cell>
+                <cell id="579">
+                    <data id="600">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="dataSet"># of projects</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">project_count</property>
+                                <text-property name="displayName">project_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
-                            <property name="textAlign">left</property>
-                            <property name="resultSetColumn">sum</property>
-                        </data>
-                    </cell>
-                    <cell id="390"/>
-                </row>
-            </header>
-            <detail>
-                <row id="391">
-                    <cell id="392">
-                        <label id="409">
-                            <text-property name="text">Total of updates</text-property>
-                        </label>
-                    </cell>
-                    <cell id="393">
-                        <data id="408">
-                            <property name="dataSet">Total of updates on all projects</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">updates_count</property>
-                                    <text-property name="displayName">updates_count</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["updates_count"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">updates_count</property>
-                        </data>
-                    </cell>
-                    <cell id="394"/>
-                </row>
-                <row id="395">
-                    <cell id="396"/>
-                    <cell id="397"/>
-                    <cell id="398"/>
-                </row>
-            </detail>
-            <footer>
-                <row id="399">
-                    <cell id="400"/>
-                    <cell id="401"/>
-                    <cell id="402"/>
-                </row>
-            </footer>
-        </table>
+                        </list-property>
+                        <property name="resultSetColumn">project_count</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="580">
+                <cell id="581">
+                    <label id="592">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">Total budget</text-property>
+                    </label>
+                </cell>
+                <cell id="582">
+                    <data id="599">
+                        <property name="fontFamily">"Calibri"</property>
+                        <structure name="numberFormat">
+                            <property name="category">Currency</property>
+                            <property name="pattern">€#,##0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="dataSet">Total budget</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">sum</property>
+                                <text-property name="displayName">sum</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sum"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">sum</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="583">
+                <cell id="584">
+                    <label id="593">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="textAlign">left</property>
+                        <text-property name="text">Total of updates</text-property>
+                    </label>
+                </cell>
+                <cell id="585">
+                    <data id="601">
+                        <property name="fontFamily">"Calibri"</property>
+                        <property name="dataSet">Total of updates on all projects</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">updates_count</property>
+                                <text-property name="displayName">updates_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["updates_count"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">updates_count</property>
+                    </data>
+                </cell>
+            </row>
+        </grid>
         <table id="502">
             <property name="fontFamily">"Calibri"</property>
             <property name="width">5.305555555555555in</property>
@@ -2888,7 +2883,9 @@ GROUP BY rsr_country.name
                         </label>
                     </cell>
                     <cell id="506">
-                        <label id="553"/>
+                        <label id="553">
+                            <property name="fontSize">14pt</property>
+                        </label>
                         <label id="507">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
@@ -2964,7 +2961,9 @@ GROUP BY rsr_country.name
                         </label>
                     </cell>
                     <cell id="531">
-                        <label id="555"/>
+                        <label id="555">
+                            <property name="fontSize">14pt</property>
+                        </label>
                         <label id="532">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
@@ -2972,7 +2971,9 @@ GROUP BY rsr_country.name
                         </label>
                     </cell>
                     <cell id="533">
-                        <label id="556"/>
+                        <label id="556">
+                            <property name="fontSize">14pt</property>
+                        </label>
                         <label id="534">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>

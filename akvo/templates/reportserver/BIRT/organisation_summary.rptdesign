@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">72</property>
     <parameters>
-        <scalar-parameter name="ProjectID" id="63">
-            <text-property name="promptText">What is the ID of your organisation?</text-property>
+        <scalar-parameter name="ID" id="302">
+            <text-property name="helpText">Numerical ID of your organisation</text-property>
+            <text-property name="promptText">Organisation ID</text-property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">integer</property>
@@ -217,7 +218,7 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">Project ID</property>
-                    <property name="paramName">ProjectID</property>
+                    <property name="paramName">ID</property>
                     <property name="nativeName"></property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
@@ -1451,7 +1452,7 @@ where rsr_organisation.id=?]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">Primary organisation</property>
-                    <property name="paramName">ProjectID</property>
+                    <property name="paramName">ID</property>
                     <property name="nativeName"></property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
@@ -5307,6 +5308,59 @@ AND  date_end_actual <= NOW()]]></xml-property>
                 </row>
             </footer>
         </table>
+        <table id="223">
+            <property name="dataSet">Count projects</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">project_count</property>
+                    <text-property name="displayName">project_count</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">update_count</property>
+                    <text-property name="displayName">update_count</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="237"/>
+            <column id="238"/>
+            <header>
+                <row id="224">
+                    <cell id="225">
+                        <label id="226">
+                            <text-property name="text">project_count</text-property>
+                        </label>
+                    </cell>
+                    <cell id="227">
+                        <label id="228">
+                            <text-property name="text">update_count</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="229">
+                    <cell id="230">
+                        <data id="231">
+                            <property name="resultSetColumn">project_count</property>
+                        </data>
+                    </cell>
+                    <cell id="232">
+                        <data id="233">
+                            <property name="resultSetColumn">update_count</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="234">
+                    <cell id="235"/>
+                    <cell id="236"/>
+                </row>
+            </footer>
+        </table>
         <table id="167">
             <property name="dataSet">Projects_2323</property>
             <list-property name="boundDataColumns">
@@ -5373,112 +5427,6 @@ AND  date_end_actual <= NOW()]]></xml-property>
                         </data>
                     </cell>
                     <cell id="180"/>
-                </row>
-            </footer>
-        </table>
-        <table id="223">
-            <property name="dataSet">Count projects</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">project_count</property>
-                    <text-property name="displayName">project_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">update_count</property>
-                    <text-property name="displayName">update_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
-            <column id="237"/>
-            <column id="238"/>
-            <header>
-                <row id="224">
-                    <cell id="225">
-                        <label id="226">
-                            <text-property name="text">project_count</text-property>
-                        </label>
-                    </cell>
-                    <cell id="227">
-                        <label id="228">
-                            <text-property name="text">update_count</text-property>
-                        </label>
-                    </cell>
-                </row>
-            </header>
-            <detail>
-                <row id="229">
-                    <cell id="230">
-                        <data id="231">
-                            <property name="resultSetColumn">project_count</property>
-                        </data>
-                    </cell>
-                    <cell id="232">
-                        <data id="233">
-                            <property name="resultSetColumn">update_count</property>
-                        </data>
-                    </cell>
-                </row>
-            </detail>
-            <footer>
-                <row id="234">
-                    <cell id="235"/>
-                    <cell id="236"/>
-                </row>
-            </footer>
-        </table>
-        <table id="239">
-            <property name="dataSet">Count projects</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">project_count</property>
-                    <text-property name="displayName">project_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">update_count</property>
-                    <text-property name="displayName">update_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
-            <column id="253"/>
-            <column id="254"/>
-            <header>
-                <row id="240">
-                    <cell id="241">
-                        <label id="242">
-                            <text-property name="text">project_count</text-property>
-                        </label>
-                    </cell>
-                    <cell id="243">
-                        <label id="244">
-                            <text-property name="text">update_count</text-property>
-                        </label>
-                    </cell>
-                </row>
-            </header>
-            <detail>
-                <row id="245">
-                    <cell id="246">
-                        <data id="247">
-                            <property name="resultSetColumn">project_count</property>
-                        </data>
-                    </cell>
-                    <cell id="248">
-                        <data id="249">
-                            <property name="resultSetColumn">update_count</property>
-                        </data>
-                    </cell>
-                </row>
-            </detail>
-            <footer>
-                <row id="250">
-                    <cell id="251"/>
-                    <cell id="252"/>
                 </row>
             </footer>
         </table>
