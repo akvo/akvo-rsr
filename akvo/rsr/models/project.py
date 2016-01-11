@@ -327,7 +327,7 @@ class Project(TimestampsMixin, models.Model):
 
     # Project editor settings
     validations = models.ManyToManyField(
-        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects',
+        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects'
     )
 
     # denormalized data
@@ -1172,19 +1172,20 @@ class Project(TimestampsMixin, models.Model):
 
 @receiver(post_save, sender=Project)
 def default_validation_set(sender, **kwargs):
-    """If the project has no validation sets, add the RSR validation (pk=1) to the project."""
+    """When the project is created, add the RSR validation (pk=1) to the project."""
     project = kwargs['instance']
-    try:
-        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
-        if not project.validations.all():
-            project.validations.add(rsr_validation_set)
-    except ProjectEditorValidationSet.DoesNotExist:
-        # RSR validation set does not exist, should not happen..
-        send_mail('RSR validation set missing',
-                  'This is a notification to inform the RSR admins that the RSR validation set '
-                  '(pk=1) is missing.',
-                  getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
-                  getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
+    created = kwargs['created']
+    if created:
+        try:
+            if not project.validations.all():
+                project.validations.add(ProjectEditorValidationSet.objects.get(pk=1))
+        except ProjectEditorValidationSet.DoesNotExist:
+            # RSR validation set does not exist, should not happen..
+            send_mail('RSR validation set missing',
+                      'This is a notification to inform the RSR admins that the RSR validation set '
+                      '(pk=1) is missing.',
+                      getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                      getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
 
 
 @receiver(post_save, sender=ProjectUpdate)
