@@ -8,12 +8,6 @@
 var i18n, formats, organisations, projects, reports, user;
 
 var DownloadButton = React.createClass({displayName: 'DownloadButton',
-    getInitialState: function() {
-        return {
-            downloading: false
-        };
-    },
-
     generateReport: function() {
         var url = this.props.report.url;
         url = url.replace('{format}', this.props.format);
@@ -27,11 +21,12 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
     },
 
     handleDownload: function() {
-        this.setState({
-            downloading: true
-        });
-        this.props.showNotice();
+        var thisDownloadButton = this;
+        this.props.setDownload(true);
         this.generateReport();
+        setTimeout(function() {
+            thisDownloadButton.props.setDownload(false);
+        }, 5000)
     },
 
     checkAllFilled: function() {
@@ -39,7 +34,7 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
     },
 
     render: function() {
-        if (this.checkAllFilled() && !this.state.downloading) {
+        if (this.checkAllFilled() && !this.props.downloading) {
             return (
                 React.DOM.button( {type:"button", className:"btn btn-primary", onClick:this.handleDownload}, 
                     React.DOM.i( {className:"fa fa-download"} ), " ", i18n.download_report
@@ -105,6 +100,13 @@ var FormatsList = React.createClass({displayName: 'FormatsList',
                 return false;
             }
 
+            var radioInput;
+            if (!thisFormatsList.props.downloading) {
+                radioInput = React.DOM.input( {className:"format-radio", type:"radio", 'aria-label':"label1"});
+            } else {
+                radioInput = React.DOM.input( {className:"format-radio", type:"radio", 'aria-label':"label1", disabled:true});
+            }
+
             if (formatNeeded()) {
                 var formatId = 'format-' + format.key;
                 var formatIcon = 'fa fa-' + format.icon;
@@ -112,7 +114,7 @@ var FormatsList = React.createClass({displayName: 'FormatsList',
                     React.DOM.div( {className:"col-sm-4", id:formatId, key:format.key}, 
                         React.DOM.div( {className:"input-group", onClick:handleClick}, 
                         React.DOM.span( {className:"input-group-addon"}, 
-                            React.DOM.input( {className:"format-radio", type:"radio", 'aria-label':"label1"})
+                            radioInput
                         ),
                             React.DOM.div( {className:"form-control"}, 
                                 React.DOM.i( {className:formatIcon}),"  ",
@@ -142,8 +144,11 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
             return (
                 React.DOM.div( {id:"choose-format"}, 
                     React.DOM.h5(null, i18n.report_format),
-                    React.createElement(FormatsList, {report: this.props.report,
-                                                       setFormat: this.props.setFormat})
+                    React.createElement(FormatsList, {
+                        report: this.props.report,
+                        setFormat: this.props.setFormat,
+                        downloading: this.props.downloading
+                    })
                 )
             );
         } else {
@@ -193,16 +198,27 @@ var ProjectsDropdown = React.createClass({displayName: 'ProjectsDropdown',
         });
         var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
 
-        return (
-            React.DOM.div( {className:"dropdown"}, 
-                React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                    buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                ),
-                React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-project"}, 
-                    projects_data
+        if (!this.props.downloading) {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    ),
+                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-project"}, 
+                        projects_data
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    )
+                )
+            );
+        }
+
     }
 });
 
@@ -221,7 +237,10 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
             return (
                 React.DOM.div( {id:"choose-project"}, 
                     React.DOM.h5(null, i18n.project),
-                    React.createElement(ProjectsDropdown, {setProject: this.props.setProject})
+                    React.createElement(ProjectsDropdown, {
+                        setProject: this.props.setProject,
+                        downloading: this.props.downloading
+                    })
                 )
             );
         } else {
@@ -271,16 +290,27 @@ var OrganisationsDropdown = React.createClass({displayName: 'OrganisationsDropdo
         });
         var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
 
-        return (
-            React.DOM.div( {className:"dropdown"}, 
-                React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                    buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                ),
-                React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-organisation"}, 
-                    organisations_data
+        if (!this.props.downloading) {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    ),
+                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-organisation"}, 
+                        organisations_data
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    )
+                )
+            );
+        }
+
     }
 });
 
@@ -299,7 +329,10 @@ var SelectOrganisation = React.createClass({displayName: 'SelectOrganisation',
             return (
                 React.DOM.div( {id:"choose-organisation"}, 
                     React.DOM.h5(null, i18n.organisation),
-                    React.createElement(OrganisationsDropdown, {setOrganisation: this.props.setOrganisation})
+                    React.createElement(OrganisationsDropdown, {
+                        setOrganisation: this.props.setOrganisation,
+                        downloading: this.props.downloading
+                    })
                 )
             );
         } else {
@@ -354,16 +387,26 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
         });
         var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
 
-        return (
-            React.DOM.div( {className:"dropdown"}, 
-                React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                    buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                ),
-                React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-report-type"}, 
-                    reports_data
+        if (!this.props.downloading) {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    ),
+                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-report-type"}, 
+                        reports_data
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"dropdown"}, 
+                    React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
+                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                    )
+                )
+            );
+        }
     }
 });
 
@@ -372,7 +415,10 @@ var SelectReport = React.createClass({displayName: 'SelectReport',
         return (
             React.DOM.div( {id:"choose-report-template"}, 
                 React.DOM.h5(null, i18n.report_type),
-                React.createElement(ReportsDropdown, {setReport: this.props.setReport})
+                React.createElement(ReportsDropdown, {
+                    setReport: this.props.setReport,
+                    downloading: this.props.downloading
+                })
             )
         );
     }
@@ -385,7 +431,7 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
             organisation: null,
             project: null,
             format: null,
-            noticeVisible: false
+            downloading: false
         };
     },
 
@@ -416,15 +462,9 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
         });
     },
 
-    showNotice: function() {
+    setDownload: function(boolean) {
         this.setState({
-            noticeVisible: true
-        });
-    },
-
-    hideNotice: function() {
-        this.setState({
-            noticeVisible: false
+            downloading: boolean
         });
     },
 
@@ -433,29 +473,34 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
             React.DOM.div( {id:"my-reports"}, 
                 React.DOM.h3(null, i18n.download_new_report),
                 React.createElement(SelectReport, {
-                    setReport: this.setReport
+                    setReport: this.setReport,
+                    downloading: this.state.downloading
                 }),
                 React.createElement(SelectOrganisation, {
                     report: this.state.report,
-                    setOrganisation: this.setOrganisation
+                    setOrganisation: this.setOrganisation,
+                    downloading: this.state.downloading
                 }),
                 React.createElement(SelectProject, {
                     report: this.state.report,
-                    setProject: this.setProject
+                    setProject: this.setProject,
+                    downloading: this.state.downloading
                 }),
                 React.createElement(SelectFormat, {
                     report: this.state.report,
-                    setFormat: this.setFormat
+                    setFormat: this.setFormat,
+                    downloading: this.state.downloading
                 }),
                 React.createElement(DownloadNotice, {
-                    visible: this.state.noticeVisible
+                    visible: this.state.downloading
                 }),
                 React.createElement(DownloadButton, {
                     report: this.state.report,
                     organisation: this.state.organisation,
                     project: this.state.project,
                     format: this.state.format,
-                    showNotice: this.showNotice
+                    downloading: this.state.downloading,
+                    setDownload: this.setDownload
                 })
             )
         );
