@@ -258,6 +258,8 @@ class BudgetItems(ImportMapper):
                         budget, 'value', 'value-date', 'value_date')
                 # TODO get currency from activity@[default-currency]
                 currency = self.get_child_elem_attrib(budget, 'value', 'currency', 'currency')
+                if not currency:
+                    currency = self.get_attrib(activity, 'default-currency', 'currency')
             else:
                 value_date = None
                 currency = ''

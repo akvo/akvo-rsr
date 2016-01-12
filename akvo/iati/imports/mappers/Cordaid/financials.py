@@ -33,9 +33,12 @@ class BudgetItems(BudgetItems):
             if budget_item_data['amount']:
                 budget_item_data['value_date'] = self.get_child_as_date(
                     budget, 'value', 'value-date', 'value_date')
-                # TODO get currency from activity@[default-currency]
-                budget_item_data['currency'] = self.get_child_elem_attrib(
+                currency = self.get_child_elem_attrib(
                     budget, 'value', 'currency', 'currency')
+                if not currency:
+                    currency = self.get_attrib(activity, 'default-currency', 'currency')
+                budget_item_data['currency'] = currency
+
             else:
                 budget_item_data['value_date'] = None
                 budget_item_data['currency'] = ''
@@ -46,7 +49,9 @@ class BudgetItems(BudgetItems):
             budget_item_data['amount'] = 0
             budget_item_data['value_date'] = None
             budget_item_data['currency'] = ''
+
         return budget_item_data
+
 
     def do_import(self):
         """ Very custom handling of the budgets for Cordaid. We look for two budget tags, one with
