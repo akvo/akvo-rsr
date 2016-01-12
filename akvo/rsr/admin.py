@@ -1195,23 +1195,22 @@ class IatiImportJobInline(admin.TabularInline):
     fields = ('admin_url', 'status', 'sha1_hexdigest',)
     readonly_fields = ('admin_url', 'status', 'sha1_hexdigest',)
     extra = 0
-    #
-    # def get_queryset(self, request):
-    #     "Optimize the list display"
-    #     qs = super(IatiImportJobInline, self).get_queryset(request)
-    #     qs = qs.select_related('project', 'iati_activity_import', 'iati_import_job')
-    #     return qs
+
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImport')
     list_display = ('__unicode__', 'user', )
     readonly_fields = ('next_execution', 'running',)
     inlines = (IatiImportJobInline,)
-    # inlines = (IatiImportJobInline,)
-#     list_filter = ('status',)
-#     search_fields = ('user__username', )
-#     exclude = ('status', 'start_date', 'end_date')
-#
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """ set the current user as selected """
+        if db_field.name == 'user':
+            kwargs['initial'] = request.user.pk
+        return super(IatiImportAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
+
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
 
 
