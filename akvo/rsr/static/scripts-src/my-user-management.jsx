@@ -233,9 +233,12 @@ InviteModal = React.createClass({
         }
 
         // Enable invite button again
-        this.setState({
-            disable: false
-        });
+        var thisInviteModal = this;
+        setTimeout(function() {
+            thisInviteModal.setState({
+                disable: false
+            });
+        }, 5000);
     },
 
     render: function() {
