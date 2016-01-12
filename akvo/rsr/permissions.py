@@ -181,4 +181,6 @@ def is_self(user, obj):
         return True
     if isinstance(obj, get_user_model()) and obj == user:
         return True
+    if isinstance(obj, Employment) and obj.user == user:
+        return True
     return False

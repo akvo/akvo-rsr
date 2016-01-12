@@ -101,6 +101,7 @@ def request_organisation(request, pk=None):
 
         serializer.data['country_full'] = CountrySerializer(country).data
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data
+        serializer.data['id'] = employment.pk
 
         return Response(serializer.data)
     else:
