@@ -665,12 +665,6 @@ div.paginationWrap {
     span {
         color: rgba($akvoBlack, 0.3);
     }
-    span.published {
-        color: $progressSuccess;
-    }
-    span.notPublished {
-        color: $secondary2;
-    }
 }
 
 #profile {
@@ -2184,7 +2178,7 @@ body {
     }
 }
 
-.formOverviewInfo {
+.formProgress {
     .progress {
         .progress-bar {
             .progress-percentage {
@@ -2192,22 +2186,30 @@ body {
             }
         }
     }
-    .info-icon {
-        padding-left: 0.5em;
-        cursor: pointer;
-        cursor: hand;
-        color: $akvoPurple;
-        &.activated {
-            color: rgba(44, 42, 116, 0.3);
-        }
+    .redLegenda {
+        background: $progressWarning;
+        color: $progressWarning;
+    }
+    .orangeLegenda {
+        background: $progressNot;
+        color: $progressNot;
+    }
+    .greenLegenda {
+        background: $progressSuccess;
+        color: $progressSuccess;
+    }
+    .mandatoryIndicator {
+        color: $progressWarning;
     }
 }
 
 .formOverviewInfo {
-    border: 1px solid rgba(52, 52, 56, 0.1);
-    padding: 20px;
-    margin-bottom: 15px;
-    @include border-radius(5px);
+    span.published {
+        color: $progressSuccess;
+    }
+    span.notPublished {
+        color: $secondary2;
+    }
 }
 
 .projectEdit {
@@ -2219,7 +2221,6 @@ body {
     }
     .myPanel {
         overflow: hidden;
-        cursor: pointer;
         line-height: 25px;
         position: relative;
         .formBlock {
@@ -2249,25 +2250,24 @@ body {
             @include border-radius(5px);
             display: block;
             width: 100%;
-            cursor: pointer;
             top: initial;
             padding: 5px 5px 5px 15px;
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
+            cursor: pointer;
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
             .info-icon {
                 padding-left: 0.5em;
                 cursor: pointer;
-                cursor: hand;
                 font-size: 90%;
                 &.activated {
                     color: rgba(44, 42, 116, 0.3);
                 }
             }
         }
-        .progress {
+        .section-progress {
             position: absolute;
             width: 30%;
             top: 15px;
@@ -2338,18 +2338,12 @@ body {
         & + span + label,
         & + ul + label {
             position: absolute;
-            top: 10px;
+            top: 0px;
             transition: top 0.7s ease, opacity 0.7s ease;
-            opacity: 0;
+            opacity: 1;
             // Some nice styling
             font-size: $label-font-size;
             font-weight: 600;
-        }
-        &:valid + label,
-        &:valid + span + label,
-        &:valid + ul + label {
-            opacity: 1;
-            top: 0px;
         }
         &:focus + label,
         &:focus + span + label,
@@ -2370,13 +2364,13 @@ body {
             font-weight: 600;
         }
     }
-    .delete-object-button {
+    .delete-related-object {
         color: $progressWarning;
     }
     .delete-photo-button {
         color: $progressWarning;
     }
-    .delete-document-button {
+    .delete-document {
         color: $progressWarning;
     }
     .info-icon {
@@ -2393,6 +2387,12 @@ body {
         font-size: 125%;
         margin-left: 4px;
         margin-right: -4px;
+    }
+    .mandatory-block {
+        @extend .mandatory;
+        font-size: 90%;
+        margin-left: 0px;
+        margin-right: 0px;
     }
     label.progress-bar {
         &[aria-valuenow="0"] {
@@ -2446,7 +2446,6 @@ body {
         border-radius: 10px;
         display: block;
         width: 100%;
-        cursor: pointer;
         top: initial;
         padding: 5px 15px 5px 15px;
         margin-top: 10px;
@@ -2460,6 +2459,17 @@ body {
         font-size: 12px;
         margin-top: 10px;
         margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .save-message {
+        text-align: center;
+    }
+    .save-button {
+        text-align: right;
+    }
+    .toggle-help {
+        font-size: 0.9em;
+        color: rgba(44, 42, 116, 0.5);
     }
 }
 
@@ -2469,21 +2479,21 @@ body {
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
     margin: 15px 15px 15px 15px;
-    .redLegenda {
-        background: $progressWarning;
-        color: $progressWarning;
-    }
-    .orangeLegenda {
-        background: $progressNot;
-        color: $progressNot;
-    }
-    .greenLegenda {
-        background: $progressSuccess;
-        color: $progressSuccess;
-    }
     .mandatory {
         color: $progressWarning;
     }
+}
+
+.progress-radio {
+    top: 25px;
+}
+
+.remove-progress-bar-link {
+    color: $progressWarning;
+}
+
+.viewProject {
+    margin-top: 15px;
 }
 
 .info-icon {
@@ -2493,6 +2503,10 @@ body {
     &.activated {
         color: rgba(44, 42, 116, 0.3);
     }
+}
+
+#publishProject {
+   margin-top: -7px;
 }
 
 #editor-feedback {
@@ -2509,15 +2523,6 @@ body {
         -moz-transform: rotate(-90deg);
         -ms-transform: rotate(-90deg);
         -o-transform: rotate(-90deg);
-    }
-}
-
-#publishProject.btn {
-    margin-top: -6px;
-    @media only screen and (max-width: $width-large) {
-        @media only screen and (min-width: $width-medium) {
-            margin-left: -1.25em;
-        }
     }
 }
 

@@ -20,24 +20,30 @@ class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
         _(u'sector code'), blank=True, max_length=5,
-        help_text=_(u'Enter the sector code of the sectors that the project is working within.<br>'
-                    u'See these lists for the DAC-5 and DAC-3 sector codes:<br>'
-                    u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">'
-                    u'DAC-5 sector codes</a><br>'
-                    u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" '
-                    u'target="_blank">DAC-3 sector codes</a>')
+        help_text=_(u'Please select DAC-5 or DAC-3 as the sector vocabulary first, then this field'
+                    u'will be populated with the corresponding codes. For other vocabularies, it '
+                    u'is possible to fill in any code. '
+                    u'See these lists for the DAC-5 and DAC-3 sector codes: '
+                    u'<a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">'
+                    u'DAC-5 sector codes</a> and <a href="http://iatistandard.org/201/codelists/'
+                    u'SectorCategory/" target="_blank">DAC-3 sector codes</a>.')
     )
     text = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)')
+        _(u'sector description'), blank=True, max_length=100,
+        help_text=_(u'Optionally enter a description.')
     )
     vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SECTOR_VOCABULARY)
+        _(u'sector vocabulary'), blank=True, max_length=5,
+        choices=codelist_choices(SECTOR_VOCABULARY),
+        help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
+                    u'should be mapped to DAC sectors to enable international comparison.')
     )
     percentage = models.DecimalField(
         _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_(u'You can set the percentage of the project that is relevant for '
-                    u'this sector here.')
+        help_text=_(u'Percentages should add up to 100% of the activity being reported if they are '
+                    u'shown for each sector. Fill in 100% if there\'s one sector. Use a period to '
+                    u'denote decimals.')
     )
 
     def __unicode__(self):

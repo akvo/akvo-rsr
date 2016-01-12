@@ -8,12 +8,15 @@
 from akvo.rsr.models import RelatedProject
 
 from ..serializers import RelatedProjectSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class RelatedProjectViewSet(BaseRSRViewSet):
+class RelatedProjectViewSet(PublicProjectViewSet):
     """
     """
     queryset = RelatedProject.objects.all()
     serializer_class = RelatedProjectSerializer
     filter_fields = ('project', 'related_project', 'relation', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(RelatedProjectViewSet, self).get_queryset(related_to)

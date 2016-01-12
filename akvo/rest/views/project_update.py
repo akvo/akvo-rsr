@@ -8,14 +8,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import ProjectUpdate
 
 from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-class ProjectUpdateViewSet(BaseRSRViewSet):
+class ProjectUpdateViewSet(PublicProjectViewSet):
 
     """."""
     queryset = ProjectUpdate.objects.select_related('project',
@@ -32,7 +32,7 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
-    def get_queryset(self):
+    def get_queryset(self, related_to='project__'):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on
@@ -57,10 +57,10 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
         user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
         if user__organisations:
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
-        return super(ProjectUpdateViewSet, self).get_queryset()
+        return super(ProjectUpdateViewSet, self).get_queryset(related_to)
 
 
-class ProjectUpdateExtraViewSet(BaseRSRViewSet):
+class ProjectUpdateExtraViewSet(PublicProjectViewSet):
 
     """Project update extra resource."""
 
@@ -99,7 +99,7 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
     }
 
-    def get_queryset(self):
+    def get_queryset(self, related_to='project__'):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on

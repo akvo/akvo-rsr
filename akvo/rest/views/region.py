@@ -8,12 +8,15 @@
 from akvo.rsr.models import RecipientRegion
 
 from ..serializers import RecipientRegionSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class RecipientRegionViewSet(BaseRSRViewSet):
+class RecipientRegionViewSet(PublicProjectViewSet):
     """
     """
     queryset = RecipientRegion.objects.all()
     serializer_class = RecipientRegionSerializer
     filter_fields = ('project', 'region', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(RecipientRegionViewSet, self).get_queryset(related_to)

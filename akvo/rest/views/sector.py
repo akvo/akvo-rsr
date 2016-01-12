@@ -7,13 +7,16 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Sector
 from ..serializers import SectorSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class SectorViewSet(BaseRSRViewSet):
+class SectorViewSet(PublicProjectViewSet):
 
     """."""
 
     queryset = Sector.objects.all()
     serializer_class = SectorSerializer
     filter_fields = ('project', 'sector_code', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(SectorViewSet, self).get_queryset(related_to)

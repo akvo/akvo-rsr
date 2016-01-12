@@ -20,8 +20,14 @@ class Link(models.Model):
     )
 
     kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS, default='E')
-    url = models.URLField(_(u'URL'), blank=True)
-    caption = ValidXMLCharField(_(u'caption'), max_length=50, blank=True)
+    url = models.URLField(
+        _(u'link url'), blank=True,
+        help_text=_(u'Enter the link to an external website you wish to redirect to from your '
+                    u'project page. The URL should start with \'http://\' or \'https://\'.')
+    )
+    caption = ValidXMLCharField(
+        _(u'link caption'), max_length=50, blank=True, help_text=_(u'Enter a name for the link.')
+    )
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='links')
 
     def __unicode__(self):

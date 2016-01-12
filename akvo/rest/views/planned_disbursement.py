@@ -8,12 +8,15 @@
 from akvo.rsr.models import PlannedDisbursement
 
 from ..serializers import PlannedDisbursementSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class PlannedDisbursementViewSet(BaseRSRViewSet):
+class PlannedDisbursementViewSet(PublicProjectViewSet):
     """
     """
     queryset = PlannedDisbursement.objects.all()
     serializer_class = PlannedDisbursementSerializer
     filter_fields = ('project', 'currency', 'type', )
+
+    def get_queryset(self, related_to='project__'):
+        return super(PlannedDisbursementViewSet, self).get_queryset(related_to)

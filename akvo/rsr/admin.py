@@ -582,7 +582,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy', 'is_public'),
+                       'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1148,3 +1148,23 @@ class IatiImportAdmin(admin.ModelAdmin):
     exclude = ('status', 'start_date', 'end_date')
 
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
+
+
+class ValidationInline(admin.TabularInline):
+    model = get_model('rsr', 'ProjectEditorValidation')
+    fields = ('validation', 'action', )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.validations.count() == 0 else 0
+        else:
+            return 1
+
+
+class ValidationSetAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ProjectEditorValidationSet')
+    list_display = ('name', 'description')
+    fields = ('name', 'description')
+    inlines = (ValidationInline, )
+
+admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)

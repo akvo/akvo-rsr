@@ -8,20 +8,26 @@
 from akvo.rsr.models import Indicator, IndicatorPeriod
 
 from ..serializers import IndicatorSerializer, IndicatorPeriodSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class IndicatorViewSet(BaseRSRViewSet):
+class IndicatorViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Indicator.objects.filter(result__project__is_public=True)
+    queryset = Indicator.objects.all()
     serializer_class = IndicatorSerializer
     filter_fields = ('result', )
 
+    def get_queryset(self, related_to='result__project__'):
+        return super(IndicatorViewSet, self).get_queryset(related_to)
 
-class IndicatorPeriodViewSet(BaseRSRViewSet):
+
+class IndicatorPeriodViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.filter(indicator__result__project__is_public=True)
+    queryset = IndicatorPeriod.objects.all()
     serializer_class = IndicatorPeriodSerializer
     filter_fields = ('indicator', )
+
+    def get_queryset(self, related_to='indicator__result__project__'):
+        return super(IndicatorPeriodViewSet, self).get_queryset(related_to)

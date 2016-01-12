@@ -66,13 +66,6 @@ class PublishingStatus(models.Model):
                                     code='current_image')
                 )
 
-            # TODO: remove
-            # if not self.project.sync_owner:
-            #     validation_errors.append(
-            #         ValidationError(_('Project needs to have a reporting organisation.'),
-            #                         code='reporting_org')
-            #     )
-
             if not self.project.partnerships.filter(
                     organisation__can_create_projects__exact=True).exists():
                 validation_errors.append(
