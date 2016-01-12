@@ -4,6 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import glob
+import os
+
 from datetime import timedelta, datetime
 from importlib import import_module
 
@@ -13,6 +16,21 @@ from django.utils.translation import ugettext_lazy as _
 
 from .iati_import_job import IatiImportJob
 from .iati_import_log import LOG_ENTRY_TYPE
+
+
+def get_subpackages(module):
+    dir = os.path.dirname(module.__file__)
+    def is_package(d):
+        d = os.path.join(dir, d)
+        return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
+
+    return filter(is_package, os.listdir(dir))
+
+
+def custom_mappers():
+    from ...iati.imports import mappers
+    subs = get_subpackages(mappers)
+    return [(sub, sub) for sub in subs]
 
 
 class IatiImport(models.Model):
@@ -75,10 +93,9 @@ class IatiImport(models.Model):
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
     url = models.URLField(_(u'url'), blank=True)
-    # TODO: make the prefixes a list of available modules in iati/imports/mappers
     mapper_prefix = models.CharField(
-            max_length=30, verbose_name=_(u'mapper prefix'), blank=True,
-            help_text='Prefix used to identify child classes overriding default import behaviour')
+            max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
+            help_text='Choose a custom mapper to invoke custom behaviour for this import')
     enabled = models.BooleanField(verbose_name=_(u'scheduled importing enabled'), default=False,
                                   help_text='Set to enable scheduled running of this import.')
     run_immediately = models.BooleanField(verbose_name=_(u'run immediately'), default=False,
