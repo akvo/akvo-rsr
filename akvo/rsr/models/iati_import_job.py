@@ -344,7 +344,10 @@ class IatiImportJob(models.Model):
             self.save()
 
         try:
-            previous_job = IatiImportJob.objects.exclude(pk=self.pk).latest()
+            # TODO: this filter fails when the previous job completed, but no activities were
+            # imported. This can happen if the reporting-org isn't allowed to create projects
+            previous_job = self.iati_import.jobs.exclude(pk=self.pk).filter(
+                    status=LOG_ENTRY_TYPE.STATUS_COMPLETED).latest()
         except IatiImportJob.DoesNotExist:
             previous_job = None
 
@@ -365,6 +368,7 @@ class IatiImportJob(models.Model):
         # Start initialize
         self.add_log(u'Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
         self.add_log(u'Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
+
         if self.check_file() and self.is_new_file():
 
             # Start import process
