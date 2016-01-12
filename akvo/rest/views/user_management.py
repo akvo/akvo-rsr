@@ -39,7 +39,7 @@ def invite_user(request):
         except ValidationError:
             return False
 
-    user = request.user
+    user, group, organisation = request.user, None, None
     if not user.has_perm('rsr.user_management'):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
@@ -76,8 +76,7 @@ def invite_user(request):
         invited_user = get_user_model().objects.get(email=email)
     except get_user_model().DoesNotExist:
         try:
-            invited_user = get_user_model().objects.create_user(email, email=email)
-            invited_user.set_is_active(False)
+            invited_user = get_user_model().objects.create_user(username=email, email=email)
         except IntegrityError:
             return Response({'error': 'Trying to create a user that already exists'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
