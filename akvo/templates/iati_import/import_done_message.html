@@ -25,14 +25,22 @@
     <h1>IATI import summary</h1>
 
     <h2>General information</h2>
-    The IATI import has been finished with the following status: <b>{{ iati_import.show_status }}</b>.<br/><br/>
+    The IATI import has been finished with the following status:
+    <b>{{ iati_import_job.show_status }}</b>.
+    <br/><br/>
 
-    <b>Import id:</b> {{ iati_import.pk }}<br/>
+    <b>Import:</b> {{ iati_import_job.iati_import.label }}<br/>
+    <b>Import job id:</b> {{ iati_import_job.pk }}<br/>
     <b>Site:</b> {{ site }}<br/>
-    {% if iati_import.url %}<b>IATI file:</b> <a href="{{ iati_import.url }}">{{ iati_import.url }}</a><br/>{% endif %}
-    <b>Start date:</b> {{ iati_import.start_date }}<br/>
-    <b>End date:</b> {{ iati_import.end_date }}<br/>
-    <b>Number of projects processed:</b> {{ project_count }} ({{ projects_created }} created, {{ projects_updated }} updated)<br/>
+    {% if iati_import_job.iati_import.url %}
+      <b>IATI file:</b>
+      <a href="{{ iati_import_job.iati_import.url }}">{{ iati_import_job.iati_import.url }}</a>
+      <br/>
+    {% endif %}
+    <b>Start date:</b> {{ iati_import_job.started_at|date:"r" }}<br/>
+    <b>End date:</b> {{ iati_import_job.finished_at|date:"r" }}<br/>
+    <b>Number of projects processed:</b>
+    {{ project_count }} ({{ projects_created }} created, {{ projects_updated }} updated)<br/>
     <b>Number of projects published:</b> {{ projects_published }}
 
     <h2>Critical errors</h2>
@@ -51,6 +59,7 @@
         </tr>
       {% endfor %}
       </table>
+      <p>See attached critical.csv for details</p>
     {% else %}
       No critical errors.
     {% endif %}
@@ -73,6 +82,7 @@
         </tr>
       {% endfor %}
       </table>
+      <p>See attached warnings.csv for details</p>
     {% else %}
       No warnings.
     {% endif %}
@@ -83,17 +93,27 @@
       <tr>
         <th>RSR project id</th>
         <th>IATI id</th>
-        <th>Action</th>
-        <th>Status</th>
+        <th>Created or updated</th>
         <th>Published</th>
       </tr>
     {% for project_log in projects_log %}
       <tr>
         <td>{{ project_log.project.pk }}</td>
         <td>{{ project_log.project.iati_activity_id }}</td>
-        <td>{{ project_log.show_action }}</td>
-        <td>{{ project_log.show_status }}</td>
-        <td>{% if project_log.project.is_published %}Yes{% else %}No{% endif %}</td>
+        <td>
+          {% if project_log.message_type == LOG_ENTRY_TYPE.ACTION_CREATE %}
+            Created
+          {% else %}
+            Updated
+          {% endif %}
+        </td>
+        <td>
+          {% if project_log.project.is_published %}
+            Yes
+          {% else %}
+            No
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
     </table>

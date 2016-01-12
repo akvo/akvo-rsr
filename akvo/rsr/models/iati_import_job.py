@@ -10,6 +10,8 @@ import urllib2
 
 from datetime import datetime
 import zipfile
+
+import tablib
 from lxml import etree
 
 from django.conf import settings
@@ -48,6 +50,10 @@ class IatiImportJob(models.Model):
         (LOG_ENTRY_TYPE.STATUS_COMPLETED, _(u'completed')),
         (LOG_ENTRY_TYPE.STATUS_CANCELLED, _(u'cancelled')),
     )
+
+    CRITICAL_LOG = 'critical'
+    WARNINGS_LOG = 'warnings'
+    FULL_LOG = 'full'
 
     iati_import = models.ForeignKey('IatiImport', related_name='jobs')
     iati_xml_file = models.FileField(_(u'local file'), blank=True, upload_to=file_path)
@@ -123,9 +129,59 @@ class IatiImportJob(models.Model):
     admin_url.short_description = "IATI import job"
     admin_url.allow_tags = True
 
-
     def show_status(self):
         return dict(map(lambda x: x, self.STATUS_CODES))[self.status]
+
+    def started_at(self):
+        return self.iati_import_logs.first().created_at
+
+    def finished_at(self):
+        return self.iati_import_logs.last().created_at
+
+    def get_log_list(self, type):
+        """
+        Create a list of lists, each list being data from a IatiImportLog object. The log objects
+        are filtered depending on the type param
+        :param type: string; determines the filtering applied
+        :return: headers and data for use by tablib.Dataset
+        """
+        if type == self.CRITICAL_LOG:
+            logs = self.iati_import_logs.filter(
+                    message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR, iati_import_job=self)
+        elif type == self.WARNINGS_LOG:
+            logs = self.iati_import_logs.filter(
+                    message_type__in=[LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED,
+                                      LOG_ENTRY_TYPE.VALUE_NOT_SAVED],
+                    iati_import_job=self
+            )
+        elif type == self.FULL_LOG:
+            logs = self.iati_import_logs.filter(iati_import_job=self)
+        else:
+            logs = []
+        records = [
+                [
+                    log.created_at,
+                    log.project.pk if log.project else '',
+                    log.project.iati_activity_id if log.project else '',
+                    log.message_type,
+                    log.text,
+                    log.tag,
+                    log.model_field()
+                ] for log in logs]
+        headers = ['Timestamp', 'Project ID', 'Message type', 'Text', 'Tag', 'Model', 'Field']
+        return headers, records
+
+    def get_log_csv(self, type):
+        """
+        Create a dict suitable for use by the EmailMessage.attach() method
+        :param type: The type of attachment, used as file name
+        :return: dict that can be used as kwargs to EmailMessage.attach()
+        """
+        headers, records = self.get_log_list(type)
+        if records:
+            data = tablib.Dataset(*records,headers=headers)
+            return [{'filename': "{}.csv".format(type), 'content': data.csv, 'mimetype': 'text/csv'}]
+        return []
 
     def send_mail(self):
         """
@@ -136,6 +192,11 @@ class IatiImportJob(models.Model):
         email_addresses = [email for _name, email in settings.ADMINS]
         email_addresses.append(self.iati_import.user.email)
 
+        attachments = []
+        attachments.extend(self.get_log_csv(self.CRITICAL_LOG))
+        attachments.extend(self.get_log_csv(self.WARNINGS_LOG))
+        attachments.extend(self.get_log_csv(self.FULL_LOG))
+
         rsr_send_mail(
             email_addresses,
             subject='iati_import/import_done_subject.txt',
@@ -144,22 +205,28 @@ class IatiImportJob(models.Model):
                 'iati_import': self.iati_import
             },
             msg_context={
-                'iati_import': self.iati_import,
+                'iati_import_job': self,
                 'project_count': self.projects.count(),
                 'projects_created': self.iati_import_logs.filter(
                         message_type=LOG_ENTRY_TYPE.ACTION_CREATE).count(),
                 'projects_updated': self.iati_import_logs.filter(
-                    message_type=LOG_ENTRY_TYPE.ACTION_UPDATE).count(),
+                        message_type=LOG_ENTRY_TYPE.ACTION_UPDATE).count(),
                 'projects_published': self.projects.all().published().count(),
                 'critical_errors_log': self.iati_import_logs.filter(
-                    message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR
+                        message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR),
+                'warnings_log': self.iati_import_logs.filter(
+                        message_type__in=[LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED,
+                                          LOG_ENTRY_TYPE.VALUE_NOT_SAVED]
                 ),
-                'warnings_log': self.iati_import_logs.filter(message_type__in=[
-                    LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED, LOG_ENTRY_TYPE.VALUE_NOT_SAVED
-                ]),
-                'projects_log': self.iati_import_logs.all()
+                'projects_log': self.iati_import_logs.filter(
+                        message_type__in=[LOG_ENTRY_TYPE.ACTION_CREATE,
+                                          LOG_ENTRY_TYPE.ACTION_UPDATE]
+                ),
+                'full_log': self.iati_import_logs.filter(iati_import_job=self),
+                'LOG_ENTRY_TYPE': LOG_ENTRY_TYPE,
             },
-            html_message='iati_import/import_done_message.html'
+            html_message='iati_import/import_done_message.html',
+            attachments=attachments,
         )
 
     def check_version(self):
@@ -248,7 +315,7 @@ class IatiImportJob(models.Model):
                 return True
             except Exception as e:
                 self.add_log('Error while fetching file from URL. '
-                             'Error message:\n%s'.format(e.message),
+                             'Error message:\n{}'.format(e.message),
                              LOG_ENTRY_TYPE.CRITICAL_ERROR)
         else:
         # No file or URL specified.

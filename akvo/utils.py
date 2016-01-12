@@ -22,7 +22,7 @@ from workflows.utils import get_state
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -63,11 +63,48 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     return path_template % locals()
 
 
+def send_mail_with_attachments(subject, message, from_email, recipient_list,
+              fail_silently=False, auth_user=None, auth_password=None,
+              connection=None, html_message=None, attachments=None):
+    """
+    Extension of django.core.main.send_mail to allow the inclusion of attachments
+
+    Easy wrapper for sending a single message to a recipient list. All members
+    of the recipient list will see the other recipients in the 'To' field.
+
+    If auth_user is None, the EMAIL_HOST_USER setting is used.
+    If auth_password is None, the EMAIL_HOST_PASSWORD setting is used.
+
+    Note: The API for this method is frozen. New code wanting to extend the
+    functionality should use the EmailMessage class directly.
+
+    attachments must be a list of dicts of the form
+        {'filename': <file name>, 'content': <attachment data>, 'mimetype': mime type}
+    """
+    connection = connection or get_connection(username=auth_user,
+                                              password=auth_password,
+                                              fail_silently=fail_silently)
+    mail = EmailMultiAlternatives(subject, message, from_email, recipient_list,
+                                  connection=connection)
+    if html_message:
+        mail.attach_alternative(html_message, 'text/html')
+
+    if attachments:
+        for attachment in attachments:
+            mail.attach(**attachment)
+
+    return mail.send()
+
+
+#return {'file_name': "{}.csv".format(type), 'data': data.csv, 'mime_type': 'text/csv'}
+
+
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt',
                   subject_context=None,
                   msg_context=None,
-                  html_message=None):
+                  html_message=None,
+                  attachments=None):
     """
     Send template driven email.
         to_list is a list of email addresses
@@ -77,27 +114,24 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org'
     if undefined
     """
-    if not subject_context:
-        subject_context = {}
-    if not msg_context:
-        msg_context = {}
+    subject_context = subject_context or {}
+    msg_context = msg_context  or {}
     current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
+
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
+
     msg_context.update({'site': current_site})
     message = loader.render_to_string(message, msg_context)
+
     if html_message:
         html_message = loader.render_to_string(html_message, msg_context)
-        send_mail(
-            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
-            html_message=html_message
-        )
-    else:
-        send_mail(
-            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
-        )
+    send_mail_with_attachments(
+        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
+        html_message=html_message, attachments=attachments
+    )
 
 
 def rsr_send_mail_to_users(users,
