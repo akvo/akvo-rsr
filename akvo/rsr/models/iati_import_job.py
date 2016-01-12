@@ -158,12 +158,13 @@ class IatiImportJob(models.Model):
             logs = self.iati_import_logs.filter(iati_import_job=self)
         else:
             logs = []
+
         records = [
                 [
                     log.created_at,
                     log.project.pk if log.project else '',
                     log.project.iati_activity_id if log.project else '',
-                    log.message_type,
+                    log.show_message_type(),
                     log.text,
                     log.tag,
                     log.model_field()

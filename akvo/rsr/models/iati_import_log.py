@@ -9,7 +9,7 @@ from collections import namedtuple
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.core import urlresolvers
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from akvo.rsr.fields import ValidXMLTextField, ValidXMLCharField
 
@@ -142,7 +142,6 @@ class IatiImportLog(models.Model):
         else:
             return self.field
 
-    # TODO: rename
     def show_message_type(self):
         return dict(map(lambda x: x, self.MESSAGE_TYPE_CODES))[self.message_type]
 
