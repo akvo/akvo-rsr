@@ -367,21 +367,25 @@ class Organisation(TimestampsMixin, models.Model):
         return self.published_projects().status_not_cancelled().status_not_archived()
 
     def partners(self):
-        """returns a queryset of all organisations that self has at least one project
-        in common with, excluding self"""
-        return self.published_projects().all_partners().exclude(id__exact=self.id)
+        """
+        Returns a queryset of all organisations that self has at least one project
+        in common with, excluding self.
+        """
+        return self.all_projects().all_partners().exclude(id__exact=self.id)
 
     def support_partners(self):
-        """returns a queryset of support partners that self has at least one project
-        in common with, excluding self"""
-        return self.published_projects().support_partners().exclude(id__exact=self.id)
+        """
+        Returns a queryset of support partners that self has at least one project
+        in common with, excluding self.
+        """
+        return self.all_projects().support_partners().exclude(id__exact=self.id)
 
     def field_partners(self):
         """
         Returns an Organisation queryset of field partners of which self has at least
         one project in common with.
         """
-        return self.all_projects().field_partners().distinct()
+        return self.all_projects().field_partners().exclude(id__exact=self.id)
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
