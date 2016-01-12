@@ -89,7 +89,6 @@ class IatiImport(models.Model):
     next_execution = models.DateTimeField(
             verbose_name=_(u'next time the import is run'), null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCIES)
-    # TODO: set to request.user in admin
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
     url = models.URLField(_(u'url'), blank=True)

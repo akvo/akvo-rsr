@@ -27,7 +27,7 @@ Warnings
 {% if warnings_log %}
 RSR project id          IATI id         Warning type          Message
 {% for warning_log in warnings_log %}
-{{ warning_log.project.pk }}            {{ warning_log.project.iati_activity_id }}          {{ warning_log.show_severity }}         {{ warning_log.text }}
+{{ warning_log.project.pk }}            {{ warning_log.project.iati_activity_id }}          {{ warning_log.show_message_type }}         {{ warning_log.text }}
 {% endfor %}
 See attached warnings.csv for details
 {% else %}

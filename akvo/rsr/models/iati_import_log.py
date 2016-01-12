@@ -143,7 +143,7 @@ class IatiImportLog(models.Model):
             return self.field
 
     # TODO: rename
-    def show_severity(self):
+    def show_message_type(self):
         return dict(map(lambda x: x, self.MESSAGE_TYPE_CODES))[self.message_type]
 
     def activity_admin_url(self):
