@@ -10,6 +10,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import get_model, Max, Sum
@@ -326,7 +327,7 @@ class Project(TimestampsMixin, models.Model):
 
     # Project editor settings
     validations = models.ManyToManyField(
-        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects',
+        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects'
     )
 
     # denormalized data
@@ -384,11 +385,6 @@ class Project(TimestampsMixin, models.Model):
                 self.convert_to_impact_project()
 
         super(Project, self).save(*args, **kwargs)
-
-        # Add RSR validation set to projects that don't have that set
-        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
-        if not rsr_validation_set in self.validations.all():
-            self.validations.add(rsr_validation_set)
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1172,6 +1168,24 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
+
+
+@receiver(post_save, sender=Project)
+def default_validation_set(sender, **kwargs):
+    """When the project is created, add the RSR validation (pk=1) to the project."""
+    project = kwargs['instance']
+    created = kwargs['created']
+    if created:
+        try:
+            if not project.validations.all():
+                project.validations.add(ProjectEditorValidationSet.objects.get(pk=1))
+        except ProjectEditorValidationSet.DoesNotExist:
+            # RSR validation set does not exist, should not happen..
+            send_mail('RSR validation set missing',
+                      'This is a notification to inform the RSR admins that the RSR validation set '
+                      '(pk=1) is missing.',
+                      getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                      getattr(settings, "SUPPORT_EMAIL", ['rsr@akvo.org']))
 
 
 @receiver(post_save, sender=ProjectUpdate)
