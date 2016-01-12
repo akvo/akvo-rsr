@@ -222,12 +222,7 @@ class InvitedUserForm(forms.Form):
 
     def save(self, request):
         """
-        Create the new User and RegistrationProfile, and returns the User.
-
-        This is essentially a light wrapper around
-        RegistrationProfile.objects.create_inactive_user(), feeding it the form data and
-        a profile callback (see the documentation on create_inactive_user() for details)
-        if supplied. Modified to set user.is_active = False and add User object creation.
+        Set the user to active and update the user's credentials.
         """
         self.user.is_active = True
         self.user.first_name = self.cleaned_data['first_name']

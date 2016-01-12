@@ -89,7 +89,7 @@ urlpatterns = i18n_patterns(
     url(r'^activate/(?P<activation_key>\w+)/$',
         'akvo.rsr.views.account.activate', name='activate'),
 
-    url(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
+    url(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<user_pk>\d+)/(?P<employment_pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
         'akvo.rsr.views.account.invite_activate', name='invite_activate'),
 
     url(r'^sign_in/$',

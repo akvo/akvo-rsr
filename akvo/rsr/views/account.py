@@ -13,6 +13,7 @@ from lxml import etree
 from tastypie.models import ApiKey
 
 from akvo.rsr.forms import RegisterForm, InvitedUserForm
+from akvo.rsr.models import Employment
 from akvo.utils import rsr_send_mail
 
 from django.conf import settings
@@ -89,21 +90,23 @@ def activate(request, activation_key, extra_context=None):
     )
 
 
-def invite_activate(request, inviting_pk, pk, token_date, token):
+def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, token):
     """
     Activate a user that has been invited to use RSR.
 
     :param request: the request
     :param inviting_pk: the invitee user's primary key
-    :param pk: the invited user's primary key
+    :param user_pk: the invited user's primary key
+    :param employment_pk: the employment's primary key
     :param token_date: the first part of the token
     :param token: the second part of the token
     """
-    bad_link, signature_expired, user, inviting_user = False, False, None, None
+    bad_link, signature_expired, user, inviting_user, employment = False, False, None, None, None
 
     try:
-        user = get_user_model().objects.get(pk=pk)
+        user = get_user_model().objects.get(pk=user_pk)
         inviting_user = get_user_model().objects.get(pk=inviting_pk)
+        employment = Employment.objects.get(pk=employment_pk)
     except get_user_model().DoesNotExist:
         bad_link = True
 
@@ -123,23 +126,26 @@ def invite_activate(request, inviting_pk, pk, token_date, token):
         bad_link = True
 
     if request.method == 'POST':
-        form = InvitedUserForm(user=user, data=request.POST, files=request.FILES)
+        form = InvitedUserForm(user=user, data=request.POST)
         if form.is_valid():
+            # Approve employment and save new user details
             form.save(request)
+            employment.approve(inviting_user)
+
             if inviting_user:
                 # Send notification email to inviting user
                 rsr_send_mail(
                     [inviting_user.email],
-                    subject='registration/invited_user_notification_subject.txt',
-                    message='registration/invited_user_notification_message.txt',
-                    html_message='registration/invited_user_notification_message.html',
+                    subject='registration/inviting_user_notification_subject.txt',
+                    message='registration/inviting_user_notification_message.txt',
+                    html_message='registration/inviting_user_notification_message.html',
                     subject_context={
                         'user': user,
                     },
                     msg_context={
                         'invited_user': user,
                         'inviting_user': inviting_user,
-                        'organisation': user.organisations.first(),
+                        'organisation': employment.organisation,
                     }
                 )
             user = authenticate(username=user.username, no_password=True)
