@@ -5229,14 +5229,102 @@ AND  date_end_actual <= NOW()]]></xml-property>
             <page-footer>
                 <text id="3">
                     <property name="contentType">html</property>
-                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                    <text-property name="content"><![CDATA[Akvo RSR <value-of format="dd-MMM-yyyy">new Date()</value-of>]]></text-property>
                 </text>
             </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
-        <table id="16">
-            <property name="dataSet">Organisations_2323</property>
+        <label id="62">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">18pt</property>
+            <property name="textAlign">left</property>
+            <text-property name="text">Organisation project overview</text-property>
+        </label>
+        <grid id="303">
+            <property name="marginTop">14pt</property>
+            <property name="width">7.947916666666667in</property>
+            <column id="304">
+                <property name="width">2.4375in</property>
+            </column>
+            <column id="305">
+                <property name="width">5.510416666666667in</property>
+            </column>
+            <row id="306">
+                <cell id="307">
+                    <label id="46">
+                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontSize">14pt</property>
+                        <text-property name="text">Organisation</text-property>
+                    </label>
+                </cell>
+                <cell id="308">
+                    <data id="59">
+                        <property name="fontSize">14pt</property>
+                        <property name="dataSet">Organisations_2323</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">name</property>
+                                <text-property name="displayName">name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">name</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="309">
+                <cell id="310">
+                    <label id="226">
+                        <text-property name="text">project_count</text-property>
+                    </label>
+                </cell>
+                <cell id="311">
+                    <data id="231">
+                        <property name="dataSet">Count projects</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">project_count</property>
+                                <text-property name="displayName">project_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">project_count</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="312">
+                <cell id="313">
+                    <label id="228">
+                        <text-property name="text">update_count</text-property>
+                    </label>
+                </cell>
+                <cell id="314">
+                    <data id="233">
+                        <property name="dataSet">Count projects</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">update_count</property>
+                                <text-property name="displayName">update_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">update_count</property>
+                    </data>
+                </cell>
+            </row>
+        </grid>
+        <label id="315">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">14pt</property>
+            <property name="marginTop">14pt</property>
+            <text-property name="text">Most recently modified projects</text-property>
+        </label>
+        <table id="260">
+            <property name="dataSet">last_edited_projects</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">name</property>
@@ -5245,122 +5333,76 @@ AND  date_end_actual <= NOW()]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">id</property>
-                    <text-property name="displayName">id</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="name">title</property>
+                    <text-property name="displayName">title</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">last_modified_at</property>
+                    <text-property name="displayName">last_modified_at</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["last_modified_at"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
-            <column id="38"/>
-            <column id="39"/>
+            <column id="279"/>
+            <column id="280"/>
+            <column id="281"/>
             <header>
-                <row id="17">
-                    <cell id="18">
-                        <label id="62">
-                            <property name="fontFamily">"Arial"</property>
-                            <property name="fontSize">large</property>
+                <row id="261">
+                    <cell id="262">
+                        <label id="263">
                             <property name="textAlign">left</property>
-                            <text-property name="text">Organisation project overview</text-property>
-                        </label>
-                    </cell>
-                    <cell id="19">
-                        <label id="54">
                             <text-property name="text">name</text-property>
                         </label>
                     </cell>
+                    <cell id="264">
+                        <label id="265">
+                            <property name="textAlign">left</property>
+                            <text-property name="text">title</text-property>
+                        </label>
+                    </cell>
+                    <cell id="266">
+                        <label id="267">
+                            <property name="textAlign">left</property>
+                            <text-property name="text">last_modified_at</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <detail>
-                <row id="20">
-                    <cell id="21">
-                        <label id="46">
-                            <property name="fontFamily">"Arial"</property>
-                            <text-property name="text">Organisation</text-property>
-                        </label>
-                    </cell>
-                    <cell id="22">
-                        <data id="59">
+                <row id="268">
+                    <cell id="269">
+                        <data id="270">
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
-                </row>
-                <row id="23">
-                    <cell id="24"/>
-                    <cell id="25"/>
-                </row>
-                <row id="26">
-                    <cell id="27"/>
-                    <cell id="28"/>
-                </row>
-                <row id="29">
-                    <cell id="30"/>
-                    <cell id="31"/>
-                </row>
-                <row id="32">
-                    <cell id="33"/>
-                    <cell id="34"/>
-                </row>
-            </detail>
-            <footer>
-                <row id="35">
-                    <cell id="36"/>
-                    <cell id="37"/>
-                </row>
-            </footer>
-        </table>
-        <table id="223">
-            <property name="dataSet">Count projects</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">project_count</property>
-                    <text-property name="displayName">project_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">update_count</property>
-                    <text-property name="displayName">update_count</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
-            <column id="237"/>
-            <column id="238"/>
-            <header>
-                <row id="224">
-                    <cell id="225">
-                        <label id="226">
-                            <text-property name="text">project_count</text-property>
-                        </label>
-                    </cell>
-                    <cell id="227">
-                        <label id="228">
-                            <text-property name="text">update_count</text-property>
-                        </label>
-                    </cell>
-                </row>
-            </header>
-            <detail>
-                <row id="229">
-                    <cell id="230">
-                        <data id="231">
-                            <property name="resultSetColumn">project_count</property>
+                    <cell id="271">
+                        <data id="272">
+                            <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
-                    <cell id="232">
-                        <data id="233">
-                            <property name="resultSetColumn">update_count</property>
+                    <cell id="273">
+                        <data id="274">
+                            <property name="resultSetColumn">last_modified_at</property>
                         </data>
                     </cell>
                 </row>
             </detail>
             <footer>
-                <row id="234">
-                    <cell id="235"/>
-                    <cell id="236"/>
+                <row id="275">
+                    <cell id="276"/>
+                    <cell id="277"/>
+                    <cell id="278"/>
                 </row>
             </footer>
         </table>
+        <label id="316">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">14pt</property>
+            <property name="marginTop">14pt</property>
+            <text-property name="text">All projects</text-property>
+        </label>
         <table id="167">
             <property name="dataSet">Projects_2323</property>
             <list-property name="boundDataColumns">
@@ -5395,12 +5437,16 @@ AND  date_end_actual <= NOW()]]></xml-property>
                 <row id="168">
                     <cell id="169">
                         <label id="170">
-                            <text-property name="text">title</text-property>
+                            <property name="fontFamily">"Arial"</property>
+                            <property name="textAlign">left</property>
+                            <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="171">
                         <label id="172">
-                            <text-property name="text">subtitle</text-property>
+                            <property name="fontFamily">"Arial"</property>
+                            <property name="textAlign">left</property>
+                            <text-property name="text">Subtitle</text-property>
                         </label>
                     </cell>
                 </row>
@@ -5427,77 +5473,6 @@ AND  date_end_actual <= NOW()]]></xml-property>
                         </data>
                     </cell>
                     <cell id="180"/>
-                </row>
-            </footer>
-        </table>
-        <table id="260">
-            <property name="dataSet">last_edited_projects</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">name</property>
-                    <text-property name="displayName">name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">title</property>
-                    <text-property name="displayName">title</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["title"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">last_modified_at</property>
-                    <text-property name="displayName">last_modified_at</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["last_modified_at"]</expression>
-                    <property name="dataType">date-time</property>
-                </structure>
-            </list-property>
-            <column id="279"/>
-            <column id="280"/>
-            <column id="281"/>
-            <header>
-                <row id="261">
-                    <cell id="262">
-                        <label id="263">
-                            <text-property name="text">name</text-property>
-                        </label>
-                    </cell>
-                    <cell id="264">
-                        <label id="265">
-                            <text-property name="text">title</text-property>
-                        </label>
-                    </cell>
-                    <cell id="266">
-                        <label id="267">
-                            <text-property name="text">last_modified_at</text-property>
-                        </label>
-                    </cell>
-                </row>
-            </header>
-            <detail>
-                <row id="268">
-                    <cell id="269">
-                        <data id="270">
-                            <property name="resultSetColumn">name</property>
-                        </data>
-                    </cell>
-                    <cell id="271">
-                        <data id="272">
-                            <property name="resultSetColumn">title</property>
-                        </data>
-                    </cell>
-                    <cell id="273">
-                        <data id="274">
-                            <property name="resultSetColumn">last_modified_at</property>
-                        </data>
-                    </cell>
-                </row>
-            </detail>
-            <footer>
-                <row id="275">
-                    <cell id="276"/>
-                    <cell id="277"/>
-                    <cell id="278"/>
                 </row>
             </footer>
         </table>
