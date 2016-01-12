@@ -50,8 +50,11 @@ class Organisations(ImportMapper):
             for line in logo.readlines():
                 tmp_file.write(line)
             tmp_file.flush()
-            # update logo if it's different from the existing one
-            old_file = organisation.logo.file
+            # update the logo if it's different from the existing one
+            try:
+                old_file = organisation.logo.file
+            except (IOError, ValueError):
+                old_file = None
             new_file = File(tmp_file)
             if not same_data(old_file, new_file):
                 filename = model_and_instance_based_filename(

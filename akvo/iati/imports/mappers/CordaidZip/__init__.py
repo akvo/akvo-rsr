@@ -23,6 +23,8 @@ OTHERS_ORG_ID = 1653
 
 def same_data(f1, f2):
     """ Compare two file like objects for sameness by comparing sha1 hashes of them """
+    if not f1 or f2:
+        return False
     f1.seek(0)
     f1_hash = get_sha1_hash(f1.read())
     f2.seek(0)

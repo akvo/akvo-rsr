@@ -36,7 +36,10 @@ class CurrentImage(ImportMapper):
                 tmp_file.write(line)
             tmp_file.flush()
             # update current image if it's different from the existing one
-            old_file = self.project.current_image.file
+            try:
+                old_file = self.project.current_image.file
+            except (IOError, ValueError):
+                old_file = None
             new_file = File(tmp_file)
             if not same_data(old_file, new_file):
                 filename = model_and_instance_based_filename(
