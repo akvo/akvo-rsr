@@ -16,9 +16,8 @@ def add_rsr_validations(apps, schema_editor):
 
     rsr_validation_set = ProjectEditorValidationSet.objects.create(
         name='RSR',
-        description='This progress bar indicates the number of completed mandatory fields for Akvo '
-                    'RSR. It is only possible to publish a project when this progress bar is green '
-                    'and fully filled, meaning that all mandatory fields have been completed.',
+        description='The default RSR validation set which indicates the mandatory fields to '
+                    'publish a project in RSR and hides all advanced IATI fields.',
     )
 
     ProjectEditorValidation.objects.create(
@@ -418,11 +417,9 @@ def add_iati_validations(apps, schema_editor):
     ProjectEditorValidation = apps.get_model("rsr", "ProjectEditorValidation")
 
     iati_validation_set = ProjectEditorValidationSet.objects.create(
-        name='International Aid Transparency Initiative',
-        description='This progress bar indicates the number of completed mandatory fields for '
-                    'IATI. It is only possible to publish a project to a valid IATI file when this '
-                    'progress bar is green and fully filled, meaning that all mandatory IATI '
-                    'fields have been completed.',
+        name='IATI',
+        description='The IATI validation set which indicates the mandatory fields to '
+                    'publish a project to IATI and shows all fields available in RSR.',
     )
 
     ProjectEditorValidation.objects.create(
