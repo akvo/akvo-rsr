@@ -11,7 +11,7 @@ We believe that Akvo RSR can be used in many other scenarios, including environm
 For more information on Akvo RSR, please visit the [wiki page](https://github.com/akvo/akvo-rsr/wiki). Or use these links to go directly to one of the corresponding pages: 
 * [Quick install guide](https://github.com/akvo/akvo-rsr/wiki/Quick-start-guide)
 * [Release notes](https://github.com/akvo/akvo-rsr/wiki/Release-notes)
-* [What's next for RSR...](https://github.com/akvo/akvo-rsr/wiki/What's-next-for-RSR...)
+* [What's next for RSR](https://github.com/akvo/akvo-rsr/wiki/What's-next-for-RSR)
 * [Authors](https://github.com/akvo/akvo-rsr/wiki/Authors)
 * [License](https://github.com/akvo/akvo-rsr/wiki/License)
 
