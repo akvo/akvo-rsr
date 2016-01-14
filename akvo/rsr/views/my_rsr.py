@@ -307,12 +307,12 @@ def my_reports(request):
     for employment in user.approved_employments():
         org = employment.organisation
         organisations_data.append({'id': org.pk,
-                                   'name': '{0} ({1})'.format(org.name, org.long_name)})
+                                   'name': u'{0} ({1})'.format(org.name, org.long_name)})
         for project in org.all_projects():
             if project.pk not in [project_data['id'] for project_data in projects_data]:
                 projects_data.append({'id': project.pk,
-                                      'name': '{0} (id: {1})'.format(project.title,
-                                                                     str(project.pk))})
+                                      'name': u'{0} (id: {1})'.format(project.title,
+                                                                      str(project.pk))})
 
     context = {
         'reports_data': json.dumps(REPORTS),
