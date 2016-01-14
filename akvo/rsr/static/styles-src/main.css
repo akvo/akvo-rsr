@@ -2852,30 +2852,36 @@ div.active .addOrg {
           margin-right: 1.5em; }
 
 /* My reports section */
-div#my-reports .dropdown .dropdown-toggle {
-  width: 100%;
-  margin-bottom: 10px; }
-div#my-reports .dropdown .dropdown-menu {
-  width: 100%;
-  top: 35px; }
-div#my-reports .input-group {
-  min-height: 100px;
-  margin-bottom: 10px;
-  cursor: pointer; }
-  div#my-reports .input-group .form-control {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100px; }
-    div#my-reports .input-group .form-control .fa {
-      font-size: 75px; }
-    div#my-reports .input-group .form-control:hover {
-      background: rgba(32, 32, 36, 0.05); }
-div#my-reports .report-title {
-  font-weight: bold; }
-div#my-reports .report-description {
-  white-space: pre-wrap;
-  white-space: -moz-pre-wrap;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
-  word-wrap: break-word; }
+div#my-reports {
+  /* Override pointer events for disabled items that show help text */ }
+  div#my-reports .dropdown .dropdown-toggle {
+    width: 100%;
+    margin-bottom: 10px; }
+  div#my-reports .dropdown .dropdown-menu {
+    width: 100%;
+    top: 35px; }
+  div#my-reports .input-group {
+    min-height: 100px;
+    margin-bottom: 10px;
+    cursor: pointer; }
+    div#my-reports .input-group .form-control {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100px; }
+      div#my-reports .input-group .form-control .fa {
+        font-size: 75px; }
+      div#my-reports .input-group .form-control:hover {
+        background: rgba(32, 32, 36, 0.05); }
+  div#my-reports .report-title {
+    font-weight: bold; }
+  div#my-reports .report-description {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word; }
+  div#my-reports .my-reports-download-error {
+    margin: 1em 0; }
+  div#my-reports .pointerEvents {
+    pointer-events: initial; }

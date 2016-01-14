@@ -3657,4 +3657,11 @@ div#my-reports {
        white-space: -o-pre-wrap;
        word-wrap: break-word;
     }
+    .my-reports-download-error {
+        margin: 1em 0;
+    }
+    /* Override pointer events for disabled items that show help text */
+    .pointerEvents {
+        pointer-events: initial;
+    }
 }

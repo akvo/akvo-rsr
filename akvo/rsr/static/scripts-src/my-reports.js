@@ -29,6 +29,10 @@ function getCookie(name) {
 var csrftoken = getCookie('csrftoken');
 
 var DownloadButton = React.createClass({displayName: 'DownloadButton',
+    getInitialState: function() {
+        return { helpText: null};
+    },
+
     generateReport: function() {
         var url = this.props.report.url;
         url = url.replace('{format}', this.props.format);
@@ -43,6 +47,7 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
 
     handleDownload: function() {
         var thisDownloadButton = this;
+        this.setState({helpText: null});
         this.props.setDownload(true);
         this.generateReport();
         setTimeout(function() {
@@ -54,6 +59,24 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
         return this.props.report !== null && (this.props.organisation !== null || this.props.project !== null) && this.props.format !== null;
     },
 
+    updateHelpText: function() {
+        var helpString = i18n.error;
+
+        if (this.props.report === null) {
+            helpString += ' ';
+            helpString += i18n.no_report;
+        }
+        if (this.props.organisation === null && this.props.project === null) {
+            helpString += ' ';
+            helpString += i18n.no_organisation;
+        }
+        if (this.props.format === null) {
+            helpString += ' ';
+            helpString += i18n.no_format;
+        }
+        this.setState({helpText: helpString});
+    },
+
     render: function() {
         if (this.checkAllFilled() && !this.props.downloading) {
             return (
@@ -63,8 +86,16 @@ var DownloadButton = React.createClass({displayName: 'DownloadButton',
             );
         } else {
             return (
-                React.DOM.button( {type:"button", className:"btn btn-primary", disabled:true}, 
-                    React.DOM.i( {className:"fa fa-download"} ), " ", i18n.download_report
+                React.DOM.span(null, 
+                    React.DOM.button( {type:"button", className:"btn btn-primary disabled pointerEvents", onClick:this.updateHelpText}, 
+                        React.DOM.i( {className:"fa fa-download"} ), " ", i18n.download_report
+                    ),
+                    this.state.helpText &&
+                        React.DOM.div( {className:"help-block-error my-reports-download-error"}, 
+                            this.state.helpText
+                        )
+                    
+                    
                 )
             );
         }
