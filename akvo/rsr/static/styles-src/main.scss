@@ -3616,3 +3616,52 @@ div.active {
         }
     }
 }
+
+/* My reports section */
+
+div#my-reports {
+    .dropdown {
+        .dropdown-toggle {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .dropdown-menu {
+            width: 100%;
+            top: 35px;
+        }
+    }
+    .input-group {
+        min-height: 100px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .form-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            .fa {
+                font-size: 75px;
+            }
+            &:hover {
+                background: rgba($akvoBlack, 0.05);
+            }
+        }
+    }
+    .report-title {
+        font-weight: bold;
+    }
+    .report-description {
+        white-space: pre-wrap;
+       white-space: -moz-pre-wrap;
+       white-space: -pre-wrap;
+       white-space: -o-pre-wrap;
+       word-wrap: break-word;
+    }
+    .my-reports-download-error {
+        margin: 1em 0;
+    }
+    /* Override pointer events for disabled items that show help text */
+    .pointerEvents {
+        pointer-events: initial;
+    }
+}
