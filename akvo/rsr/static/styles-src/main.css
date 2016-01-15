@@ -1104,7 +1104,8 @@ header.projectHeader {
         color: #2c2a74; }
   header.projectHeader .shareBlock {
     position: relative;
-    margin-top: 10px; }
+    margin-top: 10px;
+    /* Style logos for Akvo Pages project pages */ }
     header.projectHeader .shareBlock div {
       text-align: right; }
       @media only screen and (max-width: 768px) {
@@ -1135,6 +1136,12 @@ header.projectHeader {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
+    header.projectHeader .shareBlock > img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; }
+      header.projectHeader .shareBlock > img:first-child {
+        margin-bottom: 8px; }
 
 .donateSection {
   background: rgba(255, 164, 114, 0.2);
