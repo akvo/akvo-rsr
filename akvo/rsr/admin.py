@@ -1199,7 +1199,7 @@ class IatiImportJobInline(admin.TabularInline):
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'user', )
+    list_display = ('__unicode__', 'user', 'next_execution', 'running',)
     readonly_fields = ('next_execution', 'running',)
     inlines = (IatiImportJobInline,)
 

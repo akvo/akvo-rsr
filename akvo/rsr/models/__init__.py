@@ -337,4 +337,3 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(create_iati_file, sender=IatiExport)
-# post_save.connect(import_iati_file, sender=IatiImportJob)

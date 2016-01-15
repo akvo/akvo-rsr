@@ -96,9 +96,6 @@ def send_mail_with_attachments(subject, message, from_email, recipient_list,
     return mail.send()
 
 
-#return {'file_name': "{}.csv".format(type), 'data': data.csv, 'mime_type': 'text/csv'}
-
-
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt',
                   subject_context=None,
