@@ -7,7 +7,7 @@
 from ....rsr.models.project import Project
 from ....rsr.models.project_condition import ProjectCondition
 
-from .. import ImportMapper
+from .. import ImportMapper, xml_ns
 
 CODE_TO_STATUS = {
     '1': 'H',
@@ -28,10 +28,7 @@ class Language(ImportMapper):
 
         :return: List; contains fields that have changed
         """
-
-        xml_ns = 'http://www.w3.org/XML/1998/namespace'
-
-        language = self.get_attrib(self.parent_elem, '{{{}}}lang'.format(xml_ns), 'language')
+        language = self.get_attrib(self.parent_elem, xml_ns('lang'), 'language')
 
         return self.update_project_field('language', language)
 

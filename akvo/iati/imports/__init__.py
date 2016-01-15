@@ -29,6 +29,16 @@ def akvo_ns(tag_or_attr):
     """
     return "{{{}}}{}".format(settings.AKVO_NS, tag_or_attr)
 
+def xml_ns(tag_or_attr):
+    """
+    Add Akvo namespace to a tag or attribute identifier. E.g. tag_or_attr = 'budget-item' will
+    return '{http://akvo.org/iati-activities}budget-item'
+    :param tag_or_attr: string
+    :return: the string prefixed with the akvo namespace
+    """
+    XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace'
+    return "{{{}}}{}".format(XML_NAMESPACE, tag_or_attr)
+
 
 class ImportMapper(object):
     """

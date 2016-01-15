@@ -14,8 +14,7 @@ from django.core.files.temp import NamedTemporaryFile
 
 from ....rsr.models.link import Link
 from ....rsr.models.project_document import ProjectDocument
-from .. import ImportMapper, akvo_ns
-
+from .. import ImportMapper, akvo_ns, xml_ns
 
 VALID_IMAGE_EXTENSIONS = ['.gif', '.jpg', '.jpeg', '.png', '.tiff']
 
@@ -172,7 +171,6 @@ class Documents(ImportMapper):
         imported_docs = []
         changes = []
 
-        xml_ns = 'http://www.w3.org/XML/1998/namespace'
         first_image = True
 
         for doc_link in self.parent_elem.findall('document-link'):
@@ -195,10 +193,10 @@ class Documents(ImportMapper):
             if title:
                 if self.globals['version'][0] == '1':
                     title_language = self.get_child_elem_attrib(
-                            doc_link, 'title', '{%s}lang' % xml_ns, 'title_language')
+                            doc_link, 'title', xml_ns('lang'), 'title_language')
                 elif self.globals['version'][0] == '2':
                     title_language = self.get_child_elem_attrib(
-                            title_element, 'narrative', '{%s}lang' % xml_ns, 'title_language')
+                            title_element, 'narrative', xml_ns('lang'), 'title_language')
 
             category = self.get_child_elem_attrib(doc_link, 'category', 'code', 'category')
             language = self.get_child_elem_attrib(doc_link, 'language', 'code', 'language')
