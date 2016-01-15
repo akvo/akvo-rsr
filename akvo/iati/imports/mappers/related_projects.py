@@ -35,7 +35,6 @@ class RelatedProjects(ImportMapper):
             related_iati_id = self.get_attrib(related_activity, 'ref', 'related_iati_id')
             relation = self.get_attrib(related_activity, 'type', 'relation')
 
-            # TODO: I don't fully understand the original logic, need Kasper's explanation
             try:
                 related_project = Project.objects.get(iati_activity_id=related_iati_id)
             except ObjectDoesNotExist:
@@ -44,7 +43,7 @@ class RelatedProjects(ImportMapper):
             rp, created = RelatedProject.objects.get_or_create(
                 project=self.project,
                 related_project=related_project,
-                related_iati_id=related_iati_id if not related_activity else '',
+                related_iati_id=related_iati_id if not related_project else '',
                 relation=relation
             )
             if created:
