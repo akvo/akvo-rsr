@@ -30,7 +30,7 @@ REPORTS = [
         'description': unicode(_('This report provides information about your organisation\'s '
                                  'projects: amount of updates, country, total budgets, project '
                                  'statuses, start- and end dates.')),
-        'formats': ['pdf', 'excel', 'word'],
+        'formats': ['pdf', 'word', 'excel', 'html'],
         'parameters': ['organisation', ],
         'url': '/en/reports/project_overview/{organisation}?format={format}&download=true'
     },
@@ -40,7 +40,7 @@ REPORTS = [
         'description': unicode(_('This report gives an overview of your organisation\'s projects '
                                  'that have passed the planned end date, need funding or that '
                                  'haven\'t been edited or updated for 3 months.')),
-        'formats': ['pdf', 'excel', 'word'],
+        'formats': ['pdf', 'word', 'excel', 'html'],
         'parameters': ['organisation', ],
         'url': '/en/reports/data_quality/{organisation}?format={format}&download=true'
     }
