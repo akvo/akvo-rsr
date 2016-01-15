@@ -9,7 +9,7 @@ import math
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -554,6 +554,11 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
         except ObjectDoesNotExist:
             return None
+        except MultipleObjectsReturned:
+            # A project with multiple reporting organisations should not happen, but in practice
+            # it sometimes does unfortunately.
+            return self.partnerships.filter(
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)[0]
 
     @property
     def reporting_org(self):
