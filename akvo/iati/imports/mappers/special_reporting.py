@@ -102,7 +102,7 @@ class CrsAdds(ImportMapper):
             loan_status_element = crs_element.find('loan-status')
             if loan_status_element is not None:
 
-                loan_status_year = self.get_attrib(
+                loan_status_year = self.get_attrib_as_int(
                         loan_status_element, 'year', 'loan_status_year', None)
                 loan_status_currency = self.get_attrib(
                         loan_status_element, 'currency', 'loan_status_currency')
@@ -206,7 +206,8 @@ class FSSs(ImportMapper):
             priority = self.get_attrib(fss_element, 'priority', 'priority', None)
             priority = self.to_boolean(priority)
 
-            phaseout_year = self.get_attrib(fss_element, 'phaseout-year', 'phaseout_year', None)
+            phaseout_year = self.get_attrib_as_int(
+                    fss_element, 'phaseout-year', 'phaseout_year', None)
 
             defaults = dict(
                 extraction_date=extraction_date,
@@ -227,7 +228,7 @@ class FSSs(ImportMapper):
                 else:
                     value = None
 
-                year = self.get_attrib(forecast, 'year', 'year', None)
+                year = self.get_attrib_as_int(forecast, 'year', 'year', None)
                 value_date = self.get_date(forecast, 'value-date', 'value_date')
                 currency = self.get_attrib(forecast, 'currency', 'currency')
 

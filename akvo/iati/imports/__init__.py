@@ -282,6 +282,13 @@ class ImportMapper(object):
                     'field is too long ({} characters allowed)'.format(max_length))
         return default
 
+    def get_attrib_as_int(self, element, attr, field, default=None):
+        value = self.get_attrib(element, attr, field, default)
+        if value:
+            return self.cast_to_int(value, attr, field)
+        else:
+            return default
+
     def get_child_elem_attrib(self, parent, tag, attr, field, default=''):
         """
         Find a child element. Then use get_attrib() to return the value of an attribute on the child
@@ -386,6 +393,21 @@ class ImportMapper(object):
         try:
             return Decimal(value)
         except InvalidOperation as e:
+            self.add_log(tag, field, str(e))
+            return None
+
+    def cast_to_int(self, value, tag, field):
+        """
+        Cast a value to int. Log errors.
+        :param value: string (or float although that's not what the method is intended for);
+            the value to be cast
+        :param tag: String; used for logging
+        :param field: String; used for logging
+        :return: int(value) or None if the casting fails
+        """
+        try:
+            return int(value)
+        except (ValueError, TypeError) as e:
             self.add_log(tag, field, str(e))
             return None
 

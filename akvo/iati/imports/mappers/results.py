@@ -88,7 +88,8 @@ class Indicators(ImportMapper):
 
             baseline_element = indicator.find('baseline')
             if baseline_element is not None:
-                baseline_year = self.get_attrib(baseline_element, 'year', 'baseline_year', None)
+                baseline_year = self.get_attrib_as_int(
+                        baseline_element, 'year', 'baseline_year', None)
                 baseline_value = self.get_attrib(baseline_element, 'value', 'baseline_value')
                 baseline_comment = self.get_child_element_text(
                         baseline_element, 'comment', 'baseline_comment')
