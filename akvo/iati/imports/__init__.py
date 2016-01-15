@@ -8,7 +8,6 @@ from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields import FieldDoesNotExist
 
 from ...rsr.models.custom_field import ProjectCustomField
@@ -92,7 +91,7 @@ class ImportMapper(object):
         if ref:
             try:
                 return Organisation.objects.get(iati_org_id=ref)
-            except ObjectDoesNotExist:
+            except Organisation.DoesNotExist:
                 pass
 
         if org_id and internal_id:
@@ -100,16 +99,16 @@ class ImportMapper(object):
                 return Organisation.objects.get(
                         pk=InternalOrganisationID.objects.get(
                                 recording_org=org_id, identifier=internal_id))
-            except ObjectDoesNotExist:
+            except Organisation.DoesNotExist:
                 pass
 
         if name:
             try:
                 return Organisation.objects.get(name=name[:25])
-            except ObjectDoesNotExist:
+            except Organisation.DoesNotExist:
                 try:
                     return Organisation.objects.get(long_name=name[:75])
-                except ObjectDoesNotExist:
+                except Organisation.DoesNotExist:
                     pass
 
         return Organisation.objects.create(
@@ -231,7 +230,7 @@ class ImportMapper(object):
                     section=section
                 )
                 custom_field.delete()
-            except ObjectDoesNotExist:
+            except ProjectCustomField.DoesNotExist:
                 pass
 
     def check_text_length_and_set_custom_field(self, element, text, field, cf_section):
