@@ -256,7 +256,6 @@ class BudgetItems(ImportMapper):
             if amount:
                 value_date = self.get_child_as_date(
                         budget, 'value', 'value-date', 'value_date')
-                # TODO get currency from activity@[default-currency]
                 currency = self.get_child_elem_attrib(budget, 'value', 'currency', 'currency')
                 if not currency:
                     currency = self.get_attrib(activity, 'default-currency', 'currency')
@@ -307,7 +306,7 @@ class CountryBudgetItems(ImportMapper):
         cbis_element = self.parent_elem.find('country-budget-items')
 
         if cbis_element is not None:
-            country_budget_vocabulary = self.get_attrib(cbis_element, 'vocabualry', 'vocabualry')
+            country_budget_vocabulary = self.get_attrib(cbis_element, 'vocabulary', 'vocabulary')
 
             for cbi_element in cbis_element.findall('budget-item'):
 
