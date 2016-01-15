@@ -39,10 +39,10 @@ class Descriptions(Descriptions):
         element, text = self._get_description(description_start['subtitle'])
         if element is None:
             element, text = self._get_description(description_start['project_name'])
-        if element is not None:
-            return super(Descriptions, self).get_subtitle()
+        if text:
+            return element, text
         else:
-            return None, ''
+            return super(Descriptions, self).get_subtitle()
 
     def get_project_plan_summary(self):
         return self._get_description(description_start['project_plan_summary'])
