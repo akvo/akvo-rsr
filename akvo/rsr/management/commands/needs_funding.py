@@ -4,9 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from decimal import Decimal, InvalidOperation
 from django.core.management.base import BaseCommand
 from optparse import make_option
-
 from ...models import Project
 
 
@@ -16,11 +16,17 @@ class Command(BaseCommand):
 
     option_list = BaseCommand.option_list + (
         make_option(
-            '--do',
+            '--zero',
             action='store_true',
-            dest='do',
+            dest='zero',
             default=False,
             help='Set needs funding to 0, instead of only printing results'),
+        make_option(
+            '--complete',
+            action='store_true',
+            dest='complete',
+            default=False,
+            help='Set projects to the \'Complete\' status'),
     )
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +35,7 @@ class Command(BaseCommand):
         super(Command, self).__init__(*args, **kwargs)
 
     def get_projects(self):
-        self.projects = Project.objects.filter(funds_needed__gt=0, funds_needed__lt=self.value)
+        self.projects = Project.objects.filter(funds_needed__gt=0., funds_needed__lt=self.value)
 
     def print_projects(self):
         self.stdout.write('')
@@ -53,7 +59,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """
         Walk through all projects and find projects where the needs funding is in between 0 and the
-        provided integer. Print these projects, and set the needs_funding field to 0 if the --do
+        provided decimal. Print these projects, and set the needs_funding field to 0 if the --do
         option is supplied.
         """
         error = ''
@@ -61,9 +67,9 @@ class Command(BaseCommand):
             error = 'Please specify exactly 1 value'
         else:
             try:
-                self.value = int(args[0])
-            except ValueError:
-                error = 'Please specify a whole number'
+                self.value = Decimal(args[0])
+            except InvalidOperation:
+                error = 'Please specify a decimal, using a period to denote the decimals'
 
         if error:
             self.stdout.write(error)
@@ -75,13 +81,25 @@ class Command(BaseCommand):
         self.get_projects()
         self.print_projects()
 
-        if self.projects.count() > 0 and options['do']:
+        # Set funds needed to 0 for the retrieved projects
+        if self.projects.count() > 0 and options['zero']:
             for p in self.projects:
-                p.funds_needed = 0.0
+                p.funds_needed = 0.
                 p.save()
 
             self.stdout.write('')
             self.stdout.write('Succesfully set funds needed to 0 for {0} project{1}'.format(
+                str(self.projects.count()),
+                's' if not self.projects.count() == 1 else ''))
+
+        # Set projects to 'Complete' for the retrieved projects
+        if self.projects.count() > 0 and options['complete']:
+            for p in self.projects:
+                p.status = Project.STATUS_COMPLETE
+                p.save()
+
+            self.stdout.write('')
+            self.stdout.write('Succesfully set status to \'Complete\' for {0} project{1}'.format(
                 str(self.projects.count()),
                 's' if not self.projects.count() == 1 else ''))
 
