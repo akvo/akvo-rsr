@@ -2144,6 +2144,9 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
+            <structure name="toc">
+                <expression name="expressionValue" type="javascript">"Data quality report for " + row["name"]</expression>
+            </structure>
             <expression name="valueExpr">"Data quality report for " + row["name"]</expression>
             <property name="contentType">html</property>
         </text-data>
@@ -2152,6 +2155,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="fontSize">14pt</property>
             <property name="fontWeight">bold</property>
             <property name="marginTop">14pt</property>
+            <property name="pageBreakAfter">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Projects with planned end data overdue"</expression>
             </structure>
@@ -2168,6 +2172,8 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="borderRightStyle">none</property>
             <property name="borderTopStyle">none</property>
             <property name="textAlign">left</property>
+            <property name="masterPage">A4L MasterPage</property>
+            <property name="pageBreakAfter">always</property>
             <property name="width">11.125in</property>
             <property name="dataSet">Planned end date overdue</property>
             <list-property name="boundDataColumns">
@@ -2530,6 +2536,9 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="434">
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                            </structure>
                             <property name="resultSetColumn">project_url</property>
                             <list-property name="action">
                                 <structure>
@@ -2631,6 +2640,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="fontWeight">bold</property>
             <property name="marginTop">14pt</property>
             <property name="textAlign">left</property>
+            <property name="pageBreakAfter">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Projects with no edits or updates last 3 months"</expression>
             </structure>
@@ -2644,6 +2654,9 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="fontFamily">"Calibri"</property>
             <property name="fontSize">10pt</property>
             <property name="textAlign">left</property>
+            <property name="masterPage">A4L MasterPage</property>
+            <property name="pageBreakAfter">always</property>
+            <property name="pageBreakBefore">avoid</property>
             <property name="width">11.15625in</property>
             <property name="dataSet">Not edited last 3 months</property>
             <list-property name="boundDataColumns">
@@ -2946,7 +2959,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="constant">row["project_url"]</expression>
+                                    <expression name="uri" type="javascript">row["project_url"]</expression>
                                     <property name="targetWindow">_blank</property>
                                 </structure>
                             </list-property>
@@ -2983,6 +2996,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="fontWeight">bold</property>
             <property name="marginTop">14pt</property>
             <property name="textAlign">left</property>
+            <property name="pageBreakAfter">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Projects that need funding"</expression>
             </structure>
@@ -2995,6 +3009,8 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         <table id="468">
             <property name="fontFamily">"Calibri"</property>
             <property name="textAlign">left</property>
+            <property name="masterPage">A4L MasterPage</property>
+            <property name="pageBreakBefore">avoid</property>
             <property name="width">11.09375in</property>
             <property name="dataSet">Needs funding</property>
             <list-property name="boundDataColumns">
@@ -3324,7 +3340,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="constant">row["project_url"]</expression>
+                                    <expression name="uri" type="javascript">row["project_url"]</expression>
                                     <property name="targetWindow">_blank</property>
                                 </structure>
                             </list-property>
@@ -3398,6 +3414,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="fontWeight">bold</property>
             <property name="marginTop">14pt</property>
             <property name="textAlign">left</property>
+            <property name="pageBreakAfter">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Projects without photos"</expression>
             </structure>
@@ -3406,6 +3423,8 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         <table id="590">
             <property name="fontFamily">"Calibri"</property>
             <property name="textAlign">left</property>
+            <property name="masterPage">A4L MasterPage</property>
+            <property name="pageBreakBefore">avoid</property>
             <property name="width">11.125in</property>
             <property name="dataSet">No photo</property>
             <list-property name="boundDataColumns">
@@ -3676,7 +3695,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="constant">row["project_url"]</expression>
+                                    <expression name="uri" type="javascript">row["project_url"]</expression>
                                     <property name="targetWindow">_blank</property>
                                 </structure>
                             </list-property>
