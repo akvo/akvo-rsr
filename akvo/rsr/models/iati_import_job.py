@@ -241,10 +241,10 @@ class IatiImportJob(models.Model):
             else:
                 self.add_log(
                         'IATI Version %s not supported' % version, LOG_ENTRY_TYPE.CRITICAL_ERROR)
-                return False
         else:
             self.add_log('No version specified', LOG_ENTRY_TYPE.CRITICAL_ERROR)
-            return False
+        self.add_log(u"Import cancelled. IATI file version error.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
+        return False
 
     def parse_xml(self, xml_file=None):
         """
@@ -266,13 +266,14 @@ class IatiImportJob(models.Model):
             self.add_log(
                 'Retrieved {} activities'.format(len(activities.findall('iati-activity'))),
                 LOG_ENTRY_TYPE.INFORMATIONAL)
-            return activities
+            self.activities = activities
+            return True
         else:
             self.add_log('Not a valid IATI XML file, '
                          'iati-activities not root of document.', LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
-    def get_activities(self):
+    def set_activities(self):
         """
         Parse self.iati_xml_file. Real work made in parse_xml() so sub-classes can supply
         custom xml file
@@ -280,9 +281,15 @@ class IatiImportJob(models.Model):
                  continuation of the import
         """
         if self.iati_xml_file:
-            return self.parse_xml()
+            if self.parse_xml():
+                return True
+            else:
+                self.add_log(u"Import cancelled. Error while parsing XML.",
+                             LOG_ENTRY_TYPE.STATUS_CANCELLED)
+                return False
         else:
-            self.add_log('No file found', LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            self.add_log(u'No file found', LOG_ENTRY_TYPE.CRITICAL_ERROR)
+            self.add_log(u"Import cancelled. File missing.", LOG_ENTRY_TYPE.STATUS_CANCELLED)
             return False
 
     def fetch_file(self):
@@ -369,32 +376,30 @@ class IatiImportJob(models.Model):
         self.add_log(u'Starting import job.', LOG_ENTRY_TYPE.INFORMATIONAL)
         self.add_log(u'Fetching and parsing XML file.', LOG_ENTRY_TYPE.STATUS_RETRIEVING)
 
-        if self.check_file() and self.is_new_file():
+        if (self.check_file() and self.is_new_file() and
+                self.set_activities() and self.check_version()):
+            self.add_log(u'Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
+            for activity in self.activities.findall('iati-activity'):
 
-            # Start import process
-            self.activities = self.get_activities()
-            if self.activities and self.check_version():
-                self.add_log(u'Importing activities.', LOG_ENTRY_TYPE.STATUS_IN_PROGRESS)
-                for activity in self.activities.findall('iati-activity'):
+                iati_activity_import = None
+                try:
+                    with transaction.atomic():
+                        iati_activity_import = IatiActivityImport(
+                                iati_import_job=self, activity_xml=etree.tostring(activity))
+                        iati_activity_import.do_import(self.activities.attrib)
+                        iati_activity_import.save()
 
-                    iati_activity_import = None
-                    try:
-                        with transaction.atomic():
-                            iati_activity_import = IatiActivityImport(
-                                    iati_import_job=self, activity_xml=etree.tostring(activity))
-                            iati_activity_import.do_import(self.activities.attrib)
-                            iati_activity_import.save()
+                except Exception as e:
+                    self.add_log(u"Error when running import of activity. "
+                                 u"Error message:\n{}".format(e.message),
+                                 LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
-                    except Exception as e:
-                        self.add_log(u"Error when running import of activity. "
-                                     u"Error message:\n{}".format(e.message),
-                                     LOG_ENTRY_TYPE.CRITICAL_ERROR)
+                if iati_activity_import:
+                    self.save_import_logs(iati_activity_import)
 
-                    if iati_activity_import:
-                        self.save_import_logs(iati_activity_import)
+            # Import process complete
+            self.add_log(u'Import finished.', LOG_ENTRY_TYPE.STATUS_COMPLETED)
 
-                # Import process complete
-                self.add_log(u'Import finished.', LOG_ENTRY_TYPE.STATUS_COMPLETED)
         self.send_mail()
         self.add_log(u'Job finished.', LOG_ENTRY_TYPE.INFORMATIONAL)
 
@@ -514,7 +519,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         ACTIVITIES_FILENAME = 'iati-activities.xml'
         return self.get_xml_file(ACTIVITIES_FILENAME)
 
-    def get_activities(self):
+    def set_activities(self):
         """
         Get the XML from the Cordaid ZIP and then call parse_xml() to try parsing it
 
