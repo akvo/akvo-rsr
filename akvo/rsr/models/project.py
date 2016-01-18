@@ -527,10 +527,12 @@ class Project(TimestampsMixin, models.Model):
         self.save()
 
     def get_funds_needed(self):
-        """ How much more is needed to fulfill the project's budget needs
-            Note that this may be a small negative if there's been an overshooting donation
         """
-        return self.get_budget() - self.get_funds()
+        How much more is needed to fulfill the project's budget needs. In case of a negative value
+        or a value less than 1, the value is set to 0.
+        """
+        funds_needed = self.get_budget() - self.get_funds()
+        return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):
         "Update de-normalized field"
