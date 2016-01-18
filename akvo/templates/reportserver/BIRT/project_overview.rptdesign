@@ -212,172 +212,7 @@ where rsr_organisation.id=?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Organisation" id="614">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">name</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">long_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">long_name</text-property>
-                    <text-property name="heading">long_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">organisation_type</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">organisation_type</text-property>
-                    <text-property name="heading">organisation_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">logo</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo</text-property>
-                    <text-property name="heading">logo</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">url</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">url</text-property>
-                    <text-property name="heading">url</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">phone</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">phone</text-property>
-                    <text-property name="heading">phone</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">mobile</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">mobile</text-property>
-                    <text-property name="heading">mobile</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">fax</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">fax</text-property>
-                    <text-property name="heading">fax</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">contact_person</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_person</text-property>
-                    <text-property name="heading">contact_person</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">contact_email</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_email</text-property>
-                    <text-property name="heading">contact_email</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">description</text-property>
-                    <text-property name="heading">description</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">primary_location_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">primary_location_id</text-property>
-                    <text-property name="heading">primary_location_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">iati_org_id</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">iati_org_id</text-property>
-                    <text-property name="heading">iati_org_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">language</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">language</text-property>
-                    <text-property name="heading">language</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">new_organisation_type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">new_organisation_type</text-property>
-                    <text-property name="heading">new_organisation_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">notes</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">notes</text-property>
-                    <text-property name="heading">notes</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">created_at</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">created_at</text-property>
-                    <text-property name="heading">created_at</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">last_modified_at</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">last_modified_at</text-property>
-                    <text-property name="heading">last_modified_at</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">content_owner_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">content_owner_id</text-property>
-                    <text-property name="heading">content_owner_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">allow_edit</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">allow_edit</text-property>
-                    <text-property name="heading">allow_edit</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">facebook</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">facebook</text-property>
-                    <text-property name="heading">facebook</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">twitter</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">twitter</text-property>
-                    <text-property name="heading">twitter</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">linkedin</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">linkedin</text-property>
-                    <text-property name="heading">linkedin</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">public_iati_file</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">public_iati_file</text-property>
-                    <text-property name="heading">public_iati_file</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">can_become_reporting</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">can_become_reporting</text-property>
-                    <text-property name="heading">can_become_reporting</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">can_create_projects</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">can_create_projects</text-property>
-                    <text-property name="heading">can_create_projects</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">org_id</property>
@@ -527,6 +362,36 @@ where rsr_organisation.id=?]]></xml-property>
                         <property name="name">can_create_projects</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">city</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">state</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">address_1</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">31</property>
+                        <property name="name">address_2</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">32</property>
+                        <property name="name">postcode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">33</property>
+                        <property name="name">country_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -536,194 +401,212 @@ where rsr_organisation.id=?]]></xml-property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">long_name</property>
                     <property name="nativeName">long_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">organisation_type</property>
                     <property name="nativeName">organisation_type</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">logo</property>
                     <property name="nativeName">logo</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">url</property>
                     <property name="nativeName">url</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">phone</property>
                     <property name="nativeName">phone</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">mobile</property>
                     <property name="nativeName">mobile</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">fax</property>
                     <property name="nativeName">fax</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">contact_person</property>
                     <property name="nativeName">contact_person</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">contact_email</property>
                     <property name="nativeName">contact_email</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">primary_location_id</property>
                     <property name="nativeName">primary_location_id</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">iati_org_id</property>
                     <property name="nativeName">iati_org_id</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">language</property>
                     <property name="nativeName">language</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">new_organisation_type</property>
                     <property name="nativeName">new_organisation_type</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">notes</property>
                     <property name="nativeName">notes</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">created_at</property>
                     <property name="nativeName">created_at</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">last_modified_at</property>
                     <property name="nativeName">last_modified_at</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">content_owner_id</property>
                     <property name="nativeName">content_owner_id</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">allow_edit</property>
                     <property name="nativeName">allow_edit</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">facebook</property>
                     <property name="nativeName">facebook</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">twitter</property>
                     <property name="nativeName">twitter</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">linkedin</property>
                     <property name="nativeName">linkedin</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
                     <property name="name">public_iati_file</property>
                     <property name="nativeName">public_iati_file</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
                     <property name="name">can_become_reporting</property>
                     <property name="nativeName">can_become_reporting</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">27</property>
                     <property name="name">can_create_projects</property>
                     <property name="nativeName">can_create_projects</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">city</property>
+                    <property name="nativeName">city</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">state</property>
+                    <property name="nativeName">state</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">30</property>
+                    <property name="name">address_1</property>
+                    <property name="nativeName">address_1</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">31</property>
+                    <property name="name">address_2</property>
+                    <property name="nativeName">address_2</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">32</property>
+                    <property name="name">postcode</property>
+                    <property name="nativeName">postcode</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">33</property>
+                    <property name="name">country_name</property>
+                    <property name="nativeName">country_name</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT *
+            <xml-property name="queryText"><![CDATA[SELECT
+ rsr_organisation.*,
+ rsr_organisationlocation.city,
+ rsr_organisationlocation.state,
+ rsr_organisationlocation.address_1,
+ rsr_organisationlocation.address_2,
+ rsr_organisationlocation.postcode,
+ rsr_country.name country_name
 FROM rsr_organisation
-where rsr_organisation.id=?]]></xml-property>
+ LEFT JOIN rsr_organisationlocation ON rsr_organisation.primary_location_id=rsr_organisationlocation.id 
+ LEFT JOIN rsr_country ON rsr_country.id=rsr_organisationlocation.country_id 
+WHERE rsr_organisation.id=?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -3690,6 +3573,8 @@ GROUP BY rsr_country.name
             <property name="orientation">landscape</property>
             <page-footer>
                 <text id="3">
+                    <property name="fontStyle">italic</property>
+                    <property name="marginTop">10pt</property>
                     <property name="contentType">html</property>
                     <text-property name="content"><![CDATA[Akvo RSR <value-of format="dd-MMM-yyyy">new Date()</value-of>]]></text-property>
                 </text>
@@ -3702,6 +3587,14 @@ GROUP BY rsr_country.name
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bold</property>
             <property name="color">gray</property>
+            <expression name="valueExpr">"RSR Project overview report"</expression>
+            <property name="contentType">html</property>
+        </text-data>
+        <grid id="729">
+            <property name="fontFamily">"Calibri"</property>
+            <property name="marginTop">14pt</property>
+            <property name="height">2.4375in</property>
+            <property name="width">6.541666666666667in</property>
             <property name="dataSet">Organisation</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -3710,14 +3603,311 @@ GROUP BY rsr_country.name
                     <expression name="expression" type="javascript">dataSetRow["name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">long_name</property>
+                    <text-property name="displayName">long_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["long_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logo</property>
+                    <text-property name="displayName">logo</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">url</property>
+                    <text-property name="displayName">url</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["url"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">phone</property>
+                    <text-property name="displayName">phone</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["phone"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">organisation_type</property>
+                    <text-property name="displayName">organisation_type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["organisation_type"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">mobile</property>
+                    <text-property name="displayName">mobile</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["mobile"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fax</property>
+                    <text-property name="displayName">fax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">contact_person</property>
+                    <text-property name="displayName">contact_person</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["contact_person"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">contact_email</property>
+                    <text-property name="displayName">contact_email</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["contact_email"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">primary_location_id</property>
+                    <text-property name="displayName">primary_location_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["primary_location_id"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">iati_org_id</property>
+                    <text-property name="displayName">iati_org_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["iati_org_id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">language</property>
+                    <text-property name="displayName">language</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["language"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">new_organisation_type</property>
+                    <text-property name="displayName">new_organisation_type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["new_organisation_type"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">notes</property>
+                    <text-property name="displayName">notes</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["notes"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">created_at</property>
+                    <text-property name="displayName">created_at</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["created_at"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">last_modified_at</property>
+                    <text-property name="displayName">last_modified_at</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["last_modified_at"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">content_owner_id</property>
+                    <text-property name="displayName">content_owner_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["content_owner_id"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">allow_edit</property>
+                    <text-property name="displayName">allow_edit</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["allow_edit"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">facebook</property>
+                    <text-property name="displayName">facebook</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["facebook"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">twitter</property>
+                    <text-property name="displayName">twitter</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["twitter"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">linkedin</property>
+                    <text-property name="displayName">linkedin</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["linkedin"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">public_iati_file</property>
+                    <text-property name="displayName">public_iati_file</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["public_iati_file"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">can_become_reporting</property>
+                    <text-property name="displayName">can_become_reporting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["can_become_reporting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">can_create_projects</property>
+                    <text-property name="displayName">can_create_projects</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["can_create_projects"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">city</property>
+                    <text-property name="displayName">city</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["city"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">state</property>
+                    <text-property name="displayName">state</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["state"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">address_1</property>
+                    <text-property name="displayName">address_1</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["address_1"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">address_2</property>
+                    <text-property name="displayName">address_2</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["address_2"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">postcode</property>
+                    <text-property name="displayName">postcode</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["postcode"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">country_name</property>
+                    <text-property name="displayName">country_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["country_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
-            <expression name="valueExpr">"Project overview report for " + row["name"]</expression>
-            <property name="contentType">html</property>
-        </text-data>
+            <column id="731">
+                <property name="width">0.4583333333333333in</property>
+            </column>
+            <column id="745">
+                <property name="width">3.375in</property>
+            </column>
+            <column id="781">
+                <property name="width">2.7083333333333335in</property>
+            </column>
+            <row id="739">
+                <cell id="747">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <data id="748">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <structure name="toc"/>
+                        <property name="resultSetColumn">name</property>
+                    </data>
+                </cell>
+                <cell id="774">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">9</property>
+                    <image id="735">
+                        <property name="height">50%</property>
+                        <property name="width">50%</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo"] == "" || row["logo"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <structure name="toc"/>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["logo"]</expression>
+                        <expression name="altText">"Logo"</expression>
+                    </image>
+                </cell>
+            </row>
+            <row id="749">
+                <cell id="751"/>
+                <cell id="752">
+                    <data id="753">
+                        <property name="resultSetColumn">address_1</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="754">
+                <cell id="756"/>
+                <cell id="757">
+                    <data id="758">
+                        <property name="resultSetColumn">address_2</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="759">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="761"/>
+                <cell id="762">
+                    <data id="763">
+                        <property name="resultSetColumn">city</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="764">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="766"/>
+                <cell id="767">
+                    <data id="773">
+                        <property name="resultSetColumn">state</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="769">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="771"/>
+                <cell id="772">
+                    <data id="768">
+                        <property name="resultSetColumn">country_name</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="732">
+                <cell id="734"/>
+                <cell id="744">
+                    <text-data id="782">
+                        <expression name="valueExpr">"Phone: " + row["phone"]</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+            </row>
+            <row id="787">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="788"/>
+                <cell id="789">
+                    <text-data id="791">
+                        <expression name="valueExpr">"Website: " + row["url"]</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+            </row>
+            <row id="783">
+                <property name="height">0.2604166666666667in</property>
+                <cell id="784"/>
+                <cell id="785"/>
+            </row>
+        </grid>
         <label id="586">
             <property name="fontFamily">"Calibri"</property>
             <property name="fontSize">14pt</property>
             <property name="fontWeight">bold</property>
+            <property name="marginTop">14pt</property>
             <property name="textAlign">left</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">this.text</expression>
@@ -3725,6 +3915,7 @@ GROUP BY rsr_country.name
             <text-property name="text">Statistics</text-property>
         </label>
         <grid id="568">
+            <property name="fontFamily">"Calibri"</property>
             <property name="width">3.6458333333333335in</property>
             <column id="569">
                 <property name="width">2.6041666666666665in</property>
@@ -3894,6 +4085,7 @@ GROUP BY rsr_country.name
             <text-property name="text">Published project funding</text-property>
         </label>
         <table id="669">
+            <property name="fontFamily">"Calibri"</property>
             <property name="width">3.8333333333333335in</property>
             <property name="dataSet">Total budget</property>
             <list-property name="boundDataColumns">
