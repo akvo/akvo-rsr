@@ -45,16 +45,12 @@ class Command(BaseCommand):
 
         if self.projects.count() > 0:
             self.stdout.write('')
-            self.stdout.write('id   |funds_needed |')
-            self.stdout.write('-----|-------------|')
-
-            for p in self.projects:
-                nr_pspaces = 5 - len(str(p.pk))
-                nr_fspaces = 12 - len(str(p.funds_needed))
-                self.stdout.write(str(p.pk) + nr_pspaces * ' ' + '|' + nr_fspaces * ' ' +
-                                  str(p.funds_needed) + ' |')
-
-            self.stdout.write('-----|-------------|')
+            self.stdout.write(' id   | funds needed |')
+            self.stdout.write('------|--------------|')
+            for p in self.projects.order_by('id'):
+                self.stdout.write('{pk:{fill}6}|{funds:{fill}14}|'.format(
+                    pk=p.pk, funds=p.funds_needed, fill=' '))
+            self.stdout.write('------|--------------|')
 
     def handle(self, *args, **options):
         """
