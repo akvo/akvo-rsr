@@ -559,9 +559,8 @@ class Project(TimestampsMixin, models.Model):
             # it sometimes does unfortunately. In these cases we check if there's one "primary
             # reporter" and return that. If not, we return the first reporting organisation.
             primary_reporters = self.partnerships.filter(
-                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-                secondary_reporter='0'
-            )
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION).exclude(
+                    is_secondary_reporter=True)
             if primary_reporters.count() == 1:
                 return primary_reporters[0]
             else:
