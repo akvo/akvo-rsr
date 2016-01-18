@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # utility functions for RSR
 
+import hashlib
 import inspect
-from os.path import splitext
+import pytz
 import random
 import logging
-from urlparse import urljoin
+import zipfile
+
+from BeautifulSoup import BeautifulSoup
 from datetime import datetime
-
-logger = logging.getLogger('akvo.rsr')
-
-import pytz
-
+from os.path import splitext
+from urlparse import urljoin
 from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -29,15 +32,12 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext, get_language, activate
 
-from BeautifulSoup import BeautifulSoup
-
-from notification.models import (
-    Notice, NoticeType, get_notification_language, should_send,
-    LanguageStoreNotAvailable, get_formatted_messages
-)
+from notification.models import (Notice, NoticeType, get_notification_language, should_send,
+                                 LanguageStoreNotAvailable, get_formatted_messages)
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
+logger = logging.getLogger('akvo.rsr')
 
 RSR_LIMITED_CHANGE = u'rsr_limited_change'
 
@@ -63,11 +63,45 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     return path_template % locals()
 
 
+def send_mail_with_attachments(subject, message, from_email, recipient_list,
+              fail_silently=False, auth_user=None, auth_password=None,
+              connection=None, html_message=None, attachments=None):
+    """
+    Extension of django.core.main.send_mail to allow the inclusion of attachments
+
+    Easy wrapper for sending a single message to a recipient list. All members
+    of the recipient list will see the other recipients in the 'To' field.
+
+    If auth_user is None, the EMAIL_HOST_USER setting is used.
+    If auth_password is None, the EMAIL_HOST_PASSWORD setting is used.
+
+    Note: The API for this method is frozen. New code wanting to extend the
+    functionality should use the EmailMessage class directly.
+
+    attachments must be a list of dicts of the form
+        {'filename': <file name>, 'content': <attachment data>, 'mimetype': mime type}
+    """
+    connection = connection or get_connection(username=auth_user,
+                                              password=auth_password,
+                                              fail_silently=fail_silently)
+    mail = EmailMultiAlternatives(subject, message, from_email, recipient_list,
+                                  connection=connection)
+    if html_message:
+        mail.attach_alternative(html_message, 'text/html')
+
+    if attachments:
+        for attachment in attachments:
+            mail.attach(**attachment)
+
+    return mail.send()
+
+
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
                   message='templates/email/test_message.txt',
                   subject_context=None,
                   msg_context=None,
-                  html_message=None):
+                  html_message=None,
+                  attachments=None):
     """
     Send template driven email.
         to_list is a list of email addresses
@@ -77,27 +111,24 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org'
     if undefined
     """
-    if not subject_context:
-        subject_context = {}
-    if not msg_context:
-        msg_context = {}
+    subject_context = subject_context or {}
+    msg_context = msg_context  or {}
     current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
+
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
+
     msg_context.update({'site': current_site})
     message = loader.render_to_string(message, msg_context)
+
     if html_message:
         html_message = loader.render_to_string(html_message, msg_context)
-        send_mail(
-            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
-            html_message=html_message
-        )
-    else:
-        send_mail(
-            subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
-        )
+    send_mail_with_attachments(
+        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list,
+        html_message=html_message, attachments=attachments
+    )
 
 
 def rsr_send_mail_to_users(users,
@@ -497,3 +528,24 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
 def check_auth_groups(group_names):
     for group_name in group_names:
         Group.objects.get_or_create(name=group_name)
+
+
+def file_from_zip_archive(zip, file_name):
+    """
+    Return a file from a zip archive
+    :param zip: zip file or file name
+    :param file_name: name of the file to retrieve from the archive
+    :return: the file or None
+    """
+    zip = zipfile.ZipFile(zip, 'r')
+    try:
+        return zip.open(file_name)
+    except KeyError:
+        return None
+
+
+def get_sha1_hash(s):
+    """ return the sha1 hash of the string you call with"""
+    hash = hashlib.sha1()
+    hash.update(s)
+    return hash.hexdigest()
