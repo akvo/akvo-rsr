@@ -556,9 +556,17 @@ class Project(TimestampsMixin, models.Model):
             return None
         except MultipleObjectsReturned:
             # A project with multiple reporting organisations should not happen, but in practice
-            # it sometimes does unfortunately.
-            return self.partnerships.filter(
-                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)[0]
+            # it sometimes does unfortunately. In these cases we check if there's one "primary
+            # reporter" and return that. If not, we return the first reporting organisation.
+            primary_reporters = self.partnerships.filter(
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+                secondary_reporter='0'
+            )
+            if primary_reporters.count() == 1:
+                return primary_reporters[0]
+            else:
+                return self.partnerships.filter(
+                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)[0]
 
     @property
     def reporting_org(self):
