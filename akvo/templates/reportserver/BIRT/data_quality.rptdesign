@@ -2171,7 +2171,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="borderLeftStyle">none</property>
             <property name="borderRightStyle">none</property>
             <property name="borderTopStyle">none</property>
-            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakAfter">always</property>
             <property name="width">11.125in</property>
@@ -2346,6 +2345,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="403">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
@@ -2356,6 +2356,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="405">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -2376,6 +2377,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="409">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
@@ -2396,6 +2398,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="413">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -2653,7 +2656,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         <table id="232">
             <property name="fontFamily">"Calibri"</property>
             <property name="fontSize">10pt</property>
-            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakAfter">always</property>
             <property name="pageBreakBefore">avoid</property>
@@ -2818,12 +2820,14 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="571">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="244">
                         <label id="573">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -2836,6 +2840,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="248">
                         <label id="574">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
@@ -2854,6 +2859,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="254">
                         <label id="575">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -3008,7 +3014,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         </label>
         <table id="468">
             <property name="fontFamily">"Calibri"</property>
-            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakBefore">avoid</property>
             <property name="width">11.09375in</property>
@@ -3213,12 +3218,14 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="583">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="484">
                         <label id="586">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -3231,12 +3238,14 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="488">
                         <label id="489">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
                     <cell id="490">
                         <label id="491">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -3422,7 +3431,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         </label>
         <table id="590">
             <property name="fontFamily">"Calibri"</property>
-            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakBefore">avoid</property>
             <property name="width">11.125in</property>
@@ -3580,12 +3588,14 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="605">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="606">
                         <label id="607">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -3598,12 +3608,14 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="610">
                         <label id="611">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
                     <cell id="612">
                         <label id="613">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
