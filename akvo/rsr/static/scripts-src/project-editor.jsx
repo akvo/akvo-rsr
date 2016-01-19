@@ -615,7 +615,7 @@ function uploadFile(fileInput, maxFileSize, fileType) {
             // Upload progress bar
             request.upload.addEventListener("progress", function(e) {
                 var progressBar = progressBarContainer.querySelector('.progress-bar');
-                var percentage = parseInt(100 - (e.loaded / e.total * 100));
+                var percentage = parseInt(e.loaded / e.total * 100);
                 progressBar.setAttribute('aria-valuenow', percentage);
                 progressBar.style.width = percentage + '%';
                 progressBar.innerHTML = percentage + '%';
@@ -966,6 +966,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     updateAllHelpIcons();
     markMandatoryFields();
+    setHiddenFields();
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
     setPageCompletionPercentage();
@@ -1730,58 +1731,99 @@ function updateAllHelpIcons() {
     updateHelpIcons(pageContainer);
 }
 
-function getMeasureClass() {
-    /* Get the measure class of the page, based on the selection on top of the page */
-    var activeValidation = document.querySelector('.active-validation');
+function getValidationSets() {
+    /* Get the validation sets of the page */
+    return document.getElementById('progress-bar').getAttribute('validation-sets').split('-');
+}
 
-    if (activeValidation !== null) {
-        return '.mandatory-' + activeValidation.getAttribute('id').split('-')[1];
-    } else {
-        return '.mandatory-0';
+function inputCompleted(field) {
+    if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
+        // Do not count project status 'None'
+        return false;
+    } else if (field.type === 'checkbox') {
+        // Do not count checkboxes
+        return false;
+    } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
+        // Custom code for file inputs
+        return true;
+    } else if (field.value !== '') {
+        return true;
     }
+    return false;
+}
+
+function partialFilled(parentNode) {
+    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+        var inputElements = parentNode.querySelectorAll(INPUT_ELEMENTS[i]);
+        for (var j = 0; j < inputElements.length; j++) {
+            if (inputCompleted(inputElements[j])) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function shouldBeHidden(el) {
+    /* A field should be hidden when all selected validation sets have set the field to hidden */
+    var validationSets = getValidationSets();
+    var hideAccordingToValidationSet = [];
+
+    for (var i = 0; i < validationSets.length; i++) {
+        var validationSet = validationSets[i];
+
+        if (elHasClass(el, 'hidden-' + validationSet)) {
+            // Check if the field itself should be hidden
+            hideAccordingToValidationSet.push(validationSet);
+        } else {
+            // Check if the parent object(s) should be hidden
+            var relatedObject = findAncestorByClass(el, 'related-object-container');
+            while (relatedObject !== null) {
+                if (elHasClass(relatedObject, 'hidden-' + validationSet)) {
+                    hideAccordingToValidationSet.push(validationSet);
+                    relatedObject = null;
+                } else {
+                    relatedObject = findAncestorByClass(relatedObject, 'related-object-container');
+                }
+            }
+        }
+    }
+
+    return validationSets.length === hideAccordingToValidationSet.length;
 }
 
 function setHiddenFields() {
-    /* Hide fields based on the selected measure class. */
-    var measureClass = '.hidden-' + getMeasureClass().split('-')[1];
+    /* Hide fields based on the selected validation sets. */
 
+    // Check per field if it should be hidden or not
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        // Show all fields
         var allElements = document.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < allElements.length; j++) {
             var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
-            if (formGroupNode !== null && !elHasClass(formGroupNode, 'always-hidden')) {
-                elRemoveClass(formGroupNode, 'hidden');
-            }
-        }
-
-        // Hide fields that should be hidden according to the validation set
-        var hideElements = document.querySelectorAll(INPUT_ELEMENTS[i] + measureClass);
-        for (var k = 0; k < hideElements.length; k++) {
-            var hideFormGroupNode = findAncestorByClass(hideElements[k], 'form-group');
-            if (hideFormGroupNode !== null && !elHasClass(hideFormGroupNode, 'always-hidden')) {
-                elAddClass(hideFormGroupNode, 'hidden');
+            if (formGroupNode !== null) {
+                if (!(shouldBeHidden(allElements[j]) || elHasClass(formGroupNode, 'always-hidden'))) {
+                    elRemoveClass(formGroupNode, 'hidden');
+                } else {
+                    elAddClass(formGroupNode, 'hidden');
+                }
             }
         }
     }
 
-    // See if there's any related objects that should be hidden
+    // Also check the related objects if they should be hidden or not
     var relatedObjectContainers = document.querySelectorAll('.related-object-container');
-    for (var l = 0; l < relatedObjectContainers.length; l++) {
-        if (elHasClass(relatedObjectContainers[l], measureClass.substr(1))) {
-            if (!elHasClass(relatedObjectContainers[l], 'hidden')) {
-                elAddClass(relatedObjectContainers[l], 'hidden');
-            }
+    for (var k = 0; k < relatedObjectContainers.length; k++) {
+        var relatedObjectContainer = relatedObjectContainers[k];
+        if (!shouldBeHidden(relatedObjectContainer)) {
+            elRemoveClass(relatedObjectContainer, 'hidden');
         } else {
-            if (elHasClass(relatedObjectContainers[l], 'hidden')) {
-                elRemoveClass(relatedObjectContainers[l], 'hidden');
-            }
+            elAddClass(relatedObjectContainer, 'hidden');
         }
     }
 }
 
 function setSectionCompletionPercentage(section) {
-    var inputResults = getInputResults(section, getMeasureClass());
+    var inputResults = getInputResults(section);
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
 
@@ -1795,85 +1837,89 @@ function setSectionCompletionPercentage(section) {
 }
 
 function setPageCompletionPercentage() {
-    var progressBars = document.querySelectorAll('.validation-progress');
+    var inputResults = getInputResults(document.querySelector('.projectEdit'));
+    var numInputs = inputResults[0];
+    var numInputsCompleted = inputResults[1];
+    var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.progress-and-publish'));
 
-    for (var i = 0; i < progressBars.length; i++) {
-        var validationSetId = progressBars[i].getAttribute('id').split('-')[1];
-        var measureClass = '.mandatory-' + validationSetId;
-        var inputResults = getInputResults(document.querySelector('.projectEdit'), measureClass);
-        var numInputs = inputResults[0];
-        var numInputsCompleted = inputResults[1];
-
-        var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, progressBars[i]);
-
-        if (validationSetId === '1') {
-            var publishButton = document.getElementById('publishProject');
-            if (publishButton !== null) {
-                if (completionPercentage !== 100 && publishButton.getAttribute('status') === 'unpublished') {
-                    publishButton.setAttribute('disabled', '');
-                } else {
-                    publishButton.removeAttribute('disabled');
-                }
-            }
+    var publishButton = document.getElementById('publishProject');
+    if (publishButton !== null) {
+        if (completionPercentage !== 100 && publishButton.getAttribute('status') === 'unpublished') {
+            publishButton.setAttribute('disabled', '');
+        } else {
+            publishButton.removeAttribute('disabled');
         }
     }
 }
 
-function getInputResults(section, measureClass) {
-    function inputCompleted(field) {
-        if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
-            // Do not count project status 'None'
-            return false;
-        } else if (field.type === 'checkbox') {
-            // Do not count checkboxes
-            return false;
-        } else if (field.type === 'file' && field.getAttribute('saved-value') !== '') {
-            // Custom code for file inputs
-            return true;
-        } else if (field.value !== '') {
-            return true;
-        }
-        return false;
-    }
-
+function getInputResults(section) {
     function getOrField(field) {
-        var orMeasureClass = measureClass.replace('.', '') + '-or-';
-        var fieldClassList = field.classList;
+        var validationSets = getValidationSets();
 
-        for (var i = 0; i < fieldClassList.length; i++) {
-            if (fieldClassList[i].indexOf(orMeasureClass) > -1) {
-                var otherFieldName = fieldClassList[i].replace(orMeasureClass, '');
-                var fieldIdList = field.getAttribute('id').split('.');
-                var otherFieldId = [fieldIdList[0], otherFieldName, fieldIdList[2]].join('.');
-                return document.getElementById(otherFieldId);
+        for (var i = 0; i < validationSets.length; i++) {
+            var orValidation = 'mandatory-' + validationSets[i] + '-or-';
+            var fieldClassList = field.classList;
+
+            for (var j = 0; j < fieldClassList.length; j++) {
+                if (fieldClassList[j].indexOf(orValidation) > -1) {
+                    var otherFieldName = fieldClassList[j].replace(orValidation, '');
+                    var fieldIdList = field.getAttribute('id').split('.');
+                    var otherFieldId = [fieldIdList[0], otherFieldName, fieldIdList[2]].join('.');
+                    return document.getElementById(otherFieldId);
+                }
             }
         }
 
         return null;
     }
 
-    function partialFilled(parentNode) {
-        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-            var inputElements = parentNode.querySelectorAll(INPUT_ELEMENTS[i]);
-            for (var j = 0; j < inputElements.length; j++) {
-                if (inputCompleted(inputElements[j])) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     var numInputs = 0;
     var numInputsCompleted = 0;
     var processedFields = [];
+    var mandatoryFields = section.querySelectorAll('span.mandatory');
 
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var selector = INPUT_ELEMENTS[i] + measureClass;
-        var mandatoryFields = section.querySelectorAll(selector);
+    for (var i = 0; i < mandatoryFields.length; i++) {
+        // Ignore the 'OR' indications
+        if (elHasClass(mandatoryFields[i], 'mandatory-block')) {
+            continue;
+        }
 
-        for (var j = 0; j < mandatoryFields.length; j++ ) {
-            var field = mandatoryFields[j];
+        var formGroup = findAncestorByClass(mandatoryFields[i], 'form-group');
+
+        if (formGroup === null) {
+            // Mandatory partial
+            var parent = findAncestorByClass(mandatoryFields[i], 'parent');
+            if (parent !== null) {
+                if (partialFilled(parent)) {
+                    numInputs += 1;
+                }
+            } else {
+                numInputs += 1;
+            }
+
+            var underlyingPartials = findAncestorByClass(mandatoryFields[i], 'related-object-container').querySelectorAll('.parent');
+            for (var l = 0; l < underlyingPartials.length; l++) {
+                var partialParentNode = underlyingPartials[l];
+                if (partialFilled(partialParentNode)) {
+                    numInputsCompleted += 1;
+                    break;
+                }
+            }
+        } else {
+            // 'Normal' mandatory field
+            var field = null;
+
+            for (var j = 0; j < INPUT_ELEMENTS.length; j++) {
+                field = formGroup.querySelector(INPUT_ELEMENTS[j]);
+                if (field !== null) {
+                    break;
+                }
+            }
+
+            if (field === null) {
+                // No input field found (should not occur)
+                continue;
+            }
 
             if (field.getAttribute('disabled') !== null) {
                 // Ignore disabled fields
@@ -1915,30 +1961,6 @@ function getInputResults(section, measureClass) {
             }
 
             processedFields.push(field);
-        }
-    }
-
-    var relatedObjectContainers = section.querySelectorAll('.related-object-container');
-    for (var k = 0; k < relatedObjectContainers.length; k++) {
-        if (elHasClass(relatedObjectContainers[k], measureClass.substr(1))) {
-            // Check first if there is a filled parent above
-            var parent = findAncestorByClass(relatedObjectContainers[k], 'parent');
-            if (parent !== null) {
-                if (partialFilled(parent)) {
-                    numInputs += 1;
-                }
-            } else {
-                numInputs += 1;
-            }
-
-            var underlyingPartials = relatedObjectContainers[k].querySelectorAll('.parent');
-            for (var l = 0; l < underlyingPartials.length; l++) {
-                var partialParentNode = underlyingPartials[l];
-                if (partialFilled(partialParentNode)) {
-                    numInputsCompleted += 1;
-                    break;
-                }
-            }
         }
     }
 
@@ -2000,6 +2022,7 @@ function getChangeListener(section, el) {
         setSectionCompletionPercentage(currentSection);
         elAddClass(el, 'has-listener');
         setPageCompletionPercentage();
+        markMandatoryFields();
     };
 }
 
@@ -2019,41 +2042,17 @@ function setAllSectionsChangeListener() {
     }
 }
 
-function switchMandatoryFields(switchTo) {
-    var progressBars = document.querySelectorAll('.validation-progress');
-    for (var i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('id') === 'progress-' + switchTo) {
-            progressBars[i].querySelector('input').checked = true;
-            elAddClass(progressBars[i], 'active-validation');
-        } else {
-            progressBars[i].querySelector('input').checked = false;
-            elRemoveClass(progressBars[i], 'active-validation');
-        }
-    }
-
-    // Mark new mandatory fields and set new change listeners
-    setHiddenFields();
-    markMandatoryFields();
-    setAllSectionsCompletionPercentage();
-}
-
-function setSwitchMandatoryFields(switchTo) {
-    /* Switch between validation sets */
-    return function(e) {
-        e.preventDefault();
-        switchMandatoryFields(switchTo);
-    };
-}
-
 function markMandatoryOrField(element, otherField) {
     /* Mark a field as an OR mandatory field */
     var formGroupNode = findAncestorByClass(element, 'form-group');
 
-    var markContainer = document.createElement('span');
-    markContainer.setAttribute('class', 'mandatory-block mandatory');
-    markContainer.textContent = '*' + defaultValues.or_mandatory_1 + ' ' + otherField + ' ' + defaultValues.or_mandatory_2 + '.';
-
-    formGroupNode.appendChild(markContainer);
+    // Check if mandatory node already exists
+    if (formGroupNode.querySelector('span.mandatory-block') === null) {
+        var markContainer = document.createElement('span');
+        markContainer.setAttribute('class', 'mandatory-block mandatory');
+        markContainer.textContent = '*' + defaultValues.or_mandatory_1 + ' ' + otherField + ' ' + defaultValues.or_mandatory_2 + '.';
+        formGroupNode.appendChild(markContainer);
+    }
 }
 
 function markMandatoryField(element) {
@@ -2068,35 +2067,41 @@ function markMandatoryField(element) {
         elementLabel = element.querySelector('h5');
     }
 
-    var markContainer = document.createElement('span');
-    markContainer.setAttribute('class', 'mandatory');
-    markContainer.textContent = '*';
-
-    elementLabel.appendChild(markContainer);
+    // Check if mandatory node already exists
+    if (elementLabel.querySelector('span.mandatory') === null) {
+        var markContainer = document.createElement('span');
+        markContainer.setAttribute('class', 'mandatory');
+        markContainer.textContent = '*';
+        elementLabel.appendChild(markContainer);
+    }
 }
 
 function markMandatoryFields() {
     /* Mark mandatory fields with an asterisk */
-    var existingMarkers = document.querySelectorAll('.mandatory');
 
     // Clear any existing markers
+    var existingMarkers = document.querySelectorAll('.mandatory');
     for (var i = 0; i < existingMarkers.length; i++) {
         existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
     }
 
     // Mark the new elements
-    var measureClass = getMeasureClass();
-    var elementsToMark = document.querySelectorAll(measureClass);
-    for (var j = 0; j < elementsToMark.length; j++) {
-        markMandatoryField(elementsToMark[j]);
+    var validationSets = getValidationSets();
+    for (var j = 0; j < validationSets.length; j++) {
+        var mandatoryIndicator = '.mandatory-' + validationSets[j];
+        var elementsToMark = document.querySelectorAll(mandatoryIndicator);
+        for (var k = 0; k < elementsToMark.length; k++) {
+            if (!hasParent(elementsToMark[k]) || partialFilled(findAncestorByClass(elementsToMark[k], 'parent'))) {
+                markMandatoryField(elementsToMark[k]);
 
-        var orMeasureClass = measureClass.replace('.', '') + '-or-';
-        var fieldClassList = elementsToMark[j].classList;
-
-        for (var k = 0; k < fieldClassList.length; k++) {
-            if (fieldClassList[k].indexOf(orMeasureClass) > -1) {
-                var otherFieldName = fieldClassList[k].replace(orMeasureClass, '').replace(/_/g, ' ');
-                markMandatoryOrField(elementsToMark[j], otherFieldName);
+                var mandatoryOrClass = mandatoryIndicator.replace('.', '') + '-or-';
+                var fieldClassList = elementsToMark[k].classList;
+                for (var l = 0; l < fieldClassList.length; l++) {
+                    if (fieldClassList[l].indexOf(mandatoryOrClass) > -1) {
+                        var otherFieldName = fieldClassList[l].replace(mandatoryOrClass, '').replace(/_/g, ' ');
+                        markMandatoryOrField(elementsToMark[k], otherFieldName);
+                    }
+                }
             }
         }
     }
@@ -2189,11 +2194,6 @@ function setValidationListeners() {
         }
     }
 
-    var progressSwitch = document.querySelectorAll('.validation-switch');
-    for (var k = 0; k < progressSwitch.length; k++) {
-        progressSwitch[k].onchange = setSwitchMandatoryFields(progressSwitch[k].getAttribute('id').split('-')[2]);
-    }
-
     markMandatoryFields();
     setHiddenFields();
 }
@@ -2220,13 +2220,36 @@ function updateCurrency(currencyDropdown) {
 }
 
 function setToggleSectionOnClick () {
-    var toggleSections;
-
-    toggleSections = document.getElementsByClassName('toggleSection');
+    var toggleSections = document.getElementsByClassName('toggleSection');
+    var projectOptions = document.querySelector('.formOverviewInfo');
+    var projectProgress = document.querySelector('.formProgress');
 
     for (var i=0; i < toggleSections.length; i++) {
         toggleSections[i].onclick = toggleSection(toggleSections[i]);
     }
+
+    if (projectOptions !== null) {
+        var optionsPanelHeading = projectOptions.querySelector('.panel-heading');
+        optionsPanelHeading.onclick = showHidePanel(optionsPanelHeading.parentNode);
+    }
+
+    if (projectProgress !== null) {
+        var progressPanelHeading = projectProgress.querySelector('.panel-heading');
+        progressPanelHeading.onclick = showHidePanel(progressPanelHeading.parentNode);
+    }
+}
+
+function showHidePanel(panel) {
+    return function(e) {
+        e.preventDefault();
+
+        var panelBody = panel.querySelector('.panel-body');
+        if (!elHasClass(panelBody,'hidden')) {
+            elAddClass(panelBody, 'hidden');
+        } else {
+            elRemoveClass(panelBody, 'hidden');
+        }
+    };
 }
 
 function toggleSection(node) {
@@ -2445,19 +2468,15 @@ function getProjectPublish(publishingStatusId, publishButton) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 // Succesfully (un)published project!
-                var viewProjectButton = document.getElementById('viewProject');
+                var publishIndicator = document.getElementById('publish-indicator');
 
                 // Change the view project page button to "View project" or "Preview project"
                 // Update the button's status and appearance
 
                 var iconElement, textElement, otherTextElement, otherIconElement;
                 if (status === 'unpublished') {
-                    viewProjectButton.innerHTML = '';
-                    iconElement = document.createElement('span');
-                    iconElement.className = "glyphicon glyphicon-expand";
-                    textElement = document.createTextNode(' ' + defaultValues.view_project);
-                    viewProjectButton.appendChild(iconElement);
-                    viewProjectButton.appendChild(textElement);
+                    publishIndicator.className = 'published';
+                    publishIndicator.innerHTML = defaultValues.published;
 
                     publishButton.setAttribute('status', 'published');
                     otherTextElement = document.createTextNode(' ' + defaultValues.unpublish);
@@ -2469,12 +2488,8 @@ function getProjectPublish(publishingStatusId, publishButton) {
                     publishButton.appendChild(otherIconElement);
                     publishButton.appendChild(otherTextElement);
                 } else {
-                    viewProjectButton.innerHTML = '';
-                    iconElement = document.createElement('span');
-                    iconElement.className = "glyphicon glyphicon-expand";
-                    textElement = document.createTextNode(' ' + defaultValues.preview_project);
-                    viewProjectButton.appendChild(iconElement);
-                    viewProjectButton.appendChild(textElement);
+                    publishIndicator.className = 'notPublished';
+                    publishIndicator.innerHTML = defaultValues.not_published;
 
                     publishButton.setAttribute('status', 'unpublished');
                     otherTextElement = document.createTextNode(' ' + defaultValues.publish);
@@ -3044,60 +3059,74 @@ function addOrgModal() {
     );    
 }
 
-/* Add the progress bar */
-function addProgressBar(validationSetId) {
-    // Remove option from select
-    var selectProgressBar = document.getElementById('progress-bar-select');
-    var selectOptions = selectProgressBar.querySelectorAll('option');
-    for (var i = 0; i < selectOptions.length; i++) {
-        if (selectOptions[i].getAttribute('value') === validationSetId) {
-            selectOptions[i].parentNode.removeChild(selectOptions[i]);
-        }
+/* Add validation set to the progress bar */
+function removeFromProgressBar(validationSetId) {
+    var progressBar = document.getElementById('progress-bar');
+    var currentValidationSets = progressBar.getAttribute('validation-sets').split('-');
+    var index = currentValidationSets.indexOf(validationSetId);
+
+    if (index > -1) {
+        currentValidationSets.splice(index, 1);
+        progressBar.setAttribute('validation-sets', currentValidationSets.join('-'));
+
+        setValidationListeners();
+        setPageCompletionPercentage();
+        setAllSectionsCompletionPercentage();
     }
-
-    if (selectProgressBar.querySelectorAll('option').length === 1) {
-        var addProgress = document.getElementById('add-progress');
-        addProgress.parentNode.removeChild(addProgress);
-    }
-
-    // Show progress bar
-    var progressBarContainer = document.getElementById('progress-' + validationSetId);
-    elRemoveClass(progressBarContainer, 'hidden');
-
-    // Switch to new progress bar
-    switchMandatoryFields(validationSetId);
 }
 
 /* Remove a validation set from project */
-function removeValidationSetFromProject(removeLink) {
-    return function (e) {
-        e.preventDefault();
+function removeValidationSetFromProject(validationSet) {
+    var validationSetId = validationSet.getAttribute('id').split('-')[2];
+    var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/remove_validation/' + validationSetId + '/?format=json';
 
-        var validationSetId = removeLink.getAttribute('id').replace('remove-progress-bar-link-', '');
-        var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/remove_validation/' + validationSetId + '/?format=json';
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.open("DELETE", addValidationUrl);
+    xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+            if (xmlHttp.status == 200) {
+                removeFromProgressBar(validationSetId);
+            }
+        } else {
+            return false;
+        }
+    };
+
+    xmlHttp.send();
+}
+
+/* Add validation set to the progress bar */
+function addToProgressBar(validationSetId) {
+    var progressBar = document.getElementById('progress-bar');
+    var currentValidationSets = progressBar.getAttribute('validation-sets').split('-');
+    currentValidationSets.push(validationSetId);
+    progressBar.setAttribute('validation-sets', currentValidationSets.join('-'));
+
+    setValidationListeners();
+    setPageCompletionPercentage();
+    setAllSectionsCompletionPercentage();
+}
+
+/* Add a validation set to project */
+function addValidationSetToProject(validationSet) {
+    var validationSetId = validationSet.getAttribute('id').split('-')[2];
+    if (validationSetId !== '') {
+        var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/add_validation/' + validationSetId + '/?format=json';
 
         var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open("DELETE", addValidationUrl);
+        xmlHttp.open("POST", addValidationUrl);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
         xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == XMLHttpRequest.DONE) {
                 if (xmlHttp.status == 200) {
-                    // Remove progress bar
-                    var progressBarContainer = document.getElementById('progress-' + validationSetId);
-                    progressBarContainer.parentNode.removeChild(progressBarContainer);
-
-                    // Switch to first progress bar
-                    var progressBars = document.querySelectorAll('.validation-progress');
-                    for (var i = 0; i < progressBars.length; i++) {
-                        if (!elHasClass(progressBars[i], 'hidden')) {
-                            var newValidationSetId = progressBars[i].getAttribute('id').replace('progress-', '');
-                            switchMandatoryFields(newValidationSetId);
-                            break;
-                        }
-                    }
+                    addToProgressBar(validationSetId);
                 }
             } else {
                 return false;
@@ -3105,49 +3134,34 @@ function removeValidationSetFromProject(removeLink) {
         };
 
         xmlHttp.send();
-    };
+    }
 }
 
-/* Add a validation set to project */
-function addValidationSetToProject(selectLink) {
-    return function (e) {
+/* Change the validation sets, either add or remove one */
+function changeValidationSet(validationSet) {
+    return function(e) {
         e.preventDefault();
 
-        var validationSetId = selectLink.parentNode.querySelector('select').value;
-        if (validationSetId !== '') {
-            var addValidationUrl = '/rest/v1/project/' + defaultValues.project_id + '/add_validation/' + validationSetId + '/?format=json';
-
-            var xmlHttp = new XMLHttpRequest();
-
-            xmlHttp.open("POST", addValidationUrl);
-            xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-                    if (xmlHttp.status == 200) {
-                        addProgressBar(validationSetId);
-                    }
-                } else {
-                    return false;
-                }
-            };
-
-            xmlHttp.send();
+        if (validationSet.hasAttribute('checked')) {
+            // Validation set has been unchecked and should be removed
+            removeValidationSetFromProject(validationSet);
+            validationSet.removeAttribute('checked');
+        } else {
+            // Validation set has been checked and should be added
+            addValidationSetToProject(validationSet);
+            validationSet.setAttribute('checked', '');
         }
     };
 }
 
 /* Set the link for adding a new validation set */
-function setProgressBarLinks() {
-    var selectLink = document.getElementById('add-progress-bar-link');
-    if (selectLink !== null) {
-        selectLink.addEventListener('click', addValidationSetToProject(selectLink));
-    }
-
-    var removeLinks = document.querySelectorAll('.remove-progress-bar-link');
-    for (var i = 0; i < removeLinks.length; i++) {
-        removeLinks[i].onclick = removeValidationSetFromProject(removeLinks[i]);
+function setValidationSets() {
+    var validationSetContainer = document.getElementById('validation-sets');
+    if (validationSetContainer !== null) {
+        var validationSets = validationSetContainer.querySelectorAll('input');
+        for (var i = 0; i < validationSets.length; i++) {
+            validationSets[i].onchange = changeValidationSet(validationSets[i]);
+        }
     }
 }
 
@@ -3195,6 +3209,14 @@ function getAllOrganisations() {
     xmlHttp.send();
 }
 
+function setLocalStorage() {
+    try {
+        localStorageResponses = JSON.parse(localStorageResponses);
+    } catch (error) {
+        localStorageResponses = {};
+    }
+}
+
 /* General Helper Functions */
 function elHasClass(el, className) {
     if (el.classList && el.classList.forEach) {
@@ -3239,7 +3261,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setUnsavedChangesMessage();
     setImpactProject();
     setPrivateProject();
-    setProgressBarLinks();
+    setValidationSets();
     setPublishOnClick();
     setSubmitOnClicks();
 
@@ -3257,9 +3279,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
 
-    try {
-        localStorageResponses = JSON.parse(localStorageResponses);
-    } catch (error) {
-        localStorageResponses = {};
-    }
+    setLocalStorage();
 });

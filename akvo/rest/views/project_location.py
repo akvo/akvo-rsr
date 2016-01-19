@@ -16,9 +16,7 @@ class ProjectLocationViewSet(PublicProjectViewSet):
     queryset = ProjectLocation.objects.all()
     serializer_class = ProjectLocationSerializer
     filter_fields = ('location_target', 'country', )
-
-    def get_queryset(self, related_to='location_target__'):
-        return super(ProjectLocationViewSet, self).get_queryset(related_to)
+    project_relation = 'location_target__'
 
 
 class AdministrativeLocationViewSet(PublicProjectViewSet):
@@ -27,9 +25,7 @@ class AdministrativeLocationViewSet(PublicProjectViewSet):
     queryset = AdministrativeLocation.objects.all()
     serializer_class = AdministrativeLocationSerializer
     filter_fields = ('location', 'code', )
-
-    def get_queryset(self, related_to='location__location_target__'):
-        return super(AdministrativeLocationViewSet, self).get_queryset(related_to)
+    project_relation = 'location__location_target__'
 
 
 class MapProjectLocationViewSet(BaseRSRViewSet):
@@ -48,12 +44,13 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
         'location_target__partners',
         'country'
     )
+    serializer_class = MapProjectLocationSerializer
     max_paginate_by = 500
     paginate_by = 100
+    # TODO: shouldn't this be subject to private project filtering?
     queryset = ProjectLocation.objects.select_related('location_target', 'country').only(
             'id', 'latitude', 'longitude',
             'location_target__id', 'location_target__title',
             'location_target__current_image',
             'country'
     )
-    serializer_class = MapProjectLocationSerializer

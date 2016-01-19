@@ -16,5 +16,4 @@ class BenchmarknameViewSet(PublicProjectViewSet):
     queryset = Benchmarkname.objects.all()
     serializer_class = BenchmarknameSerializer
 
-    def get_queryset(self, related_to='benchmark__project__'):
-        return super(BenchmarknameViewSet, self).get_queryset(related_to)
+    project_relation = 'benchmark__project__'

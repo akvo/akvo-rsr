@@ -17,6 +17,3 @@ class SectorViewSet(PublicProjectViewSet):
     queryset = Sector.objects.all()
     serializer_class = SectorSerializer
     filter_fields = ('project', 'sector_code', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(SectorViewSet, self).get_queryset(related_to)

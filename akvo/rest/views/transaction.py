@@ -19,9 +19,6 @@ class TransactionViewSet(PublicProjectViewSet):
         'project', 'reference', 'transaction_type', 'currency', 'provider_organisation',
         'receiver_organisation')
 
-    def get_queryset(self, related_to='project__'):
-        return super(TransactionViewSet, self).get_queryset(related_to)
-
 
 class TransactionSectorViewSet(PublicProjectViewSet):
     """Transaction sector resource."""
@@ -29,6 +26,4 @@ class TransactionSectorViewSet(PublicProjectViewSet):
     queryset = TransactionSector.objects.all()
     serializer_class = TransactionSectorSerializer
     filter_fields = ('transaction', 'code')
-
-    def get_queryset(self, related_to='transaction__project__'):
-        return super(TransactionSectorViewSet, self).get_queryset(related_to)
+    project_relation = 'transaction__project__'
