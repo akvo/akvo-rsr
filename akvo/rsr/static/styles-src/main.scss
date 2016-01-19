@@ -1385,13 +1385,8 @@ header {
             }
             /* Style logos for Akvo Pages project pages */
             > img {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-
-                &:first-child {
-                    margin-bottom: 8px;
-                }
+                display: inline-block;
+                margin: 3px;
             }
         }
     }
