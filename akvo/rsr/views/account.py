@@ -101,6 +101,46 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
     :param token_date: the first part of the token
     :param token: the second part of the token
     """
+
+    def approve_employment(invitee, invited, empl):
+        """
+        Approves the employment and sends a mail to the user that has invited the new user.
+
+        :param invitee: the invitee user's instance
+        :param invited: the invited user's instance
+        :param empl: the employment's instance
+        """
+        empl.approve(invitee)
+
+        if invitee:
+            # Send notification email to inviting user
+            rsr_send_mail(
+                [invitee.email],
+                subject='registration/inviting_user_notification_subject.txt',
+                message='registration/inviting_user_notification_message.txt',
+                html_message='registration/inviting_user_notification_message.html',
+                subject_context={
+                    'user': invited,
+                },
+                msg_context={
+                    'invited_user': invited,
+                    'inviting_user': invitee,
+                    'organisation': empl.organisation,
+                }
+            )
+
+    def login_and_redirect(req, invited):
+        """
+        Log the invited user in and redirect to the My details page in MyRSR.
+
+        :param req: the request
+        :param invited: the invited user's instance
+        """
+        invited = authenticate(username=invited.username, no_password=True)
+        login(request, invited)
+        return redirect('my_details')
+
+
     bad_link, signature_expired, user, inviting_user, employment = False, False, None, None, None
 
     try:
@@ -111,9 +151,9 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         bad_link = True
 
     if user and user.is_active:
-        user = authenticate(username=user.username, no_password=True)
-        login(request, user)
-        return redirect('my_details')
+        if not employment.is_approved:
+            approve_employment(inviting_user, user, employment)
+        return login_and_redirect(request, user)
 
     expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
 
@@ -130,27 +170,8 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         if form.is_valid():
             # Approve employment and save new user details
             form.save(request)
-            employment.approve(inviting_user)
-
-            if inviting_user:
-                # Send notification email to inviting user
-                rsr_send_mail(
-                    [inviting_user.email],
-                    subject='registration/inviting_user_notification_subject.txt',
-                    message='registration/inviting_user_notification_message.txt',
-                    html_message='registration/inviting_user_notification_message.html',
-                    subject_context={
-                        'user': user,
-                    },
-                    msg_context={
-                        'invited_user': user,
-                        'inviting_user': inviting_user,
-                        'organisation': employment.organisation,
-                    }
-                )
-            user = authenticate(username=user.username, no_password=True)
-            login(request, user)
-            return redirect('my_details')
+            approve_employment(inviting_user, user, employment)
+            return login_and_redirect(request, user)
     else:
         form = InvitedUserForm(user=user)
 
