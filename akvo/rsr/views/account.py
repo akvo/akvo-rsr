@@ -19,6 +19,7 @@ from akvo.utils import rsr_send_mail
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
@@ -140,20 +141,14 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         login(request, invited)
         return redirect('my_details')
 
-
     bad_link, signature_expired, user, inviting_user, employment = False, False, None, None, None
 
     try:
         user = get_user_model().objects.get(pk=user_pk)
         inviting_user = get_user_model().objects.get(pk=inviting_pk)
         employment = Employment.objects.get(pk=employment_pk)
-    except get_user_model().DoesNotExist:
+    except ObjectDoesNotExist:
         bad_link = True
-
-    if user and user.is_active:
-        if not employment.is_approved:
-            approve_employment(inviting_user, user, employment)
-        return login_and_redirect(request, user)
 
     expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
 
@@ -164,6 +159,16 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         signature_expired = True
     except BadSignature:
         bad_link = True
+
+    if user and user.is_active:
+        if employment and employment.is_approved:
+            # User is active and employment is approved, so nothing to do here
+            return login_and_redirect(request, user)
+        elif employment and not (signature_expired or bad_link):
+            # Employment is not yet approved, and link is ok.
+            # Approve employment and log user in.
+            approve_employment(inviting_user, user, employment)
+            return login_and_redirect(request, user)
 
     if request.method == 'POST':
         form = InvitedUserForm(user=user, data=request.POST)
