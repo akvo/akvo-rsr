@@ -1383,10 +1383,10 @@ header {
                     font-weight: bold;
                 }
             }
-            /* Style logos for Akvo Pages project pages */
-            > img {
+            /* Style buttons and logos for Akvo Pages project pages */
+            .btn, img {
                 display: inline-block;
-                margin: 3px;
+                margin: 10px 3px  3px  3px;
             }
         }
     }

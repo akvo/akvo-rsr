@@ -1105,7 +1105,7 @@ header.projectHeader {
   header.projectHeader .shareBlock {
     position: relative;
     margin-top: 10px;
-    /* Style logos for Akvo Pages project pages */ }
+    /* Style buttons and logos for Akvo Pages project pages */ }
     header.projectHeader .shareBlock div {
       text-align: right; }
       @media only screen and (max-width: 768px) {
@@ -1136,9 +1136,9 @@ header.projectHeader {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
-    header.projectHeader .shareBlock > img {
+    header.projectHeader .shareBlock .btn, header.projectHeader .shareBlock img {
       display: inline-block;
-      margin: 3px; }
+      margin: 10px 3px 3px 3px; }
 
 .donateSection {
   background: rgba(255, 164, 114, 0.2);
