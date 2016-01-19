@@ -1383,6 +1383,11 @@ header {
                     font-weight: bold;
                 }
             }
+            /* Style logos for Akvo Pages project pages */
+            > img {
+                display: inline-block;
+                margin: 3px;
+            }
         }
     }
 }

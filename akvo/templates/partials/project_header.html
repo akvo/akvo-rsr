@@ -17,13 +17,13 @@
                 </div>
             </div>
             {% if not rsr_page and project.keyword_logos or rsr_page and rsr_page.show_keyword_logos and project.keyword_logos %}
-            <div class="col-sm-2 shareBlock">
+            <div class="col-sm-3 shareBlock">
                 {% for keyword in project.keyword_logos|slice:":2" %}
                     {% img keyword 125 60 keyword.label %}
                 {% endfor %}
             </div>
             {% endif %}
-            <div class="col-sm-4 shareBlock">
+            <div class="col-sm-3 shareBlock">
                 <div class="row">
                     <nav>
                         <div class="col-xs-12">
