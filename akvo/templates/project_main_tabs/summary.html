@@ -19,7 +19,15 @@
               <ul>
                 <li>
                   <span class="detailedInfo">{% trans 'Project summary' %}</span>
-                  <p>{{project.project_plan_summary}}</p>
+                  <p id="summary-truncated">
+                    {{project.project_plan_summary|truncatechars:400}}
+                    {% ifnotequal project.project_plan_summary project.project_plan_summary|truncatechars:400 %}
+                      <a class="read-more">{% trans 'Read more' %}</a>
+                    {% endifnotequal %}
+                  </p>
+                  <p id="summary-full" class="hidden">
+                    {{project.project_plan_summary}} <a class="read-less">{% trans 'Fold in' %}</a>
+                  </p>
                 </li>
                 {% if project.iati_activity_id %}
                   <li>
