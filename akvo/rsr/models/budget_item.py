@@ -128,7 +128,7 @@ class BudgetItem(models.Model):
 class CountryBudgetItem(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='country_budget_items')
     code = ValidXMLCharField(
-        _(u'country budget item'), max_length=6, blank=True,
+        _(u'country budget item'), max_length=10, blank=True,
         choices=codelist_choices(BUDGET_IDENTIFIER),
         help_text=_(u'This item encodes the alignment of activities with both the functional and '
                     u'administrative classifications used in the recipient country’s Chart of '

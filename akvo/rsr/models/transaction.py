@@ -116,7 +116,7 @@ class Transaction(models.Model):
                     u'http://iatistandard.org/201/codelists/Country/</a>.')
     )
     recipient_region = ValidXMLCharField(
-        _(u'transaction recipient region'), blank=True, max_length=3,
+        _(u'transaction recipient region'), blank=True, max_length=25,
         choices=codelist_choices(REGION),
         help_text=_(u'Enter the supranational geopolitical region (a geographical or '
                     u'administrative grouping of countries into a region - e.g. Sub-Saharan '
@@ -125,7 +125,7 @@ class Transaction(models.Model):
                     u'Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.')
     )
     recipient_region_vocabulary = ValidXMLCharField(
-        _(u'recipient region vocabulary'), blank=True, max_length=1,
+        _(u'recipient region vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(REGION_VOCABULARY)
     )
 
@@ -169,7 +169,7 @@ class TransactionSector(models.Model):
         'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
     )
     code = ValidXMLCharField(
-        _(u'transaction sector'), blank=True, max_length=5,
+        _(u'transaction sector'), blank=True, max_length=25,
         help_text=_(u'A recognised code, from a recognised vocabulary, classifying the purpose of '
                     u'this transaction. If this element is used then ALL transaction elements '
                     u'should contain a transaction/sector element and iati-activity/sector should '

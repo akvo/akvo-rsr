@@ -19,7 +19,7 @@ from akvo.utils import codelist_choices, codelist_value
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
     title = ValidXMLCharField(
-        _(u'indicator title'), blank=True, max_length=255,
+        _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
                     u'that can be counted and evaluated as the project continues and is completed.')
     )
