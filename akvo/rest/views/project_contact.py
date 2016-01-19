@@ -17,6 +17,3 @@ class ProjectContactViewSet(PublicProjectViewSet):
     queryset = ProjectContact.objects.all()
     serializer_class = ProjectContactSerializer
     filter_fields = ('project', 'type', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(ProjectContactViewSet, self).get_queryset(related_to)

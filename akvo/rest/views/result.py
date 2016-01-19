@@ -17,6 +17,3 @@ class ResultViewSet(PublicProjectViewSet):
     queryset = Result.objects.prefetch_related('indicators')
     serializer_class = ResultSerializer
     filter_fields = ('project', 'type', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(ResultViewSet, self).get_queryset(related_to)

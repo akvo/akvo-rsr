@@ -213,7 +213,7 @@ class Organisation(TimestampsMixin, models.Model):
             # This prevents organisation long names with only spaces
             validation_errors['long_name'] = _(u'Organisation long name may not be blank')
 
-        if iati_org_id and ids.exists():
+        if iati_org_id and ids:
             validation_errors['iati_org_id'] = u'{}: {}'.format(
                 _('An Organisation with this IATI organisation identifier already exists'), ids[0].name)
 

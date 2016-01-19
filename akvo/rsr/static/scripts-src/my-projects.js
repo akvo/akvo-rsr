@@ -162,7 +162,7 @@ function getCreateProject(createProjectNode) {
             return false;
         };
 
-        request.send();
+        request.send('{"validations": [1]}');
     };
 }
 

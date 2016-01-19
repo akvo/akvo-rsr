@@ -16,9 +16,7 @@ class ProjectUpdateLocationViewSet(PublicProjectViewSet):
     """
     queryset = ProjectUpdateLocation.objects.all()
     serializer_class = ProjectUpdateLocationSerializer
-
-    def get_queryset(self, related_to='location_target__project__'):
-        return super(ProjectUpdateLocationViewSet, self).get_queryset(related_to)
+    project_relation = 'location_target__project__'
 
 
 class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
@@ -40,6 +38,7 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     )
     max_paginate_by = 500
     paginate_by = 100
+    # TODO: shouldn't this be subject to private project filtering?
     queryset = ProjectUpdateLocation.objects.select_related(
             'location_target',
             'location_target__project'

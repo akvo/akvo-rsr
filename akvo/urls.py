@@ -117,6 +117,9 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/iati/$',
         'akvo.rsr.views.my_rsr.my_iati', name='my_iati'),
 
+    url(r'^myrsr/reports/$',
+        'akvo.rsr.views.my_rsr.my_reports', name='my_reports'),
+
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 

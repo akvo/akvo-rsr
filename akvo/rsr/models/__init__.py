@@ -19,7 +19,8 @@ from ..signals import (
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding, create_iati_file, import_iati_file)
+    update_project_funding, create_iati_file
+)
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
@@ -31,10 +32,11 @@ from .employment import Employment
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
+from .iati_activity_import import IatiActivityImport
 from .iati_export import IatiExport
 from .iati_import import IatiImport
+from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .iati_project_import import IatiProjectImport
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
@@ -81,10 +83,12 @@ __all__ = [
     'Fss',
     'FssForecast',
     'Goal',
+    'IatiActivityImport',
     'IatiExport',
     'IatiImport',
+    'IatiImportJob',
+    'CordaidZipIatiImportJob',
     'IatiImportLog',
-    'IatiProjectImport',
     'Indicator',
     'IndicatorPeriod',
     'Invoice',
@@ -333,4 +337,3 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(create_iati_file, sender=IatiExport)
-post_save.connect(import_iati_file, sender=IatiImport)

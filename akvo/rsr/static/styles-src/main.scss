@@ -1383,6 +1383,11 @@ header {
                     font-weight: bold;
                 }
             }
+            /* Style logos for Akvo Pages project pages */
+            > img {
+                display: inline-block;
+                margin: 3px;
+            }
         }
     }
 }
@@ -1730,7 +1735,7 @@ div.textBlock {
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
-        background: rgba(white, 0.55);
+        background: rgba(white, 0.95);
         border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
         @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
@@ -2179,12 +2184,22 @@ body {
 }
 
 .formProgress {
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($progressSuccess, 0.1);
+        }
+    }
     .progress {
         .progress-bar {
             .progress-percentage {
                 display: initial;
             }
         }
+    }
+    .progress-and-publish {
+        top: 20px;
     }
     .redLegenda {
         background: $progressWarning;
@@ -2201,14 +2216,24 @@ body {
     .mandatoryIndicator {
         color: $progressWarning;
     }
+    .published {
+        color: $progressSuccess;
+    }
+    .notPublished {
+        color: $secondary2;
+    }
 }
 
 .formOverviewInfo {
-    span.published {
-        color: $progressSuccess;
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($rsrBlue2, 0.1);
+        }
     }
-    span.notPublished {
-        color: $secondary2;
+    label {
+        color: rgba($akvoPurple, 0.5);
     }
 }
 
@@ -2473,25 +2498,6 @@ body {
     }
 }
 
-.legenda {
-    border: 1px solid rgba($akvoPurple, 0.5);
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    padding: 5px 15px 5px 15px;
-    margin: 15px 15px 15px 15px;
-    .mandatory {
-        color: $progressWarning;
-    }
-}
-
-.progress-radio {
-    top: 25px;
-}
-
-.remove-progress-bar-link {
-    color: $progressWarning;
-}
-
 .viewProject {
     margin-top: 15px;
 }
@@ -2571,11 +2577,11 @@ body {
     .border-transition {
         @include transition(border 0.25s ease-in-out);
     }
-    .bg-border-transition { 
+    .bg-border-transition {
         -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;         
+        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     }
     .opacity-transition {
         @include transition(opacity 0.25s ease-in-out);
@@ -3140,11 +3146,11 @@ body {
                 background-color: #ececec;
                 &:first-child {
                     border-left: 4px solid #ae0922;
-                }       
+                }
                 &.edit-in-progress {
                     background-color: #D1E6D1;
                     border-left: none;
-                }             
+                }
                 .update-exceed-target {
                     margin: 3em 0 1em 0;
                     text-align: right;
@@ -3183,7 +3189,7 @@ body {
                         color: #B5B5B5;
                         border: 1px solid #B5B5B5;
                         background-color: #ececec;
-                        cursor: pointer;                     
+                        cursor: pointer;
                         .progress-hover-text {
                             content: '';
                             opacity: 0;
@@ -3614,5 +3620,54 @@ div.active {
                 }
             }
         }
+    }
+}
+
+/* My reports section */
+
+div#my-reports {
+    .dropdown {
+        .dropdown-toggle {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .dropdown-menu {
+            width: 100%;
+            top: 35px;
+        }
+    }
+    .input-group {
+        min-height: 100px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .form-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            .fa {
+                font-size: 75px;
+            }
+            &:hover {
+                background: rgba($akvoBlack, 0.05);
+            }
+        }
+    }
+    .report-title {
+        font-weight: bold;
+    }
+    .report-description {
+        white-space: pre-wrap;
+       white-space: -moz-pre-wrap;
+       white-space: -pre-wrap;
+       white-space: -o-pre-wrap;
+       word-wrap: break-word;
+    }
+    .my-reports-download-error {
+        margin: 1em 0;
+    }
+    /* Override pointer events for disabled items that show help text */
+    .pointerEvents {
+        pointer-events: initial;
     }
 }

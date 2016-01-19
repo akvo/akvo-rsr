@@ -1104,7 +1104,8 @@ header.projectHeader {
         color: #2c2a74; }
   header.projectHeader .shareBlock {
     position: relative;
-    margin-top: 10px; }
+    margin-top: 10px;
+    /* Style logos for Akvo Pages project pages */ }
     header.projectHeader .shareBlock div {
       text-align: right; }
       @media only screen and (max-width: 768px) {
@@ -1135,6 +1136,9 @@ header.projectHeader {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
+    header.projectHeader .shareBlock > img {
+      display: inline-block;
+      margin: 3px; }
 
 .donateSection {
   background: rgba(255, 164, 114, 0.2);
@@ -1396,7 +1400,7 @@ div.textBlock {
   .tooltip .tooltip-inner {
     max-width: 350px;
     padding: 15px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.95);
     border: thin solid rgba(32, 32, 36, 0.15);
     color: #202024;
     -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
@@ -1699,8 +1703,15 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress .progress-bar .progress-percentage {
   display: none; }
 
+.formProgress .panel-heading {
+  cursor: pointer;
+  transition: background 0.1s linear; }
+  .formProgress .panel-heading:hover {
+    background: rgba(92, 184, 92, 0.1); }
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
+.formProgress .progress-and-publish {
+  top: 20px; }
 .formProgress .redLegenda {
   background: #d9534f;
   color: #d9534f; }
@@ -1712,11 +1723,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   color: #5cb85c; }
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
-
-.formOverviewInfo span.published {
+.formProgress .published {
   color: #5cb85c; }
-.formOverviewInfo span.notPublished {
+.formProgress .notPublished {
   color: #e31b23; }
+
+.formOverviewInfo .panel-heading {
+  cursor: pointer;
+  transition: background 0.1s linear; }
+  .formOverviewInfo .panel-heading:hover {
+    background: rgba(114, 205, 255, 0.1); }
+.formOverviewInfo label {
+  color: rgba(44, 42, 116, 0.5); }
 
 .projectEdit h2 {
   font-weight: normal;
@@ -1908,21 +1926,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .projectEdit .toggle-help {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
-
-.legenda {
-  border: 1px solid rgba(44, 42, 116, 0.5);
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  padding: 5px 15px 5px 15px;
-  margin: 15px 15px 15px 15px; }
-  .legenda .mandatory, .legenda .projectEdit .mandatory-block, .projectEdit .legenda .mandatory-block {
-    color: #d9534f; }
-
-.progress-radio {
-  top: 25px; }
-
-.remove-progress-bar-link {
-  color: #d9534f; }
 
 .viewProject {
   margin-top: 15px; }
@@ -2850,3 +2853,38 @@ div.active .addOrg {
           margin-right: 1em; }
         .modalContainer .orgModal .controls button.modal-save {
           margin-right: 1.5em; }
+
+/* My reports section */
+div#my-reports {
+  /* Override pointer events for disabled items that show help text */ }
+  div#my-reports .dropdown .dropdown-toggle {
+    width: 100%;
+    margin-bottom: 10px; }
+  div#my-reports .dropdown .dropdown-menu {
+    width: 100%;
+    top: 35px; }
+  div#my-reports .input-group {
+    min-height: 100px;
+    margin-bottom: 10px;
+    cursor: pointer; }
+    div#my-reports .input-group .form-control {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100px; }
+      div#my-reports .input-group .form-control .fa {
+        font-size: 75px; }
+      div#my-reports .input-group .form-control:hover {
+        background: rgba(32, 32, 36, 0.05); }
+  div#my-reports .report-title {
+    font-weight: bold; }
+  div#my-reports .report-description {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word; }
+  div#my-reports .my-reports-download-error {
+    margin: 1em 0; }
+  div#my-reports .pointerEvents {
+    pointer-events: initial; }
