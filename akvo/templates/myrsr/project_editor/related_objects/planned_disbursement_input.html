@@ -4,13 +4,15 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=pd %}
     <div class="hide-partial {% if pd.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include currency_input with obj=pd field='value' %}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include date_input with obj=pd field='value_date' %}
             </div>
-            <div class="col-md-4">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 {% include choice_input with obj=pd field='type' %}
             </div>
         </div>

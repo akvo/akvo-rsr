@@ -25,6 +25,3 @@ class ProjectCustomFieldViewSet(PublicProjectViewSet):
     queryset = ProjectCustomField.objects.all()
     serializer_class = ProjectCustomFieldSerializer
     filter_fields = ('project', 'name', 'max_characters', 'section', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(ProjectCustomFieldViewSet, self).get_queryset(related_to)

@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils rules compressed %}
+{% load i18n rsr_utils rules compressed %}
 {% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 {% block myrsr_main %}
   <div class="">
@@ -43,7 +43,7 @@
         <thead>
         <tr>
           <th>{% trans "Project" %}</th>
-          <th>{% trans "Location" %}</th>
+          <th>{% trans "Type" %}</th>
           <th>{% trans "Status" %}</th>
           <th>{% trans "Actions" %}</th>
         </tr>
@@ -61,7 +61,7 @@
                 <p class="small">{{ project.subtitle }}</p>
               </div>
             </td>
-            <td>{% bootstrap_icon "globe" %} {% if project.primary_location.country %}{{ project.primary_location.country }}, {{ project.primary_location.country.continent }}{% else %}{% trans 'Location unknown' %}{% endif %}</td>
+            <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
             <td>{{ project.show_status }}</td>
             <td>
               <div class="twoColumns clearfix">

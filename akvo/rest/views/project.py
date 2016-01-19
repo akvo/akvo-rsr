@@ -56,6 +56,7 @@ class ProjectViewSet(PublicProjectViewSet):
 
     serializer_class = ProjectSerializer
     filter_fields = {
+        'id': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'title': ['exact', 'icontains'],
         'subtitle': ['exact', 'icontains'],
         'status': ['exact', ],
@@ -84,7 +85,9 @@ class ProjectViewSet(PublicProjectViewSet):
         'publishingstatus__status': ['exact', ],
     }
 
-    def get_queryset(self, related_to=''):
+    project_relation = ''
+
+    def get_queryset(self):
         """
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
@@ -95,7 +98,7 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=sync_owner
             ).distinct()
-        return super(ProjectViewSet, self).get_queryset(related_to)
+        return super(ProjectViewSet, self).get_queryset()
 
 
 class ProjectExtraViewSet(ProjectViewSet):
