@@ -1605,7 +1605,6 @@ if (firstAccordionChild !== null) {
     function setReadMore(show, hide) {
       return function(e) {
         e.preventDefault();
-        console.log('click!');
         hide.classList.add('hidden');
         show.classList.remove('hidden');
       };
