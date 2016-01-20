@@ -17,10 +17,23 @@ from akvo.utils import codelist_choices, codelist_value
 
 class ProjectCondition(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='conditions')
-    text = ValidXMLCharField(_(u'condition'), blank=True, max_length=100,
-                             help_text=_(u'(100 characters)'))
-    type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1,
-                             choices=codelist_choices(CONDITION_TYPE))
+    text = ValidXMLCharField(
+        _(u'condition'), blank=True, max_length=100,
+        help_text=_(u'The text of a specific condition attached to the Project. Organisation-wide '
+                    u'terms and conditions that apply to all activities should not be reported '
+                    u'here, but in either iati-organisation/document-link or '
+                    u'iati-activity-document-link.')
+    )
+    type = ValidXMLCharField(
+        _(u'condition type'), blank=True, max_length=1, choices=codelist_choices(CONDITION_TYPE),
+        help_text=_(u'Condition type – e.g. policy, performance.<br/>'
+                    u'1 - Policy: The condition attached requires a particular policy to be '
+                    u'implemented by the recipient<br/>'
+                    u'2 - Performance: The condition attached requires certain outputs or outcomes '
+                    u'to be achieved by the recipient<br/>'
+                    u'3 - Fiduciary: The condition attached requires use of certain public '
+                    u'financial management or public accountability measures by the recipient')
+    )
 
     def __unicode__(self):
         return self.text if self.text else u'%s' % _(u'No condition specified')

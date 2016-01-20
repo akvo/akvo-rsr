@@ -7,15 +7,16 @@
 
 from akvo.rsr.models import ProjectUpdateLocation
 from ..serializers import ProjectUpdateLocationSerializer, MapProjectUpdateLocationSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
 
 
-class ProjectUpdateLocationViewSet(BaseRSRViewSet):
+class ProjectUpdateLocationViewSet(PublicProjectViewSet):
     """
     API endpoint that allows organisation locations to be viewed or edited.
     """
-    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_public=True)
+    queryset = ProjectUpdateLocation.objects.all()
     serializer_class = ProjectUpdateLocationSerializer
+    project_relation = 'location_target__project__'
 
 
 class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
@@ -37,8 +38,8 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     )
     max_paginate_by = 500
     paginate_by = 100
-    queryset = ProjectUpdateLocation.objects.filter(location_target__project__is_public=True).\
-        select_related(
+    # TODO: shouldn't this be subject to private project filtering?
+    queryset = ProjectUpdateLocation.objects.select_related(
             'location_target',
             'location_target__project'
         ).only(

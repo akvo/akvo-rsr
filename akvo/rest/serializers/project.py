@@ -40,7 +40,6 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
-        exclude = ('is_impact_project', )
 
 
 class ProjectExtraSerializer(ProjectSerializer):

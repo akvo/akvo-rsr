@@ -8,10 +8,10 @@
 from akvo.rsr.models import RecipientRegion
 
 from ..serializers import RecipientRegionSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class RecipientRegionViewSet(BaseRSRViewSet):
+class RecipientRegionViewSet(PublicProjectViewSet):
     """
     """
     queryset = RecipientRegion.objects.all()

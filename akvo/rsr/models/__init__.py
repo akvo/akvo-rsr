@@ -19,7 +19,8 @@ from ..signals import (
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding, create_iati_file, import_iati_file)
+    update_project_funding, create_iati_file
+)
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
@@ -31,10 +32,11 @@ from .employment import Employment
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
+from .iati_activity_import import IatiActivityImport
 from .iati_export import IatiExport
 from .iati_import import IatiImport
+from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .iati_project_import import IatiProjectImport
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
@@ -55,6 +57,7 @@ from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
 from .project_document import ProjectDocument
+from .project_editor_validation import ProjectEditorValidation, ProjectEditorValidationSet
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
@@ -80,10 +83,12 @@ __all__ = [
     'Fss',
     'FssForecast',
     'Goal',
+    'IatiActivityImport',
     'IatiExport',
     'IatiImport',
+    'IatiImportJob',
+    'CordaidZipIatiImportJob',
     'IatiImportLog',
-    'IatiProjectImport',
     'Indicator',
     'IndicatorPeriod',
     'Invoice',
@@ -111,6 +116,8 @@ __all__ = [
     'ProjectContact',
     'ProjectCustomField',
     'ProjectDocument',
+    'ProjectEditorValidation',
+    'ProjectEditorValidationSet',
     'ProjectUpdate',
     'PublishingStatus',
     'RecipientRegion',
@@ -188,6 +195,12 @@ rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_projecteditorvalidation', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_projecteditorvalidation', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_projecteditorvalidationset', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_projecteditorvalidationset', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
@@ -282,7 +295,7 @@ rules.add_perm('tastypie.change_apikey', is_rsr_admin | is_org_admin | is_org_us
 
 rules.add_perm('rsr.add_employment', is_rsr_admin)
 rules.add_perm('rsr.change_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
-rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
+rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_user_manager | is_self)
 
 rules.add_perm('rsr.iati_management', is_rsr_admin | is_org_admin | is_org_project_editor)
 
@@ -324,4 +337,3 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(create_iati_file, sender=IatiExport)
-post_save.connect(import_iati_file, sender=IatiImport)

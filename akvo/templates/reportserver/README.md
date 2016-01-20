@@ -19,12 +19,12 @@ https://reporting.test.akvo-ops.org/reportserver/reportserver/httpauthexport?key
 Since this exposes a password, even if just a dummy one, it should be hidden behind the rsr nginx proxy which can append the key/username/password query parameters. A proxy rule like this should do it, as the original query parameters will be copied over:
 ```
 location /report/project {
-	 proxy_pass https://reporting.test.akvo-ops.org;
-	 rewrite ^(.*)$ /reportserver/reportserver/httpauthexport?key=project_results&username=user1&password=unicorns break;
+        proxy_pass https://reporting.test.akvo-ops.org;
+        rewrite ^/en/reports/(.*)/(.*)$ /reportserver/reportserver/httpauthexport?key=$1&user=user1&password=unicorns&p_ID=$2 break;
 }
 ```
 The URL will then become something like
-``` https://rsr.akvo.org/report/project/2849?format=pdf ```
+``` https://rsr.akvo.org/en/reports/project_results/2849?format=pdf ```
 where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
 
 

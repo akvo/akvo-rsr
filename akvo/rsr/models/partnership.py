@@ -89,12 +89,24 @@ class Partnership(models.Model):
 
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
-        blank=False, help_text=_(u'Select an organisation that is taking an active role in the '
-                                 u'project.')
+        blank=True,
+        help_text=_(u'Select an organisation that is taking an active role in the project.')
     )
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     iati_organisation_role = models.PositiveSmallIntegerField(
-        u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
+        _(u'organisation role'), choices=IATI_ROLES, db_index=True, null=True, blank=True,
+        help_text=_(u'Select the role of the organisation within the project:<br/>'
+                    u'- Funding organisation: a government or organisation that provides funds to '
+                    u'the project<br/>'
+                    u'- Implementing organisation: an organisation involved in carrying out the '
+                    u'activity or intervention<br/>'
+                    u'- Accountable organisation: an organisation responsible for oversight of '
+                    u'the project and its outcomes<br/>'
+                    u'- Extending organisation: an organisation that manages the budget and '
+                    u'direction of a project on behalf of the funding organisation<br/>'
+                    u'- Reporting organisation: an organisation that will report this project in '
+                    u'an IATI file')
+    )
     # is_secondary_reporter is only used when the iati_organisation_role is set to
     # IATI_REPORTING_ORGANISATION, thus the use of NullBooleanField
     is_secondary_reporter = models.NullBooleanField(
@@ -106,16 +118,15 @@ class Partnership(models.Model):
     )
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=14, decimal_places=2, blank=True, null=True, db_index=True,
-        help_text=_(u'The funding amount of the partner.<br>'
-                    u'Note that it\'s only possible to indicate a funding amount for funding '
-                    u'partners.')
+        help_text=_(u'It’s only possible to indicate a funding amount for funding partners. Use a '
+                    u'period to denote decimals.')
     )
     partner_type_extra = ValidXMLCharField(
         _(u'partner type extra'), max_length=30, blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
         help_text=_(u'RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True
+        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True
     )
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
@@ -131,7 +142,7 @@ class Partnership(models.Model):
         )
     )
     related_activity_id = ValidXMLCharField(
-        _(u'related IATI activity ID'), max_length=50, blank=True
+        _(u'related IATI activity ID'), max_length=100, blank=True
     )
 
     def iati_organisation_role_label(self):

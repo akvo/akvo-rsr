@@ -8,10 +8,10 @@
 from akvo.rsr.models import Benchmark
 
 from ..serializers import BenchmarkSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class BenchmarkViewSet(BaseRSRViewSet):
+class BenchmarkViewSet(PublicProjectViewSet):
     """
     """
     queryset = Benchmark.objects.all()

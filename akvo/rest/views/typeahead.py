@@ -13,7 +13,6 @@ from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer)
-# from akvo.codelists.models import SectorCategory
 from akvo.rsr.models import Country, Organisation, Project, ProjectUpdate
 
 

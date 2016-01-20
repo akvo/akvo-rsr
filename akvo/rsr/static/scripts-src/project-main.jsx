@@ -13,54 +13,74 @@ var Accordion = ReactBootstrap.Accordion,
     Panel = ReactBootstrap.Panel,
     i18n;
 
-Indicator = React.createClass({
-  render: function () {
-    var period_start = this.props.indicator.period_start;
-    var period_end = this.props.indicator.period_end;
-    var periods;
-    if (period_start !== undefined) {
-        if (period_end !== undefined) {
-            periods = "(" + period_start + " - " + period_end + ")";
-        } else {
-            periods = "(" + period_start + " - " + i18n.end_date_unknown_text + ")";
-        }
-    } else if (period_end !== undefined) {
-        periods = "(" + i18n.start_date_unknown_text + " - " + period_end + ")";
-    } else {
-        periods = "";
-    }
+IndicatorPeriodValue = React.createClass({
+    render: function() {
+        var target_value = this.props.indicator.target_value;
+        var actual_value = this.props.indicator.actual_value;
 
-    var target_value = this.props.indicator.target_value;
-    var actual_value = this.props.indicator.actual_value;
-    var value = "";
-    if (actual_value !== undefined && actual_value !== "") {
-        value += actual_value + " (" + i18n.actual_text + ")";
-        if (target_value !== undefined && target_value !== "") {
-            value += " / ";
+        if (actual_value === undefined) {
+            actual_value = '';
         }
-    }
-    if (target_value !== undefined && target_value !== "") {
-        value += target_value + " (" + i18n.target_text + ")";
-    }
 
-    if (this.props.indicator.title && periods !== "") {
-        return (
-                <div>
-                    {this.props.indicator.title} {periods}: <i>{value}</i>
-                </div>
-            );
-    } else if (this.props.indicator.title) {
-        return (
-                <div>
-                    {this.props.indicator.title}
-                </div>
-            );
-    } else {
-        return (
-            <div/>
+        if (target_value === undefined) {
+            target_value = '';
+        }
+
+        return (actual_value !== '' && target_value !== '') ? (
+            <span>
+                : <i>{actual_value} ({i18n.actual_text}) / {target_value} ({i18n.target_text})</i>
+            </span>
+        ) : actual_value !== '' ? (
+            <span>
+                : <i>{actual_value} ({i18n.actual_text})</i>
+            </span>
+        ) : target_value !== '' ? (
+            <span>
+                : <i>{target_value} ({i18n.target_text})</i>
+            </span>
+        ) : (
+            <span />
         );
     }
-  }
+});
+
+IndicatorPeriod = React.createClass({
+    render: function () {
+        var period_start = this.props.indicator.period_start;
+        var period_end = this.props.indicator.period_end;
+
+        if (period_start === undefined && period_end === undefined) {
+            return (
+                <span />
+            );
+        }
+
+        if (period_start === undefined) {
+            period_start = i18n.start_date_unknown_text;
+        } else if (period_end === undefined) {
+            period_end = i18n.end_date_unknown_text;
+        }
+
+        return (
+            <span>
+                &nbsp;({period_start} - {period_end})
+            </span>
+        );
+    }
+});
+
+Indicator = React.createClass({
+    render: function () {
+        return this.props.indicator.title ? (
+            <div>
+                {this.props.indicator.title}
+                <IndicatorPeriod indicator={this.props.indicator} />
+                <IndicatorPeriodValue indicator={this.props.indicator} />
+            </div>
+        ) : (
+            <span />
+        );
+    }
 });
 
 Result = React.createClass({
@@ -97,46 +117,11 @@ AccordionInstance = React.createClass({
 
   splitLines: function(text) {
     var i = 0;
-    var lines = text.match(/[^\r\n]+/g).map(function(line) {
-      i = i + 1;
+    return text.match(/[^\r\n]+/g).map(function(line) {
       return (
-          <p key={i}>{line}</p>
+          <p key={i++}>{line}</p>
       );
     });
-    return lines;
-  },
-
-  getIndicators: function(indicators) {
-      var i = 0;
-      var result_list = indicators.map(function(indicator) {
-          i = i + 1;
-          return (
-              <dl className="indicators-description">
-                  <dt>
-                      <i className="fa fa-check"></i> {result.title}
-                  </dt>
-                  <dd></dd>
-              </dl>
-          );
-      });
-      return result_list;
-  },
-
-  getResults: function(results) {
-      var i = 0;
-      var result_list = results.map(function(result) {
-          i = i + 1;
-          return (
-              <dl className="results-description">
-                  <dt>
-                      <i className="fa fa-check"></i> <strong>{result.title}</strong>
-                  </dt>
-                  <dd></dd>
-                    {this.getIndicators(result.indicators)}
-              </dl>
-          );
-      });
-      return result_list;
   },
 
   render: function() {
@@ -709,7 +694,7 @@ if (firstAccordionChild !== null) {
           // Placeholder to ensure label is correct size - under rare
           // conditions label will have no text content until slider handle
           // is moved.
-          handleLabelEl.textContent = '--'
+          handleLabelEl.textContent = '--';
 
           handleChangeLabelEl.classList.add('handle-change-label');
 
@@ -958,7 +943,9 @@ if (firstAccordionChild !== null) {
             // Object successfully created
 
             // This callback expands the indicator period panel when the new data is loaded
-            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+            var callback = function(){
+              periodNode.querySelector('.expand-indicator-period').click();
+            };
 
             // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
             // call has finished
@@ -1027,7 +1014,9 @@ if (firstAccordionChild !== null) {
             // Object successfully saved
 
             // This callback expands the indicator period panel when the new data is loaded
-            var callback = function(){periodNode.querySelector('.expand-indicator-period').click()};
+            var callback = function(){
+              periodNode.querySelector('.expand-indicator-period').click();
+            };
 
             // TODO: only close the panel and remove the "saving" message once the "addAdditionalUpdateData"
             // call has finished
@@ -1612,6 +1601,21 @@ if (firstAccordionChild !== null) {
     return updateContainer;
   }
 
+  function readMoreOnClicks() {
+    function setReadMore(show, hide) {
+      return function(e) {
+        e.preventDefault();
+        hide.classList.add('hidden');
+        show.classList.remove('hidden');
+      };
+    }
+
+    var summaryReadMore = document.getElementById('summary-truncated').querySelector('.read-more');
+    var summaryReadLess = document.getElementById('summary-full').querySelector('.read-less');
+    summaryReadMore.onclick = setReadMore(summaryReadLess.parentNode, summaryReadMore.parentNode);
+    summaryReadLess.onclick = setReadMore(summaryReadMore.parentNode, summaryReadLess.parentNode);
+  }
+
   function setCurrentDate() {
     var interval = setInterval(function(){
       var localCurrentDate = new Date(currentDate);
@@ -1705,6 +1709,7 @@ if (firstAccordionChild !== null) {
     // Setup project tabs
     setTabOnClicks();
     readTabFromFragment();
+    readMoreOnClicks();
 
     // Setup results framework
     setResultExpandOnClicks();

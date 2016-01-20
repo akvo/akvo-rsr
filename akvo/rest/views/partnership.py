@@ -8,10 +8,10 @@
 from akvo.rsr.models import Partnership
 
 from ..serializers import PartnershipSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class PartnershipViewSet(BaseRSRViewSet):
+class PartnershipViewSet(PublicProjectViewSet):
     """
     """
     queryset = Partnership.objects.all()
@@ -24,5 +24,5 @@ class PartnershipViewSet(BaseRSRViewSet):
         if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP.keys():
             self.queryset = self.queryset.filter(
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
-            )
+            ).distinct()
         return super(PartnershipViewSet, self).get_queryset()

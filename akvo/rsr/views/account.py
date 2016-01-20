@@ -12,14 +12,18 @@ import re
 from lxml import etree
 from tastypie.models import ApiKey
 
-from akvo.rsr.forms import RegisterForm
+from akvo.rsr.forms import RegisterForm, InvitedUserForm
+from akvo.rsr.models import Employment
+from akvo.utils import rsr_send_mail
 
 from django.conf import settings
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect, render, render_to_response
 from django.template import RequestContext
 
 from registration.models import RegistrationProfile
@@ -85,6 +89,104 @@ def activate(request, activation_key, extra_context=None):
         },
         context_instance=context
     )
+
+
+def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, token):
+    """
+    Activate a user that has been invited to use RSR.
+
+    :param request: the request
+    :param inviting_pk: the invitee user's primary key
+    :param user_pk: the invited user's primary key
+    :param employment_pk: the employment's primary key
+    :param token_date: the first part of the token
+    :param token: the second part of the token
+    """
+
+    def approve_employment(invitee, invited, empl):
+        """
+        Approves the employment and sends a mail to the user that has invited the new user.
+
+        :param invitee: the invitee user's instance
+        :param invited: the invited user's instance
+        :param empl: the employment's instance
+        """
+        empl.approve(invitee)
+
+        if invitee:
+            # Send notification email to inviting user
+            rsr_send_mail(
+                [invitee.email],
+                subject='registration/inviting_user_notification_subject.txt',
+                message='registration/inviting_user_notification_message.txt',
+                html_message='registration/inviting_user_notification_message.html',
+                subject_context={
+                    'user': invited,
+                },
+                msg_context={
+                    'invited_user': invited,
+                    'inviting_user': invitee,
+                    'organisation': empl.organisation,
+                }
+            )
+
+    def login_and_redirect(req, invited):
+        """
+        Log the invited user in and redirect to the My details page in MyRSR.
+
+        :param req: the request
+        :param invited: the invited user's instance
+        """
+        invited = authenticate(username=invited.username, no_password=True)
+        login(request, invited)
+        return redirect('my_details')
+
+    bad_link, signature_expired, user, inviting_user, employment = False, False, None, None, None
+
+    try:
+        user = get_user_model().objects.get(pk=user_pk)
+        inviting_user = get_user_model().objects.get(pk=inviting_pk)
+        employment = Employment.objects.get(pk=employment_pk)
+    except ObjectDoesNotExist:
+        bad_link = True
+
+    expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
+
+    try:
+        TimestampSigner().unsign(':'.join([user.email, token_date, token]),
+                                 max_age=expiration_days * 24 * 60 * 60)
+    except SignatureExpired:
+        signature_expired = True
+    except BadSignature:
+        bad_link = True
+
+    if user and user.is_active:
+        if employment and employment.is_approved:
+            # User is active and employment is approved, so nothing to do here
+            return login_and_redirect(request, user)
+        elif employment and not (signature_expired or bad_link):
+            # Employment is not yet approved, and link is ok.
+            # Approve employment and log user in.
+            approve_employment(inviting_user, user, employment)
+            return login_and_redirect(request, user)
+
+    if request.method == 'POST':
+        form = InvitedUserForm(user=user, data=request.POST)
+        if form.is_valid():
+            # Approve employment and save new user details
+            form.save(request)
+            approve_employment(inviting_user, user, employment)
+            return login_and_redirect(request, user)
+    else:
+        form = InvitedUserForm(user=user)
+
+    context = {
+        'form': form,
+        'expiration_days': expiration_days,
+        'bad_link': bad_link,
+        'signature_expired': signature_expired
+    }
+    return render(request, 'registration/invite_activate.html', context)
 
 
 def sign_in(request):

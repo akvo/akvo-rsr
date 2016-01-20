@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with org_name=organisation.long_name %}[Akvo RSR] You have been added to {{org_name}}{% endblocktrans %}
