@@ -182,21 +182,40 @@ def act_on_log_entry(sender, **kwargs):
 
 def employment_pre_save(sender, **kwargs):
     """
-    Send a mail to the user when his/her account has been approved.
+    This signal intends to send a mail to the user when his/her account has been approved.
+    A mail will be sent when:
+
+    - A new employment is created with is_approved = True.
+      * We assume this happens when an existing user is invited for a new organisation.
+    - An existing employment is updated from is_approved = False changed to True.
+      * We assume this happens when an existing user has requested to join an organisation himself.
     """
-    employment = kwargs.get("instance", False)
+    employment = kwargs.get("instance", None)
+
     try:
         obj = sender.objects.get(pk=employment.pk)
     except sender.DoesNotExist:
-        # Object is new
-        pass
-    else:
-        if not obj.is_approved and employment.is_approved:
-            # Employment is approved, send mail
+        # Employment is new, send mail when it is also approved
+        if employment.is_approved:
             rsr_send_mail(
                 [employment.user.email],
-                subject='registration/approved_email_subject.txt',
-                message='registration/approved_email_message.txt',
+                subject='registration/approved_added_email_subject.txt',
+                message='registration/approved_added_email_message.txt',
+                subject_context={
+                    'organisation': employment.organisation,
+                },
+                msg_context={
+                    'user': employment.user,
+                    'organisation': employment.organisation,
+                }
+            )
+    else:
+        # Employment already exists, send mail when it wasn't approved before, but is approved now.
+        if not obj.is_approved and employment.is_approved:
+            rsr_send_mail(
+                [employment.user.email],
+                subject='registration/approved_request_email_subject.txt',
+                message='registration/approved_request_email_message.txt',
                 subject_context={
                     'organisation': employment.organisation,
                 },
@@ -206,32 +225,47 @@ def employment_pre_save(sender, **kwargs):
                 }
             )
 
+
 def employment_post_save(sender, **kwargs):
     """
-    If a new employment is created:
-    - Set 'Users' Group for this employment if no group has been set
-    - Inform RSR support users, organisation admins and organisation user managers
+    For all employments:
+    - Set User to is_staff (for admin access) when the employment is approved and the Group is set
+      to 'Project Editors', 'User managers' or 'Admins', or when the user is a superuser or general
+      admin.
+    - Set 'Users' Group for the employment if no group has been set
 
-    If an existing employment is saved:
-    - Set User to is_staff (for admin access) when the employment is approved and the Group is set to 'Project Editors',
-    'User managers' or 'Admins', or when the user is a superuser or general admin.
+    If a new employment is created for an active user of which the employment is not approved yet:
+    - Inform RSR support users, organisation admins and organisation user managers of the request
     """
+    # Retrieve all user groups and the employment
     users_group = Group.objects.get(name='Users')
     project_editors_group = Group.objects.get(name='Project Editors')
     user_managers_group = Group.objects.get(name='User Managers')
     admins_group = Group.objects.get(name='Admins')
     employment = kwargs.get("instance", None)
+
     if employment:
         user = employment.user
-        if kwargs['created']:
-            if not employment.group:
-                employment.group = users_group
-                employment.save()
+
+        # Set user to staff when in a certain group
+        if (employment.group in [project_editors_group, user_managers_group, admins_group] and
+                employment.is_approved) or user.is_superuser or user.is_admin:
+            user.is_staff = True
+            user.save()
+
+        # Set the group to 'Users' when no group has been specified
+        if not employment.group:
+            employment.group = users_group
+            employment.save()
+
+        # Send an 'Organisation request' mail when an employment has been newly created, the
+        # user is active and the employment has not been approved yet.
+        if kwargs['created'] and user.is_active and not employment.is_approved:
             organisation = employment.organisation
-            users = get_user_model().objects.all()
+            active_users = get_user_model().objects.filter(is_active=True)
             notify = (
-                users.filter(is_admin=True, is_support=True) |
-                users.filter(
+                active_users.filter(is_admin=True, is_support=True) |
+                active_users.filter(
                     employers__organisation=organisation,
                     employers__group__in=[user_managers_group, admins_group],
                     is_support=True
@@ -250,11 +284,6 @@ def employment_post_save(sender, **kwargs):
                     'organisation': organisation
                 },
             )
-        else:
-            if (employment.group in [project_editors_group, user_managers_group, admins_group] and
-                    employment.is_approved) or user.is_superuser or user.is_admin:
-                user.is_staff = True
-                user.save()
 
 
 def update_project_budget(sender, **kwargs):

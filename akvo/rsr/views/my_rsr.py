@@ -327,22 +327,37 @@ def my_reports(request):
 
 @login_required
 def user_management(request):
-    """Directory of users connected to the user."""
+    """
+    Show the user management page. It is possible to manage employments on this page, e.g. approve
+    an employment or change the group of a certain employment. Also allows users to invite other
+    users.
+
+    :param request; a Django request.
+    """
     user = request.user
 
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
     if user.is_admin or user.is_superuser:
+        # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        organisations = Organisation.objects.all()
+        roles = Group.objects.filter(
+            name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+        )
     else:
+        # Others can only manage or invite users to their own organisation, or the
+        # organisations that they content own
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
-                org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
+            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
+        ]
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
     if q:
@@ -389,9 +404,21 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
+    organisations_list = []
+    for organisation in organisations:
+        organisation_dict = {'id': organisation.id, 'name': organisation.name}
+        organisations_list.append(organisation_dict)
+
+    roles_list = []
+    for role in roles:
+        roles_dict = {'id': role.id, 'name': role.name}
+        roles_list.append(roles_dict)
+
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
+    context['organisations'] = json.dumps(organisations_list)
+    context['roles'] = json.dumps(roles_list)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
