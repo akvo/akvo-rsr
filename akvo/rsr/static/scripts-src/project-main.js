@@ -1601,6 +1601,21 @@ if (firstAccordionChild !== null) {
     return updateContainer;
   }
 
+  function readMoreOnClicks() {
+    function setReadMore(show, hide) {
+      return function(e) {
+        e.preventDefault();
+        hide.classList.add('hidden');
+        show.classList.remove('hidden');
+      };
+    }
+
+    var summaryReadMore = document.getElementById('summary-truncated').querySelector('.read-more');
+    var summaryReadLess = document.getElementById('summary-full').querySelector('.read-less');
+    summaryReadMore.onclick = setReadMore(summaryReadLess.parentNode, summaryReadMore.parentNode);
+    summaryReadLess.onclick = setReadMore(summaryReadMore.parentNode, summaryReadLess.parentNode);
+  }
+
   function setCurrentDate() {
     var interval = setInterval(function(){
       var localCurrentDate = new Date(currentDate);
@@ -1694,6 +1709,7 @@ if (firstAccordionChild !== null) {
     // Setup project tabs
     setTabOnClicks();
     readTabFromFragment();
+    readMoreOnClicks();
 
     // Setup results framework
     setResultExpandOnClicks();

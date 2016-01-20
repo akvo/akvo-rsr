@@ -18,7 +18,7 @@ from akvo.utils import codelist_choices, codelist_value
 class Result(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='results')
     title = ValidXMLCharField(
-        _(u'result title'), blank=True, max_length=255,
+        _(u'result title'), blank=True, max_length=500,
         help_text=_(u'The aim of the project in one sentence. This doesn’t need to be something '
                     u'that can be directly counted, but it should describe an overall goal of the '
                     u'project. There can be multiple results for one project.')

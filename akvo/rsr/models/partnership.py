@@ -126,7 +126,7 @@ class Partnership(models.Model):
         help_text=_(u'RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True
+        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True
     )
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
@@ -142,7 +142,7 @@ class Partnership(models.Model):
         )
     )
     related_activity_id = ValidXMLCharField(
-        _(u'related IATI activity ID'), max_length=50, blank=True
+        _(u'related IATI activity ID'), max_length=100, blank=True
     )
 
     def iati_organisation_role_label(self):
