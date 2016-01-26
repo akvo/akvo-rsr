@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -2367,6 +2367,12 @@ group by rsr_country.name]]></xml-property>
                     <text-property name="displayName">keywords</text-property>
                     <text-property name="heading">keywords</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">project_url</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">project_url</text-property>
+                    <text-property name="heading">project_url</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -2435,6 +2441,11 @@ group by rsr_country.name]]></xml-property>
                     <structure>
                         <property name="position">11</property>
                         <property name="name">keywords</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">project_url</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -2518,6 +2529,13 @@ group by rsr_country.name]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">project_url</property>
+                    <property name="nativeName">project_url</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
   p1.id, p1.budget, p1.currency, p1.status, p1.date_start_planned, p1.date_end_planned, p1.title, p1.iati_activity_id,
@@ -2526,7 +2544,7 @@ group by rsr_country.name]]></xml-property>
   (SELECT string_agg(k.label, ', ')
     FROM rsr_project p2, rsr_keyword k, rsr_project_keywords pk
     WHERE k.id = pk.keyword_id AND p2.id = pk.project_id AND p2.id = p1.id
-    group by pk.project_id) keywords
+    group by pk.project_id) keywords, concat('http://rsr.akvo.org/en/project/', p1.id::text) AS project_url
 
 FROM rsr_project p1
   LEFT JOIN rsr_publishingstatus ON p1.id = rsr_publishingstatus.project_id
@@ -3822,6 +3840,7 @@ GROUP BY rsr_country.name
                     <image id="735">
                         <property name="height">50%</property>
                         <property name="width">50%</property>
+                        <expression name="altText">"Logo"</expression>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -3831,7 +3850,6 @@ GROUP BY rsr_country.name
                         <structure name="toc"/>
                         <property name="source">url</property>
                         <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["logo"]</expression>
-                        <expression name="altText">"Logo"</expression>
                     </image>
                 </cell>
             </row>
@@ -3932,14 +3950,7 @@ GROUP BY rsr_country.name
                         <text-property name="text">Name</text-property>
                     </label>
                 </cell>
-                <cell id="576">
-                    <label id="792">
-                        <property name="fontFamily">"Calibri"</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
-                        <text-property name="text">Count</text-property>
-                    </label>
-                </cell>
+                <cell id="576"/>
             </row>
             <row id="577">
                 <cell id="578">
@@ -4243,7 +4254,6 @@ GROUP BY rsr_country.name
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
-            <property name="pageBreakInterval">0</property>
             <column id="633">
                 <property name="width">2.6041666666666665in</property>
             </column>
@@ -4273,31 +4283,59 @@ GROUP BY rsr_country.name
             <detail>
                 <row id="625">
                     <cell id="626">
-                        <text-data id="793">
-                            <expression name="valueExpr">switch (row["status"]) {&#13;
-    case "A":&#13;
-        "Active";&#13;
-        break;&#13;
-    case "C":&#13;
-        "Completed";&#13;
-        break;&#13;
-    case "R":&#13;
-        "Archived";&#13;
-        break;&#13;
-    case "L":&#13;
-        "Cancelled";&#13;
-        break;&#13;
-    case "H":&#13;
-        "Needs funding";&#13;
-        break;&#13;
-    case "N":&#13;
-        "(None)";&#13;
-        break;&#13;
-    default:&#13;
-        row["status"];&#13;
-}</expression>
-                            <property name="contentType">html</property>
-                        </text-data>
+                        <data id="627">
+                            <list-property name="mapRules">
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"A"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Active</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"R"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Archived</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"C"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Completed</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"H"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Needs funding</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"L"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Cancelled</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"N"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">(None)</text-property>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">status</property>
+                        </data>
                     </cell>
                     <cell id="628">
                         <data id="629">
@@ -4341,7 +4379,6 @@ GROUP BY rsr_country.name
                     <property name="dataType">date-time</property>
                 </structure>
             </list-property>
-            <property name="pageBreakInterval">0</property>
             <column id="516">
                 <property name="width">2.6041666666666665in</property>
             </column>
@@ -4435,7 +4472,6 @@ GROUP BY rsr_country.name
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <property name="pageBreakInterval">0</property>
             <column id="605">
                 <property name="width">1.6666666666666667in</property>
             </column>
@@ -4597,8 +4633,13 @@ GROUP BY rsr_country.name
                     <expression name="expression" type="javascript">dataSetRow["status"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">project_url</property>
+                    <text-property name="displayName">project_url</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_url"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
-            <property name="pageBreakInterval">0</property>
             <column id="663">
                 <property name="width">1.5208333333333333in</property>
             </column>
@@ -4630,6 +4671,9 @@ GROUP BY rsr_country.name
                 <property name="width">1.1145833333333333in</property>
             </column>
             <column id="500">
+                <property name="width">1.3125in</property>
+            </column>
+            <column id="795">
                 <property name="width">1.3125in</property>
             </column>
             <header>
@@ -4703,6 +4747,12 @@ GROUP BY rsr_country.name
                             <text-property name="text">keywords</text-property>
                         </label>
                     </cell>
+                    <cell id="792">
+                        <label id="796">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Project URL</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <detail>
@@ -4719,37 +4769,106 @@ GROUP BY rsr_country.name
                     </cell>
                     <cell id="464">
                         <data id="465">
-                            <property name="marginRight">4pt</property>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">id</property>
                         </data>
                     </cell>
                     <cell id="655">
-                        <text-data id="794">
-                            <expression name="valueExpr">switch (row["status"]) {&#13;
-    case "A":&#13;
-        "Active";&#13;
-        break;&#13;
-    case "C":&#13;
-        "Completed";&#13;
-        break;&#13;
-    case "R":&#13;
-        "Archived";&#13;
-        break;&#13;
-    case "L":&#13;
-        "Cancelled";&#13;
-        break;&#13;
-    case "H":&#13;
-        "Needs funding";&#13;
-        break;&#13;
-    case "N":&#13;
-        "(None)";&#13;
-        break;&#13;
-    default:&#13;
-        row["status"];&#13;
-}</expression>
-                            <property name="contentType">html</property>
-                        </text-data>
+                        <data id="665">
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">eq</property>
+                                    <property name="color">#AFF167</property>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"A"</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="operator">eq</property>
+                                    <property name="color">#FF0000</property>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"L"</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="operator">eq</property>
+                                    <property name="color">#808080</property>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"C"</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="operator">eq</property>
+                                    <property name="color">#808080</property>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"R"</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="operator">eq</property>
+                                    <property name="color">#FFA500</property>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"H"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="mapRules">
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"A"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Active</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"R"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Archived</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"C"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Completed</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"H"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Needs funding</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"L"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Cancelled</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["status"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">"N"</value>
+                                    </simple-property-list>
+                                    <text-property name="display">(None)</text-property>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">status</property>
+                        </data>
                     </cell>
                     <cell id="688">
                         <data id="693">
@@ -4813,7 +4932,6 @@ GROUP BY rsr_country.name
                     </cell>
                     <cell id="476">
                         <data id="477">
-                            <property name="marginRight">4pt</property>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">update_count</property>
                         </data>
@@ -4821,6 +4939,11 @@ GROUP BY rsr_country.name
                     <cell id="480">
                         <data id="481">
                             <property name="resultSetColumn">keywords</property>
+                        </data>
+                    </cell>
+                    <cell id="793">
+                        <data id="797">
+                            <property name="resultSetColumn">project_url</property>
                         </data>
                     </cell>
                 </row>
@@ -4838,6 +4961,7 @@ GROUP BY rsr_country.name
                     <cell id="488"/>
                     <cell id="489"/>
                     <cell id="491"/>
+                    <cell id="794"/>
                 </row>
             </footer>
         </table>
