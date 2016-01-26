@@ -590,7 +590,7 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     render: function() {
         return (
             React.DOM.div( {id:"my-reports"}, 
-                React.DOM.h3(null, i18n.download_new_report),
+                React.DOM.h3(null, i18n.my_reports),
                 React.createElement(SelectReport, {
                     setReport: this.setReport,
                     downloading: this.state.downloading
