@@ -195,7 +195,7 @@ var SelectFormat = React.createClass({
         if (this.props.report !== null) {
             return (
                 <div id="choose-format">
-                    <h5>{i18n.report_format}</h5>
+                    <label>{i18n.report_format}</label>
                     {React.createElement(FormatsList, {
                         report: this.props.report,
                         setFormat: this.props.setFormat,
@@ -275,7 +275,7 @@ var ProjectsDropdown = React.createClass({
                     </li>
                 );
             });
-            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
             var button;
             if (!this.props.downloading) {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -328,7 +328,7 @@ var SelectProject = React.createClass({
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 <div id="choose-project">
-                    <h5>{i18n.project}</h5>
+                    <label>{i18n.project}</label>
                     {React.createElement(ProjectsDropdown, {
                         setProject: this.props.setProject,
                         downloading: this.props.downloading
@@ -407,7 +407,7 @@ var OrganisationsDropdown = React.createClass({
                     </li>
                 );
             });
-            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
             var button;
             if (!this.props.downloading) {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -461,7 +461,7 @@ var SelectOrganisation = React.createClass({
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 <div id="choose-organisation">
-                    <h5>{i18n.organisation}</h5>
+                    <label>{i18n.organisation}</label>
                     {React.createElement(OrganisationsDropdown, {
                         setOrganisation: this.props.setOrganisation,
                         downloading: this.props.downloading
@@ -518,7 +518,7 @@ var ReportsDropdown = React.createClass({
                 </li>
             );
         });
-        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? this.state.buttonText : <strong>{this.state.buttonText}</strong>;
+        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
         var button;
         if (!this.props.downloading) {
             button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -551,7 +551,7 @@ var SelectReport = React.createClass({
     render: function() {
         return (
             <div id="choose-report-template">
-                <h5>{i18n.report_type}</h5>
+                <label>{i18n.report_type}</label>
                 {React.createElement(ReportsDropdown, {
                     setReport: this.props.setReport,
                     downloading: this.props.downloading

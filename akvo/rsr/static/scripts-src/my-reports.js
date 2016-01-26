@@ -195,7 +195,7 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
         if (this.props.report !== null) {
             return (
                 React.DOM.div( {id:"choose-format"}, 
-                    React.DOM.h5(null, i18n.report_format),
+                    React.DOM.label(null, i18n.report_format),
                     React.createElement(FormatsList, {
                         report: this.props.report,
                         setFormat: this.props.setFormat,
@@ -275,7 +275,7 @@ var ProjectsDropdown = React.createClass({displayName: 'ProjectsDropdown',
                     )
                 );
             });
-            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
+            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
             var button;
             if (!this.props.downloading) {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
@@ -328,7 +328,7 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 React.DOM.div( {id:"choose-project"}, 
-                    React.DOM.h5(null, i18n.project),
+                    React.DOM.label(null, i18n.project),
                     React.createElement(ProjectsDropdown, {
                         setProject: this.props.setProject,
                         downloading: this.props.downloading
@@ -407,7 +407,7 @@ var OrganisationsDropdown = React.createClass({displayName: 'OrganisationsDropdo
                     )
                 );
             });
-            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
+            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
             var button;
             if (!this.props.downloading) {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
@@ -461,7 +461,7 @@ var SelectOrganisation = React.createClass({displayName: 'SelectOrganisation',
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 React.DOM.div( {id:"choose-organisation"}, 
-                    React.DOM.h5(null, i18n.organisation),
+                    React.DOM.label(null, i18n.organisation),
                     React.createElement(OrganisationsDropdown, {
                         setOrganisation: this.props.setOrganisation,
                         downloading: this.props.downloading
@@ -518,7 +518,7 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
                 )
             );
         });
-        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
+        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
         var button;
         if (!this.props.downloading) {
             button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
@@ -551,7 +551,7 @@ var SelectReport = React.createClass({displayName: 'SelectReport',
     render: function() {
         return (
             React.DOM.div( {id:"choose-report-template"}, 
-                React.DOM.h5(null, i18n.report_type),
+                React.DOM.label(null, i18n.report_type),
                 React.createElement(ReportsDropdown, {
                     setReport: this.props.setReport,
                     downloading: this.props.downloading
