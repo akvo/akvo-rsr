@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n, formats, organisations, projects, reports, isAdmin;
+var endpoints, i18n, formats, organisations, projects, isAdmin;
 var Typeahead = ReactTypeahead.Typeahead;
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
@@ -498,8 +498,23 @@ var ReportOption = React.createClass({displayName: 'ReportOption',
 var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
     getInitialState: function() {
         return {
-            buttonText: i18n.select_a_report_type
+            buttonText: i18n.select_a_report_type,
+            reports: []
         };
+    },
+
+    componentDidMount: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoints.reports + '?format=json';
+        var thisDropdown = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var reportResults = JSON.parse(xmlHttp.responseText);
+                thisDropdown.setState({reports: reportResults.results});
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
     },
 
     selectReport: function(report) {
@@ -511,7 +526,7 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
 
     render: function() {
         var thisReportsDropdown = this;
-        var reports_data = reports.map(function(report) {
+        var reports_data = this.state.reports.map(function(report) {
             return (
                 React.DOM.li( {key:report.key}, 
                     React.createElement(ReportOption, {report: report, selectReport: thisReportsDropdown.selectReport})
@@ -709,7 +724,7 @@ function getAllOrganisations() {
 /* Retrieve report information and translation strings */
 function getInitialData() {
     // Retrieve report information
-    reports = JSON.parse(document.getElementById('reports-data').innerHTML);
+    //reports = JSON.parse(document.getElementById('reports-data').innerHTML);
 
     // Check if user is an admin (Superuser or RSR admin)
     isAdmin = JSON.parse(document.getElementById('user-data').innerHTML).is_admin;
@@ -729,6 +744,9 @@ function getInitialData() {
 
     // Retrieve translations
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+
+    // Retrieve data endpoints
+    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

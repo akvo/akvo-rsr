@@ -147,3 +147,11 @@ urlpatterns += patterns(
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
 )
+
+# My reports
+urlpatterns += patterns(
+    '',
+    url(r'reports$',
+        views.reports,
+        name='reports_api'),
+)

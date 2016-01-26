@@ -54,6 +54,7 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
+from .report import reports
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
@@ -122,6 +123,7 @@ __all__ = [
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
+    'reports',
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
@@ -132,7 +134,6 @@ __all__ = [
     'typeahead_country',
     'typeahead_organisation',
     'typeahead_project',
-    'typeahead_projectupdate',
     'update_details',
     'upload_indicator_update_photo',
     'UserViewSet',

@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
-from akvo.rsr.reports import FORMATS, REPORTS
+from akvo.rsr.reports import FORMATS
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
@@ -315,7 +315,6 @@ def my_reports(request):
                                                                       str(project.pk))})
 
     context = {
-        'reports_data': json.dumps(sorted(REPORTS, key=lambda k: k['title'])),
         'organisations_data': json.dumps(organisations_data),
         'projects_data': json.dumps(projects_data),
         'formats_data': json.dumps(FORMATS),
