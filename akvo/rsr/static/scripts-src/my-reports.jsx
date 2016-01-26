@@ -30,7 +30,7 @@ var csrftoken = getCookie('csrftoken');
 
 var DownloadButton = React.createClass({
     getInitialState: function() {
-        return { helpText: null};
+        return {helpText: null};
     },
 
     generateReport: function() {
@@ -279,11 +279,17 @@ var ProjectsDropdown = React.createClass({
             var button;
             if (!this.props.downloading) {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                            {buttonDisplay}
+                            <div className="caret-indicator">
+                                <i className="fa fa-sort" />
+                            </div>
                         </button>;
             } else {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-project" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                            {buttonDisplay}
+                            <div className="caret-indicator">
+                                <i className="fa fa-sort" />
+                            </div>
                         </button>;
             }
 
@@ -405,11 +411,17 @@ var OrganisationsDropdown = React.createClass({
             var button;
             if (!this.props.downloading) {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                            {buttonDisplay}
+                            <div className="caret-indicator">
+                                <i className="fa fa-sort" />
+                            </div>
                         </button>;
             } else {
                 button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                            {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                            {buttonDisplay}
+                            <div className="caret-indicator">
+                                <i className="fa fa-sort" />
+                            </div>
                         </button>;
             }
 
@@ -510,11 +522,17 @@ var ReportsDropdown = React.createClass({
         var button;
         if (!this.props.downloading) {
             button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        {buttonDisplay}
+                        <div className="caret-indicator">
+                            <i className="fa fa-sort" />
+                        </div>
                     </button>;
         } else {
             button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                        {buttonDisplay}&nbsp;&nbsp;<span className="caret" />
+                        {buttonDisplay}
+                        <div className="caret-indicator">
+                            <i className="fa fa-sort" />
+                        </div>
                     </button>;
         }
 

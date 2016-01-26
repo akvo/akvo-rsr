@@ -3628,10 +3628,15 @@ div.active {
 div#my-reports {
     .dropdown {
         .dropdown-toggle {
+            text-align: left;
             width: 100%;
             margin-bottom: 10px;
+            .caret-indicator {
+                float: right;
+            }
         }
         .dropdown-menu {
+            text-align: left;
             width: 100%;
             top: 35px;
         }

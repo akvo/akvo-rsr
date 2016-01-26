@@ -30,7 +30,7 @@ var csrftoken = getCookie('csrftoken');
 
 var DownloadButton = React.createClass({displayName: 'DownloadButton',
     getInitialState: function() {
-        return { helpText: null};
+        return {helpText: null};
     },
 
     generateReport: function() {
@@ -279,11 +279,17 @@ var ProjectsDropdown = React.createClass({displayName: 'ProjectsDropdown',
             var button;
             if (!this.props.downloading) {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                            buttonDisplay,
+                            React.DOM.div( {className:"caret-indicator"}, 
+                                React.DOM.i( {className:"fa fa-sort"} )
+                            )
                         );
             } else {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                            buttonDisplay,
+                            React.DOM.div( {className:"caret-indicator"}, 
+                                React.DOM.i( {className:"fa fa-sort"} )
+                            )
                         );
             }
 
@@ -405,11 +411,17 @@ var OrganisationsDropdown = React.createClass({displayName: 'OrganisationsDropdo
             var button;
             if (!this.props.downloading) {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                            buttonDisplay,
+                            React.DOM.div( {className:"caret-indicator"}, 
+                                React.DOM.i( {className:"fa fa-sort"} )
+                            )
                         );
             } else {
                 button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                            buttonDisplay,
+                            React.DOM.div( {className:"caret-indicator"}, 
+                                React.DOM.i( {className:"fa fa-sort"} )
+                            )
                         );
             }
 
@@ -510,11 +522,17 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
         var button;
         if (!this.props.downloading) {
             button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                        buttonDisplay,
+                        React.DOM.div( {className:"caret-indicator"}, 
+                            React.DOM.i( {className:"fa fa-sort"} )
+                        )
                     );
         } else {
             button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                        buttonDisplay,
+                        React.DOM.div( {className:"caret-indicator"}, 
+                            React.DOM.i( {className:"fa fa-sort"} )
+                        )
                     );
         }
 
