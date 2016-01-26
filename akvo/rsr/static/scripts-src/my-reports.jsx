@@ -574,10 +574,7 @@ var MyReportsApp  = React.createClass({
 
     setReport: function(report) {
         this.setState({
-            report: report,
-            organisation: null,
-            project: null,
-            format: null
+            report: report
         });
     },
 
