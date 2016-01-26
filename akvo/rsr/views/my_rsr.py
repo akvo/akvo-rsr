@@ -315,7 +315,7 @@ def my_reports(request):
                                                                       str(project.pk))})
 
     context = {
-        'reports_data': json.dumps(REPORTS),
+        'reports_data': json.dumps(sorted(REPORTS, key=lambda k: k['title'])),
         'organisations_data': json.dumps(organisations_data),
         'projects_data': json.dumps(projects_data),
         'formats_data': json.dumps(FORMATS),
