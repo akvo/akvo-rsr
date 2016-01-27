@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -530,72 +530,84 @@ GROUP BY rsr_country.name, p1.id
                     <property name="columnName">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">budget</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">budget</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">budget</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">funds</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">funds</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">funds</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">funds_needed</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">funds_needed</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">funds_needed</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_start_planned</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_start_planned</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_start_planned</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_end_planned</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_end_planned</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_end_planned</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">title</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">title</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">iati_activity_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iati_activity_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">iati_activity_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">update_count</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">update_count</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">update_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">project_url</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">project_url</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">project_url</text-property>
                 </structure>
             </list-property>
@@ -607,6 +619,7 @@ GROUP BY rsr_country.name, p1.id
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -777,6 +790,10 @@ FROM rsr_project p1
 WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
       AND p1.funds_needed > '5'
+      AND p1.status IN ('A', 'C')
+ 
+      
+      
 
 GROUP BY rsr_country.name, p1.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2171,6 +2188,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <property name="borderLeftStyle">none</property>
             <property name="borderRightStyle">none</property>
             <property name="borderTopStyle">none</property>
+            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakAfter">always</property>
             <property name="width">11.125in</property>
@@ -2299,6 +2317,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="395">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Id</text-property>
                         </label>
                     </cell>
@@ -2311,7 +2330,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="397">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Budget</text-property>
                         </label>
                     </cell>
@@ -2322,7 +2341,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="399">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Planned start date</text-property>
                         </label>
                     </cell>
@@ -2333,7 +2352,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="401">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Planned end date</text-property>
                         </label>
                     </cell>
@@ -2367,6 +2386,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="407">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Updates</text-property>
                         </label>
                     </cell>
@@ -2388,6 +2408,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="411">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Keywords</text-property>
                         </label>
                     </cell>
@@ -2412,6 +2433,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="416">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">id</property>
                         </data>
                     </cell>
@@ -2421,7 +2443,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="559">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <list-property name="mapRules">
                                 <structure>
                                     <expression name="testExpr" type="javascript">row["currency"]</expression>
@@ -2453,7 +2475,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Currency</property>
                                 <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">budget</property>
                         </data>
                     </cell>
@@ -2467,7 +2489,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_start_planned</property>
                         </data>
                     </cell>
@@ -2481,7 +2503,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_end_planned</property>
                         </data>
                     </cell>
@@ -2492,6 +2514,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <data id="424">
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
@@ -2502,6 +2525,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <data id="426">
                             <property name="fontSize">8pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">iati_activity_id</property>
                         </data>
                     </cell>
@@ -2511,7 +2535,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="428">
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">update_count</property>
                         </data>
                     </cell>
@@ -2521,6 +2545,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="430">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
@@ -2530,6 +2555,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="432">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">keywords</property>
                         </data>
                     </cell>
@@ -2542,6 +2568,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                             </structure>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">project_url</property>
                             <list-property name="action">
                                 <structure>
@@ -2571,6 +2598,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">rowcount</property>
                         </data>
                     </cell>
@@ -2656,6 +2684,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         <table id="232">
             <property name="fontFamily">"Calibri"</property>
             <property name="fontSize">10pt</property>
+            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakAfter">always</property>
             <property name="pageBreakBefore">avoid</property>
@@ -2798,21 +2827,18 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="rowSpan">1</property>
                         <label id="237">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Budget</text-property>
                         </label>
                     </cell>
                     <cell id="238">
                         <label id="569">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Planned start date</text-property>
                         </label>
                     </cell>
                     <cell id="240">
                         <label id="570">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Planned end date</text-property>
                         </label>
                     </cell>
@@ -2820,14 +2846,12 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="571">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="244">
                         <label id="573">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -2840,7 +2864,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="248">
                         <label id="574">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
@@ -2859,7 +2882,6 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="254">
                         <label id="575">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -2869,12 +2891,13 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                 <row id="256">
                     <cell id="257">
                         <data id="258">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">id</property>
                         </data>
                     </cell>
                     <cell id="564">
                         <data id="568">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <list-property name="mapRules">
                                 <structure>
                                     <expression name="testExpr" type="javascript">row["currency"]</expression>
@@ -2898,7 +2921,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     </cell>
                     <cell id="259">
                         <data id="260">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">budget</property>
                         </data>
                     </cell>
@@ -2908,7 +2931,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_start_planned</property>
                         </data>
                     </cell>
@@ -2918,35 +2941,39 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_end_planned</property>
                         </data>
                     </cell>
                     <cell id="265">
                         <data id="266">
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
                     <cell id="267">
                         <data id="268">
                             <property name="fontSize">8pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">iati_activity_id</property>
                         </data>
                     </cell>
                     <cell id="269">
                         <data id="270">
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">update_count</property>
                         </data>
                     </cell>
                     <cell id="271">
                         <data id="272">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
                     <cell id="273">
                         <data id="274">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">keywords</property>
                         </data>
                     </cell>
@@ -2956,11 +2983,13 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">last_modified_at</property>
                         </data>
                     </cell>
                     <cell id="277">
                         <data id="278">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">project_url</property>
                             <list-property name="action">
                                 <structure>
@@ -2979,6 +3008,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <property name="borderTopWidth">thin</property>
                     <cell id="280">
                         <data id="671">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">rowcount</property>
                         </data>
                     </cell>
@@ -3010,10 +3040,11 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         </label>
         <label id="562">
             <property name="fontFamily">"Calibri"</property>
-            <text-property name="text">Sorted by country and id</text-property>
+            <text-property name="text">Sorted by country and id, only active and completed projects</text-property>
         </label>
         <table id="468">
             <property name="fontFamily">"Calibri"</property>
+            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakBefore">avoid</property>
             <property name="width">11.09375in</property>
@@ -3183,28 +3214,24 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="rowSpan">1</property>
                         <label id="580">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Budget</text-property>
                         </label>
                     </cell>
                     <cell id="474">
                         <label id="475">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Funds</text-property>
                         </label>
                     </cell>
                     <cell id="476">
                         <label id="477">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Funds needed</text-property>
                         </label>
                     </cell>
                     <cell id="478">
                         <label id="584">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Planned start date</text-property>
                         </label>
                     </cell>
@@ -3218,14 +3245,12 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="583">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="484">
                         <label id="586">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -3238,14 +3263,12 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="488">
                         <label id="489">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
                     <cell id="490">
                         <label id="491">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -3255,12 +3278,13 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                 <row id="492">
                     <cell id="493">
                         <data id="494">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">id</property>
                         </data>
                     </cell>
                     <cell id="495">
                         <data id="581">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <list-property name="mapRules">
                                 <structure>
                                     <expression name="testExpr" type="javascript">row["currency"]</expression>
@@ -3284,19 +3308,19 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     </cell>
                     <cell id="577">
                         <data id="496">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">budget</property>
                         </data>
                     </cell>
                     <cell id="497">
                         <data id="498">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">funds</property>
                         </data>
                     </cell>
                     <cell id="499">
                         <data id="500">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">funds_needed</property>
                         </data>
                     </cell>
@@ -3306,7 +3330,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_start_planned</property>
                         </data>
                     </cell>
@@ -3316,35 +3340,39 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_end_planned</property>
                         </data>
                     </cell>
                     <cell id="505">
                         <data id="506">
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
                     <cell id="507">
                         <data id="508">
                             <property name="fontSize">8pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">iati_activity_id</property>
                         </data>
                     </cell>
                     <cell id="509">
                         <data id="510">
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">update_count</property>
                         </data>
                     </cell>
                     <cell id="511">
                         <data id="512">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
                     <cell id="513">
                         <data id="514">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">project_url</property>
                             <list-property name="action">
                                 <structure>
@@ -3370,6 +3398,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">rowcount</property>
                         </data>
                     </cell>
@@ -3393,7 +3422,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">total_budget</property>
                         </data>
                         <data id="668">
@@ -3401,7 +3430,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">total_budget_usd</property>
                         </data>
                     </cell>
@@ -3430,7 +3459,8 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
             <text-property name="text">Projects without photos</text-property>
         </label>
         <table id="590">
-            <property name="fontFamily">"Calibri"</property>
+            <property name="color">black</property>
+            <property name="textAlign">left</property>
             <property name="masterPage">A4L MasterPage</property>
             <property name="pageBreakBefore">avoid</property>
             <property name="width">11.125in</property>
@@ -3566,21 +3596,18 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="rowSpan">1</property>
                         <label id="595">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Budget</text-property>
                         </label>
                     </cell>
                     <cell id="600">
                         <label id="601">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Planned start date</text-property>
                         </label>
                     </cell>
                     <cell id="602">
                         <label id="603">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
                             <text-property name="text">Planned end date</text-property>
                         </label>
                     </cell>
@@ -3588,14 +3615,12 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <label id="605">
                             <property name="fontWeight">bold</property>
                             <property name="marginLeft">4pt</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Title</text-property>
                         </label>
                     </cell>
                     <cell id="606">
                         <label id="607">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">IATI activity id</text-property>
                         </label>
                     </cell>
@@ -3608,14 +3633,12 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     <cell id="610">
                         <label id="611">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Country</text-property>
                         </label>
                     </cell>
                     <cell id="612">
                         <label id="613">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
                             <text-property name="text">Project URL</text-property>
                         </label>
                     </cell>
@@ -3625,12 +3648,13 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                 <row id="614">
                     <cell id="615">
                         <data id="616">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">id</property>
                         </data>
                     </cell>
                     <cell id="617">
                         <data id="618">
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <list-property name="mapRules">
                                 <structure>
                                     <expression name="testExpr" type="javascript">row["currency"]</expression>
@@ -3654,7 +3678,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                     </cell>
                     <cell id="619">
                         <data id="620">
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">budget</property>
                         </data>
                     </cell>
@@ -3664,7 +3688,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_start_planned</property>
                         </data>
                     </cell>
@@ -3674,35 +3698,39 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                                 <property name="category">Custom</property>
                                 <property name="pattern">d-MMM-yyyy</property>
                             </structure>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">date_end_planned</property>
                         </data>
                     </cell>
                     <cell id="629">
                         <data id="630">
                             <property name="marginLeft">4pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
                     <cell id="631">
                         <data id="632">
                             <property name="fontSize">8pt</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">iati_activity_id</property>
                         </data>
                     </cell>
                     <cell id="633">
                         <data id="634">
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">update_count</property>
                         </data>
                     </cell>
                     <cell id="635">
                         <data id="636">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
                     <cell id="637">
                         <data id="638">
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">project_url</property>
                             <list-property name="action">
                                 <structure>
@@ -3725,6 +3753,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="textAlign">left</property>
                             <property name="resultSetColumn">rowcount</property>
                         </data>
                     </cell>
