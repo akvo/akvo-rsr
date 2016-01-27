@@ -2300,6 +2300,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="395">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Id</text-property>
                         </label>
                     </cell>
@@ -2312,7 +2313,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="397">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Budget</text-property>
                         </label>
                     </cell>
@@ -2323,7 +2324,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="399">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Planned start date</text-property>
                         </label>
                     </cell>
@@ -2334,7 +2335,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="401">
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">right</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Planned end date</text-property>
                         </label>
                     </cell>
@@ -2368,6 +2369,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="407">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Updates</text-property>
                         </label>
                     </cell>
@@ -2389,6 +2391,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
                         <property name="borderTopStyle">none</property>
                         <label id="411">
                             <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
                             <text-property name="text">Keywords</text-property>
                         </label>
                     </cell>
