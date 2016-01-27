@@ -140,10 +140,27 @@ urlpatterns += patterns(
     url(r'typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
+    url(r'typeaheads/user_organisations$',
+        views.typeahead_user_organisations,
+        name='user_organisations_typeahead'),
     url(r'typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
+    url(r'typeaheads/user_projects$',
+        views.typeahead_user_projects,
+        name='user_projects_typeahead'),
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
+)
+
+# My reports
+urlpatterns += patterns(
+    '',
+    url(r'reports/$',
+        views.reports,
+        name='reports_api'),
+    url(r'report_formats/$',
+        views.report_formats,
+        name='report_formats_api'),
 )
