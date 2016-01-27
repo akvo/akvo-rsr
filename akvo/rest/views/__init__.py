@@ -61,6 +61,7 @@ from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
+                        typeahead_user_organisations,
                         typeahead_project,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
@@ -134,6 +135,7 @@ __all__ = [
     'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
+    'typeahead_user_organisations',
     'typeahead_project',
     'update_details',
     'upload_indicator_update_photo',

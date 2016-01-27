@@ -5,9 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var endpoints, i18n, organisations, projects, isAdmin;
+var endpoints, i18n, projects, isAdmin;
 var Typeahead = ReactTypeahead.Typeahead;
-var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
 
 // CSRF TOKEN
@@ -128,11 +127,11 @@ var FormatsList = React.createClass({
     componentDidMount: function() {
         var xmlHttp = new XMLHttpRequest();
         var url = endpoints.base_url + endpoints.formats + '?format=json';
-        var thisDropdown = this;
+        var thisList = this;
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
                 var formatResults = JSON.parse(xmlHttp.responseText);
-                thisDropdown.setState({formats: formatResults.results});
+                thisList.setState({formats: formatResults.results});
             }
         };
         xmlHttp.open("GET", url, true);
@@ -378,6 +377,47 @@ var OrganisationOption = React.createClass({
 });
 
 var OrganisationTypeahead = React.createClass({
+    getInitialState: function() {
+        return {
+            organisations: []
+        };
+    },
+
+    componentDidMount: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoints.user_organisations + '?format=json';
+        var thisTypeahead = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var orgResults = JSON.parse(xmlHttp.responseText);
+                thisTypeahead.setState({organisations: thisTypeahead.processOrgs(orgResults.results)});
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    },
+
+    processOrgs: function(orgResults) {
+        function getDisplayOption(short, long) {
+            if (short === long) {
+                return short;
+            }
+            if (!long) {
+                return short;
+            }
+            return short + ' (' + long + ')';
+        }
+
+        orgResults.forEach(function (o) {
+            var newName = getDisplayOption(o.name, o.long_name);
+
+            o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
+        });
+
+        return orgResults;
+    },
+
     selectOrg: function(org) {
         this.props.setOrganisation(org.id);
     },
@@ -388,7 +428,7 @@ var OrganisationTypeahead = React.createClass({
                 {React.createElement(Typeahead, {
                     placeholder: i18n.select_an_organisation,
                     maxVisible: 10,
-                    options: organisations,
+                    options: this.state.organisations,
                     onOptionSelected: this.selectOrg,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
@@ -397,73 +437,6 @@ var OrganisationTypeahead = React.createClass({
                 })}
             </div>
         );
-    }
-});
-
-var OrganisationsDropdown = React.createClass({
-    getInitialState: function() {
-        return {
-            buttonText: i18n.select_an_organisation
-        };
-    },
-
-    selectOrg: function(org) {
-        this.props.setOrganisation(org.id);
-        this.setState({
-            buttonText: org.name
-        });
-    },
-
-    render: function() {
-        if (!isAdmin) {
-            var thisOrganisationsDropdown = this;
-            var organisations_data = organisations.map(function(org) {
-                return (
-                    <li key={org.id}>
-                        {React.createElement(OrganisationOption, {
-                            org: org,
-                            selectOrg: thisOrganisationsDropdown.selectOrg
-                        })}
-                    </li>
-                );
-            });
-            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
-            var button;
-            if (!this.props.downloading) {
-                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {buttonDisplay}
-                            <div className="caret-indicator">
-                                <i className="fa fa-sort" />
-                            </div>
-                        </button>;
-            } else {
-                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-organisation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
-                            {buttonDisplay}
-                            <div className="caret-indicator">
-                                <i className="fa fa-sort" />
-                            </div>
-                        </button>;
-            }
-
-            return (
-                <div className="dropdown">
-                    {button}
-                    <ul className="dropdown-menu" aria-labelledby="select-organisation">
-                        {organisations_data}
-                    </ul>
-                </div>
-            );
-        } else {
-            return (
-                <div className="org-typeahead">
-                    {React.createElement(OrganisationTypeahead, {
-                        setOrganisation: this.props.setOrganisation,
-                        downloading: this.props.downloading
-                    })}
-                </div>
-            );
-        }
-
     }
 });
 
@@ -482,10 +455,12 @@ var SelectOrganisation = React.createClass({
             return (
                 <div id="choose-organisation">
                     <label>{i18n.organisation}</label>
-                    {React.createElement(OrganisationsDropdown, {
-                        setOrganisation: this.props.setOrganisation,
-                        downloading: this.props.downloading
-                    })}
+                    <div className="org-typeahead">
+                        {React.createElement(OrganisationTypeahead, {
+                            setOrganisation: this.props.setOrganisation,
+                            downloading: this.props.downloading
+                        })}
+                    </div>
                 </div>
             );
         } else {
@@ -676,14 +651,6 @@ var MyReportsApp  = React.createClass({
     }
 });
 
-/* Initialize the 'My Reports' app */
-function initializeApp() {
-    ReactDOM.render(
-        React.createElement(MyReportsApp),
-        document.getElementById('container')
-    );
-}
-
 /* Process projects results */
 function processProjects(projectResults) {
     projectResults.forEach(function (p) {
@@ -691,28 +658,6 @@ function processProjects(projectResults) {
         p.displayOption = p.title + ' (id: ' + p.id + ')';
     });
     return projectResults;
-}
-
-/* Process organisations results */
-function processOrgs(orgResults) {
-    function getDisplayOption(short, long) {
-        if (short === long) {
-            return short;
-        }
-        if (!long) {
-            return short;
-        }
-        return short + ' (' + long + ')';
-    }
-
-    orgResults.forEach(function (o) {
-        var newName = getDisplayOption(o.name, o.long_name);
-
-        o.filterOption = o.name + ' ' + o.long_name;
-        o.displayOption = newName;
-    });
-
-    return orgResults;
 }
 
 /* Retrieve projects for the project typeahead */
@@ -728,28 +673,17 @@ function getProjects() {
     xmlHttp.send();
 }
 
-/* Retrieve organisations for the organisation typeahead */
-function getOrganisations() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            var orgResults = JSON.parse(xmlHttp.responseText);
-            organisations = processOrgs(orgResults.results);
-        }
-    };
-    xmlHttp.open("GET", orgsAPIUrl, true);
-    xmlHttp.send();
-}
-
 
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints and translations
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
 
-    getOrganisations();
     getProjects();
-    
+
     // Initialize the 'My reports' app
-    initializeApp();
+    ReactDOM.render(
+        React.createElement(MyReportsApp),
+        document.getElementById('container')
+    );
 });

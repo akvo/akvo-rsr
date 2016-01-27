@@ -40,6 +40,18 @@ def typeahead_organisation(request):
                                                              many=True))
     )
 
+
+@api_view(['GET'])
+def typeahead_user_organisations(request):
+    user = request.user
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+    organisations = user.approved_organisations() if not is_admin else Organisation.objects.all()
+    return Response(
+        rejig(organisations, TypeaheadOrganisationSerializer(organisations,
+                                                             many=True))
+    )
+
+
 @api_view(['GET'])
 def typeahead_project(request):
     projects = Project.objects.all().exclude(title='')

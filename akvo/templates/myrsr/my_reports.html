@@ -27,6 +27,7 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "formats": "{% url 'report_formats_api' %}",
+            "user_organisations": "{% url 'user_organisations_typeahead' %}",
             "reports": "{% url 'reports_api' %}"
         }
     </script>
