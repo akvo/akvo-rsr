@@ -211,32 +211,39 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
 });
 
 var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+    getInitialState: function() {
+        return {
+            disabled: this.props.downloading,
+            placeholder: i18n.select_a_project
+        };
+    },
+
+    componentDidMount: function() {
+        if (this.props.projectOptions.length === 1) {
+            this.selectProject(this.props.projectOptions[0]);
+            this.setState({
+                disabled: true,
+                placeholder: this.props.projectOptions[0].displayOption
+            });
+        }
+    },
+
+
     selectProject: function(project) {
         this.props.setProject(project.id);
     },
 
     render: function() {
-        var placeholder, disabled;
-
-        if (this.props.projectOptions.length === 1) {
-            this.selectProject(this.props.projectOptions[0]);
-            placeholder = this.props.projectOptions[0].displayOption;
-            disabled = true;
-        } else {
-            placeholder = i18n.select_a_project;
-            disabled = this.props.downloading;
-        }
-
         return (
             React.DOM.div( {className:"form-group"}, 
                 React.createElement(Typeahead, {
-                    placeholder: placeholder,
+                    placeholder: this.state.placeholder,
                     maxVisible: 10,
                     options: this.props.projectOptions,
                     onOptionSelected: this.selectProject,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: disabled},
+                    inputProps: {disabled: this.state.disabled},
                     customClasses: {input: 'form-control'}
                 })
             )
@@ -277,32 +284,38 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
 });
 
 var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahead',
+    getInitialState: function() {
+        return {
+            disabled: this.props.downloading,
+            placeholder: i18n.select_an_organisation
+        };
+    },
+
+    componentDidMount: function() {
+        if (this.props.organisationOptions.length === 1) {
+            this.selectOrg(this.props.organisationOptions[0]);
+            this.setState({
+                disabled: true,
+                placeholder: this.props.organisationOptions[0].displayOption
+            });
+        }
+    },
+
     selectOrg: function(org) {
         this.props.setOrganisation(org.id);
     },
 
     render: function() {
-        var placeholder, disabled;
-
-        if (this.props.organisationOptions.length === 1) {
-            this.selectOrg(this.props.organisationOptions[0]);
-            placeholder = this.props.organisationOptions[0].displayOption;
-            disabled = true;
-        } else {
-            placeholder = i18n.select_an_organisation;
-            disabled = this.props.downloading;
-        }
-
         return (
             React.DOM.div( {className:"form-group"}, 
                 React.createElement(Typeahead, {
-                    placeholder: placeholder,
+                    placeholder: this.state.placeholder,
                     maxVisible: 10,
                     options: this.props.organisationOptions,
                     onOptionSelected: this.selectOrg,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: disabled},
+                    inputProps: {disabled: this.state.disabled},
                     customClasses: {input: 'form-control'}
                 })
             )
