@@ -216,16 +216,27 @@ var ProjectTypeahead = React.createClass({
     },
 
     render: function() {
+        var placeholder, disabled;
+
+        if (this.props.projectOptions.length === 1) {
+            this.selectProject(this.props.projectOptions[0]);
+            placeholder = this.props.projectOptions[0].displayOption;
+            disabled = true;
+        } else {
+            placeholder = i18n.select_a_project;
+            disabled = this.props.downloading;
+        }
+
         return (
             <div className="form-group">
                 {React.createElement(Typeahead, {
-                    placeholder: i18n.select_a_project,
+                    placeholder: placeholder,
                     maxVisible: 10,
                     options: this.props.projectOptions,
                     onOptionSelected: this.selectProject,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: this.props.downloading},
+                    inputProps: {disabled: disabled},
                     customClasses: {input: 'form-control'}
                 })}
             </div>
@@ -271,16 +282,27 @@ var OrganisationTypeahead = React.createClass({
     },
 
     render: function() {
+        var placeholder, disabled;
+
+        if (this.props.organisationOptions.length === 1) {
+            this.selectOrg(this.props.organisationOptions[0]);
+            placeholder = this.props.organisationOptions[0].displayOption;
+            disabled = true;
+        } else {
+            placeholder = i18n.select_an_organisation;
+            disabled = this.props.downloading;
+        }
+
         return (
             <div className="form-group">
                 {React.createElement(Typeahead, {
-                    placeholder: i18n.select_an_organisation,
+                    placeholder: placeholder,
                     maxVisible: 10,
                     options: this.props.organisationOptions,
                     onOptionSelected: this.selectOrg,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: this.props.downloading},
+                    inputProps: {disabled: disabled},
                     customClasses: {input: 'form-control'}
                 })}
             </div>
