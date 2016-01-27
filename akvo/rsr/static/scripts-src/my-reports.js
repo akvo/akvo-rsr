@@ -117,33 +117,13 @@ var DownloadNotice = React.createClass({displayName: 'DownloadNotice',
 });
 
 var FormatsList = React.createClass({displayName: 'FormatsList',
-    getInitialState: function() {
-        return {
-            formats: []
-        };
-    },
-
-    componentDidMount: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var url = endpoints.base_url + endpoints.formats + '?format=json';
-        var thisList = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var formatResults = JSON.parse(xmlHttp.responseText);
-                thisList.setState({formats: formatResults.results});
-            }
-        };
-        xmlHttp.open("GET", url, true);
-        xmlHttp.send();
-    },
-
     handleClick: function(format) {
         this.props.setFormat(format);
     },
 
     render: function() {
         var thisFormatsList = this;
-        var formats_data = this.state.formats.map(function(format) {
+        var formats_data = this.props.formatOptions.map(function(format) {
             function handleClick() {
                 // Uncheck all radio buttons
                 var formatInputs = document.querySelectorAll('.format-radio');
@@ -216,6 +196,7 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
                     React.DOM.label(null, i18n.report_format),
                     React.createElement(FormatsList, {
                         report: this.props.report,
+                        formatOptions: this.props.formatOptions,
                         setFormat: this.props.setFormat,
                         downloading: this.props.downloading
                     })
@@ -230,34 +211,6 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
 });
 
 var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
-    getInitialState: function() {
-        return {
-            projects: []
-        };
-    },
-
-    componentDidMount: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var url = endpoints.base_url + endpoints.user_projects + '?format=json';
-        var thisTypeahead = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var projectResults = JSON.parse(xmlHttp.responseText);
-                thisTypeahead.setState({projects: thisTypeahead.processProjects(projectResults.results)});
-            }
-        };
-        xmlHttp.open("GET", url, true);
-        xmlHttp.send();
-    },
-
-    processProjects: function(projectResults) {
-        projectResults.forEach(function (p) {
-            p.filterOption = p.title + ' ' + p.id;
-            p.displayOption = p.title + ' (id: ' + p.id + ')';
-        });
-        return projectResults;
-    },
-
     selectProject: function(project) {
         this.props.setProject(project.id);
     },
@@ -268,7 +221,7 @@ var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
                 React.createElement(Typeahead, {
                     placeholder: i18n.select_a_project,
                     maxVisible: 10,
-                    options: this.state.projects,
+                    options: this.props.projectOptions,
                     onOptionSelected: this.selectProject,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
@@ -297,6 +250,7 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
                     React.DOM.label(null, i18n.project),
                     React.DOM.div( {className:"project-typeahead"}, 
                         React.createElement(ProjectTypeahead, {
+                            projectOptions: this.props.projectOptions,
                             setProject: this.props.setProject,
                             downloading: this.props.downloading
                         })
@@ -312,47 +266,6 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
 });
 
 var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahead',
-    getInitialState: function() {
-        return {
-            organisations: []
-        };
-    },
-
-    componentDidMount: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var url = endpoints.base_url + endpoints.user_organisations + '?format=json';
-        var thisTypeahead = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var orgResults = JSON.parse(xmlHttp.responseText);
-                thisTypeahead.setState({organisations: thisTypeahead.processOrgs(orgResults.results)});
-            }
-        };
-        xmlHttp.open("GET", url, true);
-        xmlHttp.send();
-    },
-
-    processOrgs: function(orgResults) {
-        function getDisplayOption(short, long) {
-            if (short === long) {
-                return short;
-            }
-            if (!long) {
-                return short;
-            }
-            return short + ' (' + long + ')';
-        }
-
-        orgResults.forEach(function (o) {
-            var newName = getDisplayOption(o.name, o.long_name);
-
-            o.filterOption = o.name + ' ' + o.long_name;
-            o.displayOption = newName;
-        });
-
-        return orgResults;
-    },
-
     selectOrg: function(org) {
         this.props.setOrganisation(org.id);
     },
@@ -363,7 +276,7 @@ var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahe
                 React.createElement(Typeahead, {
                     placeholder: i18n.select_an_organisation,
                     maxVisible: 10,
-                    options: this.state.organisations,
+                    options: this.props.organisationOptions,
                     onOptionSelected: this.selectOrg,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
@@ -392,6 +305,7 @@ var SelectOrganisation = React.createClass({displayName: 'SelectOrganisation',
                     React.DOM.label(null, i18n.organisation),
                     React.DOM.div( {className:"org-typeahead"}, 
                         React.createElement(OrganisationTypeahead, {
+                            organisationOptions: this.props.organisationOptions,
                             setOrganisation: this.props.setOrganisation,
                             downloading: this.props.downloading
                         })
@@ -428,23 +342,8 @@ var ReportOption = React.createClass({displayName: 'ReportOption',
 var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
     getInitialState: function() {
         return {
-            buttonText: i18n.select_a_report_type,
-            reports: []
+            buttonText: i18n.select_a_report_type
         };
-    },
-
-    componentDidMount: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var url = endpoints.base_url + endpoints.reports + '?format=json';
-        var thisDropdown = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var reportResults = JSON.parse(xmlHttp.responseText);
-                thisDropdown.setState({reports: reportResults.results});
-            }
-        };
-        xmlHttp.open("GET", url, true);
-        xmlHttp.send();
     },
 
     selectReport: function(report) {
@@ -456,7 +355,7 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
 
     render: function() {
         var thisReportsDropdown = this;
-        var reports_data = this.state.reports.map(function(report) {
+        var reports_data = this.props.reportOptions.map(function(report) {
             return (
                 React.DOM.li( {key:report.key}, 
                     React.createElement(ReportOption, {report: report, selectReport: thisReportsDropdown.selectReport})
@@ -498,6 +397,7 @@ var SelectReport = React.createClass({displayName: 'SelectReport',
             React.DOM.div( {id:"choose-report-template"}, 
                 React.DOM.label(null, i18n.report_type),
                 React.createElement(ReportsDropdown, {
+                    reportOptions: this.props.reportOptions,
                     setReport: this.props.setReport,
                     downloading: this.props.downloading
                 })
@@ -510,11 +410,70 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     getInitialState: function() {
         return {
             report: null,
+            reportOptions: [],
             organisation: null,
+            organisationOptions: [],
             project: null,
+            projectOptions: [],
             format: null,
+            formatOptions: [],
             downloading: false
         };
+    },
+
+    componentDidMount: function() {
+        this.getOptions(endpoints.reports, 'reportOptions');
+        this.getOptions(endpoints.user_organisations, 'organisationOptions', this.processOrgs);
+        this.getOptions(endpoints.user_projects, 'projectOptions', this.processProjects);
+        this.getOptions(endpoints.formats, 'formatOptions');
+    },
+
+    getOptions: function(endpoint, stateKey, processCallback) {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoint + '?format=json';
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var newState = {};
+                if (processCallback === undefined) {
+                    newState[stateKey] = JSON.parse(xmlHttp.responseText).results;
+                } else {
+                    newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
+                }
+                thisApp.setState(newState);
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    },
+
+    processOrgs: function(orgResults) {
+        function getDisplayOption(short, long) {
+            if (short === long) {
+                return short;
+            }
+            if (!long) {
+                return short;
+            }
+            return short + ' (' + long + ')';
+        }
+
+        orgResults.forEach(function (o) {
+            var newName = getDisplayOption(o.name, o.long_name);
+
+            o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
+        });
+
+        return orgResults;
+    },
+
+    processProjects: function(projectResults) {
+        projectResults.forEach(function (p) {
+            p.filterOption = p.title + ' ' + p.id;
+            p.displayOption = p.title + ' (id: ' + p.id + ')';
+        });
+        return projectResults;
     },
 
     setReport: function(report) {
@@ -552,21 +511,25 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
             React.DOM.div( {id:"my-reports"}, 
                 React.DOM.h3(null, i18n.my_reports),
                 React.createElement(SelectReport, {
+                    reportOptions: this.state.reportOptions,
                     setReport: this.setReport,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectOrganisation, {
                     report: this.state.report,
+                    organisationOptions: this.state.organisationOptions,
                     setOrganisation: this.setOrganisation,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectProject, {
                     report: this.state.report,
+                    projectOptions: this.state.projectOptions,
                     setProject: this.setProject,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectFormat, {
                     report: this.state.report,
+                    formatOptions: this.state.formatOptions,
                     setFormat: this.setFormat,
                     downloading: this.state.downloading
                 }),

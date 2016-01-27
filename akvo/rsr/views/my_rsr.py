@@ -298,11 +298,6 @@ def my_iati(request):
 @login_required
 def my_reports(request):
     """My reports section."""
-    # user = request.user
-
-    # if not user.can_create_project():
-    #     raise PermissionDenied
-
     return render(request, 'myrsr/my_reports.html', {})
 
 
