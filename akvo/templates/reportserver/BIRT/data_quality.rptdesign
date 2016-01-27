@@ -530,72 +530,84 @@ GROUP BY rsr_country.name, p1.id
                     <property name="columnName">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">budget</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">budget</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">budget</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">funds</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">funds</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">funds</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">funds_needed</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">funds_needed</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">funds_needed</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_start_planned</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_start_planned</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_start_planned</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_end_planned</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_end_planned</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_end_planned</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">title</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">title</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">iati_activity_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iati_activity_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">iati_activity_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">update_count</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">update_count</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">update_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">project_url</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">project_url</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">project_url</text-property>
                 </structure>
             </list-property>
@@ -607,6 +619,7 @@ GROUP BY rsr_country.name, p1.id
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -777,6 +790,10 @@ FROM rsr_project p1
 WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
       AND p1.funds_needed > '5'
+      AND p1.status IN ('A', 'C')
+ 
+      
+      
 
 GROUP BY rsr_country.name, p1.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -3023,7 +3040,7 @@ GROUP BY rsr_country.name, p1.id;]]></xml-property>
         </label>
         <label id="562">
             <property name="fontFamily">"Calibri"</property>
-            <text-property name="text">Sorted by country and id</text-property>
+            <text-property name="text">Sorted by country and id, only active and completed projects</text-property>
         </label>
         <table id="468">
             <property name="fontFamily">"Calibri"</property>
