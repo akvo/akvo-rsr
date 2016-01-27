@@ -3593,8 +3593,8 @@ GROUP BY rsr_country.name
         <grid id="729">
             <property name="fontFamily">"Calibri"</property>
             <property name="marginTop">14pt</property>
-            <property name="height">2.4375in</property>
-            <property name="width">6.541666666666667in</property>
+            <property name="height">2.6458333333333335in</property>
+            <property name="width">7.989583333333333in</property>
             <property name="dataSet">Organisation</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -3795,19 +3795,29 @@ GROUP BY rsr_country.name
                     <expression name="expression" type="javascript">dataSetRow["country_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">Project overview link</property>
+                    <text-property name="displayName">Link</text-property>
+                    <expression name="expression" type="javascript">"http://rsr.akvo.org/en/projects/?organisation=" + row["id"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="731">
                 <property name="width">0.4583333333333333in</property>
             </column>
             <column id="745">
-                <property name="width">3.375in</property>
+                <property name="width">1.4479166666666667in</property>
+            </column>
+            <column id="815">
+                <property name="width">1.9270833333333333in</property>
             </column>
             <column id="781">
-                <property name="width">2.7083333333333335in</property>
+                <property name="width">4.15625in</property>
             </column>
             <row id="739">
                 <cell id="747">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <data id="748">
                         <property name="fontSize">14pt</property>
@@ -3838,6 +3848,8 @@ GROUP BY rsr_country.name
             <row id="749">
                 <cell id="751"/>
                 <cell id="752">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="753">
                         <property name="resultSetColumn">address_1</property>
                     </data>
@@ -3846,6 +3858,8 @@ GROUP BY rsr_country.name
             <row id="754">
                 <cell id="756"/>
                 <cell id="757">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="758">
                         <property name="resultSetColumn">address_2</property>
                     </data>
@@ -3855,6 +3869,8 @@ GROUP BY rsr_country.name
                 <property name="height">0.2604166666666667in</property>
                 <cell id="761"/>
                 <cell id="762">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="763">
                         <property name="resultSetColumn">city</property>
                     </data>
@@ -3864,6 +3880,8 @@ GROUP BY rsr_country.name
                 <property name="height">0.2604166666666667in</property>
                 <cell id="766"/>
                 <cell id="767">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="773">
                         <property name="resultSetColumn">state</property>
                     </data>
@@ -3873,6 +3891,8 @@ GROUP BY rsr_country.name
                 <property name="height">0.2604166666666667in</property>
                 <cell id="771"/>
                 <cell id="772">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="768">
                         <property name="resultSetColumn">country_name</property>
                     </data>
@@ -3881,6 +3901,8 @@ GROUP BY rsr_country.name
             <row id="732">
                 <cell id="734"/>
                 <cell id="744">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text-data id="782">
                         <expression name="valueExpr">"Phone: " + row["phone"]</expression>
                         <property name="contentType">html</property>
@@ -3892,15 +3914,46 @@ GROUP BY rsr_country.name
                 <cell id="788"/>
                 <cell id="789">
                     <text-data id="791">
-                        <expression name="valueExpr">"Website: " + row["url"]</expression>
+                        <expression name="valueExpr">"Website: "</expression>
                         <property name="contentType">html</property>
                     </text-data>
                 </cell>
+                <cell id="813">
+                    <data id="817">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">url</property>
+                        <list-property name="action">
+                            <structure>
+                                <property name="linkType">hyperlink</property>
+                                <expression name="uri" type="javascript">row["url"]</expression>
+                                <property name="targetWindow">_blank</property>
+                            </structure>
+                        </list-property>
+                    </data>
+                </cell>
             </row>
             <row id="783">
-                <property name="height">0.2604166666666667in</property>
+                <property name="height">0.3125in</property>
                 <cell id="784"/>
-                <cell id="785"/>
+                <cell id="785">
+                    <label id="816">
+                        <property name="display">block</property>
+                        <text-property name="text">RSR overview link:</text-property>
+                    </label>
+                </cell>
+                <cell id="814">
+                    <data id="804">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">Project overview link</property>
+                        <list-property name="action">
+                            <structure>
+                                <property name="linkType">hyperlink</property>
+                                <expression name="uri" type="javascript">row["Project overview link"]</expression>
+                                <property name="targetWindow">_blank</property>
+                            </structure>
+                        </list-property>
+                    </data>
+                </cell>
             </row>
         </grid>
         <label id="586">
