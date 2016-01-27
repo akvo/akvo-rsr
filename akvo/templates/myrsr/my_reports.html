@@ -17,8 +17,6 @@
     {% compressed_js 'react_typeahead_1_1_5' %}
 
     {# Initial data #}
-    <script type="application/json" id="formats-data">{{ formats_data|safe }}</script>
-    <script type="application/json" id="organisations-data">{{ organisations_data|safe }}</script>
     <script type="application/json" id="projects-data">{{ projects_data|safe }}</script>
     <script type="application/json" id="user-data">{{ user_data|safe }}</script>
 
@@ -28,6 +26,7 @@
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "formats": "{% url 'report_formats_api' %}",
             "user_organisations": "{% url 'user_organisations_typeahead' %}",
+            "user_projects": "{% url 'user_projects_typeahead' %}",
             "reports": "{% url 'reports_api' %}"
         }
     </script>

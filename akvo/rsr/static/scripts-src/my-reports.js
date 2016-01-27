@@ -5,9 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var endpoints, i18n, projects, isAdmin;
+var endpoints, i18n;
 var Typeahead = ReactTypeahead.Typeahead;
-var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -230,21 +229,35 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
     }
 });
 
-var ProjectOption = React.createClass({displayName: 'ProjectOption',
-    handleClick: function() {
-        this.props.selectProject(this.props.project);
+var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+    getInitialState: function() {
+        return {
+            projects: []
+        };
     },
 
-    render: function() {
-        return (
-            React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                this.props.project.name
-            )
-        );
-    }
-});
+    componentDidMount: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoints.user_projects + '?format=json';
+        var thisTypeahead = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var projectResults = JSON.parse(xmlHttp.responseText);
+                thisTypeahead.setState({projects: thisTypeahead.processProjects(projectResults.results)});
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    },
 
-var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+    processProjects: function(projectResults) {
+        projectResults.forEach(function (p) {
+            p.filterOption = p.title + ' ' + p.id;
+            p.displayOption = p.title + ' (id: ' + p.id + ')';
+        });
+        return projectResults;
+    },
+
     selectProject: function(project) {
         this.props.setProject(project.id);
     },
@@ -255,7 +268,7 @@ var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
                 React.createElement(Typeahead, {
                     placeholder: i18n.select_a_project,
                     maxVisible: 10,
-                    options: projects,
+                    options: this.state.projects,
                     onOptionSelected: this.selectProject,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
@@ -264,72 +277,6 @@ var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
                 })
             )
         );
-    }
-});
-
-var ProjectsDropdown = React.createClass({displayName: 'ProjectsDropdown',
-    getInitialState: function() {
-        return {
-            buttonText: i18n.select_a_project
-        };
-    },
-
-    selectProject: function(project) {
-        this.props.setProject(project.id);
-        this.setState({
-            buttonText: project.name
-        });
-    },
-
-    render: function() {
-        if (!isAdmin) {
-            var thisProjectsDropdown = this;
-            var projects_data = projects.map(function(project) {
-                return (
-                    React.DOM.li( {key:project.id}, 
-                        React.createElement(ProjectOption, {
-                            project: project,
-                            selectProject: thisProjectsDropdown.selectProject
-                        })
-                    )
-                );
-            });
-            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
-            var button;
-            if (!this.props.downloading) {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,
-                            React.DOM.div( {className:"caret-indicator"}, 
-                                React.DOM.i( {className:"fa fa-sort"} )
-                            )
-                        );
-            } else {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,
-                            React.DOM.div( {className:"caret-indicator"}, 
-                                React.DOM.i( {className:"fa fa-sort"} )
-                            )
-                        );
-            }
-
-            return (
-                React.DOM.div( {className:"dropdown"}, 
-                    button,
-                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-project"}, 
-                        projects_data
-                    )
-                )
-            );
-        } else {
-            return (
-                React.DOM.div( {className:"project-typeahead"}, 
-                    React.createElement(ProjectTypeahead, {
-                        setProject: this.props.setProject,
-                        downloading: this.props.downloading
-                    })
-                )
-            );
-        }
     }
 });
 
@@ -348,10 +295,12 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
             return (
                 React.DOM.div( {id:"choose-project"}, 
                     React.DOM.label(null, i18n.project),
-                    React.createElement(ProjectsDropdown, {
-                        setProject: this.props.setProject,
-                        downloading: this.props.downloading
-                    })
+                    React.DOM.div( {className:"project-typeahead"}, 
+                        React.createElement(ProjectTypeahead, {
+                            setProject: this.props.setProject,
+                            downloading: this.props.downloading
+                        })
+                    )
                 )
             );
         } else {
@@ -359,20 +308,6 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
                 React.DOM.span(null )
             );
         }
-    }
-});
-
-var OrganisationOption = React.createClass({displayName: 'OrganisationOption',
-    handleClick: function() {
-        this.props.selectOrg(this.props.org);
-    },
-
-    render: function() {
-        return (
-            React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                this.props.org.name
-            )
-        );
     }
 });
 
@@ -651,35 +586,10 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     }
 });
 
-/* Process projects results */
-function processProjects(projectResults) {
-    projectResults.forEach(function (p) {
-        p.filterOption = p.title + ' ' + p.id;
-        p.displayOption = p.title + ' (id: ' + p.id + ')';
-    });
-    return projectResults;
-}
-
-/* Retrieve projects for the project typeahead */
-function getProjects() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            var projectResults = JSON.parse(xmlHttp.responseText);
-            projects = processProjects(projectResults.results);
-        }
-    };
-    xmlHttp.open("GET", projectsAPIUrl, true);
-    xmlHttp.send();
-}
-
-
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints and translations
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
-
-    getProjects();
 
     // Initialize the 'My reports' app
     ReactDOM.render(

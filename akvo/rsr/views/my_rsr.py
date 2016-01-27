@@ -298,30 +298,12 @@ def my_iati(request):
 @login_required
 def my_reports(request):
     """My reports section."""
-    user = request.user
+    # user = request.user
 
-    if not user.can_create_project():
-        raise PermissionDenied
+    # if not user.can_create_project():
+    #     raise PermissionDenied
 
-    organisations_data, projects_data = [], []
-    for employment in user.approved_employments():
-        org = employment.organisation
-        organisations_data.append({'id': org.pk,
-                                   'name': u'{0} ({1})'.format(org.name, org.long_name)})
-        for project in org.all_projects():
-            if project.pk not in [project_data['id'] for project_data in projects_data]:
-                projects_data.append({'id': project.pk,
-                                      'name': u'{0} (id: {1})'.format(project.title,
-                                                                      str(project.pk))})
-
-    context = {
-        'organisations_data': json.dumps(organisations_data),
-        'projects_data': json.dumps(projects_data),
-        'formats_data': json.dumps(FORMATS),
-        'user_data': json.dumps({'is_admin': user.is_superuser or user.is_admin})
-    }
-
-    return render(request, 'myrsr/my_reports.html', context)
+    return render(request, 'myrsr/my_reports.html', {})
 
 
 @login_required

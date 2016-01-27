@@ -63,6 +63,7 @@ from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_user_organisations,
                         typeahead_project,
+                        typeahead_user_projects,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
@@ -137,6 +138,7 @@ __all__ = [
     'typeahead_organisation',
     'typeahead_user_organisations',
     'typeahead_project',
+    'typeahead_user_projects',
     'update_details',
     'upload_indicator_update_photo',
     'UserViewSet',

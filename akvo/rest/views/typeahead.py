@@ -61,6 +61,20 @@ def typeahead_project(request):
 
 
 @api_view(['GET'])
+def typeahead_user_projects(request):
+    user = request.user
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+    if is_admin:
+        projects = Project.objects.all()
+    else:
+        projects = user.approved_organisations().all_projects()
+    projects = projects.exclude(title='')
+    return Response(
+        rejig(projects, TypeaheadProjectSerializer(projects, many=True))
+    )
+
+
+@api_view(['GET'])
 def typeahead_projectupdate(request):
     updates = ProjectUpdate.objects.all()
     return Response(
