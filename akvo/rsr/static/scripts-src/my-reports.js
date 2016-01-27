@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var endpoints, i18n, formats, organisations, projects, isAdmin;
+var endpoints, i18n, organisations, projects, isAdmin;
 var Typeahead = ReactTypeahead.Typeahead;
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
@@ -119,13 +119,33 @@ var DownloadNotice = React.createClass({displayName: 'DownloadNotice',
 });
 
 var FormatsList = React.createClass({displayName: 'FormatsList',
+    getInitialState: function() {
+        return {
+            formats: []
+        };
+    },
+
+    componentDidMount: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoints.formats + '?format=json';
+        var thisDropdown = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var formatResults = JSON.parse(xmlHttp.responseText);
+                thisDropdown.setState({formats: formatResults.results});
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    },
+
     handleClick: function(format) {
         this.props.setFormat(format);
     },
 
     render: function() {
         var thisFormatsList = this;
-        var formats_data = formats.map(function(format) {
+        var formats_data = this.state.formats.map(function(format) {
             function handleClick() {
                 // Uncheck all radio buttons
                 var formatInputs = document.querySelectorAll('.format-radio');
@@ -695,8 +715,8 @@ function processOrgs(orgResults) {
     return orgResults;
 }
 
-/* Retrieve all projects for the project typeahead */
-function getAllProjects() {
+/* Retrieve projects for the project typeahead */
+function getProjects() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
@@ -708,8 +728,8 @@ function getAllProjects() {
     xmlHttp.send();
 }
 
-/* Retrieve all organisations for the organisation typeahead */
-function getAllOrganisations() {
+/* Retrieve organisations for the organisation typeahead */
+function getOrganisations() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
@@ -721,35 +741,15 @@ function getAllOrganisations() {
     xmlHttp.send();
 }
 
-/* Retrieve report information and translation strings */
-function getInitialData() {
-    // Retrieve report information
-    //reports = JSON.parse(document.getElementById('reports-data').innerHTML);
-
-    // Check if user is an admin (Superuser or RSR admin)
-    isAdmin = JSON.parse(document.getElementById('user-data').innerHTML).is_admin;
-    if (!isAdmin) {
-        // If the user isn't an admin, retrieve the projects and organisations that the user is
-        // linked to
-        organisations = JSON.parse(document.getElementById('organisations-data').innerHTML);
-        projects = JSON.parse(document.getElementById('projects-data').innerHTML);
-    } else {
-        // If the user is an admin, get ALL organisations and projects from the Typeahead APIs
-        getAllOrganisations();
-        getAllProjects();
-    }
-
-    // Retrieve the available formats (e.g. PDF, Excel, Word, HTML, etc)
-    formats = JSON.parse(document.getElementById('formats-data').innerHTML);
-
-    // Retrieve translations
-    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
-
-    // Retrieve data endpoints
-    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-}
 
 document.addEventListener('DOMContentLoaded', function() {
-    getInitialData();
+    // Retrieve data endpoints and translations
+    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
+    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+
+    getOrganisations();
+    getProjects();
+    
+    // Initialize the 'My reports' app
     initializeApp();
 });

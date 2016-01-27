@@ -151,7 +151,10 @@ urlpatterns += patterns(
 # My reports
 urlpatterns += patterns(
     '',
-    url(r'reports$',
+    url(r'reports/$',
         views.reports,
         name='reports_api'),
+    url(r'report_formats/$',
+        views.report_formats,
+        name='report_formats_api'),
 )

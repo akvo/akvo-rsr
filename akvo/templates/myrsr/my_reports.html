@@ -26,6 +26,7 @@
     <script type="application/json" id="data-endpoints">
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "formats": "{% url 'report_formats_api' %}",
             "reports": "{% url 'reports_api' %}"
         }
     </script>

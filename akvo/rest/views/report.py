@@ -7,15 +7,26 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.reports import REPORTS
+from akvo.rsr.reports import FORMATS, REPORTS
 
 
 @api_view(['GET'])
 def reports(request):
     """
-    A view for displaying all reports, sorted by title.
+    A view for displaying all report information, sorted by title.
     """
     return Response({
         'count': len(REPORTS),
         'results': sorted(REPORTS, key=lambda k: k['title'])
+    })
+
+
+@api_view(['GET'])
+def report_formats(request):
+    """
+    A view for displaying all report format information.
+    """
+    return Response({
+        'count': len(FORMATS),
+        'results': FORMATS
     })

@@ -54,7 +54,7 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
-from .report import reports
+from .report import reports, report_formats
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
@@ -124,6 +124,7 @@ __all__ = [
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
     'reports',
+    'report_formats',
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
