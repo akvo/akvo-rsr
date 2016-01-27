@@ -139,6 +139,7 @@ __all__ = [
     'typeahead_user_organisations',
     'typeahead_project',
     'typeahead_user_projects',
+    'typeahead_projectupdate',
     'update_details',
     'upload_indicator_update_photo',
     'UserViewSet',
