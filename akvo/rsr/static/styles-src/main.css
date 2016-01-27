@@ -2857,10 +2857,19 @@ div.active .addOrg {
 /* My reports section */
 div#my-reports {
   /* Override pointer events for disabled items that show help text */ }
+  div#my-reports label {
+    font-size: 13px;
+    font-weight: 600; }
   div#my-reports .dropdown .dropdown-toggle {
+    text-align: left;
     width: 100%;
     margin-bottom: 10px; }
+    div#my-reports .dropdown .dropdown-toggle .not-selected {
+      color: grey; }
+    div#my-reports .dropdown .dropdown-toggle .caret-indicator {
+      float: right; }
   div#my-reports .dropdown .dropdown-menu {
+    text-align: left;
     width: 100%;
     top: 35px; }
   div#my-reports .input-group {
