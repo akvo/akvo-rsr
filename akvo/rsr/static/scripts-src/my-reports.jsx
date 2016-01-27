@@ -389,14 +389,22 @@ var ReportsDropdown = React.createClass({
     },
 
     render: function() {
+        var reportsData;
         var thisReportsDropdown = this;
-        var reports_data = this.props.reportOptions.map(function(report) {
-            return (
-                <li key={report.key}>
-                    {React.createElement(ReportOption, {report: report, selectReport: thisReportsDropdown.selectReport})}
-                </li>
-            );
-        });
+        if (this.props.reportOptions.length > 0) {
+            reportsData = this.props.reportOptions.map(function (report) {
+                return (
+                    <li key={report.key}>
+                        {React.createElement(ReportOption, {
+                            report: report,
+                            selectReport: thisReportsDropdown.selectReport
+                        })}
+                    </li>
+                );
+            });
+        } else {
+            reportsData = <li><a href="#"><i className="fa fa-spin fa-spinner" /> Loading...</a></li>;
+        }
         var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
         var button;
         if (!this.props.downloading) {
@@ -419,7 +427,7 @@ var ReportsDropdown = React.createClass({
             <div className="dropdown">
                 {button}
                 <ul className="dropdown-menu" aria-labelledby="select-report-type">
-                    {reports_data}
+                    {reportsData}
                 </ul>
             </div>
         );
