@@ -1180,6 +1180,7 @@ class IatiImportJobAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImportJob')
     inlines = (IatiImportLogInline,)
     readonly_fields = ('status', 'sha1_hexdigest',)
+    list_display = ('__unicode__', 'status',)
 
     def save_model(self, request, iati_import_job, form, change):
         iati_import_job.save()
