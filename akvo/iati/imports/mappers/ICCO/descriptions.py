@@ -16,8 +16,10 @@ description_start = dict(
     sustainability='sustainability:',
 )
 
+
 def _text_starts_with(text, start):
     return text.lower().startswith(start)
+
 
 class Descriptions(Descriptions):
     """
@@ -48,6 +50,15 @@ class Descriptions(Descriptions):
         return self._get_description(description_start['project_plan_summary'])
 
     def get_background(self):
+        """
+        In case the project plan summary exceeds the character limit, the full text will be stored
+        in the background field as well so that the full text shows somewhere on the project page.
+        """
+        element, text = self._get_description(description_start['project_plan_summary'])
+        if element is not None:
+            short_text = self.check_text_length(element, text, 'project_plan_summary', False)
+            if text != short_text:
+                return element, text
         return self._get_description(description_start['background'])
 
     def get_current_status(self):
@@ -58,4 +69,3 @@ class Descriptions(Descriptions):
 
     def get_sustainability(self):
         return self._get_description(description_start['sustainability'])
-
