@@ -141,11 +141,11 @@ class Project(TimestampsMixin, models.Model):
                     u'than 2 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
-        _(u'photo caption'), blank=True, max_length=50,
+        _(u'photo caption'), blank=True, max_length=60,
         help_text=_(u'Briefly describe who or what you see in the photo.')
     )
     current_image_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=50,
+        _(u'photo credit'), blank=True, max_length=60,
         help_text=_(u'Enter who took the photo.')
     )
 
