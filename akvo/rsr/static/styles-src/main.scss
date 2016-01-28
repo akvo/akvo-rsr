@@ -290,11 +290,9 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
-    @include box-shadow(0 2px 3px rgba(132, 132, 136, 0.2));
     @include border-radius(0);
-    border-bottom: 1px solid rgb(228, 228, 228);
+    border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
         background: $rsrBlue;
         border: 1px solid $rsrBlue;
@@ -364,13 +362,11 @@ nav.navbar-fixed-top {
                     }
                 }
                 &.addUpdateBtn {
-                    margin-top: 10px;
-                    color: white;
-                    background-color: $rsrGreen;
-                    border-color: $rsrGreen;
+                    margin-right:15px;
+                    background-color: transparent;
+                    border-color: transparent;
                     &:hover {
-                        background-color: $anchorLinkHover;
-                        border-color: $anchorLinkHover;
+                        color: $anchorLinkHover;
                     }
                     @include responsive(tablets) {
                         width: 95%;
@@ -562,39 +558,39 @@ nav.navbar-fixed-top {
 }
 
 .myRsrMenu {
-    min-height: 100%;
-    bottom: 0;
-    top: 0;
+    position: relative;
+    margin: 15px auto;
     h4 {
         padding-top: 15px;
     }
     nav[role=navigation] {
-        background: rgba($akvoBlack, 0.05);
+        background: rgba($akvoBlack, 0);
         ul {
             li {
+                display: inline;
                 a {
                     color: $anchorLink;
                     font-family: $titleFont;
-                    padding-top: 15px;
-                    padding-bottom: 15px;
+                    padding: 15px;
                     @include responsive(small-max-screens) {
-                        padding-top: 20px;
-                        padding-bottom: 20px;
+                        padding: 20px 10px;
                     }
 
                     &:hover {
                         color: $anchorLinkHover;
-                        background: rgba($anchorLinkHover, 0.05) url(../images/carret.png) 98% center no-repeat;
-                        background-size: 5px auto;
                     }
                     &.active {
                         color: $anchorLinkHover;
                         font-weight: bold;
-                        background: rgba($anchorLinkHover, 0.05) url(../images/carretWhite.png) 98% center no-repeat;
-                        background-size: 5px auto;
+                        background: rgba($akvoBlack, 0.05);
                     }
                 }
+            &.usrMgt {
+                position:absolute;
+                right:0;
+                }
             }
+
         }
     }
 }
@@ -611,7 +607,7 @@ nav.navbar-fixed-top {
             }
         }
     }
-    div.twoColumns.clearfix {
+    div.projectListMenu {
         @media only screen and (min-width: $width-large) {
             min-width: 170px;
         }
@@ -620,6 +616,8 @@ nav.navbar-fixed-top {
         }
     }
     a {
+        margin-right:25px;
+        &:last-child{margin-right:0;}
         &.addUpdate {
             &.disabled {
                 background-color: #AB9F9F;
@@ -2108,7 +2106,6 @@ dd {
 }
 
 a.addUpdateBtn {
-    margin-top: 10px;
     color: white;
     background-color: $rsrGreen;
     border-color: $rsrGreen;

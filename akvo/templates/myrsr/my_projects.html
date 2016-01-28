@@ -64,17 +64,20 @@
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
             <td>{{ project.show_status }}</td>
             <td>
-              <div class="twoColumns clearfix">
+              <div class="projectListMenu">
+                <a href="#">View</a>              
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 {% if can_edit_project %}
                   <a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a>
                 {% endif %}
+                  <a href="#">Results data</a>  
                 {% if project.is_published and project.is_public %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
                 {% else %}
                   <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}">{% trans 'Update' %}</a>
-                {% endif %}                
+                {% endif %}
+            
               </div>
             </td>
           </tr>
