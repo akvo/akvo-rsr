@@ -203,7 +203,7 @@ class IatiImportJob(models.Model):
             subject='iati_import/import_done_subject.txt',
             message='iati_import/import_done_message.txt',
             subject_context={
-                'iati_import': self.iati_import
+                'iati_import_job': self,
             },
             msg_context={
                 'iati_import_job': self,
