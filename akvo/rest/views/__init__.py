@@ -54,13 +54,16 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
+from .report import reports, report_formats
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
+                        typeahead_user_organisations,
                         typeahead_project,
+                        typeahead_user_projects,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
@@ -122,6 +125,8 @@ __all__ = [
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
+    'reports',
+    'report_formats',
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
@@ -131,7 +136,9 @@ __all__ = [
     'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
+    'typeahead_user_organisations',
     'typeahead_project',
+    'typeahead_user_projects',
     'typeahead_projectupdate',
     'update_details',
     'upload_indicator_update_photo',

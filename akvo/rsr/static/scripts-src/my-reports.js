@@ -5,10 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n, formats, organisations, projects, reports, isAdmin;
+var endpoints, i18n;
 var Typeahead = ReactTypeahead.Typeahead;
-var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
-var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
 
 // CSRF TOKEN
 function getCookie(name) {
@@ -30,7 +28,7 @@ var csrftoken = getCookie('csrftoken');
 
 var DownloadButton = React.createClass({displayName: 'DownloadButton',
     getInitialState: function() {
-        return { helpText: null};
+        return {helpText: null};
     },
 
     generateReport: function() {
@@ -125,7 +123,7 @@ var FormatsList = React.createClass({displayName: 'FormatsList',
 
     render: function() {
         var thisFormatsList = this;
-        var formats_data = formats.map(function(format) {
+        var formats_data = this.props.formatOptions.map(function(format) {
             function handleClick() {
                 // Uncheck all radio buttons
                 var formatInputs = document.querySelectorAll('.format-radio');
@@ -195,9 +193,10 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
         if (this.props.report !== null) {
             return (
                 React.DOM.div( {id:"choose-format"}, 
-                    React.DOM.h5(null, i18n.report_format),
+                    React.DOM.label(null, i18n.report_format),
                     React.createElement(FormatsList, {
                         report: this.props.report,
+                        formatOptions: this.props.formatOptions,
                         setFormat: this.props.setFormat,
                         downloading: this.props.downloading
                     })
@@ -211,21 +210,25 @@ var SelectFormat = React.createClass({displayName: 'SelectFormat',
     }
 });
 
-var ProjectOption = React.createClass({displayName: 'ProjectOption',
-    handleClick: function() {
-        this.props.selectProject(this.props.project);
+var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+    getInitialState: function() {
+        return {
+            disabled: this.props.downloading,
+            placeholder: i18n.select_a_project
+        };
     },
 
-    render: function() {
-        return (
-            React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                this.props.project.name
-            )
-        );
-    }
-});
+    componentDidMount: function() {
+        if (this.props.projectOptions.length === 1) {
+            this.selectProject(this.props.projectOptions[0]);
+            this.setState({
+                disabled: true,
+                placeholder: this.props.projectOptions[0].displayOption
+            });
+        }
+    },
 
-var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+
     selectProject: function(project) {
         this.props.setProject(project.id);
     },
@@ -234,77 +237,17 @@ var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
         return (
             React.DOM.div( {className:"form-group"}, 
                 React.createElement(Typeahead, {
-                    placeholder: i18n.select_a_project,
+                    placeholder: this.state.placeholder,
                     maxVisible: 10,
-                    options: projects,
+                    options: this.props.projectOptions,
                     onOptionSelected: this.selectProject,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: this.props.downloading},
+                    inputProps: {disabled: this.state.disabled},
                     customClasses: {input: 'form-control'}
                 })
             )
         );
-    }
-});
-
-var ProjectsDropdown = React.createClass({displayName: 'ProjectsDropdown',
-    getInitialState: function() {
-        return {
-            buttonText: i18n.select_a_project
-        };
-    },
-
-    selectProject: function(project) {
-        this.props.setProject(project.id);
-        this.setState({
-            buttonText: project.name
-        });
-    },
-
-    render: function() {
-        if (!isAdmin) {
-            var thisProjectsDropdown = this;
-            var projects_data = projects.map(function(project) {
-                return (
-                    React.DOM.li( {key:project.id}, 
-                        React.createElement(ProjectOption, {
-                            project: project,
-                            selectProject: thisProjectsDropdown.selectProject
-                        })
-                    )
-                );
-            });
-            var buttonDisplay = this.state.buttonText === i18n.select_a_project ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
-            var button;
-            if (!this.props.downloading) {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                        );
-            } else {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-project", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                        );
-            }
-
-            return (
-                React.DOM.div( {className:"dropdown"}, 
-                    button,
-                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-project"}, 
-                        projects_data
-                    )
-                )
-            );
-        } else {
-            return (
-                React.DOM.div( {className:"project-typeahead"}, 
-                    React.createElement(ProjectTypeahead, {
-                        setProject: this.props.setProject,
-                        downloading: this.props.downloading
-                    })
-                )
-            );
-        }
     }
 });
 
@@ -322,11 +265,14 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 React.DOM.div( {id:"choose-project"}, 
-                    React.DOM.h5(null, i18n.project),
-                    React.createElement(ProjectsDropdown, {
-                        setProject: this.props.setProject,
-                        downloading: this.props.downloading
-                    })
+                    React.DOM.label(null, i18n.project),
+                    React.DOM.div( {className:"project-typeahead"}, 
+                        React.createElement(ProjectTypeahead, {
+                            projectOptions: this.props.projectOptions,
+                            setProject: this.props.setProject,
+                            downloading: this.props.downloading
+                        })
+                    )
                 )
             );
         } else {
@@ -337,21 +283,24 @@ var SelectProject = React.createClass({displayName: 'SelectProject',
     }
 });
 
-var OrganisationOption = React.createClass({displayName: 'OrganisationOption',
-    handleClick: function() {
-        this.props.selectOrg(this.props.org);
+var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahead',
+    getInitialState: function() {
+        return {
+            disabled: this.props.downloading,
+            placeholder: i18n.select_an_organisation
+        };
     },
 
-    render: function() {
-        return (
-            React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                this.props.org.name
-            )
-        );
-    }
-});
+    componentDidMount: function() {
+        if (this.props.organisationOptions.length === 1) {
+            this.selectOrg(this.props.organisationOptions[0]);
+            this.setState({
+                disabled: true,
+                placeholder: this.props.organisationOptions[0].displayOption
+            });
+        }
+    },
 
-var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahead',
     selectOrg: function(org) {
         this.props.setOrganisation(org.id);
     },
@@ -360,78 +309,17 @@ var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahe
         return (
             React.DOM.div( {className:"form-group"}, 
                 React.createElement(Typeahead, {
-                    placeholder: i18n.select_an_organisation,
+                    placeholder: this.state.placeholder,
                     maxVisible: 10,
-                    options: organisations,
+                    options: this.props.organisationOptions,
                     onOptionSelected: this.selectOrg,
                     displayOption: 'displayOption',
                     filterOption: 'filterOption',
-                    inputProps: {disabled: this.props.downloading},
+                    inputProps: {disabled: this.state.disabled},
                     customClasses: {input: 'form-control'}
                 })
             )
         );
-    }
-});
-
-var OrganisationsDropdown = React.createClass({displayName: 'OrganisationsDropdown',
-    getInitialState: function() {
-        return {
-            buttonText: i18n.select_an_organisation
-        };
-    },
-
-    selectOrg: function(org) {
-        this.props.setOrganisation(org.id);
-        this.setState({
-            buttonText: org.name
-        });
-    },
-
-    render: function() {
-        if (!isAdmin) {
-            var thisOrganisationsDropdown = this;
-            var organisations_data = organisations.map(function(org) {
-                return (
-                    React.DOM.li( {key:org.id}, 
-                        React.createElement(OrganisationOption, {
-                            org: org,
-                            selectOrg: thisOrganisationsDropdown.selectOrg
-                        })
-                    )
-                );
-            });
-            var buttonDisplay = this.state.buttonText === i18n.select_an_organisation ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
-            var button;
-            if (!this.props.downloading) {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                        );
-            } else {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-organisation", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
-                        );
-            }
-
-            return (
-                React.DOM.div( {className:"dropdown"}, 
-                    button,
-                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-organisation"}, 
-                        organisations_data
-                    )
-                )
-            );
-        } else {
-            return (
-                React.DOM.div( {className:"org-typeahead"}, 
-                    React.createElement(OrganisationTypeahead, {
-                        setOrganisation: this.props.setOrganisation,
-                        downloading: this.props.downloading
-                    })
-                )
-            );
-        }
-
     }
 });
 
@@ -449,11 +337,14 @@ var SelectOrganisation = React.createClass({displayName: 'SelectOrganisation',
         if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
             return (
                 React.DOM.div( {id:"choose-organisation"}, 
-                    React.DOM.h5(null, i18n.organisation),
-                    React.createElement(OrganisationsDropdown, {
-                        setOrganisation: this.props.setOrganisation,
-                        downloading: this.props.downloading
-                    })
+                    React.DOM.label(null, i18n.organisation),
+                    React.DOM.div( {className:"org-typeahead"}, 
+                        React.createElement(OrganisationTypeahead, {
+                            organisationOptions: this.props.organisationOptions,
+                            setOrganisation: this.props.setOrganisation,
+                            downloading: this.props.downloading
+                        })
+                    )
                 )
             );
         } else {
@@ -498,23 +389,37 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
     },
 
     render: function() {
+        var reportsData;
         var thisReportsDropdown = this;
-        var reports_data = reports.map(function(report) {
-            return (
-                React.DOM.li( {key:report.key}, 
-                    React.createElement(ReportOption, {report: report, selectReport: thisReportsDropdown.selectReport})
-                )
-            );
-        });
-        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? this.state.buttonText : React.DOM.strong(null, this.state.buttonText);
+        if (this.props.reportOptions.length > 0) {
+            reportsData = this.props.reportOptions.map(function (report) {
+                return (
+                    React.DOM.li( {key:report.key}, 
+                        React.createElement(ReportOption, {
+                            report: report,
+                            selectReport: thisReportsDropdown.selectReport
+                        })
+                    )
+                );
+            });
+        } else {
+            reportsData = React.DOM.li(null, React.DOM.a( {href:"#"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " Loading..."));
+        }
+        var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
         var button;
         if (!this.props.downloading) {
             button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                        buttonDisplay,
+                        React.DOM.div( {className:"caret-indicator"}, 
+                            React.DOM.i( {className:"fa fa-sort"} )
+                        )
                     );
         } else {
             button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                        buttonDisplay,"  ",React.DOM.span( {className:"caret"} )
+                        buttonDisplay,
+                        React.DOM.div( {className:"caret-indicator"}, 
+                            React.DOM.i( {className:"fa fa-sort"} )
+                        )
                     );
         }
 
@@ -522,7 +427,7 @@ var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
             React.DOM.div( {className:"dropdown"}, 
                 button,
                 React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-report-type"}, 
-                    reports_data
+                    reportsData
                 )
             )
         );
@@ -533,8 +438,9 @@ var SelectReport = React.createClass({displayName: 'SelectReport',
     render: function() {
         return (
             React.DOM.div( {id:"choose-report-template"}, 
-                React.DOM.h5(null, i18n.report_type),
+                React.DOM.label(null, i18n.report_type),
                 React.createElement(ReportsDropdown, {
+                    reportOptions: this.props.reportOptions,
                     setReport: this.props.setReport,
                     downloading: this.props.downloading
                 })
@@ -547,19 +453,75 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     getInitialState: function() {
         return {
             report: null,
+            reportOptions: [],
             organisation: null,
+            organisationOptions: [],
             project: null,
+            projectOptions: [],
             format: null,
+            formatOptions: [],
             downloading: false
         };
     },
 
+    componentDidMount: function() {
+        this.getOptions(endpoints.reports, 'reportOptions');
+        this.getOptions(endpoints.user_organisations, 'organisationOptions', this.processOrgs);
+        this.getOptions(endpoints.user_projects, 'projectOptions', this.processProjects);
+        this.getOptions(endpoints.formats, 'formatOptions');
+    },
+
+    getOptions: function(endpoint, stateKey, processCallback) {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoint + '?format=json';
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var newState = {};
+                if (processCallback === undefined) {
+                    newState[stateKey] = JSON.parse(xmlHttp.responseText).results;
+                } else {
+                    newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
+                }
+                thisApp.setState(newState);
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    },
+
+    processOrgs: function(orgResults) {
+        function getDisplayOption(short, long) {
+            if (short === long) {
+                return short;
+            }
+            if (!long) {
+                return short;
+            }
+            return short + ' (' + long + ')';
+        }
+
+        orgResults.forEach(function (o) {
+            var newName = getDisplayOption(o.name, o.long_name);
+
+            o.filterOption = o.name + ' ' + o.long_name;
+            o.displayOption = newName;
+        });
+
+        return orgResults;
+    },
+
+    processProjects: function(projectResults) {
+        projectResults.forEach(function (p) {
+            p.filterOption = p.title + ' ' + p.id;
+            p.displayOption = p.title + ' (id: ' + p.id + ')';
+        });
+        return projectResults;
+    },
+
     setReport: function(report) {
         this.setState({
-            report: report,
-            organisation: null,
-            project: null,
-            format: null
+            report: report
         });
     },
 
@@ -590,23 +552,27 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     render: function() {
         return (
             React.DOM.div( {id:"my-reports"}, 
-                React.DOM.h3(null, i18n.download_new_report),
+                React.DOM.h3(null, i18n.my_reports),
                 React.createElement(SelectReport, {
+                    reportOptions: this.state.reportOptions,
                     setReport: this.setReport,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectOrganisation, {
                     report: this.state.report,
+                    organisationOptions: this.state.organisationOptions,
                     setOrganisation: this.setOrganisation,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectProject, {
                     report: this.state.report,
+                    projectOptions: this.state.projectOptions,
                     setProject: this.setProject,
                     downloading: this.state.downloading
                 }),
                 React.createElement(SelectFormat, {
                     report: this.state.report,
+                    formatOptions: this.state.formatOptions,
                     setFormat: this.setFormat,
                     downloading: this.state.downloading
                 }),
@@ -626,97 +592,14 @@ var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
     }
 });
 
-/* Initialize the 'My Reports' app */
-function initializeApp() {
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve data endpoints and translations
+    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
+    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+
+    // Initialize the 'My reports' app
     ReactDOM.render(
         React.createElement(MyReportsApp),
         document.getElementById('container')
     );
-}
-
-/* Process projects results */
-function processProjects(projectResults) {
-    projectResults.forEach(function (p) {
-        p.filterOption = p.title + ' ' + p.id;
-        p.displayOption = p.title + ' (id: ' + p.id + ')';
-    });
-    return projectResults;
-}
-
-/* Process organisations results */
-function processOrgs(orgResults) {
-    function getDisplayOption(short, long) {
-        if (short === long) {
-            return short;
-        }
-        if (!long) {
-            return short;
-        }
-        return short + ' (' + long + ')';
-    }
-
-    orgResults.forEach(function (o) {
-        var newName = getDisplayOption(o.name, o.long_name);
-
-        o.filterOption = o.name + ' ' + o.long_name;
-        o.displayOption = newName;
-    });
-
-    return orgResults;
-}
-
-/* Retrieve all projects for the project typeahead */
-function getAllProjects() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            var projectResults = JSON.parse(xmlHttp.responseText);
-            projects = processProjects(projectResults.results);
-        }
-    };
-    xmlHttp.open("GET", projectsAPIUrl, true);
-    xmlHttp.send();
-}
-
-/* Retrieve all organisations for the organisation typeahead */
-function getAllOrganisations() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            var orgResults = JSON.parse(xmlHttp.responseText);
-            organisations = processOrgs(orgResults.results);
-        }
-    };
-    xmlHttp.open("GET", orgsAPIUrl, true);
-    xmlHttp.send();
-}
-
-/* Retrieve report information and translation strings */
-function getInitialData() {
-    // Retrieve report information
-    reports = JSON.parse(document.getElementById('reports-data').innerHTML);
-
-    // Check if user is an admin (Superuser or RSR admin)
-    isAdmin = JSON.parse(document.getElementById('user-data').innerHTML).is_admin;
-    if (!isAdmin) {
-        // If the user isn't an admin, retrieve the projects and organisations that the user is
-        // linked to
-        organisations = JSON.parse(document.getElementById('organisations-data').innerHTML);
-        projects = JSON.parse(document.getElementById('projects-data').innerHTML);
-    } else {
-        // If the user is an admin, get ALL organisations and projects from the Typeahead APIs
-        getAllOrganisations();
-        getAllProjects();
-    }
-
-    // Retrieve the available formats (e.g. PDF, Excel, Word, HTML, etc)
-    formats = JSON.parse(document.getElementById('formats-data').innerHTML);
-
-    // Retrieve translations
-    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    getInitialData();
-    initializeApp();
 });

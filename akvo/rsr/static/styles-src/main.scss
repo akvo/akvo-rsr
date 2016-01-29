@@ -3623,12 +3623,24 @@ div.active {
 /* My reports section */
 
 div#my-reports {
+    label {
+        font-size: 13px;
+        font-weight: 600;
+    }
     .dropdown {
         .dropdown-toggle {
+            text-align: left;
             width: 100%;
             margin-bottom: 10px;
+            .not-selected {
+                color: grey;
+            }
+            .caret-indicator {
+                float: right;
+            }
         }
         .dropdown-menu {
+            text-align: left;
             width: 100%;
             top: 35px;
         }
@@ -3655,10 +3667,10 @@ div#my-reports {
     }
     .report-description {
         white-space: pre-wrap;
-       white-space: -moz-pre-wrap;
-       white-space: -pre-wrap;
-       white-space: -o-pre-wrap;
-       word-wrap: break-word;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
     }
     .my-reports-download-error {
         margin: 1em 0;
