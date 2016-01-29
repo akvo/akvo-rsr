@@ -76,7 +76,6 @@ class Descriptions(ImportMapper):
             element = self.find_description_by_akvo_type(field)
             # then do any special handling if available
             if element is None:
-
                 custom_method = getattr(self, "get_{}".format(field), None)
                 if custom_method:
                     element, text = custom_method()
@@ -95,7 +94,6 @@ class Descriptions(ImportMapper):
                     project.save(update_fields=changes)
         return changes
 
-
     def get_title(self):
         # title
         element = self.parent_elem.find('title')
@@ -107,16 +105,16 @@ class Descriptions(ImportMapper):
         return self.get_title()
 
     def get_goals_overview(self):
-        element = self.get_child_element_text(
-                self.parent_elem, "description[@type='2']", 'goals_overview')
+        text, element = self.get_child_element_text(
+                self.parent_elem, "description[@type='2']", 'goals_overview', return_element=True)
         if element is None:
             text = '\n'.join(
                 ["- {}".format(
                     self.get_text(title)
                 ) for title in self.parent_elem.findall('result/title')]
             )
-            return self.parent_elem.findall('result/title'), text
-        return None, ''
+            return self.parent_elem.find('result/title'), text
+        return element, text
 
     def get_target_group(self):
         text, element = self.get_child_element_text(
