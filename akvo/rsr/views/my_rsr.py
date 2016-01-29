@@ -7,6 +7,9 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from datetime import datetime
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -402,3 +405,72 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
+
+
+@login_required
+def results_data(request, project_id):
+    """My results section."""
+    def _get_indicator_updates_data(updates, child_projects, child=True):
+        updates_list = []
+        for update in updates:
+            if child:
+                indicator_period = update.indicator_period
+            else:
+                indicator_period = update.indicator_period.parent_period()
+
+            updates_list.append({
+                "id": update.pk,
+                "indicator_period": {
+                    "id": indicator_period.pk if indicator_period else '',
+                    "target_value": str(indicator_period.target_value) if indicator_period else ''
+                },
+                "period_update": str(update.period_update),
+                "created_at": str(update.created_at),
+                "user": {
+                    "id": update.user.id,
+                    "first_name": update.user.first_name,
+                    "last_name": update.user.last_name,
+                },
+                "text": update.text,
+                "photo": update.photo.url if update.photo else '',
+            })
+
+        for child_project in child_projects:
+            updates = child_project.project_updates.select_related('user').order_by('-created_at').\
+                filter(indicator_period__gt=0)
+            child_updates_list = _get_indicator_updates_data(updates, child_project.children(), False)
+            updates_list += child_updates_list
+
+        return updates_list
+
+    try:
+        project = Project.objects.prefetch_related('results').get(pk=project_id)
+    except Project.DoesNotExist:
+        raise Http404
+
+    if not request.user.is_anonymous() and (
+            request.user.is_superuser or request.user.is_admin or
+            True in [request.user.admin_of(partner) for partner in project.partners.all()]):
+        project_admin = True
+    else:
+        project_admin = False
+
+    # Updates
+    updates = project.project_updates.prefetch_related('user').order_by('-created_at')
+    narrative_updates = updates.exclude(indicator_period__isnull=False)
+    indicator_updates = updates.filter(indicator_period__isnull=False)
+
+    # JSON data
+    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
+                                                                    project.children()))
+
+    context = {
+        'current_datetime': datetime.now(),
+        'indicator_updates': indicator_updates_data,
+        'project': project,
+        'project_admin': project_admin,
+        'updates': narrative_updates[:5] if narrative_updates else None,
+        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
+    }
+
+    return render(request, 'myrsr/results_data.html', context)

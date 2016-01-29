@@ -1,4 +1,10 @@
+{% extends "myrsr/myrsr_base.html" %}
+
 {% load compressed i18n rsr_utils rsr_tags rules rsr_filters humanize markup_tags %}
+
+{% block title %}{% trans 'MyRSR - My Results' %}{% endblock %}
+
+{% block myrsr_main %}
 <div class="project-tab results">
   <article>
     <div class="results-container container">
@@ -16,8 +22,8 @@
               <div class="result-nav-summary result-expand clickable" data-result-id="{{result.id}}">
                 <h3 class="result-title">
                   <i class="fa fa-chevron-down"></i>
-                  <i class="fa fa-chevron-up"></i>                  
-                  <span>{{result.title}}</span>        
+                  <i class="fa fa-chevron-up"></i>
+                  <span>{{result.title}}</span>
                 </h3>
                 <span class="result-indicator-count"><i class="fa fa-tachometer"></i> <span class="indicator-count">{{result.indicators.all.count}}</span><span class="indicator-text">{% trans "Indicators:" %}</span></span>
               </div>
@@ -39,7 +45,7 @@
                   </div>
                 {% endfor %}
               </div>
-            </div>  
+            </div>
           {% endfor %}
         </div>
         <div class="indicator-container">
@@ -79,7 +85,7 @@
               </div>
             </div>
             <div class="result-{{result.id}} indicator-group opacity-transition">
-              {% for indicator in result.indicators.all %} 
+              {% for indicator in result.indicators.all %}
                 <div class="indicator-{{indicator.id}} indicator opacity-transition">
                   <h4 class="indicator-title"><i class="fa fa-tachometer"></i> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>
 
@@ -152,7 +158,7 @@
                         <tr class="add-button-tr">
                           <td colspan="6" class="add-update-td add-new-update-container">
                               <a class="add-button btn btn-primary">+ {% trans 'Add a new update' %}</a>
-                          </td>                          
+                          </td>
                         </tr>
                       </tbody>
                     {% endfor %}
@@ -165,3 +171,48 @@
     </div>
   </article>
 </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    {# Updates information #}
+    <script type="application/json" id="update-json">
+        {{ indicator_updates|safe }}
+    </script>
+
+    {# Default values #}
+    <script type="application/json" id="default-values">
+        {
+            "project_id": {{ project.pk }},
+            "user_id": {% if user.pk %}{{ user.pk }}{% else %}""{% endif %},
+            "user_first_name": "{{ user.first_name }}",
+            "user_last_name": "{{ user.last_name }}",
+            "user_is_admin": {{ project_admin|yesno:"true,false" }},
+            "can_update": {% has_perm 'rsr.post_updates' user project as can_update %}{{ can_update|yesno:"true,false" }},
+            "update_timeout": {{ update_timeout }},
+            "current_datetime": "{{ current_datetime|date:"c" }}",
+            "show_partners_tab": {% if project.partners.all %}true{% else %}false{% endif %},
+            "show_results_tab": {% if project.is_impact_project and project.results.all %}true{% else %}false{% endif %},
+            "show_updates_tab": {% if updates %}true{% else %}false{% endif %}
+
+        }
+    </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="project-main-text">
+        {
+            "results_text": "{% trans 'Results and indicators' %}",
+            "delete_confirm_text": "{% trans 'Are you sure you want to delete this update?' %}",
+            "delete_confirm_yes_text": "{% trans 'Delete update' %}",
+            "delete_confirm_cancel_text": "{% trans 'Cancel' %}"
+        }
+    </script>
+
+    {# Slider library #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css" type="text/css">
+
+    {% compressed_js 'results_data' %}
+
+{% endblock %}

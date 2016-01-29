@@ -18,6 +18,9 @@
                         <li><a href="#" class="active" onclick="return false;">{% trans 'Project editor' %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'my_reports' %}" class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">{% trans 'My reports' %}</a></li>
+                    {% if '/myrsr/results_data/' in current_path %}
+                        <li><a href="#" class="active" onclick="return false;">{% trans 'Results data' %}</a></li>
+                    {% endif %}
                     {% has_perm 'rsr.iati_management' user as can_manage_iati %}
                     {% if can_manage_iati %}
                         <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
