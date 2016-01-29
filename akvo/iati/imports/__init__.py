@@ -169,7 +169,7 @@ class ImportMapper(object):
                 return text.strip() if text else ''
             return element.text.strip() if element.text else ''
 
-    def check_text_length(self, element, text, field):
+    def check_text_length(self, element, text, field, log=True):
         """
         Checks the length of a text against the max_length of a field on self.model.
         If the text is too long a log message is created and the text returned is truncated to
@@ -178,7 +178,7 @@ class ImportMapper(object):
         :param element: ElementTree node. Only used to get the tag for logging
         :param text: the text under scrutiny
         :param field: the name of the model field who's max_length attribute is checked against
-        :param max_length: deprecated, not used
+        :param log: add log entry when text is longer than max_length
         :return: the text, possibly truncated to max_length
         """
         try:
@@ -186,9 +186,13 @@ class ImportMapper(object):
         except (AttributeError, FieldDoesNotExist) as e:
             return text
         if max_length and len(text) > max_length:
-            self.add_log(element.tag, field,
-                    'field is too long ({} characters allowed)'.format(max_length),
-                    LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
+            if log:
+                self.add_log(element.tag,
+                             field,
+                             '{}[@{}] field is too long ({} characters allowed)'.format(element.tag,
+                                                                                        field,
+                                                                                        max_length),
+                             LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
             return text[:max_length]
         return text
 
@@ -278,8 +282,11 @@ class ImportMapper(object):
         if len(element.attrib[attr]) <= max_length:
             return value
         else:
-            self.add_log("{}[@{}]".format(element.tag, attr), field,
-                    'field is too long ({} characters allowed)'.format(max_length))
+            self.add_log("{}[@{}]".format(element.tag, attr),
+                         field,
+                         '{}[@{}] field is too long ({} characters allowed)'.format(element.tag,
+                                                                                    attr,
+                                                                                    max_length))
         return default
 
     def get_attrib_as_int(self, element, attr, field, default=None):

@@ -49,10 +49,13 @@ class PolicyMarker(models.Model):
     description = ValidXMLCharField(_(u'policy marker description'), max_length=255, blank=True)
 
     def __unicode__(self):
-        if self.policy_marker:
+        try:
             return self.iati_policy_marker().name
-        else:
-            return u'%s' % _(u'Policy marker not specified')
+        except AttributeError:
+            if self.description:
+                return unicode(self.description)
+            else:
+                return u'%s' % _(u'Policy marker not specified')
 
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')
