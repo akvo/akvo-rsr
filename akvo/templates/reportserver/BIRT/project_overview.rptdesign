@@ -3829,20 +3829,6 @@ GROUP BY rsr_country.name
                 <cell id="774">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">9</property>
-                    <image id="735">
-                        <property name="height">50%</property>
-                        <property name="width">50%</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">xls</property>
-                                <expression name="valueExpr" type="javascript">true</expression>
-                            </structure>
-                        </list-property>
-                        <structure name="toc"/>
-                        <property name="source">url</property>
-                        <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["logo"]</expression>
-                        <expression name="altText">"Logo"</expression>
-                    </image>
                 </cell>
             </row>
             <row id="749">

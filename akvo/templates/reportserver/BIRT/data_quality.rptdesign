@@ -2897,6 +2897,7 @@ WHERE rsr_partnership.organisation_id = ?
             <text-property name="text">Project totals</text-property>
         </label>
         <grid id="674">
+            <property name="pageBreakBefore">avoid</property>
             <property name="width">2.8645833333333335in</property>
             <column id="675">
                 <property name="width">2.0729166666666665in</property>
@@ -3125,6 +3126,7 @@ WHERE rsr_partnership.organisation_id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="446">
                 <property name="width">0.5208333333333334in</property>
             </column>
@@ -3469,6 +3471,7 @@ WHERE rsr_partnership.organisation_id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="291">
                 <property name="width">1.25in</property>
             </column>
@@ -3765,6 +3768,7 @@ WHERE rsr_partnership.organisation_id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="527">
                 <property name="width">1.25in</property>
             </column>
@@ -4106,6 +4110,7 @@ WHERE rsr_partnership.organisation_id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="652">
                 <property name="width">1.2361111111111112in</property>
             </column>
