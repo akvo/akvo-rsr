@@ -127,27 +127,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                 self.indicator_period.save()
         super(ProjectUpdate, self).delete(*args, **kwargs)
 
-    def clean(self):
-        if hasattr(self, 'project') and hasattr(self, 'indicator_period') and \
-                hasattr(self, 'period_update'):
-            validation_errors = {}
-
-            # Don't allow an indicator period that belongs to a different project
-            if self.project and self.indicator_period:
-                if not self.indicator_period.indicator.result.project == self.project:
-                    validation_errors['indicator_period'] = u'%s' % _(
-                        u'Indicator period must be part of the same project'
-                    )
-
-            # Don't allow an indicator update to a non-Impact project
-            if self.indicator_period and self.period_update and not self.project.is_impact_project:
-                validation_errors['project'] = u'%s' % _(
-                    u'Project must be an Impact project to place indicator updates to it'
-                )
-
-            if validation_errors:
-                raise ValidationError(validation_errors)
-
     def img(self, value=''):
         try:
             return self.photo.thumbnail_tag
