@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Indicator, IndicatorPeriod
+from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
+                             IndicatorPeriodDataComment)
 
 from ..serializers import IndicatorSerializer, IndicatorPeriodSerializer
 from ..viewsets import PublicProjectViewSet
@@ -27,3 +28,21 @@ class IndicatorPeriodViewSet(PublicProjectViewSet):
     serializer_class = IndicatorPeriodSerializer
     filter_fields = ('indicator', )
     project_relation = 'indicator__result__project__'
+
+
+class IndicatorPeriodDataViewSet(PublicProjectViewSet):
+    """
+    """
+    queryset = IndicatorPeriodData.objects.all()
+    serializer_class = IndicatorPeriodSerializer
+    filter_fields = ('period', 'user', 'relative_data', 'status', 'update_method')
+    project_relation = 'period__indicator__result__project__'
+
+
+class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
+    """
+    """
+    queryset = IndicatorPeriodDataComment.objects.all()
+    serializer_class = IndicatorPeriodSerializer
+    filter_fields = ('data', 'user')
+    project_relation = 'period__indicator__result__project__'

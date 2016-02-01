@@ -5,12 +5,29 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import IndicatorPeriod, Indicator
+from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
+                             IndicatorPeriodDataComment)
 
 from .rsr_serializer import BaseRSRSerializer
 
+class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = IndicatorPeriodDataComment
+
+
+class IndicatorPeriodDataSerializer(BaseRSRSerializer):
+
+    comments = IndicatorPeriodDataCommentSerializer(many=True, required=False,
+                                                    allow_add_remove=True)
+
+    class Meta:
+        model = IndicatorPeriodData
+
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
+
+    data = IndicatorPeriodDataSerializer(many=True, required=False, allow_add_remove=True)
 
     class Meta:
         model = IndicatorPeriod

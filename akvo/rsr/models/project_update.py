@@ -68,64 +68,12 @@ class ProjectUpdate(TimestampsMixin, models.Model):
                              help_text=_(u'Universally unique ID set by creating user agent'))
     notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
 
-    # Indicator updates
-    indicator_period = models.ForeignKey('IndicatorPeriod', related_name='updates',
-                                         verbose_name=_(u'indicator period'), blank=True, null=True)
-    period_update = models.DecimalField(_(u'period update'), blank=True, null=True, max_digits=14,
-                                        decimal_places=2)
-
     class Meta:
         app_label = 'rsr'
         get_latest_by = "created_at"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
         ordering = ['-id', ]
-
-    def save(self, *args, **kwargs):
-        if self.indicator_period and self.period_update:
-            if not self.pk:
-                # Newly created update to indicator period, update the actual value.
-                self.indicator_period.update_actual_value(self.period_update)
-
-            else:
-                # Update to already existing indicator period, check if values have been changed.
-                orig_update = ProjectUpdate.objects.get(pk=self.pk)
-                if orig_update.indicator_period != self.indicator_period:
-                    # Indicator period has changed. Substract value from old period, and add new
-                    # value to new period.
-                    try:
-                        orig_update.update_actual_value(Decimal(orig_update.period_update) * -1)
-                    except (InvalidOperation, TypeError):
-                        pass
-                    self.indicator_period.update_actual_value(self.period_update)
-
-                elif orig_update.period_update != self.period_update:
-                    # Indicator value has changed. Add the difference to it.
-                    try:
-                        self.indicator_period.update_actual_value(
-                            Decimal(self.period_update) - Decimal(orig_update.period_update)
-                        )
-                    except (InvalidOperation, TypeError):
-                        self.indicator_period.update_actual_value(self.period_update)
-
-        super(ProjectUpdate, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.indicator_period and self.period_update:
-            # Subsctract the value of the update from the actual value of the indicator period
-            if ProjectUpdate.objects.filter(indicator_period=self.indicator_period).\
-                    exclude(pk=self.pk).exists():
-                try:
-                    self.indicator_period.update_actual_value(
-                        Decimal(self.period_update) * -1
-                    )
-                except (InvalidOperation, TypeError):
-                    pass
-            else:
-                # There's no other updates for this indicator period, remove actual value
-                self.indicator_period.actual_value = ''
-                self.indicator_period.save()
-        super(ProjectUpdate, self).delete(*args, **kwargs)
 
     def img(self, value=''):
         try:

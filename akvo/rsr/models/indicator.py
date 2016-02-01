@@ -22,7 +22,6 @@ from sorl.thumbnail.fields import ImageField
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
-    locked = models.BooleanField(_(u'locked'), default=True)
     title = ValidXMLCharField(
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
@@ -204,6 +203,7 @@ class Indicator(models.Model):
 
 class IndicatorPeriod(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')
+    locked = models.BooleanField(_(u'locked'), default=True, db_index=True)
     period_start = models.DateField(
         _(u'period start'), null=True, blank=True,
         help_text=_(u'The start date of the reporting period for this indicator.')
@@ -584,7 +584,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         deleted, because it could lead to strange scenarios.
         """
         if self.status == self.STATUS_APPROVED:
-            raise FieldError(unicode(_(u'It is not possible to delete an approved update')))
+            raise FieldError(unicode(_(u'It is not possible to delete an approved data update')))
         super(IndicatorPeriodData, self).delete(*args, **kwargs)
 
 

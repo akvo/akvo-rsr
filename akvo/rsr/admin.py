@@ -1244,3 +1244,22 @@ class ValidationSetAdmin(admin.ModelAdmin):
     inlines = (ValidationInline, )
 
 admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
+
+
+class IndicatorPeriodDataCommentInline(admin.TabularInline):
+    model = get_model('rsr', 'IndicatorPeriodDataComment')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.comments.count() == 0 else 0
+        else:
+            return 1
+
+
+class IndicatorPeriodDataAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IndicatorPeriodData')
+    list_display = ('period', 'user', 'data', 'relative_data', 'status')
+    readonly_fields = ('created_at', 'last_modified_at')
+    inlines = (IndicatorPeriodDataCommentInline, )
+
+admin.site.register(get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)

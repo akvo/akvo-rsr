@@ -17,7 +17,8 @@ from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldS
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
-from .indicator import IndicatorPeriodSerializer, IndicatorSerializer
+from .indicator import (IndicatorSerializer, IndicatorPeriodSerializer,
+                        IndicatorPeriodDataSerializer, IndicatorPeriodDataCommentSerializer)
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .invoice import InvoiceSerializer
 from .keyword import KeywordSerializer
@@ -67,8 +68,10 @@ __all__ = [
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
-    'IndicatorPeriodSerializer',
     'IndicatorSerializer',
+    'IndicatorPeriodSerializer',
+    'IndicatorPeriodDataSerializer',
+    'IndicatorPeriodDataCommentSerializer',
     'InternalOrganisationIDSerializer',
     'InvoiceSerializer',
     'KeywordSerializer',
