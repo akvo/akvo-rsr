@@ -30,20 +30,13 @@ from .partnership import PartnershipViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
-from .project_editor import (project_editor_delete_document,
-                             project_editor_delete_photo,
+from .project_editor import (project_editor,
+                             log_project_addition,
+                             project_editor_upload_file,
                              project_editor_import_results,
+                             project_editor_add_validation,
+                             project_editor_remove_validation,
                              project_editor_remove_keyword,
-                             project_editor_step1,
-                             project_editor_step2,
-                             project_editor_step3,
-                             project_editor_step4,
-                             project_editor_step5,
-                             project_editor_step6,
-                             project_editor_step7,
-                             project_editor_step8,
-                             project_editor_step9,
-                             project_editor_step10,
                              project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
@@ -61,16 +54,20 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
+from .report import reports, report_formats
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
+                        typeahead_user_organisations,
                         typeahead_project,
+                        typeahead_user_projects,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
+from .user_management import invite_user
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -89,6 +86,7 @@ __all__ = [
     'IndicatorPeriodViewSet',
     'IndicatorViewSet',
     'InternalOrganisationIDViewSet',
+    'invite_user',
     'InvoiceViewSet',
     'KeywordViewSet',
     'LegacyDataViewSet',
@@ -116,24 +114,19 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
-    'project_editor_delete_document',
-    'project_editor_delete_photo',
+    'project_editor',
+    'log_project_addition',
+    'project_editor_upload_file',
+    'project_editor_add_validation',
+    'project_editor_remove_validation',
     'project_editor_import_results',
-    'project_editor_step1',
-    'project_editor_step2',
-    'project_editor_step3',
-    'project_editor_step4',
-    'project_editor_step5',
-    'project_editor_step6',
-    'project_editor_step7',
-    'project_editor_step8',
-    'project_editor_step9',
-    'project_editor_step10',
     'project_editor_organisation_logo',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
+    'reports',
+    'report_formats',
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
@@ -143,7 +136,9 @@ __all__ = [
     'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
+    'typeahead_user_organisations',
     'typeahead_project',
+    'typeahead_user_projects',
     'typeahead_projectupdate',
     'update_details',
     'upload_indicator_update_photo',

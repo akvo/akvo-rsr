@@ -665,12 +665,6 @@ div.paginationWrap {
     span {
         color: rgba($akvoBlack, 0.3);
     }
-    span.published {
-        color: $progressSuccess;
-    }
-    span.notPublished {
-        color: $secondary2;
-    }
 }
 
 #profile {
@@ -1389,6 +1383,11 @@ header {
                     font-weight: bold;
                 }
             }
+            /* Style buttons and logos for Akvo Pages project pages */
+            .btn, img {
+                display: inline-block;
+                margin: 10px 3px  3px  3px;
+            }
         }
     }
 }
@@ -1736,7 +1735,7 @@ div.textBlock {
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
-        background: rgba(white, 0.55);
+        background: rgba(white, 0.95);
         border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
         @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
@@ -2184,7 +2183,14 @@ body {
     }
 }
 
-.formOverviewInfo {
+.formProgress {
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($progressSuccess, 0.1);
+        }
+    }
     .progress {
         .progress-bar {
             .progress-percentage {
@@ -2192,22 +2198,43 @@ body {
             }
         }
     }
-    .info-icon {
-        padding-left: 0.5em;
-        cursor: pointer;
-        cursor: hand;
-        color: $akvoPurple;
-        &.activated {
-            color: rgba(44, 42, 116, 0.3);
-        }
+    .progress-and-publish {
+        top: 20px;
+    }
+    .redLegenda {
+        background: $progressWarning;
+        color: $progressWarning;
+    }
+    .orangeLegenda {
+        background: $progressNot;
+        color: $progressNot;
+    }
+    .greenLegenda {
+        background: $progressSuccess;
+        color: $progressSuccess;
+    }
+    .mandatoryIndicator {
+        color: $progressWarning;
+    }
+    .published {
+        color: $progressSuccess;
+    }
+    .notPublished {
+        color: $secondary2;
     }
 }
 
 .formOverviewInfo {
-    border: 1px solid rgba(52, 52, 56, 0.1);
-    padding: 20px;
-    margin-bottom: 15px;
-    @include border-radius(5px);
+    .panel-heading {
+        cursor: pointer;
+        transition: background 0.1s linear;
+        &:hover {
+            background: rgba($rsrBlue2, 0.1);
+        }
+    }
+    label {
+        color: rgba($akvoPurple, 0.5);
+    }
 }
 
 .projectEdit {
@@ -2219,7 +2246,6 @@ body {
     }
     .myPanel {
         overflow: hidden;
-        cursor: pointer;
         line-height: 25px;
         position: relative;
         .formBlock {
@@ -2249,25 +2275,24 @@ body {
             @include border-radius(5px);
             display: block;
             width: 100%;
-            cursor: pointer;
             top: initial;
             padding: 5px 5px 5px 15px;
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
+            cursor: pointer;
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
             .info-icon {
                 padding-left: 0.5em;
                 cursor: pointer;
-                cursor: hand;
                 font-size: 90%;
                 &.activated {
                     color: rgba(44, 42, 116, 0.3);
                 }
             }
         }
-        .progress {
+        .section-progress {
             position: absolute;
             width: 30%;
             top: 15px;
@@ -2338,18 +2363,12 @@ body {
         & + span + label,
         & + ul + label {
             position: absolute;
-            top: 10px;
+            top: 0px;
             transition: top 0.7s ease, opacity 0.7s ease;
-            opacity: 0;
+            opacity: 1;
             // Some nice styling
             font-size: $label-font-size;
             font-weight: 600;
-        }
-        &:valid + label,
-        &:valid + span + label,
-        &:valid + ul + label {
-            opacity: 1;
-            top: 0px;
         }
         &:focus + label,
         &:focus + span + label,
@@ -2370,13 +2389,13 @@ body {
             font-weight: 600;
         }
     }
-    .delete-object-button {
+    .delete-related-object {
         color: $progressWarning;
     }
     .delete-photo-button {
         color: $progressWarning;
     }
-    .delete-document-button {
+    .delete-document {
         color: $progressWarning;
     }
     .info-icon {
@@ -2393,6 +2412,12 @@ body {
         font-size: 125%;
         margin-left: 4px;
         margin-right: -4px;
+    }
+    .mandatory-block {
+        @extend .mandatory;
+        font-size: 90%;
+        margin-left: 0px;
+        margin-right: 0px;
     }
     label.progress-bar {
         &[aria-valuenow="0"] {
@@ -2446,7 +2471,6 @@ body {
         border-radius: 10px;
         display: block;
         width: 100%;
-        cursor: pointer;
         top: initial;
         padding: 5px 15px 5px 15px;
         margin-top: 10px;
@@ -2460,30 +2484,22 @@ body {
         font-size: 12px;
         margin-top: 10px;
         margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .save-message {
+        text-align: center;
+    }
+    .save-button {
+        text-align: right;
+    }
+    .toggle-help {
+        font-size: 0.9em;
+        color: rgba(44, 42, 116, 0.5);
     }
 }
 
-.legenda {
-    border: 1px solid rgba($akvoPurple, 0.5);
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    padding: 5px 15px 5px 15px;
-    margin: 15px 15px 15px 15px;
-    .redLegenda {
-        background: $progressWarning;
-        color: $progressWarning;
-    }
-    .orangeLegenda {
-        background: $progressNot;
-        color: $progressNot;
-    }
-    .greenLegenda {
-        background: $progressSuccess;
-        color: $progressSuccess;
-    }
-    .mandatory {
-        color: $progressWarning;
-    }
+.viewProject {
+    margin-top: 15px;
 }
 
 .info-icon {
@@ -2493,6 +2509,10 @@ body {
     &.activated {
         color: rgba(44, 42, 116, 0.3);
     }
+}
+
+#publishProject {
+   margin-top: -7px;
 }
 
 #editor-feedback {
@@ -2509,15 +2529,6 @@ body {
         -moz-transform: rotate(-90deg);
         -ms-transform: rotate(-90deg);
         -o-transform: rotate(-90deg);
-    }
-}
-
-#publishProject.btn {
-    margin-top: -6px;
-    @media only screen and (max-width: $width-large) {
-        @media only screen and (min-width: $width-medium) {
-            margin-left: -1.25em;
-        }
     }
 }
 
@@ -2566,11 +2577,11 @@ body {
     .border-transition {
         @include transition(border 0.25s ease-in-out);
     }
-    .bg-border-transition { 
+    .bg-border-transition {
         -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
         -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;         
+        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     }
     .opacity-transition {
         @include transition(opacity 0.25s ease-in-out);
@@ -3135,11 +3146,11 @@ body {
                 background-color: #ececec;
                 &:first-child {
                     border-left: 4px solid #ae0922;
-                }       
+                }
                 &.edit-in-progress {
                     background-color: #D1E6D1;
                     border-left: none;
-                }             
+                }
                 .update-exceed-target {
                     margin: 3em 0 1em 0;
                     text-align: right;
@@ -3178,7 +3189,7 @@ body {
                         color: #B5B5B5;
                         border: 1px solid #B5B5B5;
                         background-color: #ececec;
-                        cursor: pointer;                     
+                        cursor: pointer;
                         .progress-hover-text {
                             content: '';
                             opacity: 0;
@@ -3609,5 +3620,66 @@ div.active {
                 }
             }
         }
+    }
+}
+
+/* My reports section */
+
+div#my-reports {
+    label {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .dropdown {
+        .dropdown-toggle {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 10px;
+            .not-selected {
+                color: grey;
+            }
+            .caret-indicator {
+                float: right;
+            }
+        }
+        .dropdown-menu {
+            text-align: left;
+            width: 100%;
+            top: 35px;
+        }
+    }
+    .input-group {
+        min-height: 100px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .form-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            .fa {
+                font-size: 75px;
+            }
+            &:hover {
+                background: rgba($akvoBlack, 0.05);
+            }
+        }
+    }
+    .report-title {
+        font-weight: bold;
+    }
+    .report-description {
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+    }
+    .my-reports-download-error {
+        margin: 1em 0;
+    }
+    /* Override pointer events for disabled items that show help text */
+    .pointerEvents {
+        pointer-events: initial;
     }
 }

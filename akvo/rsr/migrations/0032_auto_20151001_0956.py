@@ -6,6 +6,9 @@ import akvo.rsr.models.iati_import
 from django.conf import settings
 import akvo.rsr.fields
 
+def file_path(self, filename):
+    return 'db/iati_import/%s' % filename
+
 
 class Migration(migrations.Migration):
 
@@ -19,7 +22,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
-                ('local_file', models.FileField(upload_to=akvo.rsr.models.iati_import.file_path, verbose_name='local file', blank=True)),
+                ('local_file', models.FileField(upload_to=file_path, verbose_name='local file', blank=True)),
                 ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status', choices=[(1, 'pending'), (2, 'retrieving file'), (3, 'import in progress'), (4, 'completed'), (5, 'cancelled')])),
                 ('start_date', models.DateTimeField(null=True, verbose_name='start date', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),

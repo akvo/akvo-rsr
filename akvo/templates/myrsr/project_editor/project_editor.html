@@ -1,0 +1,204 @@
+{% extends "myrsr/myrsr_base.html" %}
+{% load i18n bootstrap3 rsr_utils compressed rules humanize project_editor %}
+{% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
+{% block myrsr_main %}
+    <!--[if lte IE 9]>
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      {% trans 'You are using an unsupported browser (Internet Explorer 9 or less). Please update your browser to a newer version or use a different browser.' %}
+    </div>
+    <![endif]-->
+
+    <!--*************************************** Project editor header **********************************************-->
+    <div class="row">
+        <div class="col-md-4">
+            <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'project-main' project.pk %}" target="_blank">
+                <button class="btn btn-primary viewProject" id="viewProject"><span class="glyphicon glyphicon-expand"></span> {% trans 'View project page' %}</button>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div class="editDate">
+                <span>{% trans 'Date created' %}:</span>
+                <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.created_at }}</time><br/>
+                <span>{% trans 'Last modified' %}:</span>
+                <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.last_modified_at }}</time>
+            </div>
+        </div>
+    </div>
+    <div class="help-block" id="editorHelptext">
+        {% trans 'Your RSR project page shows project information about what’s happening, where and who’s involved, as well as who the funders are. Tell your project’s story by entering complete information. After a project is published you can keep it up to date by adding project updates with text, photos and videos.' %}<br/><br/>
+        {% trans 'Before you start, please review all the project fields so you know which information belongs where in the RSR project form.' %}<br/><br/>
+        {% trans 'RSR editors can edit the project information, and RSR administrators can edit and publish the project once all mandatory fields are filled out and the progress bar on top of the page is green. Changes that are made to a published project, will be visible online immediately after saving.' %}<br/><br/>
+        {% trans 'If you have questions, please get in touch with us via' %}
+        {# Javascript will generate the support feedback email, as to reduce spam #}
+        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
+        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>.
+    </div>
+
+    {% include "myrsr/project_editor/project_editor_options.html" %}
+    {% include "myrsr/project_editor/project_editor_progress.html" %}
+
+    <!--*************************************** Project editor sections **********************************************-->
+    <section class="panels projectEdit">
+        {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" file_input="myrsr/project_editor/fields/file_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" custom_field_input="myrsr/project_editor/fields/custom_field_input.html" %}
+            <fieldset>
+                {% include "myrsr/project_editor/section_1.html" %}
+                {% include "myrsr/project_editor/section_2.html" %}
+                {% include "myrsr/project_editor/section_3.html" %}
+                {% include "myrsr/project_editor/section_4.html" %}
+                {% include "myrsr/project_editor/section_5.html" %}
+                {% include "myrsr/project_editor/section_6.html" %}
+                {% include "myrsr/project_editor/section_7.html" %}
+                {% include "myrsr/project_editor/section_8.html" %}
+                {% include "myrsr/project_editor/section_9.html" %}
+                {% include "myrsr/project_editor/section_10.html" %}
+            </fieldset>
+        {% endwith %}
+    </section>
+    <div id="editor-feedback" class="hidden-xs">
+        {# Javascript will generate the support feedback email, as to reduce spam #}
+        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback"> #}
+        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62));</script>
+        <i class="fa fa-comment-o"></i> {% trans 'Provide feedback' %}
+        {# </a> #}
+        <script type="text/javascript">document.write(String.fromCharCode(60,47,97,62));</script>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
+        {# Section 1 #}
+        <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
+
+        {# Section 2 #}
+        <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact='ProjectContact.'|add:project_id_string %}</script>
+
+        {# Section 3 #}
+        <script type="text/template" id="partner-input">{% include "myrsr/project_editor/related_objects/partner_input.html" with ps='Partnership.'|add:project_id_string %}</script>
+
+        {# Section 5 #}
+        <script type="text/template" id="result-input">{% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string result_id_string="new-0" %}</script>
+        <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string %}</script>
+        <script type="text/template" id="condition-input">{% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}</script>
+
+        {# Section 6 #}
+        <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor/related_objects/budget_item_input.html" with item='BudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor/related_objects/country_budget_item_input.html" with item='CountryBudgetItem.'|add:project_id_string %}</script>
+        <script type="text/template" id="transaction-input">{% include "myrsr/project_editor/related_objects/transaction_input.html" with transaction='Transaction.'|add:project_id_string %}</script>
+        <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string %}</script>
+        <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor/related_objects/planned_disbursement_input.html" with pd='PlannedDisbursement.'|add:project_id_string %}</script>
+
+        {# Section 7 #}
+        <script type="text/template" id="project-location-input">{% include "myrsr/project_editor/related_objects/location_input.html" with location='ProjectLocation.'|add:project_id_string %}</script>
+        <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor/related_objects/location_administrative_input.html" with admin='AdministrativeLocation.'|add:project_id_string %}</script>
+        <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor/related_objects/recipient_country_input.html" with rc='RecipientCountry.'|add:project_id_string %}</script>
+        <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor/related_objects/recipient_region_input.html" with rr='RecipientRegion.'|add:project_id_string %}</script>
+
+        {# Section 8 #}
+        <script type="text/template" id="sector-input">{% include "myrsr/project_editor/related_objects/sector_input.html" with sector='Sector.'|add:project_id_string %}</script>
+        <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor/related_objects/policy_marker_input.html" with marker='PolicyMarker.'|add:project_id_string %}</script>
+
+        {# Section 9 #}
+        <script type="text/template" id="link-input">{% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}</script>
+        <script type="text/template" id="document-input">{% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>
+
+        {# Section 10 #}
+        <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
+    {% endwith %}
+ 
+    {% block react_js %}
+        <script src="//fb.me/react-0.12.0.js"></script>
+    {% endblock react_js %}
+
+    <script type="application/json" id="default-values">
+        {
+            "project_id": "{{ project.pk }}",
+            "publishing_status_id": "{{ project.publishingstatus.pk }}",
+            "user_id": "{{ user.pk }}",
+            "save": "{% trans 'Save' %}",
+            "saving": "{% trans 'Saving' %}",
+            "save_error": "{% trans 'Could not save one or more fields' %}",
+            "save_general_error": "{% trans 'Something went wrong while saving' %}",
+            "save_success": "{% trans 'Saved successfully!' %}",
+            "save_forbidden": "{% trans 'You are not allowed to save this project' %}",
+            "sure_message": "{% trans 'Are you sure?' %}",
+            "yes": "{% trans 'Yes' %}",
+            "no": "{% trans 'No' %}",
+            "file_delete_error": "{% trans 'Could not delete file' %}",
+            "uploaded_document": "{% trans 'Uploaded document' %}",
+            "delete_error": "{% trans 'Could not delete item' %}",
+            "publish": "{% trans 'Publish' %}",
+            "unpublish": "{% trans 'Unpublish' %}",
+            "published": "{% trans 'Published' %}",
+            "not_published": "{% trans 'Not published' %}",
+            "or_mandatory_1": "{% trans 'Either this field or' %}",
+            "or_mandatory_2": "{% trans 'is mandatory' %}",
+            "related_project_label": "{% trans 'Related RSR project' %}",
+            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
+            "reporting_org": "{% trans 'Reporting organisation' %}",
+            "partner_label": "{% trans 'Project partner' %}",
+            "partner_helptext": "{% trans 'Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database.' %}",
+            "provider_org_label": "{% trans 'Provider organisation' %}",
+            "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
+            "recipient_org_label": "{% trans 'Recipient organisation' %}",
+            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}",
+            "add_new_organisation": "{% trans 'Add new organisation' %}",
+            "name": "{% trans 'Name' %}",
+            "long_name": "{% trans 'Long name' %}",
+            "iati_org_id": "{% trans 'Organisation IATI identifier' %}",
+            "org_type": "{% trans 'Organisation type' %}",
+            "description": "{% trans 'Description' %}",
+            "cancel": "{% trans 'Cancel' %}",
+            "max": "{% trans 'Max' %}",
+            "characters": "{% trans 'characters' %}",
+            "blank_name": "{% trans 'Organisation name can not be blank' %}",
+            "blank_long_name": "{% trans 'Organisation long name can not be blank' %}",
+            "government": "{% trans 'Government' %}",
+            "other_public_sector": "{% trans 'Other Public Sector' %}",
+            "international_ngo": "{% trans 'International NGO' %}",
+            "national_ngo": "{% trans 'National NGO' %}",
+            "regional_ngo": "{% trans 'Regional NGO' %}",
+            "public_private_partnership": "{% trans 'Public Private Partnership' %}",
+            "multilateral": "{% trans 'Multilateral' %}",
+            "foundation": "{% trans 'Foundation' %}",
+            "private_sector": "{% trans 'Private Sector' %}",
+            "academic_training_research": "{% trans 'Academic, Training and Research' %}",
+            "website": "{% trans 'Website' %}",
+            "start_http": "{% trans 'The URL of the website must begin with http://' %}",
+            "contact_person": "{% trans 'Contact name' %}",
+            "contact_email": "{% trans 'Contact email' %}",
+            "longitude": "{% trans 'Longitude' %}",
+            "latitude": "{% trans 'Latitude' %}",
+            "country": "{% trans 'Country' %}",
+            "use_link": "{% trans 'Use the link to' %}",
+            "coordinates": "{% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}",
+            "org_logo": "{% trans 'Organisation logo' %}",
+            "location_check": "{% trans 'All location fields have to be filled in' %}",
+            "general_error": "{% trans 'Something went wrong while adding the organisation' %}",
+            "comma_value": "{% trans 'It is not allowed to use a comma, use a period to denote decimals' %}",
+            "image_file_format": "{% trans 'File is not an image file. Supported formats are' %}",
+            "file_size": "{% trans 'File size is too large' %}",
+            "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
+            "connection_error": "{% trans 'Connection error, please check your internet connection' %}"
+        }
+    </script>
+
+    <script type="application/json" id="country-values">
+        [{% for country in countries %}{"pk": "{{ country.pk }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+    </script>
+
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+
+    {% compressed_css 'react_datepicker_style' %}
+
+    {% compressed_js 'react_typeahead' %}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+    {% compressed_js 'project_editor' %}
+{% endblock %}

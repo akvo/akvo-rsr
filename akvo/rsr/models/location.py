@@ -18,32 +18,19 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class BaseLocation(models.Model):
-    _help_text = _(u"Go to <a href='http://mygeoposition.com/' target='_blank'>"
-                   u"http://mygeoposition.com/</a> to get the decimal coordinates of your project.")
     latitude = LatitudeField(
-        _(u'latitude'), null=True, db_index=True, default=0, help_text=_help_text
+        _(u'latitude'), null=True, blank=True, db_index=True, default=0,
+        help_text=_(u'Use a period to denote decimals.')
     )
     longitude = LongitudeField(
-        _(u'longitude'), null=True, db_index=True, default=0, help_text=_help_text
+        _(u'longitude'), null=True, blank=True, db_index=True, default=0,
+        help_text=_(u'Use a period to denote decimals.')
     )
-    city = ValidXMLCharField(
-        _(u'city'), blank=True, max_length=255, help_text=_(u'Select the city. (255 characters)')
-    )
-    state = ValidXMLCharField(
-        _(u'state'), blank=True, max_length=255, help_text=_(u'Select the state. (255 characters)')
-    )
-    address_1 = ValidXMLCharField(
-        _(u'address 1'), max_length=255, blank=True,
-        help_text=_(u'Enter the street and house number. (255 characters)')
-    )
-    address_2 = ValidXMLCharField(
-        _(u'address 2'), max_length=255, blank=True,
-        help_text=_(u'Add additional address information, if needed. (255 characters)')
-    )
-    postcode = ValidXMLCharField(
-        _(u'postal code'), max_length=10, blank=True,
-        help_text=_(u'Enter the postal/area code. (10 characters)')
-    )
+    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255)
+    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255)
+    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True)
+    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True)
+    postcode = ValidXMLCharField(_(u'postal code'), max_length=10, blank=True)
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
@@ -84,28 +71,75 @@ class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', related_name='locations')
     country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.'), null=True
+        'Country', verbose_name=_(u'country'), null=True, blank=True,
+        help_text=_(u'The country or countries that benefit(s) from the activity.')
     )
 
     # Extra IATI fields
-    reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
-    location_code = ValidXMLCharField(_(u'code'), blank=True, max_length=25)
+    reference = ValidXMLCharField(
+        _(u'reference'), blank=True, max_length=50,
+        help_text=_(u'An internal reference that describes the location in the reporting '
+                    u'organisation\'s own system. For reference see: '
+                    u'<a href="http://iatistandard.org/201/activity-standard/iati-activities/'
+                    u'iati-activity/location/#attributes" target="_blank">'
+                    u'http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/'
+                    u'location/#attributes</a>.')
+    )
+    location_code = ValidXMLCharField(
+        _(u'code'), blank=True, max_length=25,
+        help_text=_(u'Enter a code to identify the region. Codes are based on DAC region codes. '
+                    u'Where an activity is considered global, the code 998 can be used. For '
+                    u'reference: <a href="http://www.oecd.org/dac/stats/dacandcrscodelists.htm" '
+                    u'target="_blank">http://www.oecd.org/dac/stats/dacandcrscodelists.htm</a>.')
+    )
     vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=2,
                                    choices=codelist_choices(GEOGRAPHIC_VOCABULARY))
-    name = ValidXMLCharField(_(u'name'), blank=True, max_length=100)
-    description = ValidXMLCharField(_(u'description'), blank=True, max_length=255,
-                                    help_text=_(u'(max 255 characters)'))
-    activity_description = ValidXMLCharField(
-        _(u'activity description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
+    name = ValidXMLCharField(
+        _(u'name'), blank=True, max_length=100,
+        help_text=_(u'The human-readable name for the location.')
     )
-    exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1,
-                                  choices=codelist_choices(GEOGRAPHIC_EXACTNESS))
-    location_reach = ValidXMLCharField(_(u'reach'), blank=True, max_length=1,
-                                       choices=codelist_choices(GEOGRAPHIC_LOCATION_REACH))
-    location_class = ValidXMLCharField(_(u'class'), blank=True, max_length=1,
-                                       choices=codelist_choices(GEOGRAPHIC_LOCATION_CLASS))
-    feature_designation = ValidXMLCharField(_(u'feature designation'), blank=True, max_length=5,
-                                            choices=codelist_choices(LOCATION_TYPE))
+    description = ValidXMLCharField(
+        _(u'location description'), blank=True, max_length=255,
+        help_text=_(u'This provides free text space for providing an additional description, if '
+                    u'needed, of the actual target of the activity. A description that qualifies '
+                    u'the location, not the activity.')
+    )
+    activity_description = ValidXMLCharField(
+        _(u'activity description'), blank=True, max_length=255,
+        help_text=_(u'A description that qualifies the activity taking place at the location. '
+                    u'This should not duplicate information provided in the main activity '
+                    u'description, and should typically be used to distinguish between activities '
+                    u'at multiple locations within a single iati-activity record.')
+    )
+    exactness = ValidXMLCharField(
+        _(u'location precision'), blank=True, max_length=1,
+        choices=codelist_choices(GEOGRAPHIC_EXACTNESS),
+        help_text=_(u'Defines whether the location represents the most distinct point reasonably '
+                    u'possible for this type of activity or is an approximation due to lack of '
+                    u'more detailed information.')
+    )
+    location_reach = ValidXMLCharField(
+        _(u'reach'), blank=True, max_length=1, choices=codelist_choices(GEOGRAPHIC_LOCATION_REACH),
+        help_text=_(u'Does this location describe where the activity takes place or where the '
+                    u'intended beneficiaries reside?')
+    )
+    location_class = ValidXMLCharField(
+        _(u'class'), blank=True, max_length=1, choices=codelist_choices(GEOGRAPHIC_LOCATION_CLASS),
+        help_text=_(u'Does the location refer to a physical structure such as a building, a '
+                    u'populated place (e.g. city or village), an administrative division, or '
+                    u'another topological feature (e.g. river, nature reserve)? For reference: '
+                    u'<a href="http://iatistandard.org/201/codelists/GeographicLocationClass/" '
+                    u'target="_blank">http://iatistandard.org/201/codelists/'
+                    u'GeographicLocationClass/</a>.')
+    )
+    feature_designation = ValidXMLCharField(
+        _(u'feature designation'), blank=True, max_length=5,
+        choices=codelist_choices(LOCATION_TYPE),
+        help_text=_(u'A more refined coded classification of the type of feature referred to by '
+                    u'this location. For reference: <a href="http://iatistandard.org/201/codelists/'
+                    u'LocationType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'LocationType/</a>.')
+    )
 
     def __unicode__(self):
         location_unicode = self.country.name if self.country else u'%s' % _(u'No country specified')
@@ -142,14 +176,21 @@ class AdministrativeLocation(models.Model):
     location = models.ForeignKey(
         'ProjectLocation', verbose_name=_(u'location'), related_name='administratives'
     )
-    code = ValidXMLCharField(_(u'administrative code'), blank=True, max_length=25)
+    code = ValidXMLCharField(
+        _(u'administrative code'), blank=True, max_length=25,
+        help_text=_(u'Coded identification of national and sub-national divisions according to '
+                    u'recognised administrative boundary repositories. Multiple levels may be '
+                    u'reported.')
+    )
     vocabulary = ValidXMLCharField(
         _(u'administrative vocabulary'), blank=True, max_length=2,
-        choices=codelist_choices(GEOGRAPHIC_VOCABULARY)
+        choices=codelist_choices(GEOGRAPHIC_VOCABULARY),
+        help_text=_(u'For reference: <a href="http://iatistandard.org/201/codelists/'
+                    u'GeographicVocabulary/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'GeographicVocabulary/</a>.')
     )
-    level = models.PositiveSmallIntegerField(
-        _(u'administrative level'), blank=True, null=True, max_length=1
-    )
+
+    level = models.PositiveSmallIntegerField(_(u'administrative level'), blank=True, null=True)
 
     def __unicode__(self):
         return str(self.code) if self.code else u'%s' % _(u'No code specified')

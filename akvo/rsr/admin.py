@@ -582,7 +582,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy', 'is_public'),
+                       'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1140,11 +1140,107 @@ class EmploymentAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
 
 
+class IatiImportLogAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiImportLog')
+    list_display = ('iati_import_job', 'project', 'message_type', 'tag', 'model_field',
+                    'iati_activity_import', 'text', 'created_at',)
+    list_display = ('iati_import_job', 'message_type', 'tag', 'model_field', 'iati_activity_import', 'text', 'created_at',)
+
+    def get_queryset(self, request):
+        "Optimize the list display"
+        qs = super(IatiImportLogAdmin, self).get_queryset(request)
+        qs = qs.select_related('project', 'iati_activity_import', 'iati_import_job')
+        return qs
+
+admin.site.register(get_model('rsr', 'IatiImportLog'), IatiImportLogAdmin)
+
+
+class IatiImportLogInline(admin.TabularInline):
+    model = get_model('rsr', 'IatiImportLog')
+    fk_name = 'iati_import_job'
+    fields = ('iati_import_job_admin_url', 'project', 'activity_admin_url', 'message_type', 'tag',
+              'model_field', 'text', 'created_at',)
+    readonly_fields = ('iati_import_job_admin_url', 'project', 'activity_admin_url', 'message_type',
+                       'tag', 'model_field', 'text', 'created_at',)
+    extra = 0
+
+    def get_queryset(self, request):
+        "Optimize the list display"
+        qs = super(IatiImportLogInline, self).get_queryset(request)
+        qs = qs.select_related('project', 'iati_activity_import', 'iati_import_job')
+        return qs
+
+
+class IatiImportJobAdmin(admin.ModelAdmin):
+    """
+    NOTE: This form allows the addition of an IATI XML file by direct uploading. However running the
+    import is still managed by the the cron job in combination with the iati_import management
+    command.
+    """
+    model = get_model('rsr', 'IatiImportJob')
+    inlines = (IatiImportLogInline,)
+    readonly_fields = ('status', 'sha1_hexdigest',)
+    list_display = ('__unicode__', 'status',)
+
+    def save_model(self, request, iati_import_job, form, change):
+        iati_import_job.save()
+        if iati_import_job.iati_xml_file:
+            iati_import_job.iati_import.run_immediately = True
+
+admin.site.register(get_model('rsr', 'IatiImportJob'), IatiImportJobAdmin)
+
+
+class IatiImportJobInline(admin.TabularInline):
+    model = get_model('rsr', 'IatiImportJob')
+    # fk_name = 'iati_import'
+    fields = ('admin_url', 'status', 'sha1_hexdigest',)
+    readonly_fields = ('admin_url', 'status', 'sha1_hexdigest',)
+    extra = 0
+
+
 class IatiImportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'status', 'start_date', 'end_date')
-    list_filter = ('status',)
-    search_fields = ('user__username', )
-    exclude = ('status', 'start_date', 'end_date')
+    list_display = ('__unicode__', 'user', 'next_execution', 'running',)
+    readonly_fields = ('next_execution', 'running',)
+    inlines = (IatiImportJobInline,)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """ set the current user as selected """
+        if db_field.name == 'user':
+            kwargs['initial'] = request.user.pk
+        return super(IatiImportAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
 admin.site.register(get_model('rsr', 'IatiImport'), IatiImportAdmin)
+
+
+class IatiImportLogActivityInline(IatiImportLogInline):
+    fk_name = 'iati_activity_import'
+
+
+class IatiActivityImportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiActivityImport')
+    inlines = (IatiImportLogActivityInline,)
+
+admin.site.register(get_model('rsr', 'IatiActivityImport'), IatiActivityImportAdmin)
+
+
+class ValidationInline(admin.TabularInline):
+    model = get_model('rsr', 'ProjectEditorValidation')
+    fields = ('validation', 'action', )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.validations.count() == 0 else 0
+        else:
+            return 1
+
+
+class ValidationSetAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ProjectEditorValidationSet')
+    list_display = ('name', 'description')
+    fields = ('name', 'description')
+    inlines = (ValidationInline, )
+
+admin.site.register(get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)

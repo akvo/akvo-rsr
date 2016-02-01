@@ -21,15 +21,24 @@ class RelatedProject(models.Model):
         on_delete=models.SET_NULL
     )
     related_iati_id = ValidXMLCharField(
-        _(u'related project IATI identifier'), max_length=100, blank=True,
-        help_text=_(u'The IATI Identifier for the related project.<br>'
-                    u'Fill this in if the related project does not exist in RSR')
+        _(u'related project iati identifier'), max_length=100, blank=True,
+        help_text=_(u'In case you know the IATI identifier of a project that does not exist in '
+                    u'RSR, you can point out the IATI identifier here.')
     )
     relation = ValidXMLCharField(
         _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE), blank=True,
-        help_text=_(u'The relation between a project and related project. '
-                    u'(E.g. select the \'Parent\' relation when the selected project here is '
-                    u'the parent of this project).')
+        help_text=_(u'The relationship between a project and related project. There are five types '
+                    u'of relationships:<br/>'
+                    u'1 - Parent: the project you are now creating is a sub-component of the '
+                    u'selected related project.<br/>'
+                    u'2 - Child: the selected related project is a sub-component of the project '
+                    u'you are now creating.<br/>'
+                    u'3 - Sibling: the selected related project and the project you are now '
+                    u'creating are both sub-components of a parent project.<br/>'
+                    u'4 - Co-funded: a project that receives funding from more than one '
+                    u'organisation.<br/>'
+                    u'5 - Third party: a report by another organisation on the same project '
+                    u'that you are reporting on.')
     )
 
     def iati_relation(self):

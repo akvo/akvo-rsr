@@ -18,20 +18,31 @@ from akvo.utils import codelist_choices, codelist_value
 class Result(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='results')
     title = ValidXMLCharField(
-        _(u'title'), blank=True, max_length=255,
-        help_text=_(u'Enter the title of the result for this project. (255 characters)')
+        _(u'result title'), blank=True, max_length=500,
+        help_text=_(u'The aim of the project in one sentence. This doesn’t need to be something '
+                    u'that can be directly counted, but it should describe an overall goal of the '
+                    u'project. There can be multiple results for one project.')
     )
     type = ValidXMLCharField(
-        _(u'type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
-        help_text=_(u'Select whether the result is an output, outcome or impact. '
-                    u'<a href="http://www.tacticalphilanthropy.com/2010/06/'
-                    u'outputs-outcomes-impact-oh-my/" target="_blank">'
-                    u'Further explanation on result types</a>')
+        _(u'result type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
+        help_text=_(u'Choose whether the result is an output, outcome or impact.<br/>'
+                    u'1 - Output: Direct result of the project activities. E.g. number of booklets '
+                    u'produced, workshops held, people trained, latrines build.<br/>'
+                    u'2 - Outcome: The changes or benefits that result from the program activities '
+                    u'and resulting outputs. E.g number of beneficiaries reached, knowledge '
+                    u'increased, capacity build, monitored behaviour change.<br/>'
+                    u'3 - Impact: Long-term results of program (on population) that can be '
+                    u'attributed to the project outputs and outcomes. E.g improved health, '
+                    u'increased political participation of women.<br/>'
+                    u'9 - Other: Another type of result, not specified above.')
     )
-    aggregation_status = models.NullBooleanField(_(u'aggregation status'), blank=True)
+    aggregation_status = models.NullBooleanField(
+        _(u'aggregation status'), blank=True,
+        help_text=_(u'Indicate whether the data in the result set can be accumulated.')
+    )
     description = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=2000,
-        help_text=_(u'You can provide further information of the result here. (2000 characters)')
+        _(u'result description'), blank=True, max_length=2000,
+        help_text=_(u'You can provide further information of the result here.')
     )
     parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
                                       help_text=_(u'The parent result of this result.'),

@@ -19,16 +19,31 @@ class PlannedDisbursement(models.Model):
     project = models.ForeignKey(
         'Project', verbose_name=_(u'project'), related_name='planned_disbursements'
     )
-    value = models.DecimalField(_(u'value'), null=True, blank=True, max_digits=14, decimal_places=2)
-    value_date = models.DateField(_(u'value date'), null=True, blank=True)
+    value = models.DecimalField(
+        _(u'planned disbursement value'), null=True, blank=True, max_digits=14, decimal_places=2,
+        help_text=_(u'This should only be used to report specific planned cash transfers. Use a '
+                    u'period to denote decimals.')
+    )
+    value_date = models.DateField(
+        _(u'planned disbursement value date'), null=True, blank=True,
+        help_text=_(u'Enter the specific date (DD/MM/YYYY) for the planned disbursement value.')
+    )
     currency = ValidXMLCharField(
         _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
     updated = models.DateField(_(u'updated'), null=True, blank=True)
-    period_start = models.DateField(_(u'period start'), null=True, blank=True)
-    period_end = models.DateField(_(u'period end'), null=True, blank=True)
+    period_start = models.DateField(
+        _(u'planned disbursement period start'), null=True, blank=True,
+        help_text=_(u'The exact date of the planned disbursement OR the starting date for the '
+                    u'disbursement period (DD/MM/YYYY).')
+    )
+    period_end = models.DateField(
+        _(u'planned disbursement period end'), null=True, blank=True,
+        help_text=_(u'Enter the end date (DD/MM/YYYY) for the disbursement period.')
+    )
     type = ValidXMLCharField(
-        _(u'type'), blank=True, max_length=1, choices=codelist_choices(BUDGET_TYPE)
+        _(u'planned disbursement type'), blank=True, max_length=1,
+        choices=codelist_choices(BUDGET_TYPE)
     )
 
     def __unicode__(self):

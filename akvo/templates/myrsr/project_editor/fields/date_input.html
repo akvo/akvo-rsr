@@ -1,0 +1,14 @@
+{% load project_editor %}
+
+{% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
+    <div class="form-group">
+        <div class="control datepicker-container"
+             data-id="{{ obj_field_id }}"
+             data-child="{{ obj_value|date:"d/m/Y" }}"
+             data-label="{{ obj|field_name:field }}"
+             data-helptext="{{ obj|help_text:field }}"
+             data-classes="{{ validations|mandatory_or_hidden:obj_field_id }}"
+             {% if disabled %}data-disabled="true"{% endif %}>
+        </div>
+    </div>
+{% endwith %}

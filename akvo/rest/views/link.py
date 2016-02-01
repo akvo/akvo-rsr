@@ -8,10 +8,10 @@
 from akvo.rsr.models import Link
 
 from ..serializers import LinkSerializer
-from ..viewsets import BaseRSRViewSet
+from ..viewsets import PublicProjectViewSet
 
 
-class LinkViewSet(BaseRSRViewSet):
+class LinkViewSet(PublicProjectViewSet):
     """
     """
     queryset = Link.objects.all()

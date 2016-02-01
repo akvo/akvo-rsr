@@ -50,14 +50,21 @@ class RecipientCountry(models.Model):
     project = models.ForeignKey(
         'Project', verbose_name=_(u'project'), related_name='recipient_countries'
     )
-    country = ValidXMLCharField(_(u'country'), blank=True, max_length=2,
-                                choices=codelist_choices(COUNTRY))
+    country = ValidXMLCharField(
+        _(u'recipient country'), blank=True, max_length=2,choices=codelist_choices(COUNTRY),
+        help_text=_(u'The country that benefits from the project.')
+    )
     percentage = models.DecimalField(
-        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'recipient country percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'The percentage of total commitments or total activity budget allocated to '
+                    u'this country. Content must be a positive decimal number between 0 and 100, '
+                    u'with no percentage sign. Percentages for all reported countries and regions '
+                    u'MUST add up to 100%. Use a period to denote decimals.')
     )
     text = ValidXMLCharField(
-        _(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
+        _(u'recipient country description'), blank=True, max_length=50,
+        help_text=_(u'Enter additional information about the recipient country, if necessary.')
     )
 
     def __unicode__(self):
