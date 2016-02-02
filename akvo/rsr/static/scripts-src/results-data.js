@@ -5,58 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n = JSON.parse(document.getElementById("project-main-text").innerHTML);
-
-///////// RESULTS FRAMEWORK /////////
-
-  // Default values
-  var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
-  var currentDate = defaultValues.current_datetime;
-
-  /* Set the click listeners that expand or hide the full
-  ** "Results" entries in the sidebar.
-  */
-  function setResultExpandOnClicks() {
-    var els = document.querySelectorAll('.sidebar .result-expand');
-    var el = null;
-    var resultID = null;
-
-    for (var i = 0; i < els.length; i++) {
-      el = els[i];
-
-      el.addEventListener('click', function() {
-        if (!this.parentNode.classList.contains('expanded')) {
-          // Expand this result!
-
-          // Collapse any expanded results in the sidebar
-          removeClassFromAll('.result-nav', 'expanded');
-
-          // Expand this result in the sidebar
-          this.parentNode.classList.add('expanded');
-
-          // Hide all indicators in the main panel
-          hideAll('.indicator');
-
-          // Expand the appropriate result in the main panel
-          resultID = this.getAttribute('data-result-id');
-          showResultsSummary(resultID);
-        } else {
-
-          // Collapse all result entries in the sidebar
-          removeClassFromAll('.result-nav', 'expanded');
-
-          // Hide all result summaries in the main panel
-          hideAllResultsSummaries();
-
-          // Hide all indicators in the main panel
-          hideAll('.indicator-group, .indicator');
-
-          // Remove the "active" status of any indicators in main panel
-          removeClassFromAll('.indicator-nav.active', 'active');
-        }
-      });
-    }
-  }
+var currentDate, endpoints, i18n, initialSettings;
 
   /* Show the results summary in the main panel when the
   ** appropriate side bar link is activated.
@@ -1380,115 +1329,358 @@ var i18n = JSON.parse(document.getElementById("project-main-text").innerHTML);
     return updateContainer;
   }
 
-  function readMoreOnClicks() {
-    function setReadMore(show, hide) {
-      return function(e) {
-        e.preventDefault();
-        hide.classList.add('hidden');
-        show.classList.remove('hidden');
-      };
+var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry',
+    selected: function() {
+        if (this.props.selectedPeriod !== null) {
+            return this.props.selectedPeriod.id === this.props.period.id;
+        } else {
+            return false;
+        }
+    },
+
+    switchPeriod: function() {
+        var selectPeriod = this.props.selectPeriod;
+        this.selected() ? selectPeriod(null) : selectPeriod(this.props.period);
+    },
+
+    render: function() {
+        return (
+            React.DOM.tr(null, 
+                React.DOM.td( {className:"period-td"}, 
+                    React.DOM.a( {className:"clickable", onClick:this.switchPeriod}, 
+                        this.props.period.period_start, " - ", this.props.period.period_end
+                    )
+                ),
+                React.DOM.td( {className:"target-td"}, this.props.period.target_value),
+                React.DOM.td( {className:"actual-td"}, 
+                    this.props.period.actual_value,
+                    React.DOM.span( {className:"percentage-complete"},  " (100%)")
+                ),
+                React.DOM.td( {className:"actions-td"}, 
+                    React.DOM.a( {className:"clickable"}, i18n.update)
+                )
+            )
+        );
     }
+});
 
-    var summaryReadMore = document.getElementById('summary-truncated').querySelector('.read-more');
-    var summaryReadLess = document.getElementById('summary-full').querySelector('.read-less');
-    summaryReadMore.onclick = setReadMore(summaryReadLess.parentNode, summaryReadMore.parentNode);
-    summaryReadLess.onclick = setReadMore(summaryReadMore.parentNode, summaryReadLess.parentNode);
-  }
+var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
+    render: function() {
+        var thisList = this;
 
-  function setCurrentDate() {
-    var interval = setInterval(function(){
-      var localCurrentDate = new Date(currentDate);
-      localCurrentDate.setSeconds(localCurrentDate.getSeconds() + 1);
-      currentDate = localCurrentDate.toString();
+        var periods = this.props.indicator.periods.map(function (period) {
+            return (
+                React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
+                    React.createElement(IndicatorPeriodEntry, {
+                        period: period,
+                        selectedPeriod: thisList.props.selectedPeriod,
+                        selectPeriod: thisList.props.selectPeriod
+                    })
+                )
+            );
+        });
+
+        return (
+            React.DOM.div( {className:"indicator-period-list"}, 
+                React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
+                React.DOM.table( {className:"table table-responsive"}, 
+                    React.DOM.thead(null, 
+                        React.DOM.tr(null, 
+                            React.DOM.td( {className:"th-period"}, i18n.period),
+                            React.DOM.td( {className:"th-target"}, i18n.target_value),
+                            React.DOM.td( {className:"th-actual"}, i18n.actual_value),
+                            React.DOM.td( {className:"th-actions"} )
+                        )
+                    ),
+                    periods
+                )
+            )
+        );
+    }
+});
+
+var MainContent = React.createClass({displayName: 'MainContent',
+    getInitialState: function() {
+        return {
+            selectedPeriod: null
+        };
+    },
+
+    selectPeriod: function(period) {
+        this.setState({selectedPeriod: period})
+    },
+
+    deselectPeriod: function() {
+        this.setState({selectedPeriod: null})
+    },
+
+    showMeasure: function() {
+        switch(this.props.indicator.measure) {
+            case "1":
+                return i18n.unit;
+            case "2":
+                return i18n.percentage;
+            default:
+                return "";
+        }
+    },
+
+    render: function() {
+        if (this.state.selectedPeriod !== null) {
+            return (
+                React.DOM.span(null, 
+                    "Selected a period!",
+                    React.DOM.a( {className:"clickable", onClick:this.deselectPeriod}, "Go back.")
+                )
+            );
+        } else if (this.props.indicator !== null) {
+            return (
+                React.DOM.div( {className:"indicator opacity-transition"}, 
+                    React.DOM.h4( {className:"indicator-title"}, 
+                        React.DOM.i( {className:"fa fa-tachometer"} ),
+                        this.props.indicator.title,
+                        "(",this.showMeasure(),")"
+                    ),
+                    React.DOM.div( {className:"indicator-description"}, 
+                        this.props.indicator.description
+                    ),
+                    React.DOM.dl( {className:"baseline"}, 
+                        React.DOM.div( {className:"baseline-year"}, 
+                            React.DOM.dt(null, i18n.baseline_year),
+                            React.DOM.dd(null, this.props.indicator.baseline_year)
+                        ),
+                        React.DOM.div( {className:"baseline-value"}, 
+                            React.DOM.dt(null, i18n.baseline_value),
+                            React.DOM.dd(null, this.props.indicator.baseline_value)
+                        )
+                    ),
+                    React.createElement(IndicatorPeriodList, {
+                        indicator: this.props.indicator,
+                        selectedPeriod: this.state.selectedPeriod,
+                        selectPeriod: this.selectPeriod
+                    })
+                )
+            )
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    }
+});
+
+var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
+    selected: function() {
+        if (this.props.selectedIndicator !== null) {
+            return this.props.selectedIndicator.id === this.props.indicator.id;
+        } else {
+            return false;
+        }
+    },
+
+    switchIndicator: function() {
+        var selectIndicator = this.props.selectIndicator;
+        this.selected() ? selectIndicator(null) : selectIndicator(this.props.indicator);
+    },
+
+    render: function() {
+        var indicatorClass = "indicator-nav clickable bg-border-transition";
+        if (this.selected()) {
+            indicatorClass += " active"
+        }
+
+        return (
+            React.DOM.div( {className:indicatorClass, onClick:this.switchIndicator, key:this.props.indicator.id}, 
+                React.DOM.a(null, 
+                    React.DOM.h4(null, this.props.indicator.title)
+                )
+            )
+        );
+    }
+});
+
+var ResultEntry = React.createClass({displayName: 'ResultEntry',
+    expanded: function() {
+        if (this.props.selectedResult !== null) {
+            return this.props.selectedResult.id === this.props.result.id;
+        } else {
+            return false;
+        }
+    },
+
+    switchResult: function() {
+        var selectResult = this.props.selectResult;
+        this.expanded() ? selectResult(null) : selectResult(this.props.result);
+    },
+
+    render: function() {
+        var indicatorCount, indicatorEntries;
+
+        if (this.expanded()) {
+            indicatorCount = React.DOM.span(null );
+        } else {
+            indicatorCount = React.DOM.span( {className:"result-indicator-count"}, 
+                React.DOM.i( {className:"fa fa-tachometer"} ),
+                React.DOM.span( {className:"indicator-count"}, this.props.result.indicators.length)
+            );
+        }
+
+        if (this.expanded()) {
+            var thisResult = this;
+            indicatorEntries = this.props.result.indicators.map(function (indicator) {
+                return (
+                    React.DOM.div( {key:indicator.id}, 
+                        React.createElement(IndicatorEntry, {
+                            indicator: indicator,
+                            selectedIndicator: thisResult.props.selectedIndicator,
+                            selectIndicator: thisResult.props.selectIndicator
+                        })
+                    )
+                );
+            });
+            indicatorEntries = React.DOM.div( {className:"result-nav-full clickable"}, indicatorEntries);
+        } else {
+            indicatorEntries = React.DOM.span(null );
+        }
+
+        var resultNavClass = "result-nav bg-transition";
+        resultNavClass += this.expanded() ? " expanded" : "";
+
+        return (
+            React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
+                React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
+                    React.DOM.h3( {className:"result-title"}, 
+                        React.DOM.i( {className:"fa fa-chevron-down"}),
+                        React.DOM.i( {className:"fa fa-chevron-up"}),
+                        React.DOM.span(null, this.props.result.title)
+                    ),
+                    indicatorCount
+                ),
+                indicatorEntries
+            )
+        );
+    }
+});
+
+var SideBar = React.createClass({displayName: 'SideBar',
+    render: function() {
+        var thisList = this;
+        var resultEntries = this.props.results.map(function (result) {
+            return (
+                React.DOM.div( {key:result.id}, 
+                    React.createElement(ResultEntry, {
+                        result: result,
+                        selectedIndicator: thisList.props.selectedIndicator,
+                        selectedResult: thisList.props.selectedResult,
+                        selectIndicator: thisList.props.selectIndicator,
+                        selectResult: thisList.props.selectResult
+                    })
+                )
+            );
+        });
+
+        return (
+            React.DOM.div( {className:"results-list"}, 
+                resultEntries
+            )
+        );
+    }
+});
+
+var ResultsApp = React.createClass({displayName: 'ResultsApp',
+    getInitialState: function() {
+        return {
+            selectedResult: null,
+            selectedIndicator: null,
+            results: []
+        };
+    },
+
+    componentDidMount: function() {
+        // Load results data
+        var xmlHttp = new XMLHttpRequest();
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                thisApp.setState({'results': JSON.parse(xmlHttp.responseText).results});
+            }
+        };
+        xmlHttp.open("GET", endpoints.base_url + endpoints.results, true);
+        xmlHttp.send();
+    },
+
+    selectResult: function(resultId) {
+        this.setState({selectedResult: resultId});
+    },
+
+    selectIndicator: function(indicatorId) {
+        this.setState({selectedIndicator: indicatorId});
+    },
+
+    render: function() {
+        return (
+            React.DOM.div( {className:"results"}, 
+                React.DOM.article(null, 
+                    React.DOM.div( {className:"results-container container"}, 
+                        React.DOM.div( {className:"sidebar"}, 
+                            React.DOM.div( {className:"result-nav-header"}, 
+                                React.DOM.h3(null, i18n.results)
+                            ),
+                            React.createElement(
+                                SideBar, {
+                                    results: this.state.results,
+                                    selectedIndicator: this.state.selectedIndicator,
+                                    selectedResult: this.state.selectedResult,
+                                    selectIndicator: this.selectIndicator,
+                                    selectResult: this.selectResult
+                                }
+                            )
+                        ),
+                        React.DOM.div( {className:"indicator-container"}, 
+                            React.createElement(
+                                MainContent, {
+                                    indicator: this.state.selectedIndicator
+                                }
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
+});
+
+function setCurrentDate() {
+    currentDate = initialSettings.current_datetime;
+    setInterval(function () {
+        var localCurrentDate = new Date(currentDate);
+        localCurrentDate.setSeconds(localCurrentDate.getSeconds() + 1);
+        currentDate = localCurrentDate.toString();
     }, 1000);
-  }
+}
 
-  function showTab(tabClass) {
-    var allTabs = document.querySelectorAll('.project-tab');
-    var allTabLinks = document.querySelectorAll('.tab-link.selected');
-    var activeTab = document.querySelector('.' + tabClass);
-    var activeTabLink = document.querySelector('.tab-link[href="#' + tabClass + '"]');
+// Polyfill for element.closest() for IE and Safari
+this.Element && function(ElementPrototype) {
+    ElementPrototype.closest = ElementPrototype.closest ||
+        function (selector) {
+            var el = this;
+            while (el.matches && !el.matches(selector)) el = el.parentNode;
+            return el.matches ? el : null;
+        };
+}(Element.prototype);
 
-    for (var i = 0; i < allTabs.length; i++) {
-      var tab = allTabs[i];
+/* Initialise page */
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve data endpoints, translations and page settings
+    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
+    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    initialSettings = JSON.parse(document.getElementById('initial-settings').innerHTML);
 
-      tab.style.display = 'none';
-    }
-    for (var j = 0; j < allTabLinks.length; j++) {
-      var tabLink = allTabLinks[j];
-
-      tabLink.classList.remove('selected');
-    }
-
-    activeTab.style.display = 'block';
-    activeTabLink.classList.add('selected');
-  }
-
-  function setTabOnClicks() {
-    var allTabs = document.querySelectorAll('.tab-link');
-
-    for (var i = 0; i < allTabs.length; i++) {
-      var tab = allTabs[i];
-
-      tab.addEventListener('click', function() {
-        var tabClass = this.getAttribute('href');
-
-        // Remove the '#' from the href
-        tabClass = tabClass.substring(1);
-        showTab(tabClass);
-      });
-    }
-  }
-
-  function readTabFromFragment() {
-    var fragment = window.location.hash;
-    var parameters = window.location.search;
-
-    if (fragment || parameters.indexOf('?page') > -1) {
-      if (parameters.indexOf('?page') > -1) {
-        // KB: Hack, only the updates tab has a 'page' parameter
-        fragment = 'updates';
-      } else {
-        // Remove the '#' from the fragment
-        fragment = fragment.substring(1);
-      }
-
-      if (fragment === 'summary' || fragment === 'report' || fragment === 'finance') {
-          showTab(fragment);
-      } else if (fragment === 'partners' && defaultValues.show_partners_tab) {
-          showTab(fragment);
-      } else if (fragment === 'results' && defaultValues.show_results_tab) {
-          showTab(fragment);
-      } else if (fragment === 'updates' && defaultValues.show_updates_tab) {
-          showTab(fragment);
-      } else {
-        showTab('summary');
-      }
-    } else {
-      showTab('summary');
-    }
-  }
-
-  /* POLYFILLS */
-
-  // Polyfill for element.closest() for IE and Safari
-  this.Element && function(ElementPrototype) {
-      ElementPrototype.closest = ElementPrototype.closest ||
-      function(selector) {
-          var el = this;
-          while (el.matches && !el.matches(selector)) el = el.parentNode;
-          return el.matches ? el : null;
-      };
-  }(Element.prototype);
-
-  /* Initialise page */
-  document.addEventListener('DOMContentLoaded', function() {
     setCurrentDate();
 
-    // Setup results framework
-    setResultExpandOnClicks();
-    setIndicatorLinkOnClicks();
-    setExpandIndicatorPeriodOnClicks();
-    addAddOnClicks();
-    buildUpdateJSON();
-  });
+    // Initialize the 'My reports' app
+    ReactDOM.render(
+        React.createElement(ResultsApp),
+        document.getElementById('results-framework')
+    );
+});

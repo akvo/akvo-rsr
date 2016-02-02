@@ -17,7 +17,8 @@ from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldView
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
-from .indicator import IndicatorViewSet, IndicatorPeriodViewSet
+from .indicator import (IndicatorViewSet, IndicatorPeriodViewSet, IndicatorPeriodDataViewSet,
+                        IndicatorPeriodDataCommentViewSet)
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
@@ -83,8 +84,10 @@ __all__ = [
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
-    'IndicatorPeriodViewSet',
     'IndicatorViewSet',
+    'IndicatorPeriodViewSet',
+    'IndicatorPeriodDataViewSet',
+    'IndicatorPeriodDataCommentViewSet',
     'InternalOrganisationIDViewSet',
     'invite_user',
     'InvoiceViewSet',

@@ -16,7 +16,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, render_to_response
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.template import RequestContext
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
@@ -409,67 +409,28 @@ def user_management(request):
 
 @login_required
 def results_data(request, project_id):
-    """My results section."""
-    def _get_indicator_updates_data(updates, child_projects, child=True):
-        updates_list = []
-        for update in updates:
-            if child:
-                indicator_period = update.indicator_period
-            else:
-                indicator_period = update.indicator_period.parent_period()
+    """
+    My results section. Only accessible to Admins and Project editors.
 
-            updates_list.append({
-                "id": update.pk,
-                "indicator_period": {
-                    "id": indicator_period.pk if indicator_period else '',
-                    "target_value": str(indicator_period.target_value) if indicator_period else ''
-                },
-                "period_update": str(update.period_update),
-                "created_at": str(update.created_at),
-                "user": {
-                    "id": update.user.id,
-                    "first_name": update.user.first_name,
-                    "last_name": update.user.last_name,
-                },
-                "text": update.text,
-                "photo": update.photo.url if update.photo else '',
-            })
+    :param request; A Django HTTP request and context
+    :param project_id; The ID of the project
+    """
+    project = get_object_or_404(Project, pk=project_id)
+    user = request.user
+    is_admin = False
 
-        for child_project in child_projects:
-            updates = child_project.project_updates.select_related('user').order_by('-created_at').\
-                filter(indicator_period__gt=0)
-            child_updates_list = _get_indicator_updates_data(updates, child_project.children(), False)
-            updates_list += child_updates_list
+    if not user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
 
-        return updates_list
-
-    try:
-        project = Project.objects.prefetch_related('results').get(pk=project_id)
-    except Project.DoesNotExist:
-        raise Http404
-
-    if not request.user.is_anonymous() and (
-            request.user.is_superuser or request.user.is_admin or
-            True in [request.user.admin_of(partner) for partner in project.partners.all()]):
-        project_admin = True
-    else:
-        project_admin = False
-
-    # Updates
-    updates = project.project_updates.prefetch_related('user').order_by('-created_at')
-    narrative_updates = updates.exclude(indicator_period__isnull=False)
-    indicator_updates = updates.filter(indicator_period__isnull=False)
-
-    # JSON data
-    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
-                                                                    project.children()))
+    # Check if user is an admin
+    if user.is_superuser or user.is_admin or \
+            True in [user.admin_of(partner) for partner in project.partners.all()]:
+        is_admin = True
 
     context = {
-        'current_datetime': datetime.now(),
-        'indicator_updates': indicator_updates_data,
         'project': project,
-        'project_admin': project_admin,
-        'updates': narrative_updates[:5] if narrative_updates else None,
+        'current_datetime': datetime.now(),
+        'is_admin': is_admin,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 

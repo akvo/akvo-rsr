@@ -37,7 +37,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import Indicator, IndicatorPeriod
+from .indicator import Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
@@ -91,6 +91,8 @@ __all__ = [
     'IatiImportLog',
     'Indicator',
     'IndicatorPeriod',
+    'IndicatorPeriodData',
+    'IndicatorPeriodDataComment',
     'Invoice',
     'InternalOrganisationID',
     'Keyword',
