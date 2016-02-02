@@ -34,6 +34,9 @@
                 </button>
             {% endbuttons %}
         </form>
+        <h3>Password</h3>
+        <a href="{% url 'password_change' %}" class="{% if '/myrsr/password_change/' in current_path %}active{% endif %}">{% trans 'Change password' %}</a>
+
     </div>
 
     <div class="col-sm-5 col-xs-12" id="organisations"></div>

@@ -343,11 +343,11 @@ nav.navbar-fixed-top {
     }
     .navbar-nav {
         li {
+            font-weight: normal;
             padding-top: 3px;
             &:first-child {}
             a {
-                color: $anchorLink;
-                font-family: $titleFont;
+                color: $akvoPurple;
                 border: thin solid transparent;
                 &:hover {
                     color: $anchorLinkHover;
@@ -362,7 +362,7 @@ nav.navbar-fixed-top {
                     }
                 }
                 &.addUpdateBtn {
-                    margin-right:15px;
+                    margin-right: 15px;
                     background-color: transparent;
                     border-color: transparent;
                     &:hover {
@@ -554,23 +554,28 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-    padding: 15px 0 25px 0;
+    padding: 10px 0 25px 0;
 }
-
+.navContainer {
+    background: rgba($akvoBlack, 0.05);
+    margin-bottom: 10px;
+}
 .myRsrMenu {
     position: relative;
-    margin: 15px auto;
+    margin: 5px auto;
+    .nav-tabs {
+        border-bottom: none;
+    }
     h4 {
         padding-top: 15px;
     }
     nav[role=navigation] {
-        background: rgba($akvoBlack, 0);
+        background: rgba(white, 0.5);
         ul {
             li {
                 display: inline;
                 a {
                     color: $anchorLink;
-                    font-family: $titleFont;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
@@ -585,16 +590,21 @@ nav.navbar-fixed-top {
                         background: rgba($akvoBlack, 0.05);
                     }
                 }
-            &.usrMgt {
-                position:absolute;
-                right:0;
+                &.usrMgt {
+                    position: absolute;
+                    right: 0;
                 }
             }
-
         }
     }
 }
-
+.navbar-form {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+#createProject {
+        margin: 23px 0 0 25px;
+}
 .myProjectList {
     tbody {
         tr {
@@ -608,6 +618,12 @@ nav.navbar-fixed-top {
         }
     }
     div.projectListMenu {
+        a {
+            margin-right: 15px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
         @media only screen and (min-width: $width-large) {
             min-width: 170px;
         }
@@ -616,8 +632,9 @@ nav.navbar-fixed-top {
         }
     }
     a {
-        margin-right:25px;
-        &:last-child{margin-right:0;}
+        &:last-child {
+            margin-right: 0;
+        }
         &.addUpdate {
             &.disabled {
                 background-color: #AB9F9F;
@@ -2509,7 +2526,7 @@ body {
 }
 
 #publishProject {
-   margin-top: -7px;
+    margin-top: -7px;
 }
 
 #editor-feedback {
@@ -2940,7 +2957,8 @@ body {
             .indicator-bar-progress {
                 position: absolute;
                 width: 4px;
-                margin-left: -2px; /* Offset half the width */
+                margin-left: -2px;
+                /* Offset half the width */
                 height: 23px;
                 top: 30px;
                 background-color: #A3C7E3;
@@ -2970,37 +2988,33 @@ body {
     .indicator-container .indicator-group .table tbody {
         background-color: white;
         border-bottom: none !important;
-
         &:last-child {
-          margin-bottom: 0;
+            margin-bottom: 0;
         }
-
         .edit-button {
-          position: absolute;
-          height: 20px;
-          width: 20px;
-          top: 15px;
-          right: 10px;
-          color: $akvoBlack;
-          font-size: 1.5em;
-          &.activated {
-            display: none;
-          }
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            top: 15px;
+            right: 10px;
+            color: $akvoBlack;
+            font-size: 1.5em;
+            &.activated {
+                display: none;
+            }
         }
-
         .delete-button {
-          position: absolute;
-          height: 20px;
-          width: 20px;
-          top: 13px;
-          right: 35px;
-          font-size: 1.5em;
-          color: $akvoBlack;
-          &.activated {
-            display: none;
-          }
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            top: 13px;
+            right: 35px;
+            font-size: 1.5em;
+            color: $akvoBlack;
+            &.activated {
+                display: none;
+            }
         }
-
         .delete-confirm {
             display: none;
             position: absolute;
@@ -3011,18 +3025,15 @@ body {
             color: $akvoBlack;
             padding: 1em;
             z-index: 101;
-
             > div {
                 height: 40px;
                 position: relative;
             }
-
             .delete-confirm-no {
                 position: absolute;
                 left: 10px;
                 top: 10px;
             }
-
             .delete-confirm-yes {
                 background-color: #ae0922;
                 border-color: #ae0922;
@@ -3030,99 +3041,96 @@ body {
                 position: absolute;
                 right: 10px;
                 top: 10px;
-
                 &:hover {
                     background-color: #ff5500;
                     border-color: #ff5500;
                 }
             }
         }
-
         .update-date {
-          display: inline-block;
-          text-align: left;
-          width: 50%;
+            display: inline-block;
+            text-align: left;
+            width: 50%;
         }
         .update-name {
-          display: inline-block;
-          text-align: left;
-          width: 30%;
-          margin-right: 10%;
-          color: $akvoBlack;
-
-          &.delete-pending {
-            margin-bottom: 90px;
-          }
+            display: inline-block;
+            text-align: left;
+            width: 30%;
+            margin-right: 10%;
+            color: $akvoBlack;
+            &.delete-pending {
+                margin-bottom: 90px;
+            }
         }
         .update-timeline {
-          display: inline-block;
-          width: 75%;
-          height: 80px;
-          padding-top: 1em;
-          z-index: 99;
-          position: relative;
+            display: inline-block;
+            width: 75%;
+            height: 80px;
+            padding-top: 1em;
+            z-index: 99;
+            position: relative;
         }
         .update-target {
-          position: absolute;
-          margin-top: 48px;
-          display: inline-block;
-          width: 24%;
-          height: 80px;
-          text-align: center;
-          span {
-            font-size: 1.1em;
-            color: rgb(81, 80, 80);
-            vertical-align: text-top;
-            &.update-target-actual {
-              padding-left: 15px;
-              font-size: 1.1em;
-              font-weight: bold;
-              color: #A3C7E3;
-              vertical-align: bottom;
+            position: absolute;
+            margin-top: 48px;
+            display: inline-block;
+            width: 24%;
+            height: 80px;
+            text-align: center;
+            span {
+                font-size: 1.1em;
+                color: rgb(81, 80, 80);
+                vertical-align: text-top;
+                &.update-target-actual {
+                    padding-left: 15px;
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: #A3C7E3;
+                    vertical-align: bottom;
+                }
             }
-          }
         }
         .update-description {
-          padding: 0.5em;
-          margin: 20px auto 30px;
-          &.editable {
-            background: whitesmoke;
-            border: 1px solid #A3C7E3;
-          }
-          .update-photo {
-            float: right;
-            width: 150px;
-            height: 100px;
-            background-size: cover;
-          }
+            padding: 0.5em;
+            margin: 20px auto 30px;
+            &.editable {
+                background: whitesmoke;
+                border: 1px solid #A3C7E3;
+            }
+            .update-photo {
+                float: right;
+                width: 150px;
+                height: 100px;
+                background-size: cover;
+            }
         }
         .save-button {
-          position: absolute;
-          display: none;
-          right: 10px;
-          bottom: 10px;
-          &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: white;
-            background-color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-          }
+            position: absolute;
+            display: none;
+            right: 10px;
+            bottom: 10px;
+            &.active {
+                display: inline-block;
+                padding: 3px 7px;
+                color: white;
+                background-color: rgb(0, 122, 184);
+                @include border-radius(2px);
+                text-align: center;
+            }
         }
         .cancel-button {
-          position: absolute;
-          display: none;
-          right: 60px;
-          bottom: 10px;
-          background-color: none;
-          &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-          }
+            position: absolute;
+            display: none;
+            right: 60px;
+            bottom: 10px;
+            background-color: none;
+            &.active {
+                display: inline-block;
+                padding: 3px 7px;
+                color: rgb(0, 122, 184);
+                @include border-radius(2px);
+                text-align: center;
+            }
         }
     }
     .update-dialog-container {
@@ -3160,7 +3168,6 @@ body {
                     }
                     .update-exceed-target-checkbox {
                         margin-right: 10px;
-
                         &:checked {
                             ~ input.exceed-value {
                                 opacity: 1;
@@ -3174,7 +3181,7 @@ body {
                     margin-left: 45px;
                     margin-right: 0;
                     .indicator-baseline {
-                        top:34px;
+                        top: 34px;
                         left: -60px;
                     }
                     .indicator-bar-progress-text {
@@ -3214,7 +3221,8 @@ body {
                                 background-color: white;
                                 width: 100px;
                                 height: auto;
-                                margin-left: -28px; /* Half of the width of this - half the width of the parent */
+                                margin-left: -28px;
+                                /* Half of the width of this - half the width of the parent */
                                 padding: 5px 0;
                                 &:before {
                                     content: '';
@@ -3404,7 +3412,7 @@ body {
                         width: 3px;
                         margin-left: -2px;
                         height: 20px;
-                        position:absolute;
+                        position: absolute;
                         background-color: #B5B5B5;
                         top: -3px;
                         z-index: 102;
