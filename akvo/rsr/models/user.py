@@ -388,12 +388,31 @@ class User(AbstractBaseUser, PermissionsMixin):
             employments=employments_array,
         )
 
+    def has_role_in_org(self, org, group):
+        """
+        Helper function to determine if a user is in a certain group at an organisation.
+
+        :param org; an Organisation instance.
+        :param group; a Group instance.
+        """
+        if self.approved_employments().filter(organisation=org, group=group).exists():
+            return True
+        return False
+
     def admin_of(self, org):
         """
         Checks if the user is an Admin of this organisation.
+
+        :param org; an Organisation instance.
         """
         admin_group = Group.objects.get(name='Admins')
-        for employment in Employment.objects.filter(user=self, group=admin_group):
-            if employment.organisation == org:
-                return True
-        return False
+        return self.has_role_in_org(org, admin_group)
+
+    def project_editor_of(self, org):
+        """
+        Checks if the user is a Project editor of this organisation.
+
+        :param org; an Organisation instance
+        """
+        editor_group = Group.objects.get(name='Project editors')
+        return self.has_role_in_org(org, editor_group)

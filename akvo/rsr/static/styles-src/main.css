@@ -2215,7 +2215,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               margin-right: 1.4em; }
         .results .indicator-container .indicator-group .table td {
           vertical-align: middle; }
-          .results .indicator-container .indicator-group .table td.fromTime, .results .indicator-container .indicator-group .table td.toTime, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.expand-td {
+          .results .indicator-container .indicator-group .table td.period-td, .results .indicator-container .indicator-group .table td.actual-td, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.actions-td {
             white-space: nowrap; }
           .results .indicator-container .indicator-group .table td.indicator-bar-td {
             width: 55%; }
@@ -2229,7 +2229,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           display: none; }
       .results .indicator-container .indicator-group .indicator {
         display: none; }
-  .results .indicator-bar-td, .results .target-td {
+  .results .indicator-bar-td {
     height: 80px;
     padding: 0; }
   .results .th-progress:before {

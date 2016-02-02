@@ -2851,7 +2851,7 @@ body {
                 }
                 td {
                     vertical-align: middle;
-                    &.fromTime, &.toTime, &.target-td, &.expand-td {
+                    &.period-td, &.actual-td, &.target-td, &.actions-td {
                         white-space: nowrap;
                     }
                     &.indicator-bar-td {
@@ -2881,8 +2881,7 @@ body {
         }
     }
     /* Styling for the indicator period progress bar */
-    .indicator-bar-td,
-    .target-td {
+    .indicator-bar-td {
         height: 80px;
         padding: 0;
     }
