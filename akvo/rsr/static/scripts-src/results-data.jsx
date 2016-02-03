@@ -1355,9 +1355,17 @@ var UpdateEntry = React.createClass({
         return this.props.editingData.indexOf(this.props.update.id) > -1;
     },
 
-    saveUpdate: function() {
+    baseSave: function(status) {
         var xmlHttp = new XMLHttpRequest();
         var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
+        var newData = {
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data
+        };
+        if (status !== undefined) {
+            newData['status'] = status;
+        }
         var thisApp = this;
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE) { //TODO: && xmlHttp.status == 201) {
@@ -1370,11 +1378,15 @@ var UpdateEntry = React.createClass({
         xmlHttp.open("PATCH", url, true);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
-            'user': user.id,
-            'text': this.state.description,
-            'data': this.state.data
-        }));
+        xmlHttp.send(JSON.stringify(newData));
+    },
+
+    saveUpdate: function() {
+        this.baseSave();
+    },
+
+    askForApproval: function() {
+        this.baseSave('P');
     },
 
     switchEdit: function() {
@@ -1430,16 +1442,16 @@ var UpdateEntry = React.createClass({
     },
 
     renderActual: function() {
+        var inputId = "actual-input-" + this.props.update.id;
+
         if (this.editing()) {
             return (
                 <div className="row">
-                    <div className="col-xs-12">
-                        <span className="update-actual-value-text">{i18n.actual_value}</span>
-                    </div>
-                    <div className="col-xs-2">
-                        <input className="form-control" defaultValue={this.props.update.data} onChange={this.handleDataChange} />
-                    </div>
                     <div className="col-xs-4">
+                        <label htmlFor={inputId}>{i18n.actual_value}</label>
+                        <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
+                    </div>
+                    <div className="col-xs-8">
                         {i18n.current}: PERIOD ACTUAL
                     </div>
                 </div>
@@ -1457,26 +1469,36 @@ var UpdateEntry = React.createClass({
     },
 
     renderDescription: function() {
-        if (this.editing()) {
-            return (
-                <div className="row">
-                    <div className="col-xs-10">
-                        <textarea className="form-control" defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} />
-                    </div>
-                </div>
-            );
+        var inputId = "description-input-" + this.props.update.id;
+        var photoPart, descriptionPart, descriptionClass;
+
+        if (this.props.update.photo === "") {
+            photoPart = <span />;
+            descriptionClass = "col-xs-10 update-description";
         } else {
-            return (
-                <div className="row">
-                    <div className="col-xs-3 update-photo">
-                        <img src={this.props.update.photo}/>
-                    </div>
-                    <div className="col-xs-9 update-description">
-                        {this.props.update.text}
-                    </div>
-                </div>
-            );
+            photoPart = <div className="col-xs-3 update-photo">
+                <img src={endpoints.base_url + '/media/' + this.props.update.photo}/>
+            </div>;
+            descriptionClass = "col-xs-7 update-description";
         }
+
+        if (this.editing()) {
+            descriptionPart = <div className={descriptionClass}>
+                <label htmlFor={inputId}>{i18n.note}</label>
+                <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} />
+            </div>;
+        } else {
+            descriptionPart = <div className={descriptionClass}>
+                {this.props.update.text}
+            </div>;
+        }
+
+        return (
+            <div className="row">
+                {photoPart}
+                {descriptionPart}
+            </div>
+        );
     },
 
     renderFooter: function() {
@@ -1490,7 +1512,7 @@ var UpdateEntry = React.createClass({
                         <a className="clickable" onClick={this.saveUpdate}>{i18n.save}</a>
                     </div>
                     <div className="col-xs-3">
-                        <a className="clickable">{i18n.submit_for_approval}</a>
+                        <a className="clickable" onClick={this.askForApproval}>{i18n.submit_for_approval}</a>
                     </div>
                 </div>
             );
@@ -1898,6 +1920,7 @@ var ResultsApp = React.createClass({
     },
 
     saveUpdateToPeriod: function(update, periodId) {
+        // TODO: Clean up
         // Loop through all results, indicators and periods
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];

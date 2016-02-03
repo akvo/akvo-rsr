@@ -1355,9 +1355,17 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         return this.props.editingData.indexOf(this.props.update.id) > -1;
     },
 
-    saveUpdate: function() {
+    baseSave: function(status) {
         var xmlHttp = new XMLHttpRequest();
         var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
+        var newData = {
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data
+        };
+        if (status !== undefined) {
+            newData['status'] = status;
+        }
         var thisApp = this;
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE) { //TODO: && xmlHttp.status == 201) {
@@ -1370,11 +1378,15 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         xmlHttp.open("PATCH", url, true);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
-            'user': user.id,
-            'text': this.state.description,
-            'data': this.state.data
-        }));
+        xmlHttp.send(JSON.stringify(newData));
+    },
+
+    saveUpdate: function() {
+        this.baseSave();
+    },
+
+    askForApproval: function() {
+        this.baseSave('P');
     },
 
     switchEdit: function() {
@@ -1430,16 +1442,16 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     },
 
     renderActual: function() {
+        var inputId = "actual-input-" + this.props.update.id;
+
         if (this.editing()) {
             return (
                 React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-12"}, 
-                        React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value)
-                    ),
-                    React.DOM.div( {className:"col-xs-2"}, 
-                        React.DOM.input( {className:"form-control", defaultValue:this.props.update.data, onChange:this.handleDataChange} )
-                    ),
                     React.DOM.div( {className:"col-xs-4"}, 
+                        React.DOM.label( {htmlFor:inputId}, i18n.actual_value),
+                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
+                    ),
+                    React.DOM.div( {className:"col-xs-8"}, 
                         i18n.current,": PERIOD ACTUAL"
                     )
                 )
@@ -1457,26 +1469,36 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     },
 
     renderDescription: function() {
+        var inputId = "description-input-" + this.props.update.id;
+        var photoPart, descriptionPart, descriptionClass;
+
+        if (this.props.update.photo === "") {
+            photoPart = React.DOM.span(null );
+            descriptionClass = "col-xs-10 update-description";
+        } else {
+            photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
+                React.DOM.img( {src:endpoints.base_url + '/media/' + this.props.update.photo})
+            );
+            descriptionClass = "col-xs-7 update-description";
+        }
+
         if (this.editing()) {
-            return (
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-10"}, 
-                        React.DOM.textarea( {className:"form-control", defaultValue:this.props.update.text, onChange:this.handleDescriptionChange} )
-                    )
-                )
+            descriptionPart = React.DOM.div( {className:descriptionClass}, 
+                React.DOM.label( {htmlFor:inputId}, i18n.note),
+                React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange} )
             );
         } else {
-            return (
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.img( {src:this.props.update.photo})
-                    ),
-                    React.DOM.div( {className:"col-xs-9 update-description"}, 
-                        this.props.update.text
-                    )
-                )
+            descriptionPart = React.DOM.div( {className:descriptionClass}, 
+                this.props.update.text
             );
         }
+
+        return (
+            React.DOM.div( {className:"row"}, 
+                photoPart,
+                descriptionPart
+            )
+        );
     },
 
     renderFooter: function() {
@@ -1490,7 +1512,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                         React.DOM.a( {className:"clickable", onClick:this.saveUpdate}, i18n.save)
                     ),
                     React.DOM.div( {className:"col-xs-3"}, 
-                        React.DOM.a( {className:"clickable"}, i18n.submit_for_approval)
+                        React.DOM.a( {className:"clickable", onClick:this.askForApproval}, i18n.submit_for_approval)
                     )
                 )
             );
@@ -1898,6 +1920,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     saveUpdateToPeriod: function(update, periodId) {
+        // TODO: Clean up
         // Loop through all results, indicators and periods
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
