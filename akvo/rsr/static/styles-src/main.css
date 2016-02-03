@@ -540,45 +540,45 @@ nav.navbar-fixed-top {
 #updates {
   margin-top: 45px; }
 
-.myProjectList thead tr, #updates thead tr {
+.myProjectList thead tr, #updates thead tr, #user_table thead tr {
   background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
-  .myProjectList thead tr th, #updates thead tr th {
+  .myProjectList thead tr th, #updates thead tr th, #user_table thead tr th {
     padding-top: 10px 0;
     padding-bottom: 10px 0; }
 
-.myProjectList tbody tr, #updates tbody tr {
+.myProjectList tbody tr, #updates tbody tr, #user_table tbody tr {
   background: white !important; }
-  .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished {
+  .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished, #user_table tbody tr.notPublished {
     background: rgba(217, 83, 79, 0.1) !important; }
-  .myProjectList tbody tr.isPrivate, #updates tbody tr.isPrivate {
+  .myProjectList tbody tr.isPrivate, #updates tbody tr.isPrivate, #user_table tbody tr.isPrivate {
     background: rgba(240, 173, 78, 0.1) !important; }
-  .myProjectList tbody tr td, #updates tbody tr td {
+  .myProjectList tbody tr td, #updates tbody tr td, #user_table tbody tr td {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
 
-.myProjectList div.projectListMenu a, #updates div.projectListMenu a {
+.myProjectList div.projectListMenu a, #updates div.projectListMenu a, #user_table div.projectListMenu a {
   margin-right: 25px; }
-  .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child {
+  .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child, #user_table div.projectListMenu a:last-child {
     margin-right: 0; }
 @media only screen and (min-width: 1200px) {
-  .myProjectList div.projectListMenu, #updates div.projectListMenu {
+  .myProjectList div.projectListMenu, #updates div.projectListMenu, #user_table div.projectListMenu {
     min-width: 170px; } }
 
-.myProjectList div.projectListMenu > a, #updates div.projectListMenu > a {
+.myProjectList div.projectListMenu > a, #updates div.projectListMenu > a, #user_table div.projectListMenu > a {
   min-width: 70px; }
 
-.myProjectList a:last-child, #updates a:last-child {
+.myProjectList a:last-child, #updates a:last-child, #user_table a:last-child {
   margin-right: 0; }
 
-.myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled {
+.myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled, #user_table a.addUpdate.disabled {
   background-color: #AB9F9F;
   color: #E9E9E9;
   pointer-events: initial;
   cursor: not-allowed;
   border: none; }
-  .myProjectList a.addUpdate.disabled:hover, #updates a.addUpdate.disabled:hover {
+  .myProjectList a.addUpdate.disabled:hover, #updates a.addUpdate.disabled:hover, #user_table a.addUpdate.disabled:hover {
     text-decoration: none; }
 
 div.paginationWrap {
@@ -636,38 +636,20 @@ div.paginationWrap {
 .twoColumns {
   width: 100%;
   display: block; }
-  .twoColumns a {
-    width: 45%;
-    padding: 2px 0.5%;
-    float: left;
-    text-align: center;
-    background: rgba(0, 170, 255, 0.2);
-    color: #00aaff;
-    margin: 2px 2%;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; }
-    .twoColumns a:hover {
-      background: #ff5500;
-      color: white; }
-    @media only screen and (max-width: 768px) {
-      .twoColumns a {
-        width: 98%;
-        padding: 2px 1%;
-        float: none;
-        margin: 2px 0 2px 0;
-        display: block; } }
-    @media only screen and (min-width: 768px) and (max-width: 1024px) {
-      .twoColumns a {
-        width: 98%;
-        padding: 2px 1%;
-        float: none;
-        margin: 2px 0 2px 0;
-        display: block; } }
+  @media only screen and (max-width: 768px) {
+    .twoColumns a {
+      width: 98%;
+      padding: 2px 1%;
+      float: none;
+      margin: 2px 0 2px 0;
+      display: block; } }
+  @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .twoColumns a {
+      width: 98%;
+      padding: 2px 1%;
+      float: none;
+      margin: 2px 0 2px 0;
+      display: block; } }
 
 #organisations {
   background: rgba(255, 85, 0, 0);
@@ -1301,6 +1283,9 @@ div.projectTopRow {
             margin-left: 15px; }
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
+
+#invite_button button {
+  margin: 23px 0 0 25px; }
 
 div.textBlock {
   margin: 10px auto; }

@@ -608,7 +608,7 @@ nav.navbar-fixed-top {
 #updates {
     margin-top:45px;
 }
-.myProjectList, #updates {
+.myProjectList, #updates, #user_table {
     thead {
         tr{
             background-color: rgba($akvoBlack,0.05);
@@ -746,19 +746,7 @@ div.paginationWrap {
     width: 100%;
     display: block;
     a {
-        width: 45%;
-        padding: 2px 0.5%;
-        float: left;
-        text-align: center;
-        background: rgba($anchorLink, 0.2);
-        color: $anchorLink;
-        margin: 2px 2%;
-        @include border-radius(3px);
-        @include noWrapTxt;
-        &:hover {
-            background: $anchorLinkHover;
-            color: white;
-        }
+
         @include responsive(small-max-screens) {
             width: 98%;
             padding: 2px 1%;
@@ -1581,7 +1569,9 @@ div.projectTopRow {
         }
     }
 }
-
+#invite_button {
+    button {margin: 23px 0 0 25px;}
+}
 div.textBlock {
     margin: 10px auto;
     .panel {

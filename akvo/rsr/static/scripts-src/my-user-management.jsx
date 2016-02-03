@@ -554,7 +554,7 @@ InviteButton = React.createClass({
     render: function() {
         return (
             <ModalTrigger modal={<InviteModal />}>
-                <Button title={i18n.invite_users_text}>
+                <Button title={i18n.invite_users_text} className="btn btn-default btn-xs">
                     <i className="glyphicon glyphicon-user"></i> +
                 </Button>
             </ModalTrigger>
