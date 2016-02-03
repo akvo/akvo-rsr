@@ -55,7 +55,7 @@
               </a>
               <div class="media-body">
                 <a href="{% url 'project-main' project.id %}">
-                  <h4 class="media-heading"><i class="fa fa-{% if not project.is_public %}lock{% else %}folder-o{% endif %}"></i> {% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
+                  <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
               </div>

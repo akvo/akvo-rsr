@@ -263,7 +263,7 @@ dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
 label {
-  color: #00a79d;
+  margin-top: 15px;
   font-weight: normal; }
 
 /****************************************************************************
@@ -546,35 +546,49 @@ nav.navbar-fixed-top {
 #createProject {
   margin: 23px 0 0 25px; }
 
-.myProjectList tbody tr {
-  background: white !important; }
-  .myProjectList tbody tr.notPublished {
-    background: rgba(217, 83, 79, 0.1) !important; }
-  .myProjectList tbody tr.isPrivate {
-    background: rgba(240, 173, 78, 0.1) !important; }
+#updates {
+  margin-top: 45px; }
 
-.myProjectList div.projectListMenu a {
-  margin-right: 15px; }
-  .myProjectList div.projectListMenu a:last-child {
+.myProjectList thead tr, #updates thead tr {
+  background-color: rgba(32, 32, 36, 0.05);
+  border-bottom: none; }
+  .myProjectList thead tr th, #updates thead tr th {
+    padding-top: 10px 0;
+    padding-bottom: 10px 0; }
+
+.myProjectList tbody tr, #updates tbody tr {
+  background: white !important; }
+  .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished {
+    background: rgba(217, 83, 79, 0.1) !important; }
+  .myProjectList tbody tr.isPrivate, #updates tbody tr.isPrivate {
+    background: rgba(240, 173, 78, 0.1) !important; }
+  .myProjectList tbody tr td, #updates tbody tr td {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border: none; }
+
+.myProjectList div.projectListMenu a, #updates div.projectListMenu a {
+  margin-right: 25px; }
+  .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child {
     margin-right: 0; }
 
 @media only screen and (min-width: 1200px) {
-  .myProjectList div.projectListMenu {
+  .myProjectList div.projectListMenu, #updates div.projectListMenu {
     min-width: 170px; } }
 
-.myProjectList div.projectListMenu > a {
+.myProjectList div.projectListMenu > a, #updates div.projectListMenu > a {
   min-width: 70px; }
 
-.myProjectList a:last-child {
+.myProjectList a:last-child, #updates a:last-child {
   margin-right: 0; }
 
-.myProjectList a.addUpdate.disabled {
+.myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled {
   background-color: #AB9F9F;
   color: #E9E9E9;
   pointer-events: initial;
   cursor: not-allowed;
   border: none; }
-  .myProjectList a.addUpdate.disabled:hover {
+  .myProjectList a.addUpdate.disabled:hover, #updates a.addUpdate.disabled:hover {
     text-decoration: none; }
 
 div.paginationWrap {
@@ -613,6 +627,9 @@ div.paginationWrap {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
+
+.table-responsive .media > a {
+  min-width: 80px; }
 
 .table-responsive .media .media-body p {
   max-width: 170px;
@@ -663,8 +680,9 @@ div.paginationWrap {
         display: block; } }
 
 #organisations {
-  background: rgba(255, 85, 0, 0.05);
+  background: rgba(255, 85, 0, 0);
   padding-bottom: 15px;
+  margin-top: 25px;
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;

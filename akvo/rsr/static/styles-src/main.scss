@@ -280,7 +280,7 @@ dl {
 }
 
 label {
-    color: $rsrGreen;
+    margin-top: 15px;
     font-weight: normal;
 }
 
@@ -605,7 +605,20 @@ nav.navbar-fixed-top {
 #createProject {
         margin: 23px 0 0 25px;
 }
-.myProjectList {
+#updates {
+    margin-top:45px;
+}
+.myProjectList, #updates {
+    thead {
+        tr{
+            background-color: rgba($akvoBlack,0.05);
+            border-bottom: none;
+            th{
+                padding-top:10px 0;
+                padding-bottom:10px 0;
+            }
+        }
+    }
     tbody {
         tr {
             background: white !important;
@@ -615,11 +628,16 @@ nav.navbar-fixed-top {
             &.isPrivate {
                 background: rgba($progressNot, 0.1) !important;
             }
+            td {
+                padding-top:30px;
+                padding-bottom:30px;
+                border: none;
+            }
         }
     }
     div.projectListMenu {
         a {
-            margin-right: 15px;
+            margin-right: 25px;
             &:last-child {
                 margin-right: 0;
             }
@@ -710,6 +728,7 @@ div.paginationWrap {
         }
     }
     .media {
+        > a {min-width:80px;}
         .media-body {
             p {
                 max-width: 170px;
@@ -759,8 +778,9 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: darken(rgba($anchorLinkHover, 0.05), 0);
+    background: darken(rgba($anchorLinkHover, 0.0), 0);
     padding-bottom: 15px;
+    margin-top: 25px;
     @include border-radius(5px);
     @include responsive(small-max-screens) {
         margin-top: 20px;
