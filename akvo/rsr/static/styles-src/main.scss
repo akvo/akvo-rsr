@@ -3152,6 +3152,19 @@ body {
             }
         }
     }
+    .update-entry-container {
+        padding: 2em;
+        margin-bottom: 2em;
+        position: relative;
+        background-color: #ececec;
+        &:first-child {
+            border-left: 4px solid #ae0922;
+        }
+        &.edit-in-progress {
+            background-color: #D1E6D1;
+            border-left: none;
+        }
+    }
     .update-dialog-container {
         &.pending-new-update {
             .update-entry-container {
@@ -3161,7 +3174,7 @@ body {
                 }
             }
         }
-        td {
+        div {
             padding: 8px 2em;
             .update-entry-container {
                 padding: 2em;

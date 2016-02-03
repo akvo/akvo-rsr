@@ -25,6 +25,8 @@ router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
 router.register(r'indicator', views.IndicatorViewSet)
 router.register(r'indicator_period', views.IndicatorPeriodViewSet)
+router.register(r'indicator_period_data', views.IndicatorPeriodDataViewSet)
+router.register(r'indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
 router.register(r'internal_organisation_id',
                 views.InternalOrganisationIDViewSet)
 router.register(r'invoice', views.InvoiceViewSet)

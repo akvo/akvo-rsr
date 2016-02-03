@@ -9,135 +9,6 @@
     <div id="results-framework"></div>
 {% endblock %}
 
-{#{% block myrsr_main %}#}
-{#<div class="project-tab results">#}
-{#  <article>#}
-{#    <div class="results-container container">#}
-{#        <div class="indicator-container">#}
-{#          {% for result in project.results.all %}#}
-{#            <div class="result-{{result.id}} result-summary opacity-transition">#}
-{#              <h4 class="item-type">{% trans 'Result' %}</h4>#}
-{#              <div class="title-container">#}
-{#                <h3>{{result.title}}</h3>#}
-{#                {% if result.parent_result %}#}
-{#                  <div class="result-parent">#}
-{#                    {% trans "Parent project:" %} <a href="{% url 'project-main' result.parent_result.project.pk %}#results">{{ result.parent_result.project.title }}</a>#}
-{#                  </div>#}
-{#                {% endif %}#}
-{#                {% for child_result in result.child_results.all %}#}
-{#                  <div class="result-parent">#}
-{#                    {% trans "Linked child project:" %} <a href="{% url 'project-main' child_result.project.pk %}#results">{{ child_result.project.title }}</a>#}
-{#                  </div>#}
-{#                {% endfor %}#}
-{#              </div>#}
-{#              {% if result.description %}#}
-{#                <div class="result-description">#}
-{#                  <h4>{% trans "Description" %}</h4>#}
-{#                  <div>#}
-{#                    {{result.description}}#}
-{#                  </div>#}
-{#                </div>#}
-{#              {% endif %}#}
-{#              <div class="result-indicators">#}
-{#                <h4><i class="fa fa-tachometer"></i> {% trans "Indicators" %} ({{result.indicators.all.count}})</h4>#}
-{#                <ul>#}
-{#                  {% for indicator in result.indicators.all %}#}
-{#                    <li class="indicator-link clickable" data-indicator-id="{{indicator.id}}" data-result-id="{{result.id}}">#}
-{#                      {{indicator.title}}#}
-{#                    </li>#}
-{#                  {% endfor %}#}
-{#                </ul>#}
-{#              </div>#}
-{#            </div>#}
-{#            <div class="result-{{result.id}} indicator-group opacity-transition">#}
-{#              {% for indicator in result.indicators.all %}#}
-{#                <div class="indicator-{{indicator.id}} indicator opacity-transition">#}
-{#                  <h4 class="indicator-title"><i class="fa fa-tachometer"></i> {{indicator.title}} ({% if indicator.measure == "2" %}{% trans "Percentage" %}{% else %}{% trans "Unit" %}{% endif %})</h4>#}
-{##}
-{#                  {% if indicator.baseline_year or indicator.baseline_value %}#}
-{#                  <dl class="baseline">#}
-{#                    {% if indicator.baseline_year %}#}
-{#                      <div class="baseline-year">#}
-{#                        <dt>{% trans "Baseline Year" %}</dt>#}
-{#                        <dd>{{indicator.baseline_year}}</dd>#}
-{#                      </div>#}
-{#                    {% endif %}#}
-{##}
-{#                    {% if indicator.baseline_value %}#}
-{#                      <div class="baseline-value">#}
-{#                        <dt>{% trans "Baseline Value" %}</dt>#}
-{#                        <dd>{{indicator.baseline_value}}</dd>#}
-{#                      </div>#}
-{#                    {% endif %}#}
-{#                  </dl>#}
-{#                  {% endif %}#}
-{##}
-{#                  <h4 class="indicator-periods-title">{% trans "Indicator periods" %}</h4>#}
-{##}
-{#                  <table class="table table-responsive">#}
-{#                    <thead>#}
-{#                      <tr>#}
-{#                        <td class="th-start">{% trans "Start" %}</td>#}
-{#                        <td class="th-end">{% trans "End" %}</td>#}
-{#                        <td class="th-progress">{% trans "Progress" %}</td>#}
-{#                        <td class="th-target">{% trans "Target" %}</td>#}
-{#                        <td class="th-add"></td>#}
-{#                        <td class="th-expand"></td>#}
-{#                      </tr>#}
-{#                    </thead>#}
-{#                    {% for period in indicator.periods.all %}#}
-{#                      <tbody class="indicator-period bg-transition" period-id="{{ period.id }}" period-target="{{ period.target|floatformat:"0" }}" period-actual="{{ period.actual|floatformat:"0" }}" period-start="{{ period.baseline|floatformat:"0" }}" indicator-baseline="{{ indicator.baseline_value|floatformat:"0" }}" has-updates="{% if period.updates.all%}true{% else %}false{% endif %}">#}
-{#                        <tr class="indicator-period-{{period.id}}-tr">#}
-{#                          <td class="fromTime">{{period.period_start}}</td>#}
-{#                          <td class="toTime">{{period.period_end}}</td>#}
-{#                          <td class="indicator-bar-td">#}
-{#                            <div class="indicator-bar-display-container">#}
-{#                              <div class="indicator-baseline">#}
-{#                                {{indicator.baseline_value|floatformat:"0"}}#}
-{#                              </div>#}
-{#                              <div class="indicator-bar">#}
-{#                              </div>#}
-{#                              <div class="indicator-bar-progress-amount" style="width: {{period.percent_accomplishment_100}}%;">#}
-{#                              </div>#}
-{#                              <div class="indicator-bar-progress-container">#}
-{#                                <div class="indicator-bar-progress" style="left: {{period.percent_accomplishment_100}}%; z-index: {{period.percent_accomplishment_100}}" data-progress="{{period.percent_accomplishment_100}}">#}
-{#                                  <span class="indicator-bar-progress-triangle"></span>#}
-{#                                </div>#}
-{#                              </div>#}
-{#                            </div>#}
-{#                          </td>#}
-{#                          <td class="target-td">#}
-{#                            <div class="indicator-bar-progress-complete-container">#}
-{#                              <span class="indicator-bar-progress-text">{{period.actual|floatformat:"0"}}</span>#}
-{#                              <span class="indicator-bar-progress-complete"> / {{period.target_value}}</span>#}
-{#                            </div>#}
-{#                          </td>#}
-{#                          <td></td>#}
-{#                          <td class="expand-td">#}
-{#                            <span class="expand-indicator-period clickable">#}
-{#                              <i class="fa fa-chevron-down"></i>#}
-{#                              <i class="fa fa-chevron-up"></i>#}
-{#                            </span>#}
-{#                          </td>#}
-{#                        </tr>#}
-{#                        <tr class="add-button-tr">#}
-{#                          <td colspan="6" class="add-update-td add-new-update-container">#}
-{#                              <a class="add-button btn btn-primary">+ {% trans 'Add a new update' %}</a>#}
-{#                          </td>#}
-{#                        </tr>#}
-{#                      </tbody>#}
-{#                    {% endfor %}#}
-{#                  </table>#}
-{#                </div>#}
-{#              {% endfor %}#}
-{#            </div>#}
-{#          {% endfor %}#}
-{#        </div>#}
-{#    </div>#}
-{#  </article>#}
-{#</div>#}
-{#{% endblock %}#}
-
 {% block js %}
     {{ block.super }}
 
@@ -149,7 +20,8 @@
     <script type="application/json" id="data-endpoints">
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
-            "results": "/rest/v1/result/?format=json&project={{ project.pk }}"
+            "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
+            "updates": "/rest/v1/indicator_period_data/?format=json"
         }
     </script>
 
@@ -167,6 +39,7 @@
         {
             "results": "{% trans 'Results' %}",
             "indicators": "{% trans 'Indicators' %}",
+            "indicator_period": "{% trans 'Indicator period' %}",
             "indicator_periods": "{% trans 'Indicator periods' %}",
             "unit": "{% trans 'Unit' %}",
             "percentage": "{% trans 'Percentage' %}",
@@ -176,9 +49,14 @@
             "actual_value": "{% trans 'Actual value' %}",
             "target_value": "{% trans 'Target value' %}",
             "update": "{% trans 'Update' %}",
+            "updates": "{% trans 'Updates' %}",
+            "new_update": "{% trans 'New update' %}",
+            "edit_update": "{% trans 'Edit update' %}",
+            "cancel": "{% trans 'Cancel' %}",
+            "save": "{% trans 'Save' %}",
+            "submit_for_approval": "{% trans 'Submit for approval' %}",
             "delete_confirm_text": "{% trans 'Are you sure you want to delete this update?' %}",
-            "delete_confirm_yes_text": "{% trans 'Delete update' %}",
-            "delete_confirm_cancel_text": "{% trans 'Cancel' %}"
+            "delete_confirm_yes_text": "{% trans 'Delete update' %}"
         }
     </script>
 

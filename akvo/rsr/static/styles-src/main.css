@@ -45,19 +45,14 @@ body {
   color: #394c50;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: "Poppins", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
   @media only screen and (max-width: 768px) {
     body {
       padding-top: 65px; } }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74; }
 
@@ -98,7 +93,7 @@ time {
   color: #de8929; }
 
 em {
-  font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+  font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
   margin: 0 5px 0em 0em;
   font-style: italic; }
@@ -213,8 +208,7 @@ span.twitter-typeahead .tt-suggestion > p {
   color: rgba(0, 0, 0, 0.7);
   white-space: nowrap; }
 
-span.twitter-typeahead .tt-suggestion > p:hover,
-span.twitter-typeahead .tt-suggestion > p:focus {
+span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
   color: #ffffff;
   text-decoration: none;
   outline: 0;
@@ -249,16 +243,13 @@ dl.dl-horizontal dt {
     font-weight: bold; }
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
-
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
-
 dl.dl-horizontal dd.funders {
   margin-top: 5px; }
   dl.dl-horizontal dd.funders span.iati-activity-id {
     font-style: italic; }
-
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
@@ -439,7 +430,7 @@ nav.navbar-fixed-top {
           -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
             color: #00aaff;
-            font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
             border: thin solid transparent; }
             nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
               color: #ff5500; }
@@ -450,10 +441,10 @@ nav.navbar-fixed-top {
               -moz-border-radius: 3px;
               -o-border-radius: 3px;
               -webkit-border-radius: 3px;
-              border-radius: 3px; } }
-      @media only screen and (max-width: 768px) and (max-width: 1024px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
-          background: rgba(255, 85, 0, 0.1); } }
+              border-radius: 3px; }
+              @media only screen and (max-width: 1024px) {
+                nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+                  background: rgba(255, 85, 0, 0.1); } } }
 
 .navbar .container {
   /* nav menu overflows to two lines in spanish and french unless container width
@@ -571,7 +562,6 @@ nav.navbar-fixed-top {
   margin-right: 25px; }
   .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child {
     margin-right: 0; }
-
 @media only screen and (min-width: 1200px) {
   .myProjectList div.projectListMenu, #updates div.projectListMenu {
     min-width: 170px; } }
@@ -1019,12 +1009,10 @@ h4.detailedInfo {
     .main-list li dl.dl-horizontal dd {
       margin-left: 0px;
       display: block; } }
-
 .main-list .excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal; }
-
 .main-list.projects ul li {
   border: thin solid rgba(44, 42, 116, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1055,7 +1043,6 @@ h4.detailedInfo {
         margin-top: 1em; } }
     .main-list.projects ul li .donateButton .totalBudgetLabel {
       width: initial; }
-
 .main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1088,7 +1075,6 @@ h4.detailedInfo {
     list-style-type: initial;
     margin: initial;
     padding: initial; }
-
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1121,7 +1107,7 @@ h4.detailedInfo {
   .main-list.organisations ul li img {
     filter: gray;
     -webkit-filter: grayscale(100%);
-    filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
     filter: grayscale(100%);
     transition: all 0.2s ease-in; }
   .main-list.organisations ul li:hover img {
@@ -1285,7 +1271,7 @@ div.projectTopRow {
               width: 80%;
               filter: gray;
               -webkit-filter: grayscale(100%);
-              filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
+              filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
               filter: grayscale(100%);
               transition: all 0.2s ease-in;
               margin: inherit; }
@@ -1345,7 +1331,6 @@ div.textBlock {
 #accordion .panel-group .panel-heading a:before {
   content: '- ';
   position: relative; }
-
 #accordion .panel-group .panel-heading a.collapsed:before {
   content: '+ ';
   top: 1px; }
@@ -1411,9 +1396,7 @@ div.textBlock {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
-.project-hierarchy-window:hover,
-.project-hierarchy-window._jsPlumb_source_hover,
-.project-hierarchy-window._jsPlumb_target_hover {
+.project-hierarchy-window:hover, .project-hierarchy-window._jsPlumb_source_hover, .project-hierarchy-window._jsPlumb_target_hover {
   border: 1px solid orange;
   color: orange; }
 
@@ -1477,8 +1460,7 @@ ul.typeahead-selector {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    ul.typeahead-selector li:hover,
-    ul.typeahead-selector li.hover {
+    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
     ul.typeahead-selector li a {
@@ -1490,12 +1472,10 @@ ul.typeahead-selector {
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
-
 .organisationDetail .orgDescr {
   background-color: rgba(244, 116, 107, 0); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
-
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1506,26 +1486,20 @@ ul.typeahead-selector {
   .organisationDetail h1 i {
     font-size: 0.75em;
     top: -5px; }
-
 .organisationDetail .orgLogo {
   padding: 10px 0; }
   .organisationDetail .orgLogo img {
     width: 35%;
     margin-left: 5px; }
-
 .organisationDetail .orgDetails {
   background: rgba(255, 255, 255, 0.45);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
-
-.organisationDetail .orgUrl,
-.organisationDetail .orgIati,
-.organisationDetail .orgEmail {
+.organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
   display: block;
   padding-bottom: 0.75em; }
-
 @media only screen and (max-width: 768px) {
   .organisationDetail .orgDetails > h4 {
     padding-top: 0.75em; } }
@@ -1548,7 +1522,6 @@ ul.typeahead-selector {
 .updateMain h2 {
   color: #00a79d;
   margin-top: 0; }
-
 .updateMain .asideUpList .row {
   padding: 15px 0; }
   .updateMain .asideUpList .row:nth-of-type(2n+1) {
@@ -1566,9 +1539,7 @@ ul.typeahead-selector {
       width: 95%;
       max-width: 450px;
       text-align: justify; }
-      .projectDonate .paymentOption,
-      .projectDonate .donateTitle,
-      .projectDonate h3 {
+      .projectDonate .paymentOption, .projectDonate .donateTitle, .projectDonate h3 {
         text-align: center; } }
   .projectDonate .donateButton {
     margin-bottom: 2em; }
@@ -1589,10 +1560,10 @@ ul.typeahead-selector {
     clear: both; }
   .projectDonate .paymentSystemInfo {
     background-color: #f2f0e6; }
-
-@media only screen and (min-width: 768px) and (max-width: 992px) {
-  .projectDonate h3 {
-    font-size: 1.3em; } }
+  @media only screen and (min-width: 768px) {
+    @media only screen and (max-width: 992px) {
+      .projectDonate h3 {
+        font-size: 1.3em; } } }
   @media only screen and (max-width: 768px) {
     .projectDonate .paymentOption {
       margin-top: 3em; }
@@ -1610,10 +1581,8 @@ ul.typeahead-selector {
 /* Financial details page */
 section.projectFinancial .currentFunders dl > dd {
   text-align: right; }
-
 section.projectFinancial .donationBreak {
   display: none; }
-
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;
@@ -1622,22 +1591,21 @@ section.projectFinancial .donationBreak {
     margin-right: auto; }
     section.projectFinancial .dl-horizontal dt {
       float: left; } }
-
-@media only screen and (max-width: 992px) and (min-width: 768px) {
-  section.projectFinancial .dl-horizontal dt {
-    width: initial; }
-  section.projectFinancial .donationBreak {
-    display: initial;
-    clear: both; }
-  section.projectFinancial .currentFunders dd.donation {
-    float: right; }
-  section.projectFinancial .currentFunders dt.donation {
-    clear: both; } }
+@media only screen and (max-width: 992px) {
+  @media only screen and (min-width: 768px) {
+    section.projectFinancial .dl-horizontal dt {
+      width: initial; }
+    section.projectFinancial .donationBreak {
+      display: initial;
+      clear: both; }
+    section.projectFinancial .currentFunders dd.donation {
+      float: right; }
+    section.projectFinancial .currentFunders dt.donation {
+      clear: both; } } }
 
 /* Project Partners details page */
 section.projectPartners .title {
   margin-bottom: 1em; }
-
 section.projectPartners .row {
   margin-left: 0;
   margin-right: 0;
@@ -1672,7 +1640,6 @@ section.projectPartners .row {
     padding: 0; }
   section.projectPartners .row li {
     list-style: none; }
-
 @media only screen and (max-width: 768px) {
   section.projectPartners .container {
     padding-left: 0;
@@ -1696,18 +1663,17 @@ dd.currencyAmount {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto; } }
-
 @media only screen and (min-width: 992px) {
   .projectReport table {
     table-layout: fixed; }
     .projectReport table th {
-      word-break: break-word; } }
-    @media only screen and (min-width: 992px) and (max-width: 1200px) {
-      .projectReport table th {
-        width: 90px; } }
-    @media only screen and (min-width: 992px) and (min-width: 1200px) {
-      .projectReport table th {
-        width: 120px; } }
+      word-break: break-word; }
+      @media only screen and (max-width: 1200px) {
+        .projectReport table th {
+          width: 90px; } }
+      @media only screen and (min-width: 1200px) {
+        .projectReport table th {
+          width: 120px; } } }
 
 /* Project update page */
 .updateText {
@@ -1732,20 +1698,11 @@ a.addUpdateBtn {
 /* Google translation bar styles */
 body.translationBarActive .nav {
   padding-top: 39px; }
-
 body.translationBarActive .navbar-brand {
   margin-top: 39px; }
-
-body.translationBarActive article,
-body.translationBarActive .updateMain,
-body.translationBarActive .organisationDetail,
-body.translationBarActive #map {
+body.translationBarActive article, body.translationBarActive .updateMain, body.translationBarActive .organisationDetail, body.translationBarActive #map {
   padding-top: 39px; }
-
-body.translationBarActive div.skiptranslate ~ article,
-body.translationBarActive div.skiptranslate ~ .updateMain,
-body.translationBarActive div.skiptranslate ~ .organisationDetail,
-body.translationBarActive div.skiptranslate ~ #map {
+body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
   padding-top: 0px; }
 
 /* Cookie */
@@ -1771,13 +1728,10 @@ body.translationBarActive div.skiptranslate ~ #map {
 /* Project Admin */
 .progress .progress-bar[data-completion='empty'] {
   background: #d9534f; }
-
 .progress .progress-bar[data-completion='incomplete'] {
   background: #f0ad4e; }
-
 .progress .progress-bar[data-completion='complete'] {
   background: #5cb85c; }
-
 .progress .progress-bar .progress-percentage {
   display: none; }
 
@@ -1786,31 +1740,23 @@ body.translationBarActive div.skiptranslate ~ #map {
   transition: background 0.1s linear; }
   .formProgress .panel-heading:hover {
     background: rgba(92, 184, 92, 0.1); }
-
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
-
 .formProgress .progress-and-publish {
   top: 20px; }
-
 .formProgress .redLegenda {
   background: #d9534f;
   color: #d9534f; }
-
 .formProgress .orangeLegenda {
   background: #f0ad4e;
   color: #f0ad4e; }
-
 .formProgress .greenLegenda {
   background: #5cb85c;
   color: #5cb85c; }
-
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
-
 .formProgress .published {
   color: #5cb85c; }
-
 .formProgress .notPublished {
   color: #e31b23; }
 
@@ -1819,7 +1765,6 @@ body.translationBarActive div.skiptranslate ~ #map {
   transition: background 0.1s linear; }
   .formOverviewInfo .panel-heading:hover {
     background: rgba(114, 205, 255, 0.1); }
-
 .formOverviewInfo label {
   color: rgba(44, 42, 116, 0.5); }
 
@@ -1828,7 +1773,6 @@ body.translationBarActive div.skiptranslate ~ #map {
   text-transform: uppercase;
   font-size: 1.5em;
   display: block; }
-
 .projectEdit .myPanel {
   overflow: hidden;
   line-height: 25px;
@@ -1839,7 +1783,7 @@ body.translationBarActive div.skiptranslate ~ #map {
     display: block;
     overflow: hidden;
     box-sizing: border-box;
-    transition: all 0.5s linear;
+    transition: all .5s linear;
     padding: 5px 15px;
     margin: 0 auto;
     -moz-border-radius: 5px;
@@ -1851,10 +1795,8 @@ body.translationBarActive div.skiptranslate ~ #map {
     overflow: auto;
     background: rgba(253, 242, 232, 0);
     box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
-
 .projectEdit input[type='radio'] {
   display: none; }
-
 .projectEdit .formStep {
   position: relative; }
   .projectEdit .formStep > div > label {
@@ -1886,16 +1828,11 @@ body.translationBarActive div.skiptranslate ~ #map {
     padding-top: 10px; }
   .projectEdit .formStep span.tab {
     padding-left: 5em; }
-
 .projectEdit .borderBottom {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(44, 42, 116, 0); }
-
-.projectEdit *,
-.projectEdit *:before,
-.projectEdit *:after {
+.projectEdit *, .projectEdit *:before, .projectEdit *:after {
   box-sizing: border-box; }
-
 .projectEdit .control {
   position: relative;
   padding-top: 23px;
@@ -1907,21 +1844,16 @@ body.translationBarActive div.skiptranslate ~ #map {
     padding-left: 10px; }
   .projectEdit .control:last-child {
     border: 0; }
-
 .projectEdit .control-label {
   min-width: 90%; }
-
 .projectEdit a.btn {
   margin-top: 23px; }
   .projectEdit a.btn.btn-link {
     margin-top: 0; }
-
 .projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
   margin-top: 23px; }
-
 .projectEdit .add-object-link {
   top: 8px; }
-
 .projectEdit hr {
   border: none;
   height: 1px;
@@ -1929,49 +1861,28 @@ body.translationBarActive div.skiptranslate ~ #map {
   /* old IE */
   background-color: rgba(44, 42, 116, 0.3);
   /* Modern Browsers */ }
-
-.projectEdit input + label,
-.projectEdit input + span + label,
-.projectEdit input + ul + label, .projectEdit textarea + label,
-.projectEdit textarea + span + label,
-.projectEdit textarea + ul + label, .projectEdit select + label,
-.projectEdit select + span + label,
-.projectEdit select + ul + label {
+.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
   position: absolute;
   top: 0px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-
-.projectEdit input:focus + label,
-.projectEdit input:focus + span + label,
-.projectEdit input:focus + ul + label, .projectEdit textarea:focus + label,
-.projectEdit textarea:focus + span + label,
-.projectEdit textarea:focus + ul + label, .projectEdit select:focus + label,
-.projectEdit select:focus + span + label,
-.projectEdit select:focus + ul + label {
+.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
   color: #2c2a74; }
-
-.projectEdit div.input-group + label,
-.projectEdit div.input-group + span + label,
-.projectEdit div.input-group + ul + label {
+.projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
   position: absolute;
   top: 0px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-
 .projectEdit .delete-related-object {
   color: #d9534f; }
-
 .projectEdit .delete-photo-button {
   color: #d9534f; }
-
 .projectEdit .delete-document {
   color: #d9534f; }
-
 .projectEdit .info-icon {
   padding-left: 0.5em;
   cursor: pointer;
@@ -1979,62 +1890,48 @@ body.translationBarActive div.skiptranslate ~ #map {
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
-
 .projectEdit .mandatory, .projectEdit .mandatory-block {
   color: #d9534f;
   font-size: 125%;
   margin-left: 4px;
   margin-right: -4px; }
-
 .projectEdit .mandatory-block {
   font-size: 90%;
   margin-left: 0px;
   margin-right: 0px; }
-
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
-
 .projectEdit label.progress-bar[aria-valuenow="10"] {
   background: #d9534f;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="20"] {
   background: #d9534f;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="30"] {
   background: #d9534f;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="40"] {
   background: #f0ad4e;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="50"] {
   background: #f0ad4e;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="60"] {
   background: #f0ad4e;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="70"] {
   background: #5cb85c;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="80"] {
   background: #5cb85c;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="90"] {
   background: #5cb85c;
   color: white; }
-
 .projectEdit label.progress-bar[aria-valuenow="100"] {
   background: #5cb85c;
   color: white; }
-
 .projectEdit div.parent {
   background: rgba(240, 173, 78, 0.15);
   -webkit-border-radius: 10px;
@@ -2046,7 +1943,6 @@ body.translationBarActive div.skiptranslate ~ #map {
   margin-top: 10px;
   margin-bottom: 10px;
   transition: background 0.1s linear; }
-
 .projectEdit div.partial-header {
   font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
@@ -2055,13 +1951,10 @@ body.translationBarActive div.skiptranslate ~ #map {
   margin-top: 10px;
   margin-bottom: 10px;
   cursor: pointer; }
-
 .projectEdit .save-message {
   text-align: center; }
-
 .projectEdit .save-button {
   text-align: right; }
-
 .projectEdit .toggle-help {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
@@ -2574,43 +2467,53 @@ body.translationBarActive div.skiptranslate ~ #map {
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
+  .results .update-entry-container {
+    padding: 2em;
+    margin-bottom: 2em;
+    position: relative;
+    background-color: #ececec; }
+    .results .update-entry-container:first-child {
+      border-left: 4px solid #ae0922; }
+    .results .update-entry-container.edit-in-progress {
+      background-color: #D1E6D1;
+      border-left: none; }
   .results .update-dialog-container.pending-new-update .update-entry-container {
     background-color: #D1E6D1; }
     .results .update-dialog-container.pending-new-update .update-entry-container:first-child {
       border-left: none; }
-  .results .update-dialog-container td {
+  .results .update-dialog-container div {
     padding: 8px 2em; }
-    .results .update-dialog-container td .update-entry-container {
+    .results .update-dialog-container div .update-entry-container {
       padding: 2em;
       margin-bottom: 2em;
       position: relative;
       background-color: #ececec; }
-      .results .update-dialog-container td .update-entry-container:first-child {
+      .results .update-dialog-container div .update-entry-container:first-child {
         border-left: 4px solid #ae0922; }
-      .results .update-dialog-container td .update-entry-container.edit-in-progress {
+      .results .update-dialog-container div .update-entry-container.edit-in-progress {
         background-color: #D1E6D1;
         border-left: none; }
-      .results .update-dialog-container td .update-entry-container .update-exceed-target {
+      .results .update-dialog-container div .update-entry-container .update-exceed-target {
         margin: 3em 0 1em 0;
         text-align: right; }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
+        .results .update-dialog-container div .update-entry-container .update-exceed-target input.exceed-value {
           opacity: 0; }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target label {
+        .results .update-dialog-container div .update-entry-container .update-exceed-target label {
           margin-right: 10px;
           color: rgba(32, 32, 36, 0.5); }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
+        .results .update-dialog-container div .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
           margin-right: 10px; }
-          .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
+          .results .update-dialog-container div .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
             opacity: 1; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
+      .results .update-dialog-container div .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
         margin-left: 45px;
         margin-right: 0; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-baseline {
           top: 34px;
           left: -60px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -18px;
           width: 44px;
@@ -2620,7 +2523,7 @@ body.translationBarActive div.skiptranslate ~ #map {
           border: 1px solid #B5B5B5;
           background-color: #ececec;
           cursor: pointer; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
+          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
             content: '';
             opacity: 0;
             height: 0px;
@@ -2628,13 +2531,13 @@ body.translationBarActive div.skiptranslate ~ #map {
             padding: 0;
             margin: 0;
             font-size: 0; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
+          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
             color: #A3C7E3;
             border-color: #A3C7E3; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
+          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
             z-index: 101;
             background-color: white; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
+            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
               display: block;
               font-size: initial;
               opacity: 1;
@@ -2648,7 +2551,7 @@ body.translationBarActive div.skiptranslate ~ #map {
               margin-left: -28px;
               /* Half of the width of this - half the width of the parent */
               padding: 5px 0; }
-              .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
+              .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
                 content: '';
                 width: 0;
                 height: 0;
@@ -2658,7 +2561,7 @@ body.translationBarActive div.skiptranslate ~ #map {
                 position: absolute;
                 top: -5px;
                 left: 45px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           position: absolute;
           top: 38px;
           bottom: 24px;
@@ -2669,48 +2572,48 @@ body.translationBarActive div.skiptranslate ~ #map {
           -webkit-border-radius: 2px;
           border-radius: 2px;
           border: 1px solid #CDDFEF; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar {
           background-color: #fff;
           right: 0px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           background-color: #fff;
           border-right: none; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
+        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
           /* The progress box has non-zero width, so add some
                         ** padding to ensure it doesn't overflow the parent
                         ** container.
                         */
           position: relative;
           height: 100%; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
             position: absolute;
             width: 3px;
             height: 20px;
             top: 35px;
             background-color: #B5B5B5;
             text-align: center; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
+            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
               background-color: #A3C7E3; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
+            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
               border: none; }
-      .results .update-dialog-container td .update-entry-container .target-td {
+      .results .update-dialog-container div .update-entry-container .target-td {
         vertical-align: middle; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+      .results .update-dialog-container div .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
         padding-left: 15px;
         font-size: 1.5em;
         font-weight: normal;
         color: #515050;
         vertical-align: bottom; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+      .results .update-dialog-container div .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
         padding-left: 15px;
         font-size: 1.5em;
         font-weight: bold;
         color: #A3C7E3;
         vertical-align: bottom;
         z-index: 19999; }
-      .results .update-dialog-container td .update-entry-container:last-child {
+      .results .update-dialog-container div .update-entry-container:last-child {
         margin-bottom: 0; }
-      .results .update-dialog-container td .update-entry-container .edit-button {
+      .results .update-dialog-container div .update-entry-container .edit-button {
         position: absolute;
         height: 20px;
         width: 20px;
@@ -2718,9 +2621,9 @@ body.translationBarActive div.skiptranslate ~ #map {
         right: 10px;
         color: #202024;
         font-size: 1.5em; }
-        .results .update-dialog-container td .update-entry-container .edit-button.activated {
+        .results .update-dialog-container div .update-entry-container .edit-button.activated {
           display: none; }
-      .results .update-dialog-container td .update-entry-container .delete-button {
+      .results .update-dialog-container div .update-entry-container .delete-button {
         position: absolute;
         height: 20px;
         width: 20px;
@@ -2728,59 +2631,59 @@ body.translationBarActive div.skiptranslate ~ #map {
         right: 35px;
         font-size: 1.5em;
         color: #202024; }
-        .results .update-dialog-container td .update-entry-container .delete-button.activated {
+        .results .update-dialog-container div .update-entry-container .delete-button.activated {
           display: none; }
-      .results .update-dialog-container td .update-entry-container .update-date {
+      .results .update-dialog-container div .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
         width: 50%; }
-      .results .update-dialog-container td .update-entry-container .update-name {
+      .results .update-dialog-container div .update-entry-container .update-name {
         display: inline-block;
         text-align: left;
         width: 30%;
         margin-right: 10%;
         color: #202024; }
-      .results .update-dialog-container td .update-entry-container .update-timeline {
+      .results .update-dialog-container div .update-entry-container .update-timeline {
         display: inline-block;
         width: 84%;
         height: 80px;
         padding-top: 1em;
         z-index: 99;
         position: relative; }
-      .results .update-dialog-container td .update-entry-container .update-target {
+      .results .update-dialog-container div .update-entry-container .update-target {
         position: absolute;
         margin-top: 49px;
         display: inline-block;
         width: 15%;
         height: 80px;
         text-align: right; }
-        .results .update-dialog-container td .update-entry-container .update-target span {
+        .results .update-dialog-container div .update-entry-container .update-target span {
           font-size: 1.1em;
           color: #515050;
           vertical-align: text-top; }
-          .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
+          .results .update-dialog-container div .update-entry-container .update-target span.update-target-actual {
             padding-left: 15px;
             font-size: 1.1em;
             font-weight: bold;
             color: #A3C7E3;
             vertical-align: bottom; }
-      .results .update-dialog-container td .update-entry-container .update-description {
+      .results .update-dialog-container div .update-entry-container .update-description {
         padding: 0.5em;
         margin: 20px auto 30px; }
-        .results .update-dialog-container td .update-entry-container .update-description.editable {
+        .results .update-dialog-container div .update-entry-container .update-description.editable {
           background: whitesmoke;
           border: 1px solid #A3C7E3; }
-        .results .update-dialog-container td .update-entry-container .update-description .update-photo {
+        .results .update-dialog-container div .update-entry-container .update-description .update-photo {
           float: right;
           width: 150px;
           height: 100px;
           background-size: cover; }
-      .results .update-dialog-container td .update-entry-container .save-button {
+      .results .update-dialog-container div .update-entry-container .save-button {
         position: absolute;
         display: none;
         right: 10px;
         bottom: 10px; }
-        .results .update-dialog-container td .update-entry-container .save-button.active {
+        .results .update-dialog-container div .update-entry-container .save-button.active {
           display: inline-block;
           padding: 3px 7px;
           color: white;
@@ -2790,12 +2693,12 @@ body.translationBarActive div.skiptranslate ~ #map {
           -webkit-border-radius: 2px;
           border-radius: 2px;
           text-align: center; }
-      .results .update-dialog-container td .update-entry-container .cancel-button {
+      .results .update-dialog-container div .update-entry-container .cancel-button {
         position: absolute;
         display: none;
         right: 60px;
         bottom: 10px; }
-        .results .update-dialog-container td .update-entry-container .cancel-button.active {
+        .results .update-dialog-container div .update-entry-container .cancel-button.active {
           display: inline-block;
           padding: 3px 7px;
           color: #202024;
@@ -2804,9 +2707,9 @@ body.translationBarActive div.skiptranslate ~ #map {
           -webkit-border-radius: 2px;
           border-radius: 2px;
           text-align: center; }
-      .results .update-dialog-container td .update-entry-container .edit-slider {
+      .results .update-dialog-container div .update-entry-container .edit-slider {
         z-index: 9999; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
+        .results .update-dialog-container div .update-entry-container .edit-slider .original-position-marker {
           width: 3px;
           margin-left: -2px;
           height: 20px;
@@ -2814,16 +2717,16 @@ body.translationBarActive div.skiptranslate ~ #map {
           background-color: #B5B5B5;
           top: -3px;
           z-index: 102; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
+        .results .update-dialog-container div .update-entry-container .edit-slider .change-indicator {
           position: absolute;
           background-color: green;
           height: 12px;
           top: 1px;
           z-index: 101;
           opacity: 0.5; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
+          .results .update-dialog-container div .update-entry-container .edit-slider .change-indicator.negative {
             background-color: red; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
+        .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal {
           height: 5px;
           border: 0;
           background-color: rgba(255, 255, 255, 0);
@@ -2834,13 +2737,13 @@ body.translationBarActive div.skiptranslate ~ #map {
           -webkit-border-radius: 4px;
           border-radius: 4px;
           box-shadow: none; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
+          .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
             background-color: rgba(255, 255, 255, 0);
             -moz-border-radius: 4px;
             -o-border-radius: 4px;
             -webkit-border-radius: 4px;
             border-radius: 4px; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+          .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
             position: relative;
             width: 28px;
             height: 28px;
@@ -2851,7 +2754,7 @@ body.translationBarActive div.skiptranslate ~ #map {
             box-shadow: none;
             top: -7px;
             color: white; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
               display: block;
               content: '|||';
               color: white;
@@ -2864,13 +2767,13 @@ body.translationBarActive div.skiptranslate ~ #map {
               background-color: transparent;
               top: 0;
               left: -1px; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
               display: none; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
               background-color: #009ceb; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
               background-color: #de8929; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
               position: absolute;
               top: -32px;
               background-color: #007ab8;
@@ -2878,7 +2781,7 @@ body.translationBarActive div.skiptranslate ~ #map {
               width: 44px;
               left: -8px;
               text-align: center; }
-              .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+              .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
                 content: '';
                 height: 0px;
                 width: 0px;
@@ -2888,7 +2791,7 @@ body.translationBarActive div.skiptranslate ~ #map {
                 border-left: 5px solid transparent;
                 border-right: 5px solid transparent;
                 border-top: 5px solid #007ab8; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
               position: absolute;
               width: 42px;
               text-align: center;
@@ -2896,7 +2799,7 @@ body.translationBarActive div.skiptranslate ~ #map {
               left: -8px;
               background-color: white;
               color: #007ab8; }
-        .results .update-dialog-container td .update-entry-container .edit-slider.active {
+        .results .update-dialog-container div .update-entry-container .edit-slider.active {
           display: initial; }
 
 /* Modal dialog stuff for the Project Editor */

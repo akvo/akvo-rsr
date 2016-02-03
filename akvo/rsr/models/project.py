@@ -1091,26 +1091,28 @@ class Project(TimestampsMixin, models.Model):
             for indicator in result.indicators.all():
                 for period in indicator.periods.all():
                     if period.actual_value:
-                        try:
-                            update_value = Decimal(period.actual_value) - period.baseline
-                        except (InvalidOperation, TypeError):
-                            continue
-
-                        period.actual_value = str(period.baseline)
-                        period.save(update_fields=['actual_value'])
-
-                        get_model('rsr', 'ProjectUpdate').objects.create(
-                            project=self,
-                            # TODO: What user should we link to a 'system' update?
-                            # We could make sure that the 1st user in the database is a 'system'
-                            # user.
-                            user=get_model('rsr', 'user').objects.all()[0],
-                            title=u'Initial value of indicator period',
-                            text=u'Initial value of indicator period, added by system while '
-                                 u'calculating the actual value of this indicator period.',
-                            indicator_period=period,
-                            period_update=update_value,
-                        )
+                        # TODO: Remove old code
+                        # try:
+                        #     update_value = Decimal(period.actual_value) - period.baseline
+                        # except (InvalidOperation, TypeError):
+                        #     continue
+                        #
+                        # period.actual_value = str(period.baseline)
+                        # period.save(update_fields=['actual_value'])
+                        #
+                        # get_model('rsr', 'ProjectUpdate').objects.create(
+                        #     project=self,
+                        #     # TODO: What user should we link to a 'system' update?
+                        #     # We could make sure that the 1st user in the database is a 'system'
+                        #     # user.
+                        #     user=get_model('rsr', 'user').objects.all()[0],
+                        #     title=u'Initial value of indicator period',
+                        #     text=u'Initial value of indicator period, added by system while '
+                        #          u'calculating the actual value of this indicator period.',
+                        #     indicator_period=period,
+                        #     period_update=update_value,
+                        # )
+                        pass
 
     def import_results(self):
         """Import results from the parent project."""
