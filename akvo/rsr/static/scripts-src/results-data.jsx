@@ -1329,6 +1329,211 @@ var currentDate, endpoints, i18n, initialSettings;
     return updateContainer;
   }
 
+/* General helper functions */
+
+function displayDate(dateString) {
+    // Display a dateString like "25 Jan 2016"
+
+    var locale = "en-gb";
+    var date = new Date(dateString.split(".")[0].replace("/", /-/g));
+    var day = date.getUTCDate();
+    var month = date.toLocaleString(locale, { month: "short" });
+    var year = date.getUTCFullYear();
+    return day + " " + month + " " + year;
+}
+
+
+var UpdateEntry = React.createClass({
+    getInitialState: function() {
+        return {
+            editing: false
+        };
+    },
+
+    switchEdit: function() {
+        this.setState({editing: !this.state.editing});
+    },
+
+    renderUpdateClass: function() {
+        var updateClass = "row update-entry-container";
+        if (this.state.editing) {
+            updateClass += " edit-in-progress";
+        }
+        return updateClass;
+    },
+
+    renderHeader: function() {
+        var headerLeft;
+
+        if (this.state.editing) {
+            headerLeft = <div className="col-xs-9">
+                <span className="edit-update">{i18n.edit_update}</span>
+            </div>
+        } else {
+            headerLeft = <div className="col-xs-9">
+                <span className="update-user">{this.props.update.user}</span>
+                <span className="update-created-at"> | {displayDate(this.props.update.created_at)}</span>
+            </div>
+        }
+
+        return (
+            <div className="row update-entry-container-header">
+                {headerLeft}
+                <div className="col-xs-3">
+                    <span className="update-status"> {this.props.update.status}</span>
+                </div>
+            </div>
+        );
+    },
+
+    renderFooter: function() {
+        if (this.state.editing) {
+            return (
+                <div className="row">
+                    <div className="col-xs-7">
+                        <a className="clickable" onClick={this.switchEdit}>{i18n.cancel}</a>
+                    </div>
+                    <div className="col-xs-2">
+                        <a className="clickable">{i18n.save}</a>
+                    </div>
+                    <div className="col-xs-3">
+                        <a className="clickable">{i18n.submit_for_approval}</a>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-xs-9"></div>
+                    <div className="col-xs-3">
+                        <a className="clickable" onClick={this.switchEdit}>{i18n.edit_update}</a>
+                    </div>
+                </div>
+            );
+        }
+    },
+
+    render: function() {
+        return (
+            <div className={this.renderUpdateClass()}>
+                <div className="col-xs-12">
+                    {this.renderHeader()}
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <span
+                                className="update-actual-value-text">{i18n.actual_value}</span>
+                            <span
+                                className="update-actual-value-data">{this.props.update.data}</span>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-3 update-photo">
+                            <img src={this.props.update.photo}/>
+                        </div>
+                        <div className="col-xs-9 update-description">
+                            {this.props.update.text}
+                        </div>
+                    </div>
+                    {this.renderFooter()}
+                </div>
+            </div>
+        );
+    }
+});
+
+var UpdatesList = React.createClass({
+    sortedUpdates: function() {
+        function compare(u1, u2) {
+            if (u1.created_at > u2.created_at) {
+                return -1;
+            } else if (u1.created_at < u2.created_at) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        return this.props.selectedPeriod.data.sort(compare);
+    },
+
+    render: function() {
+        var thisList = this;
+        var updates = this.sortedUpdates().map(function (update) {
+            return (
+                <div className="update-container" key={update.id}>
+                    {React.createElement(UpdateEntry, {
+                        selectedPeriod: thisList.props.selectedPeriod,
+                        selectPeriod: thisList.props.selectPeriod,
+                        update: update
+                    })}
+                </div>
+            );
+        });
+
+        return (
+            <div className="updates-container">
+                <h5>{i18n.updates}</h5>
+                {updates}
+            </div>
+        );
+    }
+});
+
+var IndicatorPeriodMain = React.createClass({
+    addNewUpdate: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
+                var update = JSON.parse(xmlHttp.responseText);
+                var periodId = thisApp.props.selectedPeriod.id;
+                thisApp.props.addUpdateToPeriod(update, periodId);
+            }
+        };
+        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'period': this.props.selectedPeriod.id,
+            'user': 1,
+            'data': 0
+        }));
+    },
+
+    render: function() {
+        return (
+            <div className="indicator-period opacity-transition">
+                <div className="row">
+                    <div className="col-xs-9">
+                        <h4 className="indicator-title">
+                            {i18n.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
+                        </h4>
+                    </div>
+                    <div className="col-xs-3 new-update">
+                        <a className="clickable" onClick={this.addNewUpdate}>{i18n.new_update}</a>
+                    </div>
+                </div>
+                <dl className="period-target-actual">
+                    <div className="period-target">
+                        <dt>{i18n.target_value}</dt>
+                        <dd>{this.props.selectedPeriod.target_value}</dd>
+                    </div>
+                    <div className="period-actual">
+                        <dt>{i18n.actual_value}</dt>
+                        <dd>
+                            {this.props.selectedPeriod.actual_value}
+                            <span className="percentage-complete"> (100%)</span>
+                        </dd>
+                    </div>
+                    {React.createElement(UpdatesList, {
+                        selectedPeriod: this.props.selectedPeriod,
+                        selectPeriod: this.props.selectPeriod
+                    })}
+                </dl>
+            </div>
+        );
+    }
+});
+
 var IndicatorPeriodEntry = React.createClass({
     selected: function() {
         if (this.props.selectedPeriod !== null) {
@@ -1348,7 +1553,7 @@ var IndicatorPeriodEntry = React.createClass({
             <tr>
                 <td className="period-td">
                     <a className="clickable" onClick={this.switchPeriod}>
-                        {this.props.period.period_start} - {this.props.period.period_end}
+                        {displayDate(this.props.period.period_start)} - {displayDate(this.props.period.period_end)}
                     </a>
                 </td>
                 <td className="target-td">{this.props.period.target_value}</td>
@@ -1400,20 +1605,6 @@ var IndicatorPeriodList = React.createClass({
 });
 
 var MainContent = React.createClass({
-    getInitialState: function() {
-        return {
-            selectedPeriod: null
-        };
-    },
-
-    selectPeriod: function(period) {
-        this.setState({selectedPeriod: period})
-    },
-
-    deselectPeriod: function() {
-        this.setState({selectedPeriod: null})
-    },
-
     showMeasure: function() {
         switch(this.props.indicator.measure) {
             case "1":
@@ -1426,12 +1617,14 @@ var MainContent = React.createClass({
     },
 
     render: function() {
-        if (this.state.selectedPeriod !== null) {
+        if (this.props.selectedPeriod !== null) {
             return (
-                <span>
-                    Selected a period!
-                    <a className="clickable" onClick={this.deselectPeriod}>Go back.</a>
-                </span>
+                <div className="indicator-period-container">
+                    {React.createElement(IndicatorPeriodMain, {
+                        addUpdateToPeriod: this.props.addUpdateToPeriod,
+                        selectedPeriod: this.props.selectedPeriod
+                    })}
+                </div>
             );
         } else if (this.props.indicator !== null) {
             return (
@@ -1456,8 +1649,8 @@ var MainContent = React.createClass({
                     </dl>
                     {React.createElement(IndicatorPeriodList, {
                         indicator: this.props.indicator,
-                        selectedPeriod: this.state.selectedPeriod,
-                        selectPeriod: this.selectPeriod
+                        selectedPeriod: this.props.selectedPeriod,
+                        selectPeriod: this.props.selectPeriod
                     })}
                 </div>
             )
@@ -1480,7 +1673,8 @@ var IndicatorEntry = React.createClass({
 
     switchIndicator: function() {
         var selectIndicator = this.props.selectIndicator;
-        this.selected() ? selectIndicator(null) : selectIndicator(this.props.indicator);
+        var selectPeriod = this.props.selectPeriod;
+        this.selected() ? selectPeriod(null) : selectIndicator(this.props.indicator);
     },
 
     render: function() {
@@ -1533,7 +1727,8 @@ var ResultEntry = React.createClass({
                         {React.createElement(IndicatorEntry, {
                             indicator: indicator,
                             selectedIndicator: thisResult.props.selectedIndicator,
-                            selectIndicator: thisResult.props.selectIndicator
+                            selectIndicator: thisResult.props.selectIndicator,
+                            selectPeriod: thisResult.props.selectPeriod
                         })}
                     </div>
                 );
@@ -1550,8 +1745,8 @@ var ResultEntry = React.createClass({
             <div className={resultNavClass} key={this.props.result.id}>
                 <div className="result-nav-summary clickable" onClick={this.switchResult}>
                     <h3 className="result-title">
-                        <i className="fa fa-chevron-down"></i>
-                        <i className="fa fa-chevron-up"></i>
+                        <i className="fa fa-chevron-down" />
+                        <i className="fa fa-chevron-up" />
                         <span>{this.props.result.title}</span>
                     </h3>
                     {indicatorCount}
@@ -1570,10 +1765,11 @@ var SideBar = React.createClass({
                 <div key={result.id}>
                     {React.createElement(ResultEntry, {
                         result: result,
-                        selectedIndicator: thisList.props.selectedIndicator,
                         selectedResult: thisList.props.selectedResult,
+                        selectedIndicator: thisList.props.selectedIndicator,
+                        selectResult: thisList.props.selectResult,
                         selectIndicator: thisList.props.selectIndicator,
-                        selectResult: thisList.props.selectResult
+                        selectPeriod: thisList.props.selectPeriod
                     })}
                 </div>
             );
@@ -1592,6 +1788,7 @@ var ResultsApp = React.createClass({
         return {
             selectedResult: null,
             selectedIndicator: null,
+            selectedPeriod: null,
             results: []
         };
     },
@@ -1609,12 +1806,32 @@ var ResultsApp = React.createClass({
         xmlHttp.send();
     },
 
+    addUpdateToPeriod: function(update, periodId) {
+        for (var i = 0; i < this.state.results.length; i++) {
+            var result = this.state.results[i];
+            for (var j = 0; j < result.indicators.length; j++) {
+                var indicator = result.indicators[j];
+                for (var k = 0; k < indicator.periods.length; k++) {
+                    var period = indicator.periods[k];
+                    if (period.id == periodId) {
+                        period.data.push(update);
+                        this.forceUpdate();
+                    }
+                }
+            }
+        }
+    },
+
     selectResult: function(resultId) {
         this.setState({selectedResult: resultId});
     },
 
-    selectIndicator: function(indicatorId) {
-        this.setState({selectedIndicator: indicatorId});
+    selectIndicator: function(indicator) {
+        this.setState({selectedIndicator: indicator});
+    },
+
+    selectPeriod: function(period) {
+        this.setState({selectedPeriod: period});
     },
 
     render: function() {
@@ -1629,17 +1846,21 @@ var ResultsApp = React.createClass({
                             {React.createElement(
                                 SideBar, {
                                     results: this.state.results,
-                                    selectedIndicator: this.state.selectedIndicator,
                                     selectedResult: this.state.selectedResult,
+                                    selectedIndicator: this.state.selectedIndicator,
+                                    selectResult: this.selectResult,
                                     selectIndicator: this.selectIndicator,
-                                    selectResult: this.selectResult
+                                    selectPeriod: this.selectPeriod
                                 }
                             )}
                         </div>
                         <div className="indicator-container">
                             {React.createElement(
                                 MainContent, {
-                                    indicator: this.state.selectedIndicator
+                                    addUpdateToPeriod: this.addUpdateToPeriod,
+                                    indicator: this.state.selectedIndicator,
+                                    selectedPeriod: this.state.selectedPeriod,
+                                    selectPeriod: this.selectPeriod
                                 }
                             )}
                         </div>

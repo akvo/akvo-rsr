@@ -1329,6 +1329,211 @@ var currentDate, endpoints, i18n, initialSettings;
     return updateContainer;
   }
 
+/* General helper functions */
+
+function displayDate(dateString) {
+    // Display a dateString like "25 Jan 2016"
+
+    var locale = "en-gb";
+    var date = new Date(dateString.split(".")[0].replace("/", /-/g));
+    var day = date.getUTCDate();
+    var month = date.toLocaleString(locale, { month: "short" });
+    var year = date.getUTCFullYear();
+    return day + " " + month + " " + year;
+}
+
+
+var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
+    getInitialState: function() {
+        return {
+            editing: false
+        };
+    },
+
+    switchEdit: function() {
+        this.setState({editing: !this.state.editing});
+    },
+
+    renderUpdateClass: function() {
+        var updateClass = "row update-entry-container";
+        if (this.state.editing) {
+            updateClass += " edit-in-progress";
+        }
+        return updateClass;
+    },
+
+    renderHeader: function() {
+        var headerLeft;
+
+        if (this.state.editing) {
+            headerLeft = React.DOM.div( {className:"col-xs-9"}, 
+                React.DOM.span( {className:"edit-update"}, i18n.edit_update)
+            )
+        } else {
+            headerLeft = React.DOM.div( {className:"col-xs-9"}, 
+                React.DOM.span( {className:"update-user"}, this.props.update.user),
+                React.DOM.span( {className:"update-created-at"},  " | ", displayDate(this.props.update.created_at))
+            )
+        }
+
+        return (
+            React.DOM.div( {className:"row update-entry-container-header"}, 
+                headerLeft,
+                React.DOM.div( {className:"col-xs-3"}, 
+                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status)
+                )
+            )
+        );
+    },
+
+    renderFooter: function() {
+        if (this.state.editing) {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-7"}, 
+                        React.DOM.a( {className:"clickable", onClick:this.switchEdit}, i18n.cancel)
+                    ),
+                    React.DOM.div( {className:"col-xs-2"}, 
+                        React.DOM.a( {className:"clickable"}, i18n.save)
+                    ),
+                    React.DOM.div( {className:"col-xs-3"}, 
+                        React.DOM.a( {className:"clickable"}, i18n.submit_for_approval)
+                    )
+                )
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-9"}),
+                    React.DOM.div( {className:"col-xs-3"}, 
+                        React.DOM.a( {className:"clickable", onClick:this.switchEdit}, i18n.edit_update)
+                    )
+                )
+            );
+        }
+    },
+
+    render: function() {
+        return (
+            React.DOM.div( {className:this.renderUpdateClass()}, 
+                React.DOM.div( {className:"col-xs-12"}, 
+                    this.renderHeader(),
+                    React.DOM.div( {className:"row"}, 
+                        React.DOM.div( {className:"col-xs-12"}, 
+                            React.DOM.span(
+                                {className:"update-actual-value-text"}, i18n.actual_value),
+                            React.DOM.span(
+                                {className:"update-actual-value-data"}, this.props.update.data)
+                        )
+                    ),
+                    React.DOM.div( {className:"row"}, 
+                        React.DOM.div( {className:"col-xs-3 update-photo"}, 
+                            React.DOM.img( {src:this.props.update.photo})
+                        ),
+                        React.DOM.div( {className:"col-xs-9 update-description"}, 
+                            this.props.update.text
+                        )
+                    ),
+                    this.renderFooter()
+                )
+            )
+        );
+    }
+});
+
+var UpdatesList = React.createClass({displayName: 'UpdatesList',
+    sortedUpdates: function() {
+        function compare(u1, u2) {
+            if (u1.created_at > u2.created_at) {
+                return -1;
+            } else if (u1.created_at < u2.created_at) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        return this.props.selectedPeriod.data.sort(compare);
+    },
+
+    render: function() {
+        var thisList = this;
+        var updates = this.sortedUpdates().map(function (update) {
+            return (
+                React.DOM.div( {className:"update-container", key:update.id}, 
+                    React.createElement(UpdateEntry, {
+                        selectedPeriod: thisList.props.selectedPeriod,
+                        selectPeriod: thisList.props.selectPeriod,
+                        update: update
+                    })
+                )
+            );
+        });
+
+        return (
+            React.DOM.div( {className:"updates-container"}, 
+                React.DOM.h5(null, i18n.updates),
+                updates
+            )
+        );
+    }
+});
+
+var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
+    addNewUpdate: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
+                var update = JSON.parse(xmlHttp.responseText);
+                var periodId = thisApp.props.selectedPeriod.id;
+                thisApp.props.addUpdateToPeriod(update, periodId);
+            }
+        };
+        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'period': this.props.selectedPeriod.id,
+            'user': 1,
+            'data': 0
+        }));
+    },
+
+    render: function() {
+        return (
+            React.DOM.div( {className:"indicator-period opacity-transition"}, 
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-9"}, 
+                        React.DOM.h4( {className:"indicator-title"}, 
+                            i18n.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
+                        )
+                    ),
+                    React.DOM.div( {className:"col-xs-3 new-update"}, 
+                        React.DOM.a( {className:"clickable", onClick:this.addNewUpdate}, i18n.new_update)
+                    )
+                ),
+                React.DOM.dl( {className:"period-target-actual"}, 
+                    React.DOM.div( {className:"period-target"}, 
+                        React.DOM.dt(null, i18n.target_value),
+                        React.DOM.dd(null, this.props.selectedPeriod.target_value)
+                    ),
+                    React.DOM.div( {className:"period-actual"}, 
+                        React.DOM.dt(null, i18n.actual_value),
+                        React.DOM.dd(null, 
+                            this.props.selectedPeriod.actual_value,
+                            React.DOM.span( {className:"percentage-complete"},  " (100%)")
+                        )
+                    ),
+                    React.createElement(UpdatesList, {
+                        selectedPeriod: this.props.selectedPeriod,
+                        selectPeriod: this.props.selectPeriod
+                    })
+                )
+            )
+        );
+    }
+});
+
 var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry',
     selected: function() {
         if (this.props.selectedPeriod !== null) {
@@ -1348,7 +1553,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
             React.DOM.tr(null, 
                 React.DOM.td( {className:"period-td"}, 
                     React.DOM.a( {className:"clickable", onClick:this.switchPeriod}, 
-                        this.props.period.period_start, " - ", this.props.period.period_end
+                        displayDate(this.props.period.period_start), " - ", displayDate(this.props.period.period_end)
                     )
                 ),
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
@@ -1400,20 +1605,6 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 });
 
 var MainContent = React.createClass({displayName: 'MainContent',
-    getInitialState: function() {
-        return {
-            selectedPeriod: null
-        };
-    },
-
-    selectPeriod: function(period) {
-        this.setState({selectedPeriod: period})
-    },
-
-    deselectPeriod: function() {
-        this.setState({selectedPeriod: null})
-    },
-
     showMeasure: function() {
         switch(this.props.indicator.measure) {
             case "1":
@@ -1426,11 +1617,13 @@ var MainContent = React.createClass({displayName: 'MainContent',
     },
 
     render: function() {
-        if (this.state.selectedPeriod !== null) {
+        if (this.props.selectedPeriod !== null) {
             return (
-                React.DOM.span(null, 
-                    "Selected a period!",
-                    React.DOM.a( {className:"clickable", onClick:this.deselectPeriod}, "Go back.")
+                React.DOM.div( {className:"indicator-period-container"}, 
+                    React.createElement(IndicatorPeriodMain, {
+                        addUpdateToPeriod: this.props.addUpdateToPeriod,
+                        selectedPeriod: this.props.selectedPeriod
+                    })
                 )
             );
         } else if (this.props.indicator !== null) {
@@ -1456,8 +1649,8 @@ var MainContent = React.createClass({displayName: 'MainContent',
                     ),
                     React.createElement(IndicatorPeriodList, {
                         indicator: this.props.indicator,
-                        selectedPeriod: this.state.selectedPeriod,
-                        selectPeriod: this.selectPeriod
+                        selectedPeriod: this.props.selectedPeriod,
+                        selectPeriod: this.props.selectPeriod
                     })
                 )
             )
@@ -1480,7 +1673,8 @@ var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
 
     switchIndicator: function() {
         var selectIndicator = this.props.selectIndicator;
-        this.selected() ? selectIndicator(null) : selectIndicator(this.props.indicator);
+        var selectPeriod = this.props.selectPeriod;
+        this.selected() ? selectPeriod(null) : selectIndicator(this.props.indicator);
     },
 
     render: function() {
@@ -1533,7 +1727,8 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
                         React.createElement(IndicatorEntry, {
                             indicator: indicator,
                             selectedIndicator: thisResult.props.selectedIndicator,
-                            selectIndicator: thisResult.props.selectIndicator
+                            selectIndicator: thisResult.props.selectIndicator,
+                            selectPeriod: thisResult.props.selectPeriod
                         })
                     )
                 );
@@ -1550,8 +1745,8 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
             React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
                 React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
                     React.DOM.h3( {className:"result-title"}, 
-                        React.DOM.i( {className:"fa fa-chevron-down"}),
-                        React.DOM.i( {className:"fa fa-chevron-up"}),
+                        React.DOM.i( {className:"fa fa-chevron-down"} ),
+                        React.DOM.i( {className:"fa fa-chevron-up"} ),
                         React.DOM.span(null, this.props.result.title)
                     ),
                     indicatorCount
@@ -1570,10 +1765,11 @@ var SideBar = React.createClass({displayName: 'SideBar',
                 React.DOM.div( {key:result.id}, 
                     React.createElement(ResultEntry, {
                         result: result,
-                        selectedIndicator: thisList.props.selectedIndicator,
                         selectedResult: thisList.props.selectedResult,
+                        selectedIndicator: thisList.props.selectedIndicator,
+                        selectResult: thisList.props.selectResult,
                         selectIndicator: thisList.props.selectIndicator,
-                        selectResult: thisList.props.selectResult
+                        selectPeriod: thisList.props.selectPeriod
                     })
                 )
             );
@@ -1592,6 +1788,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         return {
             selectedResult: null,
             selectedIndicator: null,
+            selectedPeriod: null,
             results: []
         };
     },
@@ -1609,12 +1806,32 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         xmlHttp.send();
     },
 
+    addUpdateToPeriod: function(update, periodId) {
+        for (var i = 0; i < this.state.results.length; i++) {
+            var result = this.state.results[i];
+            for (var j = 0; j < result.indicators.length; j++) {
+                var indicator = result.indicators[j];
+                for (var k = 0; k < indicator.periods.length; k++) {
+                    var period = indicator.periods[k];
+                    if (period.id == periodId) {
+                        period.data.push(update);
+                        this.forceUpdate();
+                    }
+                }
+            }
+        }
+    },
+
     selectResult: function(resultId) {
         this.setState({selectedResult: resultId});
     },
 
-    selectIndicator: function(indicatorId) {
-        this.setState({selectedIndicator: indicatorId});
+    selectIndicator: function(indicator) {
+        this.setState({selectedIndicator: indicator});
+    },
+
+    selectPeriod: function(period) {
+        this.setState({selectedPeriod: period});
     },
 
     render: function() {
@@ -1629,17 +1846,21 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                             React.createElement(
                                 SideBar, {
                                     results: this.state.results,
-                                    selectedIndicator: this.state.selectedIndicator,
                                     selectedResult: this.state.selectedResult,
+                                    selectedIndicator: this.state.selectedIndicator,
+                                    selectResult: this.selectResult,
                                     selectIndicator: this.selectIndicator,
-                                    selectResult: this.selectResult
+                                    selectPeriod: this.selectPeriod
                                 }
                             )
                         ),
                         React.DOM.div( {className:"indicator-container"}, 
                             React.createElement(
                                 MainContent, {
-                                    indicator: this.state.selectedIndicator
+                                    addUpdateToPeriod: this.addUpdateToPeriod,
+                                    indicator: this.state.selectedIndicator,
+                                    selectedPeriod: this.state.selectedPeriod,
+                                    selectPeriod: this.selectPeriod
                                 }
                             )
                         )

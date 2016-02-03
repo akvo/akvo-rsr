@@ -8,7 +8,8 @@
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
                              IndicatorPeriodDataComment)
 
-from ..serializers import IndicatorSerializer, IndicatorPeriodSerializer
+from ..serializers import (IndicatorSerializer, IndicatorPeriodSerializer,
+                           IndicatorPeriodDataSerializer, IndicatorPeriodDataCommentSerializer)
 from ..viewsets import PublicProjectViewSet
 
 
@@ -34,7 +35,7 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
     """
     """
     queryset = IndicatorPeriodData.objects.all()
-    serializer_class = IndicatorPeriodSerializer
+    serializer_class = IndicatorPeriodDataSerializer
     filter_fields = ('period', 'user', 'relative_data', 'status', 'update_method')
     project_relation = 'period__indicator__result__project__'
 
@@ -43,6 +44,6 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     """
     """
     queryset = IndicatorPeriodDataComment.objects.all()
-    serializer_class = IndicatorPeriodSerializer
+    serializer_class = IndicatorPeriodDataCommentSerializer
     filter_fields = ('data', 'user')
     project_relation = 'period__indicator__result__project__'
