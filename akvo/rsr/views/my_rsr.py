@@ -417,20 +417,14 @@ def results_data(request, project_id):
     """
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
-    is_admin = False
 
     if not user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
-    # Check if user is an admin
-    if user.is_superuser or user.is_admin or \
-            True in [user.admin_of(partner) for partner in project.partners.all()]:
-        is_admin = True
-
     context = {
         'project': project,
+        'user': user,
         'current_datetime': datetime.now(),
-        'is_admin': is_admin,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 

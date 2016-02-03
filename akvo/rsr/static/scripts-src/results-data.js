@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var currentDate, endpoints, i18n, initialSettings;
+var currentDate, endpoints, i18n, initialSettings, user;
 
   /* Show the results summary in the main panel when the
   ** appropriate side bar link is activated.
@@ -1346,17 +1346,60 @@ function displayDate(dateString) {
 var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     getInitialState: function() {
         return {
-            editing: false
+            data: this.props.update.data,
+            description: this.props.update.text
         };
     },
 
+    editing: function() {
+        return this.props.editingData.indexOf(this.props.update.id) > -1;
+    },
+
+    saveUpdate: function() {
+        var xmlHttp = new XMLHttpRequest();
+        var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) { //TODO: && xmlHttp.status == 201) {
+                var update = JSON.parse(xmlHttp.responseText);
+                var periodId = thisApp.props.selectedPeriod.id;
+                thisApp.props.saveUpdateToPeriod(update, periodId);
+                thisApp.props.removeEditingData(update.id);
+            }
+        };
+        xmlHttp.open("PATCH", url, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data
+        }));
+    },
+
     switchEdit: function() {
-        this.setState({editing: !this.state.editing});
+        var addEdit = this.props.addEditingData;
+        var removeEdit = this.props.removeEditingData;
+        var updateId = this.props.update.id;
+
+        if (this.editing()) {
+            removeEdit(updateId);
+        } else {
+            addEdit(updateId);
+        }
+    },
+
+    handleDataChange: function(e) {
+        this.setState({data: e.target.value});
+    },
+
+    handleDescriptionChange: function(e) {
+        this.setState({description: e.target.value});
     },
 
     renderUpdateClass: function() {
         var updateClass = "row update-entry-container";
-        if (this.state.editing) {
+        if (this.editing()) {
             updateClass += " edit-in-progress";
         }
         return updateClass;
@@ -1365,13 +1408,13 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     renderHeader: function() {
         var headerLeft;
 
-        if (this.state.editing) {
+        if (this.editing()) {
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
                 React.DOM.span( {className:"edit-update"}, i18n.edit_update)
             )
         } else {
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
-                React.DOM.span( {className:"update-user"}, this.props.update.user),
+                React.DOM.span( {className:"update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name),
                 React.DOM.span( {className:"update-created-at"},  " | ", displayDate(this.props.update.created_at))
             )
         }
@@ -1380,21 +1423,71 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             React.DOM.div( {className:"row update-entry-container-header"}, 
                 headerLeft,
                 React.DOM.div( {className:"col-xs-3"}, 
-                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status)
+                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
                 )
             )
         );
     },
 
+    renderActual: function() {
+        if (this.editing()) {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-12"}, 
+                        React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value)
+                    ),
+                    React.DOM.div( {className:"col-xs-2"}, 
+                        React.DOM.input( {className:"form-control", defaultValue:this.props.update.data, onChange:this.handleDataChange} )
+                    ),
+                    React.DOM.div( {className:"col-xs-4"}, 
+                        i18n.current,": PERIOD ACTUAL"
+                    )
+                )
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-12"}, 
+                        React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value),
+                        React.DOM.span( {className:"update-actual-value-data"}, this.props.update.data)
+                    )
+                )
+            );
+        }
+    },
+
+    renderDescription: function() {
+        if (this.editing()) {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-10"}, 
+                        React.DOM.textarea( {className:"form-control", defaultValue:this.props.update.text, onChange:this.handleDescriptionChange} )
+                    )
+                )
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-xs-3 update-photo"}, 
+                        React.DOM.img( {src:this.props.update.photo})
+                    ),
+                    React.DOM.div( {className:"col-xs-9 update-description"}, 
+                        this.props.update.text
+                    )
+                )
+            );
+        }
+    },
+
     renderFooter: function() {
-        if (this.state.editing) {
+        if (this.editing()) {
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-7"}, 
                         React.DOM.a( {className:"clickable", onClick:this.switchEdit}, i18n.cancel)
                     ),
                     React.DOM.div( {className:"col-xs-2"}, 
-                        React.DOM.a( {className:"clickable"}, i18n.save)
+                        React.DOM.a( {className:"clickable", onClick:this.saveUpdate}, i18n.save)
                     ),
                     React.DOM.div( {className:"col-xs-3"}, 
                         React.DOM.a( {className:"clickable"}, i18n.submit_for_approval)
@@ -1418,22 +1511,8 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             React.DOM.div( {className:this.renderUpdateClass()}, 
                 React.DOM.div( {className:"col-xs-12"}, 
                     this.renderHeader(),
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-12"}, 
-                            React.DOM.span(
-                                {className:"update-actual-value-text"}, i18n.actual_value),
-                            React.DOM.span(
-                                {className:"update-actual-value-data"}, this.props.update.data)
-                        )
-                    ),
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                            React.DOM.img( {src:this.props.update.photo})
-                        ),
-                        React.DOM.div( {className:"col-xs-9 update-description"}, 
-                            this.props.update.text
-                        )
-                    ),
+                    this.renderActual(),
+                    this.renderDescription(),
                     this.renderFooter()
                 )
             )
@@ -1461,6 +1540,10 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
             return (
                 React.DOM.div( {className:"update-container", key:update.id}, 
                     React.createElement(UpdateEntry, {
+                        addEditingData: thisList.props.addEditingData,
+                        removeEditingData: thisList.props.removeEditingData,
+                        editingData: thisList.props.editingData,
+                        saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
                         selectedPeriod: thisList.props.selectedPeriod,
                         selectPeriod: thisList.props.selectPeriod,
                         update: update
@@ -1486,7 +1569,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
                 var update = JSON.parse(xmlHttp.responseText);
                 var periodId = thisApp.props.selectedPeriod.id;
-                thisApp.props.addUpdateToPeriod(update, periodId);
+                thisApp.props.saveUpdateToPeriod(update, periodId);
             }
         };
         xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
@@ -1494,7 +1577,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlHttp.send(JSON.stringify({
             'period': this.props.selectedPeriod.id,
-            'user': 1,
+            'user': user.id,
             'data': 0
         }));
     },
@@ -1525,6 +1608,10 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         )
                     ),
                     React.createElement(UpdatesList, {
+                        addEditingData: this.props.addEditingData,
+                        removeEditingData: this.props.removeEditingData,
+                        editingData: this.props.editingData,
+                        saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod
                     })
@@ -1621,7 +1708,10 @@ var MainContent = React.createClass({displayName: 'MainContent',
             return (
                 React.DOM.div( {className:"indicator-period-container"}, 
                     React.createElement(IndicatorPeriodMain, {
-                        addUpdateToPeriod: this.props.addUpdateToPeriod,
+                        addEditingData: this.props.addEditingData,
+                        removeEditingData: this.props.removeEditingData,
+                        editingData: this.props.editingData,
+                        saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         selectedPeriod: this.props.selectedPeriod
                     })
                 )
@@ -1789,6 +1879,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
             selectedResult: null,
             selectedIndicator: null,
             selectedPeriod: null,
+            editingData: [],
             results: []
         };
     },
@@ -1806,16 +1897,38 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         xmlHttp.send();
     },
 
-    addUpdateToPeriod: function(update, periodId) {
+    saveUpdateToPeriod: function(update, periodId) {
+        // Loop through all results, indicators and periods
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
             for (var j = 0; j < result.indicators.length; j++) {
                 var indicator = result.indicators[j];
                 for (var k = 0; k < indicator.periods.length; k++) {
                     var period = indicator.periods[k];
+                    // When we find the period we're looking for..
                     if (period.id == periodId) {
-                        period.data.push(update);
-                        this.forceUpdate();
+                        var dataFound = null;
+                        // Check if update already exists..
+                        for (var l = 0; l < period.data.length; l++) {
+                            var dataUpdate = period.data[l];
+                            if (dataUpdate.id == update.id) {
+                                console.log(dataUpdate.id, update.id);
+                                dataFound = dataUpdate;
+                                break;
+                            }
+                        }
+                        if (dataFound === null) {
+                            // Insert new update if not
+                            period.data.push(update);
+                            this.forceUpdate();
+                            this.addEditingData(update.id);
+                        } else {
+                            // Remove old update and insert updated update if update exists
+                            var periodDataList = period.data;
+                            periodDataList.splice(periodDataList.indexOf(dataFound), 1);
+                            periodDataList.push(update);
+                            this.forceUpdate();
+                        }
                     }
                 }
             }
@@ -1832,6 +1945,18 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
 
     selectPeriod: function(period) {
         this.setState({selectedPeriod: period});
+    },
+
+    addEditingData: function(updateId) {
+        var editingDataList = this.state.editingData;
+        editingDataList.push(updateId);
+        this.setState({editingData: editingDataList});
+    },
+
+    removeEditingData: function(updateId) {
+        var editingDataList = this.state.editingData;
+        editingDataList.splice(editingDataList.indexOf(updateId), 1);
+        this.setState({editingData: editingDataList});
     },
 
     render: function() {
@@ -1857,7 +1982,10 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                         React.DOM.div( {className:"indicator-container"}, 
                             React.createElement(
                                 MainContent, {
-                                    addUpdateToPeriod: this.addUpdateToPeriod,
+                                    addEditingData: this.addEditingData,
+                                    removeEditingData: this.removeEditingData,
+                                    editingData: this.state.editingData,
+                                    saveUpdateToPeriod: this.saveUpdateToPeriod,
                                     indicator: this.state.selectedIndicator,
                                     selectedPeriod: this.state.selectedPeriod,
                                     selectPeriod: this.selectPeriod
@@ -1880,6 +2008,17 @@ function setCurrentDate() {
     }, 1000);
 }
 
+function getUserData() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+            user = JSON.parse(xmlHttp.responseText);
+        }
+    };
+    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.send();
+}
+
 // Polyfill for element.closest() for IE and Safari
 this.Element && function(ElementPrototype) {
     ElementPrototype.closest = ElementPrototype.closest ||
@@ -1898,6 +2037,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initialSettings = JSON.parse(document.getElementById('initial-settings').innerHTML);
 
     setCurrentDate();
+    getUserData();
 
     // Initialize the 'My reports' app
     ReactDOM.render(

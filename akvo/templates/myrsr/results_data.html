@@ -21,7 +21,9 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
-            "updates": "/rest/v1/indicator_period_data/?format=json"
+            "update": "/rest/v1/indicator_period_data/{update}/?format=json",
+            "updates": "/rest/v1/indicator_period_data/?format=json",
+            "user": "/rest/v1/user/{{ user.pk }}/?format=json"
         }
     </script>
 
@@ -55,8 +57,7 @@
             "cancel": "{% trans 'Cancel' %}",
             "save": "{% trans 'Save' %}",
             "submit_for_approval": "{% trans 'Submit for approval' %}",
-            "delete_confirm_text": "{% trans 'Are you sure you want to delete this update?' %}",
-            "delete_confirm_yes_text": "{% trans 'Delete update' %}"
+            "current": "{% trans 'Current' %}"
         }
     </script>
 

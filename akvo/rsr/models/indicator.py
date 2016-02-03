@@ -587,6 +587,16 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             raise FieldError(unicode(_(u'It is not possible to delete an approved data update')))
         super(IndicatorPeriodData, self).delete(*args, **kwargs)
 
+    @property
+    def status_display(self):
+        """
+        Returns the display of the status.
+        """
+        try:
+            return dict(self.STATUSES)[self.status]
+        except KeyError:
+            return u''
+
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):
     """

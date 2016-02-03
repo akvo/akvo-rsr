@@ -30,6 +30,11 @@ class UserSerializer(BaseRSRSerializer):
             'email',
             'organisation',
             'organisations',
+            'is_active',
+            'is_staff',
+            'is_admin',
+            'is_support',
+            'is_superuser',
         )
         exclude = ('absolute_url',)
 
