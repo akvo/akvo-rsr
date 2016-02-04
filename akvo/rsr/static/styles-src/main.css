@@ -35,28 +35,40 @@
   ========================================================================== */
 /* Placeholder
   ========================================================================== */
+/* line 9, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 html {
   width: 100%;
   overflow-y: scroll; }
 
+/* line 14, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 body {
   width: 100%;
   height: 100%;
   color: #394c50;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: 'Poppins', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Poppins", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
   @media only screen and (max-width: 768px) {
+    /* line 14, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     body {
       padding-top: 65px; } }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+/* line 32, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74; }
 
-a, a:link, a:visited {
+/* line 40, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+a,
+a:link,
+a:visited {
   outline: none;
   color: #00aaff;
   text-decoration: none;
@@ -65,39 +77,55 @@ a, a:link, a:visited {
   -o-transition: color 0.2s linear;
   -webkit-transition: color 0.2s linear;
   transition: color 0.2s linear; }
-  a:link, a:link:link, a:visited:link {
+  /* line 46, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  a:link,
+  a:link:link,
+  a:visited:link {
     -webkit-tap-highlight-color: #fcd700; }
-  a:hover, a:link:hover, a:visited:hover {
+  /* line 49, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  a:hover,
+  a:link:hover,
+  a:visited:hover {
     color: #ff5500; }
 
 /****************** Miscellanous Typography ********************/
+/* line 57, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 img {
   max-width: 100%; }
+  /* line 59, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .gmnoprint img {
     max-width: none; }
 
+/* line 64, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .noItem {
-  color: rgba(44, 42, 116, 0.2);
-  font-weight: bold; }
+  color: rgba(44, 42, 116, 0.8);
+  font-weight: bold;
+  margin-top: 25px; }
 
+/* line 70, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .emTxt {
   color: rgba(44, 42, 116, 0.5); }
 
+/* line 74, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .noStyleUl {
   list-style-type: none;
   padding: 0; }
+  /* line 77, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .noStyleUl li {
     padding: 0; }
 
+/* line 82, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 time {
   color: #de8929; }
 
+/* line 86, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 em {
-  font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+  font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
   margin: 0 5px 0em 0em;
   font-style: italic; }
 
+/* line 93, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 a.moreLink {
   margin-left: 5px;
   padding: 3px 5px;
@@ -107,26 +135,32 @@ a.moreLink {
   -webkit-border-radius: 4px;
   border-radius: 4px;
   font-weight: bold; }
+  /* line 99, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   a.moreLink:hover {
     background: rgba(255, 85, 0, 0.8);
     color: white; }
 
+/* line 105, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 ::-moz-selection {
   background: #72cdff;
   color: #fff;
   text-shadow: none; }
 
+/* line 111, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 ::selection {
   background: #72cdff;
   color: #fff;
   text-shadow: none; }
 
+/* line 117, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .topMargin {
   margin-top: 15px; }
 
+/* line 121, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .verticalPadding {
   padding: 20px 0; }
 
+/* line 125, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .noInfoBlock {
   background: rgba(32, 32, 36, 0.05);
   text-align: center;
@@ -134,43 +168,57 @@ a.moreLink {
 
 /* Force full-width columns below 570px (when using col-xs-N) */
 @media only screen and (min-width: 768px) {
+  /* line 135, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .col-ty-12 {
     float: none;
     width: 100%; } }
 
-a.btn-primary, button.btn-primary {
+/* line 142, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+a.btn-primary,
+button.btn-primary {
   border: 1px solid #00aaff;
   color: white;
   background: #00aaff; }
-  a.btn-primary:hover, button.btn-primary:hover {
+  /* line 146, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  a.btn-primary:hover,
+  button.btn-primary:hover {
     color: white;
     background: #ff5500;
     border: 1px solid #ff5500; }
 
+/* line 153, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .dropdown-label {
   display: block;
   color: rgba(0, 167, 157, 0.7);
   text-align: left; }
 
-.btn-group button, .form-group button {
+/* line 161, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.btn-group button,
+.form-group button {
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
-.tt-input, .tt-hint {
+/* line 170, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.tt-input,
+.tt-hint {
   -moz-border-radius: 5px 0 0 5px;
   -o-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
-.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+/* line 176, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.input-group-addon:not(:first-child):not(:last-child),
+.input-group-btn:not(:first-child):not(:last-child),
+.input-group .form-control:not(:first-child):not(:last-child) {
   -moz-border-radius: 5px 0 0 5px;
   -o-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
+/* line 180, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 span.twitter-typeahead .tt-dropdown-menu {
   position: absolute;
   top: 100%;
@@ -191,14 +239,18 @@ span.twitter-typeahead .tt-dropdown-menu {
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box; }
+  /* line 200, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   span.twitter-typeahead .tt-dropdown-menu .tt-suggestions {
     color: rgba(0, 0, 0, 0.7) !important; }
+    /* line 202, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     span.twitter-typeahead .tt-dropdown-menu .tt-suggestions * {
       color: rgba(0, 0, 0, 0.7) !important; }
 
+/* line 211, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .tt-hint {
   color: rgba(0, 167, 157, 0.9); }
 
+/* line 215, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 span.twitter-typeahead .tt-suggestion > p {
   display: block;
   padding: 3px 20px;
@@ -208,51 +260,70 @@ span.twitter-typeahead .tt-suggestion > p {
   color: rgba(0, 0, 0, 0.7);
   white-space: nowrap; }
 
-span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
+/* line 226, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
   color: #ffffff;
   text-decoration: none;
   outline: 0;
   background-color: #428bca; }
 
+/* line 233, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 span.twitter-typeahead .tt-suggestion.tt-cursor {
   color: #ffffff;
   background-color: #428bca; }
 
+/* line 238, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 span.twitter-typeahead {
   width: 100%; }
 
+/* line 242, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .input-group span.twitter-typeahead {
   display: block !important; }
 
+/* line 246, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .input-group span.twitter-typeahead .tt-dropdown-menu {
   top: 32px !important; }
 
+/* line 250, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
   top: 44px !important; }
 
+/* line 254, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
   top: 28px !important; }
 
+/* line 260, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 dl.dl-horizontal dt {
   text-transform: uppercase;
   text-align: left;
   color: rgba(32, 32, 36, 0.4);
   font-weight: normal; }
+  /* line 265, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+  /* line 269, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
+
+/* line 274, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+
+/* line 278, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 dl.dl-horizontal dd.funders {
   margin-top: 5px; }
+  /* line 280, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   dl.dl-horizontal dd.funders span.iati-activity-id {
     font-style: italic; }
+
+/* line 286, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
+/* line 293, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 label {
   margin-top: 15px;
   font-weight: normal; }
@@ -260,6 +331,7 @@ label {
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
+/* line 303, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 nav.navbar-fixed-top {
   background-color: rgba(255, 255, 255, 0.95);
   border: none;
@@ -269,19 +341,24 @@ nav.navbar-fixed-top {
   -webkit-border-radius: 0;
   border-radius: 0;
   border-bottom: 1px solid rgba(44, 42, 116, 0.2); }
+  /* line 309, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   nav.navbar-fixed-top button.navbar-toggle {
     background: #2c2a74;
     border: 1px solid #2c2a74; }
+    /* line 312, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top button.navbar-toggle:hover {
       background: white;
       border: 1px solid #2c2a74; }
+      /* line 315, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top button.navbar-toggle:hover .icon-bar {
         background: #2c2a74; }
+  /* line 320, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   nav.navbar-fixed-top .navbar-brand {
     float: left;
     font-size: 18px;
     line-height: 20px;
     padding: 0 15px 0 0; }
+    /* line 325, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-brand h1 {
       width: 130px;
       top: 0px;
@@ -292,6 +369,7 @@ nav.navbar-fixed-top {
       text-indent: -9999px;
       margin-top: 0; }
       @media only screen and (max-width: 768px) {
+        /* line 325, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-brand h1 {
           width: 180px;
           top: -5px;
@@ -302,6 +380,7 @@ nav.navbar-fixed-top {
           text-indent: -9999px;
           margin-top: 0; } }
       @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        /* line 325, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-brand h1 {
           width: 180px;
           top: -5px;
@@ -311,14 +390,18 @@ nav.navbar-fixed-top {
           background-size: 175px auto;
           text-indent: -9999px;
           margin-top: 0; } }
+  /* line 357, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   nav.navbar-fixed-top .navbar-nav li {
     font-weight: normal;
     padding-top: 3px; }
+    /* line 361, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav li a {
       color: #2c2a74;
       border: thin solid transparent; }
+      /* line 364, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li a:hover {
         color: #ff5500; }
+      /* line 367, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li a.active {
         color: #72742a;
         font-weight: bold;
@@ -328,19 +411,24 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px; }
         @media only screen and (max-width: 1024px) {
+          /* line 367, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           nav.navbar-fixed-top .navbar-nav li a.active {
             background: rgba(255, 85, 0, 0.1); } }
+      /* line 376, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
         margin-right: 15px;
         background-color: transparent;
         border-color: transparent; }
+        /* line 380, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
           color: #ff5500; }
         @media only screen and (max-width: 1024px) {
+          /* line 376, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
             width: 95%;
             padding: 10px 5%;
             margin: 0 auto 10px auto; } }
+    /* line 391, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav li.navProject .active {
       background: rgba(30, 28, 79, 0.05);
       border: thin solid rgba(44, 42, 116, 0.2);
@@ -353,6 +441,7 @@ nav.navbar-fixed-top {
       -o-transition: all 0.2s linear;
       -webkit-transition: all 0.2s linear;
       transition: all 0.2s linear; }
+      /* line 397, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li.navProject .active:hover {
         background: rgba(30, 28, 79, 0);
         border: thin solid rgba(44, 42, 116, 0);
@@ -361,6 +450,7 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px;
         color: #ff5500; }
+    /* line 406, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav li.navUpdate .active {
       background: rgba(0, 116, 109, 0.05);
       border: thin solid rgba(0, 167, 157, 0.2);
@@ -373,6 +463,7 @@ nav.navbar-fixed-top {
       -o-transition: all 0.2s linear;
       -webkit-transition: all 0.2s linear;
       transition: all 0.2s linear; }
+      /* line 412, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li.navUpdate .active:hover {
         background: rgba(0, 116, 109, 0);
         border: thin solid rgba(0, 167, 157, 0);
@@ -381,6 +472,7 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px;
         color: #ff5500; }
+    /* line 421, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav li.navOrganisation .active {
       background: rgba(207, 28, 16, 0.05);
       border: thin solid rgba(238, 49, 36, 0.2);
@@ -393,6 +485,7 @@ nav.navbar-fixed-top {
       -o-transition: all 0.2s linear;
       -webkit-transition: all 0.2s linear;
       transition: all 0.2s linear; }
+      /* line 427, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav li.navOrganisation .active:hover {
         background: rgba(207, 28, 16, 0);
         border: thin solid rgba(238, 49, 36, 0);
@@ -401,39 +494,50 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px;
         color: #ff5500; }
+  /* line 437, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
+    /* line 439, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
       padding-left: 5px;
       padding-right: 5px; }
       @media only screen and (max-width: 1024px) {
+        /* line 439, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-nav.navbar-right li a {
           padding: 10px 15px; } }
+      /* line 445, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       nav.navbar-fixed-top .navbar-nav.navbar-right li a.active {
         background: none;
-        color: #ff5500; }
+        color: rgba(255, 85, 0, 0.7); }
+    /* line 450, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
       margin-top: 10px; }
       @media only screen and (max-width: 768px) {
+        /* line 450, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
           padding-left: 15px;
           padding-right: 15px; } }
       @media only screen and (max-width: 1024px) and (min-width: 768px) {
+        /* line 456, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
           position: initial;
           float: none; } }
       @media only screen and (max-width: 768px) {
+        /* line 456, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
           background-color: #FFF;
           border: 1px solid rgba(0, 0, 0, 0.14902);
           box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
           -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+          /* line 466, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
             color: #00aaff;
-            font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
             border: thin solid transparent; }
+            /* line 470, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
               color: #ff5500; }
+            /* line 473, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
               color: #72742a;
               font-weight: bold;
@@ -441,202 +545,293 @@ nav.navbar-fixed-top {
               -moz-border-radius: 3px;
               -o-border-radius: 3px;
               -webkit-border-radius: 3px;
-              border-radius: 3px; }
-              @media only screen and (max-width: 1024px) {
-                nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
-                  background: rgba(255, 85, 0, 0.1); } } }
+              border-radius: 3px; } }
+      @media only screen and (max-width: 768px) and (max-width: 1024px) {
+        /* line 473, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+          background: rgba(255, 85, 0, 0.1); } }
 
+/* line 492, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .navbar .container {
   /* nav menu overflows to two lines in spanish and french unless container width
         is increased slightly just above the threshold for switching to dropdown */ }
   @media only screen and (max-width: 1200px) and (min-width: 1024px) {
+    /* line 492, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .navbar .container {
       min-width: 1000px; } }
+  /* line 499, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar .container .navbar-collapse.in {
     /*  Allow language dropdown menu to extend the height of the nav container.
                     Otherwise, we get a scrollbar in the nav area on small screens */ }
     @media only screen and (max-width: 768px) {
+      /* line 499, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .navbar .container .navbar-collapse.in {
         overflow-y: initial; } }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
+  /* line 511, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-header {
     float: none; }
-  .navbar-left, .navbar-right {
+  /* line 515, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .navbar-left,
+  .navbar-right {
     float: none !important; }
+  /* line 518, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-toggle {
     display: block; }
+  /* line 521, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-collapse {
     border-top: 1px solid transparent;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+  /* line 525, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-fixed-top {
     top: 0;
     border-width: 0 0 1px; }
+  /* line 529, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-collapse.collapse {
     display: none !important; }
+  /* line 532, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-nav {
     float: none !important;
     margin-top: 7.5px; }
+  /* line 536, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-nav > li {
     float: none; }
+  /* line 539, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .navbar-nav > li > a {
     padding-top: 10px;
     padding-bottom: 10px; }
+  /* line 543, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .collapse.in {
     display: block !important; } }
 
+/* line 549, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .navbar-inverse .navbar-collapse {
   border-color: #e4e4e4; }
 
+/* line 554, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .navbar .btn {
   padding: 4px 9px; }
 
 @media only screen and (max-width: 768px) {
+  /* line 559, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   body > .navbar > .container .navbar-brand {
     margin-left: 0; } }
 
 /* My RSR stuff */
+/* line 567, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .btnHeader {
   padding: 10px 0 25px 0; }
 
+/* line 571, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .navContainer {
   background: rgba(32, 32, 36, 0.05);
-  margin-bottom: 10px; }
+  margin: -15px 0 10px 0;
+  padding-top: 10px; }
 
+/* line 577, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .myRsrMenu {
   position: relative;
-  margin: 5px auto; }
+  margin: 5px auto 0 auto; }
+  /* line 580, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .myRsrMenu .nav-tabs {
     border-bottom: none; }
+  /* line 583, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .myRsrMenu h4 {
     padding-top: 15px; }
+  /* line 586, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .myRsrMenu nav[role=navigation] {
-    background: rgba(255, 255, 255, 0.5); }
+    background: rgba(32, 32, 36, 0); }
+    /* line 589, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .myRsrMenu nav[role=navigation] ul li {
       display: inline; }
+      /* line 591, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .myRsrMenu nav[role=navigation] ul li a {
-        color: #00aaff;
         padding: 15px; }
         @media only screen and (max-width: 768px) {
+          /* line 591, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .myRsrMenu nav[role=navigation] ul li a {
             padding: 20px 10px; } }
+        /* line 596, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .myRsrMenu nav[role=navigation] ul li a:hover {
-          color: #ff5500; }
+          color: #ff5500;
+          border-color: transparent;
+          background-color: rgba(32, 32, 36, 0.1); }
+        /* line 601, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .myRsrMenu nav[role=navigation] ul li a.active {
           color: #ff5500;
           font-weight: bold;
-          background: rgba(32, 32, 36, 0.05); }
+          background: white;
+          -moz-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+          -o-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+          -webkit-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+          box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1); }
+      /* line 608, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .myRsrMenu nav[role=navigation] ul li.usrMgt {
         position: absolute;
         right: 0; }
 
+/* line 617, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .navbar-form {
   padding-left: 0;
   margin-bottom: 25px; }
 
+/* line 622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #createProject {
   margin: 23px 0 0 25px; }
 
-#updates {
-  margin-top: 45px; }
-
-.myProjectList thead tr, #updates thead tr, #user_table thead tr {
+/* line 630, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList thead tr,
+#updates thead tr,
+#user_table thead tr {
   background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
-  .myProjectList thead tr th, #updates thead tr th, #user_table thead tr th {
+  /* line 633, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList thead tr th,
+  #updates thead tr th,
+  #user_table thead tr th {
     padding-top: 10px 0;
     padding-bottom: 10px 0; }
 
-.myProjectList tbody tr, #updates tbody tr, #user_table tbody tr {
+/* line 640, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList tbody tr,
+#updates tbody tr,
+#user_table tbody tr {
   background: white !important; }
-  .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished, #user_table tbody tr.notPublished {
+  /* line 642, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList tbody tr.notPublished,
+  #updates tbody tr.notPublished,
+  #user_table tbody tr.notPublished {
     background: rgba(217, 83, 79, 0.1) !important; }
-  .myProjectList tbody tr.isPrivate, #updates tbody tr.isPrivate, #user_table tbody tr.isPrivate {
+  /* line 645, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList tbody tr.isPrivate,
+  #updates tbody tr.isPrivate,
+  #user_table tbody tr.isPrivate {
     background: rgba(240, 173, 78, 0.1) !important; }
-  .myProjectList tbody tr td, #updates tbody tr td, #user_table tbody tr td {
+  /* line 648, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList tbody tr td,
+  #updates tbody tr td,
+  #user_table tbody tr td {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
 
-.myProjectList div.projectListMenu a, #updates div.projectListMenu a, #user_table div.projectListMenu a {
+/* line 656, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList div.projectListMenu a,
+#updates div.projectListMenu a,
+#user_table div.projectListMenu a {
   margin-right: 25px; }
-  .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child, #user_table div.projectListMenu a:last-child {
+  /* line 658, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList div.projectListMenu a:last-child,
+  #updates div.projectListMenu a:last-child,
+  #user_table div.projectListMenu a:last-child {
     margin-right: 0; }
+
 @media only screen and (min-width: 1200px) {
-  .myProjectList div.projectListMenu, #updates div.projectListMenu, #user_table div.projectListMenu {
+  /* line 655, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList div.projectListMenu,
+  #updates div.projectListMenu,
+  #user_table div.projectListMenu {
     min-width: 170px; } }
 
-.myProjectList div.projectListMenu > a, #updates div.projectListMenu > a, #user_table div.projectListMenu > a {
+/* line 665, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList div.projectListMenu > a,
+#updates div.projectListMenu > a,
+#user_table div.projectListMenu > a {
   min-width: 70px; }
 
-.myProjectList a:last-child, #updates a:last-child, #user_table a:last-child {
+/* line 670, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList a:last-child,
+#updates a:last-child,
+#user_table a:last-child {
   margin-right: 0; }
 
-.myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled, #user_table a.addUpdate.disabled {
+/* line 674, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.myProjectList a.addUpdate.disabled,
+#updates a.addUpdate.disabled,
+#user_table a.addUpdate.disabled {
   background-color: #AB9F9F;
   color: #E9E9E9;
   pointer-events: initial;
   cursor: not-allowed;
   border: none; }
-  .myProjectList a.addUpdate.disabled:hover, #updates a.addUpdate.disabled:hover, #user_table a.addUpdate.disabled:hover {
+  /* line 680, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .myProjectList a.addUpdate.disabled:hover,
+  #updates a.addUpdate.disabled:hover,
+  #user_table a.addUpdate.disabled:hover {
     text-decoration: none; }
 
+/* line 688, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div.paginationWrap {
   clear: both; }
 
+/* line 692, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .help-block, .help-block-error, .charsLeft, .save-success {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
 
+/* line 697, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .help-block-error {
   color: #a94442; }
 
+/* line 706, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .save-success {
   color: #5cb85c; }
 
+/* line 711, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .editDate {
   font-style: italic;
   padding: 10px 0 10px 15px;
   margin-bottom: 15px; }
+  /* line 715, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .editDate span {
     color: rgba(32, 32, 36, 0.3); }
 
+/* line 721, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+/* line 728, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .table-responsive.locationTab {
   overflow: hidden; }
+  /* line 731, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .table-responsive.locationTab thead th {
     max-width: 8.33% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
+  /* line 739, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .table-responsive.locationTab tbody td {
     max-width: 8.33% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
 
+/* line 748, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .table-responsive .media > a {
   min-width: 80px; }
 
+/* line 752, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .table-responsive .media .media-body p {
   max-width: 170px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
   @media only screen and (max-width: 768px) {
+    /* line 752, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .table-responsive .media .media-body p {
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; } }
 
+/* line 764, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .twoColumns {
   width: 100%;
   display: block; }
   @media only screen and (max-width: 768px) {
+    /* line 767, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .twoColumns a {
       width: 98%;
       padding: 2px 1%;
@@ -644,6 +839,7 @@ div.paginationWrap {
       margin: 2px 0 2px 0;
       display: block; } }
   @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    /* line 767, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .twoColumns a {
       width: 98%;
       padding: 2px 1%;
@@ -651,6 +847,7 @@ div.paginationWrap {
       margin: 2px 0 2px 0;
       display: block; } }
 
+/* line 785, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #organisations {
   background: rgba(255, 85, 0, 0);
   padding-bottom: 15px;
@@ -660,18 +857,24 @@ div.paginationWrap {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
   @media only screen and (max-width: 768px) {
+    /* line 785, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #organisations {
       margin-top: 20px;
       margin-bottom: 20px; }
+      /* line 793, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       #organisations .btn {
         margin: 10px auto; } }
+  /* line 797, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #organisations ul {
     padding-left: 5px;
     margin-bottom: 25px; }
+    /* line 800, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #organisations ul li {
       list-style-type: none; }
+  /* line 804, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #organisations .tt-hint {
     color: #999; }
+  /* line 807, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #organisations .tt-dropdown-menu {
     margin-top: 12px;
     padding: 8px 15px;
@@ -686,104 +889,131 @@ div.paginationWrap {
     -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }
+  /* line 816, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #organisations .tt-suggestion {
     padding: 3px 20px;
     line-height: 24px; }
+    /* line 819, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #organisations .tt-suggestion.tt-cursor {
       color: #fff;
       background-color: #0097cf; }
+    /* line 823, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #organisations .tt-suggestion p {
       margin: 0; }
+  /* line 827, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #organisations .twitter-typeahead {
     width: 100%; }
 
 /* FOOTER */
+/* line 835, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 body > footer {
   margin-top: 1em; }
 
+/* line 840, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 footer .navbar {
   background: #202024;
   -moz-border-radius: 0;
   -o-border-radius: 0;
   -webkit-border-radius: 0;
   border-radius: 0; }
+  /* line 845, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   footer .navbar #footer-body ul.nav li {
     padding-top: 10px;
     padding-bottom: 10px; }
+    /* line 848, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     footer .navbar #footer-body ul.nav li a {
       display: block;
       -moz-border-radius: 5px;
       -o-border-radius: 5px;
       -webkit-border-radius: 5px;
       border-radius: 5px; }
+      /* line 851, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       footer .navbar #footer-body ul.nav li a:hover {
         background-color: rgba(255, 255, 255, 0.1); }
+      /* line 854, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
         margin: 0;
         width: 70px;
         background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
         text-indent: -9999px;
         background-size: 70px 42px; }
+        /* line 860, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
           background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
           text-indent: -9999px;
           background-size: 70px 42px; }
         @media only screen and (max-width: 768px) {
+          /* line 854, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
             width: 100%;
             background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
             background-size: 80px auto; }
+            /* line 869, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
               background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
               background-size: 80px auto; } }
 
+/* line 882, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #footer-body {
   text-align: center;
   font-size: 0; }
+  /* line 885, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #footer-body .navbar-nav {
     display: inline-block;
     float: none;
     font-size: 14px; }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
+/* line 895, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .touch-navbar {
   margin-top: -10px; }
   @media only screen and (max-width: 768px) {
+    /* line 895, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .touch-navbar {
       margin-top: -15px; } }
   @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    /* line 895, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .touch-navbar {
       margin-top: -20px; } }
 
+/* line 905, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .center-text {
   text-align: center; }
 
+/* line 909, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .detailedInfo {
   font-size: 0.875em;
   text-transform: uppercase;
   font-weight: bold;
   color: #202024; }
 
+/* line 916, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .detailedPoint {
   float: right; }
   @media only screen and (max-width: 992px) and (min-width: 768px) {
+    /* line 919, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .detailedPoint .fa-calendar-o {
       display: none; } }
 
+/* line 925, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 h4.detailedInfo {
   margin-bottom: 0.25em;
   color: #202024; }
 
+/* line 930, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .progress-bar-info {
   background-color: #e1edc3; }
 
 /* LISTINGS */
+/* line 937, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #map {
   height: 400px; }
   @media only screen and (max-width: 568px) {
+    /* line 937, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #map {
       display: none; } }
 
+/* line 944, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #map-warning {
   margin-top: -30px;
   z-index: 99;
@@ -798,11 +1028,14 @@ h4.detailedInfo {
   border-radius: 5px 5px 0px 0px;
   -webkit-border-radius: 5px 5px 0px 0px; }
   @media only screen and (max-width: 568px) {
+    /* line 944, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #map-warning {
       display: none; } }
 
+/* line 962, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .searchContainer {
   position: relative; }
+  /* line 965, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
@@ -810,25 +1043,30 @@ h4.detailedInfo {
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.4s ease-in; }
+    /* line 972, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .searchContainer #search .showFilters:hover {
       background: rgba(255, 85, 0, 0);
       border: 1px solid rgba(255, 85, 0, 0.5);
       color: #ff5500; }
     @media only screen and (max-width: 768px) {
+      /* line 965, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .searchContainer #search .showFilters {
         display: table;
         top: inherit;
         left: inherit;
         margin: 10px auto 0; } }
+  /* line 985, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .searchContainer #search.toggled .showFilters {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(0, 167, 157, 0.5);
     color: #00a79d; }
+    /* line 989, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .searchContainer #search.toggled .showFilters:hover {
       background: rgba(255, 85, 0, 0);
       border: 1px solid rgba(255, 85, 0, 0.5);
       color: #ff5500; }
 
+/* line 999, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .paginationWrap {
   background: rgba(58, 58, 58, 0.05);
   -moz-border-radius: 3px;
@@ -837,32 +1075,41 @@ h4.detailedInfo {
   border-radius: 3px;
   margin-bottom: 15px; }
   @media only screen and (max-width: 768px) {
-    .paginationWrap .pagination li a, .paginationWrap .pagination li span {
+    /* line 1006, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    .paginationWrap .pagination li a,
+    .paginationWrap .pagination li span {
       padding: 10px 16px;
       font-size: 18px; } }
+  /* line 1014, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .paginationWrap .sortList {
     display: inline-block;
     padding-left: 0;
     margin: 23px 0 0 0;
     text-align: left; }
     @media only screen and (max-width: 768px) {
+      /* line 1014, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .paginationWrap .sortList {
         text-align: center;
         margin: 20px auto; } }
+    /* line 1026, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .paginationWrap .sortList .dropdown .dropdown-menu li a {
       color: #00aaff; }
+    /* line 1030, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
       font-weight: bold;
       color: #ff5500; }
     @media only screen and (max-width: 768px) {
+      /* line 1036, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .paginationWrap .sortList .dropdown .dropdown-menu li a {
         color: #00aaff;
         padding-top: 10px;
         padding-bottom: 10px; }
+      /* line 1042, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
         font-weight: bold;
         color: #ff5500; } }
 
+/* line 1054, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #sidebar-wrapper {
   z-index: 99999;
   position: absolute;
@@ -883,56 +1130,74 @@ h4.detailedInfo {
   -o-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
+  /* line 1066, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #sidebar-wrapper .showFilters:hover {
     color: #ff5500; }
   @media only screen and (max-width: 768px) {
+    /* line 1065, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #sidebar-wrapper .showFilters {
       padding-top: 20px;
       padding-bottom: 20px; } }
+  /* line 1074, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #sidebar-wrapper div#filter {
     padding: 5px 15px 15px 15px; }
+    /* line 1077, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #sidebar-wrapper div#filter div .btn-group {
       width: 100%;
       border-top: 1px solid rgba(32, 32, 36, 0.1);
       padding: 5px 0; }
+      /* line 1081, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       #sidebar-wrapper div#filter div .btn-group select {
         border-color: rgba(32, 32, 36, 0.2); }
+      /* line 1084, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       #sidebar-wrapper div#filter div .btn-group label {
         color: rgba(32, 32, 36, 0.5);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap; }
+    /* line 1090, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #sidebar-wrapper div#filter div:nth-child(1) .btn-group {
       border-top: none; }
 
+/* line 1098, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #page-content-wrapper {
   width: 100%;
   padding: 15px; }
 
+/* line 1103, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #wrapper.toggled {
   padding-left: 200px; }
+  /* line 1105, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #wrapper.toggled #sidebar-wrapper {
     width: 200px; }
+  /* line 1108, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -200px; }
 
+/* line 1114, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #search-filter {
   background-color: #241F20; }
   @media only screen and (max-width: 768px) {
+    /* line 1114, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #search-filter {
       padding-bottom: 0; } }
+  /* line 1118, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #search-filter #search {
     color: #fff;
     text-align: center; }
     @media only screen and (max-width: 768px) {
+      /* line 1118, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       #search-filter #search {
         padding-bottom: 0; } }
+    /* line 1124, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #search-filter #search button {
       padding-top: 5px;
       padding-bottom: 5px; }
+  /* line 1130, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #search-filter p {
     color: #a5dfff; }
+  /* line 1133, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #search-filter div#filter {
     background: #383334;
     text-align: center; }
@@ -940,6 +1205,7 @@ h4.detailedInfo {
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+/* line 1145, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .main-list li {
   margin-bottom: 30px;
   list-style-type: none;
@@ -949,107 +1215,147 @@ h4.detailedInfo {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   background: white; }
+  /* line 1151, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li img {
     border: 1px solid rgba(32, 32, 36, 0.05);
     -moz-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
     -o-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
     -webkit-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
     box-shadow: 0 0 2px rgba(255, 85, 0, 0); }
+  /* line 1155, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li:nth-child(2n+1) {
     background: #eeeeee; }
+  /* line 1158, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li:last-child {
     margin-bottom: 0; }
+  /* line 1161, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li h1 {
     margin-top: 0;
     font-size: 1.3em; }
+  /* line 1165, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li div h4:first-of-type {
     margin-top: 0; }
+  /* line 1168, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .thumbImg {
     height: 100%; }
+    /* line 1170, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list li .thumbImg img {
       width: 100%; }
+  /* line 1174, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }
+  /* line 1178, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .projectTitle {
     display: block;
     margin: 0 0 3px 0; }
+  /* line 1182, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li span.userFullName {
     color: rgba(32, 32, 36, 0.5);
     margin: 0 0 0px 0; }
+  /* line 1186, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .upDateTime {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 10px; }
+  /* line 1190, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .orgType {
     color: rgba(32, 32, 36, 0.5); }
+  /* line 1195, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list li .additionalInfo div span {
     margin-left: 5px; }
   @media only screen and (max-width: 768px) {
+    /* line 1202, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list li dl.dl-horizontal dd {
       margin-left: 100px; } }
   @media only screen and (max-width: 1200px) {
+    /* line 1202, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list li dl.dl-horizontal dd {
       margin-left: 0px;
       display: block; } }
+
+/* line 1214, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .main-list .excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal; }
+
+/* line 1219, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .main-list.projects ul li {
   border: thin solid rgba(44, 42, 116, 0);
   -moz-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in; }
+  /* line 1221, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li h1 a {
     color: #2c2a74; }
+    /* line 1223, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.projects ul li h1 a:hover {
       color: #ff5500; }
+  /* line 1230, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li .projectSubT {
     margin-bottom: 0; }
+  /* line 1233, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li:nth-child(2n+1) {
     background: rgba(30, 28, 79, 0.05);
     border: thin solid rgba(44, 42, 116, 0.05); }
+  /* line 1237, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
+  /* line 1240, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li:hover {
     background: rgba(44, 42, 116, 0.1);
     border: thin solid rgba(44, 42, 116, 0.3); }
+  /* line 1244, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.projects ul li .donateButton {
     text-align: left; }
     @media only screen and (max-width: 992px) {
+      /* line 1246, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .main-list.projects ul li .donateButton a {
         margin-top: 0.6em; } }
     @media only screen and (max-width: 768px) {
+      /* line 1246, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .main-list.projects ul li .donateButton a {
         margin-top: 1em; } }
+    /* line 1254, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.projects ul li .donateButton .totalBudgetLabel {
       width: initial; }
+
+/* line 1263, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
   -moz-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in; }
+  /* line 1267, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li .projectTitle {
     color: #00aaff; }
+    /* line 1269, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.updates ul li .projectTitle i {
       font-size: 1.1em;
       color: #00aaff; }
+    /* line 1273, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.updates ul li .projectTitle:hover {
       color: #ff5500; }
+  /* line 1278, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li h1 a {
     color: #00a79d; }
+    /* line 1280, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.updates ul li h1 a:hover {
       color: #ff5500; }
+  /* line 1285, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li:nth-child(2n+1) {
     background: rgba(0, 116, 109, 0.05);
     border: thin solid rgba(0, 167, 157, 0.1); }
+  /* line 1289, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
+  /* line 1292, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li:hover {
     background: rgba(0, 167, 157, 0.1);
     border: thin solid rgba(0, 167, 157, 0.35); }
+  /* line 1297, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.updates ul li .excerpt li {
     background: none;
     border: none;
@@ -1057,41 +1363,55 @@ h4.detailedInfo {
     list-style-type: initial;
     margin: initial;
     padding: initial; }
+
+/* line 1311, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in; }
+  /* line 1314, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li i {
     font-size: 1.1em; }
+  /* line 1318, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li .projectTitle {
     display: block;
     margin: 0 0 3px 0; }
+  /* line 1322, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li span.userFullName {
     margin: 0 0 0px 0; }
+  /* line 1325, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li .upDateTime {
     margin-top: 10px; }
+  /* line 1330, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li .additionalInfo div {
     color: rgba(32, 32, 36, 0.5); }
+    /* line 1332, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.organisations ul li .additionalInfo div span {
       margin-left: 5px; }
+  /* line 1338, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li h1 a {
     color: #ee3124; }
+    /* line 1340, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .main-list.organisations ul li h1 a:hover {
       color: #ff5500; }
+  /* line 1345, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li:nth-child(2n+1) {
     background: rgba(238, 49, 36, 0.05);
     border: thin solid rgba(238, 49, 36, 0.05); }
+  /* line 1349, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li:hover {
     background: rgba(238, 49, 36, 0.1);
     border: thin solid rgba(238, 49, 36, 0.35); }
+  /* line 1353, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li img {
     filter: gray;
     -webkit-filter: grayscale(100%);
-    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+    filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
     filter: grayscale(100%);
     transition: all 0.2s ease-in; }
+  /* line 1358, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .main-list.organisations ul li:hover img {
     filter: 0;
     -webkit-filter: grayscale(0%);
@@ -1099,6 +1419,7 @@ h4.detailedInfo {
     filter: grayscale(0%); }
 
 /* PROJECT */
+/* line 1371, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
@@ -1109,52 +1430,68 @@ header.projectHeader {
   -o-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   -webkit-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
   box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5); }
+  /* line 1378, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   header.projectHeader h1 {
     margin-top: 10px;
     margin-bottom: 0;
     font-size: 1.5em; }
+    /* line 1382, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     header.projectHeader h1 a {
       color: #2c2a74; }
+      /* line 1384, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       header.projectHeader h1 a:hover {
         color: #2c2a74; }
+  /* line 1389, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   header.projectHeader .shareBlock {
     position: relative;
     margin-top: 10px;
     /* Style buttons and logos for Akvo Pages project pages */ }
+    /* line 1392, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     header.projectHeader .shareBlock div {
       text-align: right; }
       @media only screen and (max-width: 768px) {
+        /* line 1392, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         header.projectHeader .shareBlock div {
           text-align: left; } }
+      /* line 1397, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       header.projectHeader .shareBlock div a {
         position: relative;
         top: 0px; }
         @media only screen and (max-width: 768px) {
+          /* line 1397, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           header.projectHeader .shareBlock div a {
             left: 0;
             top: 0; } }
+        /* line 1404, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         header.projectHeader .shareBlock div a.fullPdf {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap; }
+    /* line 1409, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     header.projectHeader .shareBlock .reportPdf {
       margin-top: 15px;
       text-align: right;
       padding-right: 0; }
       @media only screen and (max-width: 768px) {
+        /* line 1409, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         header.projectHeader .shareBlock .reportPdf {
           text-align: left;
           padding-left: 0; } }
+    /* line 1418, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     header.projectHeader .shareBlock .projectLocation {
       color: #9c9ca7; }
+      /* line 1420, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       header.projectHeader .shareBlock .projectLocation .map-toggle {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
-    header.projectHeader .shareBlock .btn, header.projectHeader .shareBlock img {
+    /* line 1428, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    header.projectHeader .shareBlock .btn,
+    header.projectHeader .shareBlock img {
       display: inline-block;
       margin: 10px 3px 3px 3px; }
 
+/* line 1436, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .donateSection {
   background: rgba(255, 164, 114, 0.2);
   padding: 10px 15px;
@@ -1163,18 +1500,23 @@ header.projectHeader {
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+  /* line 1441, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .donateSection a {
     margin: -10px auto 5px auto; }
 
+/* line 1446, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #project-map {
   border: 1px solid #f9d7b9; }
+  /* line 1448, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #project-map div.akvo_map {
     width: calc(100%-2px);
     height: 300px; }
 
+/* line 1456, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .orgMap .mapInfoWindow img {
   display: none; }
 
+/* line 1462, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div.projectTopRow {
   position: relative;
   background: rgba(245, 245, 245, 0.5);
@@ -1182,23 +1524,31 @@ div.projectTopRow {
   margin-bottom: 20px;
   /*border-bottom: 1px solid rgba($akvoBlack, 0.1);*/
   box-shadow: 0 3px 6px rgba(32, 32, 36, 0.1); }
+  /* line 1469, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.projectTopRow #carousel {
     padding: 15px 0;
     margin-left: -15px; }
     @media only screen and (max-width: 768px) {
+      /* line 1469, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow #carousel {
         margin-left: inherit; } }
+    /* line 1475, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.projectTopRow #carousel .carousel-indicators {
       bottom: -5px; }
+      /* line 1477, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow #carousel .carousel-indicators li {
         border-color: #00aaff; }
+        /* line 1479, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow #carousel .carousel-indicators li.active {
           background-color: #00aaff; }
+    /* line 1485, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.projectTopRow #carousel .carousel-inner .item {
       text-align: center; }
+      /* line 1488, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow #carousel .carousel-inner .item a img {
         max-height: 400px;
         margin: auto; }
+      /* line 1493, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow #carousel .carousel-inner .item .carousel-caption {
         background-color: rgba(255, 255, 255, 0.6);
         border: thin solid rgba(255, 255, 255, 0.8);
@@ -1209,26 +1559,34 @@ div.projectTopRow {
         -o-border-radius: 5px 5px 0 0;
         -webkit-border-radius: 5px 5px 0 0;
         border-radius: 5px 5px 0 0; }
+        /* line 1500, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption h4 {
           margin-top: 0;
           margin-bottom: 0;
           color: #2c2a74; }
+        /* line 1505, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption p {
           margin-bottom: 20px;
           color: #202024; }
+    /* line 1512, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.projectTopRow #carousel .carousel-control.right {
       background-image: none; }
+    /* line 1515, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.projectTopRow #carousel .carousel-control.left {
       background-image: none; }
+  /* line 1519, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.projectTopRow .projectSideInfo {
     padding: 5px 0;
     margin-left: -15px; }
     @media only screen and (max-width: 768px) {
+      /* line 1519, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow .projectSideInfo {
         margin-left: inherit; } }
+    /* line 1525, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.projectTopRow .projectSideInfo ul {
       margin: 0;
       padding: 0; }
+      /* line 1528, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.projectTopRow .projectSideInfo ul li {
         color: #9c9ca7;
         list-style-type: none;
@@ -1236,38 +1594,48 @@ div.projectTopRow {
         padding-bottom: 5px;
         border-bottom: thin solid rgba(230, 230, 230, 0.5);
         border-top: thin solid rgba(248, 248, 248, 0.8); }
+        /* line 1535, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow .projectSideInfo ul li:first-child {
           padding-top: 5px;
           border-top: none; }
+        /* line 1539, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow .projectSideInfo ul li:last-child {
           padding-bottom: 0;
           border-bottom: none; }
+        /* line 1543, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow .projectSideInfo ul li.projectPartners {
           padding-bottom: 20px;
           border-bottom: none; }
+          /* line 1546, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.projectPartners span + div {
             margin-top: 10px; }
+          /* line 1549, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg {
             max-width: 50px; }
+            /* line 1551, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img {
               width: 80%;
               filter: gray;
               -webkit-filter: grayscale(100%);
-              filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+              filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
               filter: grayscale(100%);
               transition: all 0.2s ease-in;
               margin: inherit; }
+              /* line 1556, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
               div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img:hover {
                 filter: 0;
                 -webkit-filter: grayscale(0%);
                 filter: url();
                 filter: grayscale(0%); }
+          /* line 1561, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.projectPartners .partType {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: normal; }
+          /* line 1564, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.projectPartners .projectLocation {
             margin-top: 5px; }
+        /* line 1568, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow .projectSideInfo ul li.financeBlock {
           border-top: none;
           padding: 15px 0 15px 0;
@@ -1277,80 +1645,108 @@ div.projectTopRow {
           -o-border-radius: 5px;
           -webkit-border-radius: 5px;
           border-radius: 5px; }
+          /* line 1574, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.financeBlock span {
             margin-left: 15px; }
+          /* line 1577, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           div.projectTopRow .projectSideInfo ul li.financeBlock a {
             margin-left: 15px; }
+        /* line 1581, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
 
+/* line 1590, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #invite_button button {
   margin: 23px 0 0 25px; }
 
+/* line 1595, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div.textBlock {
   margin: 10px auto; }
+  /* line 1597, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.textBlock .panel {
     border: 1px solid rgba(235, 235, 235, 0.5); }
+    /* line 1599, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.textBlock .panel .panel-heading {
       padding: 0; }
+      /* line 1602, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.textBlock .panel .panel-heading .panel-title a {
         display: block;
         padding: 15px 15px; }
+    /* line 1609, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.textBlock .panel .panel-collapse .panel-body {
       background: rgba(44, 42, 116, 0); }
+  /* line 1614, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.textBlock .udpateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
     background: #fff6f1; }
+    /* line 1618, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.textBlock .udpateComponent h4 {
       margin-bottom: 10px; }
+    /* line 1621, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div.textBlock .udpateComponent .updateLinkTitle {
       display: block;
       color: #00a79d;
       margin-bottom: 5px; }
+      /* line 1625, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.textBlock .udpateComponent .updateLinkTitle i {
         margin-right: 5px; }
+      /* line 1628, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div.textBlock .udpateComponent .updateLinkTitle:hover {
         color: #ff5500; }
 
+/* line 1639, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #accordion .panel-group .panel-heading a:before {
   content: '- ';
   position: relative; }
+
+/* line 1644, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #accordion .panel-group .panel-heading a.collapsed:before {
   content: '+ ';
   top: 1px; }
 
+/* line 1654, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .allUpdates {
   margin-top: 25px; }
 
+/* line 1658, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .udpateComponent {
   padding-top: 10px;
   padding-bottom: 15px;
   background: #fff6f1; }
+  /* line 1662, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .udpateComponent h4 {
     margin-bottom: 10px; }
+  /* line 1665, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .udpateComponent .updateLinkTitle {
     display: block;
     color: #00a79d;
     margin-bottom: 5px; }
+    /* line 1669, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .udpateComponent .updateLinkTitle i {
       margin-right: 5px; }
+    /* line 1672, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .udpateComponent .updateLinkTitle:hover {
       color: #ff5500; }
+  /* line 1676, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .udpateComponent .updateLine {
     margin-bottom: 5px; }
 
+/* line 1681, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #project-footer {
   margin: 25px auto -16px auto;
   padding-top: 30px;
   padding-bottom: 30px;
   background: #f5f5f6; }
+  /* line 1686, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #project-footer .detailedInfo {
     color: #2c2a74; }
+  /* line 1689, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #project-footer #project-footer-right {
     border: 1px solid rgba(32, 32, 36, 0.05);
     padding: 1.5em; }
 
+/* line 1695, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #draft {
   background: #E04F46;
   color: #fff;
@@ -1358,17 +1754,22 @@ div.textBlock {
   text-align: center;
   margin-bottom: 20px; }
 
+/* line 1703, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #gallery {
   height: 300px;
   background: #ccc; }
 
+/* line 1709, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectFinancial .budgetItem {
   margin-top: 12px;
   width: 60%; }
-  .projectFinancial .budgetItem:nth-child(1), .projectFinancial .budgetItem:nth-child(2) {
+  /* line 1713, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .projectFinancial .budgetItem:nth-child(1),
+  .projectFinancial .budgetItem:nth-child(2) {
     margin-top: 0; }
 
 /* Project hierarchy */
+/* line 1722, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .project-hierarchy-window {
   border: 0.1em solid #d3d3d3;
   width: 150px;
@@ -1381,25 +1782,34 @@ div.textBlock {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
-.project-hierarchy-window:hover, .project-hierarchy-window._jsPlumb_source_hover, .project-hierarchy-window._jsPlumb_target_hover {
+/* line 1734, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.project-hierarchy-window:hover,
+.project-hierarchy-window._jsPlumb_source_hover,
+.project-hierarchy-window._jsPlumb_target_hover {
   border: 1px solid orange;
   color: orange; }
 
+/* line 1739, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .project-hierarchy-empty-window {
   width: 150px;
   float: left;
   margin: 30px; }
 
+/* line 1746, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .extra-partner-tooltip div.extra-partner-entry {
   margin-bottom: 0.75em; }
+  /* line 1748, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .extra-partner-tooltip div.extra-partner-entry:last-child {
     margin-bottom: 0;
     border-bottom: none; }
+    /* line 1751, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .extra-partner-tooltip div.extra-partner-entry:last-child hr {
       display: none; }
+  /* line 1755, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .extra-partner-tooltip div.extra-partner-entry hr {
     margin: 0.5em 0 0 0;
     padding: 0; }
+  /* line 1759, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .extra-partner-tooltip div.extra-partner-entry img {
     display: block;
     width: 80px;
@@ -1409,12 +1819,15 @@ div.textBlock {
     padding-top: 0;
     padding-bottom: 0.25em; }
 
+/* line 1773, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .project-container .tooltip .tooltip-inner {
   background: rgba(255, 255, 255, 0.9); }
 
 /* Tooltips */
+/* line 1782, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .tooltip {
   z-index: 99999; }
+  /* line 1785, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .tooltip .tooltip-inner {
     max-width: 350px;
     padding: 15px;
@@ -1425,10 +1838,12 @@ div.textBlock {
     -o-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
     -webkit-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
     box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
+    /* line 1792, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .tooltip .tooltip-inner a {
       font-weight: bold; }
 
 /* Typeahead Styling */
+/* line 1801, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 ul.typeahead-selector {
   margin: 0;
   padding: 0.25em;
@@ -1441,26 +1856,37 @@ ul.typeahead-selector {
   -o-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px; }
+  /* line 1810, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   ul.typeahead-selector li {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
+    /* line 1815, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    ul.typeahead-selector li:hover,
+    ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
+    /* line 1819, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     ul.typeahead-selector li a {
       color: #555555; }
 
+/* line 1827, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #filterForm #org-filter-container ul.typeahead-container {
   margin: -15px 0 0 0; }
 
 /* Organisation Page */
+/* line 1837, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
+
+/* line 1840, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .organisationDetail .orgDescr {
   background-color: rgba(244, 116, 107, 0); }
+  /* line 1842, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
+
+/* line 1846, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1468,129 +1894,181 @@ ul.typeahead-selector {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(238, 49, 36, 0.05);
   position: relative; }
+  /* line 1853, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .organisationDetail h1 i {
     font-size: 0.75em;
     top: -5px; }
+
+/* line 1858, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .organisationDetail .orgLogo {
   padding: 10px 0; }
+  /* line 1860, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .organisationDetail .orgLogo img {
     width: 35%;
     margin-left: 5px; }
+
+/* line 1865, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .organisationDetail .orgDetails {
   background: rgba(255, 255, 255, 0.45);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
-.organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
+
+/* line 1871, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.organisationDetail .orgUrl,
+.organisationDetail .orgIati,
+.organisationDetail .orgEmail {
   display: block;
   padding-bottom: 0.75em; }
+
 @media only screen and (max-width: 768px) {
+  /* line 1877, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .organisationDetail .orgDetails > h4 {
     padding-top: 0.75em; } }
 
 @media only screen and (max-width: 768px) {
+  /* line 1884, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .organisationInfo {
     max-width: 325px;
     margin-right: auto;
     margin-left: auto; }
-    .organisationInfo dd, .organisationInfo dt {
+    /* line 1890, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    .organisationInfo dd,
+    .organisationInfo dt {
       display: inline-block; }
+    /* line 1893, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .organisationInfo dt {
       width: 49%;
       text-align: left; }
+    /* line 1897, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .organisationInfo dd {
       width: 49%;
       text-align: right; } }
 
 /* Update Page */
+/* line 1908, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .updateMain h2 {
   color: #00a79d;
   margin-top: 0; }
+
+/* line 1913, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .updateMain .asideUpList .row {
   padding: 15px 0; }
+  /* line 1915, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .updateMain .asideUpList .row:nth-of-type(2n+1) {
     background-color: rgba(0, 167, 157, 0.1); }
+  /* line 1918, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .updateMain .asideUpList .row h5 {
     margin-top: 0; }
 
 /* Donate Page*/
+/* line 1928, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectDonate {
   max-width: 95%;
   margin-left: auto;
   margin-right: auto; }
   @media only screen and (max-width: 768px) {
+    /* line 1928, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectDonate {
       width: 95%;
       max-width: 450px;
       text-align: justify; }
-      .projectDonate .paymentOption, .projectDonate .donateTitle, .projectDonate h3 {
+      /* line 1938, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .projectDonate .paymentOption,
+      .projectDonate .donateTitle,
+      .projectDonate h3 {
         text-align: center; } }
+  /* line 1942, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .donateButton {
     margin-bottom: 2em; }
+  /* line 1945, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .donateButtonContainer {
     text-align: center; }
+  /* line 1948, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .methodInfo {
     min-height: 15em;
     padding: 2.5em 1em 1em 1em;
     background-color: #f2f0e6; }
+  /* line 1953, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .donateStep2Image {
     margin-top: 0.5em;
     margin-bottom: 1em; }
+  /* line 1957, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .editDonation {
     margin-top: 1em;
     background-color: #999999;
     border-color: #999999; }
+  /* line 1962, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .clear {
     clear: both; }
+  /* line 1965, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectDonate .paymentSystemInfo {
     background-color: #f2f0e6; }
-  @media only screen and (min-width: 768px) {
-    @media only screen and (max-width: 992px) {
-      .projectDonate h3 {
-        font-size: 1.3em; } } }
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  /* line 1970, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .projectDonate h3 {
+    font-size: 1.3em; } }
   @media only screen and (max-width: 768px) {
+    /* line 1976, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectDonate .paymentOption {
       margin-top: 3em; }
+    /* line 1979, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectDonate .paymentSystemInfo {
       margin-top: 4em;
       padding-top: 1.25em;
       padding-bottom: 1.25em;
       clear: both; }
+    /* line 1985, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectDonate .donateButton {
       width: initial; }
+    /* line 1988, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectDonate h3 {
       margin-top: 1.25em;
       margin-bottom: 1em; } }
 
 /* Financial details page */
+/* line 2001, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 section.projectFinancial .currentFunders dl > dd {
   text-align: right; }
+
+/* line 2006, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 section.projectFinancial .donationBreak {
   display: none; }
+
 @media only screen and (max-width: 768px) {
+  /* line 1998, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectFinancial {
     width: 95%;
     max-width: 450px;
     margin-left: auto;
     margin-right: auto; }
+    /* line 2015, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     section.projectFinancial .dl-horizontal dt {
       float: left; } }
-@media only screen and (max-width: 992px) {
-  @media only screen and (min-width: 768px) {
-    section.projectFinancial .dl-horizontal dt {
-      width: initial; }
-    section.projectFinancial .donationBreak {
-      display: initial;
-      clear: both; }
-    section.projectFinancial .currentFunders dd.donation {
-      float: right; }
-    section.projectFinancial .currentFunders dt.donation {
-      clear: both; } } }
+
+@media only screen and (max-width: 992px) and (min-width: 768px) {
+  /* line 2023, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectFinancial .dl-horizontal dt {
+    width: initial; }
+  /* line 2027, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectFinancial .donationBreak {
+    display: initial;
+    clear: both; }
+  /* line 2033, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectFinancial .currentFunders dd.donation {
+    float: right; }
+  /* line 2038, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectFinancial .currentFunders dt.donation {
+    clear: both; } }
 
 /* Project Partners details page */
+/* line 2051, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 section.projectPartners .title {
   margin-bottom: 1em; }
+
+/* line 2054, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 section.projectPartners .row {
   margin-left: 0;
   margin-right: 0;
@@ -1601,34 +2079,48 @@ section.projectPartners .row {
   -o-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px; }
-  section.projectPartners .row h2, section.projectPartners .row h3, section.projectPartners .row h4 {
+  /* line 2063, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectPartners .row h2,
+  section.projectPartners .row h3,
+  section.projectPartners .row h4 {
     margin-top: 0; }
+  /* line 2066, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .row img {
     max-height: 120px;
     margin: 0 auto;
     display: block; }
   @media only screen and (max-width: 768px) {
+    /* line 2072, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     section.projectPartners .row img {
       max-height: 150px;
       margin-bottom: 1em;
       max-width: 60%; } }
+  /* line 2078, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .row h2 {
     display: inline-block;
     font-size: 1.3em; }
+  /* line 2082, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .row .fa {
     font-size: 1.3em;
     color: #2c2a74; }
-  section.projectPartners .row a.org-link:hover i, section.projectPartners .row a.org-link:hover h2 {
+  /* line 2089, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  section.projectPartners .row a.org-link:hover i,
+  section.projectPartners .row a.org-link:hover h2 {
     color: #ff5500; }
+  /* line 2094, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .row ul {
     margin: 0;
     padding: 0; }
+  /* line 2098, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .row li {
     list-style: none; }
+
 @media only screen and (max-width: 768px) {
+  /* line 2103, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners .container {
     padding-left: 0;
     padding-right: 0; }
+  /* line 2107, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   section.projectPartners.projectPartners {
     max-width: 95%;
     display: block;
@@ -1636,61 +2128,88 @@ section.projectPartners .row {
     margin-right: auto; } }
 
 /* Display currency totals right-aligned */
+/* line 2119, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .currencyAmount {
   text-align: right; }
 
+/* line 2124, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 dd.currencyAmount {
   margin-left: auto; }
 
 /* Project report page */
 @media only screen and (max-width: 768px) {
+  /* line 2132, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectReport {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto; } }
+
 @media only screen and (min-width: 992px) {
+  /* line 2139, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectReport table {
     table-layout: fixed; }
+    /* line 2141, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectReport table th {
-      word-break: break-word; }
-      @media only screen and (max-width: 1200px) {
-        .projectReport table th {
-          width: 90px; } }
-      @media only screen and (min-width: 1200px) {
-        .projectReport table th {
-          width: 120px; } } }
+      word-break: break-word; } }
+    @media only screen and (min-width: 992px) and (max-width: 1200px) {
+      /* line 2141, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .projectReport table th {
+        width: 90px; } }
+    @media only screen and (min-width: 992px) and (min-width: 1200px) {
+      /* line 2141, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .projectReport table th {
+        width: 120px; } }
 
 /* Project update page */
+/* line 2157, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .updateText {
   white-space: pre-line; }
+  /* line 2159, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .updateText li {
     padding: initial;
     margin: initial;
     white-space: initial; }
+  /* line 2164, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .updateText li p {
     margin: 0;
     padding: 0;
     display: initial; }
 
+/* line 2171, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 a.addUpdateBtn {
   color: white;
   background-color: #00a79d;
   border-color: #00a79d; }
+  /* line 2175, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   a.addUpdateBtn:hover {
     background-color: #ff5500;
     border-color: #ff5500; }
 
 /* Google translation bar styles */
+/* line 2186, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 body.translationBarActive .nav {
   padding-top: 39px; }
+
+/* line 2189, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 body.translationBarActive .navbar-brand {
   margin-top: 39px; }
-body.translationBarActive article, body.translationBarActive .updateMain, body.translationBarActive .organisationDetail, body.translationBarActive #map {
+
+/* line 2195, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+body.translationBarActive article,
+body.translationBarActive .updateMain,
+body.translationBarActive .organisationDetail,
+body.translationBarActive #map {
   padding-top: 39px; }
-body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
+
+/* line 2201, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+body.translationBarActive div.skiptranslate ~ article,
+body.translationBarActive div.skiptranslate ~ .updateMain,
+body.translationBarActive div.skiptranslate ~ .organisationDetail,
+body.translationBarActive div.skiptranslate ~ #map {
   padding-top: 0px; }
 
 /* Cookie */
+/* line 2210, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #cookie-law {
   position: fixed;
   bottom: 0;
@@ -1701,89 +2220,130 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   box-shadow: 0px -2px 3px rgba(32, 32, 36, 0.55);
   width: 100%;
   background: #17163c; }
+  /* line 2217, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   #cookie-law p {
     padding: 15px 0;
     text-align: center;
     color: white;
     margin: 0;
     font-size: 1.1em; }
+    /* line 2223, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     #cookie-law p a {
       font-weight: bold; }
 
 /* Project Admin */
+/* line 2234, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .progress .progress-bar[data-completion='empty'] {
   background: #d9534f; }
+
+/* line 2237, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .progress .progress-bar[data-completion='incomplete'] {
   background: #f0ad4e; }
+
+/* line 2240, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .progress .progress-bar[data-completion='complete'] {
   background: #5cb85c; }
+
+/* line 2243, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .progress .progress-bar .progress-percentage {
   display: none; }
 
+/* line 2250, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .panel-heading {
   cursor: pointer;
   transition: background 0.1s linear; }
+  /* line 2253, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .formProgress .panel-heading:hover {
     background: rgba(92, 184, 92, 0.1); }
+
+/* line 2259, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
+
+/* line 2264, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .progress-and-publish {
   top: 20px; }
+
+/* line 2267, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .redLegenda {
   background: #d9534f;
   color: #d9534f; }
+
+/* line 2271, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .orangeLegenda {
   background: #f0ad4e;
   color: #f0ad4e; }
+
+/* line 2275, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .greenLegenda {
   background: #5cb85c;
   color: #5cb85c; }
+
+/* line 2279, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
+
+/* line 2282, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .published {
   color: #5cb85c; }
+
+/* line 2285, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formProgress .notPublished {
   color: #e31b23; }
 
+/* line 2291, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formOverviewInfo .panel-heading {
   cursor: pointer;
   transition: background 0.1s linear; }
+  /* line 2294, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .formOverviewInfo .panel-heading:hover {
     background: rgba(114, 205, 255, 0.1); }
+
+/* line 2298, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .formOverviewInfo label {
   color: rgba(44, 42, 116, 0.5); }
 
+/* line 2304, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit h2 {
   font-weight: normal;
   text-transform: uppercase;
   font-size: 1.5em;
   display: block; }
+
+/* line 2310, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .myPanel {
   overflow: hidden;
   line-height: 25px;
   position: relative; }
+  /* line 2314, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .myPanel .formBlock {
     width: 99%;
     height: 0;
     display: block;
     overflow: hidden;
     box-sizing: border-box;
-    transition: all .5s linear;
+    transition: all 0.5s linear;
     padding: 5px 15px;
     margin: 0 auto;
     -moz-border-radius: 5px;
     -o-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px; }
+  /* line 2325, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
     height: auto;
     overflow: auto;
     background: rgba(253, 242, 232, 0);
     box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
+
+/* line 2332, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit input[type='radio'] {
   display: none; }
+
+/* line 2335, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .formStep {
   position: relative; }
+  /* line 2337, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .formStep > div > label {
     -moz-border-radius: 5px;
     -o-border-radius: 5px;
@@ -1796,49 +2356,78 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     transition: background 0.1s linear;
     background: rgba(44, 42, 116, 0.1);
     cursor: pointer; }
+    /* line 2346, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectEdit .formStep > div > label:hover {
       background: rgba(32, 32, 36, 0.05); }
+    /* line 2349, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .projectEdit .formStep > div > label .info-icon {
       padding-left: 0.5em;
       cursor: pointer;
       font-size: 90%; }
+      /* line 2353, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .projectEdit .formStep > div > label .info-icon.activated {
         color: rgba(44, 42, 116, 0.3); }
+  /* line 2358, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .formStep .section-progress {
     position: absolute;
     width: 30%;
     top: 15px;
     right: 5px; }
+  /* line 2364, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .formStep form {
     padding-top: 10px; }
+  /* line 2367, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .formStep span.tab {
     padding-left: 5em; }
+
+/* line 2371, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .borderBottom {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(44, 42, 116, 0); }
-.projectEdit *, .projectEdit *:before, .projectEdit *:after {
+
+/* line 2380, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.projectEdit *,
+.projectEdit *:before,
+.projectEdit *:after {
   box-sizing: border-box; }
+
+/* line 2383, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .control {
   position: relative;
   padding-top: 23px;
   padding-bottom: 10px; }
+  /* line 2388, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .control.small {
     width: 30%; }
+  /* line 2391, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .control.medium {
     width: 70%;
     padding-left: 10px; }
+  /* line 2395, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .control:last-child {
     border: 0; }
+
+/* line 2399, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .control-label {
   min-width: 90%; }
+
+/* line 2403, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit a.btn {
   margin-top: 23px; }
+  /* line 2405, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit a.btn.btn-link {
     margin-top: 0; }
-.projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
+
+/* line 2411, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.projectEdit .col-md-4 a.btn.btn-link,
+.projectEdit .col-md-3 a.btn.btn-link {
   margin-top: 23px; }
+
+/* line 2414, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .add-object-link {
   top: 8px; }
+
+/* line 2417, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit hr {
   border: none;
   height: 1px;
@@ -1846,77 +2435,138 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   /* old IE */
   background-color: rgba(44, 42, 116, 0.3);
   /* Modern Browsers */ }
-.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
+
+/* line 2430, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.projectEdit input + label,
+.projectEdit input + span + label,
+.projectEdit input + ul + label,
+.projectEdit textarea + label,
+.projectEdit textarea + span + label,
+.projectEdit textarea + ul + label,
+.projectEdit select + label,
+.projectEdit select + span + label,
+.projectEdit select + ul + label {
   position: absolute;
   top: 0px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
+
+/* line 2441, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.projectEdit input:focus + label,
+.projectEdit input:focus + span + label,
+.projectEdit input:focus + ul + label,
+.projectEdit textarea:focus + label,
+.projectEdit textarea:focus + span + label,
+.projectEdit textarea:focus + ul + label,
+.projectEdit select:focus + label,
+.projectEdit select:focus + span + label,
+.projectEdit select:focus + ul + label {
   color: #2c2a74; }
-.projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+
+/* line 2448, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+.projectEdit div.input-group + label,
+.projectEdit div.input-group + span + label,
+.projectEdit div.input-group + ul + label {
   position: absolute;
   top: 0px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
+
+/* line 2458, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .delete-related-object {
   color: #d9534f; }
+
+/* line 2461, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .delete-photo-button {
   color: #d9534f; }
+
+/* line 2464, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .delete-document {
   color: #d9534f; }
+
+/* line 2467, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .info-icon {
   padding-left: 0.5em;
   cursor: pointer;
   cursor: hand;
   font-size: 120%; }
+  /* line 2472, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+
+/* line 2476, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .mandatory, .projectEdit .mandatory-block {
   color: #d9534f;
   font-size: 125%;
   margin-left: 4px;
   margin-right: -4px; }
+
+/* line 2482, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .mandatory-block {
   font-size: 90%;
   margin-left: 0px;
   margin-right: 0px; }
+
+/* line 2489, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
+
+/* line 2493, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="10"] {
   background: #d9534f;
   color: white; }
+
+/* line 2497, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="20"] {
   background: #d9534f;
   color: white; }
+
+/* line 2501, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="30"] {
   background: #d9534f;
   color: white; }
+
+/* line 2505, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="40"] {
   background: #f0ad4e;
   color: white; }
+
+/* line 2509, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="50"] {
   background: #f0ad4e;
   color: white; }
+
+/* line 2513, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="60"] {
   background: #f0ad4e;
   color: white; }
+
+/* line 2517, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="70"] {
   background: #5cb85c;
   color: white; }
+
+/* line 2521, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="80"] {
   background: #5cb85c;
   color: white; }
+
+/* line 2525, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="90"] {
   background: #5cb85c;
   color: white; }
+
+/* line 2529, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit label.progress-bar[aria-valuenow="100"] {
   background: #5cb85c;
   color: white; }
+
+/* line 2534, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit div.parent {
   background: rgba(240, 173, 78, 0.15);
   -webkit-border-radius: 10px;
@@ -1928,6 +2578,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin-top: 10px;
   margin-bottom: 10px;
   transition: background 0.1s linear; }
+
+/* line 2546, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit div.partial-header {
   font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
@@ -1936,27 +2588,38 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin-top: 10px;
   margin-bottom: 10px;
   cursor: pointer; }
+
+/* line 2555, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .save-message {
   text-align: center; }
+
+/* line 2558, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .save-button {
   text-align: right; }
+
+/* line 2561, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .projectEdit .toggle-help {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
 
+/* line 2567, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .viewProject {
   margin-top: 15px; }
 
+/* line 2571, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .info-icon {
   padding-left: 0.5em;
   cursor: pointer;
   cursor: hand; }
+  /* line 2575, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
 
+/* line 2580, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #publishProject {
   margin-top: -7px; }
 
+/* line 2585, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 #editor-feedback a {
   display: block;
   position: fixed;
@@ -1972,64 +2635,83 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   -o-transform: rotate(-90deg); }
 
 /* New concatenated project page */
+/* line 2604, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .tab-menu {
   padding: 0.5em 1em 2em 1em; }
+  /* line 2606, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .tab-menu a {
     padding: 0.5em;
     margin: 0 1em;
     color: #00aaff; }
-    .tab-menu a:hover, .tab-menu a.selected {
+    /* line 2611, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    .tab-menu a:hover,
+    .tab-menu a.selected {
       border-bottom: 3px solid #646363;
       color: #646363; }
+    /* line 2615, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .tab-menu a:active {
       opacity: 0.6; }
 
 /* Results framework display */
+/* line 2624, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+#results-framework {
+  padding: 0;
+  margin: 0; }
+
+/* line 2629, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .results {
   position: relative;
   /* Styling for the indicator period progress bar */
   /* Insert some transparent text to space the "progress" label */ }
+  /* line 2631, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results * {
     box-sizing: border-box; }
+  /* line 2634, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results article {
-    margin: 0 1em;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
+    margin: 0;
     overflow: hidden; }
+  /* line 2638, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .clickable {
     cursor: pointer; }
+    /* line 2640, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .clickable:hover {
       opacity: 0.8; }
+    /* line 2643, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .clickable:active {
       opacity: 0.6; }
+  /* line 2647, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .bg-transition {
     -moz-transition: background-color 0.25s ease-in-out;
     -o-transition: background-color 0.25s ease-in-out;
     -webkit-transition: background-color 0.25s ease-in-out;
     transition: background-color 0.25s ease-in-out; }
+  /* line 2650, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .border-transition {
     -moz-transition: border 0.25s ease-in-out;
     -o-transition: border 0.25s ease-in-out;
     -webkit-transition: border 0.25s ease-in-out;
     transition: border 0.25s ease-in-out; }
+  /* line 2653, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .bg-border-transition {
     -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
     transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out; }
+  /* line 2659, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .opacity-transition {
     -moz-transition: opacity 0.25s ease-in-out;
     -o-transition: opacity 0.25s ease-in-out;
     -webkit-transition: opacity 0.25s ease-in-out;
     transition: opacity 0.25s ease-in-out; }
+  /* line 2662, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .results-container {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
-    display: flex; }
+    display: flex;
+    padding-left: 0; }
+  /* line 2666, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .sidebar {
     width: 30%;
     min-width: 200px;
@@ -2037,8 +2719,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     background-color: #efefe5;
     vertical-align: top;
     border: 1px solid #e0e1e2; }
+    /* line 2673, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .sidebar .result-nav {
       padding: 1px 0.75em 1.75em 0.75em; }
+      /* line 2675, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav:before {
         height: 1px;
         background-color: #e0e1e2;
@@ -2050,10 +2734,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         -o-transition: background-color 0.25s ease-in-out;
         -webkit-transition: background-color 0.25s ease-in-out;
         transition: background-color 0.25s ease-in-out; }
+      /* line 2684, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav:last-child {
         padding-bottom: 1em; }
+    /* line 2688, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .sidebar .result-nav-header {
       padding: 0.25em 0.75em 0 0.75em; }
+      /* line 2690, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav-header h3 {
         color: rgba(32, 32, 36, 0.4);
         font-size: 0.9em;
@@ -2061,32 +2748,42 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         margin-top: 5px;
         margin-right: 5px;
         position: relative; }
+        /* line 2697, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav-header h3 > a {
           position: absolute;
           right: -5px; }
+    /* line 2703, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .sidebar .result-nav {
       cursor: pointer; }
+      /* line 2705, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav .fa-chevron-up {
         display: none; }
+      /* line 2708, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav h3 {
         font-size: 1.1em;
         color: #424c2b; }
+      /* line 2713, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav.expanded:before {
         background-color: transparent; }
+      /* line 2716, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav.expanded h3 {
         color: #202024; }
+      /* line 2720, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav.expanded ~ .result-nav:before {
         background-color: transparent; }
+      /* line 2725, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav .result-title {
         position: relative;
         height: 2.8em;
         overflow: hidden;
         box-sizing: border-box; }
+        /* line 2730, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav .result-title .fa {
           float: right;
           font-size: 1.3em;
           margin-right: 6px;
           text-shadow: 0 1px 0 white; }
+        /* line 2736, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav .result-title > span {
           box-sizing: border-box;
           max-width: 80%;
@@ -2099,24 +2796,33 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           overflow: hidden;
           text-overflow: ellipsis;
           word-break: break-word; }
+      /* line 2750, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav .result-indicator-count {
         color: #bcbca6;
         margin-top: -10px;
         display: block; }
+      /* line 2755, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav .result-nav-full {
         display: none; }
+      /* line 2758, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav .indicator-text {
         display: none; }
+      /* line 2761, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .sidebar .result-nav.expanded {
         background: white; }
+        /* line 2763, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav.expanded .fa-chevron-down {
           display: none; }
+        /* line 2766, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav.expanded .fa-chevron-up {
           display: block; }
+        /* line 2769, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav.expanded .indicator-text {
           display: initial; }
+        /* line 2772, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav.expanded .indicator-count {
           display: none; }
+        /* line 2775, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .sidebar .result-nav.expanded .result-nav-full {
           display: block;
           cursor: pointer;
@@ -2124,17 +2830,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           background-color: white;
           margin-top: 1em;
           background-color: transparent; }
+          /* line 2782, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav {
             padding: 0.25em 0em 0.75em 0.5em;
             /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
             border-left: 4px solid transparent; }
+            /* line 2788, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav.active {
               background-color: #ececec;
               border-left: 4px solid #ae0922; }
+            /* line 2792, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             .results .sidebar .result-nav.expanded .result-nav-full .indicator-nav:last-child {
               margin-bottom: 0; }
+          /* line 2797, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .sidebar .result-nav.expanded .result-nav-full a h4 {
             font-size: 1.1em;
             color: #646464;
@@ -2142,11 +2852,14 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap; }
+          /* line 2804, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .sidebar .result-nav.expanded .result-nav-full a.active h4 {
             color: #ae0922; }
+          /* line 2809, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .sidebar .result-nav.expanded .result-nav-full .last-update {
             font-size: 0.9em;
             color: #aaaaaa; }
+  /* line 2817, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-container {
     vertical-align: top;
     overflow-y: scroll;
@@ -2158,102 +2871,147 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1; }
+    /* line 2824, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .result-summary {
       display: none;
       opacity: 0; }
+      /* line 2827, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .result-summary h4 {
         font-size: 0.9em;
         color: #aaaaaa;
         font-variant: small-caps;
         text-transform: lowercase; }
+      /* line 2833, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .result-summary h3 {
         font-size: 1.2em;
         color: #424c2b;
         margin-bottom: 4px; }
+      /* line 2838, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .result-summary .result-parent {
         font-size: 0.8em;
         color: #aaaaaa; }
+      /* line 2842, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .result-summary .indicator-link {
         cursor: pointer; }
+        /* line 2844, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .result-summary .indicator-link:hover {
           opacity: 0.8; }
+        /* line 2847, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .result-summary .indicator-link:active {
           opacity: 0.6; }
+      /* line 2851, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .result-summary .result-indicators {
         margin-top: 20px; }
+        /* line 2853, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .result-summary .result-indicators ul {
           list-style-type: none;
           padding-left: 5px; }
+          /* line 2856, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .indicator-container .result-summary .result-indicators ul li {
             color: #00aaff; }
+    /* line 2862, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group {
       padding: 0;
       display: none; }
+      /* line 2865, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group h4.indicator-title {
         color: #ae0922;
         font-size: 1em; }
+        /* line 2868, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group h4.indicator-title .glyphicon {
           float: left;
           margin-right: 4px; }
+      /* line 2873, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .baseline {
         padding: 2em 0; }
-        .results .indicator-container .indicator-group .baseline .baseline-value, .results .indicator-container .indicator-group .baseline .baseline-year {
+        /* line 2876, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .indicator-container .indicator-group .baseline .baseline-value,
+        .results .indicator-container .indicator-group .baseline .baseline-year {
           width: 30%;
           display: inline-block;
           padding: 0 0 0 5%; }
-          .results .indicator-container .indicator-group .baseline .baseline-value dt, .results .indicator-container .indicator-group .baseline .baseline-year dt {
+          /* line 2880, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .indicator-container .indicator-group .baseline .baseline-value dt,
+          .results .indicator-container .indicator-group .baseline .baseline-year dt {
             color: #818386; }
-          .results .indicator-container .indicator-group .baseline .baseline-value dd, .results .indicator-container .indicator-group .baseline .baseline-year dd {
+          /* line 2883, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .indicator-container .indicator-group .baseline .baseline-value dd,
+          .results .indicator-container .indicator-group .baseline .baseline-year dd {
             font-size: 1.5em;
             font-weight: bold;
             color: #515050; }
+      /* line 2890, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .indicator-periods-title {
         font-size: 1em;
         color: #515050; }
+      /* line 2894, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table {
         padding: 0.5em 0.25em;
         /*background-color: rgb(235,235,231);*/ }
+        /* line 2898, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table tbody.indicator-period {
           border-top: 1px solid #E7E8E8; }
+        /* line 2901, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table tbody.expanded {
           background-color: white; }
+        /* line 2905, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table thead {
           font-weight: normal;
           color: silver; }
+          /* line 2908, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .indicator-container .indicator-group .table thead tr {
             background-color: #ececec; }
-        .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
+        /* line 2913, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .indicator-container .indicator-group .table tr,
+        .results .indicator-container .indicator-group .table td {
           border: none;
           color: #acacac; }
+        /* line 2917, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table tr {
           min-height: 125px; }
+          /* line 2919, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .indicator-container .indicator-group .table tr .add-button {
             display: none; }
+          /* line 2922, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
             text-align: right; }
+            /* line 2924, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
             .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
               border: none;
               display: inline-block;
               margin-right: 1.4em; }
+        /* line 2931, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table td {
           vertical-align: middle; }
-          .results .indicator-container .indicator-group .table td.period-td, .results .indicator-container .indicator-group .table td.actual-td, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.actions-td {
+          /* line 2936, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .indicator-container .indicator-group .table td.period-td,
+          .results .indicator-container .indicator-group .table td.actual-td,
+          .results .indicator-container .indicator-group .table td.target-td,
+          .results .indicator-container .indicator-group .table td.actions-td {
             white-space: nowrap; }
+          /* line 2939, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
           .results .indicator-container .indicator-group .table td.indicator-bar-td {
             width: 55%; }
+        /* line 2944, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-up {
           display: none; }
+        /* line 2947, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-down {
           display: initial; }
+        /* line 2951, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-up {
           display: initial; }
+        /* line 2954, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-down {
           display: none; }
+      /* line 2960, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .indicator {
         display: none; }
+  /* line 2966, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-bar-td {
     height: 80px;
     padding: 0; }
+  /* line 2972, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .th-progress:before {
     content: 'spacer';
     width: 40px;
@@ -2261,14 +3019,18 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     display: inline-block;
     color: transparent; }
     @media only screen and (max-width: 800px) {
+      /* line 2972, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .th-progress:before {
         display: none; } }
+  /* line 2983, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-bar-display-container {
     position: relative;
     height: 100%;
     margin-left: 50px;
     margin-right: 15px; }
-    .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
+    /* line 2989, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    .results .indicator-bar-display-container .indicator-bar,
+    .results .indicator-bar-display-container .indicator-bar-progress-amount {
       position: absolute;
       top: 38px;
       bottom: 24px;
@@ -2279,6 +3041,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       -webkit-border-radius: 2px;
       border-radius: 2px;
       border: 1px solid #CDDFEF; }
+    /* line 2998, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-bar-display-container .indicator-baseline {
       position: absolute;
       left: -45px;
@@ -2288,11 +3051,14 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       vertical-align: bottom;
       width: 35px;
       text-align: right; }
+    /* line 3008, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-bar-display-container .indicator-bar {
       background-color: #E2EBF5;
       right: 0px; }
+    /* line 3012, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-bar-display-container .indicator-bar-progress-amount {
       background-color: rgba(0, 0, 0, 0.2); }
+    /* line 3015, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-bar-display-container .indicator-bar-progress-container {
       /* The progress box has non-zero width, so add some
             ** padding to ensure it doesn't overflow the parent
@@ -2300,6 +3066,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             */
       position: relative;
       height: 100%; }
+      /* line 3022, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
         position: absolute;
         width: 4px;
@@ -2309,25 +3076,31 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         top: 30px;
         background-color: #A3C7E3;
         text-align: center; }
+  /* line 3034, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .target-td {
     vertical-align: middle; }
+  /* line 3038, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
     padding-left: 15px;
     font-size: 1.1em;
     font-weight: normal;
     color: #515050;
     vertical-align: bottom; }
+  /* line 3045, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-bar-progress-complete-container .indicator-bar-progress-text {
     padding-left: 15px;
     font-size: 1.1em;
     font-weight: bold;
     color: #A3C7E3;
     vertical-align: bottom; }
+  /* line 3053, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .indicator-container .indicator-group .table tbody {
     background-color: white;
     border-bottom: none !important; }
+    /* line 3056, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody:last-child {
       margin-bottom: 0; }
+    /* line 3059, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .edit-button {
       position: absolute;
       height: 20px;
@@ -2336,8 +3109,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       right: 10px;
       color: #202024;
       font-size: 1.5em; }
+      /* line 3067, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .edit-button.activated {
         display: none; }
+    /* line 3071, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .delete-button {
       position: absolute;
       height: 20px;
@@ -2346,8 +3121,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       right: 35px;
       font-size: 1.5em;
       color: #202024; }
+      /* line 3079, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .delete-button.activated {
         display: none; }
+    /* line 3083, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .delete-confirm {
       display: none;
       position: absolute;
@@ -2358,13 +3135,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       color: #202024;
       padding: 1em;
       z-index: 101; }
+      /* line 3093, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .delete-confirm > div {
         height: 40px;
         position: relative; }
+      /* line 3097, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
         position: absolute;
         left: 10px;
         top: 10px; }
+      /* line 3102, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
         background-color: #ae0922;
         border-color: #ae0922;
@@ -2372,21 +3152,26 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         position: absolute;
         right: 10px;
         top: 10px; }
+        /* line 3109, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
           background-color: #ff5500;
           border-color: #ff5500; }
+    /* line 3115, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .update-date {
       display: inline-block;
       text-align: left;
       width: 50%; }
+    /* line 3120, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .update-name {
       display: inline-block;
       text-align: left;
       width: 30%;
       margin-right: 10%;
       color: #202024; }
+      /* line 3126, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .update-name.delete-pending {
         margin-bottom: 90px; }
+    /* line 3130, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .update-timeline {
       display: inline-block;
       width: 75%;
@@ -2394,6 +3179,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       padding-top: 1em;
       z-index: 99;
       position: relative; }
+    /* line 3138, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .update-target {
       position: absolute;
       margin-top: 48px;
@@ -2401,32 +3187,39 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       width: 24%;
       height: 80px;
       text-align: center; }
+      /* line 3145, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .update-target span {
         font-size: 1.1em;
         color: #515050;
         vertical-align: text-top; }
+        /* line 3149, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .results .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
           padding-left: 15px;
           font-size: 1.1em;
           font-weight: bold;
           color: #A3C7E3;
           vertical-align: bottom; }
+    /* line 3158, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .update-description {
       padding: 0.5em;
       margin: 20px auto 30px; }
+      /* line 3161, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .update-description.editable {
         background: whitesmoke;
         border: 1px solid #A3C7E3; }
+      /* line 3165, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .update-description .update-photo {
         float: right;
         width: 150px;
         height: 100px;
         background-size: cover; }
+    /* line 3172, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .save-button {
       position: absolute;
       display: none;
       right: 10px;
       bottom: 10px; }
+      /* line 3177, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .save-button.active {
         display: inline-block;
         padding: 3px 7px;
@@ -2437,12 +3230,14 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
+    /* line 3186, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .indicator-container .indicator-group .table tbody .cancel-button {
       position: absolute;
       display: none;
       right: 60px;
       bottom: 10px;
       background-color: none; }
+      /* line 3192, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .results .indicator-container .indicator-group .table tbody .cancel-button.active {
         display: inline-block;
         padding: 3px 7px;
@@ -2452,53 +3247,57 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
-  .results .update-entry-container {
-    padding: 2em;
-    margin-bottom: 2em;
-    position: relative;
-    background-color: #ececec; }
-    .results .update-entry-container:first-child {
-      border-left: 4px solid #ae0922; }
-    .results .update-entry-container.edit-in-progress {
-      background-color: #D1E6D1;
-      border-left: none; }
+  /* line 3203, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .results .update-dialog-container.pending-new-update .update-entry-container {
     background-color: #D1E6D1; }
+    /* line 3205, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .results .update-dialog-container.pending-new-update .update-entry-container:first-child {
       border-left: none; }
-  .results .update-dialog-container div {
+  /* line 3210, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+  .results .update-dialog-container td {
     padding: 8px 2em; }
-    .results .update-dialog-container div .update-entry-container {
+    /* line 3212, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+    .results .update-dialog-container td .update-entry-container {
       padding: 2em;
       margin-bottom: 2em;
       position: relative;
       background-color: #ececec; }
-      .results .update-dialog-container div .update-entry-container:first-child {
+      /* line 3217, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container:first-child {
         border-left: 4px solid #ae0922; }
-      .results .update-dialog-container div .update-entry-container.edit-in-progress {
+      /* line 3220, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container.edit-in-progress {
         background-color: #D1E6D1;
         border-left: none; }
-      .results .update-dialog-container div .update-entry-container .update-exceed-target {
+      /* line 3224, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-exceed-target {
         margin: 3em 0 1em 0;
         text-align: right; }
-        .results .update-dialog-container div .update-entry-container .update-exceed-target input.exceed-value {
+        /* line 3227, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
           opacity: 0; }
-        .results .update-dialog-container div .update-entry-container .update-exceed-target label {
+        /* line 3230, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-exceed-target label {
           margin-right: 10px;
           color: rgba(32, 32, 36, 0.5); }
-        .results .update-dialog-container div .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
+        /* line 3234, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
           margin-right: 10px; }
-          .results .update-dialog-container div .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
+          /* line 3237, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
             opacity: 1; }
-      .results .update-dialog-container div .update-entry-container .indicator-bar-display-container {
+      /* line 3243, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
         position: relative;
         height: 100%;
         margin-left: 45px;
         margin-right: 0; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-baseline {
+        /* line 3248, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
           top: 34px;
           left: -60px; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
+        /* line 3252, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
           position: absolute;
           bottom: -18px;
           width: 44px;
@@ -2508,7 +3307,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           border: 1px solid #B5B5B5;
           background-color: #ececec;
           cursor: pointer; }
-          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
+          /* line 3262, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
             content: '';
             opacity: 0;
             height: 0px;
@@ -2516,13 +3316,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             padding: 0;
             margin: 0;
             font-size: 0; }
-          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
+          /* line 3271, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
             color: #A3C7E3;
             border-color: #A3C7E3; }
-          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
+          /* line 3275, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
             z-index: 101;
             background-color: white; }
-            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
+            /* line 3278, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
               display: block;
               font-size: initial;
               opacity: 1;
@@ -2536,7 +3339,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               margin-left: -28px;
               /* Half of the width of this - half the width of the parent */
               padding: 5px 0; }
-              .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
+              /* line 3292, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+              .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
                 content: '';
                 width: 0;
                 height: 0;
@@ -2546,7 +3350,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
                 position: absolute;
                 top: -5px;
                 left: 45px; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        /* line 3307, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar,
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           position: absolute;
           top: 38px;
           bottom: 24px;
@@ -2557,48 +3363,59 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -webkit-border-radius: 2px;
           border-radius: 2px;
           border: 1px solid #CDDFEF; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar {
+        /* line 3316, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
           background-color: #fff;
           right: 0px; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        /* line 3320, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
           background-color: #fff;
           border-right: none; }
-        .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
+        /* line 3324, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
           /* The progress box has non-zero width, so add some
                         ** padding to ensure it doesn't overflow the parent
                         ** container.
                         */
           position: relative;
           height: 100%; }
-          .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+          /* line 3331, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
             position: absolute;
             width: 3px;
             height: 20px;
             top: 35px;
             background-color: #B5B5B5;
             text-align: center; }
-            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
+            /* line 3337, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
               background-color: #A3C7E3; }
-            .results .update-dialog-container div .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
+            /* line 3341, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
               border: none; }
-      .results .update-dialog-container div .update-entry-container .target-td {
+      /* line 3347, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .target-td {
         vertical-align: middle; }
-      .results .update-dialog-container div .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+      /* line 3351, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
         padding-left: 15px;
         font-size: 1.5em;
         font-weight: normal;
         color: #515050;
         vertical-align: bottom; }
-      .results .update-dialog-container div .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+      /* line 3358, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
         padding-left: 15px;
         font-size: 1.5em;
         font-weight: bold;
         color: #A3C7E3;
         vertical-align: bottom;
         z-index: 19999; }
-      .results .update-dialog-container div .update-entry-container:last-child {
+      /* line 3367, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container:last-child {
         margin-bottom: 0; }
-      .results .update-dialog-container div .update-entry-container .edit-button {
+      /* line 3370, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .edit-button {
         position: absolute;
         height: 20px;
         width: 20px;
@@ -2606,9 +3423,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 10px;
         color: #202024;
         font-size: 1.5em; }
-        .results .update-dialog-container div .update-entry-container .edit-button.activated {
+        /* line 3378, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .edit-button.activated {
           display: none; }
-      .results .update-dialog-container div .update-entry-container .delete-button {
+      /* line 3382, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .delete-button {
         position: absolute;
         height: 20px;
         width: 20px;
@@ -2616,59 +3435,71 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         right: 35px;
         font-size: 1.5em;
         color: #202024; }
-        .results .update-dialog-container div .update-entry-container .delete-button.activated {
+        /* line 3390, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .delete-button.activated {
           display: none; }
-      .results .update-dialog-container div .update-entry-container .update-date {
+      /* line 3394, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-date {
         display: inline-block;
         text-align: left;
         width: 50%; }
-      .results .update-dialog-container div .update-entry-container .update-name {
+      /* line 3399, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-name {
         display: inline-block;
         text-align: left;
         width: 30%;
         margin-right: 10%;
         color: #202024; }
-      .results .update-dialog-container div .update-entry-container .update-timeline {
+      /* line 3406, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-timeline {
         display: inline-block;
         width: 84%;
         height: 80px;
         padding-top: 1em;
         z-index: 99;
         position: relative; }
-      .results .update-dialog-container div .update-entry-container .update-target {
+      /* line 3414, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-target {
         position: absolute;
         margin-top: 49px;
         display: inline-block;
         width: 15%;
         height: 80px;
         text-align: right; }
-        .results .update-dialog-container div .update-entry-container .update-target span {
+        /* line 3421, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-target span {
           font-size: 1.1em;
           color: #515050;
           vertical-align: text-top; }
-          .results .update-dialog-container div .update-entry-container .update-target span.update-target-actual {
+          /* line 3425, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
             padding-left: 15px;
             font-size: 1.1em;
             font-weight: bold;
             color: #A3C7E3;
             vertical-align: bottom; }
-      .results .update-dialog-container div .update-entry-container .update-description {
+      /* line 3434, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .update-description {
         padding: 0.5em;
         margin: 20px auto 30px; }
-        .results .update-dialog-container div .update-entry-container .update-description.editable {
+        /* line 3437, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-description.editable {
           background: whitesmoke;
           border: 1px solid #A3C7E3; }
-        .results .update-dialog-container div .update-entry-container .update-description .update-photo {
+        /* line 3441, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .update-description .update-photo {
           float: right;
           width: 150px;
           height: 100px;
           background-size: cover; }
-      .results .update-dialog-container div .update-entry-container .save-button {
+      /* line 3448, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .save-button {
         position: absolute;
         display: none;
         right: 10px;
         bottom: 10px; }
-        .results .update-dialog-container div .update-entry-container .save-button.active {
+        /* line 3453, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .save-button.active {
           display: inline-block;
           padding: 3px 7px;
           color: white;
@@ -2678,12 +3509,14 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -webkit-border-radius: 2px;
           border-radius: 2px;
           text-align: center; }
-      .results .update-dialog-container div .update-entry-container .cancel-button {
+      /* line 3462, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .cancel-button {
         position: absolute;
         display: none;
         right: 60px;
         bottom: 10px; }
-        .results .update-dialog-container div .update-entry-container .cancel-button.active {
+        /* line 3467, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .cancel-button.active {
           display: inline-block;
           padding: 3px 7px;
           color: #202024;
@@ -2692,9 +3525,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -webkit-border-radius: 2px;
           border-radius: 2px;
           text-align: center; }
-      .results .update-dialog-container div .update-entry-container .edit-slider {
+      /* line 3475, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+      .results .update-dialog-container td .update-entry-container .edit-slider {
         z-index: 9999; }
-        .results .update-dialog-container div .update-entry-container .edit-slider .original-position-marker {
+        /* line 3477, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
           width: 3px;
           margin-left: -2px;
           height: 20px;
@@ -2702,16 +3537,20 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           background-color: #B5B5B5;
           top: -3px;
           z-index: 102; }
-        .results .update-dialog-container div .update-entry-container .edit-slider .change-indicator {
+        /* line 3486, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
           position: absolute;
           background-color: green;
           height: 12px;
           top: 1px;
           z-index: 101;
           opacity: 0.5; }
-          .results .update-dialog-container div .update-entry-container .edit-slider .change-indicator.negative {
+          /* line 3493, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
             background-color: red; }
-        .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal {
+        /* line 3498, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base,
+        .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
           height: 5px;
           border: 0;
           background-color: rgba(255, 255, 255, 0);
@@ -2722,13 +3561,17 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           -webkit-border-radius: 4px;
           border-radius: 4px;
           box-shadow: none; }
-          .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
+          /* line 3506, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin,
+          .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
             background-color: rgba(255, 255, 255, 0);
             -moz-border-radius: 4px;
             -o-border-radius: 4px;
             -webkit-border-radius: 4px;
             border-radius: 4px; }
-          .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+          /* line 3510, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle,
+          .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
             position: relative;
             width: 28px;
             height: 28px;
@@ -2739,7 +3582,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             box-shadow: none;
             top: -7px;
             color: white; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+            /* line 3521, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
               display: block;
               content: '|||';
               color: white;
@@ -2752,13 +3597,21 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               background-color: transparent;
               top: 0;
               left: -1px; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+            /* line 3535, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
               display: none; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+            /* line 3538, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
               background-color: #009ceb; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+            /* line 3541, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
               background-color: #de8929; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+            /* line 3544, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
               position: absolute;
               top: -32px;
               background-color: #007ab8;
@@ -2766,7 +3619,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               width: 44px;
               left: -8px;
               text-align: center; }
-              .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+              /* line 3552, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+              .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after,
+              .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
                 content: '';
                 height: 0px;
                 width: 0px;
@@ -2776,7 +3631,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
                 border-left: 5px solid transparent;
                 border-right: 5px solid transparent;
                 border-top: 5px solid #007ab8; }
-            .results .update-dialog-container div .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container div .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+            /* line 3564, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label,
+            .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
               position: absolute;
               width: 42px;
               text-align: center;
@@ -2784,13 +3641,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               left: -8px;
               background-color: white;
               color: #007ab8; }
-        .results .update-dialog-container div .update-entry-container .edit-slider.active {
+        /* line 3575, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .results .update-dialog-container td .update-entry-container .edit-slider.active {
           display: initial; }
 
 /* Modal dialog stuff for the Project Editor */
+/* line 3588, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div.inactive .addOrg {
   display: none; }
 
+/* line 3594, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div.active .addOrg {
   display: block;
   padding: 0.5em;
@@ -2800,11 +3660,14 @@ div.active .addOrg {
   margin-top: -3px;
   cursor: pointer;
   color: #5cb85c; }
+  /* line 3603, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.active .addOrg:hover {
     font-weight: bold; }
+  /* line 3606, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div.active .addOrg:active {
     opacity: 0.8; }
 
+/* line 3612, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .modalBackground {
   position: fixed;
   top: 0;
@@ -2814,6 +3677,7 @@ div.active .addOrg {
   z-index: 1031;
   background-color: rgba(0, 0, 0, 0.7); }
 
+/* line 3622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 .modalContainer {
   position: fixed;
   top: 20%;
@@ -2822,21 +3686,26 @@ div.active .addOrg {
   left: 100px;
   z-index: 1032; }
   @media only screen and (max-width: 768px) {
+    /* line 3622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer {
       right: 25px;
       left: 25px; } }
   @media only screen and (max-width: 568px) {
+    /* line 3622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer {
       right: 5px;
       left: 5px; } }
   @media only screen and (max-height: 900px) {
+    /* line 3622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer {
       top: 10%;
       bottom: 10%; } }
   @media only screen and (max-height: 700px) {
+    /* line 3622, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer {
       top: 5%;
       bottom: 5%; } }
+  /* line 3645, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   .modalContainer .orgModal {
     width: 100%;
     max-width: 800px;
@@ -2849,24 +3718,36 @@ div.active .addOrg {
     -o-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px; }
+    /* line 3654, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer .orgModal .modalContents {
       min-width: 100px;
       position: relative;
       padding: 1em 2em 5em 2em; }
+      /* line 3658, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .modalContainer .orgModal .modalContents .inputContainer {
         margin-top: 2.75em;
         margin-bottom: 1em; }
-        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label, .modalContainer .orgModal .modalContents .inputContainer textarea + label {
+        /* line 3664, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .modalContainer .orgModal .modalContents .inputContainer input + label,
+        .modalContainer .orgModal .modalContents .inputContainer select + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea + label {
           position: absolute;
           top: -25px;
           transition: top 0.7s ease, opacity 0.7s ease;
           opacity: 0;
           font-size: 13px;
           font-weight: 600; }
-        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label, .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
+        /* line 3672, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label,
+        .modalContainer .orgModal .modalContents .inputContainer select:valid + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
           opacity: 1; }
-        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label, .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
+        /* line 3675, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label,
+        .modalContainer .orgModal .modalContents .inputContainer select:focus + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
           color: #2c2a74; }
+    /* line 3681, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     .modalContainer .orgModal .controls {
       position: absolute;
       bottom: 0;
@@ -2874,53 +3755,72 @@ div.active .addOrg {
       right: 0;
       height: 3.5em;
       text-align: right; }
+      /* line 3688, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       .modalContainer .orgModal .controls button {
         margin: 0 0.5em; }
+        /* line 3690, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .modalContainer .orgModal .controls button.modal-cancel {
           margin-right: 1em; }
+        /* line 3693, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
         .modalContainer .orgModal .controls button.modal-save {
           margin-right: 1.5em; }
 
 /* My reports section */
+/* line 3704, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
 div#my-reports {
   /* Override pointer events for disabled items that show help text */ }
+  /* line 3705, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports label {
     font-size: 13px;
     font-weight: 600; }
+  /* line 3710, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .dropdown .dropdown-toggle {
     text-align: left;
     width: 100%;
     margin-bottom: 10px; }
+    /* line 3714, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div#my-reports .dropdown .dropdown-toggle .not-selected {
       color: grey; }
+    /* line 3717, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div#my-reports .dropdown .dropdown-toggle .caret-indicator {
       float: right; }
+  /* line 3721, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .dropdown .dropdown-menu {
     text-align: left;
     width: 100%;
     top: 35px; }
+  /* line 3727, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .input-group {
     min-height: 100px;
     margin-bottom: 10px;
     cursor: pointer; }
+    /* line 3731, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
     div#my-reports .input-group .form-control {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100px; }
+      /* line 3736, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div#my-reports .input-group .form-control .fa {
         font-size: 75px; }
+      /* line 3739, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
       div#my-reports .input-group .form-control:hover {
         background: rgba(32, 32, 36, 0.05); }
+  /* line 3744, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .report-title {
     font-weight: bold; }
+  /* line 3747, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .report-description {
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word; }
+  /* line 3754, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .my-reports-download-error {
     margin: 1em 0; }
+  /* line 3758, /akvo-rsr/akvo/rsr/static/styles-src/main.scss */
   div#my-reports .pointerEvents {
     pointer-events: initial; }
+
+/*# sourceMappingURL=main.css.map */

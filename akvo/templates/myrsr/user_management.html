@@ -11,7 +11,6 @@
 
 {% block myrsr_main %}
 
-        <div class="row">
             <div class="col-sm-6">
                 <h3  style="display: inline-block; float:left;">{% trans 'User management' %}</h3>
                 {% has_perm 'rsr.change_employment' user as can_change_employments %}
@@ -35,7 +34,6 @@
                     </div>
                 </form>
             </div>
-        </div>
         {% if employments %}
         <div id="user_table" class="col-sm-12"></div>
         <div>
