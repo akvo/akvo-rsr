@@ -12,9 +12,8 @@
                 {% with current_path=request.get_full_path %}
                 <nav class="navbar navbar-nav nav-justified" role="navigation">
                     <ul class="nav nav-tabs">
-                        <li class=""><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">{% trans 'My details' %}</a></li>
-                        <li class=""><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
                         <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">{% trans 'My projects' %}</a></li>
+                        <li class=""><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
                         {% if '/myrsr/project_editor/' in current_path %}
                             <li><a href="#" class="active" onclick="return false;">{% trans 'Project editor' %}</a></li>
                         {% endif %}
@@ -30,8 +29,9 @@
                         {% if can_change_employments %}
                             <li class="usrMgt"><a href="{% url 'user_management' %}" class="{% if '/myrsr/user_management/' in current_path %}active{% endif %}">{% trans 'User management' %}</a></li>
                         {% endif %}
+                        <li class=""><a href="{% url 'my_details' %}"  class="{% if '/myrsr/details' in current_path %}active{% endif %}">{% trans 'My details' %}</a></li>
                     </ul>
-                    <ul class="nav nav-pills nav-stacked     hidden">
+                    <ul class="nav nav-pills nav-stacked  hidden">
                         <li><a href="{% url 'password_change' %}" class="{% if '/myrsr/password_change/' in current_path %}active{% endif %}">{% trans 'Change password' %}</a></li>
                     </ul>
                 </nav>
@@ -44,9 +44,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
             {% block myrsr_main %}{% endblock %}
-        </div>
     </div>
 </div>
 {% endblock %}

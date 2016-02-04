@@ -6,7 +6,6 @@
 /*---------------------------------------------------------------------------------*/
 
 @import "library.scss";
-
 html {
     width: 100%;
     overflow-y: scroll;
@@ -36,7 +35,9 @@ h6 {
     color: $akvoPurple;
 }
 
-a, a:link, a:visited {
+a,
+a:link,
+a:visited {
     outline: none;
     color: $anchorLink;
     text-decoration: none;
@@ -50,6 +51,7 @@ a, a:link, a:visited {
     }
 }
 
+
 /****************** Miscellanous Typography ********************/
 
 img {
@@ -60,8 +62,9 @@ img {
 }
 
 .noItem {
-    color: rgba($akvoPurple, 0.2);
+    color: rgba($akvoPurple, 0.8);
     font-weight: bold;
+    margin-top: 25px;
 }
 
 .emTxt {
@@ -125,7 +128,9 @@ a.moreLink {
     padding: 20px 0;
 }
 
+
 /* Force full-width columns below 570px (when using col-xs-N) */
+
 @include responsive(small-screens) {
     .col-ty-12 {
         float: none;
@@ -133,8 +138,8 @@ a.moreLink {
     }
 }
 
-
-a.btn-primary, button.btn-primary {
+a.btn-primary,
+button.btn-primary {
     border: 1px solid $anchorLink;
     color: white;
     background: $anchorLink;
@@ -151,18 +156,24 @@ a.btn-primary, button.btn-primary {
     text-align: left;
 }
 
-.btn-group, .form-group {
+.btn-group,
+.form-group {
     button {
         @include border-radius(5px);
     }
 }
 
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
-.tt-input, .tt-hint {
+
+.tt-input,
+.tt-hint {
     @include border-radius(5px 0 0 5px);
 }
 
-.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+.input-group-addon:not(:first-child):not(:last-child),
+.input-group-btn:not(:first-child):not(:last-child),
+.input-group .form-control:not(:first-child):not(:last-child) {
     @include border-radius(5px 0 0 5px);
 }
 
@@ -284,9 +295,11 @@ label {
     font-weight: normal;
 }
 
+
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
+
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
@@ -328,7 +341,6 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
-
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -430,10 +442,9 @@ nav.navbar-fixed-top {
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
-
                     &.active {
                         background: none;
-                        color: $anchorLinkHover;
+                        color: rgba($anchorLinkHover, 0.7);
                     }
                 }
                 .langDropdown {
@@ -442,7 +453,6 @@ nav.navbar-fixed-top {
                         padding-left: 15px;
                         padding-right: 15px;
                     }
-
                     .dropdown-menu {
                         @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
                             position: initial;
@@ -501,7 +511,8 @@ nav.navbar-fixed-top {
     .navbar-header {
         float: none;
     }
-    .navbar-left, .navbar-right {
+    .navbar-left,
+    .navbar-right {
         float: none !important;
     }
     .navbar-toggle {
@@ -534,7 +545,6 @@ nav.navbar-fixed-top {
     }
 }
 
-
 .navbar-inverse {
     .navbar-collapse {
         border-color: rgb(228, 228, 228);
@@ -553,16 +563,20 @@ nav.navbar-fixed-top {
 
 
 /* My RSR stuff */
+
 .btnHeader {
     padding: 10px 0 25px 0;
 }
+
 .navContainer {
     background: rgba($akvoBlack, 0.05);
-    margin-bottom: 10px;
+    margin: -15px 0 10px 0;
+    padding-top: 10px;
 }
+
 .myRsrMenu {
     position: relative;
-    margin: 5px auto;
+    margin: 5px auto 0 auto;
     .nav-tabs {
         border-bottom: none;
     }
@@ -570,24 +584,25 @@ nav.navbar-fixed-top {
         padding-top: 15px;
     }
     nav[role=navigation] {
-        background: rgba(white, 0.5);
+        background: rgba($akvoBlack, 0);
         ul {
             li {
                 display: inline;
                 a {
-                    color: $anchorLink;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
                     }
-
                     &:hover {
                         color: $anchorLinkHover;
+                        border-color: transparent;
+                        background-color: rgba($akvoBlack, 0.1);
                     }
                     &.active {
                         color: $anchorLinkHover;
                         font-weight: bold;
-                        background: rgba($akvoBlack, 0.05);
+                        background: rgba(white, 1);
+                        @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
                 }
                 &.usrMgt {
@@ -598,24 +613,26 @@ nav.navbar-fixed-top {
         }
     }
 }
+
 .navbar-form {
     padding-left: 0;
     margin-bottom: 25px;
 }
+
 #createProject {
-        margin: 23px 0 0 25px;
+    margin: 23px 0 0 25px;
 }
-#updates {
-    margin-top:45px;
-}
-.myProjectList, #updates {
+
+.myProjectList,
+#updates,
+#user_table {
     thead {
-        tr{
-            background-color: rgba($akvoBlack,0.05);
+        tr {
+            background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
-            th{
-                padding-top:10px 0;
-                padding-bottom:10px 0;
+            th {
+                padding-top: 10px 0;
+                padding-bottom: 10px 0;
             }
         }
     }
@@ -629,8 +646,8 @@ nav.navbar-fixed-top {
                 background: rgba($progressNot, 0.1) !important;
             }
             td {
-                padding-top:30px;
-                padding-bottom:30px;
+                padding-top: 30px;
+                padding-bottom: 30px;
                 border: none;
             }
         }
@@ -728,7 +745,9 @@ div.paginationWrap {
         }
     }
     .media {
-        > a {min-width:80px;}
+        > a {
+            min-width: 80px;
+        }
         .media-body {
             p {
                 max-width: 170px;
@@ -746,19 +765,6 @@ div.paginationWrap {
     width: 100%;
     display: block;
     a {
-        width: 45%;
-        padding: 2px 0.5%;
-        float: left;
-        text-align: center;
-        background: rgba($anchorLink, 0.2);
-        color: $anchorLink;
-        margin: 2px 2%;
-        @include border-radius(3px);
-        @include noWrapTxt;
-        &:hover {
-            background: $anchorLinkHover;
-            color: white;
-        }
         @include responsive(small-max-screens) {
             width: 98%;
             padding: 2px 1%;
@@ -766,7 +772,6 @@ div.paginationWrap {
             margin: 2px 0 2px 0;
             display: block;
         }
-
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -789,7 +794,6 @@ div.paginationWrap {
             margin: 10px auto;
         }
     }
-
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
@@ -825,7 +829,9 @@ div.paginationWrap {
     }
 }
 
+
 /* FOOTER */
+
 body > footer {
     margin-top: 1em;
 }
@@ -883,13 +889,14 @@ footer {
     }
 }
 
+
 /* GENERIC STRUCTURE and TEXT STYLES */
+
 .touch-navbar {
     margin-top: -10px;
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
-
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -924,7 +931,9 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
+
 /* LISTINGS */
+
 #map {
     height: 400px;
     @include responsive(xtra-small-max-screens) {
@@ -936,7 +945,6 @@ h4.detailedInfo {
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
-
     margin-top: -30px;
     z-index: 99;
     opacity: 0.8;
@@ -994,7 +1002,8 @@ h4.detailedInfo {
     margin-bottom: 15px;
     .pagination {
         li {
-            a, span {
+            a,
+            span {
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
@@ -1011,7 +1020,6 @@ h4.detailedInfo {
             text-align: center;
             margin: 20px auto;
         }
-
         .dropdown {
             .dropdown-menu {
                 li {
@@ -1107,14 +1115,12 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
-
     #search {
         color: #fff;
         text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
-
         button {
             padding-top: 5px;
             padding-bottom: 5px;
@@ -1129,6 +1135,7 @@ h4.detailedInfo {
         text-align: center;
     }
 }
+
 
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -1196,7 +1203,6 @@ h4.detailedInfo {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
                     }
-
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1241,7 +1247,6 @@ h4.detailedInfo {
                         @include responsive(mediums-max-screens) {
                             margin-top: 0.6em;
                         }
-
                         @include responsive(small-max-screens) {
                             margin-top: 1em;
                         }
@@ -1359,7 +1364,9 @@ h4.detailedInfo {
     }
 }
 
+
 /* PROJECT */
+
 header {
     &.projectHeader {
         margin-bottom: 0;
@@ -1387,7 +1394,6 @@ header {
                 @include responsive(small-max-screens) {
                     text-align: left;
                 }
-
                 a {
                     position: relative;
                     top: 0px;
@@ -1395,7 +1401,6 @@ header {
                         left: 0;
                         top: 0;
                     }
-
                     &.fullPdf {
                         @include noWrapTxt;
                     }
@@ -1419,9 +1424,10 @@ header {
                 }
             }
             /* Style buttons and logos for Akvo Pages project pages */
-            .btn, img {
+            .btn,
+            img {
                 display: inline-block;
-                margin: 10px 3px  3px  3px;
+                margin: 10px 3px 3px 3px;
             }
         }
     }
@@ -1466,7 +1472,6 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
-
         .carousel-indicators {
             bottom: -5px;
             li {
@@ -1517,7 +1522,6 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
-
         ul {
             margin: 0;
             padding: 0;
@@ -1579,6 +1583,12 @@ div.projectTopRow {
                 }
             }
         }
+    }
+}
+
+#invite_button {
+    button {
+        margin: 23px 0 0 25px;
     }
 }
 
@@ -1699,13 +1709,16 @@ div.textBlock {
     .budgetItem {
         margin-top: 12px;
         width: 60%;
-        &:nth-child(1), &:nth-child(2) {
+        &:nth-child(1),
+        &:nth-child(2) {
             margin-top: 0;
         }
     }
 }
 
+
 /* Project hierarchy */
+
 .project-hierarchy-window {
     border: 0.1em solid #d3d3d3;
     width: 150px;
@@ -1763,7 +1776,9 @@ div.textBlock {
     }
 }
 
+
 /* Tooltips */
+
 .tooltip {
     z-index: 99999;
     .tooltip-arrow {}
@@ -1779,6 +1794,7 @@ div.textBlock {
         }
     }
 }
+
 
 /* Typeahead Styling */
 
@@ -1814,7 +1830,9 @@ ul.typeahead-selector {
     }
 }
 
+
 /* Organisation Page */
+
 .organisationDetail {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
@@ -1868,7 +1886,8 @@ ul.typeahead-selector {
         max-width: 325px;
         margin-right: auto;
         margin-left: auto;
-        dd, dt {
+        dd,
+        dt {
             display: inline-block;
         }
         dt {
@@ -1882,7 +1901,9 @@ ul.typeahead-selector {
     }
 }
 
+
 /* Update Page */
+
 .updateMain {
     h2 {
         color: $rsrGreen;
@@ -1901,6 +1922,7 @@ ul.typeahead-selector {
     }
 }
 
+
 /* Donate Page*/
 
 .projectDonate {
@@ -1917,7 +1939,6 @@ ul.typeahead-selector {
             text-align: center;
         }
     }
-
     .donateButton {
         margin-bottom: 2em;
     }
@@ -1951,7 +1972,6 @@ ul.typeahead-selector {
             }
         }
     }
-
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
@@ -1971,6 +1991,7 @@ ul.typeahead-selector {
         }
     }
 }
+
 
 /* Financial details page */
 
@@ -1996,7 +2017,6 @@ section.projectFinancial {
             }
         }
     }
-
     @include responsive(mediums-max-screens) {
         @include responsive(small-screens) {
             .dl-horizontal {
@@ -2024,6 +2044,7 @@ section.projectFinancial {
     }
 }
 
+
 /* Project Partners details page */
 
 section.projectPartners {
@@ -2037,7 +2058,9 @@ section.projectPartners {
         background: rgba(245, 245, 245, 0.5);
         border: thin solid rgba($rsrBlue, 0.1);
         @include border-radius(3px);
-        h2, h3, h4 {
+        h2,
+        h3,
+        h4 {
             margin-top: 0;
         }
         img {
@@ -2052,7 +2075,6 @@ section.projectPartners {
                 max-width: 60%;
             }
         }
-
         h2 {
             display: inline-block;
             font-size: 1.3em;
@@ -2063,7 +2085,8 @@ section.projectPartners {
         }
         a.org-link {
             &:hover {
-                i, h2 {
+                i,
+                h2 {
                     color: rgb(255, 85, 0);
                 }
             }
@@ -2090,7 +2113,9 @@ section.projectPartners {
     }
 }
 
+
 /* Display currency totals right-aligned */
+
 .currencyAmount {
     text-align: right;
 }
@@ -2101,6 +2126,7 @@ dd {
     }
 }
 
+
 /* Project report page */
 
 .projectReport {
@@ -2109,7 +2135,6 @@ dd {
         margin-left: auto;
         margin-right: auto;
     }
-
     @media only screen and (min-width: $width-medium) {
         table {
             table-layout: fixed;
@@ -2125,6 +2150,7 @@ dd {
         }
     }
 }
+
 
 /* Project update page */
 
@@ -2152,6 +2178,7 @@ a.addUpdateBtn {
     }
 }
 
+
 /* Google translation bar styles */
 
 body {
@@ -2177,6 +2204,7 @@ body {
     }
 }
 
+
 /* Cookie */
 
 #cookie-law {
@@ -2197,6 +2225,7 @@ body {
         }
     }
 }
+
 
 /* Project Admin */
 
@@ -2378,7 +2407,8 @@ body {
             }
         }
     }
-    .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
+    .col-md-4 a.btn.btn-link,
+    .col-md-3 a.btn.btn-link {
         margin-top: 23px;
     }
     .add-object-link {
@@ -2392,7 +2422,9 @@ body {
         background-color: rgba($akvoPurple, 0.3);
         /* Modern Browsers */
     }
-    input, textarea, select {
+    input,
+    textarea,
+    select {
         & + label,
         & + span + label,
         & + ul + label {
@@ -2566,6 +2598,7 @@ body {
     }
 }
 
+
 /* New concatenated project page */
 
 .tab-menu {
@@ -2574,7 +2607,8 @@ body {
         padding: 0.5em;
         margin: 0 1em;
         color: $anchorLink;
-        &:hover, &.selected {
+        &:hover,
+        &.selected {
             border-bottom: 3px solid $newResultColor;
             color: $newResultColor;
         }
@@ -2584,7 +2618,13 @@ body {
     }
 }
 
+
 /* Results framework display */
+
+#results-framework {
+    padding: 0;
+    margin: 0;
+}
 
 .results {
     position: relative;
@@ -2592,8 +2632,7 @@ body {
         box-sizing: border-box;
     }
     article {
-        margin: 0 1em;
-        @include border-radius(3px);
+        margin: 0;
         overflow: hidden;
     }
     .clickable {
@@ -2622,6 +2661,7 @@ body {
     }
     .results-container {
         @include display-flex;
+        padding-left: 0;
     }
     .sidebar {
         width: 30%;
@@ -2832,7 +2872,8 @@ body {
             }
             .baseline {
                 padding: 2em 0;
-                .baseline-value, .baseline-year {
+                .baseline-value,
+                .baseline-year {
                     width: 30%;
                     display: inline-block;
                     padding: 0 0 0 5%;
@@ -2868,7 +2909,8 @@ body {
                         background-color: #ececec;
                     }
                 }
-                tr, td {
+                tr,
+                td {
                     border: none;
                     color: rgb(172, 172, 172);
                 }
@@ -2888,7 +2930,10 @@ body {
                 }
                 td {
                     vertical-align: middle;
-                    &.period-td, &.actual-td, &.target-td, &.actions-td {
+                    &.period-td,
+                    &.actual-td,
+                    &.target-td,
+                    &.actions-td {
                         white-space: nowrap;
                     }
                     &.indicator-bar-td {
@@ -2940,7 +2985,8 @@ body {
         height: 100%;
         margin-left: 50px;
         margin-right: 15px;
-        .indicator-bar, .indicator-bar-progress-amount {
+        .indicator-bar,
+        .indicator-bar-progress-amount {
             position: absolute;
             top: 38px;
             bottom: 24px;
@@ -3180,7 +3226,7 @@ body {
                 }
             }
         }
-        div {
+        td {
             padding: 8px 2em;
             .update-entry-container {
                 padding: 2em;
@@ -3276,7 +3322,8 @@ body {
                             }
                         }
                     }
-                    .indicator-bar, .indicator-bar-progress-amount {
+                    .indicator-bar,
+                    .indicator-bar-progress-amount {
                         position: absolute;
                         top: 38px;
                         bottom: 24px;
@@ -3466,7 +3513,8 @@ body {
                             background-color: red;
                         }
                     }
-                    .noUi-base, &.noUi-horizontal {
+                    .noUi-base,
+                    &.noUi-horizontal {
                         height: 5px;
                         border: 0;
                         background-color: rgba(white, 0);
@@ -3552,6 +3600,7 @@ body {
     }
 }
 
+
 /* Modal dialog stuff for the Project Editor */
 
 div.inactive {
@@ -3628,7 +3677,9 @@ div.active {
             .inputContainer {
                 margin-top: 2.75em;
                 margin-bottom: 1em;
-                input, select, textarea {
+                input,
+                select,
+                textarea {
                     & + label {
                         position: absolute;
                         top: -25px;
@@ -3665,6 +3716,7 @@ div.active {
         }
     }
 }
+
 
 /* My reports section */
 
