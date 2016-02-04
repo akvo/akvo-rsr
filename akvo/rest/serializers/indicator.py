@@ -13,6 +13,8 @@ from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
+    user_details = UserDetailsSerializer(source='user', required=False)
+
     class Meta:
         model = IndicatorPeriodDataComment
 

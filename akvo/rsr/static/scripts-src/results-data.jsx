@@ -1342,12 +1342,29 @@ function displayDate(dateString) {
     return day + " " + month + " " + year;
 }
 
+var CommentEntry = React.createClass({
+    render: function() {
+        var comment = this.props.comment;
+        var user = comment.user_details;
+        return (
+            <div className="row">
+                <div class="col-xs-12 comment-header">
+                    {user.first_name} {user.last_name} | {displayDate(comment.created_at)}
+                </div>
+                <div class="col-xs-12 comment-text">
+                    {comment.comment}
+                </div>
+            </div>
+        );
+    }
+});
 
 var UpdateEntry = React.createClass({
     getInitialState: function() {
         return {
             data: this.props.update.data,
-            description: this.props.update.text
+            description: this.props.update.text,
+            comment: ''
         };
     },
 
@@ -1451,6 +1468,29 @@ var UpdateEntry = React.createClass({
         this.baseUpload(file, 'file');
     },
 
+    addComment: function() {
+        var url = endpoints.base_url + endpoints.comments;
+        var thisApp = this;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
+                var comment = JSON.parse(xmlHttp.responseText);
+                var updateId = thisApp.props.update.id;
+                thisApp.props.saveCommentInUpdate(comment, updateId);
+                thisApp.setState({comment: ''});
+            }
+        };
+        xmlHttp.open("POST", url, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'data': this.props.update.id,
+            'user': user.id,
+            'comment': this.state.comment
+        }));
+    },
+
     switchEdit: function() {
         var addEdit = this.props.addEditingData;
         var removeEdit = this.props.removeEditingData;
@@ -1469,6 +1509,10 @@ var UpdateEntry = React.createClass({
 
     handleDescriptionChange: function(e) {
         this.setState({description: e.target.value});
+    },
+
+    handleCommentChange: function(e) {
+        this.setState({comment: e.target.value});
     },
 
     renderUpdateClass: function() {
@@ -1622,6 +1666,34 @@ var UpdateEntry = React.createClass({
         }
     },
 
+    renderComments: function() {
+        var comments = this.props.update.comments.map(function(comment) {
+            return (
+                <div className="comment">
+                    {React.createElement(CommentEntry, {
+                        comment: comment
+                    })}
+                </div>
+            )
+        });
+
+        var inputId = "new-comment-" + this.props.update.id;
+        return (
+            <div className="comments">
+                {comments}
+                <div className="row">
+                    <div className="col-xs-8">
+                        <label htmlFor={inputId}>{i18n.comment}</label>
+                        <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18n.add_comment_placeholder} onChange={this.handleCommentChange} />
+                    </div>
+                    <div className="col-xs-3">
+                        <a onClick={this.addComment}>{i18n.add_comment}</a>
+                    </div>
+                </div>
+            </div>
+        );
+    },
+
     renderFooter: function() {
         if (this.editing()) {
             switch(this.props.update.status) {
@@ -1692,6 +1764,7 @@ var UpdateEntry = React.createClass({
                     {this.renderActual()}
                     {this.renderDescription()}
                     {this.renderFileUpload()}
+                    {this.renderComments()}
                     {this.renderFooter()}
                 </div>
             </div>
@@ -1724,6 +1797,7 @@ var UpdatesList = React.createClass({
                         editingData: thisList.props.editingData,
                         saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
                         saveFileInUpdate: thisList.props.saveFileInUpdate,
+                        saveCommentInUpdate: thisList.props.saveCommentInUpdate,
                         selectedPeriod: thisList.props.selectedPeriod,
                         selectPeriod: thisList.props.selectPeriod,
                         update: update
@@ -1793,6 +1867,7 @@ var IndicatorPeriodMain = React.createClass({
                         editingData: this.props.editingData,
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
+                        saveCommentInUpdate: this.props.saveCommentInUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod
                     })}
@@ -1894,6 +1969,7 @@ var MainContent = React.createClass({
                         editingData: this.props.editingData,
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
+                        saveCommentInUpdate: this.props.saveCommentInUpdate,
                         selectedPeriod: this.props.selectedPeriod
                     })}
                 </div>
@@ -2156,6 +2232,15 @@ var ResultsApp = React.createClass({
         }
     },
 
+    saveCommentInUpdate: function(comment, updateId) {
+        var update = this.findUpdate(updateId);
+
+        if (update !== null) {
+            update.comments.push(comment);
+            this.forceUpdate();
+        }
+    },
+
     selectResult: function(resultId) {
         this.setState({selectedResult: resultId});
     },
@@ -2208,6 +2293,7 @@ var ResultsApp = React.createClass({
                                     editingData: this.state.editingData,
                                     saveUpdateToPeriod: this.saveUpdateToPeriod,
                                     saveFileInUpdate: this.saveFileInUpdate,
+                                    saveCommentInUpdate: this.saveCommentInUpdate,
                                     indicator: this.state.selectedIndicator,
                                     selectedPeriod: this.state.selectedPeriod,
                                     selectPeriod: this.selectPeriod
