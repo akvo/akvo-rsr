@@ -23,6 +23,8 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
                                                     allow_add_remove=True)
     user_details = UserDetailsSerializer(source='user', required=False)
     status_display = serializers.Field(source='status_display')
+    photo_url = serializers.Field(source='photo_url')
+    file_url = serializers.Field(source='file_url')
 
     class Meta:
         model = IndicatorPeriodData

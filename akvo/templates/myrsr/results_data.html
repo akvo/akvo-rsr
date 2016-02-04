@@ -23,7 +23,8 @@
             "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
             "update": "/rest/v1/indicator_period_data/{update}/?format=json",
             "updates": "/rest/v1/indicator_period_data/?format=json",
-            "user": "/rest/v1/user/{{ user.pk }}/?format=json"
+            "user": "/rest/v1/user/{{ user.pk }}/?format=json",
+            "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
         }
     </script>
 
@@ -58,7 +59,12 @@
             "edit_update": "{% trans 'Edit update' %}",
             "cancel": "{% trans 'Cancel' %}",
             "save": "{% trans 'Save' %}",
-            "submit_for_approval": "{% trans 'Submit for approval' %}"
+            "submit_for_approval": "{% trans 'Submit for approval' %}",
+            "return_for_revision": "{% trans 'Return for revision' %}",
+            "approve": "{% trans 'Approve' %}",
+            "add_image": "{% trans 'Add image' %}",
+            "change_image": "{% trans 'Change image' %}",
+            "attach_file": "{% trans 'Attach file' %}"
         }
     </script>
 

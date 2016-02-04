@@ -98,6 +98,9 @@ urlpatterns = patterns(
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+    url(r'^indicator_period_data/(?P<pk>[0-9]+)/upload_file/$',
+        views.indicator_upload_file,
+        name='indicator_upload_file'),
     url(r'^server_info/$', views.server_info, name='server_info'),
 )
 

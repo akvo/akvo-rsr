@@ -1355,38 +1355,100 @@ var UpdateEntry = React.createClass({
         return this.props.editingData.indexOf(this.props.update.id) > -1;
     },
 
-    baseSave: function(status) {
-        var xmlHttp = new XMLHttpRequest();
+    baseSave: function(data, keepEditing) {
         var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
-        var newData = {
-            'user': user.id,
-            'text': this.state.description,
-            'data': this.state.data
-        };
-        if (status !== undefined) {
-            newData['status'] = status;
-        }
         var thisApp = this;
+
+        var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE) { //TODO: && xmlHttp.status == 201) {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
                 var update = JSON.parse(xmlHttp.responseText);
                 var periodId = thisApp.props.selectedPeriod.id;
                 thisApp.props.saveUpdateToPeriod(update, periodId);
-                thisApp.props.removeEditingData(update.id);
+                if (!keepEditing) {
+                    thisApp.props.removeEditingData(update.id);
+                }
             }
         };
         xmlHttp.open("PATCH", url, true);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify(newData));
+        xmlHttp.send(JSON.stringify(data));
     },
 
     saveUpdate: function() {
-        this.baseSave();
+        this.baseSave({
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data
+        }, false);
     },
 
     askForApproval: function() {
-        this.baseSave('P');
+        this.baseSave({
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data,
+            'status': 'P'
+        }, false);
+    },
+
+    approve: function() {
+        this.baseSave({
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data,
+            'status': 'A'
+        }, false);
+    },
+
+    returnForRevision: function() {
+        this.baseSave({
+            'user': user.id,
+            'text': this.state.description,
+            'data': this.state.data,
+            'status': 'R'
+        }, false);
+    },
+
+    removePhoto: function() {
+        this.baseSave({'photo': ''}, true);
+    },
+
+    removeFile: function() {
+        this.baseSave({'file': ''}, true);
+    },
+
+    baseUpload: function(file, type) {
+        var thisApp = this;
+        var updateId = this.props.update.id;
+        var url = endpoints.file_upload.replace('{update}', updateId);
+
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("type", type);
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", url);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.onload = function() {
+            if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
+                var newFile = JSON.parse(xmlHttp.responseText).file;
+                thisApp.props.saveFileInUpdate(newFile, updateId, type);
+            }
+        };
+
+        xmlHttp.send(formData);
+    },
+
+    uploadImage: function(e) {
+        var file = e.target.files[0];
+        this.baseUpload(file, 'photo');
+    },
+
+    uploadFile: function(e) {
+        var file = e.target.files[0];
+        this.baseUpload(file, 'file');
     },
 
     switchEdit: function() {
@@ -1472,13 +1534,19 @@ var UpdateEntry = React.createClass({
         var inputId = "description-input-" + this.props.update.id;
         var photoPart, descriptionPart, descriptionClass;
 
-        if (this.props.update.photo === "") {
+        if (this.props.update.photo_url === "") {
             photoPart = <span />;
             descriptionClass = "col-xs-10 update-description";
         } else {
-            photoPart = <div className="col-xs-3 update-photo">
-                <img src={endpoints.base_url + '/media/' + this.props.update.photo}/>
-            </div>;
+            if (this.editing()) {
+                photoPart = <div className="col-xs-3 update-photo">
+                    <img src={endpoints.base_url + this.props.update.photo_url} onClick={this.removePhoto} />
+                </div>;
+            } else {
+                photoPart = <div className="col-xs-3 update-photo">
+                    <img src={endpoints.base_url + this.props.update.photo_url}/>
+                </div>;
+            }
             descriptionClass = "col-xs-7 update-description";
         }
 
@@ -1501,30 +1569,118 @@ var UpdateEntry = React.createClass({
         );
     },
 
-    renderFooter: function() {
+    fileNameDisplay: function() {
+        if (this.props.update.file_url !== '') {
+            return decodeURIComponent(this.props.update.file_url.split('/').pop());
+        } else {
+            return '';
+        }
+    },
+
+    renderFileUpload: function() {
         if (this.editing()) {
+            var fileUpload;
+            var labelText = this.props.update.photo_url === "" ? i18n.add_image : i18n.change_image;
+
+            if (this.props.update.file_url !== '') {
+                fileUpload = <div className="col-xs-6">
+                    <i className="fa fa-paperclip"/> <a href={this.props.update.file_url} target="_blank">{this.fileNameDisplay()}</a>
+                    <a onClick={this.removeFile}> Remove</a>
+                </div>
+            } else {
+                fileUpload = <div className="col-xs-3">
+                    <label className="fileUpload">
+                        <input type="file" onChange={this.uploadFile} />
+                        <a><i className="fa fa-paperclip"/> {i18n.attach_file}</a>
+                    </label>
+                </div>
+            }
+
             return (
                 <div className="row">
-                    <div className="col-xs-7">
-                        <a className="clickable" onClick={this.switchEdit}>{i18n.cancel}</a>
-                    </div>
-                    <div className="col-xs-2">
-                        <a className="clickable" onClick={this.saveUpdate}>{i18n.save}</a>
-                    </div>
                     <div className="col-xs-3">
-                        <a className="clickable" onClick={this.askForApproval}>{i18n.submit_for_approval}</a>
+                        <label className="imageUpload">
+                            <input type="file" accept="image/*" onChange={this.uploadImage} />
+                            <a><i className="fa fa-camera"/> {labelText}</a>
+                        </label>
+                    </div>
+                    {fileUpload}
+                </div>
+            );
+        } else if (this.props.update.file_url !== '') {
+            return (
+                <div className="row">
+                    <div className="col-xs-6">
+                        <i className="fa fa-paperclip"/> <a href={this.props.update.file_url} target="_blank">{this.fileNameDisplay()}</a>
                     </div>
                 </div>
             );
         } else {
             return (
-                <div className="row">
-                    <div className="col-xs-9"></div>
-                    <div className="col-xs-3">
-                        <a className="clickable" onClick={this.switchEdit}>{i18n.edit_update}</a>
-                    </div>
-                </div>
+                <span />
             );
+        }
+    },
+
+    renderFooter: function() {
+        if (this.editing()) {
+            switch(this.props.update.status) {
+                case 'P':
+                    return (
+                        <div className="row">
+                            <div className="col-xs-9">
+                                <a onClick={this.switchEdit}>{i18n.cancel}</a>
+                            </div>
+                            <div className="col-xs-3">
+                                <a onClick={this.approve}>{i18n.approve}</a>
+                            </div>
+                        </div>
+                    );
+                default:
+                    return (
+                        <div className="row">
+                            <div className="col-xs-7">
+                                <a onClick={this.switchEdit}>{i18n.cancel}</a>
+                            </div>
+                            <div className="col-xs-2">
+                                <a onClick={this.saveUpdate}>{i18n.save}</a>
+                            </div>
+                            <div className="col-xs-3">
+                                <a onClick={this.askForApproval}>{i18n.submit_for_approval}</a>
+                            </div>
+                        </div>
+                    );
+            }
+        } else {
+            switch(this.props.update.status) {
+                case 'P':
+                    return (
+                        <div className="row">
+                            <div className="col-xs-7">
+                                <a onClick={this.returnForRevision}>{i18n.return_for_revision}</a>
+                            </div>
+                            <div className="col-xs-2">
+                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
+                            </div>
+                            <div className="col-xs-3">
+                                <a onClick={this.approve}>{i18n.approve}</a>
+                            </div>
+                        </div>
+                    );
+                case 'A':
+                    return (
+                        <span />
+                    );
+                default:
+                    return (
+                        <div className="row">
+                            <div className="col-xs-9"></div>
+                            <div className="col-xs-3">
+                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
+                            </div>
+                        </div>
+                    );
+            }
         }
     },
 
@@ -1535,6 +1691,7 @@ var UpdateEntry = React.createClass({
                     {this.renderHeader()}
                     {this.renderActual()}
                     {this.renderDescription()}
+                    {this.renderFileUpload()}
                     {this.renderFooter()}
                 </div>
             </div>
@@ -1566,6 +1723,7 @@ var UpdatesList = React.createClass({
                         removeEditingData: thisList.props.removeEditingData,
                         editingData: thisList.props.editingData,
                         saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
+                        saveFileInUpdate: thisList.props.saveFileInUpdate,
                         selectedPeriod: thisList.props.selectedPeriod,
                         selectPeriod: thisList.props.selectPeriod,
                         update: update
@@ -1614,7 +1772,7 @@ var IndicatorPeriodMain = React.createClass({
                         </h4>
                     </div>
                     <div className="col-xs-3 new-update">
-                        <a className="clickable" onClick={this.addNewUpdate}>{i18n.new_update}</a>
+                        <a onClick={this.addNewUpdate}>{i18n.new_update}</a>
                     </div>
                 </div>
                 <dl className="period-target-actual">
@@ -1634,6 +1792,7 @@ var IndicatorPeriodMain = React.createClass({
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
+                        saveFileInUpdate: this.props.saveFileInUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod
                     })}
@@ -1661,7 +1820,7 @@ var IndicatorPeriodEntry = React.createClass({
         return (
             <tr>
                 <td className="period-td">
-                    <a className="clickable" onClick={this.switchPeriod}>
+                    <a onClick={this.switchPeriod}>
                         {displayDate(this.props.period.period_start)} - {displayDate(this.props.period.period_end)}
                     </a>
                 </td>
@@ -1671,7 +1830,7 @@ var IndicatorPeriodEntry = React.createClass({
                     <span className="percentage-complete"> (100%)</span>
                 </td>
                 <td className="actions-td">
-                    <a className="clickable">{i18n.update}</a>
+                    <a>{i18n.update}</a>
                 </td>
             </tr>
         );
@@ -1734,6 +1893,7 @@ var MainContent = React.createClass({
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
+                        saveFileInUpdate: this.props.saveFileInUpdate,
                         selectedPeriod: this.props.selectedPeriod
                     })}
                 </div>
@@ -1919,41 +2079,79 @@ var ResultsApp = React.createClass({
         xmlHttp.send();
     },
 
-    saveUpdateToPeriod: function(update, periodId) {
-        // TODO: Clean up
-        // Loop through all results, indicators and periods
+    findPeriod: function(periodId) {
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
             for (var j = 0; j < result.indicators.length; j++) {
                 var indicator = result.indicators[j];
                 for (var k = 0; k < indicator.periods.length; k++) {
                     var period = indicator.periods[k];
-                    // When we find the period we're looking for..
                     if (period.id == periodId) {
-                        var dataFound = null;
-                        // Check if update already exists..
-                        for (var l = 0; l < period.data.length; l++) {
-                            var dataUpdate = period.data[l];
-                            if (dataUpdate.id == update.id) {
-                                console.log(dataUpdate.id, update.id);
-                                dataFound = dataUpdate;
-                                break;
-                            }
-                        }
-                        if (dataFound === null) {
-                            // Insert new update if not
-                            period.data.push(update);
-                            this.forceUpdate();
-                            this.addEditingData(update.id);
-                        } else {
-                            // Remove old update and insert updated update if update exists
-                            var periodDataList = period.data;
-                            periodDataList.splice(periodDataList.indexOf(dataFound), 1);
-                            periodDataList.push(update);
-                            this.forceUpdate();
+                        return period;
+                    }
+                }
+            }
+        }
+        return null;
+    },
+
+    findUpdate: function(updateId) {
+        for (var i = 0; i < this.state.results.length; i++) {
+            var result = this.state.results[i];
+            for (var j = 0; j < result.indicators.length; j++) {
+                var indicator = result.indicators[j];
+                for (var k = 0; k < indicator.periods.length; k++) {
+                    var period = indicator.periods[k];
+                    for (var l = 0; l < period.data.length; l++) {
+                        var update = period.data[l];
+                        if (update.id == updateId) {
+                            return update;
                         }
                     }
                 }
+            }
+        }
+        return null;
+    },
+
+    saveUpdateToPeriod: function(update, periodId) {
+        var period = this.findPeriod(periodId);
+
+        if (period !== null) {
+            var dataFound = null;
+            for (var l = 0; l < period.data.length; l++) {
+                var dataUpdate = period.data[l];
+                if (dataUpdate.id == update.id) {
+                    dataFound = dataUpdate;
+                    break;
+                }
+            }
+
+            if (dataFound === null) {
+                // Insert new update if not
+                period.data.push(update);
+                this.forceUpdate();
+                this.addEditingData(update.id);
+            } else {
+                // Remove old update and insert updated update if update exists
+                var periodDataList = period.data;
+                periodDataList.splice(periodDataList.indexOf(dataFound), 1);
+                periodDataList.push(update);
+                this.forceUpdate();
+            }
+        }
+    },
+
+    saveFileInUpdate: function(file, updateId, fileType) {
+        var update = this.findUpdate(updateId);
+
+        if (update !== null) {
+            if (fileType === 'photo') {
+                update.photo_url = file;
+                this.forceUpdate();
+            } else if (fileType === 'file') {
+                update.file_url = file;
+                this.forceUpdate();
             }
         }
     },
@@ -2009,6 +2207,7 @@ var ResultsApp = React.createClass({
                                     removeEditingData: this.removeEditingData,
                                     editingData: this.state.editingData,
                                     saveUpdateToPeriod: this.saveUpdateToPeriod,
+                                    saveFileInUpdate: this.saveFileInUpdate,
                                     indicator: this.state.selectedIndicator,
                                     selectedPeriod: this.state.selectedPeriod,
                                     selectPeriod: this.selectPeriod

@@ -18,7 +18,7 @@ from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
 from .indicator import (IndicatorViewSet, IndicatorPeriodViewSet, IndicatorPeriodDataViewSet,
-                        IndicatorPeriodDataCommentViewSet)
+                        IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
@@ -88,6 +88,7 @@ __all__ = [
     'IndicatorPeriodViewSet',
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataCommentViewSet',
+    'indicator_upload_file',
     'InternalOrganisationIDViewSet',
     'invite_user',
     'InvoiceViewSet',

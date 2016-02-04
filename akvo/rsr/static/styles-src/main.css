@@ -546,7 +546,6 @@ nav.navbar-fixed-top {
   .myProjectList thead tr th, #updates thead tr th {
     padding-top: 10px 0;
     padding-bottom: 10px 0; }
-
 .myProjectList tbody tr, #updates tbody tr {
   background: white !important; }
   .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished {
@@ -557,7 +556,6 @@ nav.navbar-fixed-top {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
-
 .myProjectList div.projectListMenu a, #updates div.projectListMenu a {
   margin-right: 25px; }
   .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child {
@@ -565,13 +563,10 @@ nav.navbar-fixed-top {
 @media only screen and (min-width: 1200px) {
   .myProjectList div.projectListMenu, #updates div.projectListMenu {
     min-width: 170px; } }
-
 .myProjectList div.projectListMenu > a, #updates div.projectListMenu > a {
   min-width: 70px; }
-
 .myProjectList a:last-child, #updates a:last-child {
   margin-right: 0; }
-
 .myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled {
   background-color: #AB9F9F;
   color: #E9E9E9;
@@ -617,10 +612,8 @@ div.paginationWrap {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
-
 .table-responsive .media > a {
   min-width: 80px; }
-
 .table-responsive .media .media-body p {
   max-width: 170px;
   overflow: hidden;
@@ -2467,6 +2460,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
+  .results label.imageUpload input[type="file"], .results label.fileUpload input[type="file"] {
+    position: fixed;
+    top: -1000px; }
   .results .update-entry-container {
     padding: 2em;
     margin-bottom: 2em;

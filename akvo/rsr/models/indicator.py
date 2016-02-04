@@ -597,6 +597,20 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         except KeyError:
             return u''
 
+    @property
+    def photo_url(self):
+        """
+        Returns the full URL of the photo.
+        """
+        return self.photo.url if self.photo else u''
+
+    @property
+    def file_url(self):
+        """
+        Returns the full URL of the file.
+        """
+        return self.file.url if self.file else u''
+
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):
     """

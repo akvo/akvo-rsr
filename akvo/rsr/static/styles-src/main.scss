@@ -3152,6 +3152,12 @@ body {
             }
         }
     }
+    label.imageUpload, label.fileUpload {
+        input[type="file"] {
+            position: fixed;
+            top: -1000px;
+        }
+    }
     .update-entry-container {
         padding: 2em;
         margin-bottom: 2em;

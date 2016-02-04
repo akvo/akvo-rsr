@@ -12,6 +12,10 @@ from ..serializers import (IndicatorSerializer, IndicatorPeriodSerializer,
                            IndicatorPeriodDataSerializer, IndicatorPeriodDataCommentSerializer)
 from ..viewsets import PublicProjectViewSet
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 
 class IndicatorViewSet(PublicProjectViewSet):
     """
@@ -38,6 +42,35 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
     serializer_class = IndicatorPeriodDataSerializer
     filter_fields = ('period', 'user', 'relative_data', 'status', 'update_method')
     project_relation = 'period__indicator__result__project__'
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def indicator_upload_file(request, pk=None):
+    """
+    Special API call for directly uploading a file.
+
+    :param request; A Django request object.
+    :param pk; The primary key of an IndicatorPeriodData instance.
+    """
+    update = IndicatorPeriodData.objects.get(pk=pk)
+    upload_file = request.FILES['file']
+
+    # TODO: Permissions
+    user = request.user
+
+    file_type = request.POST.copy()['type']
+    if file_type == 'photo':
+        update.photo = upload_file
+        update.save(update_fields=['photo'])
+        return Response({'file': update.photo.url})
+    elif file_type == 'file':
+        update.file = upload_file
+        update.save(update_fields=['file'])
+        return Response({'file': update.file.url})
+
+    # TODO: Error response
+    return Response({})
 
 
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
