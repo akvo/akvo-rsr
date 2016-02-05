@@ -1342,6 +1342,15 @@ function displayDate(dateString) {
     return day + " " + month + " " + year;
 }
 
+function userIsManager() {
+    if (user.is_admin || user.is_superuser) {
+        return true;
+    }
+    // TODO: Check org admins
+
+    return false;
+}
+
 var CommentEntry = React.createClass({displayName: 'CommentEntry',
     render: function() {
         var comment = this.props.comment;
@@ -1821,23 +1830,24 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
 
 var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     addNewUpdate: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var thisApp = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
-                var update = JSON.parse(xmlHttp.responseText);
-                var periodId = thisApp.props.selectedPeriod.id;
-                thisApp.props.saveUpdateToPeriod(update, periodId);
-            }
-        };
-        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
-            'period': this.props.selectedPeriod.id,
-            'user': user.id,
-            'data': 0
-        }));
+        this.props.addNewUpdate(this.props.selectedPeriod.id);
+    },
+
+    renderNewUpdate: function() {
+        switch (this.props.selectedPeriod.locked) {
+            case false:
+                return (
+                    React.DOM.div( {className:"col-xs-3 new-update"}, 
+                        React.DOM.a( {onClick:this.addNewUpdate}, i18n.new_update)
+                    )
+                );
+            default:
+                return (
+                    React.DOM.div( {className:"col-xs-3 new-update"}, 
+                        i18n.new_update
+                    )
+                );
+        }
     },
 
     render: function() {
@@ -1849,9 +1859,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                             i18n.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
                         )
                     ),
-                    React.DOM.div( {className:"col-xs-3 new-update"}, 
-                        React.DOM.a( {onClick:this.addNewUpdate}, i18n.new_update)
-                    )
+                    this.renderNewUpdate()
                 ),
                 React.DOM.dl( {className:"period-target-actual"}, 
                     React.DOM.div( {className:"period-target"}, 
@@ -1896,22 +1904,102 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         this.selected() ? selectPeriod(null) : selectPeriod(this.props.period);
     },
 
+    switchPeriodAndUpdate: function() {
+        this.props.addNewUpdate(this.props.selectedPeriod.id);
+        this.switchPeriod();
+    },
+
+    basePeriodSave: function(data) {
+        var url = endpoints.base_url + endpoints.period.replace('{period}', this.props.period.id);
+        var thisApp = this;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var period = JSON.parse(xmlHttp.responseText);
+                var indicatorId = period.indicator;
+                thisApp.props.savePeriodToIndicator(period, indicatorId);
+            }
+        };
+        xmlHttp.open("PATCH", url, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify(data));
+    },
+
+    lockPeriod: function() {
+        this.basePeriodSave({locked: true});
+    },
+
+    unlockPeriod: function() {
+        this.basePeriodSave({locked: false});
+    },
+
+    renderPeriodDisplay: function() {
+        var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
+
+        switch(this.props.period.data.length) {
+            case 0:
+                return (
+                    React.DOM.td( {className:"period-td"}, 
+                        periodDisplay
+                    )
+                );
+            default:
+                return (
+                    React.DOM.td( {className:"period-td"}, 
+                        React.DOM.a( {onClick:this.switchPeriod}, 
+                            periodDisplay
+                        )
+                    )
+                );
+        }
+    },
+
+    renderActions: function() {
+        if (userIsManager()) {
+            switch(this.props.period.locked) {
+                case false:
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
+                        )
+                    );
+                default:
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
+                        )
+                    )
+            }
+        } else {
+            switch(this.props.period.locked) {
+                case false:
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.switchPeriod}, i18n.update)
+                        )
+                    );
+                default:
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            i18n.update
+                        )
+                    )
+            }
+        }
+    },
+
     render: function() {
         return (
             React.DOM.tr(null, 
-                React.DOM.td( {className:"period-td"}, 
-                    React.DOM.a( {onClick:this.switchPeriod}, 
-                        displayDate(this.props.period.period_start), " - ", displayDate(this.props.period.period_end)
-                    )
-                ),
+                this.renderPeriodDisplay(),
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
                 React.DOM.td( {className:"actual-td"}, 
                     this.props.period.actual_value,
                     React.DOM.span( {className:"percentage-complete"},  " (100%)")
                 ),
-                React.DOM.td( {className:"actions-td"}, 
-                    React.DOM.a(null, i18n.update)
-                )
+                this.renderActions()
             )
         );
     }
@@ -1927,7 +2015,9 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
                     React.createElement(IndicatorPeriodEntry, {
                         period: period,
                         selectedPeriod: thisList.props.selectedPeriod,
-                        selectPeriod: thisList.props.selectPeriod
+                        selectPeriod: thisList.props.selectPeriod,
+                        addNewUpdate: thisList.props.addNewUpdate,
+                        savePeriodToIndicator: thisList.props.savePeriodToIndicator
                     })
                 )
             );
@@ -1953,6 +2043,25 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 });
 
 var MainContent = React.createClass({displayName: 'MainContent',
+    addNewUpdate: function(periodId) {
+        var xmlHttp = new XMLHttpRequest();
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
+                var update = JSON.parse(xmlHttp.responseText);
+                thisApp.props.saveUpdateToPeriod(update, periodId);
+            }
+        };
+        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'period': periodId,
+            'user': user.id,
+            'data': 0
+        }));
+    },
+
     showMeasure: function() {
         switch(this.props.indicator.measure) {
             case "1":
@@ -1969,6 +2078,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
             return (
                 React.DOM.div( {className:"indicator-period-container"}, 
                     React.createElement(IndicatorPeriodMain, {
+                        addNewUpdate: this.addNewUpdate,
                         addEditingData: this.props.addEditingData,
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
@@ -2004,7 +2114,9 @@ var MainContent = React.createClass({displayName: 'MainContent',
                     React.createElement(IndicatorPeriodList, {
                         indicator: this.props.indicator,
                         selectedPeriod: this.props.selectedPeriod,
-                        selectPeriod: this.props.selectPeriod
+                        selectPeriod: this.props.selectPeriod,
+                        addNewUpdate: this.addNewUpdate,
+                        savePeriodToIndicator: this.props.savePeriodToIndicator
                     })
                 )
             )
@@ -2290,7 +2402,6 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                // Remove old period and insert updated period
                 var period = JSON.parse(xmlHttp.responseText);
                 var indicatorId = period.indicator;
                 thisApp.savePeriodToIndicator(period, indicatorId);
@@ -2352,6 +2463,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                                     removeEditingData: this.removeEditingData,
                                     editingData: this.state.editingData,
                                     saveUpdateToPeriod: this.saveUpdateToPeriod,
+                                    savePeriodToIndicator: this.savePeriodToIndicator,
                                     saveFileInUpdate: this.saveFileInUpdate,
                                     saveCommentInUpdate: this.saveCommentInUpdate,
                                     reloadPeriod: this.reloadPeriod,

@@ -1342,6 +1342,15 @@ function displayDate(dateString) {
     return day + " " + month + " " + year;
 }
 
+function userIsManager() {
+    if (user.is_admin || user.is_superuser) {
+        return true;
+    }
+    // TODO: Check org admins
+
+    return false;
+}
+
 var CommentEntry = React.createClass({
     render: function() {
         var comment = this.props.comment;
@@ -1821,23 +1830,24 @@ var UpdatesList = React.createClass({
 
 var IndicatorPeriodMain = React.createClass({
     addNewUpdate: function() {
-        var xmlHttp = new XMLHttpRequest();
-        var thisApp = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
-                var update = JSON.parse(xmlHttp.responseText);
-                var periodId = thisApp.props.selectedPeriod.id;
-                thisApp.props.saveUpdateToPeriod(update, periodId);
-            }
-        };
-        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
-            'period': this.props.selectedPeriod.id,
-            'user': user.id,
-            'data': 0
-        }));
+        this.props.addNewUpdate(this.props.selectedPeriod.id);
+    },
+
+    renderNewUpdate: function() {
+        switch (this.props.selectedPeriod.locked) {
+            case false:
+                return (
+                    <div className="col-xs-3 new-update">
+                        <a onClick={this.addNewUpdate}>{i18n.new_update}</a>
+                    </div>
+                );
+            default:
+                return (
+                    <div className="col-xs-3 new-update">
+                        {i18n.new_update}
+                    </div>
+                );
+        }
     },
 
     render: function() {
@@ -1849,9 +1859,7 @@ var IndicatorPeriodMain = React.createClass({
                             {i18n.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
                         </h4>
                     </div>
-                    <div className="col-xs-3 new-update">
-                        <a onClick={this.addNewUpdate}>{i18n.new_update}</a>
-                    </div>
+                    {this.renderNewUpdate()}
                 </div>
                 <dl className="period-target-actual">
                     <div className="period-target">
@@ -1896,22 +1904,102 @@ var IndicatorPeriodEntry = React.createClass({
         this.selected() ? selectPeriod(null) : selectPeriod(this.props.period);
     },
 
+    switchPeriodAndUpdate: function() {
+        this.props.addNewUpdate(this.props.selectedPeriod.id);
+        this.switchPeriod();
+    },
+
+    basePeriodSave: function(data) {
+        var url = endpoints.base_url + endpoints.period.replace('{period}', this.props.period.id);
+        var thisApp = this;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                var period = JSON.parse(xmlHttp.responseText);
+                var indicatorId = period.indicator;
+                thisApp.props.savePeriodToIndicator(period, indicatorId);
+            }
+        };
+        xmlHttp.open("PATCH", url, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify(data));
+    },
+
+    lockPeriod: function() {
+        this.basePeriodSave({locked: true});
+    },
+
+    unlockPeriod: function() {
+        this.basePeriodSave({locked: false});
+    },
+
+    renderPeriodDisplay: function() {
+        var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
+
+        switch(this.props.period.data.length) {
+            case 0:
+                return (
+                    <td className="period-td">
+                        {periodDisplay}
+                    </td>
+                );
+            default:
+                return (
+                    <td className="period-td">
+                        <a onClick={this.switchPeriod}>
+                            {periodDisplay}
+                        </a>
+                    </td>
+                );
+        }
+    },
+
+    renderActions: function() {
+        if (userIsManager()) {
+            switch(this.props.period.locked) {
+                case false:
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
+                        </td>
+                    );
+                default:
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.unlockPeriod}>{i18n.unlock_period}</a>
+                        </td>
+                    )
+            }
+        } else {
+            switch(this.props.period.locked) {
+                case false:
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.switchPeriod}>{i18n.update}</a>
+                        </td>
+                    );
+                default:
+                    return (
+                        <td className="actions-td">
+                            {i18n.update}
+                        </td>
+                    )
+            }
+        }
+    },
+
     render: function() {
         return (
             <tr>
-                <td className="period-td">
-                    <a onClick={this.switchPeriod}>
-                        {displayDate(this.props.period.period_start)} - {displayDate(this.props.period.period_end)}
-                    </a>
-                </td>
+                {this.renderPeriodDisplay()}
                 <td className="target-td">{this.props.period.target_value}</td>
                 <td className="actual-td">
                     {this.props.period.actual_value}
                     <span className="percentage-complete"> (100%)</span>
                 </td>
-                <td className="actions-td">
-                    <a>{i18n.update}</a>
-                </td>
+                {this.renderActions()}
             </tr>
         );
     }
@@ -1927,7 +2015,9 @@ var IndicatorPeriodList = React.createClass({
                     {React.createElement(IndicatorPeriodEntry, {
                         period: period,
                         selectedPeriod: thisList.props.selectedPeriod,
-                        selectPeriod: thisList.props.selectPeriod
+                        selectPeriod: thisList.props.selectPeriod,
+                        addNewUpdate: thisList.props.addNewUpdate,
+                        savePeriodToIndicator: thisList.props.savePeriodToIndicator
                     })}
                 </tbody>
             );
@@ -1953,6 +2043,25 @@ var IndicatorPeriodList = React.createClass({
 });
 
 var MainContent = React.createClass({
+    addNewUpdate: function(periodId) {
+        var xmlHttp = new XMLHttpRequest();
+        var thisApp = this;
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
+                var update = JSON.parse(xmlHttp.responseText);
+                thisApp.props.saveUpdateToPeriod(update, periodId);
+            }
+        };
+        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
+        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.send(JSON.stringify({
+            'period': periodId,
+            'user': user.id,
+            'data': 0
+        }));
+    },
+
     showMeasure: function() {
         switch(this.props.indicator.measure) {
             case "1":
@@ -1969,6 +2078,7 @@ var MainContent = React.createClass({
             return (
                 <div className="indicator-period-container">
                     {React.createElement(IndicatorPeriodMain, {
+                        addNewUpdate: this.addNewUpdate,
                         addEditingData: this.props.addEditingData,
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
@@ -2004,7 +2114,9 @@ var MainContent = React.createClass({
                     {React.createElement(IndicatorPeriodList, {
                         indicator: this.props.indicator,
                         selectedPeriod: this.props.selectedPeriod,
-                        selectPeriod: this.props.selectPeriod
+                        selectPeriod: this.props.selectPeriod,
+                        addNewUpdate: this.addNewUpdate,
+                        savePeriodToIndicator: this.props.savePeriodToIndicator
                     })}
                 </div>
             )
@@ -2290,7 +2402,6 @@ var ResultsApp = React.createClass({
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                // Remove old period and insert updated period
                 var period = JSON.parse(xmlHttp.responseText);
                 var indicatorId = period.indicator;
                 thisApp.savePeriodToIndicator(period, indicatorId);
@@ -2352,6 +2463,7 @@ var ResultsApp = React.createClass({
                                     removeEditingData: this.removeEditingData,
                                     editingData: this.state.editingData,
                                     saveUpdateToPeriod: this.saveUpdateToPeriod,
+                                    savePeriodToIndicator: this.savePeriodToIndicator,
                                     saveFileInUpdate: this.saveFileInUpdate,
                                     saveCommentInUpdate: this.saveCommentInUpdate,
                                     reloadPeriod: this.reloadPeriod,
