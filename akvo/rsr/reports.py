@@ -20,9 +20,18 @@ REPORTS = [
         'title': unicode(_('Results and indicators overview')),
         'description': unicode(_('This report gives an overview of the status of your project\'s '
                                  'results and indicators.')),
-        'formats': ['pdf', 'excel'],
+        'formats': ['pdf',],
         'parameters': ['project', ],
         'url': '/en/reports/project_results/{project}?format={format}&download=true'
+    },
+    {
+        'key': 'results-simple-table',
+        'title': unicode(_('Results and indicators table')),
+        'description': unicode(_('This report provides a view of your project\'s results and '
+                                 'indicators data in a table.')),
+        'formats': ['excel',],
+        'parameters': ['project', ],
+        'url': '/en/reports/project_results_simple_table/{project}?format={format}&download=true'
     },
     {
         'key': 'projects-overview',
