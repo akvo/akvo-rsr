@@ -402,11 +402,6 @@ class IndicatorPeriod(models.Model):
         if parent:
             parent.update_actual_value(data, relative_data)
 
-        # Update next period
-        next_period = self.adjacent_period()
-        if next_period and next_period.actual_value:
-            next_period.update_actual_value(data, relative_data)
-
     @property
     def percent_accomplishment(self):
         """
@@ -507,15 +502,15 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     """
     Model for adding data to an indicator period.
     """
-    STATUS_DRAFT = _(u'draft')
-    STATUS_PENDING = _(u'pending approval')
-    STATUS_REVISION = _(u'return for revision')
-    STATUS_APPROVED = _(u'approved')
+    STATUS_DRAFT = unicode(_(u'draft'))
+    STATUS_PENDING = unicode(_(u'pending approval'))
+    STATUS_REVISION = unicode(_(u'return for revision'))
+    STATUS_APPROVED = unicode(_(u'approved'))
     STATUSES = (
-        ('D', STATUS_DRAFT),
-        ('P', STATUS_PENDING),
-        ('R', STATUS_REVISION),
-        ('A', STATUS_APPROVED),
+        (u'D', STATUS_DRAFT),
+        (u'P', STATUS_PENDING),
+        (u'R', STATUS_REVISION),
+        (u'A', STATUS_APPROVED),
     )
 
     UPDATE_METHODS = (
@@ -545,14 +540,14 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
-        if not self.pk and self.status == self.STATUS_APPROVED:
+        if not self.pk and self.status == u'A':
             # Newly added data update that is immediately approved. Scenario that probably does
             # not happen very often.
             self.period.update_actual_value(self.data, self.relative_data)
         elif self.pk:
             # Only process data when the data update was not approved, but has been approved now.
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
-            if orig.status != self.STATUS_APPROVED and self.status == self.STATUS_APPROVED:
+            if orig.status != u'A' and self.status == u'A':
                 self.period.update_actual_value(self.data, self.relative_data)
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
@@ -586,6 +581,30 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         if self.status == self.STATUS_APPROVED:
             raise FieldError(unicode(_(u'It is not possible to delete an approved data update')))
         super(IndicatorPeriodData, self).delete(*args, **kwargs)
+
+    @property
+    def status_display(self):
+        """
+        Returns the display of the status.
+        """
+        try:
+            return dict(self.STATUSES)[self.status]
+        except KeyError:
+            return u''
+
+    @property
+    def photo_url(self):
+        """
+        Returns the full URL of the photo.
+        """
+        return self.photo.url if self.photo else u''
+
+    @property
+    def file_url(self):
+        """
+        Returns the full URL of the file.
+        """
+        return self.file.url if self.file else u''
 
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):

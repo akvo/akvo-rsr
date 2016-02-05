@@ -21,7 +21,13 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
-            "updates": "/rest/v1/indicator_period_data/?format=json"
+            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
+            "period": "/rest/v1/indicator_period/{period}/?format=json",
+            "update": "/rest/v1/indicator_period_data/{update}/?format=json",
+            "updates": "/rest/v1/indicator_period_data/?format=json",
+            "comments": "/rest/v1/indicator_period_data_comment/?format=json",
+            "user": "/rest/v1/user/{{ user.pk }}/?format=json",
+            "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
         }
     </script>
 
@@ -46,8 +52,13 @@
             "baseline_year": "{% trans 'Baseline year' %}",
             "baseline_value": "{% trans 'Baseline value' %}",
             "period": "{% trans 'Period' %}",
+            "lock_period": "{% trans 'Lock period' %}",
+            "unlock_period": "{% trans 'Unlock period' %}",
+            "request_update": "{% trans 'Request update' %}",
             "actual_value": "{% trans 'Actual value' %}",
             "target_value": "{% trans 'Target value' %}",
+            "current": "{% trans 'Current' %}",
+            "note": "{% trans 'Note' %}",
             "update": "{% trans 'Update' %}",
             "updates": "{% trans 'Updates' %}",
             "new_update": "{% trans 'New update' %}",
@@ -55,8 +66,14 @@
             "cancel": "{% trans 'Cancel' %}",
             "save": "{% trans 'Save' %}",
             "submit_for_approval": "{% trans 'Submit for approval' %}",
-            "delete_confirm_text": "{% trans 'Are you sure you want to delete this update?' %}",
-            "delete_confirm_yes_text": "{% trans 'Delete update' %}"
+            "return_for_revision": "{% trans 'Return for revision' %}",
+            "approve": "{% trans 'Approve' %}",
+            "add_image": "{% trans 'Add image' %}",
+            "change_image": "{% trans 'Change image' %}",
+            "attach_file": "{% trans 'Attach file' %}",
+            "comment": "{% trans 'Comment' %}",
+            "add_comment": "{% trans 'Add comment' %}",
+            "add_comment_placeholder": "{% trans 'Add a comment to further elaborate on the update' %}"
         }
     </script>
 
