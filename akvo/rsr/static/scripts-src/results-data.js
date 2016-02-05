@@ -719,10 +719,23 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
 });
 
 var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
+    sortedPeriods: function() {
+        function compare(u1, u2) {
+            if (u1.period_start < u2.period_start) {
+                return -1;
+            } else if (u1.period_start > u2.period_start) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        return this.props.indicator.periods.sort(compare);
+    },
+
     render: function() {
         var thisList = this;
 
-        var periods = this.props.indicator.periods.map(function (period) {
+        var periods = this.sortedPeriods().map(function (period) {
             return (
                 React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
                     React.createElement(IndicatorPeriodEntry, {

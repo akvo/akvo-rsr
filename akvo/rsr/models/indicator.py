@@ -183,17 +183,12 @@ class Indicator(models.Model):
     def baseline(self):
         """
         Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
-        it'll return 0.
+        it'll return None.
         """
-        baseline = 0
-
-        if self.baseline_value:
-            baseline = self.baseline_value  
-
         try:
-            return Decimal(baseline)
+            return Decimal(self.baseline_value)
         except (InvalidOperation, TypeError):
-            return Decimal(1)   
+            return None
 
     class Meta:
         app_label = 'rsr'
@@ -406,17 +401,15 @@ class IndicatorPeriod(models.Model):
     def percent_accomplishment(self):
         """
         Return the percentage completed for this indicator period. If not possible to convert the
-        values to numbers, return 0.
+        values to numbers, return None.
         """
-        if not self.target_value:
+        if not (self.target_value and self.actual_value):
             return None
 
-        actual_value = self.actual_value or self.baseline
-        baseline = self.indicator.baseline_value or None
         try:
             return round(
-                (Decimal(actual_value) - Decimal(baseline)) /
-                (Decimal(self.target_value) - Decimal(baseline)) *
+                (Decimal(self.actual_value) - Decimal(self.baseline)) /
+                (Decimal(self.target_value) - Decimal(self.baseline)) *
                 100, 1
             )
         except (InvalidOperation, TypeError, DivisionByZero):
@@ -428,7 +421,9 @@ class IndicatorPeriod(models.Model):
         Similar to the percent_accomplishment property. However, it won't return any number bigger
         than 100.
         """
-        return 100 if self.percent_accomplishment > 100 else self.percent_accomplishment
+        if self.percent_accomplishment and self.percent_accomplishment > 100:
+            return 100
+        return self.percent_accomplishment
 
     @property
     def actual(self):
@@ -467,7 +462,7 @@ class IndicatorPeriod(models.Model):
         try:
             return Decimal(baseline)
         except (InvalidOperation, TypeError):
-            return Decimal(0)
+            return None
 
     class Meta:
         app_label = 'rsr'
