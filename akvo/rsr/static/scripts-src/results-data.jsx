@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var currentDate, csrftoken, endpoints, i18n, initialSettings, user;
+var currentDate, csrftoken, endpoints, i18n, initialSettings, isAdmin, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -46,19 +46,6 @@ function displayDate(dateString) {
     var month = date.toLocaleString(locale, { month: "short" });
     var year = date.getUTCFullYear();
     return day + " " + month + " " + year;
-}
-
-function userIsManager() {
-    // Check if the user is a PME mananager, resulting in different actions than a regular
-    // PO officer.
-
-    if (user.is_admin || user.is_superuser) {
-        return true;
-    }
-
-    // TODO: Check org admins
-
-    return false;
 }
 
 var CommentEntry = React.createClass({
@@ -667,7 +654,7 @@ var IndicatorPeriodEntry = React.createClass({
     },
 
     renderActions: function() {
-        if (userIsManager()) {
+        if (isAdmin) {
             switch(this.props.period.locked) {
                 case false:
                     return (
@@ -1190,7 +1177,56 @@ var ResultsApp = React.createClass({
     }
 });
 
+function userIsAdmin() {
+    // Check if the user is a PME mananager, resulting in different actions than a regular
+    // PO officer.
+    var adminOrgIds, partnerships;
+
+    if (user.is_admin || user.is_superuser) {
+        return true;
+    }
+
+    for (var i = 0; i < user.approved_employments.length; i++) {
+        var employment = user.approved_employments[i];
+        if (employment.group_name === 'Admins') {
+            adminOrgIds.push(employment.organisation)
+        }
+    }
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+            partnerships = JSON.parse(xmlHttp.responseText).results;
+            for (var j = 0; i < partnerships.length; i++) {
+                var partnership = partnerships[j];
+                if (adminOrgIds.indexOf(partnership.organisation) > -1) {
+                    return true;
+                }
+            }
+        }
+    };
+    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.send();
+
+    return false;
+}
+
+function getUserData() {
+    // Get the user data from the API and stores it in the global user variable
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+            user = JSON.parse(xmlHttp.responseText);
+            isAdmin = userIsAdmin();
+        }
+    };
+    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.send();
+}
+
 function setCurrentDate() {
+    // Gets the current datetime from the initial settings and stores it in the global
+    // currentDate variable
     currentDate = initialSettings.current_datetime;
     setInterval(function () {
         var localCurrentDate = new Date(currentDate);
@@ -1198,27 +1234,6 @@ function setCurrentDate() {
         currentDate = localCurrentDate.toString();
     }, 1000);
 }
-
-function getUserData() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            user = JSON.parse(xmlHttp.responseText);
-        }
-    };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
-    xmlHttp.send();
-}
-
-// Polyfill for element.closest() for IE and Safari
-this.Element && function(ElementPrototype) {
-    ElementPrototype.closest = ElementPrototype.closest ||
-        function (selector) {
-            var el = this;
-            while (el.matches && !el.matches(selector)) el = el.parentNode;
-            return el.matches ? el : null;
-        };
-}(Element.prototype);
 
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {

@@ -21,6 +21,7 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
+            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
             "period": "/rest/v1/indicator_period/{period}/?format=json",
             "update": "/rest/v1/indicator_period_data/{update}/?format=json",
             "updates": "/rest/v1/indicator_period_data/?format=json",
