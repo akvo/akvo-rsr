@@ -894,6 +894,10 @@ var ResultEntry = React.createClass({
         this.expanded() ? selectResult(null) : selectResult(this.props.result);
     },
 
+    indicatorText: function() {
+        return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+    },
+
     render: function() {
         var indicatorCount, indicatorEntries;
 
@@ -903,7 +907,7 @@ var ResultEntry = React.createClass({
             indicatorCount = <span className="result-indicator-count">
                 <i className="fa fa-tachometer" />
                 <span className="indicator-count inlined">{this.props.result.indicators.length}</span>
-                <p>indicators</p>
+                <p>{this.indicatorText().toLowerCase()}</p>
             </span>;
         }
 
