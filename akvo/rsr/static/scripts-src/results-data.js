@@ -267,7 +267,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                         React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
                     ),
                     React.DOM.div( {className:"col-xs-8"}, 
-                        i18n.current,": PERIOD ACTUAL"
+                        i18n.current,": ", this.props.selectedPeriod.actual_value
                     )
                 )
             );
@@ -557,6 +557,18 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
 
     },
 
+    renderPercentageComplete: function() {
+        if (this.props.selectedPeriod.percent_accomplishment !== null) {
+            return (
+                React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    },
+
     render: function() {
         return (
             React.DOM.div( {className:"indicator-period opacity-transition"}, 
@@ -577,7 +589,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         React.DOM.dt(null, i18n.actual_value),
                         React.DOM.dd(null, 
                             this.props.selectedPeriod.actual_value,
-                            React.DOM.span( {className:"percentage-complete"},  " (100%)")
+                            this.renderPercentageComplete()
                         )
                     ),
                     React.createElement(UpdatesList, {
@@ -679,6 +691,18 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         }
     },
 
+    renderPercentageComplete: function() {
+        if (this.props.period.percent_accomplishment !== null) {
+            return (
+                React.DOM.span( {className:"percentage-complete"},  " (",this.props.period.percent_accomplishment,"%)")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    },
+
     render: function() {
         return (
             React.DOM.tr(null, 
@@ -686,7 +710,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
                 React.DOM.td( {className:"actual-td"}, 
                     this.props.period.actual_value,
-                    React.DOM.span( {className:"percentage-complete"},  " (100%)")
+                    this.renderPercentageComplete()
                 ),
                 this.renderActions()
             )

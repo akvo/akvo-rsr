@@ -409,18 +409,18 @@ class IndicatorPeriod(models.Model):
         values to numbers, return 0.
         """
         if not self.target_value:
-            return 0
+            return None
 
-        actual_value = self.actual_value if self.actual_value else self.baseline
-        baseline = self.indicator.baseline_value
+        actual_value = self.actual_value or self.baseline
+        baseline = self.indicator.baseline_value or None
         try:
             return round(
-                (Decimal(actual_value) - Decimal(self.indicator.baseline_value)) /
+                (Decimal(actual_value) - Decimal(baseline)) /
                 (Decimal(self.target_value) - Decimal(baseline)) *
                 100, 1
             )
         except (InvalidOperation, TypeError, DivisionByZero):
-            return 0
+            return None
 
     @property
     def percent_accomplishment_100(self):
