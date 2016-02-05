@@ -6,6 +6,7 @@
 /*---------------------------------------------------------------------------------*/
 
 @import "library.scss";
+
 html {
     width: 100%;
     overflow-y: scroll;
@@ -51,9 +52,10 @@ a:visited {
     }
 }
 
-
 /****************** Miscellanous Typography ********************/
-
+.inlined {
+    display: inline;
+}
 img {
     max-width: 100%;
     .gmnoprint & {
@@ -128,7 +130,6 @@ a.moreLink {
     padding: 20px 0;
 }
 
-
 /* Force full-width columns below 570px (when using col-xs-N) */
 
 @include responsive(small-screens) {
@@ -137,6 +138,7 @@ a.moreLink {
         width: 100%;
     }
 }
+
 
 a.btn-primary,
 button.btn-primary {
@@ -162,7 +164,6 @@ button.btn-primary {
         @include border-radius(5px);
     }
 }
-
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
@@ -295,7 +296,6 @@ label {
     font-weight: normal;
 }
 
-
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
@@ -341,6 +341,7 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
+
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -442,6 +443,7 @@ nav.navbar-fixed-top {
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
+
                     &.active {
                         background: none;
                         color: rgba($anchorLinkHover, 0.7);
@@ -453,6 +455,7 @@ nav.navbar-fixed-top {
                         padding-left: 15px;
                         padding-right: 15px;
                     }
+
                     .dropdown-menu {
                         @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
                             position: initial;
@@ -545,6 +548,7 @@ nav.navbar-fixed-top {
     }
 }
 
+
 .navbar-inverse {
     .navbar-collapse {
         border-color: rgb(228, 228, 228);
@@ -593,6 +597,7 @@ nav.navbar-fixed-top {
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
                     }
+
                     &:hover {
                         color: $anchorLinkHover;
                         border-color: transparent;
@@ -631,8 +636,8 @@ nav.navbar-fixed-top {
             background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
-                padding-top: 10px 0;
-                padding-bottom: 10px 0;
+                padding-top: 15px;
+                padding-bottom: 15px;
             }
         }
     }
@@ -772,6 +777,7 @@ div.paginationWrap {
             margin: 2px 0 2px 0;
             display: block;
         }
+
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -783,7 +789,7 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: darken(rgba($anchorLinkHover, 0.0), 0);
+    background: darken(rgba($anchorLinkHover, 0), 0);
     padding-bottom: 15px;
     margin-top: 25px;
     @include border-radius(5px);
@@ -794,6 +800,7 @@ div.paginationWrap {
             margin: 10px auto;
         }
     }
+
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
@@ -828,7 +835,6 @@ div.paginationWrap {
         width: 100%;
     }
 }
-
 
 /* FOOTER */
 
@@ -889,7 +895,6 @@ footer {
     }
 }
 
-
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
@@ -897,6 +902,7 @@ footer {
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
+
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -931,7 +937,6 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
-
 /* LISTINGS */
 
 #map {
@@ -945,6 +950,7 @@ h4.detailedInfo {
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
+
     margin-top: -30px;
     z-index: 99;
     opacity: 0.8;
@@ -1020,6 +1026,7 @@ h4.detailedInfo {
             text-align: center;
             margin: 20px auto;
         }
+
         .dropdown {
             .dropdown-menu {
                 li {
@@ -1115,12 +1122,14 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
+
     #search {
         color: #fff;
         text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
+
         button {
             padding-top: 5px;
             padding-bottom: 5px;
@@ -1135,7 +1144,6 @@ h4.detailedInfo {
         text-align: center;
     }
 }
-
 
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -1203,6 +1211,7 @@ h4.detailedInfo {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
                     }
+
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1247,6 +1256,7 @@ h4.detailedInfo {
                         @include responsive(mediums-max-screens) {
                             margin-top: 0.6em;
                         }
+
                         @include responsive(small-max-screens) {
                             margin-top: 1em;
                         }
@@ -1364,7 +1374,6 @@ h4.detailedInfo {
     }
 }
 
-
 /* PROJECT */
 
 header {
@@ -1394,6 +1403,7 @@ header {
                 @include responsive(small-max-screens) {
                     text-align: left;
                 }
+
                 a {
                     position: relative;
                     top: 0px;
@@ -1401,6 +1411,7 @@ header {
                         left: 0;
                         top: 0;
                     }
+
                     &.fullPdf {
                         @include noWrapTxt;
                     }
@@ -1472,6 +1483,7 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+
         .carousel-indicators {
             bottom: -5px;
             li {
@@ -1522,6 +1534,7 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+
         ul {
             margin: 0;
             padding: 0;
@@ -1716,7 +1729,6 @@ div.textBlock {
     }
 }
 
-
 /* Project hierarchy */
 
 .project-hierarchy-window {
@@ -1776,7 +1788,6 @@ div.textBlock {
     }
 }
 
-
 /* Tooltips */
 
 .tooltip {
@@ -1794,7 +1805,6 @@ div.textBlock {
         }
     }
 }
-
 
 /* Typeahead Styling */
 
@@ -1829,7 +1839,6 @@ ul.typeahead-selector {
         }
     }
 }
-
 
 /* Organisation Page */
 
@@ -1901,7 +1910,6 @@ ul.typeahead-selector {
     }
 }
 
-
 /* Update Page */
 
 .updateMain {
@@ -1922,7 +1930,6 @@ ul.typeahead-selector {
     }
 }
 
-
 /* Donate Page*/
 
 .projectDonate {
@@ -1939,6 +1946,7 @@ ul.typeahead-selector {
             text-align: center;
         }
     }
+
     .donateButton {
         margin-bottom: 2em;
     }
@@ -1972,6 +1980,7 @@ ul.typeahead-selector {
             }
         }
     }
+
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
@@ -1991,7 +2000,6 @@ ul.typeahead-selector {
         }
     }
 }
-
 
 /* Financial details page */
 
@@ -2017,6 +2025,7 @@ section.projectFinancial {
             }
         }
     }
+
     @include responsive(mediums-max-screens) {
         @include responsive(small-screens) {
             .dl-horizontal {
@@ -2043,7 +2052,6 @@ section.projectFinancial {
         }
     }
 }
-
 
 /* Project Partners details page */
 
@@ -2075,6 +2083,7 @@ section.projectPartners {
                 max-width: 60%;
             }
         }
+
         h2 {
             display: inline-block;
             font-size: 1.3em;
@@ -2113,7 +2122,6 @@ section.projectPartners {
     }
 }
 
-
 /* Display currency totals right-aligned */
 
 .currencyAmount {
@@ -2126,7 +2134,6 @@ dd {
     }
 }
 
-
 /* Project report page */
 
 .projectReport {
@@ -2135,6 +2142,7 @@ dd {
         margin-left: auto;
         margin-right: auto;
     }
+
     @media only screen and (min-width: $width-medium) {
         table {
             table-layout: fixed;
@@ -2150,7 +2158,6 @@ dd {
         }
     }
 }
-
 
 /* Project update page */
 
@@ -2178,7 +2185,6 @@ a.addUpdateBtn {
     }
 }
 
-
 /* Google translation bar styles */
 
 body {
@@ -2204,7 +2210,6 @@ body {
     }
 }
 
-
 /* Cookie */
 
 #cookie-law {
@@ -2225,7 +2230,6 @@ body {
         }
     }
 }
-
 
 /* Project Admin */
 
@@ -2598,7 +2602,6 @@ body {
     }
 }
 
-
 /* New concatenated project page */
 
 .tab-menu {
@@ -2618,12 +2621,18 @@ body {
     }
 }
 
-
 /* Results framework display */
 
 #results-framework {
     padding: 0;
     margin: 0;
+}
+
+.resultProjectTitle {
+    margin: 15px 0 25px 0;
+    span {
+        margin-right: 15px;
+    }
 }
 
 .results {
@@ -2667,14 +2676,14 @@ body {
         width: 30%;
         min-width: 200px;
         overflow-y: auto;
-        background-color: rgb(239, 239, 229);
         vertical-align: top;
         border: 1px solid rgb(224, 225, 226);
         .result-nav {
-            padding: 1px 0.75em 1.75em 0.75em;
+            padding: 0.2em 0em 0 0em;
+            border-bottom:1px solid rgba($akvoBlack,0.2);
             &:before {
                 height: 1px;
-                background-color: rgb(224, 225, 226);
+                background-color: rgba(224, 225, 226, 0);
                 width: 100%;
                 display: block;
                 content: '';
@@ -2682,18 +2691,17 @@ body {
                 @include transition(background-color 0.25s ease-in-out);
             }
             &:last-child {
-                padding-bottom: 1em;
             }
         }
         .result-nav-header {
-            padding: 0.25em 0.75em 0 0.75em;
             h3 {
                 color: rgba($akvoBlack, 0.4);
-                font-size: 0.9em;
+                font-size: 1em;
                 text-transform: uppercase;
-                margin-top: 5px;
-                margin-right: 5px;
                 position: relative;
+                padding: 5px 0 5px 5px;
+                margin-top: 0;
+                background: rgba($akvoBlack, 0.1);
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2702,7 +2710,10 @@ body {
         }
         .result-nav {
             cursor: pointer;
-            .fa-chevron-up {
+            .result-nav-summary {
+                padding-left: 10px;
+            }
+            .fa-caret-square-o-up {
                 display: none;
             }
             h3 {
@@ -2724,9 +2735,8 @@ body {
             }
             .result-title {
                 position: relative;
-                height: 2.8em;
-                overflow: hidden;
                 box-sizing: border-box;
+                font-weight: 700;
                 .fa {
                     float: right;
                     font-size: 1.3em;
@@ -2742,15 +2752,19 @@ body {
                     line-height: 1.4em;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-word;
                 }
             }
             .result-indicator-count {
                 color: rgb(188, 188, 166);
                 margin-top: -10px;
                 display: block;
+                span {
+                    margin-left: 5px;
+                }
+                p {
+                    display: inline-block;
+                    margin-left: 5px;
+                }
             }
             .result-nav-full {
                 display: none;
@@ -2760,10 +2774,10 @@ body {
             }
             &.expanded {
                 background: white;
-                .fa-chevron-down {
+                .fa-caret-square-o-down {
                     display: none;
                 }
-                .fa-chevron-up {
+                .fa-caret-square-o-up {
                     display: block;
                 }
                 .indicator-text {
@@ -2775,19 +2789,24 @@ body {
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
-                    padding: 0.5em 0 0 5px;
+                    padding: 0.5em 0 0 0px;
                     background-color: white;
                     margin-top: 1em;
-                    background-color: transparent;
                     .indicator-nav {
-                        padding: 0.25em 0em 0.75em 0.5em;
+                        padding: 0.25em 0em 0.75em 0em;
                         /* Transparent border means text doesn't shift when
                         ** we add a colored border to active elements.
                         */
                         border-left: 4px solid rgba(0, 0, 0, 0);
+                        background: rgba($akvoBlack,0.05);
+                        border-bottom: 2px solid white;
                         &.active {
-                            background-color: rgb(236, 236, 236);
-                            border-left: 4px solid rgb(174, 9, 34);
+                            background: rgba($akvoBlack,0.5) url(../images/carretWhite.svg) center right no-repeat;
+                            border-left: 4px solid rgba(174, 9, 34,0);
+                            background-size: 5% auto;
+                            h4 {
+                                color:white;
+                            }
                         }
                         &:last-child {
                             margin-bottom: 0;
@@ -2795,15 +2814,12 @@ body {
                     }
                     a {
                         h4 {
-                            font-size: 1.1em;
+                            font-size: 1em;
                             color: rgb(100, 100, 100);
                             margin-bottom: 1px;
-                            @include noWrapTxt;
-                        }
-                        &.active {
-                            h4 {
-                                color: #ae0922;
-                            }
+                            font-family: $bodyFont;
+                            line-height: 150%;
+                            padding-left: 15px;
                         }
                     }
                     .last-update {
@@ -2819,7 +2835,6 @@ body {
         overflow-y: scroll;
         padding: 0.25em 1em;
         background-color: rgb(255, 255, 255);
-        border: 1px solid rgb(241, 241, 242);
         @include flex(1);
         .result-summary {
             display: none;
@@ -2941,17 +2956,17 @@ body {
                     }
                 }
                 .expand-indicator-period {
-                    .fa-chevron-up {
+                    .fa-caret-square-o-up {
                         display: none;
                     }
-                    .fa-chevron-down {
+                    .fa-caret-square-o-down {
                         display: initial;
                     }
                     &.expanded {
-                        .fa-chevron-up {
+                        .fa-caret-square-o-up {
                             display: initial;
                         }
-                        .fa-chevron-down {
+                        .fa-caret-square-o-down {
                             display: none;
                         }
                     }
@@ -3581,7 +3596,6 @@ body {
     }
 }
 
-
 /* Modal dialog stuff for the Project Editor */
 
 div.inactive {
@@ -3697,7 +3711,6 @@ div.active {
         }
     }
 }
-
 
 /* My reports section */
 

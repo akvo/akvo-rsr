@@ -1715,7 +1715,8 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
         } else {
             indicatorCount = React.DOM.span( {className:"result-indicator-count"}, 
                 React.DOM.i( {className:"fa fa-tachometer"} ),
-                React.DOM.span( {className:"indicator-count"}, this.props.result.indicators.length)
+                React.DOM.span( {className:"indicator-count inlined"}, this.props.result.indicators.length),
+                React.DOM.p(null, "indicators")
             );
         }
 
@@ -1745,8 +1746,8 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
             React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
                 React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
                     React.DOM.h3( {className:"result-title"}, 
-                        React.DOM.i( {className:"fa fa-chevron-down"} ),
-                        React.DOM.i( {className:"fa fa-chevron-up"} ),
+                        React.DOM.i( {className:"fa fa-caret-square-o-down"} ),
+                        React.DOM.i( {className:"fa fa-caret-square-o-up"} ),
                         React.DOM.span(null, this.props.result.title)
                     ),
                     indicatorCount
@@ -1838,7 +1839,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         return (
             React.DOM.div( {className:"results"}, 
                 React.DOM.article(null, 
-                    React.DOM.div( {className:"results-container container"}, 
+                    React.DOM.div( {className:"results-container"}, 
                         React.DOM.div( {className:"sidebar"}, 
                             React.DOM.div( {className:"result-nav-header"}, 
                                 React.DOM.h3(null, i18n.results)
@@ -1866,7 +1867,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                         )
                     )
                 )
-            )
+            )  
         );
     }
 });
