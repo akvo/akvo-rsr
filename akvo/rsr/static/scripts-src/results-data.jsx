@@ -1372,7 +1372,7 @@ var UpdateEntry = React.createClass({
         return this.props.editingData.indexOf(this.props.update.id) > -1;
     },
 
-    baseSave: function(data, keepEditing) {
+    baseSave: function(data, keepEditing, reloadPeriod) {
         var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
         var thisApp = this;
 
@@ -1384,6 +1384,9 @@ var UpdateEntry = React.createClass({
                 thisApp.props.saveUpdateToPeriod(update, periodId);
                 if (!keepEditing) {
                     thisApp.props.removeEditingData(update.id);
+                }
+                if (reloadPeriod) {
+                    thisApp.props.reloadPeriod(periodId);
                 }
             }
         };
@@ -1398,7 +1401,7 @@ var UpdateEntry = React.createClass({
             'user': user.id,
             'text': this.state.description,
             'data': this.state.data
-        }, false);
+        }, false, false);
     },
 
     askForApproval: function() {
@@ -1407,7 +1410,7 @@ var UpdateEntry = React.createClass({
             'text': this.state.description,
             'data': this.state.data,
             'status': 'P'
-        }, false);
+        }, false, false);
     },
 
     approve: function() {
@@ -1416,7 +1419,7 @@ var UpdateEntry = React.createClass({
             'text': this.state.description,
             'data': this.state.data,
             'status': 'A'
-        }, false);
+        }, false, true);
     },
 
     returnForRevision: function() {
@@ -1425,15 +1428,15 @@ var UpdateEntry = React.createClass({
             'text': this.state.description,
             'data': this.state.data,
             'status': 'R'
-        }, false);
+        }, false, false);
     },
 
     removePhoto: function() {
-        this.baseSave({'photo': ''}, true);
+        this.baseSave({'photo': ''}, true, false);
     },
 
     removeFile: function() {
-        this.baseSave({'file': ''}, true);
+        this.baseSave({'file': ''}, true, false);
     },
 
     baseUpload: function(file, type) {
@@ -1800,6 +1803,7 @@ var UpdatesList = React.createClass({
                         saveCommentInUpdate: thisList.props.saveCommentInUpdate,
                         selectedPeriod: thisList.props.selectedPeriod,
                         selectPeriod: thisList.props.selectPeriod,
+                        reloadPeriod: thisList.props.reloadPeriod,
                         update: update
                     })}
                 </div>
@@ -1869,7 +1873,8 @@ var IndicatorPeriodMain = React.createClass({
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
                         selectedPeriod: this.props.selectedPeriod,
-                        selectPeriod: this.props.selectPeriod
+                        selectPeriod: this.props.selectPeriod,
+                        reloadPeriod: this.props.reloadPeriod
                     })}
                 </dl>
             </div>
@@ -1970,7 +1975,8 @@ var MainContent = React.createClass({
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
-                        selectedPeriod: this.props.selectedPeriod
+                        selectedPeriod: this.props.selectedPeriod,
+                        reloadPeriod: this.props.reloadPeriod
                     })}
                 </div>
             );
@@ -2155,6 +2161,19 @@ var ResultsApp = React.createClass({
         xmlHttp.send();
     },
 
+    findIndicator: function(indicatorId) {
+        for (var i = 0; i < this.state.results.length; i++) {
+            var result = this.state.results[i];
+            for (var j = 0; j < result.indicators.length; j++) {
+                var indicator = result.indicators[j];
+                if (indicator.id == indicatorId) {
+                    return indicator;
+                }
+            }
+        }
+        return null;
+    },
+
     findPeriod: function(periodId) {
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
@@ -2188,6 +2207,29 @@ var ResultsApp = React.createClass({
             }
         }
         return null;
+    },
+
+    savePeriodToIndicator: function(period, indicatorId) {
+        var indicator = this.findIndicator(indicatorId);
+
+        if (indicator !== null) {
+            var dataFound = null;
+            for (var l = 0; l < indicator.periods.length; l++) {
+                var oldPeriod = indicator.periods[l];
+                if (oldPeriod.id == period.id) {
+                    dataFound = oldPeriod;
+                    break;
+                }
+            }
+
+            if (dataFound !== null) {
+                // Remove old period and insert updated period if update exists
+                var periodsList = indicator.periods;
+                periodsList.splice(periodsList.indexOf(dataFound), 1);
+                periodsList.push(period);
+                this.forceUpdate();
+            }
+        }
     },
 
     saveUpdateToPeriod: function(update, periodId) {
@@ -2239,6 +2281,24 @@ var ResultsApp = React.createClass({
             update.comments.push(comment);
             this.forceUpdate();
         }
+    },
+
+    reloadPeriod: function(periodId) {
+        var url = endpoints.base_url + endpoints.period.replace('{period}', periodId);
+        var thisApp = this;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                // Remove old period and insert updated period
+                var period = JSON.parse(xmlHttp.responseText);
+                var indicatorId = period.indicator;
+                thisApp.savePeriodToIndicator(period, indicatorId);
+                thisApp.setState({selectedPeriod: period});
+            }
+        };
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
     },
 
     selectResult: function(resultId) {
@@ -2294,6 +2354,7 @@ var ResultsApp = React.createClass({
                                     saveUpdateToPeriod: this.saveUpdateToPeriod,
                                     saveFileInUpdate: this.saveFileInUpdate,
                                     saveCommentInUpdate: this.saveCommentInUpdate,
+                                    reloadPeriod: this.reloadPeriod,
                                     indicator: this.state.selectedIndicator,
                                     selectedPeriod: this.state.selectedPeriod,
                                     selectPeriod: this.selectPeriod
