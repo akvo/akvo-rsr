@@ -815,6 +815,7 @@ var IndicatorPeriodList = React.createClass({
 var MainContent = React.createClass({
     addNewUpdate: function(periodId) {
         var xmlHttp = new XMLHttpRequest();
+        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var thisApp = this;
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
@@ -828,8 +829,8 @@ var MainContent = React.createClass({
         xmlHttp.send(JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': this.props.selectedPeriod.actual_value,
-            'period_actual_value': this.props.selectedPeriod.actual_value
+            'data': actualValue,
+            'period_actual_value': actualValue
         }));
     },
 

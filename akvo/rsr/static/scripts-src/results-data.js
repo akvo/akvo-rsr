@@ -815,6 +815,7 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 var MainContent = React.createClass({displayName: 'MainContent',
     addNewUpdate: function(periodId) {
         var xmlHttp = new XMLHttpRequest();
+        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var thisApp = this;
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
@@ -824,12 +825,12 @@ var MainContent = React.createClass({displayName: 'MainContent',
         };
         xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-81");
         xmlHttp.send(JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': this.props.selectedPeriod.actual_value,
-            'period_actual_value': this.props.selectedPeriod.actual_value
+            'data': actualValue,
+            'period_actual_value': actualValue
         }));
     },
 
