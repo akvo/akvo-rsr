@@ -501,12 +501,16 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     STATUS_PENDING = unicode(_(u'pending approval'))
     STATUS_REVISION = unicode(_(u'return for revision'))
     STATUS_APPROVED = unicode(_(u'approved'))
-    STATUSES = (
-        (u'D', STATUS_DRAFT),
-        (u'P', STATUS_PENDING),
-        (u'R', STATUS_REVISION),
-        (u'A', STATUS_APPROVED),
-    )
+
+    STATUS_DRAFT_CODE = u'D'
+    STATUS_PENDING_CODE = u'P'
+    STATUS_REVISION_CODE = u'R'
+    STATUS_APPROVED_CODE = u'A'
+
+    STATUS_CODES_LIST = [STATUS_DRAFT_CODE, STATUS_PENDING_CODE, STATUS_REVISION_CODE,
+                         STATUS_APPROVED_CODE]
+    STATUSES_LABELS_LIST = [STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION, STATUS_APPROVED]
+    STATUSES = zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST)
 
     UPDATE_METHODS = (
         ('W', _(u'web')),
@@ -518,8 +522,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)
     relative_data = models.BooleanField(_(u'relative data'), default=False)
     data = ValidXMLCharField(_(u'data'), max_length=300)
-    status = ValidXMLCharField(_(u'status'), blank=True, max_length=1, choices=STATUSES,
-                               db_index=True, default='D')
+    period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
+                               default='D')
     text = ValidXMLTextField(_(u'text'), blank=True)
     photo = ImageField(_(u'photo'), blank=True, upload_to=image_path)
     file = models.FileField(_(u'file'), blank=True, upload_to=file_path)
@@ -535,14 +540,19 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
-        if not self.pk and self.status == u'A':
-            # Newly added data update that is immediately approved. Scenario that probably does
-            # not happen very often.
-            self.period.update_actual_value(self.data, self.relative_data)
-        elif self.pk:
+        # Always copy the period's actual value to the period_actual_value field.
+        self.period_actual_value = self.period.actual_value
+
+        if not self.pk:
+            # Newly added data update
+            if self.status == self.STATUS_APPROVED_CODE:
+                # Update is immediately approved. Scenario that probably does not happen very often.
+                self.period.update_actual_value(self.data, self.relative_data)
+        else:
             # Only process data when the data update was not approved, but has been approved now.
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
-            if orig.status != u'A' and self.status == u'A':
+            if orig.status != self.STATUS_APPROVED_CODE and \
+                    self.status == self.STATUS_APPROVED_CODE:
                 self.period.update_actual_value(self.data, self.relative_data)
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
@@ -555,12 +565,27 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         if not self.period.indicator.result.project.is_impact_project:
             validation_errors['period'] = unicode(_(u'Indicator period must be part of an RSR '
                                                     u'Impact project to add data to it'))
+
+        # Don't allow a data update to a locked period
+        if self.period.locked:
+            validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
+                                                    u'data to it'))
+
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
             # Don't allow an approved data update to be changed
-            if orig.status == self.STATUS_APPROVED:
+            if orig.status == self.STATUS_APPROVED_CODE:
                 validation_errors['status'] = unicode(_(u'Not allowed to change approved data '
                                                         u'updates'))
+
+            # Don't allow to approve an update that has a different actual value of the period
+            elif self.status == self.STATUS_APPROVED_CODE and \
+                    self.period_actual_value != self.period.actual_value:
+                validation_errors['period_actual_value'] = unicode(
+                    _(u'The actual value of the period has changed, please save the update first '
+                      u'before approving it')
+                )
+
             # Don't allow for the indicator period to change
             if orig.period != self.period:
                 validation_errors['period'] = unicode(_(u'Not allowed to change indicator period '
@@ -573,7 +598,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Check if the data update was already approved. Approved data updates should not be
         deleted, because it could lead to strange scenarios.
         """
-        if self.status == self.STATUS_APPROVED:
+        if self.status == self.STATUS_APPROVED_CODE:
             raise FieldError(unicode(_(u'It is not possible to delete an approved data update')))
         super(IndicatorPeriodData, self).delete(*args, **kwargs)
 
