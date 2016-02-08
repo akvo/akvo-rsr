@@ -72,6 +72,7 @@ var UpdateEntry = React.createClass({
         return {
             data: this.props.update.data,
             description: this.props.update.text,
+            isRelative: this.props.update.relative_data,
             comment: ''
         };
     },
@@ -108,7 +109,8 @@ var UpdateEntry = React.createClass({
         this.baseSave({
             'user': user.id,
             'text': this.state.description.trim(),
-            'data': this.state.data.trim()
+            'data': this.state.data.trim(),
+            'relative_data': this.state.isRelative
         }, false, false);
     },
 
@@ -117,6 +119,7 @@ var UpdateEntry = React.createClass({
             'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
+            'relative_data': this.state.isRelative,
             'status': 'P'
         }, false, false);
     },
@@ -126,6 +129,7 @@ var UpdateEntry = React.createClass({
             'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
+            'relative_data': this.state.isRelative,
             'status': 'A'
         }, false, true);
     },
@@ -135,6 +139,7 @@ var UpdateEntry = React.createClass({
             'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
+            'relative_data': this.state.isRelative,
             'status': 'R'
         }, false, false);
     },
@@ -226,6 +231,14 @@ var UpdateEntry = React.createClass({
         this.setState({comment: e.target.value});
     },
 
+    handleRelativeChange: function(e) {
+        if (this.state.isRelative) {
+            this.setState({isRelative: false});
+        } else {
+            this.setState({isRelative: true});
+        }
+    },
+
     renderUpdateClass: function() {
         var updateClass = "row update-entry-container";
         if (this.editing()) {
@@ -258,18 +271,46 @@ var UpdateEntry = React.createClass({
         );
     },
 
+    renderActualRelative: function() {
+        var periodActualValue = parseFloat(this.props.update.period_actual_value);
+        var originalData = parseFloat(this.state.data);
+        var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
+        var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
+
+        if (isNaN(updateData) || isNaN(relativeData) || relativeData === 0) {
+            return (
+                <div>
+                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-data">{this.state.data}</span><br/>
+                </div>
+            );
+        } else {
+            relativeData = relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
+            return (
+                <div>
+                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-data">{updateData} </span>
+                    <span className="update-relative-value">({relativeData})</span>
+                </div>
+            );
+        }
+    },
+
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
+        var checkboxId = "relative-checkbox-" + this.props.update.id;
 
         if (this.editing()) {
             return (
                 <div className="row">
                     <div className="col-xs-4">
-                        <label htmlFor={inputId}>{i18n.actual_value}</label>
+                        <label htmlFor={inputId}>{i18n.new_actual_value}</label>
                         <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
+                        <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> Add relative data</label>
                     </div>
                     <div className="col-xs-8">
                         {i18n.current}: {this.props.selectedPeriod.actual_value}
+                        {this.renderActualRelative()}
                     </div>
                 </div>
             );
@@ -277,8 +318,7 @@ var UpdateEntry = React.createClass({
             return (
                 <div className="row">
                     <div className="col-xs-12">
-                        <span className="update-actual-value-text">{i18n.actual_value}</span>
-                        <span className="update-actual-value-data">{this.props.update.data}</span>
+                        {this.renderActualRelative()}
                     </div>
                 </div>
             );
@@ -665,7 +705,7 @@ var IndicatorPeriodEntry = React.createClass({
                 case false:
                     return (
                         <td className="actions-td">
-                            <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
+                            <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
                         </td>
                     );
                 default:
@@ -686,7 +726,7 @@ var IndicatorPeriodEntry = React.createClass({
                 default:
                     return (
                         <td className="actions-td">
-                            <i className="fa fa-lock" />{i18n.period_locked}
+                            <i className="fa fa-lock" /> {i18n.period_locked}
                         </td>
                     )
             }
@@ -788,7 +828,8 @@ var MainContent = React.createClass({
         xmlHttp.send(JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': 0
+            'data': this.props.selectedPeriod.actual_value,
+            'period_actual_value': this.props.selectedPeriod.actual_value
         }));
     },
 
