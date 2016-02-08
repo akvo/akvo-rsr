@@ -29,10 +29,7 @@
                         {% if can_change_employments %}
                             <li class="usrMgt"><a href="{% url 'user_management' %}" class="{% if '/myrsr/user_management/' in current_path %}active{% endif %}">{% trans 'User management' %}</a></li>
                         {% endif %}
-                        <li class=""><a href="{% url 'my_details' %}"  class="{% if '/myrsr/details' in current_path %}active{% endif %}">{% trans 'My details' %}</a></li>
-                    </ul>
-                    <ul class="nav nav-pills nav-stacked  hidden">
-                        <li><a href="{% url 'password_change' %}" class="{% if '/myrsr/password_change/' in current_path %}active{% endif %}">{% trans 'Change password' %}</a></li>
+                        <li class=""><a href="{% url 'my_details' %}"  class="{% if '/myrsr/' == current_path|slice:"3:" %}active{% endif %}">{% trans 'My details' %}</a></li>
                     </ul>
                 </nav>
                 {% endwith %}
