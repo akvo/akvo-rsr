@@ -126,9 +126,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 
-    url(r'^myrsr/password_change/$',
-        'akvo.rsr.views.my_rsr.password_change', name='password_change'),
-
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         'akvo.rsr.views.my_rsr.project_editor', name='project_editor'),
 

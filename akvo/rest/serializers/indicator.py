@@ -35,6 +35,7 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     data = IndicatorPeriodDataSerializer(many=True, required=False, allow_add_remove=True)
+    percent_accomplishment = serializers.Field(source='percent_accomplishment')
 
     class Meta:
         model = IndicatorPeriod

@@ -35,12 +35,10 @@
             {% endbuttons %}
         </form>
     </div>
-    <div class="col-sm-6 col-xs-12" id="password"> 
-        <h3>Password</h3>
-        <a href="{% url 'password_change' %}" class="{% if '/myrsr/password_change/' in current_path %}active{% endif %}" class="hidden">{% trans 'Change password' %}</a>
+    <div class="col-sm-6 col-xs-12" id="password">
         <h3>{% trans 'Change your password' %}</h3>
         <form method="post" action="" id="passwordForm">
-            {% for field in form %}
+            {% for field in change_password_form %}
                 {% bootstrap_field field %}
             {% endfor %}
             {% buttons %}

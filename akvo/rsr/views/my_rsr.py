@@ -54,6 +54,8 @@ def my_details(request):
     organisation_count = Organisation.objects.all().count()
     country_count = Country.objects.all().count()
 
+    change_password_form = PasswordForm(request.user)
+
     context = {
         'organisation_count': organisation_count,
         'country_count': country_count,
@@ -61,18 +63,10 @@ def my_details(request):
         'profileform': profile_form,
         'organisationform': organisation_form,
         'avatarform': avatar_form,
+        'change_password_form': change_password_form,
     }
 
     return render(request, 'myrsr/my_details.html', context)
-
-
-@login_required
-def password_change(request):
-    """The password change page."""
-    context = RequestContext(request)
-    form = PasswordForm(request.user)
-    return render_to_response('myrsr/password_change.html', {'form': form},
-                              context_instance=context)
 
 
 @login_required
