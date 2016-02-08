@@ -429,18 +429,27 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         });
 
         var inputId = "new-comment-" + this.props.update.id;
+        var addComments = this.props.update.status !== 'A';
+        var addCommentInput;
+
+        if (addComments) {
+            addCommentInput = React.DOM.div( {className:"row"}, 
+                React.DOM.div( {className:"col-xs-8"}, 
+                    React.DOM.label( {htmlFor:inputId}, i18n.comment),
+                    React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} )
+                ),
+                React.DOM.div( {className:"col-xs-3"}, 
+                    React.DOM.a( {onClick:this.addComment}, i18n.add_comment)
+                )
+            );
+        } else {
+            addCommentInput = React.DOM.span(null );
+        }
+
         return (
             React.DOM.div( {className:"comments"}, 
                 comments,
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-8"}, 
-                        React.DOM.label( {htmlFor:inputId}, i18n.comment),
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} )
-                    ),
-                    React.DOM.div( {className:"col-xs-3"}, 
-                        React.DOM.a( {onClick:this.addComment}, i18n.add_comment)
-                    )
-                )
+                addCommentInput
             )
         );
     },

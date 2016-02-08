@@ -429,18 +429,27 @@ var UpdateEntry = React.createClass({
         });
 
         var inputId = "new-comment-" + this.props.update.id;
+        var addComments = this.props.update.status !== 'A';
+        var addCommentInput;
+
+        if (addComments) {
+            addCommentInput = <div className="row">
+                <div className="col-xs-8">
+                    <label htmlFor={inputId}>{i18n.comment}</label>
+                    <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18n.add_comment_placeholder} onChange={this.handleCommentChange} />
+                </div>
+                <div className="col-xs-3">
+                    <a onClick={this.addComment}>{i18n.add_comment}</a>
+                </div>
+            </div>;
+        } else {
+            addCommentInput = <span />;
+        }
+
         return (
             <div className="comments">
                 {comments}
-                <div className="row">
-                    <div className="col-xs-8">
-                        <label htmlFor={inputId}>{i18n.comment}</label>
-                        <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18n.add_comment_placeholder} onChange={this.handleCommentChange} />
-                    </div>
-                    <div className="col-xs-3">
-                        <a onClick={this.addComment}>{i18n.add_comment}</a>
-                    </div>
-                </div>
+                {addCommentInput}
             </div>
         );
     },
