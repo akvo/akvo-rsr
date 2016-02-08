@@ -6,7 +6,11 @@
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle"><span>Project:</span> {{ project.title }}</h4>
-    <div id="results-framework"></div>
+    {% if not project.is_impact_project %}
+        <div id="draft" class="row">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
+    {% else %}
+        <div id="results-framework"></div>
+    {% endif %}
 {% endblock %}
 
 {% block js %}
@@ -81,6 +85,8 @@
         }
     </script>
 
-    {% compressed_js 'results_data' %}
+    {% if project.is_impact_project %}
+        {% compressed_js 'results_data' %}
+    {% endif %}
 
 {% endblock %}

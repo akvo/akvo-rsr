@@ -825,7 +825,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
         };
         xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
         xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-81");
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlHttp.send(JSON.stringify({
             'period': periodId,
             'user': user.id,
