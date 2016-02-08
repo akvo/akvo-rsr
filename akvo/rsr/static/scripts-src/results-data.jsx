@@ -898,7 +898,11 @@ var ResultEntry = React.createClass({
         var indicatorCount, indicatorEntries;
 
         if (this.expanded()) {
-            indicatorCount = <span />;
+            indicatorCount = <span className="result-indicator-count">
+                <i className="fa fa-tachometer" />
+                <span className="indicator-count inlined">{this.props.result.indicators.length}</span>
+                <p>indicators:</p>
+            </span>;
         } else {
             indicatorCount = <span className="result-indicator-count">
                 <i className="fa fa-tachometer" />
@@ -933,8 +937,8 @@ var ResultEntry = React.createClass({
             <div className={resultNavClass} key={this.props.result.id}>
                 <div className="result-nav-summary clickable" onClick={this.switchResult}>
                     <h3 className="result-title">
-                        <i className="fa fa-caret-square-o-down" />
-                        <i className="fa fa-caret-square-o-up" />
+                        <i className="fa fa-chevron-circle-down" />
+                        <i className="fa fa-chevron-circle-up" />
                         <span>{this.props.result.title}</span>
                     </h3>
                     {indicatorCount}

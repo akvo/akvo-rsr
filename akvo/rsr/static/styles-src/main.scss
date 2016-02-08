@@ -2677,10 +2677,10 @@ body {
         min-width: 200px;
         overflow-y: auto;
         vertical-align: top;
-        border: 1px solid rgb(224, 225, 226);
+        border: 1px solid rgba($akvoBlack,0.3);
         .result-nav {
             padding: 0.2em 0em 0 0em;
-            border-bottom:1px solid rgba($akvoBlack,0.2);
+            border-bottom:1px solid rgba($akvoBlack,0.6);
             &:before {
                 height: 1px;
                 background-color: rgba(224, 225, 226, 0);
@@ -2695,13 +2695,13 @@ body {
         }
         .result-nav-header {
             h3 {
-                color: rgba($akvoBlack, 0.4);
+                color: rgba(white, 1);
                 font-size: 1em;
                 text-transform: uppercase;
                 position: relative;
                 padding: 5px 0 5px 5px;
                 margin-top: 0;
-                background: rgba($akvoBlack, 0.1);
+                background: rgba($akvoBlack, 0.4); 
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2709,23 +2709,34 @@ body {
             }
         }
         .result-nav {
+            opacity:0.6;
             cursor: pointer;
+            @include transition(all 0.2s linear);
+            &:hover {
+                opacity:1;
+                background: rgba($rsrBlue2,0.1);
+            }
             .result-nav-summary {
                 padding-left: 10px;
             }
-            .fa-caret-square-o-up {
+            .fa-chevron-circle-up {
                 display: none;
             }
             h3 {
                 font-size: 1.1em;
-                color: $secondary6;
+                color: rgba($rsrBlue2,1);
+                @include transition(all 0.2s linear);
+                &:hover {
+                    color:$rsrBlue;
+                }
             }
             &.expanded {
+                opacity:1;
                 &:before {
                     background-color: transparent;
                 }
                 h3 {
-                    color: $akvoBlack;
+                    color: $rsrBlue;
                 }
                 ~ .result-nav {
                     &:before {
@@ -2742,6 +2753,7 @@ body {
                     font-size: 1.3em;
                     margin-right: 6px;
                     text-shadow: 0 1px 0 rgb(255, 255, 255);
+                    color:rgba($akvoPurple, 0.6);
                 }
                 > span {
                     box-sizing: border-box;
@@ -2755,8 +2767,7 @@ body {
                 }
             }
             .result-indicator-count {
-                color: rgb(188, 188, 166);
-                margin-top: -10px;
+                color: $akvoPurple;
                 display: block;
                 span {
                     margin-left: 5px;
@@ -2774,10 +2785,10 @@ body {
             }
             &.expanded {
                 background: white;
-                .fa-caret-square-o-down {
+                .fa-chevron-circle-down {
                     display: none;
                 }
-                .fa-caret-square-o-up {
+                .fa-chevron-circle-up {
                     display: block;
                 }
                 .indicator-text {
@@ -2791,40 +2802,53 @@ body {
                     cursor: pointer;
                     padding: 0.5em 0 0 0px;
                     background-color: white;
-                    margin-top: 1em;
-                    .indicator-nav {
-                        padding: 0.25em 0em 0.75em 0em;
-                        /* Transparent border means text doesn't shift when
-                        ** we add a colored border to active elements.
-                        */
-                        border-left: 4px solid rgba(0, 0, 0, 0);
-                        background: rgba($akvoBlack,0.05);
-                        border-bottom: 2px solid white;
-                        &.active {
-                            background: rgba($akvoBlack,0.5) url(../images/carretWhite.svg) center right no-repeat;
-                            border-left: 4px solid rgba(174, 9, 34,0);
-                            background-size: 5% auto;
-                            h4 {
-                                color:white;
+                    div {
+                        &:last-child {
+                            .indicator-nav {
+                                border-bottom: none;
                             }
                         }
-                        &:last-child {
-                            margin-bottom: 0;
+                        .indicator-nav {
+                            padding: 0.75em 0em 1em 0em;
+                            /* Transparent border means text doesn't shift when
+                            ** we add a colored border to active elements.
+                            */
+                            border-left: 4px solid rgba(0, 0, 0, 0);
+                            background: rgba($akvoPurple,0.05);
+                            border-bottom: 2px solid white;
+                            &:hover {
+                                background: rgba($akvoPurple,0.2);
+                            }
+                            &.active {
+                                background: rgba($akvoPurple,0.5) url(../images/carretWhite.svg) center right no-repeat;
+                                border-left: 4px solid rgba(174, 9, 34,0);
+                                background-size: 5% auto;
+                                h4 {
+                                    color:white;
+                                }
+                            }
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
                         }
-                    }
-                    a {
-                        h4 {
-                            font-size: 1em;
-                            color: rgb(100, 100, 100);
-                            margin-bottom: 1px;
-                            font-family: $bodyFont;
-                            line-height: 150%;
-                            padding-left: 15px;
+                        a {
+                            h4 {
+                                font-size: 1em;
+                                color: $akvoPurple;
+                                margin-bottom: 1px;
+                                font-family: $bodyFont;
+                                line-height: 150%;
+                                padding-left: 15px;
+                            }
+                            &:hover {
+                                color: rgba($akvoPurple,0.5);
+                                text-decoration: none;
+                            }
                         }
-                    }
-                    .last-update {
-                        font-size: 0.9em;
-                        color: rgb(170, 170, 170);
+                        .last-update {
+                            font-size: 0.9em;
+                            color: rgb(170, 170, 170);
+                        }
                     }
                 }
             }
@@ -2836,6 +2860,11 @@ body {
         padding: 0.25em 1em;
         background-color: rgb(255, 255, 255);
         @include flex(1);
+        .indicator-title {
+            i {
+                display: none;
+            }
+        }
         .result-summary {
             display: none;
             opacity: 0;
@@ -2956,17 +2985,17 @@ body {
                     }
                 }
                 .expand-indicator-period {
-                    .fa-caret-square-o-up {
+                    .fa-chevron-circle-up {
                         display: none;
                     }
-                    .fa-caret-square-o-down {
+                    .fa-chevron-circle-down {
                         display: initial;
                     }
                     &.expanded {
-                        .fa-caret-square-o-up {
+                        .fa-chevron-circle-up {
                             display: initial;
                         }
-                        .fa-caret-square-o-down {
+                        .fa-chevron-circle-down {
                             display: none;
                         }
                     }
