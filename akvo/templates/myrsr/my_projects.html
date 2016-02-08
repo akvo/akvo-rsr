@@ -5,7 +5,7 @@
       <div class="col-sm-6"><h3 style="display: inline-block; float:left;">{% trans "My projects" %}</h3>
           {% has_perm 'rsr.add_project' user as can_add_project %}
           {% if can_add_project and user.can_create_project %}
-            <button class="btn btn-default btn-xs" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
+            <button class="btn btn-default btn-sm" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
           {% endif %}
       </div>   
       <div class="col-sm-6 btnHeader text-right">
@@ -79,7 +79,7 @@
         {% endfor %}
       </table>
     </div>
-      <div class="">
+      <div class="text-center small showingTxt">
         <p>
           {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
             Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects

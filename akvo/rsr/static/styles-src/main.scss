@@ -56,6 +56,7 @@ a:visited {
 .inlined {
     display: inline;
 }
+
 img {
     max-width: 100%;
     .gmnoprint & {
@@ -625,9 +626,38 @@ nav.navbar-fixed-top {
 }
 
 #createProject {
-    margin: 23px 0 0 25px;
+    margin: 20px 0 0 25px;
+    background: $akvoBlack;
+    color: white;
+    border: none;
+    &:hover {
+        background: $rsrBlue;
+    }
 }
-
+.indicator-period-list {
+    thead {
+        tr {
+            background-color: rgba($akvoBlack, 0.05);
+            border-bottom: none;
+            th {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
+    }
+    tbody {
+        &.indicator-period {
+            border:none;
+            tr {
+                td {
+                    padding-top:25px;
+                    padding-bottom:25px;
+                    border:none;
+                }
+            }
+        }
+    }
+}
 .myProjectList,
 #updates,
 #user_table {
@@ -727,6 +757,20 @@ div.paginationWrap {
         background-color: rgba($akvoBlack, 0);
         padding: 10px 0 10px 0;
     }
+    .btn {
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
+}
+
+#password {
+    h4 {
+        margin-top: 65px;
+    }
 }
 
 .table-responsive {
@@ -789,7 +833,7 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: darken(rgba($anchorLinkHover, 0), 0);
+    background: rgba($akvoBlack, 0.1);
     padding-bottom: 15px;
     margin-top: 25px;
     @include border-radius(5px);
@@ -801,6 +845,14 @@ div.paginationWrap {
         }
     }
 
+    .btn {
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
@@ -1002,8 +1054,13 @@ h4.detailedInfo {
     }
 }
 
+.showingTxt {
+    color: rgba($akvoPurple, 0.5);
+    margin-top: 20px;
+}
+
 .paginationWrap {
-    background: rgba(58, 58, 58, 0.05);
+    background: rgba(58, 58, 58, 0);
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
@@ -1601,7 +1658,7 @@ div.projectTopRow {
 
 #invite_button {
     button {
-        margin: 23px 0 0 25px;
+        margin: 20px 0 0 25px;
     }
 }
 
@@ -2672,15 +2729,43 @@ body {
         @include display-flex;
         padding-left: 0;
     }
+    .baseline {
+        padding: 2em 0;
+        position: relative;
+        width: 100%;
+        margin-bottom: 55px;
+        .baseline-value,
+        .baseline-year {
+            width: 50%;
+            display: inline-block;
+            padding: 0 0 0 5px;
+            span:first-child {
+                color: rgb(129, 131, 134);
+                display: block;
+            }
+            span:nth-child(2) {
+                font-size: 1.5em;
+                display: block;
+                font-weight: bold;
+                color: rgb(81, 80, 80);
+            }
+        }
+        .baseline-value {
+            float: left;
+        }
+        .baseline-year {
+            float: right;
+        }
+    }
     .sidebar {
         width: 30%;
         min-width: 200px;
         overflow-y: auto;
         vertical-align: top;
-        border: 1px solid rgba($akvoBlack,0.3);
+        border: 1px solid rgba($akvoBlack, 0.3);
         .result-nav {
             padding: 0.2em 0em 0 0em;
-            border-bottom:1px solid rgba($akvoBlack,0.6);
+            border-bottom: 1px solid rgba($akvoBlack, 0.6);
             &:before {
                 height: 1px;
                 background-color: rgba(224, 225, 226, 0);
@@ -2690,18 +2775,21 @@ body {
                 margin: 0 auto;
                 @include transition(background-color 0.25s ease-in-out);
             }
-            &:last-child {
-            }
+            &:last-child {}
         }
         .result-nav-header {
+            border-bottom: 1px solid rgba($akvoBlack, 0);
             h3 {
                 color: rgba(white, 1);
+                display: inline-block;
                 font-size: 1em;
                 text-transform: uppercase;
                 position: relative;
-                padding: 5px 0 5px 5px;
+                padding: 5px 10px;
                 margin-top: 0;
-                background: rgba($akvoBlack, 0.4); 
+                background: rgba($rsrBlue2, 1);
+                margin-bottom: 0;
+                @include border-radius(0 0 8px 0);
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2709,29 +2797,52 @@ body {
             }
         }
         .result-nav {
-            opacity:0.6;
+            opacity: 1;
             cursor: pointer;
             @include transition(all 0.2s linear);
             &:hover {
-                opacity:1;
-                background: rgba($rsrBlue2,0.1);
+                opacity: 1;
+                background: rgba($rsrBlue2, 0.3);
             }
             .result-nav-summary {
-                padding-left: 10px;
+                padding: 25px 0 10px 10px;
+                h3 {
+                    font-size: 1.3em;
+                    color: rgba($rsrBlue2, 1);
+                    @include transition(all 0.2s linear);
+                    &:hover {
+                        color: $rsrBlue;
+                    }
+                    &.result-title {
+                        position: relative;
+                        box-sizing: border-box;
+                        font-weight: 700;
+                        .fa {
+                            float: right;
+                            font-size: 1.3em;
+                            margin-right: 6px;
+                            text-shadow: 0 1px 0 rgb(255, 255, 255);
+                            color: rgba($akvoPurple, 0.6);
+                            }
+                        > span {
+                            box-sizing: border-box;
+                            max-width: 80%;
+                            margin: 0 auto 0 0;
+                            display: block;
+                            display: -webkit-box;
+                            line-height: 1.4em;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                        }
+                    }
+                }
             }
             .fa-chevron-circle-up {
                 display: none;
             }
-            h3 {
-                font-size: 1.1em;
-                color: rgba($rsrBlue2,1);
-                @include transition(all 0.2s linear);
-                &:hover {
-                    color:$rsrBlue;
-                }
-            }
+
             &.expanded {
-                opacity:1;
+                opacity: 1;
                 &:before {
                     background-color: transparent;
                 }
@@ -2744,31 +2855,11 @@ body {
                     }
                 }
             }
-            .result-title {
-                position: relative;
-                box-sizing: border-box;
-                font-weight: 700;
-                .fa {
-                    float: right;
-                    font-size: 1.3em;
-                    margin-right: 6px;
-                    text-shadow: 0 1px 0 rgb(255, 255, 255);
-                    color:rgba($akvoPurple, 0.6);
-                }
-                > span {
-                    box-sizing: border-box;
-                    max-width: 80%;
-                    margin: 0 auto 0 0;
-                    display: block;
-                    display: -webkit-box;
-                    line-height: 1.4em;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                }
-            }
+
             .result-indicator-count {
                 color: $akvoPurple;
                 display: block;
+                margin-top: -5px;
                 span {
                     margin-left: 5px;
                 }
@@ -2813,18 +2904,17 @@ body {
                             /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
-                            border-left: 4px solid rgba(0, 0, 0, 0);
-                            background: rgba($akvoPurple,0.05);
+                            background: rgba($akvoPurple, 0.05);
                             border-bottom: 2px solid white;
                             &:hover {
-                                background: rgba($akvoPurple,0.2);
+                                background: rgba($akvoPurple, 0.5);
                             }
                             &.active {
-                                background: rgba($akvoPurple,0.5) url(../images/carretWhite.svg) center right no-repeat;
-                                border-left: 4px solid rgba(174, 9, 34,0);
+                                background: rgba($akvoPurple, 0.8) url(../images/carretWhite.svg) center right no-repeat;
+                                border-left: 8px solid rgba(174, 9, 34, 0);
                                 background-size: 5% auto;
                                 h4 {
-                                    color:white;
+                                    color: white;
                                 }
                             }
                             &:last-child {
@@ -2841,7 +2931,7 @@ body {
                                 padding-left: 15px;
                             }
                             &:hover {
-                                color: rgba($akvoPurple,0.5);
+                                color: rgba($akvoPurple, 0.5);
                                 text-decoration: none;
                             }
                         }
@@ -2864,6 +2954,11 @@ body {
             i {
                 display: none;
             }
+        }
+        .indicator-periods-title {
+            font-size: 1em;
+            color: $akvoBlack;
+            margin-top: 40px;
         }
         .result-summary {
             display: none;
@@ -2906,7 +3001,7 @@ body {
         .indicator-group {
             padding: 0;
             display: none;
-            h4.indicator-title {
+            .indicator-title {
                 color: rgb(174, 9, 34);
                 font-size: 1em;
                 .glyphicon {
@@ -2914,33 +3009,13 @@ body {
                     margin-right: 4px;
                 }
             }
-            .baseline {
-                padding: 2em 0;
-                .baseline-value,
-                .baseline-year {
-                    width: 30%;
-                    display: inline-block;
-                    padding: 0 0 0 5%;
-                    dt {
-                        color: rgb(129, 131, 134);
-                    }
-                    dd {
-                        font-size: 1.5em;
-                        font-weight: bold;
-                        color: rgb(81, 80, 80);
-                    }
-                }
-            }
-            .indicator-periods-title {
-                font-size: 1em;
-                color: rgb(81, 80, 80);
-            }
             .table {
                 padding: 0.5em 0.25em;
                 /*background-color: rgb(235,235,231);*/
                 tbody {
                     &.indicator-period {
-                        border-top: 1px solid #E7E8E8;
+                        border:none;
+                        padding:15px 0;
                     }
                     &.expanded {
                         background-color: white;

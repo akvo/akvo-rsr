@@ -859,16 +859,16 @@ var MainContent = React.createClass({
                     <div className="indicator-description">
                         {this.props.selectedIndicator.description}
                     </div>
-                    <dl className="baseline">
+                    <div className="baseline">
                         <div className="baseline-year">
-                            <dt>{i18n.baseline_year}</dt>
-                            <dd>{this.props.selectedIndicator.baseline_year}</dd>
-                        </div>
+                            {i18n.baseline_year}
+                            <span>{this.props.selectedIndicator.baseline_year}</span>
+                        </div> 
                         <div className="baseline-value">
-                            <dt>{i18n.baseline_value}</dt>
-                            <dd>{this.props.selectedIndicator.baseline_value}</dd>
+                            {i18n.baseline_value}
+                            <span>{this.props.selectedIndicator.baseline_value}</span>
                         </div>
-                    </dl>
+                    </div>
                     {React.createElement(IndicatorPeriodList, {
                         selectedIndicator: this.props.selectedIndicator,
                         selectedPeriod: this.props.selectedPeriod,

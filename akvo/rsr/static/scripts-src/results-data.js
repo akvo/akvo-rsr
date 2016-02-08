@@ -859,14 +859,14 @@ var MainContent = React.createClass({displayName: 'MainContent',
                     React.DOM.div( {className:"indicator-description"}, 
                         this.props.selectedIndicator.description
                     ),
-                    React.DOM.dl( {className:"baseline"}, 
+                    React.DOM.div( {className:"baseline"}, 
                         React.DOM.div( {className:"baseline-year"}, 
-                            React.DOM.dt(null, i18n.baseline_year),
-                            React.DOM.dd(null, this.props.selectedIndicator.baseline_year)
-                        ),
+                            i18n.baseline_year,
+                            React.DOM.span(null, this.props.selectedIndicator.baseline_year)
+                        ), 
                         React.DOM.div( {className:"baseline-value"}, 
-                            React.DOM.dt(null, i18n.baseline_value),
-                            React.DOM.dd(null, this.props.selectedIndicator.baseline_value)
+                            i18n.baseline_value,
+                            React.DOM.span(null, this.props.selectedIndicator.baseline_value)
                         )
                     ),
                     React.createElement(IndicatorPeriodList, {

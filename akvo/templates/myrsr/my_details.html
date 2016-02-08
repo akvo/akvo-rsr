@@ -29,30 +29,32 @@
                 {% bootstrap_field field %}
             {% endfor %}
             {% buttons %}
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-default btn-sm">
                     {% trans 'Update details' %}
                 </button>
             {% endbuttons %}
         </form>
+        <div id="password">
+            <h4>{% trans 'Change your password' %}</h4>
+            <form method="post" action="" id="passwordForm">
+                {% for field in change_password_form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-default btn-sm">
+                        {% trans 'Update password' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
     </div>
-    <div class="col-sm-6 col-xs-12" id="password">
-        <h3>{% trans 'Change your password' %}</h3>
-        <form method="post" action="" id="passwordForm">
-            {% for field in change_password_form %}
-                {% bootstrap_field field %}
-            {% endfor %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% bootstrap_icon "ok-sign" %} {% trans 'Update password' %}
-                </button>
-            {% endbuttons %}
-        </form>
-    </div>
-
-    <div class="col-sm-12 col-xs-12" id="organisations">
+    <div class="col-sm-6 col-xs-12" id="organisations">
       
 
     </div>
+
+
+
 {% endblock %}
 
 {% block js %}

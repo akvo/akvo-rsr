@@ -207,7 +207,7 @@ var FormButton = React.createClass({displayName: 'FormButton',
             return button(
                 {
                     onClick: this.handleAddEmployment,
-                    className: 'btn btn-primary',
+                    className: 'btn btn-default btn-sm',
                     type: "button"
                 },
                 i18n.request_join_text
@@ -377,7 +377,7 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     render: function() {
         var icon = React.createFactory("i");
         var headingIcon = icon({className: 'fa fa-users'});
-        var heading = React.createElement("h3", null, headingIcon, ' ', i18n.my_organisations_text);
+        var heading = React.createElement("h4", null, ' ', i18n.my_organisations_text);
         var employmentList = React.createElement(EmploymentList, {employments: this.state.employments, removeEmployment: this.removeEmployment});
         var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment, existingEmployment: this.existingEmployment});
         return React.createElement("span", null, heading, employmentList, addEmploymentForm);
