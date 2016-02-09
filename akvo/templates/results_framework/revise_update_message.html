@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+{% load i18n %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style type="text/css">
+        body {
+            font-family: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.42857;
+            color: #394c50;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: normal;
+            color: #2C2A74;
+        }
+    </style>
+</head>
+    <body>
+        <p>{% trans 'Dear' %} {{ update.user.first_name }} {{ update.user.last_name }}</p>
+        <p>{% trans 'Your data update with the following details has been returned for revision' %}:</p>
+        <ul>
+            <li>{% trans 'Project' %}: {{ update.period.indicator.result.project.title }}</li>
+            <li>{% trans 'Result' %}: {{ update.period.indicator.result.title }}</li>
+            <li>{% trans 'Indicator' %}: {{ update.period.indicator.title }}</li>
+            <li>{% trans 'Period' %}: {{ update.period.period_start|date:"d b Y" }} - {{ update.period.period_end|date:"d b Y" }}</li>
+            <li>{% trans 'Current value' %}: {{ update.period_actual_value }}</li>
+            <li>{% trans 'New value' %}: {{ update.update_new_value }}</li>
+        </ul>
+        {% if update.comments.all %}
+            <h4>{% trans 'Comments' %}</h4>
+            <ul>
+                {% for comment in update.comments.all %}
+                    <li>{{ comment.user.first_name }} {{ comment.user.last_name }}: {{ comment.comment }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p>{% trans 'Please click the following link to edit the update' %}:</p>
+        <h3><a href="http://{{ site }}/myrsr/results_data/{{ update.period.indicator.result.project.pk }}/">{% trans 'Edit the update' %}</a></h3>
+        <p>
+            {% trans 'Thank you' %},<br/>Akvo.org
+        </p>
+    </body>
+</html>

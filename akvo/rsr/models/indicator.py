@@ -8,7 +8,7 @@ from akvo.codelists.models import IndicatorMeasure
 from akvo.codelists.store.codelists_v201 import INDICATOR_MEASURE
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.utils import codelist_choices, codelist_value, rsr_image_path
+from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_send_mail
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
@@ -554,11 +554,44 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                 # Update is immediately approved. Scenario that probably does not happen very often.
                 self.period.update_actual_value(self.data, self.relative_data)
         else:
-            # Only process data when the data update was not approved, but has been approved now.
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
-            if orig.status != self.STATUS_APPROVED_CODE and \
+
+            # Mail admins of a paying partner when an update needs to be approved
+            if orig.status != self.STATUS_PENDING_CODE and \
+                    self.status == self.STATUS_PENDING_CODE:
+                admins = self.period.indicator.result.project.publishing_orgs.employments().\
+                    filter(group__name='Admins')
+
+                rsr_send_mail(
+                    [empl.user.email for empl in admins],
+                    subject='results_framework/approve_update_subject.txt',
+                    message='results_framework/approve_update_message.txt',
+                    html_message='results_framework/approve_update_message.html',
+                    msg_context={'update': self}
+                )
+
+            # Mail the user that created the update when an update needs revision
+            elif orig.status != self.STATUS_REVISION_CODE and \
+                    self.status == self.STATUS_REVISION_CODE:
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/revise_update_subject.txt',
+                    message='results_framework/revise_update_message.txt',
+                    html_message='results_framework/revise_update_message.html',
+                    msg_context={'update': self}
+                )
+
+            # Process data when the update has been approved and mail the user about it
+            elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
                 self.period.update_actual_value(self.data, self.relative_data)
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/approved_subject.txt',
+                    message='results_framework/approved_message.txt',
+                    html_message='results_framework/approved_message.html',
+                    msg_context={'update': self}
+                )
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
@@ -631,6 +664,25 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Returns the full URL of the file.
         """
         return self.file.url if self.file else u''
+
+    def update_new_value(self):
+        """
+        Returns a string with the new value, taking into account a relative update.
+        """
+        if self.relative_data:
+            try:
+                add_up = Decimal(self.data) + Decimal(self.period_actual_value)
+                relative = '+' + str(self.data) if self.data >= 0 else str(self.data)
+                return "{} ({})".format(str(add_up), relative)
+            except (InvalidOperation, TypeError):
+                return self.data
+        else:
+            try:
+                substract = Decimal(self.data) - Decimal(self.period_actual_value)
+                relative = '+' + str(substract) if substract >= 0 else str(substract)
+                return "{} ({})".format(self.data, relative)
+            except (InvalidOperation, TypeError):
+                return self.data
 
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):

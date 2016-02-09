@@ -39,7 +39,7 @@ function getTimeDifference(endDate) {
 
 function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
-    if (dateString !== undefined) {
+    if (dateString !== undefined && dateString !== null) {
         var locale = "en-gb";
         var date = new Date(dateString.split(".")[0].replace("/", /-/g));
         var day = date.getUTCDate();
@@ -299,6 +299,12 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
         var checkboxId = "relative-checkbox-" + this.props.update.id;
+        var checkbox;
+        if (this.state.isRelative) {
+            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange, checked:true} ), " ", i18n.relative_data);
+        } else {
+            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange} ), " ", i18n.relative_data);
+        }
 
         if (this.editing()) {
             return (
@@ -306,7 +312,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     React.DOM.div( {className:"col-xs-4"}, 
                         React.DOM.label( {htmlFor:inputId}, i18n.new_actual_value),
                         React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} ),
-                        React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange} ), " Add relative data")
+                        checkbox
                     ),
                     React.DOM.div( {className:"col-xs-8"}, 
                         i18n.current,": ", this.props.selectedPeriod.actual_value,
@@ -475,23 +481,44 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         } else {
             switch(this.props.update.status) {
                 case 'P':
-                    return (
-                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-sm"}, i18n.return_for_revision)),
-                          React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)),
-                          React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve))
-                        )
-                    );
+                    if (isAdmin) {
+                        return (
+                            React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                                React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a(
+                                    {onClick:this.returnForRevision,
+                                    className:"btn btn-default btn-sm"}, i18n.return_for_revision)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
+                                    {onClick:this.switchEdit,
+                                    className:"btn btn-default btn-xs"}, i18n.edit_update)),
+                                React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a(
+                                    {onClick:this.approve,
+                                    className:"btn btn-default btn-xs"}, i18n.approve))
+                            )
+                        );
+                    } else {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    }
                 case 'A':
                     return (
                         React.DOM.span(null )
                     );
                 default:
-                    return (
-                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update))
-                        )
-                    );
+                    if (this.props.update.user === user.id || isAdmin) {
+                        return (
+                            React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                                React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
+                                    {onClick:this.switchEdit,
+                                    className:"btn btn-default btn-xs1"}, i18n.edit_update))
+                            )
+                        );
+                    } else {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    }
             }
         }
     },
@@ -566,7 +593,13 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     },
 
     renderNewUpdate: function() {
-        if (!this.props.selectedPeriod.locked) {
+        if (this.props.addingNewUpdate) {
+            return (
+                React.DOM.div( {className:"col-xs-3 new-update"}, 
+                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.adding_update
+                )
+            );
+        } else if (!this.props.selectedPeriod.locked) {
             return (
                 React.DOM.div( {className:"new-update"}, 
                     React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-xs btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
@@ -802,7 +835,14 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 });
 
 var MainContent = React.createClass({displayName: 'MainContent',
+    getInitialState: function() {
+        return {
+            addingNewUpdate: false
+        };
+    },
+
     addNewUpdate: function(periodId) {
+        this.setState({addingNewUpdate: true});
         var xmlHttp = new XMLHttpRequest();
         var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var thisApp = this;
@@ -810,6 +850,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
                 var update = JSON.parse(xmlHttp.responseText);
                 thisApp.props.saveUpdateToPeriod(update, periodId);
+                thisApp.setState({addingNewUpdate: false});
             }
         };
         xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
@@ -866,6 +907,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
                 React.DOM.div( {className:"indicator-period-container"}, 
                     React.createElement(IndicatorPeriodMain, {
                         addNewUpdate: this.addNewUpdate,
+                        addingNewUpdate: this.state.addingNewUpdate,
                         addEditingData: this.props.addEditingData,
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
@@ -1039,11 +1081,23 @@ var SideBar = React.createClass({displayName: 'SideBar',
             );
         });
 
-        return (
-            React.DOM.div( {className:"results-list"}, 
-                resultEntries
-            )
-        );
+        if (this.props.results.length > 0) {
+            return (
+                React.DOM.div( {className:"results-list"}, 
+                    resultEntries
+                )
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"results-list"}, 
+                    React.DOM.div( {className:"result-nav bg-transition"}, 
+                        React.DOM.div( {className:"result-nav-summary"}, 
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading_results
+                        )
+                    )
+                )
+            );
+        }
     }
 });
 
@@ -1304,7 +1358,8 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
 function userIsAdmin() {
     // Check if the user is a PME mananager, resulting in different actions than a regular
     // PO officer.
-    var adminOrgIds, partnerships;
+    var adminOrgIds = [],
+        partnerships;
 
     if (user.is_admin || user.is_superuser) {
         return true;
@@ -1321,7 +1376,7 @@ function userIsAdmin() {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
             partnerships = JSON.parse(xmlHttp.responseText).results;
-            for (var j = 0; i < partnerships.length; i++) {
+            for (var j = 0; j < partnerships.length; j++) {
                 var partnership = partnerships[j];
                 if (adminOrgIds.indexOf(partnership.organisation) > -1) {
                     return true;
@@ -1329,7 +1384,7 @@ function userIsAdmin() {
             }
         }
     };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.open("GET", endpoints.base_url + endpoints.partnerships, true);
     xmlHttp.send();
 
     return false;

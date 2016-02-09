@@ -12,7 +12,6 @@
         <a href="#report" class="tab-link">{% trans 'Full report' %}</a>
         {% if project.partners.all %}<a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>{% endif %}
         <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
-        {% if project.is_impact_project %}<a href="#results" class="tab-link">{% trans 'Results & indicators' %}</a>{% endif %}
         {% if updates %}<a href="#updates" class="tab-link">{% trans 'Updates' %}</a>{% endif %}
       </div>
     </div>
@@ -20,9 +19,6 @@
     {% include "project_main_tabs/report.html" %}
     {% include "project_main_tabs/partners.html" %}
     {% include "project_main_tabs/finance.html" %}
-    {% if project.is_impact_project and project.results.all %}
-        {% include "project_main_tabs/results.html" %}
-    {% endif %}
     {% if updates %}
         {% include "project_main_tabs/updates.html" %}
     {% endif %}
@@ -42,26 +38,11 @@
         {{ carousel_data|safe }}
     </script>
 
-    {# Updates information #}
-    <script type="application/json" id="update-json">
-        {{ indicator_updates|safe }}
-    </script>
-
     {# Default values #}
     <script type="application/json" id="default-values">
         {
-            "project_id": {{ project.pk }},
-            "user_id": {% if user.pk %}{{ user.pk }}{% else %}""{% endif %},
-            "user_first_name": "{{ user.first_name }}",
-            "user_last_name": "{{ user.last_name }}",
-            "user_is_admin": {{ project_admin|yesno:"true,false" }},
-            "can_update": {% has_perm 'rsr.post_updates' user project as can_update %}{{ can_update|yesno:"true,false" }},
-            "update_timeout": {{ update_timeout }},
-            "current_datetime": "{{ current_datetime|date:"c" }}",
             "show_partners_tab": {% if project.partners.all %}true{% else %}false{% endif %},
-            "show_results_tab": {% if project.is_impact_project and project.results.all %}true{% else %}false{% endif %},
             "show_updates_tab": {% if updates %}true{% else %}false{% endif %}
-
         }
     </script>
 
