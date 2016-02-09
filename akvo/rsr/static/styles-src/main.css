@@ -2018,7 +2018,7 @@ body.translationBarActive div.skiptranslate ~ #map {
 .projectEdit select + span + label,
 .projectEdit select + ul + label {
   position: absolute;
-  top: 0px;
+  top: -20px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
@@ -2241,29 +2241,33 @@ body.translationBarActive div.skiptranslate ~ #map {
     display: -webkit-flex;
     display: flex;
     padding-left: 0; }
-  .results .baseline {
+  .results .baseline, .results .periodValues {
     padding: 2em 0;
     position: relative;
     width: 100%;
     margin-bottom: 55px; }
     .results .baseline .baseline-value,
-    .results .baseline .baseline-year {
+    .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .periodValues .baseline-value,
+    .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual {
       width: 50%;
       display: inline-block;
       padding: 0 0 0 5px; }
       .results .baseline .baseline-value span:first-child,
-      .results .baseline .baseline-year span:first-child {
+      .results .baseline .baseline-year span:first-child, .results .baseline .period-target span:first-child, .results .baseline .period-actual span:first-child, .results .periodValues .baseline-value span:first-child,
+      .results .periodValues .baseline-year span:first-child, .results .periodValues .period-target span:first-child, .results .periodValues .period-actual span:first-child {
         color: #818386;
         display: block; }
       .results .baseline .baseline-value span:nth-child(2),
-      .results .baseline .baseline-year span:nth-child(2) {
-        font-size: 1.5em;
+      .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2),
+      .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) {
+        font-size: 1.6em;
         display: block;
         font-weight: bold;
-        color: #515050; }
-    .results .baseline .baseline-value {
+        color: #515050;
+        margin-left: 5px; }
+    .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
       float: left; }
-    .results .baseline .baseline-year {
+    .results .baseline .baseline-year, .results .baseline .period-actual, .results .periodValues .baseline-year, .results .periodValues .period-actual {
       float: right; }
   .results .sidebar {
     width: 30%;
@@ -2313,7 +2317,7 @@ body.translationBarActive div.skiptranslate ~ #map {
       transition: all 0.2s linear; }
       .results .sidebar .result-nav:hover {
         opacity: 1;
-        background: rgba(114, 205, 255, 0.3); }
+        background: rgba(114, 205, 255, 0.1); }
       .results .sidebar .result-nav .result-nav-summary {
         padding: 25px 0 10px 10px; }
         .results .sidebar .result-nav .result-nav-summary h3 {
@@ -2395,10 +2399,11 @@ body.translationBarActive div.skiptranslate ~ #map {
               background: rgba(44, 42, 116, 0.5); }
             .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
               background: rgba(44, 42, 116, 0.8) url(../images/carretWhite.svg) center right no-repeat;
-              border-left: 8px solid rgba(174, 9, 34, 0);
+              border-left: 10px solid rgba(174, 9, 34, 0);
               background-size: 5% auto; }
               .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
-                color: white; }
+                color: white;
+                font-weight: bold; }
             .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
               margin-bottom: 0; }
           .results .sidebar .result-nav.expanded .result-nav-full div a h4 {
@@ -2418,14 +2423,21 @@ body.translationBarActive div.skiptranslate ~ #map {
     vertical-align: top;
     overflow-y: scroll;
     padding: 0.25em 1em;
-    background-color: white;
+    background-color: rgba(245, 245, 245, 0.2);
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1; }
-    .results .indicator-container .indicator-title i {
-      display: none; }
+    .results .indicator-container .indicator-period .indicTitle {
+      position: relative; }
+      .results .indicator-container .indicator-period .indicTitle .indicator-title i {
+        display: none; }
+      .results .indicator-container .indicator-period .indicTitle .new-update {
+        position: absolute;
+        display: inline-block;
+        top: 0;
+        right: 0; }
     .results .indicator-container .indicator-periods-title {
       font-size: 1em;
       color: #202024;
@@ -2718,16 +2730,60 @@ body.translationBarActive div.skiptranslate ~ #map {
   .results label.imageUpload input[type="file"], .results label.fileUpload input[type="file"] {
     position: fixed;
     top: -1000px; }
-  .results .update-entry-container {
-    padding: 2em;
-    margin-bottom: 2em;
-    position: relative;
-    background-color: #ececec; }
-    .results .update-entry-container:first-child {
-      border-left: 4px solid #ae0922; }
-    .results .update-entry-container.edit-in-progress {
-      background-color: #D1E6D1;
-      border-left: none; }
+  .results .update-container {
+    background: rgba(32, 32, 36, 0);
+    border: 1px solid rgba(32, 32, 36, 0.1);
+    padding: 0 1em 0.75em 1em;
+    margin-bottom: 20px; }
+    .results .update-container .update-entry-container {
+      margin-bottom: 2em;
+      position: relative; }
+      .results .update-container .update-entry-container.edit-in-progress {
+        background-color: #D1E6D1;
+        border-left: none; }
+      .results .update-container .update-entry-container .update-entry-container-header {
+        background: rgba(32, 32, 36, 0.1);
+        padding: 0.75em 0; }
+        .results .update-container .update-entry-container .update-entry-container-header .update-user {
+          color: #2c2a74; }
+        .results .update-container .update-entry-container .update-entry-container-header .update-created-at {
+          margin-left: 15px; }
+        .results .update-container .update-entry-container .update-entry-container-header .update-status {
+          color: #ee3124; }
+      .results .update-container .update-entry-container .comments .input-group {
+        margin-top: 20px;
+        /* button {
+                        background: $akvoBlack;
+                        color:white;
+                        &:hover {
+                            background: $akvoPurple;
+                        }
+                    }*/ }
+      .results .update-container .update-entry-container .comments .comment {
+        margin-top: 20px;
+        margin-bottom: 20px; }
+        .results .update-container .update-entry-container .comments .comment .comment-header {
+          margin-bottom: 5px;
+          font-weight: bold; }
+      .results .update-container .update-entry-container .bottomRow {
+        margin-top: 20px;
+        padding: 0.75em;
+        position: relative; }
+        .results .update-container .update-entry-container .bottomRow .btn {
+          background: #202024;
+          color: white; }
+          .results .update-container .update-entry-container .bottomRow .btn:hover {
+            background: #2c2a74; }
+      .results .update-container .update-entry-container .upActualValue {
+        margin-top: 20px;
+        margin-bottom: 15px; }
+        .results .update-container .update-entry-container .upActualValue .update-actual-value-text {
+          color: rgba(32, 32, 36, 0.4); }
+        .results .update-container .update-entry-container .upActualValue .update-actual-value-data {
+          font-weight: bold; }
+        .results .update-container .update-entry-container .upActualValue .update-relative-value {
+          margin-left: 5px;
+          font-weight: bold; }
   .results .update-dialog-container.pending-new-update .update-entry-container {
     background-color: #D1E6D1; }
     .results .update-dialog-container.pending-new-update .update-entry-container:first-child {

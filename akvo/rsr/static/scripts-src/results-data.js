@@ -257,14 +257,14 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         } else {
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
                 React.DOM.span( {className:"update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name),
-                React.DOM.span( {className:"update-created-at"},  " | ", displayDate(this.props.update.created_at))
+                React.DOM.span( {className:"update-created-at"}, displayDate(this.props.update.created_at))
             )
         }
 
         return (
             React.DOM.div( {className:"row update-entry-container-header"}, 
                 headerLeft,
-                React.DOM.div( {className:"col-xs-3"}, 
+                React.DOM.div( {className:"col-xs-3 text-right"}, 
                     React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
                 )
             )
@@ -279,7 +279,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
         if (isNaN(updateData) || isNaN(relativeData) || relativeData === 0) {
             return (
-                React.DOM.div(null, 
+                React.DOM.div( {className:"upActualValue"}, 
                     React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, this.state.data),React.DOM.br(null)
                 )
@@ -287,7 +287,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         } else {
             relativeData = relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
             return (
-                React.DOM.div(null, 
+                React.DOM.div( {className:"upActualValue"}, 
                     React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, updateData, " " ),
                     React.DOM.span( {className:"update-relative-value"}, "(",relativeData,")")
@@ -433,13 +433,12 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         var addCommentInput;
 
         if (addComments) {
-            addCommentInput = React.DOM.div( {className:"row"}, 
-                React.DOM.div( {className:"col-xs-8"}, 
-                    React.DOM.label( {htmlFor:inputId}, i18n.comment),
-                    React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} )
-                ),
-                React.DOM.div( {className:"col-xs-3"}, 
-                    React.DOM.a( {onClick:this.addComment}, i18n.add_comment)
+            addCommentInput = React.DOM.div(null, 
+                React.DOM.div( {className:"input-group"}, 
+                    React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                    React.DOM.span( {className:"input-group-btn"},          
+                        React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18n.add_comment)
+                    ) 
                 )
             );
         } else {
@@ -459,27 +458,17 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-9"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)
-                            ),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.approve}, i18n.approve)
-                            )
+                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)),
+                          React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve))
                         )
                     );
                 default:
                     return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-7"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)
-                            ),
-                            React.DOM.div( {className:"col-xs-2"}, 
-                                React.DOM.a( {onClick:this.saveUpdate}, i18n.save)
-                            ),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.askForApproval}, i18n.submit_for_approval)
-                            )
+                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)),
+                          React.DOM.li( {role:"presentation", className:"saveUpdate"}, React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)),
+                          React.DOM.li( {role:"presentation", className:"submitUpdate"}, React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval))
                         )
                     );
             }
@@ -487,16 +476,10 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-7"}, 
-                                React.DOM.a( {onClick:this.returnForRevision}, i18n.return_for_revision)
-                            ),
-                            React.DOM.div( {className:"col-xs-2"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
-                            ),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.approve}, i18n.approve)
-                            )
+                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-sm"}, i18n.return_for_revision)),
+                          React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)),
+                          React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve))
                         )
                     );
                 case 'A':
@@ -505,11 +488,8 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     );
                 default:
                     return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-9"}),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
-                            )
+                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update))
                         )
                     );
             }
@@ -588,8 +568,8 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     renderNewUpdate: function() {
         if (!this.props.selectedPeriod.locked) {
             return (
-                React.DOM.div( {className:"col-xs-3 new-update"}, 
-                    React.DOM.a( {onClick:this.addNewUpdate}, i18n.new_update)
+                React.DOM.div( {className:"new-update"}, 
+                    React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-xs btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
                 )
             );
         } else if (isAdmin) {
@@ -623,24 +603,24 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     render: function() {
         return (
             React.DOM.div( {className:"indicator-period opacity-transition"}, 
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-9"}, 
+                React.DOM.div( {className:"indicTitle"}, 
                         React.DOM.h4( {className:"indicator-title"}, 
                             i18n.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
-                        )
-                    ),
+                        ),
                     this.renderNewUpdate()
                 ),
-                React.DOM.dl( {className:"period-target-actual"}, 
-                    React.DOM.div( {className:"period-target"}, 
-                        React.DOM.dt(null, i18n.target_value),
-                        React.DOM.dd(null, this.props.selectedPeriod.target_value)
-                    ),
-                    React.DOM.div( {className:"period-actual"}, 
-                        React.DOM.dt(null, i18n.actual_value),
-                        React.DOM.dd(null, 
-                            this.props.selectedPeriod.actual_value,
-                            this.renderPercentageComplete()
+                React.DOM.div( {className:"period-target-actual"}, 
+                    React.DOM.div( {className:"periodValues"}, 
+                        React.DOM.div( {className:"period-target"}, 
+                            i18n.target_value,
+                            React.DOM.span(null, this.props.selectedPeriod.target_value)
+                        ),
+                        React.DOM.div( {className:"period-actual"}, 
+                            i18n.actual_value,
+                            React.DOM.span(null, 
+                                this.props.selectedPeriod.actual_value,
+                                this.renderPercentageComplete()
+                            )
                         )
                     ),
                     React.createElement(UpdatesList, {
@@ -903,7 +883,6 @@ var MainContent = React.createClass({displayName: 'MainContent',
             return (
                 React.DOM.div( {className:"indicator opacity-transition"}, 
                     React.DOM.h4( {className:"indicator-title"}, 
-                        React.DOM.i( {className:"fa fa-tachometer"} ),
                         this.props.selectedIndicator.title,
                         "(",this.showMeasure(),")"
                     ),

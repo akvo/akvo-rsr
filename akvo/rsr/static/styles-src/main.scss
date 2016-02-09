@@ -2490,7 +2490,7 @@ body {
         & + span + label,
         & + ul + label {
             position: absolute;
-            top: 0px;
+            top: -20px;
             transition: top 0.7s ease, opacity 0.7s ease;
             opacity: 1;
             // Some nice styling
@@ -2729,13 +2729,13 @@ body {
         @include display-flex;
         padding-left: 0;
     }
-    .baseline {
+    .baseline, .periodValues {
         padding: 2em 0;
         position: relative;
         width: 100%;
         margin-bottom: 55px;
         .baseline-value,
-        .baseline-year {
+        .baseline-year, .period-target, .period-actual {
             width: 50%;
             display: inline-block;
             padding: 0 0 0 5px;
@@ -2744,16 +2744,17 @@ body {
                 display: block;
             }
             span:nth-child(2) {
-                font-size: 1.5em;
+                font-size: 1.6em;
                 display: block;
                 font-weight: bold;
                 color: rgb(81, 80, 80);
+                margin-left: 5px;
             }
         }
-        .baseline-value {
+        .baseline-value, .period-target {
             float: left;
         }
-        .baseline-year {
+        .baseline-year, .period-actual {
             float: right;
         }
     }
@@ -2802,7 +2803,7 @@ body {
             @include transition(all 0.2s linear);
             &:hover {
                 opacity: 1;
-                background: rgba($rsrBlue2, 0.3);
+                background: rgba($rsrBlue2, 0.1);
             }
             .result-nav-summary {
                 padding: 25px 0 10px 10px;
@@ -2911,10 +2912,11 @@ body {
                             }
                             &.active {
                                 background: rgba($akvoPurple, 0.8) url(../images/carretWhite.svg) center right no-repeat;
-                                border-left: 8px solid rgba(174, 9, 34, 0);
+                                border-left: 10px solid rgba(174, 9, 34, 0);
                                 background-size: 5% auto;
                                 h4 {
                                     color: white;
+                                    font-weight: bold;
                                 }
                             }
                             &:last-child {
@@ -2948,11 +2950,22 @@ body {
         vertical-align: top;
         overflow-y: scroll;
         padding: 0.25em 1em;
-        background-color: rgb(255, 255, 255);
+        background-color: rgba(245, 245, 245,0.2);
         @include flex(1);
-        .indicator-title {
-            i {
-                display: none;
+        .indicator-period {
+            .indicTitle{
+                position: relative;
+                .indicator-title {
+                    i {
+                        display: none;
+                        }
+                    }
+                .new-update {
+                    position: absolute;
+                    display: inline-block;
+                    top:0;
+                    right:0;
+                }
             }
         }
         .indicator-periods-title {
@@ -3323,17 +3336,80 @@ body {
             top: -1000px;
         }
     }
-    .update-entry-container {
-        padding: 2em;
-        margin-bottom: 2em;
-        position: relative;
-        background-color: #ececec;
-        &:first-child {
-            border-left: 4px solid #ae0922;
-        }
-        &.edit-in-progress {
-            background-color: #D1E6D1;
-            border-left: none;
+    .update-container{
+        background: rgba($akvoBlack,0);
+        border:1px solid rgba($akvoBlack,0.1);
+        padding:0 1em 0.75em 1em;
+        margin-bottom: 20px;
+        .update-entry-container {
+            margin-bottom: 2em;
+            position: relative;
+            &.edit-in-progress {
+                background-color: #D1E6D1;
+                border-left: none;
+            }
+            .update-entry-container-header {
+                background: rgba($akvoBlack,0.1);
+                padding:0.75em 0;
+                .update-user {color:$akvoPurple;}
+                .update-created-at {margin-left: 15px;}
+                .update-status {color:$akvoTvRed;}
+            }
+            .comments {
+                .input-group {
+                    margin-top: 20px;
+                 /* button {
+                        background: $akvoBlack;
+                        color:white;
+                        &:hover {
+                            background: $akvoPurple;
+                        }
+                    }*/
+                }
+                .comment {
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                    .comment-header {
+                        margin-bottom:5px;
+                        font-weight: bold;
+                    }
+                    .comment-text {
+
+                    }
+                }
+            }
+            .bottomRow {
+                margin-top: 20px;
+                padding:0.75em;
+                position: relative;
+                .btn {                        
+                    background: $akvoBlack;
+                    color:white;
+                    &:hover {
+                        background: $akvoPurple;
+                        }
+                    }
+                .cancelUpdate {}
+                .editUpdate {}
+                .saveUpdate {}
+                .returnUpdate {}
+                .submitUpdate {}
+                .approveUpdate {}
+            }
+            .upActualValue {
+                margin-top: 20px;
+                margin-bottom: 15px;
+                .update-actual-value-text {
+                    color:rgba($akvoBlack,0.4);
+                }
+                .update-actual-value-data {
+                    font-weight: bold;
+                }
+                .update-relative-value {
+                    margin-left: 5px;
+                    font-weight: bold;
+                }
+            }
         }
     }
     .update-dialog-container {

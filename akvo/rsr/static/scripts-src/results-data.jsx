@@ -257,14 +257,14 @@ var UpdateEntry = React.createClass({
         } else {
             headerLeft = <div className="col-xs-9">
                 <span className="update-user">{this.props.update.user_details.first_name} {this.props.update.user_details.last_name}</span>
-                <span className="update-created-at"> | {displayDate(this.props.update.created_at)}</span>
+                <span className="update-created-at">{displayDate(this.props.update.created_at)}</span>
             </div>
         }
 
         return (
             <div className="row update-entry-container-header">
                 {headerLeft}
-                <div className="col-xs-3">
+                <div className="col-xs-3 text-right">
                     <span className="update-status"> {this.props.update.status_display}</span>
                 </div>
             </div>
@@ -279,7 +279,7 @@ var UpdateEntry = React.createClass({
 
         if (isNaN(updateData) || isNaN(relativeData) || relativeData === 0) {
             return (
-                <div>
+                <div className="upActualValue">
                     <span className="update-actual-value-text">{i18n.actual_value}: </span>
                     <span className="update-actual-value-data">{this.state.data}</span><br/>
                 </div>
@@ -287,7 +287,7 @@ var UpdateEntry = React.createClass({
         } else {
             relativeData = relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
             return (
-                <div>
+                <div className="upActualValue">
                     <span className="update-actual-value-text">{i18n.actual_value}: </span>
                     <span className="update-actual-value-data">{updateData} </span>
                     <span className="update-relative-value">({relativeData})</span>
@@ -433,13 +433,12 @@ var UpdateEntry = React.createClass({
         var addCommentInput;
 
         if (addComments) {
-            addCommentInput = <div className="row">
-                <div className="col-xs-8">
-                    <label htmlFor={inputId}>{i18n.comment}</label>
+            addCommentInput = <div>
+                <div className="input-group">
                     <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18n.add_comment_placeholder} onChange={this.handleCommentChange} />
-                </div>
-                <div className="col-xs-3">
-                    <a onClick={this.addComment}>{i18n.add_comment}</a>
+                    <span className="input-group-btn">         
+                        <button onClick={this.addComment} type="submit" className="btn btn-default">{i18n.add_comment}</button>
+                    </span> 
                 </div>
             </div>;
         } else {
@@ -459,45 +458,29 @@ var UpdateEntry = React.createClass({
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        <div className="row">
-                            <div className="col-xs-9">
-                                <a onClick={this.switchEdit}>{i18n.cancel}</a>
-                            </div>
-                            <div className="col-xs-3">
-                                <a onClick={this.approve}>{i18n.approve}</a>
-                            </div>
-                        </div>
+                        <ul className="nav nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit}>{i18n.cancel}</a></li>
+                          <li role="presentation" className="approveUpdate"><a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a></li>
+                        </ul>
                     );
                 default:
                     return (
-                        <div className="row">
-                            <div className="col-xs-7">
-                                <a onClick={this.switchEdit}>{i18n.cancel}</a>
-                            </div>
-                            <div className="col-xs-2">
-                                <a onClick={this.saveUpdate}>{i18n.save}</a>
-                            </div>
-                            <div className="col-xs-3">
-                                <a onClick={this.askForApproval}>{i18n.submit_for_approval}</a>
-                            </div>
-                        </div>
+                        <ul className="nav nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit}>{i18n.cancel}</a></li>
+                          <li role="presentation" className="saveUpdate"><a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a></li>
+                          <li role="presentation" className="submitUpdate"><a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a></li>
+                        </ul>
                     );
             }
         } else {
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        <div className="row">
-                            <div className="col-xs-7">
-                                <a onClick={this.returnForRevision}>{i18n.return_for_revision}</a>
-                            </div>
-                            <div className="col-xs-2">
-                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
-                            </div>
-                            <div className="col-xs-3">
-                                <a onClick={this.approve}>{i18n.approve}</a>
-                            </div>
-                        </div>
+                        <ul className="nav nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="returnUpdate"><a onClick={this.returnForRevision} className="btn btn-default btn-sm">{i18n.return_for_revision}</a></li>
+                          <li role="presentation" className="editUpdate"><a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a></li>
+                          <li role="presentation" className="approveUpdate"><a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a></li>
+                        </ul>
                     );
                 case 'A':
                     return (
@@ -505,12 +488,9 @@ var UpdateEntry = React.createClass({
                     );
                 default:
                     return (
-                        <div className="row">
-                            <div className="col-xs-9"></div>
-                            <div className="col-xs-3">
-                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
-                            </div>
-                        </div>
+                        <ul className="nav nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="editUpdate"><a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a></li>
+                        </ul>
                     );
             }
         }
@@ -588,8 +568,8 @@ var IndicatorPeriodMain = React.createClass({
     renderNewUpdate: function() {
         if (!this.props.selectedPeriod.locked) {
             return (
-                <div className="col-xs-3 new-update">
-                    <a onClick={this.addNewUpdate}>{i18n.new_update}</a>
+                <div className="new-update">
+                    <a onClick={this.addNewUpdate} className="btn btn-xs btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
                 </div>
             );
         } else if (isAdmin) {
@@ -623,25 +603,25 @@ var IndicatorPeriodMain = React.createClass({
     render: function() {
         return (
             <div className="indicator-period opacity-transition">
-                <div className="row">
-                    <div className="col-xs-9">
+                <div className="indicTitle">
                         <h4 className="indicator-title">
                             {i18n.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
                         </h4>
-                    </div>
                     {this.renderNewUpdate()}
                 </div>
-                <dl className="period-target-actual">
-                    <div className="period-target">
-                        <dt>{i18n.target_value}</dt>
-                        <dd>{this.props.selectedPeriod.target_value}</dd>
-                    </div>
-                    <div className="period-actual">
-                        <dt>{i18n.actual_value}</dt>
-                        <dd>
-                            {this.props.selectedPeriod.actual_value}
-                            {this.renderPercentageComplete()}
-                        </dd>
+                <div className="period-target-actual">
+                    <div className="periodValues">
+                        <div className="period-target">
+                            {i18n.target_value}
+                            <span>{this.props.selectedPeriod.target_value}</span>
+                        </div>
+                        <div className="period-actual">
+                            {i18n.actual_value}
+                            <span>
+                                {this.props.selectedPeriod.actual_value}
+                                {this.renderPercentageComplete()}
+                            </span>
+                        </div>
                     </div>
                     {React.createElement(UpdatesList, {
                         addEditingData: this.props.addEditingData,
@@ -654,7 +634,7 @@ var IndicatorPeriodMain = React.createClass({
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
                     })}
-                </dl>
+                </div>
             </div>
         );
     }
@@ -903,7 +883,6 @@ var MainContent = React.createClass({
             return (
                 <div className="indicator opacity-transition">
                     <h4 className="indicator-title">
-                        <i className="fa fa-tachometer" />
                         {this.props.selectedIndicator.title}
                         ({this.showMeasure()})
                     </h4>
