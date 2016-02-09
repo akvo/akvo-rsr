@@ -253,12 +253,12 @@ var UpdateEntry = React.createClass({
         if (this.editing()) {
             headerLeft = <div className="col-xs-9">
                 <span className="edit-update">{i18n.edit_update}</span>
-            </div>
+            </div>;
         } else {
             headerLeft = <div className="col-xs-9">
                 <span className="update-user">{this.props.update.user_details.first_name} {this.props.update.user_details.last_name}</span>
                 <span className="update-created-at">{displayDate(this.props.update.created_at)}</span>
-            </div>
+            </div>;
         }
 
         return (
@@ -387,14 +387,14 @@ var UpdateEntry = React.createClass({
                 fileUpload = <div className="col-xs-6">
                     <i className="fa fa-paperclip"/> <a href={this.props.update.file_url} target="_blank">{this.fileNameDisplay()}</a>
                     <a onClick={this.removeFile}> Remove</a>
-                </div>
+                </div>;
             } else {
                 fileUpload = <div className="col-xs-3">
                     <label className="fileUpload">
                         <input type="file" onChange={this.uploadFile} />
                         <a><i className="fa fa-paperclip"/> {i18n.attach_file}</a>
                     </label>
-                </div>
+                </div>;
             }
 
             return (
@@ -431,7 +431,7 @@ var UpdateEntry = React.createClass({
                         comment: comment
                     })}
                 </div>
-            )
+            );
         });
 
         var inputId = "new-comment-" + this.props.update.id;
@@ -501,6 +501,7 @@ var UpdateEntry = React.createClass({
                             <span />
                         );
                     }
+                    break;
                 case 'A':
                     return (
                         <span />
@@ -691,8 +692,8 @@ var IndicatorPeriodEntry = React.createClass({
     },
 
     switchPeriod: function() {
-        var selectPeriod = this.props.selectPeriod;
-        this.selected() ? selectPeriod(null) : selectPeriod(this.props.period.id);
+        var periodId = this.selected() ? null : this.props.period.id;
+        this.props.selectPeriod(periodId);
     },
 
     switchPeriodAndUpdate: function() {
@@ -735,7 +736,7 @@ var IndicatorPeriodEntry = React.createClass({
                         <td className="actions-td">
                             <a onClick={this.unlockPeriod}>{i18n.unlock_period}</a>
                         </td>
-                    )
+                    );
             }
         } else {
             switch(this.props.period.locked) {
@@ -750,7 +751,7 @@ var IndicatorPeriodEntry = React.createClass({
                         <td className="actions-td">
                             <i className="fa fa-lock" /> {i18n.period_locked}
                         </td>
-                    )
+                    );
             }
         }
     },
@@ -951,7 +952,7 @@ var MainContent = React.createClass({
                         unlockPeriod: this.unlockPeriod
                     })}
                 </div>
-            )
+            );
         } else {
             return (
                 <span />
@@ -977,7 +978,7 @@ var IndicatorEntry = React.createClass({
     render: function() {
         var indicatorClass = "indicator-nav clickable bg-border-transition";
         if (this.selected()) {
-            indicatorClass += " active"
+            indicatorClass += " active";
         }
 
         return (
@@ -1000,8 +1001,8 @@ var ResultEntry = React.createClass({
     },
 
     switchResult: function() {
-        var selectResult = this.props.selectResult;
-        this.expanded() ? selectResult(null) : selectResult(this.props.result.id);
+        var resultId = this.expanded() ? null : this.props.result.id;
+        this.props.selectResult(resultId);
     },
 
     indicatorText: function() {
@@ -1368,7 +1369,7 @@ function userIsAdmin() {
     for (var i = 0; i < user.approved_employments.length; i++) {
         var employment = user.approved_employments[i];
         if (employment.group_name === 'Admins') {
-            adminOrgIds.push(employment.organisation)
+            adminOrgIds.push(employment.organisation);
         }
     }
 

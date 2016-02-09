@@ -253,12 +253,12 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         if (this.editing()) {
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
                 React.DOM.span( {className:"edit-update"}, i18n.edit_update)
-            )
+            );
         } else {
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
                 React.DOM.span( {className:"update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name),
                 React.DOM.span( {className:"update-created-at"}, displayDate(this.props.update.created_at))
-            )
+            );
         }
 
         return (
@@ -387,14 +387,14 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 fileUpload = React.DOM.div( {className:"col-xs-6"}, 
                     React.DOM.i( {className:"fa fa-paperclip"}), " ", React.DOM.a( {href:this.props.update.file_url, target:"_blank"}, this.fileNameDisplay()),
                     React.DOM.a( {onClick:this.removeFile},  " Remove")
-                )
+                );
             } else {
                 fileUpload = React.DOM.div( {className:"col-xs-3"}, 
                     React.DOM.label( {className:"fileUpload"}, 
                         React.DOM.input( {type:"file", onChange:this.uploadFile} ),
                         React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18n.attach_file)
                     )
-                )
+                );
             }
 
             return (
@@ -431,7 +431,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                         comment: comment
                     })
                 )
-            )
+            );
         });
 
         var inputId = "new-comment-" + this.props.update.id;
@@ -501,6 +501,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                             React.DOM.span(null )
                         );
                     }
+                    break;
                 case 'A':
                     return (
                         React.DOM.span(null )
@@ -511,7 +512,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                             React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
                                 React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
                                     {onClick:this.switchEdit,
-                                    className:"btn btn-default btn-xs1"}, i18n.edit_update))
+                                    className:"btn btn-default btn-xs"}, i18n.edit_update))
                             )
                         );
                     } else {
@@ -691,8 +692,8 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
     },
 
     switchPeriod: function() {
-        var selectPeriod = this.props.selectPeriod;
-        this.selected() ? selectPeriod(null) : selectPeriod(this.props.period.id);
+        var periodId = this.selected() ? null : this.props.period.id;
+        this.props.selectPeriod(periodId);
     },
 
     switchPeriodAndUpdate: function() {
@@ -735,7 +736,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                         React.DOM.td( {className:"actions-td"}, 
                             React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
                         )
-                    )
+                    );
             }
         } else {
             switch(this.props.period.locked) {
@@ -750,7 +751,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                         React.DOM.td( {className:"actions-td"}, 
                             React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.period_locked
                         )
-                    )
+                    );
             }
         }
     },
@@ -951,7 +952,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
                         unlockPeriod: this.unlockPeriod
                     })
                 )
-            )
+            );
         } else {
             return (
                 React.DOM.span(null )
@@ -977,7 +978,7 @@ var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
     render: function() {
         var indicatorClass = "indicator-nav clickable bg-border-transition";
         if (this.selected()) {
-            indicatorClass += " active"
+            indicatorClass += " active";
         }
 
         return (
@@ -1000,8 +1001,8 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
     },
 
     switchResult: function() {
-        var selectResult = this.props.selectResult;
-        this.expanded() ? selectResult(null) : selectResult(this.props.result.id);
+        var resultId = this.expanded() ? null : this.props.result.id;
+        this.props.selectResult(resultId);
     },
 
     indicatorText: function() {
@@ -1368,7 +1369,7 @@ function userIsAdmin() {
     for (var i = 0; i < user.approved_employments.length; i++) {
         var employment = user.approved_employments[i];
         if (employment.group_name === 'Admins') {
-            adminOrgIds.push(employment.organisation)
+            adminOrgIds.push(employment.organisation);
         }
     }
 
