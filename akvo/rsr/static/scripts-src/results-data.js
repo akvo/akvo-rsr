@@ -39,7 +39,7 @@ function getTimeDifference(endDate) {
 
 function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
-    if (dateString !== undefined) {
+    if (dateString !== undefined && dateString !== null) {
         var locale = "en-gb";
         var date = new Date(dateString.split(".")[0].replace("/", /-/g));
         var day = date.getUTCDate();
