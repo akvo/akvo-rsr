@@ -486,32 +486,45 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         } else {
             switch(this.props.update.status) {
                 case 'P':
-                    return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-7"}, 
-                                React.DOM.a( {onClick:this.returnForRevision}, i18n.return_for_revision)
-                            ),
-                            React.DOM.div( {className:"col-xs-2"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
-                            ),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.approve}, i18n.approve)
+                    if (isAdmin) {
+                        return (
+                            React.DOM.div( {className:"row"}, 
+                                React.DOM.div( {className:"col-xs-7"}, 
+                                    React.DOM.a( {onClick:this.returnForRevision}, i18n.return_for_revision)
+                                ),
+                                React.DOM.div( {className:"col-xs-2"}, 
+                                    React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
+                                ),
+                                React.DOM.div( {className:"col-xs-3"}, 
+                                    React.DOM.a( {onClick:this.approve}, i18n.approve)
+                                )
                             )
-                        )
-                    );
+                        );
+                    } else {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    }
+
                 case 'A':
                     return (
                         React.DOM.span(null )
                     );
                 default:
-                    return (
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-xs-9"}),
-                            React.DOM.div( {className:"col-xs-3"}, 
-                                React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
+                    if (this.props.update.user.id === user.id || isAdmin) {
+                        return (
+                            React.DOM.div( {className:"row"}, 
+                                React.DOM.div( {className:"col-xs-9"}),
+                                React.DOM.div( {className:"col-xs-3"}, 
+                                    React.DOM.a( {onClick:this.switchEdit}, i18n.edit_update)
+                                )
                             )
-                        )
-                    );
+                        );
+                    } else {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    }
             }
         }
     },
@@ -1325,7 +1338,8 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
 function userIsAdmin() {
     // Check if the user is a PME mananager, resulting in different actions than a regular
     // PO officer.
-    var adminOrgIds, partnerships;
+    var adminOrgIds = [],
+        partnerships;
 
     if (user.is_admin || user.is_superuser) {
         return true;
@@ -1342,7 +1356,7 @@ function userIsAdmin() {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
             partnerships = JSON.parse(xmlHttp.responseText).results;
-            for (var j = 0; i < partnerships.length; i++) {
+            for (var j = 0; j < partnerships.length; j++) {
                 var partnership = partnerships[j];
                 if (adminOrgIds.indexOf(partnership.organisation) > -1) {
                     return true;
@@ -1350,7 +1364,7 @@ function userIsAdmin() {
             }
         }
     };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.open("GET", endpoints.base_url + endpoints.partnerships, true);
     xmlHttp.send();
 
     return false;

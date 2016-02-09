@@ -486,32 +486,45 @@ var UpdateEntry = React.createClass({
         } else {
             switch(this.props.update.status) {
                 case 'P':
-                    return (
-                        <div className="row">
-                            <div className="col-xs-7">
-                                <a onClick={this.returnForRevision}>{i18n.return_for_revision}</a>
+                    if (isAdmin) {
+                        return (
+                            <div className="row">
+                                <div className="col-xs-7">
+                                    <a onClick={this.returnForRevision}>{i18n.return_for_revision}</a>
+                                </div>
+                                <div className="col-xs-2">
+                                    <a onClick={this.switchEdit}>{i18n.edit_update}</a>
+                                </div>
+                                <div className="col-xs-3">
+                                    <a onClick={this.approve}>{i18n.approve}</a>
+                                </div>
                             </div>
-                            <div className="col-xs-2">
-                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
-                            </div>
-                            <div className="col-xs-3">
-                                <a onClick={this.approve}>{i18n.approve}</a>
-                            </div>
-                        </div>
-                    );
+                        );
+                    } else {
+                        return (
+                            <span />
+                        );
+                    }
+
                 case 'A':
                     return (
                         <span />
                     );
                 default:
-                    return (
-                        <div className="row">
-                            <div className="col-xs-9"></div>
-                            <div className="col-xs-3">
-                                <a onClick={this.switchEdit}>{i18n.edit_update}</a>
+                    if (this.props.update.user.id === user.id || isAdmin) {
+                        return (
+                            <div className="row">
+                                <div className="col-xs-9"></div>
+                                <div className="col-xs-3">
+                                    <a onClick={this.switchEdit}>{i18n.edit_update}</a>
+                                </div>
                             </div>
-                        </div>
-                    );
+                        );
+                    } else {
+                        return (
+                            <span />
+                        );
+                    }
             }
         }
     },
@@ -1325,7 +1338,8 @@ var ResultsApp = React.createClass({
 function userIsAdmin() {
     // Check if the user is a PME mananager, resulting in different actions than a regular
     // PO officer.
-    var adminOrgIds, partnerships;
+    var adminOrgIds = [],
+        partnerships;
 
     if (user.is_admin || user.is_superuser) {
         return true;
@@ -1342,7 +1356,7 @@ function userIsAdmin() {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
             partnerships = JSON.parse(xmlHttp.responseText).results;
-            for (var j = 0; i < partnerships.length; i++) {
+            for (var j = 0; j < partnerships.length; j++) {
                 var partnership = partnerships[j];
                 if (adminOrgIds.indexOf(partnership.organisation) > -1) {
                     return true;
@@ -1350,7 +1364,7 @@ function userIsAdmin() {
             }
         }
     };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
+    xmlHttp.open("GET", endpoints.base_url + endpoints.partnerships, true);
     xmlHttp.send();
 
     return false;
