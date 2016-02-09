@@ -1073,11 +1073,23 @@ var SideBar = React.createClass({
             );
         });
 
-        return (
-            <div className="results-list">
-                {resultEntries}
-            </div>
-        );
+        if (this.props.results.length > 0) {
+            return (
+                <div className="results-list">
+                    {resultEntries}
+                </div>
+            );
+        } else {
+            return (
+                <div className="results-list">
+                    <div className="result-nav bg-transition">
+                        <div className="result-nav-summary">
+                            <i className="fa fa-spin fa-spinner" /> {i18n.loading_results}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
     }
 });
 

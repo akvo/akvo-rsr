@@ -1073,11 +1073,23 @@ var SideBar = React.createClass({displayName: 'SideBar',
             );
         });
 
-        return (
-            React.DOM.div( {className:"results-list"}, 
-                resultEntries
-            )
-        );
+        if (this.props.results.length > 0) {
+            return (
+                React.DOM.div( {className:"results-list"}, 
+                    resultEntries
+                )
+            );
+        } else {
+            return (
+                React.DOM.div( {className:"results-list"}, 
+                    React.DOM.div( {className:"result-nav bg-transition"}, 
+                        React.DOM.div( {className:"result-nav-summary"}, 
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading_results
+                        )
+                    )
+                )
+            );
+        }
     }
 });
 
