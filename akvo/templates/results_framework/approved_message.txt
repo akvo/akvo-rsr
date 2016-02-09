@@ -1,0 +1,25 @@
+{% load i18n %}
+
+{% trans 'Dear' %} {{ update.user.first_name }} {{ update.user.last_name }},
+
+{% trans 'Your data update with the following details has been approved' %}:
+
+{% trans 'Project' %}: {{ update.period.indicator.result.project.title }}
+{% trans 'Result' %}: {{ update.period.indicator.result.title }}
+{% trans 'Indicator' %}: {{ update.period.indicator.title }}
+{% trans 'Period' %}: {{ update.period.period_start|date:"d b Y" }} - {{ update.period.period_end|date:"d b Y" }}
+{% trans 'Old value' %}: {{ update.period_actual_value }}
+{% trans 'New value' %}: {{ update.update_new_value }}
+
+{% if update.comments.all %}
+Comments
+{% for comment in update.comments.all %}
+{{ comment.user.first_name }} {{ comment.user.last_name }}: {{ comment.comment }}
+{% endfor %}
+{% endif %}
+
+{% trans 'Click the following link to view the update' %}:
+http://{{ site }}/myrsr/results_data/{{ update.period.indicator.result.project.pk }}/
+
+{% trans 'Thank you' %},
+Akvo.org
