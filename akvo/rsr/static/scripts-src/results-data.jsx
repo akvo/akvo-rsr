@@ -299,6 +299,12 @@ var UpdateEntry = React.createClass({
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
         var checkboxId = "relative-checkbox-" + this.props.update.id;
+        var checkbox;
+        if (this.state.isRelative) {
+            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+        } else {
+            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+        }
 
         if (this.editing()) {
             return (
@@ -306,7 +312,7 @@ var UpdateEntry = React.createClass({
                     <div className="col-xs-4">
                         <label htmlFor={inputId}>{i18n.new_actual_value}</label>
                         <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
-                        <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> Add relative data</label>
+                        {checkbox}
                     </div>
                     <div className="col-xs-8">
                         {i18n.current}: {this.props.selectedPeriod.actual_value}
@@ -511,7 +517,7 @@ var UpdateEntry = React.createClass({
                         <span />
                     );
                 default:
-                    if (this.props.update.user.id === user.id || isAdmin) {
+                    if (this.props.update.user === user.id || isAdmin) {
                         return (
                             <div className="row">
                                 <div className="col-xs-9"></div>
@@ -599,7 +605,13 @@ var IndicatorPeriodMain = React.createClass({
     },
 
     renderNewUpdate: function() {
-        if (!this.props.selectedPeriod.locked) {
+        if (this.props.addingNewUpdate) {
+            return (
+                <div className="col-xs-3 new-update">
+                    <i className="fa fa-spin fa-spinner" /> {i18n.adding_update}
+                </div>
+            );
+        } else if (!this.props.selectedPeriod.locked) {
             return (
                 <div className="col-xs-3 new-update">
                     <a onClick={this.addNewUpdate}>{i18n.new_update}</a>
@@ -835,7 +847,14 @@ var IndicatorPeriodList = React.createClass({
 });
 
 var MainContent = React.createClass({
+    getInitialState: function() {
+        return {
+            addingNewUpdate: false
+        };
+    },
+
     addNewUpdate: function(periodId) {
+        this.setState({addingNewUpdate: true});
         var xmlHttp = new XMLHttpRequest();
         var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var thisApp = this;
@@ -843,6 +862,7 @@ var MainContent = React.createClass({
             if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
                 var update = JSON.parse(xmlHttp.responseText);
                 thisApp.props.saveUpdateToPeriod(update, periodId);
+                thisApp.setState({addingNewUpdate: false});
             }
         };
         xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
@@ -899,6 +919,7 @@ var MainContent = React.createClass({
                 <div className="indicator-period-container">
                     {React.createElement(IndicatorPeriodMain, {
                         addNewUpdate: this.addNewUpdate,
+                        addingNewUpdate: this.state.addingNewUpdate,
                         addEditingData: this.props.addEditingData,
                         removeEditingData: this.props.removeEditingData,
                         editingData: this.props.editingData,
