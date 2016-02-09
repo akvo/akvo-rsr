@@ -166,7 +166,7 @@ def _check_project_viewing_permissions(user, project):
 
 def _get_accordion_data(project):
     results_data = []
-    if project.results.all() and not project.is_impact_project:
+    if project.results.all():
         for result in project.results.all():
             result_data = dict()
             result_data['id'] = str(result.pk)

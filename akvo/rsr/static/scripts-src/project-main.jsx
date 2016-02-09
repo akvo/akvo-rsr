@@ -11,6 +11,7 @@ var Accordion = ReactBootstrap.Accordion,
     CarouselInstance,
     CarouselItem = ReactBootstrap.CarouselItem,
     Panel = ReactBootstrap.Panel,
+    defaultValues,
     i18n;
 
 IndicatorPeriodValue = React.createClass({
@@ -314,6 +315,7 @@ function readTabFromFragment() {
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
     i18n = JSON.parse(document.getElementById("project-main-text").innerHTML);
+    defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 
     // Setup project tabs
     setTabsOnClicks();

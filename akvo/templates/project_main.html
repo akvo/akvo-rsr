@@ -38,6 +38,14 @@
         {{ carousel_data|safe }}
     </script>
 
+    {# Default values #}
+    <script type="application/json" id="default-values">
+        {
+            "show_partners_tab": {% if project.partners.all %}true{% else %}false{% endif %},
+            "show_updates_tab": {% if updates %}true{% else %}false{% endif %}
+        }
+    </script>
+
     {# Translation strings #}
     <script type="application/json" id="project-main-text">
         {
