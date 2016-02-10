@@ -486,7 +486,7 @@ var UpdateEntry = React.createClass({
                             <ul className="nav nav-pills bottomRow navbar-right">
                                 <li role="presentation" className="returnUpdate"><a
                                     onClick={this.returnForRevision}
-                                    className="btn btn-default btn-sm">{i18n.return_for_revision}</a>
+                                    className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
                                 </li>
                                 <li role="presentation" className="editUpdate"><a
                                     onClick={this.switchEdit}

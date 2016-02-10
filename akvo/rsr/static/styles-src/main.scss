@@ -634,6 +634,7 @@ nav.navbar-fixed-top {
         background: $rsrBlue;
     }
 }
+
 .indicator-period-list {
     thead {
         tr {
@@ -647,17 +648,18 @@ nav.navbar-fixed-top {
     }
     tbody {
         &.indicator-period {
-            border:none;
+            border: none;
             tr {
                 td {
-                    padding-top:25px;
-                    padding-bottom:25px;
-                    border:none;
+                    padding-top: 25px;
+                    padding-bottom: 25px;
+                    border: none;
                 }
             }
         }
     }
 }
+
 .myProjectList,
 #updates,
 #user_table {
@@ -2744,11 +2746,15 @@ body {
                 display: block;
             }
             span:nth-child(2) {
-                font-size: 1.6em;
                 display: block;
                 font-weight: bold;
                 color: rgb(81, 80, 80);
-                margin-left: 5px;
+                span {
+                    display: inline;
+                }
+                span:nth-child(2) {
+                    margin-left: 10px;
+                }
             }
         }
         .baseline-value, .period-target {
@@ -2763,7 +2769,9 @@ body {
         min-width: 200px;
         overflow-y: auto;
         vertical-align: top;
-        border: 1px solid rgba($akvoBlack, 0.3);
+        .results-list {
+            border: 1px solid rgba($akvoBlack, 0.3);
+        }
         .result-nav {
             padding: 0.2em 0em 0 0em;
             border-bottom: 1px solid rgba($akvoBlack, 0.6);
@@ -2780,6 +2788,7 @@ body {
         }
         .result-nav-header {
             border-bottom: 1px solid rgba($akvoBlack, 0);
+            background: rgba($akvoBlack, 0.1);
             h3 {
                 color: rgba(white, 1);
                 display: inline-block;
@@ -2824,7 +2833,7 @@ body {
                             margin-right: 6px;
                             text-shadow: 0 1px 0 rgb(255, 255, 255);
                             color: rgba($akvoPurple, 0.6);
-                            }
+                        }
                         > span {
                             box-sizing: border-box;
                             max-width: 80%;
@@ -2841,7 +2850,6 @@ body {
             .fa-chevron-circle-up {
                 display: none;
             }
-
             &.expanded {
                 opacity: 1;
                 &:before {
@@ -2856,7 +2864,6 @@ body {
                     }
                 }
             }
-
             .result-indicator-count {
                 color: $akvoPurple;
                 display: block;
@@ -2950,21 +2957,21 @@ body {
         vertical-align: top;
         overflow-y: scroll;
         padding: 0.25em 1em;
-        background-color: rgba(245, 245, 245,0.2);
+        background-color: rgba(245, 245, 245, 0.2);
         @include flex(1);
         .indicator-period {
-            .indicTitle{
+            .indicTitle {
                 position: relative;
                 .indicator-title {
                     i {
                         display: none;
-                        }
                     }
+                }
                 .new-update {
                     position: absolute;
                     display: inline-block;
-                    top:0;
-                    right:0;
+                    top: 0;
+                    right: 0;
                 }
             }
         }
@@ -3027,8 +3034,8 @@ body {
                 /*background-color: rgb(235,235,231);*/
                 tbody {
                     &.indicator-period {
-                        border:none;
-                        padding:15px 0;
+                        border: none;
+                        padding: 15px 0;
                     }
                     &.expanded {
                         background-color: white;
@@ -3336,10 +3343,10 @@ body {
             top: -1000px;
         }
     }
-    .update-container{
-        background: rgba($akvoBlack,0);
-        border:1px solid rgba($akvoBlack,0.1);
-        padding:0 1em 0.75em 1em;
+    .update-container {
+        background: rgba($akvoBlack, 0);
+        border: 1px solid rgba($akvoBlack, 0.1);
+        padding: 0 1em 0.75em 1em;
         margin-bottom: 20px;
         .update-entry-container {
             margin-bottom: 2em;
@@ -3349,46 +3356,50 @@ body {
                 border-left: none;
             }
             .update-entry-container-header {
-                background: rgba($akvoBlack,0.1);
-                padding:0.75em 0;
-                .update-user {color:$akvoPurple;}
-                .update-created-at {margin-left: 15px;}
-                .update-status {color:$akvoTvRed;}
+                background: rgba($akvoBlack, 0.1);
+                padding: 0.75em 0;
+                .update-user {
+                    color: $akvoPurple;
+                }
+                .update-created-at {
+                    margin-left: 15px;
+                }
+                .update-status {
+                    color: $akvoTvRed;
+                }
             }
             .comments {
                 .input-group {
                     margin-top: 20px;
-                 /* button {
-                        background: $akvoBlack;
-                        color:white;
-                        &:hover {
-                            background: $akvoPurple;
-                        }
-                    }*/
+                    /* button {
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/
                 }
                 .comment {
                     margin-top: 20px;
                     margin-bottom: 20px;
                     .comment-header {
-                        margin-bottom:5px;
+                        margin-bottom: 5px;
                         font-weight: bold;
                     }
-                    .comment-text {
-
-                    }
+                    .comment-text {}
                 }
             }
             .bottomRow {
                 margin-top: 20px;
-                padding:0.75em;
+                padding: 0.75em;
                 position: relative;
-                .btn {                        
+                .btn {
                     background: $akvoBlack;
-                    color:white;
+                    color: white;
                     &:hover {
                         background: $akvoPurple;
-                        }
                     }
+                }
                 .cancelUpdate {}
                 .editUpdate {}
                 .saveUpdate {}
@@ -3400,7 +3411,7 @@ body {
                 margin-top: 20px;
                 margin-bottom: 15px;
                 .update-actual-value-text {
-                    color:rgba($akvoBlack,0.4);
+                    color: rgba($akvoBlack, 0.4);
                 }
                 .update-actual-value-data {
                     font-weight: bold;
@@ -3969,5 +3980,15 @@ div#my-reports {
     /* Override pointer events for disabled items that show help text */
     .pointerEvents {
         pointer-events: initial;
+    }
+}
+
+.results-list {
+    div {
+        &:last-child {
+            .result-nav {
+                border-bottom: none;
+            }
+        }
     }
 }

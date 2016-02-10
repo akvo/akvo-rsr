@@ -2260,11 +2260,17 @@ body.translationBarActive div.skiptranslate ~ #map {
       .results .baseline .baseline-value span:nth-child(2),
       .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2),
       .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) {
-        font-size: 1.6em;
         display: block;
         font-weight: bold;
-        color: #515050;
-        margin-left: 5px; }
+        color: #515050; }
+        .results .baseline .baseline-value span:nth-child(2) span,
+        .results .baseline .baseline-year span:nth-child(2) span, .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span,
+        .results .periodValues .baseline-year span:nth-child(2) span, .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span {
+          display: inline; }
+        .results .baseline .baseline-value span:nth-child(2) span:nth-child(2),
+        .results .baseline .baseline-year span:nth-child(2) span:nth-child(2), .results .baseline .period-target span:nth-child(2) span:nth-child(2), .results .baseline .period-actual span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(2),
+        .results .periodValues .baseline-year span:nth-child(2) span:nth-child(2), .results .periodValues .period-target span:nth-child(2) span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) span:nth-child(2) {
+          margin-left: 10px; }
     .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
       float: left; }
     .results .baseline .baseline-year, .results .baseline .period-actual, .results .periodValues .baseline-year, .results .periodValues .period-actual {
@@ -2273,8 +2279,9 @@ body.translationBarActive div.skiptranslate ~ #map {
     width: 30%;
     min-width: 200px;
     overflow-y: auto;
-    vertical-align: top;
-    border: 1px solid rgba(32, 32, 36, 0.3); }
+    vertical-align: top; }
+    .results .sidebar .results-list {
+      border: 1px solid rgba(32, 32, 36, 0.3); }
     .results .sidebar .result-nav {
       padding: 0.2em 0em 0 0em;
       border-bottom: 1px solid rgba(32, 32, 36, 0.6); }
@@ -2290,7 +2297,8 @@ body.translationBarActive div.skiptranslate ~ #map {
         -webkit-transition: background-color 0.25s ease-in-out;
         transition: background-color 0.25s ease-in-out; }
     .results .sidebar .result-nav-header {
-      border-bottom: 1px solid rgba(32, 32, 36, 0); }
+      border-bottom: 1px solid rgba(32, 32, 36, 0);
+      background: rgba(32, 32, 36, 0.1); }
       .results .sidebar .result-nav-header h3 {
         color: white;
         display: inline-block;
@@ -2753,12 +2761,12 @@ body.translationBarActive div.skiptranslate ~ #map {
       .results .update-container .update-entry-container .comments .input-group {
         margin-top: 20px;
         /* button {
-                        background: $akvoBlack;
-                        color:white;
-                        &:hover {
-                            background: $akvoPurple;
-                        }
-                    }*/ }
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/ }
       .results .update-container .update-entry-container .comments .comment {
         margin-top: 20px;
         margin-bottom: 20px; }
@@ -3263,3 +3271,6 @@ div#my-reports {
     margin: 1em 0; }
   div#my-reports .pointerEvents {
     pointer-events: initial; }
+
+.results-list div:last-child .result-nav {
+  border-bottom: none; }

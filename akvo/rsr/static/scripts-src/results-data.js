@@ -486,7 +486,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                             React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
                                 React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a(
                                     {onClick:this.returnForRevision,
-                                    className:"btn btn-default btn-sm"}, i18n.return_for_revision)
+                                    className:"btn btn-default btn-xs"}, i18n.return_for_revision)
                                 ),
                                 React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
                                     {onClick:this.switchEdit,
