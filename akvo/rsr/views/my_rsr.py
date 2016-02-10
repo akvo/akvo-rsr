@@ -402,6 +402,31 @@ def user_management(request):
 
 
 @login_required
+def results_data_select(request):
+    """
+    My results section without a project selected. Only accessible to Admins and Project editors.
+
+    :param request; A Django HTTP request and context
+    """
+    user = request.user
+    admins = Group.objects.get(name='Admins')
+    project_editors = Group.objects.get(name='Project Editors')
+
+    if not (user.is_admin or user.is_superuser or user.in_group(admins) or
+            user.in_group(project_editors)):
+        raise PermissionDenied
+
+    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
+
+    context = {
+        'user': user,
+        'projects': projects.filter(is_impact_project=True),
+    }
+
+    return render(request, 'myrsr/results_data_select.html', context)
+
+
+@login_required
 def results_data(request, project_id):
     """
     My results section. Only accessible to Admins and Project editors.
