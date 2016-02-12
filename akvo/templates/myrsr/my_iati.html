@@ -20,8 +20,9 @@
 {% endblock head %}
 
 {% block myrsr_main %}
-    <h3>{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
     <div class="col-sm-7 col-xs-12">
+    <h3>{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
+
         {% if export_added %}
             <div class="alert alert-success" role="alert">
                 <strong>{% trans 'Successfully added an IATI file export! ' %}</strong><br/>
@@ -70,12 +71,11 @@
             </form>
         </p>
         {% else %}
-        <br/><br/>
-            <p class="noItem text-center">
-                {% trans "Your organisation does not report any projects yet. " %}
-                {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>
-                {% blocktrans with admin_link="/myrsr/projects/" %}Go to the projects admin <a href={{admin_link}}>here</a>.{% endblocktrans %}
-            </p>
+        <p class="noItem">
+            {% trans "Your organisation does not report any projects yet. " %}
+            {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>
+            {% blocktrans with admin_link="/myrsr/projects/" %}Go to the projects admin <a href={{admin_link}}>here</a>.{% endblocktrans %}
+        </p>
         {% endif %}
     </div>
     {% if exports %}

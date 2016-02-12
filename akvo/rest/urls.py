@@ -25,6 +25,8 @@ router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
 router.register(r'indicator', views.IndicatorViewSet)
 router.register(r'indicator_period', views.IndicatorPeriodViewSet)
+router.register(r'indicator_period_data', views.IndicatorPeriodDataViewSet)
+router.register(r'indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
 router.register(r'internal_organisation_id',
                 views.InternalOrganisationIDViewSet)
 router.register(r'invoice', views.InvoiceViewSet)
@@ -90,9 +92,15 @@ urlpatterns = patterns(
     url(r'^user/(?P<pk>[0-9]+)/request_organisation/$',
         views.request_organisation,
         name='user_request_organisation'),
+    url(r'^invite_user/$',
+        views.invite_user,
+        name='invite_user'),
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+    url(r'^indicator_period_data/(?P<pk>[0-9]+)/upload_file/$',
+        views.indicator_upload_file,
+        name='indicator_upload_file'),
     url(r'^server_info/$', views.server_info, name='server_info'),
 )
 
@@ -137,10 +145,27 @@ urlpatterns += patterns(
     url(r'typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
+    url(r'typeaheads/user_organisations$',
+        views.typeahead_user_organisations,
+        name='user_organisations_typeahead'),
     url(r'typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
+    url(r'typeaheads/user_projects$',
+        views.typeahead_user_projects,
+        name='user_projects_typeahead'),
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
+)
+
+# My reports
+urlpatterns += patterns(
+    '',
+    url(r'reports/$',
+        views.reports,
+        name='reports_api'),
+    url(r'report_formats/$',
+        views.report_formats,
+        name='report_formats_api'),
 )

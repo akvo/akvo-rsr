@@ -349,7 +349,7 @@ class IatiActivityImport(TimestampsMixin):
                         project.delete()
             else:
                 self.add_log(text=u"project skipped since it hasn't changed",
-                             message_type=LOG_ENTRY_TYPE.STATUS_CANCELLED)
+                             message_type=LOG_ENTRY_TYPE.STATUS_NO_CHANGES)
 
         except IatiIdNotFoundException:
             self.add_log(text=u'Iati identifier not found', message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR)

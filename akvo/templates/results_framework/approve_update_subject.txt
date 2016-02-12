@@ -1,0 +1,1 @@
+{% load i18n %}[Akvo RSR{% if 'test' in site %} Test{% elif 'uat' in site %} UAT{% endif %}] {% trans 'A data update on one of your indicators is waiting to be approved' %}

@@ -23,7 +23,7 @@ class PolicyMarker(models.Model):
         'Project', verbose_name=_(u'project'), related_name='policy_markers'
     )
     policy_marker = ValidXMLCharField(
-        _(u'policy marker'), blank=True, max_length=2, choices=codelist_choices(POLICY_MARKER),
+        _(u'policy marker'), blank=True, max_length=25, choices=codelist_choices(POLICY_MARKER),
         help_text=_(u'A policy or theme addressed by the activity, based on DAC policy markers. '
                     u'These indicators track key policy issues, like gender equality, environment, '
                     u'and trade development.')
@@ -49,10 +49,13 @@ class PolicyMarker(models.Model):
     description = ValidXMLCharField(_(u'policy marker description'), max_length=255, blank=True)
 
     def __unicode__(self):
-        if self.policy_marker:
+        try:
             return self.iati_policy_marker().name
-        else:
-            return u'%s' % _(u'Policy marker not specified')
+        except AttributeError:
+            if self.description:
+                return unicode(self.description)
+            else:
+                return u'%s' % _(u'Policy marker not specified')
 
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')

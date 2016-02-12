@@ -59,7 +59,7 @@
         {% if not '/myrsr/projects/' in request.get_full_path %}
         <li>
             <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
-               class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
+               class="addUpdateBtn">
               <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
             </a>
         </li>

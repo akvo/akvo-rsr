@@ -32,7 +32,7 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
-    def get_queryset(self, related_to='project__'):
+    def get_queryset(self):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on
@@ -57,7 +57,7 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
         user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
         if user__organisations:
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
-        return super(ProjectUpdateViewSet, self).get_queryset(related_to)
+        return super(ProjectUpdateViewSet, self).get_queryset()
 
 
 class ProjectUpdateExtraViewSet(PublicProjectViewSet):
@@ -99,7 +99,7 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
     }
 
-    def get_queryset(self, related_to='project__'):
+    def get_queryset(self):
         """
         Allow simple filtering on selected fields.
         We don't use the default filter_fields, because Up filters on

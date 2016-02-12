@@ -21,7 +21,7 @@ class RecipientRegion(models.Model):
         'Project', verbose_name=_(u'project'), related_name='recipient_regions'
     )
     region = ValidXMLCharField(
-        _(u'recipient region'), blank=True, max_length=3, choices=codelist_choices(REGION),
+        _(u'recipient region'), blank=True, max_length=25, choices=codelist_choices(REGION),
         help_text=_(u'This identifies the region in which the activity takes place. Regions can be '
                     u'supra-national (a geographical or administrative grouping of countries into '
                     u'a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities '
@@ -30,7 +30,7 @@ class RecipientRegion(models.Model):
                     u'target="_blank">http://iatistandard.org/201/codelists/Region/</a>.')
     )
     region_vocabulary = ValidXMLCharField(
-        _(u'recipient region vocabulary'), blank=True, max_length=1,
+        _(u'recipient region vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(REGION_VOCABULARY),
         help_text=_(u'The vocabulary from which the region code is drawn. If it is not present 1 – '
                     u'\'OECD DAC\' is assumed. For more information, see '

@@ -10,28 +10,33 @@
 {% endblock head_js %}
 
 {% block myrsr_main %}
-    <h3>{% trans 'User management' %}</h3>
-    {% has_perm 'rsr.change_employment' user as can_change_employments %}
-    {% if not can_change_employments %}
-    <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
-        {% trans "You don't have the rights to manage users." %}
-    </p>
-    {% else %}
-        <div class="col-sm-12">
-            <form class="navbar-form" role="search">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{ q_search }}"{% endif %}>
-                <div class="input-group-btn">
-                    <button class="btn btn-default" type="submit">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </div>
+
+            <div class="col-sm-6">
+                <h3  style="display: inline-block; float:left;">{% trans 'User management' %}</h3>
+                {% has_perm 'rsr.change_employment' user as can_change_employments %}
+                {% if not can_change_employments %}
+                <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
+                    {% trans "You don't have the rights to manage users." %}
+                </p>
+                {% else %}
+
+            <div id="invite_button"></div>
             </div>
-            </form>
-        </div>
+            <div class="col-sm-6 btnHeader text-right">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{ q_search }}"{% endif %}>
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         {% if employments %}
         <div id="user_table" class="col-sm-12"></div>
-        <div>
+        <div class="text-center small showingTxt">
           <p>
           {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
               Viewing {{start_index}} - {{end_index}} of {{paginator_count}} users
@@ -57,6 +62,8 @@
     {% if employments %}
     {# App data #}
     <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
+    <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
+    <script type="application/json" id="role-data">{{ roles|safe }}</script>
 
     {# Translation strings #}
     <script type="application/json" id="user-management-text">
@@ -75,7 +82,12 @@
             "email_text": "{% trans 'Email' %}",
             "first_name_text": "{% trans 'First name' %}",
             "last_name_text": "{% trans 'Last name' %}",
-            "organisations_text": "{% trans 'Organisation' %}"
+            "invite_users_text": "{% trans 'Invite users' %}",
+            "invite_users_heading": "{% trans 'Invite a user to your organisation(s) by filling in an email address, organisation and role. It is possible to invite multiple users by clicking on the green +. Each user will receive an email with an activation link that is valid for 7 days, and you will be notified when a user has activated his or her account.' %}",
+            "organisations_text": "{% trans 'Organisation' %}",
+            "role_text": "{% trans 'Role' %}",
+            "select_org_text": "{% trans 'Select organisation' %}",
+            "select_role_text": "{% trans 'Select role' %}"
         }
     </script>
 

@@ -30,8 +30,7 @@ def _all_updates():
     """
     Return all project updates.
     """
-    return ProjectUpdate.objects.exclude(project__is_public=False).\
-        exclude(indicator_period__isnull=False).order_by('-id')
+    return ProjectUpdate.objects.exclude(project__is_public=False).order_by('-id')
 
 
 def _all_projects():
@@ -119,8 +118,7 @@ def main(request, project_id, update_id):
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
     )
-    other_updates = project.updates_desc().exclude(indicator_period__isnull=False).\
-                        exclude(pk=update_id)[:5]
+    other_updates = project.updates_desc().exclude(pk=update_id)[:5]
 
     context = {
         'update': update,

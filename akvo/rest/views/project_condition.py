@@ -17,6 +17,3 @@ class ProjectConditionViewSet(PublicProjectViewSet):
     queryset = ProjectCondition.objects.all()
     serializer_class = ProjectConditionSerializer
     filter_fields = ('project', 'type', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(ProjectConditionViewSet, self).get_queryset(related_to)

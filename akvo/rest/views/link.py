@@ -17,6 +17,3 @@ class LinkViewSet(PublicProjectViewSet):
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
     filter_fields = ('project', 'kind', )
-
-    def get_queryset(self, related_to='project__'):
-        return super(LinkViewSet, self).get_queryset(related_to)

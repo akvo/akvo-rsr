@@ -100,8 +100,8 @@ class Project(TimestampsMixin, models.Model):
         STATUS_ARCHIVED: 'grey',
     }
 
-    title = ValidXMLCharField(_(u'project title'), max_length=45, db_index=True, blank=True)
-    subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=75, blank=True)
+    title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
+    subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
         _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
         help_text=_(u'There are five different project statuses:<br/>'
@@ -122,8 +122,10 @@ class Project(TimestampsMixin, models.Model):
         blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
-        _(u'summary of project plan'), max_length=400, blank=True,
-        help_text=_(u'Enter a brief summary. The summary should explain:<br>'
+        _(u'summary of project plan'), max_length=2000, blank=True,
+        help_text=_(u'Enter a brief summary, try to restrict the number of characters to 400 in '
+                    u'order to display the summary nicely on the project page. The summary should '
+                    u'explain:<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
                     u'- Who will benefit and/or participate;<br>'
@@ -139,20 +141,20 @@ class Project(TimestampsMixin, models.Model):
                     u'than 2 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
-        _(u'photo caption'), blank=True, max_length=50,
+        _(u'photo caption'), blank=True, max_length=60,
         help_text=_(u'Briefly describe who or what you see in the photo.')
     )
     current_image_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=50,
+        _(u'photo credit'), blank=True, max_length=60,
         help_text=_(u'Enter who took the photo.')
     )
 
-    goals_overview = ProjectLimitedTextField(
-        _(u'goals overview'), max_length=600, blank=True,
+    goals_overview = ValidXMLTextField(
+        _(u'goals overview'), blank=True,
         help_text=_(u'Provide a brief description of the overall project goals.')
     )
-    current_status = ProjectLimitedTextField(
-        _(u'baseline situation'), blank=True, max_length=600,
+    current_status = ValidXMLTextField(
+        _(u'baseline situation'), blank=True,
         help_text=_(u'Describe the situation at the start of the project.')
     )
     project_plan = ValidXMLTextField(
@@ -168,20 +170,16 @@ class Project(TimestampsMixin, models.Model):
                     u'arrangements for operation and maintenance, anticipation of environmental '
                     u'impact and social integration.')
     )
-    background = ProjectLimitedTextField(
-        _(u'background'), blank=True, max_length=1000,
-        help_text=_(
-            u'This should describe the geographical, political, environmental, social and/or '
-            u'cultural context of the project, and any related activities that have already taken '
-            u'place or are underway.'
-        )
+    background = ValidXMLTextField(
+        _(u'background'), blank=True,
+        help_text=_(u'This should describe the geographical, political, environmental, social '
+                    u'and/or cultural context of the project, and any related activities that '
+                    u'have already taken place or are underway.')
     )
     target_group = ProjectLimitedTextField(
-        _(u'target group'), blank=True, max_length=600,
-        help_text=_(
-            u'This should include information about the people, organisations or resources that '
-            u'are being impacted by this project.'
-        )
+        _(u'target group'), blank=True,
+        help_text=_(u'This should include information about the people, organisations or resources '
+                    u'that are being impacted by this project.')
     )
 
     # RSR Impact
@@ -372,17 +370,6 @@ class Project(TimestampsMixin, models.Model):
         # Strip IATI ID of any trailing or leading spaces
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
-
-        # Check if project should be converted to an Impact project
-        if not last_updated:
-            if self.pk:
-                # Existing project, only convert if original project was not an Impact project
-                orig = get_model('rsr', 'project').objects.get(pk=self.pk)
-                if self.is_impact_project and not orig.is_impact_project:
-                    self.convert_to_impact_project()
-            elif self.is_impact_project:
-                # New project, so convert to Impact project
-                self.convert_to_impact_project()
 
         super(Project, self).save(*args, **kwargs)
 
@@ -1083,36 +1070,6 @@ class Project(TimestampsMixin, models.Model):
     ###################################
     ####### RSR Impact projects #######
     ###################################
-
-    def convert_to_impact_project(self):
-        """
-        When a project is converted to an RSR Impact project, it is not possible to edit the actual
-        values of the indicators and the actual values should be converted to updates.
-        """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                for period in indicator.periods.all():
-                    if period.actual_value:
-                        try:
-                            update_value = Decimal(period.actual_value) - period.baseline
-                        except (InvalidOperation, TypeError):
-                            continue
-
-                        period.actual_value = str(period.baseline)
-                        period.save(update_fields=['actual_value'])
-
-                        get_model('rsr', 'ProjectUpdate').objects.create(
-                            project=self,
-                            # TODO: What user should we link to a 'system' update?
-                            # We could make sure that the 1st user in the database is a 'system'
-                            # user.
-                            user=get_model('rsr', 'user').objects.all()[0],
-                            title=u'Initial value of indicator period',
-                            text=u'Initial value of indicator period, added by system while '
-                                 u'calculating the actual value of this indicator period.',
-                            indicator_period=period,
-                            period_update=update_value,
-                        )
 
     def import_results(self):
         """Import results from the parent project."""

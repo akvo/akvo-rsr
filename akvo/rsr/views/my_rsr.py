@@ -7,16 +7,18 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from datetime import datetime
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, render_to_response
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.template import RequestContext
 
-from akvo.rsr.reports import FORMATS, REPORTS
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
@@ -52,6 +54,8 @@ def my_details(request):
     organisation_count = Organisation.objects.all().count()
     country_count = Country.objects.all().count()
 
+    change_password_form = PasswordForm(request.user)
+
     context = {
         'organisation_count': organisation_count,
         'country_count': country_count,
@@ -59,18 +63,10 @@ def my_details(request):
         'profileform': profile_form,
         'organisationform': organisation_form,
         'avatarform': avatar_form,
+        'change_password_form': change_password_form,
     }
 
     return render(request, 'myrsr/my_details.html', context)
-
-
-@login_required
-def password_change(request):
-    """The password change page."""
-    context = RequestContext(request)
-    form = PasswordForm(request.user)
-    return render_to_response('myrsr/password_change.html', {'form': form},
-                              context_instance=context)
 
 
 @login_required
@@ -132,7 +128,7 @@ def my_projects(request):
     page, paginator, page_range = pagination(page, projects, 10)
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related('primary_location__country').\
+    page.object_list = page.object_list.select_related('validations').\
         prefetch_related('publishingstatus')
 
     # Add custom fields in case user adds a new project
@@ -298,51 +294,42 @@ def my_iati(request):
 @login_required
 def my_reports(request):
     """My reports section."""
-    user = request.user
-
-    if not user.can_create_project():
-        raise PermissionDenied
-
-    organisations_data, projects_data = [], []
-    for employment in user.approved_employments():
-        org = employment.organisation
-        organisations_data.append({'id': org.pk,
-                                   'name': u'{0} ({1})'.format(org.name, org.long_name)})
-        for project in org.all_projects():
-            if project.pk not in [project_data['id'] for project_data in projects_data]:
-                projects_data.append({'id': project.pk,
-                                      'name': u'{0} (id: {1})'.format(project.title,
-                                                                      str(project.pk))})
-
-    context = {
-        'reports_data': json.dumps(REPORTS),
-        'organisations_data': json.dumps(organisations_data),
-        'projects_data': json.dumps(projects_data),
-        'formats_data': json.dumps(FORMATS),
-        'user_data': json.dumps({'is_admin': user.is_superuser or user.is_admin})
-    }
-
-    return render(request, 'myrsr/my_reports.html', context)
+    return render(request, 'myrsr/my_reports.html', {})
 
 
 @login_required
 def user_management(request):
-    """Directory of users connected to the user."""
+    """
+    Show the user management page. It is possible to manage employments on this page, e.g. approve
+    an employment or change the group of a certain employment. Also allows users to invite other
+    users.
+
+    :param request; a Django request.
+    """
     user = request.user
 
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
     if user.is_admin or user.is_superuser:
+        # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        organisations = Organisation.objects.all()
+        roles = Group.objects.filter(
+            name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+        )
     else:
+        # Others can only manage or invite users to their own organisation, or the
+        # organisations that they content own
         connected_orgs = user.employers.approved().organisations().content_owned_organisations()
         connected_orgs_list = [
-                org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)]
+            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
+        ]
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
         employments = organisations.employments().exclude(user=user).select_related().\
             prefetch_related('country', 'group').order_by('-id')
+        roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
     if q:
@@ -389,9 +376,21 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
+    organisations_list = []
+    for organisation in organisations:
+        organisation_dict = {'id': organisation.id, 'name': organisation.name}
+        organisations_list.append(organisation_dict)
+
+    roles_list = []
+    for role in roles:
+        roles_dict = {'id': role.id, 'name': role.name}
+        roles_list.append(roles_dict)
+
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
+    context['organisations'] = json.dumps(organisations_list)
+    context['roles'] = json.dumps(roles_list)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
@@ -400,3 +399,52 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
+
+
+@login_required
+def results_data_select(request):
+    """
+    My results section without a project selected. Only accessible to Admins and Project editors.
+
+    :param request; A Django HTTP request and context
+    """
+    user = request.user
+    admins = Group.objects.get(name='Admins')
+    project_editors = Group.objects.get(name='Project Editors')
+
+    if not (user.is_admin or user.is_superuser or user.in_group(admins) or
+            user.in_group(project_editors)):
+        raise PermissionDenied
+
+    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
+
+    context = {
+        'user': user,
+        'projects': projects.filter(is_impact_project=True),
+    }
+
+    return render(request, 'myrsr/results_data_select.html', context)
+
+
+@login_required
+def results_data(request, project_id):
+    """
+    My results section. Only accessible to Admins and Project editors.
+
+    :param request; A Django HTTP request and context
+    :param project_id; The ID of the project
+    """
+    project = get_object_or_404(Project, pk=project_id)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
+
+    context = {
+        'project': project,
+        'user': user,
+        'current_datetime': datetime.now(),
+        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
+    }
+
+    return render(request, 'myrsr/results_data.html', context)

@@ -89,6 +89,9 @@ urlpatterns = i18n_patterns(
     url(r'^activate/(?P<activation_key>\w+)/$',
         'akvo.rsr.views.account.activate', name='activate'),
 
+    url(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<user_pk>\d+)/(?P<employment_pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
+        'akvo.rsr.views.account.invite_activate', name='invite_activate'),
+
     url(r'^sign_in/$',
         'akvo.rsr.views.account.sign_in', name='sign_in'),
 
@@ -117,11 +120,14 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/reports/$',
         'akvo.rsr.views.my_rsr.my_reports', name='my_reports'),
 
+    url(r'^myrsr/results_data/$',
+        'akvo.rsr.views.my_rsr.results_data_select', name='results_data_select'),
+
+    url(r'^myrsr/results_data/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.results_data', name='results_data'),
+
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
-
-    url(r'^myrsr/password_change/$',
-        'akvo.rsr.views.my_rsr.password_change', name='password_change'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         'akvo.rsr.views.my_rsr.project_editor', name='project_editor'),

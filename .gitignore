@@ -23,6 +23,7 @@ data/*
 
 # Dev environment
 .vagrant
+Vagrantfile
 dev-env
 venv
 scripts/dev-vm

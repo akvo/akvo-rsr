@@ -37,7 +37,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import Indicator, IndicatorPeriod
+from .indicator import Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
@@ -91,6 +91,8 @@ __all__ = [
     'IatiImportLog',
     'Indicator',
     'IndicatorPeriod',
+    'IndicatorPeriodData',
+    'IndicatorPeriodDataComment',
     'Invoice',
     'InternalOrganisationID',
     'Keyword',
@@ -158,6 +160,13 @@ rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_proj
 rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicatorperioddata', is_rsr_admin)
+
+rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)

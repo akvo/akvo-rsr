@@ -49,6 +49,7 @@ class IatiImportJob(models.Model):
         (LOG_ENTRY_TYPE.STATUS_RETRIEVING, _(u'retrieving')),
         (LOG_ENTRY_TYPE.STATUS_COMPLETED, _(u'completed')),
         (LOG_ENTRY_TYPE.STATUS_CANCELLED, _(u'cancelled')),
+        (LOG_ENTRY_TYPE.STATUS_NO_CHANGES, _(u'no changes')),
     )
 
     CRITICAL_LOG = 'critical'
@@ -203,7 +204,7 @@ class IatiImportJob(models.Model):
             subject='iati_import/import_done_subject.txt',
             message='iati_import/import_done_message.txt',
             subject_context={
-                'iati_import': self.iati_import
+                'iati_import_job': self,
             },
             msg_context={
                 'iati_import_job': self,
@@ -360,7 +361,7 @@ class IatiImportJob(models.Model):
 
         if previous_job and previous_job.sha1_hexdigest == self.sha1_hexdigest:
             self.add_log(u"Import cancelled since the file hasn't changed since last import.",
-                         LOG_ENTRY_TYPE.STATUS_CANCELLED)
+                         LOG_ENTRY_TYPE.STATUS_NO_CHANGES)
             return False
 
         return True

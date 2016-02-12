@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-4">
             <a href="{% url 'project-main' project.pk %}" target="_blank">
-                <button class="btn btn-primary viewProject" id="viewProject"><span class="glyphicon glyphicon-expand"></span> {% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
+                <button class="btn btn-primary viewProject" id="viewProject"><span class="glyphicon glyphicon-expand"></span> {% trans 'View project page' %}</button>
             </a>
         </div>
         <div class="col-md-4">
@@ -121,8 +121,6 @@
             "project_id": "{{ project.pk }}",
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
-            "view_project": "{% trans 'View project page' %}",
-            "preview_project": "{% trans 'Preview project page' %}",
             "save": "{% trans 'Save' %}",
             "saving": "{% trans 'Saving' %}",
             "save_error": "{% trans 'Could not save one or more fields' %}",
@@ -137,6 +135,8 @@
             "delete_error": "{% trans 'Could not delete item' %}",
             "publish": "{% trans 'Publish' %}",
             "unpublish": "{% trans 'Unpublish' %}",
+            "published": "{% trans 'Published' %}",
+            "not_published": "{% trans 'Not published' %}",
             "or_mandatory_1": "{% trans 'Either this field or' %}",
             "or_mandatory_2": "{% trans 'is mandatory' %}",
             "related_project_label": "{% trans 'Related RSR project' %}",

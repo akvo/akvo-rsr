@@ -17,7 +17,8 @@ from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldView
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
-from .indicator import IndicatorViewSet, IndicatorPeriodViewSet
+from .indicator import (IndicatorViewSet, IndicatorPeriodViewSet, IndicatorPeriodDataViewSet,
+                        IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
@@ -54,16 +55,20 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
+from .report import reports, report_formats
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
+                        typeahead_user_organisations,
                         typeahead_project,
+                        typeahead_user_projects,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
+from .user_management import invite_user
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -79,9 +84,13 @@ __all__ = [
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
-    'IndicatorPeriodViewSet',
     'IndicatorViewSet',
+    'IndicatorPeriodViewSet',
+    'IndicatorPeriodDataViewSet',
+    'IndicatorPeriodDataCommentViewSet',
+    'indicator_upload_file',
     'InternalOrganisationIDViewSet',
+    'invite_user',
     'InvoiceViewSet',
     'KeywordViewSet',
     'LegacyDataViewSet',
@@ -120,6 +129,8 @@ __all__ = [
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
+    'reports',
+    'report_formats',
     'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
@@ -129,7 +140,9 @@ __all__ = [
     'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
+    'typeahead_user_organisations',
     'typeahead_project',
+    'typeahead_user_projects',
     'typeahead_projectupdate',
     'update_details',
     'upload_indicator_update_photo',

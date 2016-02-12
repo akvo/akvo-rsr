@@ -27,8 +27,7 @@ def image_path(instance, file_name):
 
 
 class CustomUserManager(BaseUserManager):
-    def _create_user(self, username, email, password,
-                     is_staff, is_superuser, **extra_fields):
+    def _create_user(self, username, email, password, is_staff, is_superuser, is_active, **extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
@@ -36,20 +35,19 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
-        user = self.model(username=username,
-                          email=email,
-                          is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser, last_login=now,
-                          date_joined=now, **extra_fields)
+        user = self.model(
+            username=username, email=email, is_staff=is_staff, is_active=is_active,
+            is_superuser=is_superuser, last_login=now, date_joined=now, **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_user(self, username, email, password=None, **extra_fields):
-        return self._create_user(username, email, password, False, False, **extra_fields)
+        return self._create_user(username, email, password, False, False, False, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
-        return self._create_user(username, email, password, True, True, **extra_fields)
+        return self._create_user(username, email, password, True, True, False, **extra_fields)
 
     def __getattr__(self, attr, *args):
         try:
@@ -390,12 +388,31 @@ class User(AbstractBaseUser, PermissionsMixin):
             employments=employments_array,
         )
 
+    def has_role_in_org(self, org, group):
+        """
+        Helper function to determine if a user is in a certain group at an organisation.
+
+        :param org; an Organisation instance.
+        :param group; a Group instance.
+        """
+        if self.approved_employments().filter(organisation=org, group=group).exists():
+            return True
+        return False
+
     def admin_of(self, org):
         """
         Checks if the user is an Admin of this organisation.
+
+        :param org; an Organisation instance.
         """
         admin_group = Group.objects.get(name='Admins')
-        for employment in Employment.objects.filter(user=self, group=admin_group):
-            if employment.organisation == org:
-                return True
-        return False
+        return self.has_role_in_org(org, admin_group)
+
+    def project_editor_of(self, org):
+        """
+        Checks if the user is a Project editor of this organisation.
+
+        :param org; an Organisation instance
+        """
+        editor_group = Group.objects.get(name='Project editors')
+        return self.has_role_in_org(org, editor_group)

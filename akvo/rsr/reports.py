@@ -20,9 +20,18 @@ REPORTS = [
         'title': unicode(_('Results and indicators overview')),
         'description': unicode(_('This report gives an overview of the status of your project\'s '
                                  'results and indicators.')),
-        'formats': ['pdf', 'word', 'excel', 'html'],
+        'formats': ['pdf',],
         'parameters': ['project', ],
         'url': '/en/reports/project_results/{project}?format={format}&download=true'
+    },
+    {
+        'key': 'results-simple-table',
+        'title': unicode(_('Results and indicators table')),
+        'description': unicode(_('This report provides a view of your project\'s results and '
+                                 'indicators data in a table.')),
+        'formats': ['excel',],
+        'parameters': ['project', ],
+        'url': '/en/reports/project_results_simple_table/{project}?format={format}&download=true'
     },
     {
         'key': 'projects-overview',
@@ -30,7 +39,7 @@ REPORTS = [
         'description': unicode(_('This report provides information about your organisation\'s '
                                  'projects: amount of updates, country, total budgets, project '
                                  'statuses, start- and end dates.')),
-        'formats': ['pdf', 'word', 'excel', 'html'],
+        'formats': ['pdf', 'excel'],
         'parameters': ['organisation', ],
         'url': '/en/reports/project_overview/{organisation}?format={format}&download=true'
     },
@@ -40,7 +49,7 @@ REPORTS = [
         'description': unicode(_('This report gives an overview of your organisation\'s projects '
                                  'that have passed the planned end date, need funding or that '
                                  'haven\'t been edited or updated for 3 months.')),
-        'formats': ['pdf', 'word', 'excel', 'html'],
+        'formats': ['pdf', 'excel'],
         'parameters': ['organisation', ],
         'url': '/en/reports/data_quality/{organisation}?format={format}&download=true'
     }
