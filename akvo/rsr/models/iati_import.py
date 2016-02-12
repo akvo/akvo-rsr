@@ -167,10 +167,6 @@ class IatiImport(models.Model):
             else:
                 self.next_execution += time_adds[self.frequency]
 
-    def save(self, *args, **kwargs):
-        self.set_next_execution()
-        super(IatiImport, self).save(*args, **kwargs)
-
     def it_is_time_to_execute(self):
         return self.enabled and self.next_execution and self.next_execution < datetime.now()
 
@@ -211,7 +207,6 @@ class IatiImport(models.Model):
         :param job: IatiImportJob object; if present this is a manually initiated execution
         :return:
         """
-        # from .iati_import_job import IatiImportJob
         from .iati_import_log import IatiImportLog
 
         # safe-guard against running the same import in parallel
