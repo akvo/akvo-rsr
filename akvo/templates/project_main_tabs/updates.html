@@ -10,9 +10,9 @@
                   <div class="col-sm-3 col-md-2 col-xs-4">
                       <a href="{% url 'update-main' u.project.id u.id %}">
                         {% if u.video %}
-                          {% vid_img u 250 250 u.title %}
+                          {% vid_img u 150 150 u.title %}
                         {% else %}
-                          {% img u 250 250 u.title %}
+                          {% img u 150 150 u.title %}
                         {% endif %}
                       </a>
                   </div>

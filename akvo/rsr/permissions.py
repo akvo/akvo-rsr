@@ -133,7 +133,7 @@ def is_org_project_editor(user, obj):
         if employment.group in Group.objects.filter(name__in=['Project Editors', 'M&E Managers']):
             if not obj:
                 return True
-            elif isinstance(obj, Organisation):
+            if isinstance(obj, Organisation):
                 if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():

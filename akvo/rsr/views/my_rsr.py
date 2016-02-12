@@ -29,8 +29,23 @@ import json
 
 
 @login_required
+def my_rsr(request):
+    """
+    Redirect to the 'My Details' page in MyRSR, if the user is logged in.
+
+    :param request; A Django request.
+    """
+    return HttpResponseRedirect(reverse('my_details', args=[]))
+
+
+@login_required
 def my_details(request):
-    """First page in My RSR."""
+    """
+    If the user is logged in, he/she can change his user details and password here. In addition,
+    the user can request to join an organisation.
+
+    :param request; A Django request.
+    """
     if request.method == "POST" and 'avatar' in request.FILES:
         request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
@@ -70,7 +85,11 @@ def my_details(request):
 
 @login_required
 def my_updates(request):
-    """Directory of Updates connected to the user."""
+    """
+    If the user is logged in, he/she can view a list of own updates.
+
+    :param request; A Django request.
+    """
     updates = request.user.updates().select_related('project')
 
     q = request.GET.get('q')
@@ -94,7 +113,11 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    """Directory of Projects connected to the user."""
+    """
+    If the user is logged in, he/she can view a list of projects linked to the user account.
+
+    :param request; A Django request.
+    """
 
     # Get user organisation information
     organisations = request.user.approved_employments().organisations()
@@ -147,9 +170,43 @@ def my_projects(request):
     }
     return render(request, 'myrsr/my_projects.html', context)
 
+
+@login_required
+def project_editor_select(request):
+    """
+    Project editor without a project selected. Only accessible to Admins, Project editors and
+    M&E Managers.
+
+    :param request; A Django HTTP request and context
+    """
+    user = request.user
+    me_managers = Group.objects.get(name='M&E Managers')
+    admins = Group.objects.get(name='Admins')
+    project_editors = Group.objects.get(name='Project Editors')
+
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
+            user.in_group(admins) or user.in_group(project_editors)):
+        raise PermissionDenied
+
+    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
+
+    context = {
+        'user': user,
+        'projects': projects,
+    }
+
+    return render(request, 'myrsr/select_project.html', context)
+
+
 @login_required
 def project_editor(request, project_id):
-    """The project admin."""
+    """
+    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
+    Editors), he/she can edit the selected project.
+
+    :param request; A Django request.
+    :param project_id; The selected project's ID.
+    """
     try:
         project = Project.objects.prefetch_related(
             'related_projects',
@@ -234,13 +291,19 @@ def project_editor(request, project_id):
     }
 
     return render(request, 'myrsr/project_editor/project_editor.html', context)
-    
+
+
 @login_required
 def my_iati(request):
-    """IATI reports."""
+    """
+    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
+    Editors), he/she can view and create IATI files.
+
+    :param request; A Django request.
+    """
     user = request.user
 
-    if not user.has_perm('rsr.iati_management'):
+    if not user.has_perm('rsr.project_management'):
         raise PermissionDenied
 
     org = request.GET.get('org')
@@ -292,7 +355,11 @@ def my_iati(request):
 
 @login_required
 def my_reports(request):
-    """My reports section."""
+    """
+    If the user is logged in, he/she can create reports based on a project or organisation.
+
+    :param request; A Django request.
+    """
     return render(request, 'myrsr/my_reports.html', {})
 
 
@@ -425,7 +492,7 @@ def results_data_select(request):
         'projects': projects.filter(is_impact_project=True),
     }
 
-    return render(request, 'myrsr/results_data_select.html', context)
+    return render(request, 'myrsr/select_project.html', context)
 
 
 @login_required

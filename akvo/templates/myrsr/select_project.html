@@ -2,24 +2,24 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'MyRSR - My Results' %}{% endblock %}
+{% block title %}{% trans 'MyRSR' %} - {% trans 'Select project' %}{% endblock %}
 
 {% block myrsr_main %}
-    <h4 class="resultProjectTitle">{% trans 'Select project' %}</h4>
+    <h4>{% trans 'Select project' %}</h4>
+
     <form>
         <div class="form-group">
             <div class="select-group control">
-                <select title="select-project"
-                        id="select-project"
-                        class="form-control">
+                <select title="select-project"  id="select-project" class="form-control">
                     <option value="" selected="selected"></option>
-                    {% for project in projects %}
-                        <option value="{{ project.pk }}">{{ project.title }} (ID: {{ project.pk }})</option>
+                    {% for p in projects %}
+                        <option value="{{ p.pk }}">{{ p.title }} (ID: {{ p.pk }})</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
     </form>
+
 {% endblock %}
 
 {% block js %}
@@ -30,7 +30,9 @@
             var currentUrl = window.location.href;
             var selectProject = document.getElementById('select-project');
             selectProject.addEventListener('change', function () {
-                window.location.assign(currentUrl + selectProject.value + '/');
+                if (selectProject.value !== '') {
+                    window.location.assign(currentUrl + selectProject.value + '/');
+                }
             });
         });
     </script>
