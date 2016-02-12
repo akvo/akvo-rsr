@@ -167,6 +167,12 @@ class IatiImport(models.Model):
             else:
                 self.next_execution += time_adds[self.frequency]
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # Set the next execution when the IATI import has been created.
+            self.set_next_execution()
+        super(IatiImport, self).save(*args, **kwargs)
+
     def it_is_time_to_execute(self):
         return self.enabled and self.next_execution and self.next_execution < datetime.now()
 
