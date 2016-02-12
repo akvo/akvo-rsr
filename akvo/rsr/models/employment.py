@@ -22,14 +22,16 @@ from ..fields import ValidXMLCharField
 
 
 class Employment(models.Model):
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='employees')
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'),
+                                     related_name='employees')
     user = models.ForeignKey('User', verbose_name=_(u'user'), related_name='employers')
-    group = models.ForeignKey(Group, verbose_name=_(u'group'), null=True, related_name='employments',
-                              related_query_name='employment', on_delete=models.SET_NULL,
+    group = models.ForeignKey(Group, verbose_name=_(u'group'), null=True,
+                              related_name='employments', related_query_name='employment',
+                              on_delete=models.SET_NULL,
                               help_text=_('The permissions group for this user\'s employment.'))
-    is_approved = models.BooleanField(
-        _('approved'), default=False, help_text=_('Designates whether this employment is approved by an administrator.')
-    )
+    is_approved = models.BooleanField(_('approved'), default=False,
+                                      help_text=_('Designates whether this employment is approved '
+                                                  'by an administrator.'))
     country = models.ForeignKey('Country', verbose_name=_(u'country'), null=True, blank=True)
     job_title = ValidXMLCharField(_(u'job title'), max_length=50, blank=True)
 
