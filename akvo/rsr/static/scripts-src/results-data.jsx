@@ -1104,10 +1104,33 @@ var SideBar = React.createClass({
 
 var ResultsApp = React.createClass({
     getInitialState: function() {
+        var hash = window.location.hash,
+            defaultResult = null,
+            defaultIndicator = null,
+            defaultPeriod = null;
+
+        if (hash !== '') {
+            hash = hash.substring(1);
+            var hashArray = hash.split(',');
+            for (var i = 0; i < hashArray.length; i++) {
+                switch(i) {
+                    case 0:
+                        defaultResult = hashArray[i];
+                        break;
+                    case 1:
+                        defaultIndicator = hashArray[i];
+                        break;
+                    case 2:
+                        defaultPeriod = hashArray[i];
+                        break;
+                }
+            }
+        }
+
         return {
-            selectedResultId: null,
-            selectedIndicatorId: null,
-            selectedPeriodId: null,
+            selectedResultId: defaultResult,
+            selectedIndicatorId: defaultIndicator,
+            selectedPeriodId: defaultPeriod,
             editingData: [],
             results: []
         };
@@ -1280,10 +1303,19 @@ var ResultsApp = React.createClass({
 
     selectIndicator: function(indicatorId) {
         this.setState({selectedIndicatorId: indicatorId});
+        if (indicatorId !== null) {
+            var resultId = this.state.selectedResultId;
+            window.location.hash = resultId + ',' + indicatorId;
+        }
     },
 
     selectPeriod: function(periodId) {
         this.setState({selectedPeriodId: periodId});
+        if (periodId !== null) {
+            var resultId = this.state.selectedResultId;
+            var indicatorId = this.state.selectedIndicatorId;
+            window.location.hash = resultId + ',' + indicatorId + ',' + periodId;
+        }
     },
 
     selectedResult: function() {
@@ -1377,7 +1409,8 @@ function userIsAdmin() {
         partnerships;
 
     if (user.is_admin || user.is_superuser) {
-        return true;
+        isAdmin = true;
+        return;
     }
 
     for (var i = 0; i < user.approved_employments.length; i++) {
