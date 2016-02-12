@@ -18,6 +18,7 @@ def is_rsr_admin(user):
         return True
     return False
 
+
 @rules.predicate
 def is_org_admin(user, obj):
     if not user.is_authenticated():
@@ -100,6 +101,7 @@ def is_org_admin(user, obj):
                     pass
     return False
 
+
 @rules.predicate
 def is_org_user_manager(user, obj):
     if not user.is_authenticated():
@@ -122,12 +124,13 @@ def is_org_user_manager(user, obj):
                 return True
     return False
 
+
 @rules.predicate
 def is_org_project_editor(user, obj):
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
-        if employment.group == Group.objects.get(name='Project Editors'):
+        if employment.group in Group.objects.filter(name__in=['Project Editors', 'M&E Managers']):
             if not obj:
                 return True
             elif isinstance(obj, Organisation):
@@ -189,6 +192,7 @@ def is_org_project_editor(user, obj):
                     pass
     return False
 
+
 @rules.predicate
 def is_org_user(user, obj):
     if not user.is_authenticated():
@@ -202,6 +206,7 @@ def is_org_user(user, obj):
             if isinstance(obj, ProjectUpdate) and obj.user == user:
                 return True
     return False
+
 
 @rules.predicate
 def is_self(user, obj):

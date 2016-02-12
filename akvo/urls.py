@@ -235,17 +235,8 @@ urlpatterns += patterns(
         name="widget_random_project_small"),
 )
 
-
-# handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.error.server_error'
-# if settings.DEBUG:
-#     urlpatterns += patterns(
-#         '',
 
-#         (r'^500/$', 'akvo.rsr.views.server_error'),
-#     )
-
-# if settings.DEBUG:
 urlpatterns += patterns(
     '',
 

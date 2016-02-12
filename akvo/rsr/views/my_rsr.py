@@ -16,8 +16,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
@@ -317,7 +316,7 @@ def user_management(request):
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
         roles = Group.objects.filter(
-            name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+            name__in=['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
         )
     else:
         # Others can only manage or invite users to their own organisation, or the
@@ -349,6 +348,7 @@ def user_management(request):
         Group.objects.get(name='Users'),
         Group.objects.get(name='User Managers'),
         Group.objects.get(name='Project Editors'),
+        Group.objects.get(name='M&E Managers'),
         Group.objects.get(name='Admins')
     ]
 
@@ -404,16 +404,18 @@ def user_management(request):
 @login_required
 def results_data_select(request):
     """
-    My results section without a project selected. Only accessible to Admins and Project editors.
+    My results section without a project selected. Only accessible to M&E Managers, Admins and
+    Project editors.
 
     :param request; A Django HTTP request and context
     """
     user = request.user
+    me_managers = Group.objects.get(name='M&E Managers')
     admins = Group.objects.get(name='Admins')
     project_editors = Group.objects.get(name='Project Editors')
 
-    if not (user.is_admin or user.is_superuser or user.in_group(admins) or
-            user.in_group(project_editors)):
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
+            user.in_group(admins) or user.in_group(project_editors)):
         raise PermissionDenied
 
     projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
@@ -429,7 +431,7 @@ def results_data_select(request):
 @login_required
 def results_data(request, project_id):
     """
-    My results section. Only accessible to Admins and Project editors.
+    My results section. Only accessible to M&E Managers, Admins and Project editors.
 
     :param request; A Django HTTP request and context
     :param project_id; The ID of the project
@@ -440,9 +442,13 @@ def results_data(request, project_id):
     if not user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
+    me_managers_group = Group.objects.get(name='M&E Managers')
+    me_managers = project.publishing_orgs.employments().approved().filter(group=me_managers_group)
+
     context = {
         'project': project,
         'user': user,
+        'me_managers': me_managers.exists(),
         'current_datetime': datetime.now(),
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }

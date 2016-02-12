@@ -133,8 +133,8 @@ __all__ = [
 
 # Permission rules
 import rules
-from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,
-                           is_org_project_editor, is_org_user, is_self)
+from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, 
+                           is_org_user, is_self)
 
 rules.add_perm('rsr', rules.always_allow)
 
@@ -167,6 +167,7 @@ rules.add_perm('rsr.delete_indicatorperioddata', is_rsr_admin)
 
 rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
@@ -241,7 +242,7 @@ rules.add_perm('rsr.add_projectcontact', is_rsr_admin | is_org_admin | is_org_pr
 rules.add_perm('rsr.change_projectcontact', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectcontact', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_countrybudgetitem', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 
@@ -255,7 +256,7 @@ rules.add_perm('rsr.add_policymarker', is_rsr_admin | is_org_admin | is_org_proj
 rules.add_perm('rsr.change_policymarker', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_policymarker', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_recipientcountry', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
 
@@ -287,8 +288,8 @@ rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_proj
 rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_organisation', is_rsr_admin)
 
-rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin)
-rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)

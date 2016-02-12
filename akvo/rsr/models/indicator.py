@@ -13,6 +13,7 @@ from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_sen
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.exceptions import FieldError, ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -557,43 +558,42 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
             # Mail admins of a paying partner when an update needs to be approved
-            # TODO: uncomment before going Live
-            # if orig.status != self.STATUS_PENDING_CODE and \
-            #         self.status == self.STATUS_PENDING_CODE:
-            #     admins = self.period.indicator.result.project.publishing_orgs.employments().\
-            #         filter(group__name='Admins')
-            #
-            #     rsr_send_mail(
-            #         [empl.user.email for empl in admins],
-            #         subject='results_framework/approve_update_subject.txt',
-            #         message='results_framework/approve_update_message.txt',
-            #         html_message='results_framework/approve_update_message.html',
-            #         msg_context={'update': self}
-            #     )
-            #
-            # # Mail the user that created the update when an update needs revision
-            # elif orig.status != self.STATUS_REVISION_CODE and \
-            #         self.status == self.STATUS_REVISION_CODE:
-            #     rsr_send_mail(
-            #         [self.user.email],
-            #         subject='results_framework/revise_update_subject.txt',
-            #         message='results_framework/revise_update_message.txt',
-            #         html_message='results_framework/revise_update_message.html',
-            #         msg_context={'update': self}
-            #     )
+            if orig.status != self.STATUS_PENDING_CODE and \
+                    self.status == self.STATUS_PENDING_CODE:
+                me_managers_group = Group.objects.get(name='M&E Managers')
+                me_managers = self.period.indicator.result.project.publishing_orgs.employments().\
+                    approved().filter(group=me_managers_group)
+
+                rsr_send_mail(
+                    [empl.user.email for empl in me_managers],
+                    subject='results_framework/approve_update_subject.txt',
+                    message='results_framework/approve_update_message.txt',
+                    html_message='results_framework/approve_update_message.html',
+                    msg_context={'update': self}
+                )
+
+            # Mail the user that created the update when an update needs revision
+            elif orig.status != self.STATUS_REVISION_CODE and \
+                    self.status == self.STATUS_REVISION_CODE:
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/revise_update_subject.txt',
+                    message='results_framework/revise_update_message.txt',
+                    html_message='results_framework/revise_update_message.html',
+                    msg_context={'update': self}
+                )
 
             # Process data when the update has been approved and mail the user about it
-            # TODO: elif, uncomment before going Live
-            if orig.status != self.STATUS_APPROVED_CODE and \
+            elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
                 self.period.update_actual_value(self.data, self.relative_data)
-                # rsr_send_mail(
-                #     [self.user.email],
-                #     subject='results_framework/approved_subject.txt',
-                #     message='results_framework/approved_message.txt',
-                #     html_message='results_framework/approved_message.html',
-                #     msg_context={'update': self}
-                # )
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/approved_subject.txt',
+                    message='results_framework/approved_message.txt',
+                    html_message='results_framework/approved_message.html',
+                    msg_context={'update': self}
+                )
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 

@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var currentDate, csrftoken, endpoints, i18n, initialSettings, isAdmin, user;
+var currentDate, csrftoken, endpoints, i18n, initialSettings, isAdmin, permissions, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -1354,11 +1354,25 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     }
 });
 
-
+function setPermissions() {
+    // Set the specific permissions for the results framework
+    permissions = {
+        addUpdate: true,
+        editUpdate: true,
+        deleteUpdate: false,
+        unlockPeriod: isAdmin,
+        addComment: true,
+        editComment: false,
+        deleteComment: false,
+        returnForRevision: isAdmin,
+        approve: isAdmin
+    };
+}
 
 function userIsAdmin() {
-    // Check if the user is a PME mananager, resulting in different actions than a regular
-    // PO officer.
+    // Check if the user is an M&E manager, resulting in different actions than other users.
+    isAdmin = false;
+
     var adminOrgIds = [],
         partnerships;
 
@@ -1368,7 +1382,7 @@ function userIsAdmin() {
 
     for (var i = 0; i < user.approved_employments.length; i++) {
         var employment = user.approved_employments[i];
-        if (employment.group_name === 'Admins') {
+        if (employment.group_name === 'M&E Managers') {
             adminOrgIds.push(employment.organisation);
         }
     }
@@ -1380,15 +1394,13 @@ function userIsAdmin() {
             for (var j = 0; j < partnerships.length; j++) {
                 var partnership = partnerships[j];
                 if (adminOrgIds.indexOf(partnership.organisation) > -1) {
-                    return true;
+                    isAdmin = true;
                 }
             }
         }
     };
     xmlHttp.open("GET", endpoints.base_url + endpoints.partnerships, true);
     xmlHttp.send();
-
-    return false;
 }
 
 function getUserData() {
@@ -1397,7 +1409,7 @@ function getUserData() {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
             user = JSON.parse(xmlHttp.responseText);
-            isAdmin = userIsAdmin();
+            userIsAdmin();
         }
     };
     xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
@@ -1424,6 +1436,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setCurrentDate();
     getUserData();
+    setPermissions();
 
     // Initialize the 'My reports' app
     ReactDOM.render(
