@@ -17,8 +17,10 @@ from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldView
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
-from .indicator import (IndicatorViewSet, IndicatorPeriodViewSet, IndicatorPeriodDataViewSet,
-                        IndicatorPeriodDataCommentViewSet, indicator_upload_file)
+from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
+from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
+from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
+                                    IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
@@ -56,7 +58,7 @@ from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import reports, report_formats
-from .result import ResultViewSet
+from .result import ResultsViewSet, ResultsFrameworkViewSet
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
@@ -85,8 +87,11 @@ __all__ = [
     'FocusAreaViewSet',
     'GoalViewSet',
     'IndicatorViewSet',
+    'IndicatorFrameworkViewSet',
     'IndicatorPeriodViewSet',
+    'IndicatorPeriodFrameworkViewSet',
     'IndicatorPeriodDataViewSet',
+    'IndicatorPeriodDataFrameworkViewSet',
     'IndicatorPeriodDataCommentViewSet',
     'indicator_upload_file',
     'InternalOrganisationIDViewSet',
@@ -132,7 +137,8 @@ __all__ = [
     'reports',
     'report_formats',
     'request_organisation',
-    'ResultViewSet',
+    'ResultsViewSet',
+    'ResultsFrameworkViewSet',
     'SectorViewSet',
     'server_info',
     'set_group',

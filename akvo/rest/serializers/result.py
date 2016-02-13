@@ -13,6 +13,12 @@ from .rsr_serializer import BaseRSRSerializer
 
 class ResultSerializer(BaseRSRSerializer):
 
+    class Meta:
+        model = Result
+
+
+class ResultsFrameworkSerializer(BaseRSRSerializer):
+
     indicators = IndicatorSerializer(many=True, required=False, allow_add_remove=True)
 
     class Meta:

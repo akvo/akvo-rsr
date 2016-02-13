@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var currentDate, csrftoken, endpoints, i18n, initialSettings, isAdmin, permissions, user;
+var csrftoken, endpoints, i18n, initialSettings, isAdmin, permissions, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -25,16 +25,63 @@ function getCookie(name) {
 csrftoken = getCookie('csrftoken');
 
 /** General helper functions **/
+function isInt(value) {
+  return !isNaN(value) &&
+         parseInt(Number(value)) == value &&
+         !isNaN(parseInt(value, 10));
+}
 
-function getTimeDifference(endDate) {
-    // Time remaining to edit (needs to be in GMT)
-    var remainingDate = endDate - new Date(currentDate);
+function showGeneralError(message) {
+    var errorNode = document.createElement("div");
+    errorNode.setAttribute('id', 'draft');
+    errorNode.setAttribute('class', 'row');
 
-    return {
-        'days': Math.floor(remainingDate / (1000 * 60 * 60 * 24)),
-        'hours': Math.floor((remainingDate / (1000 * 60 * 60)) % 24),
-        'minutes': Math.floor((remainingDate / 1000 / 60) % 60)
+    var textNode = document.createTextNode(message);
+    errorNode.appendChild(textNode);
+
+    var resultsFrameworkNode = document.getElementById('results-framework');
+    var containerNode = resultsFrameworkNode.parentNode;
+    containerNode.insertBefore(errorNode, resultsFrameworkNode);
+}
+
+function apiCall(method, url, data, successCallback, retries) {
+    var xmlHttp = new XMLHttpRequest();
+    var maxRetries = 5;
+
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+            var response = JSON.parse(xmlHttp.responseText);
+            if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
+                // TODO: Check for next page
+                return successCallback(response);
+            } else {
+                var message = i18n.general_error + ': ';
+                for (var key in response) {
+                    if (response.hasOwnProperty(key)) {
+                         message += key + '; ' + response[key] + '. ';
+                    }
+                }
+                showGeneralError(message);
+                return false;
+            }
+        }
     };
+
+    xmlHttp.onerror = function () {
+        if (retries === undefined) {
+            return apiCall(method, url, data, successCallback, 2);
+        } else if (retries <= maxRetries) {
+            return apiCall(method, url, data, successCallback, retries + 1);
+        } else {
+            showGeneralError(i18n.connection_error);
+            return false;
+        }
+    };
+
+    xmlHttp.open(method, url, true);
+    xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(data);
 }
 
 function displayDate(dateString) {
@@ -424,15 +471,23 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     },
 
     renderComments: function() {
-        var comments = this.props.update.comments.map(function(comment) {
-            return (
-                React.DOM.div( {className:"comment", key:comment.id}, 
-                    React.createElement(CommentEntry, {
-                        comment: comment
-                    })
-                )
+        var comments;
+
+        if (this.props.update.comments !== undefined) {
+            comments = this.props.update.comments.map(function(comment) {
+                return (
+                    React.DOM.div( {className:"comment", key:comment.id}, 
+                        React.createElement(CommentEntry, {
+                            comment: comment
+                        })
+                    )
+                );
+            });
+        } else {
+            comments = React.DOM.div( {className:"comment"}, 
+                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.comments
             );
-        });
+        }
 
         var inputId = "new-comment-" + this.props.update.id;
         var addComments = this.props.update.status !== 'A';
@@ -555,25 +610,34 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
     },
 
     render: function() {
-        var thisList = this;
-        var updates = this.sortedUpdates().map(function (update) {
-            return (
-                React.DOM.div( {className:"update-container", key:update.id}, 
-                    React.createElement(UpdateEntry, {
-                        addEditingData: thisList.props.addEditingData,
-                        removeEditingData: thisList.props.removeEditingData,
-                        editingData: thisList.props.editingData,
-                        saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
-                        saveFileInUpdate: thisList.props.saveFileInUpdate,
-                        saveCommentInUpdate: thisList.props.saveCommentInUpdate,
-                        selectedPeriod: thisList.props.selectedPeriod,
-                        selectPeriod: thisList.props.selectPeriod,
-                        reloadPeriod: thisList.props.reloadPeriod,
-                        update: update
-                    })
-                )
+        var thisList = this,
+            updates;
+
+        if (this.props.selectedPeriod.data !== undefined) {
+            updates = this.sortedUpdates().map(function (update) {
+                return (
+                    React.DOM.div( {className:"update-container", key:update.id}, 
+                        React.createElement(UpdateEntry, {
+                            addEditingData: thisList.props.addEditingData,
+                            removeEditingData: thisList.props.removeEditingData,
+                            editingData: thisList.props.editingData,
+                            saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
+                            saveFileInUpdate: thisList.props.saveFileInUpdate,
+                            saveCommentInUpdate: thisList.props.saveCommentInUpdate,
+                            selectedPeriod: thisList.props.selectedPeriod,
+                            selectPeriod: thisList.props.selectPeriod,
+                            reloadPeriod: thisList.props.reloadPeriod,
+                            update: update
+                        })
+                    )
+                );
+            });
+        } else {
+            updates = React.DOM.div( {className:"update-container"}, 
+                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.updates
             );
-        });
+        }
+
 
         return (
             React.DOM.div( {className:"updates-container"}, 
@@ -704,21 +768,20 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
     renderPeriodDisplay: function() {
         var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
 
-        switch(this.props.period.data.length) {
-            case 0:
-                return (
-                    React.DOM.td( {className:"period-td"}, 
+        if (this.props.period.data === undefined || this.props.period.data.length === 0) {
+            return (
+                React.DOM.td( {className:"period-td"}, 
+                    periodDisplay
+                )
+            );
+        } else {
+            return (
+                React.DOM.td( {className:"period-td"}, 
+                    React.DOM.a( {onClick:this.switchPeriod}, 
                         periodDisplay
                     )
-                );
-            default:
-                return (
-                    React.DOM.td( {className:"period-td"}, 
-                        React.DOM.a( {onClick:this.switchPeriod}, 
-                            periodDisplay
-                        )
-                    )
-                );
+                )
+            );
         }
     },
 
@@ -798,23 +861,35 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
     },
 
     render: function() {
-        var thisList = this;
+        var thisList = this,
+            periods;
 
-        var periods = this.sortedPeriods().map(function (period) {
-            return (
-                React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
-                    React.createElement(IndicatorPeriodEntry, {
-                        period: period,
-                        selectedPeriod: thisList.props.selectedPeriod,
-                        selectPeriod: thisList.props.selectPeriod,
-                        addNewUpdate: thisList.props.addNewUpdate,
-                        savePeriodToIndicator: thisList.props.savePeriodToIndicator,
-                        lockPeriod: thisList.props.lockPeriod,
-                        unlockPeriod: thisList.props.unlockPeriod
-                    })
+        if (this.props.selectedIndicator.periods !== undefined) {
+            periods = this.sortedPeriods().map(function (period) {
+                return (
+                    React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
+                        React.createElement(IndicatorPeriodEntry, {
+                            period: period,
+                            selectedPeriod: thisList.props.selectedPeriod,
+                            selectPeriod: thisList.props.selectPeriod,
+                            addNewUpdate: thisList.props.addNewUpdate,
+                            savePeriodToIndicator: thisList.props.savePeriodToIndicator,
+                            lockPeriod: thisList.props.lockPeriod,
+                            unlockPeriod: thisList.props.unlockPeriod
+                        })
+                    )
+                );
+            });
+        } else {
+            periods = React.DOM.tbody( {className:"indicator-period bg-transition"}, 
+                React.DOM.tr(null, 
+                    React.DOM.td(null, 
+                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicator_periods
+                    ),
+                    React.DOM.td(null ),React.DOM.td(null ),React.DOM.td(null )
                 )
             );
-        });
+        }
 
         return (
             React.DOM.div( {className:"indicator-period-list"}, 
@@ -982,7 +1057,7 @@ var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
         }
 
         return (
-            React.DOM.div( {className:indicatorClass, onClick:this.switchIndicator, key:this.props.indicator.id}, 
+            React.DOM.div( {className:indicatorClass, onClick:this.switchIndicator}, 
                 React.DOM.a(null, 
                     React.DOM.h4(null, this.props.indicator.title)
                 )
@@ -1006,45 +1081,79 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
     },
 
     indicatorText: function() {
-        return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+        if (this.props.result.indicators !== undefined) {
+            return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+        } else {
+            return i18n.indicators;
+        }
+    },
+
+    renderIndicatorEntries: function() {
+        if (this.expanded()) {
+            var thisResult = this;
+            if (this.props.result.indicators !== undefined) {
+                var indicatorEntries = this.props.result.indicators.map(function (indicator) {
+                    return (
+                        React.DOM.div( {key:indicator.id}, 
+                            React.createElement(IndicatorEntry, {
+                                indicator: indicator,
+                                selectedIndicator: thisResult.props.selectedIndicator,
+                                selectIndicator: thisResult.props.selectIndicator,
+                                selectPeriod: thisResult.props.selectPeriod
+                            })
+                        )
+                    );
+                });
+                return (
+                    React.DOM.div( {className:"result-nav-full clickable"}, indicatorEntries)
+                );
+            } else {
+                return (
+                    React.DOM.div( {className:"result-nav-full clickable"}, 
+                        React.DOM.div( {className:"indicator-nav bg-border-transition"}, 
+                            React.DOM.a(null, 
+                                React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicators)
+                            )
+                        )
+                    )
+                );
+            }
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    },
+
+    renderIndicatorCount: function() {
+        var indicatorLength;
+
+        if (this.props.result.indicators === undefined) {
+            indicatorLength = React.DOM.i( {className:"fa fa-spin fa-spinner"} );
+        } else {
+            indicatorLength = this.props.result.indicators.length;
+        }
+
+        if (this.expanded()) {
+            return (
+                React.DOM.span( {className:"result-indicator-count"}, 
+                    React.DOM.i( {className:"fa fa-tachometer"} ),
+                    React.DOM.span( {className:"indicator-count inlined"}, indicatorLength),
+                    React.DOM.p(null, this.indicatorText(),":")
+                )
+            );
+        } else {
+            return (
+                React.DOM.span( {className:"result-indicator-count"}, 
+                    React.DOM.i( {className:"fa fa-tachometer"} ),
+                    React.DOM.span( {className:"indicator-count inlined"}, indicatorLength),
+                    React.DOM.p(null, this.indicatorText().toLowerCase())
+                )
+            );
+        }
     },
 
     render: function() {
-        var indicatorCount, indicatorEntries;
-
-        if (this.expanded()) {
-            indicatorCount = React.DOM.span( {className:"result-indicator-count"}, 
-                React.DOM.i( {className:"fa fa-tachometer"} ),
-                React.DOM.span( {className:"indicator-count inlined"}, this.props.result.indicators.length),
-                React.DOM.p(null, "indicators:")
-            );
-        } else {
-            indicatorCount = React.DOM.span( {className:"result-indicator-count"}, 
-                React.DOM.i( {className:"fa fa-tachometer"} ),
-                React.DOM.span( {className:"indicator-count inlined"}, this.props.result.indicators.length),
-                React.DOM.p(null, this.indicatorText().toLowerCase())
-            );
-        }
-
-        if (this.expanded()) {
-            var thisResult = this;
-            indicatorEntries = this.props.result.indicators.map(function (indicator) {
-                return (
-                    React.DOM.div( {key:indicator.id}, 
-                        React.createElement(IndicatorEntry, {
-                            indicator: indicator,
-                            selectedIndicator: thisResult.props.selectedIndicator,
-                            selectIndicator: thisResult.props.selectIndicator,
-                            selectPeriod: thisResult.props.selectPeriod
-                        })
-                    )
-                );
-            });
-            indicatorEntries = React.DOM.div( {className:"result-nav-full clickable"}, indicatorEntries);
-        } else {
-            indicatorEntries = React.DOM.span(null );
-        }
-
         var resultNavClass = "result-nav bg-transition";
         resultNavClass += this.expanded() ? " expanded" : "";
 
@@ -1056,9 +1165,9 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
                         React.DOM.i( {className:"fa fa-chevron-circle-up"} ),
                         React.DOM.span(null, this.props.result.title)
                     ),
-                    indicatorCount
+                    this.renderIndicatorCount()
                 ),
-                indicatorEntries
+                this.renderIndicatorEntries()
             )
         );
     }
@@ -1082,7 +1191,7 @@ var SideBar = React.createClass({displayName: 'SideBar',
             );
         });
 
-        if (this.props.results.length > 0) {
+        if (!this.props.loadingResults) {
             return (
                 React.DOM.div( {className:"results-list"}, 
                     resultEntries
@@ -1093,7 +1202,7 @@ var SideBar = React.createClass({displayName: 'SideBar',
                 React.DOM.div( {className:"results-list"}, 
                     React.DOM.div( {className:"result-nav bg-transition"}, 
                         React.DOM.div( {className:"result-nav-summary"}, 
-                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading_results
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.results
                         )
                     )
                 )
@@ -1128,6 +1237,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         }
 
         return {
+            loadingResults: true,
             selectedResultId: defaultResult,
             selectedIndicatorId: defaultIndicator,
             selectedPeriodId: defaultPeriod,
@@ -1137,16 +1247,75 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     componentDidMount: function() {
-        // Load results data
-        var xmlHttp = new XMLHttpRequest();
+        this.loadResults();
+    },
+
+    loadResults: function() {
         var thisApp = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                thisApp.setState({'results': JSON.parse(xmlHttp.responseText).results});
-            }
+        var success = function(response) {
+            thisApp.setState({
+                'results': response.results,
+                'loadingResults': false
+            });
+            thisApp.loadIndicators();
         };
-        xmlHttp.open("GET", endpoints.base_url + endpoints.results, true);
-        xmlHttp.send();
+        apiCall('GET', endpoints.base_url + endpoints.results_of_project, '', success);
+    },
+
+    loadIndicators: function() {
+        var thisApp = this;
+        var success = function(response) {
+            var indicators = response.results;
+            for (var i = 0; i < indicators.length; i++) {
+                var indicator = indicators[i];
+                var result = thisApp.findResult(indicator.result);
+                if (result.indicators === undefined) {
+                    result.indicators = [indicator];
+                } else {
+                    result.indicators.push(indicator);
+                }
+            }
+            thisApp.forceUpdate();
+            thisApp.loadPeriods();
+        };
+        apiCall('GET', endpoints.base_url + endpoints.indicators_of_project, '', success);
+    },
+
+    loadPeriods: function() {
+        var thisApp = this;
+        var success = function(response) {
+            var periods = response.results;
+            for (var i = 0; i < periods.length; i++) {
+                var period = periods[i];
+                var indicator = thisApp.findIndicator(period.indicator);
+                if (indicator.periods === undefined) {
+                    indicator.periods = [period];
+                } else {
+                    indicator.periods.push(period);
+                }
+            }
+            thisApp.forceUpdate();
+            thisApp.loadDataUpdatesAndComments();
+        };
+        apiCall('GET', endpoints.base_url + endpoints.periods_of_project, '', success);
+    },
+
+    loadDataUpdatesAndComments: function() {
+        var thisApp = this;
+        var success = function(response) {
+            var updates = response.results;
+            for (var i = 0; i < updates.length; i++) {
+                var update = updates[i];
+                var period = thisApp.findPeriod(update.period);
+                if (period.data === undefined) {
+                    period.data = [update];
+                } else {
+                    period.data.push(update);
+                }
+            }
+            thisApp.forceUpdate();
+        };
+        apiCall('GET', endpoints.base_url + endpoints.updates_and_comments_of_project, '', success);
     },
 
     findResult: function(resultId) {
@@ -1162,10 +1331,12 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     findIndicator: function(indicatorId) {
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
-            for (var j = 0; j < result.indicators.length; j++) {
-                var indicator = result.indicators[j];
-                if (indicator.id == indicatorId) {
-                    return indicator;
+            if (result.indicators !== undefined) {
+                for (var j = 0; j < result.indicators.length; j++) {
+                    var indicator = result.indicators[j];
+                    if (indicator.id == indicatorId) {
+                        return indicator;
+                    }
                 }
             }
         }
@@ -1175,12 +1346,16 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     findPeriod: function(periodId) {
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
-            for (var j = 0; j < result.indicators.length; j++) {
-                var indicator = result.indicators[j];
-                for (var k = 0; k < indicator.periods.length; k++) {
-                    var period = indicator.periods[k];
-                    if (period.id == periodId) {
-                        return period;
+            if (result.indicators !== undefined) {
+                for (var j = 0; j < result.indicators.length; j++) {
+                    var indicator = result.indicators[j];
+                    if (indicator.periods !== undefined) {
+                        for (var k = 0; k < indicator.periods.length; k++) {
+                            var period = indicator.periods[k];
+                            if (period.id == periodId) {
+                                return period;
+                            }
+                        }
                     }
                 }
             }
@@ -1191,14 +1366,20 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     findUpdate: function(updateId) {
         for (var i = 0; i < this.state.results.length; i++) {
             var result = this.state.results[i];
-            for (var j = 0; j < result.indicators.length; j++) {
-                var indicator = result.indicators[j];
-                for (var k = 0; k < indicator.periods.length; k++) {
-                    var period = indicator.periods[k];
-                    for (var l = 0; l < period.data.length; l++) {
-                        var update = period.data[l];
-                        if (update.id == updateId) {
-                            return update;
+            if (result.indicators !== undefined) {
+                for (var j = 0; j < result.indicators.length; j++) {
+                    var indicator = result.indicators[j];
+                    if (indicator.periods !== undefined) {
+                        for (var k = 0; k < indicator.periods.length; k++) {
+                            var period = indicator.periods[k];
+                            if (period.data !== undefined) {
+                                for (var l = 0; l < period.data.length; l++) {
+                                    var update = period.data[l];
+                                    if (update.id == updateId) {
+                                        return update;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1354,6 +1535,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                             React.createElement(
                                 SideBar, {
                                     results: this.state.results,
+                                    loadingResults: this.state.loadingResults,
                                     selectedResult: this.selectedResult(),
                                     selectedIndicator: this.selectedIndicator(),
                                     selectResult: this.selectResult,
@@ -1420,44 +1602,25 @@ function userIsAdmin() {
         }
     }
 
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            partnerships = JSON.parse(xmlHttp.responseText).results;
-            for (var j = 0; j < partnerships.length; j++) {
-                var partnership = partnerships[j];
-                if (adminOrgIds.indexOf(partnership.organisation) > -1) {
-                    isAdmin = true;
-                }
+    var success = function(response) {
+        partnerships = response.results;
+        for (var j = 0; j < partnerships.length; j++) {
+            var partnership = partnerships[j];
+            if (adminOrgIds.indexOf(partnership.organisation) > -1) {
+                isAdmin = true;
             }
         }
     };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.partnerships, true);
-    xmlHttp.send();
+    apiCall('GET', endpoints.base_url + endpoints.partnerships, '', success);
 }
 
 function getUserData() {
     // Get the user data from the API and stores it in the global user variable
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-            user = JSON.parse(xmlHttp.responseText);
-            userIsAdmin();
-        }
+    var success = function(response) {
+        user = response;
+        userIsAdmin();
     };
-    xmlHttp.open("GET", endpoints.base_url + endpoints.user, true);
-    xmlHttp.send();
-}
-
-function setCurrentDate() {
-    // Gets the current datetime from the initial settings and stores it in the global
-    // currentDate variable
-    currentDate = initialSettings.current_datetime;
-    setInterval(function () {
-        var localCurrentDate = new Date(currentDate);
-        localCurrentDate.setSeconds(localCurrentDate.getSeconds() + 1);
-        currentDate = localCurrentDate.toString();
-    }, 1000);
+    apiCall('GET', endpoints.base_url + endpoints.user, '', success);
 }
 
 /* Initialise page */
@@ -1467,7 +1630,6 @@ document.addEventListener('DOMContentLoaded', function() {
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
     initialSettings = JSON.parse(document.getElementById('initial-settings').innerHTML);
 
-    setCurrentDate();
     getUserData();
     setPermissions();
 

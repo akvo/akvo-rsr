@@ -29,13 +29,21 @@
     <script type="application/json" id="data-endpoints">
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
-            "results": "/rest/v1/result/?format=json&project={{ project.pk }}",
-            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
+            "results_of_project": "/rest/v1/result/?format=json&project={{ project.pk }}",
+            "indicator": "/rest/v1/indicator/{indicator}/?format=json",
+            "indicators": "/rest/v1/indicator/?format=json",
+            "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={{ project.pk }}",
             "period": "/rest/v1/indicator_period/{period}/?format=json",
+            "periods": "/rest/v1/indicator_period/?format=json",
+            "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={{ project.pk }}",
             "update": "/rest/v1/indicator_period_data/{update}/?format=json",
             "updates": "/rest/v1/indicator_period_data/?format=json",
+            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={{ project.pk }}",
+            "comment": "/rest/v1/indicator_period_data_comment/{comment}/?format=json",
             "comments": "/rest/v1/indicator_period_data_comment/?format=json",
+            "comments_of_project": "/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project={{ project.pk }}",
             "user": "/rest/v1/user/{{ user.pk }}/?format=json",
+            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
             "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
         }
     </script>
@@ -62,7 +70,7 @@
             "baseline_year": "{% trans 'Baseline year' %}",
             "baseline_value": "{% trans 'Baseline value' %}",
             "period": "{% trans 'Period' %}",
-            "loading_results": "{% trans 'Loading results' %}",
+            "loading": "{% trans 'Loading' %}",
             "lock_period": "{% trans 'Lock period' %}",
             "unlock_period": "{% trans 'Unlock period' %}",
             "period_locked": "{% trans 'Period locked' %}",
@@ -88,8 +96,11 @@
             "attach_file": "{% trans 'Attach file' %}",
             "unknown_date": "{% trans 'Unknown date' %}",
             "comment": "{% trans 'Comment' %}",
+            "comments": "{% trans 'Comments' %}",
             "add_comment": "{% trans 'Add comment' %}",
-            "add_comment_placeholder": "{% trans 'Add an internal comment to the update' %}"
+            "add_comment_placeholder": "{% trans 'Add an internal comment to the update' %}",
+            "general_error": "{% trans 'An error occurred' %}",
+            "connection_error": "{% trans 'There was a connection error. Please check your internet connection and refresh the page.' %}"
         }
     </script>
 

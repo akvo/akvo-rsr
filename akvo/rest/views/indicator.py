@@ -4,17 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
-from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
-                             IndicatorPeriodDataComment)
-
-from ..serializers import (IndicatorSerializer, IndicatorPeriodSerializer,
-                           IndicatorPeriodDataSerializer, IndicatorPeriodDataCommentSerializer)
-from ..viewsets import PublicProjectViewSet
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from akvo.rest.serializers import IndicatorSerializer, IndicatorFrameworkSerializer
+from akvo.rest.viewsets import PublicProjectViewSet
+from akvo.rsr.models import Indicator
 
 
 class IndicatorViewSet(PublicProjectViewSet):
@@ -22,61 +14,28 @@ class IndicatorViewSet(PublicProjectViewSet):
     """
     queryset = Indicator.objects.all()
     serializer_class = IndicatorSerializer
-    filter_fields = ('result', )
+    filter_fields = {
+        'result': ['exact'],
+        'result__project': ['exact'],
+        'measure': ['exact'],
+        'ascending': ['exact'],
+        'baseline_year': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        'baseline_value': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+    }
     project_relation = 'result__project__'
 
 
-class IndicatorPeriodViewSet(PublicProjectViewSet):
+class IndicatorFrameworkViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.all()
-    serializer_class = IndicatorPeriodSerializer
-    filter_fields = ('indicator', )
-    project_relation = 'indicator__result__project__'
-
-
-class IndicatorPeriodDataViewSet(PublicProjectViewSet):
-    """
-    """
-    queryset = IndicatorPeriodData.objects.all()
-    serializer_class = IndicatorPeriodDataSerializer
-    filter_fields = ('period', 'user', 'relative_data', 'status', 'update_method')
-    project_relation = 'period__indicator__result__project__'
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def indicator_upload_file(request, pk=None):
-    """
-    Special API call for directly uploading a file.
-
-    :param request; A Django request object.
-    :param pk; The primary key of an IndicatorPeriodData instance.
-    """
-    update = IndicatorPeriodData.objects.get(pk=pk)
-    upload_file = request.FILES['file']
-
-    # TODO: Permissions
-    user = request.user
-
-    file_type = request.POST.copy()['type']
-    if file_type == 'photo':
-        update.photo = upload_file
-        update.save(update_fields=['photo'])
-        return Response({'file': update.photo.url})
-    elif file_type == 'file':
-        update.file = upload_file
-        update.save(update_fields=['file'])
-        return Response({'file': update.file.url})
-
-    # TODO: Error response
-    return Response({})
-
-
-class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
-    """
-    """
-    queryset = IndicatorPeriodDataComment.objects.all()
-    serializer_class = IndicatorPeriodDataCommentSerializer
-    filter_fields = ('data', 'user')
-    project_relation = 'period__indicator__result__project__'
+    queryset = Indicator.objects.all()
+    serializer_class = IndicatorFrameworkSerializer
+    filter_fields = {
+        'result': ['exact'],
+        'result__project': ['exact'],
+        'measure': ['exact'],
+        'ascending': ['exact'],
+        'baseline_year': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        'baseline_value': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+    }
+    project_relation = 'result__project__'

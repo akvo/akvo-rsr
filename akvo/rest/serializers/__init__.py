@@ -17,8 +17,11 @@ from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldS
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
-from .indicator import (IndicatorSerializer, IndicatorPeriodSerializer,
-                        IndicatorPeriodDataSerializer, IndicatorPeriodDataCommentSerializer)
+from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
+from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
+from .indicator_period_data import (IndicatorPeriodDataSerializer,
+                                    IndicatorPeriodDataFrameworkSerializer,
+                                    IndicatorPeriodDataCommentSerializer)
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .invoice import InvoiceSerializer
 from .keyword import KeywordSerializer
@@ -47,7 +50,7 @@ from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer
 from .region import RecipientRegionSerializer
 from .related_project import RelatedProjectSerializer
-from .result import ResultSerializer
+from .result import ResultSerializer, ResultsFrameworkSerializer
 from .sector import SectorSerializer
 from .transaction import TransactionSerializer, TransactionSectorSerializer
 from .typeahead import (TypeaheadCountrySerializer,
@@ -69,8 +72,11 @@ __all__ = [
     'FocusAreaSerializer',
     'GoalSerializer',
     'IndicatorSerializer',
+    'IndicatorFrameworkSerializer',
     'IndicatorPeriodSerializer',
+    'IndicatorPeriodFrameworkSerializer',
     'IndicatorPeriodDataSerializer',
+    'IndicatorPeriodDataFrameworkSerializer',
     'IndicatorPeriodDataCommentSerializer',
     'InternalOrganisationIDSerializer',
     'InvoiceSerializer',
@@ -105,6 +111,7 @@ __all__ = [
     'RecipientRegionSerializer',
     'RelatedProjectSerializer',
     'ResultSerializer',
+    'ResultsFrameworkSerializer',
     'SectorSerializer',
     'TransactionSerializer',
     'TransactionSectorSerializer',
