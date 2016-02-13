@@ -52,8 +52,20 @@ function apiCall(method, url, data, successCallback, retries) {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
             var response = JSON.parse(xmlHttp.responseText);
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
-                // TODO: Check for next page
-                return successCallback(response);
+                if (method === 'GET' && response.next !== undefined) {
+                    if (response.next !== null) {
+                        var success = function(newResponse) {
+                            var oldResults = response.results;
+                            response.results = oldResults.concat(newResponse.results);
+                            return successCallback(response);
+                        };
+                        apiCall(method, response.next, data, success);
+                    } else {
+                        return successCallback(response);
+                    }
+                } else {
+                    return successCallback(response);
+                }
             } else {
                 var message = i18n.general_error + ': ';
                 for (var key in response) {
