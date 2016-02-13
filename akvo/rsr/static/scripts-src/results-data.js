@@ -309,13 +309,16 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         if (this.editing()) {
             return (
                 React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-4"}, 
+                    React.DOM.div( {className:"col-xs-6"}, 
                         React.DOM.label( {htmlFor:inputId}, i18n.new_actual_value),
                         React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} ),
                         checkbox
                     ),
-                    React.DOM.div( {className:"col-xs-8"}, 
-                        i18n.current,": ", this.props.selectedPeriod.actual_value,
+                    React.DOM.div( {className:"col-xs-6"}, 
+
+                /* {i18n.current}: {this.props.selectedPeriod.actual_value} */
+
+                        
                         this.renderActualRelative()
                     )
                 )
@@ -337,7 +340,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
         if (this.props.update.photo_url === "") {
             photoPart = React.DOM.span(null );
-            descriptionClass = "col-xs-10 update-description";
+            descriptionClass = "update-description";
         } else {
             if (this.editing()) {
                 photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
@@ -363,7 +366,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         }
 
         return (
-            React.DOM.div( {className:"row"}, 
+            React.DOM.div( {className:""}, 
                 photoPart,
                 descriptionPart
             )
@@ -464,15 +467,15 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)),
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)),
                           React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve))
                         )
                     );
                 default:
                     return (
-                        React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit}, i18n.cancel)),
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)),
                           React.DOM.li( {role:"presentation", className:"saveUpdate"}, React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)),
                           React.DOM.li( {role:"presentation", className:"submitUpdate"}, React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval))
                         )
@@ -483,7 +486,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 case 'P':
                     if (isAdmin) {
                         return (
-                            React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                 React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a(
                                     {onClick:this.returnForRevision,
                                     className:"btn btn-default btn-xs"}, i18n.return_for_revision)
@@ -508,7 +511,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 default:
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
-                            React.DOM.ul( {className:"nav nav-pills bottomRow navbar-right"}, 
+                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                 React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
                                     {onClick:this.switchEdit,
                                     className:"btn btn-default btn-xs"}, i18n.edit_update))

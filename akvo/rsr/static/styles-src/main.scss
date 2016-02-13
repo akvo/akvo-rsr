@@ -367,7 +367,7 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: complement($rsrBlue);
+                    color: $rsrGreen;
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
                     @include border-radius(3px);
@@ -447,10 +447,13 @@ nav.navbar-fixed-top {
 
                     &.active {
                         background: none;
-                        color: rgba($anchorLinkHover, 0.7);
+                        color:  $rsrGreen;
                     }
                 }
                 .langDropdown {
+                    .btn-default {
+                        border-color:transparent;
+                    }
                     margin-top: 10px;
                     @include responsive(small-max-screens) {
                         padding-left: 15px;
@@ -605,8 +608,8 @@ nav.navbar-fixed-top {
                         background-color: rgba($akvoBlack, 0.1);
                     }
                     &.active {
-                        color: $anchorLinkHover;
-                        font-weight: bold;
+                        color:  $rsrGreen;
+                        font-weight: normal;
                         background: rgba(white, 1);
                         @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
@@ -2694,6 +2697,8 @@ body {
     }
 }
 
+
+
 .results {
     position: relative;
     * {
@@ -2787,8 +2792,7 @@ body {
             &:last-child {}
         }
         .result-nav-header {
-            border-bottom: 1px solid rgba($akvoBlack, 0);
-            background: rgba($akvoBlack, 0.1);
+            background: rgba($akvoBlack, 0);
             h3 {
                 color: rgba(white, 1);
                 display: inline-block;
@@ -2799,7 +2803,7 @@ body {
                 margin-top: 0;
                 background: rgba($rsrBlue2, 1);
                 margin-bottom: 0;
-                @include border-radius(0 0 8px 0);
+                @include border-radius(8px 8px 0 0);
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2865,6 +2869,7 @@ body {
                 }
             }
             .result-indicator-count {
+                display: block;
                 color: $akvoPurple;
                 display: block;
                 margin-top: -5px;
@@ -2956,7 +2961,7 @@ body {
     .indicator-container {
         vertical-align: top;
         overflow-y: scroll;
-        padding: 0.25em 1em;
+        padding:20px 1em 0.25em 1em;
         background-color: rgba(245, 245, 245, 0.2);
         @include flex(1);
         .indicator-period {
@@ -3346,14 +3351,17 @@ body {
     .update-container {
         background: rgba($akvoBlack, 0);
         border: 1px solid rgba($akvoBlack, 0.1);
-        padding: 0 1em 0.75em 1em;
+        padding: 0 1em;
         margin-bottom: 20px;
         .update-entry-container {
-            margin-bottom: 2em;
+            padding:0 0 10px 0;
             position: relative;
             &.edit-in-progress {
-                background-color: #D1E6D1;
-                border-left: none;
+                border:1px solid transparent;
+                background-color: rgba($rsrGreen, 0.3);
+                .update-entry-container-header {
+                    background: rgba(white, 0.5);
+                }
             }
             .update-entry-container-header {
                 background: rgba($akvoBlack, 0.1);
@@ -3393,22 +3401,30 @@ body {
                 margin-top: 20px;
                 padding: 0.75em;
                 position: relative;
+                list-style-type: none;
                 .btn {
-                    background: $akvoBlack;
-                    color: white;
-                    &:hover {
-                        background: $akvoPurple;
+                    padding: 2px 7px;
+                    &.btn-default {
+                        background: $akvoBlack;
+                        color: white;
+                        .editUpdate & {
+                            background: initial;
+                            color: initial;
+                        }
+                        &:hover {
+                            background: $akvoPurple;
+                        }
                     }
                 }
                 .cancelUpdate {}
-                .editUpdate {}
+
                 .saveUpdate {}
                 .returnUpdate {}
                 .submitUpdate {}
                 .approveUpdate {}
             }
             .upActualValue {
-                margin-top: 20px;
+                margin-top: 47px;
                 margin-bottom: 15px;
                 .update-actual-value-text {
                     color: rgba($akvoBlack, 0.4);
@@ -3436,7 +3452,6 @@ body {
             padding: 8px 2em;
             .update-entry-container {
                 padding: 2em;
-                margin-bottom: 2em;
                 position: relative;
                 background-color: #ececec;
                 &:first-child {
