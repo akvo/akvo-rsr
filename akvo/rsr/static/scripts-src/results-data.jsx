@@ -349,13 +349,16 @@ var UpdateEntry = React.createClass({
         if (this.editing()) {
             return (
                 <div className="row">
-                    <div className="col-xs-4">
+                    <div className="col-xs-6">
                         <label htmlFor={inputId}>{i18n.new_actual_value}</label>
                         <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
                         {checkbox}
                     </div>
-                    <div className="col-xs-8">
-                        {i18n.current}: {this.props.selectedPeriod.actual_value}
+                    <div className="col-xs-6">
+
+                {/* {i18n.current}: {this.props.selectedPeriod.actual_value} */}
+
+                        
                         {this.renderActualRelative()}
                     </div>
                 </div>
@@ -377,7 +380,7 @@ var UpdateEntry = React.createClass({
 
         if (this.props.update.photo_url === "") {
             photoPart = <span />;
-            descriptionClass = "col-xs-10 update-description";
+            descriptionClass = "update-description";
         } else {
             if (this.editing()) {
                 photoPart = <div className="col-xs-3 update-photo">
@@ -403,7 +406,7 @@ var UpdateEntry = React.createClass({
         }
 
         return (
-            <div className="row">
+            <div className="">
                 {photoPart}
                 {descriptionPart}
             </div>
@@ -512,15 +515,15 @@ var UpdateEntry = React.createClass({
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        <ul className="nav nav-pills bottomRow navbar-right">
-                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit}>{i18n.cancel}</a></li>
+                        <ul className="nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a></li>
                           <li role="presentation" className="approveUpdate"><a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a></li>
                         </ul>
                     );
                 default:
                     return (
-                        <ul className="nav nav-pills bottomRow navbar-right">
-                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit}>{i18n.cancel}</a></li>
+                        <ul className="nav-pills bottomRow navbar-right">
+                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a></li>
                           <li role="presentation" className="saveUpdate"><a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a></li>
                           <li role="presentation" className="submitUpdate"><a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a></li>
                         </ul>
@@ -531,7 +534,7 @@ var UpdateEntry = React.createClass({
                 case 'P':
                     if (isAdmin) {
                         return (
-                            <ul className="nav nav-pills bottomRow navbar-right">
+                            <ul className="nav-pills bottomRow navbar-right">
                                 <li role="presentation" className="returnUpdate"><a
                                     onClick={this.returnForRevision}
                                     className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
@@ -557,7 +560,7 @@ var UpdateEntry = React.createClass({
                 default:
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
-                            <ul className="nav nav-pills bottomRow navbar-right">
+                            <ul className="nav-pills bottomRow navbar-right">
                                 <li role="presentation" className="editUpdate"><a
                                     onClick={this.switchEdit}
                                     className="btn btn-default btn-xs">{i18n.edit_update}</a></li>
