@@ -136,7 +136,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     },
 
     baseSave: function(data, keepEditing, reloadPeriod) {
-        var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
+        var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', this.props.update.id);
         var thisApp = this;
         var success = function(response) {
             var update = response;
@@ -913,7 +913,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
     addNewUpdate: function(periodId) {
         this.setState({addingNewUpdate: true});
         var thisApp = this;
-        var url = endpoints.base_url + endpoints.updates;
+        var url = endpoints.base_url + endpoints.updates_and_comments;
         var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var data = JSON.stringify({
             'period': periodId,
