@@ -355,10 +355,6 @@ var UpdateEntry = React.createClass({
                         {checkbox}
                     </div>
                     <div className="col-xs-6">
-
-                {/* {i18n.current}: {this.props.selectedPeriod.actual_value} */}
-
-                        
                         {this.renderActualRelative()}
                     </div>
                 </div>

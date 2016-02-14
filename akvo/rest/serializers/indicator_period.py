@@ -7,7 +7,7 @@
 from rest_framework import serializers
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataSerializer
+from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer
 from akvo.rsr.models import IndicatorPeriod
 
 
@@ -21,7 +21,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
-    data = IndicatorPeriodDataSerializer(many=True, required=False, allow_add_remove=True)
+    data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False, allow_add_remove=True)
     percent_accomplishment = serializers.Field(source='percent_accomplishment')
 
     class Meta:

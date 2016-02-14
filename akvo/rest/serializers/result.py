@@ -7,7 +7,7 @@
 
 from akvo.rsr.models import Result
 
-from .indicator import IndicatorSerializer
+from .indicator import IndicatorFrameworkSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -19,7 +19,7 @@ class ResultSerializer(BaseRSRSerializer):
 
 class ResultsFrameworkSerializer(BaseRSRSerializer):
 
-    indicators = IndicatorSerializer(many=True, required=False, allow_add_remove=True)
+    indicators = IndicatorFrameworkSerializer(many=True, required=False, allow_add_remove=True)
 
     class Meta:
         model = Result
