@@ -498,19 +498,22 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     """
     Model for adding data to an indicator period.
     """
+    STATUS_NEW = unicode(_(u'new'))
     STATUS_DRAFT = unicode(_(u'draft'))
     STATUS_PENDING = unicode(_(u'pending approval'))
     STATUS_REVISION = unicode(_(u'return for revision'))
     STATUS_APPROVED = unicode(_(u'approved'))
 
+    STATUS_NEW_CODE = u'N'
     STATUS_DRAFT_CODE = u'D'
     STATUS_PENDING_CODE = u'P'
     STATUS_REVISION_CODE = u'R'
     STATUS_APPROVED_CODE = u'A'
 
-    STATUS_CODES_LIST = [STATUS_DRAFT_CODE, STATUS_PENDING_CODE, STATUS_REVISION_CODE,
-                         STATUS_APPROVED_CODE]
-    STATUSES_LABELS_LIST = [STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION, STATUS_APPROVED]
+    STATUS_CODES_LIST = [STATUS_NEW_CODE, STATUS_DRAFT_CODE, STATUS_PENDING_CODE,
+                         STATUS_REVISION_CODE, STATUS_APPROVED_CODE]
+    STATUSES_LABELS_LIST = [STATUS_NEW, STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION,
+                            STATUS_APPROVED]
     STATUSES = zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST)
 
     UPDATE_METHODS = (
@@ -525,7 +528,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     data = ValidXMLCharField(_(u'data'), max_length=300)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
-                               default='D')
+                               default=STATUS_NEW_CODE)
     text = ValidXMLTextField(_(u'text'), blank=True)
     photo = ImageField(_(u'photo'), blank=True, upload_to=image_path)
     file = models.FileField(_(u'file'), blank=True, upload_to=file_path)
@@ -649,7 +652,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Returns the display of the status.
         """
         try:
-            return dict(self.STATUSES)[self.status]
+            return dict(self.STATUSES)[self.status].capitalize()
         except KeyError:
             return u''
 

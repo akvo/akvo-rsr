@@ -163,7 +163,7 @@ rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_or
 
 rules.add_perm('rsr.add_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatorperioddata', is_rsr_admin)
+rules.add_perm('rsr.delete_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)

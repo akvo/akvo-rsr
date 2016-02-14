@@ -45,7 +45,7 @@ function apiCall(method, url, data, successCallback, retries) {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            var response = JSON.parse(xmlHttp.responseText);
+            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {
                     if (response.next !== null) {
@@ -253,7 +253,11 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         var updateId = this.props.update.id;
 
         if (this.editing()) {
-            removeEdit(updateId);
+            if (this.props.update.status === 'N') {
+                this.props.removeUpdate(updateId);
+            } else {
+                removeEdit(updateId);
+            }
         } else {
             addEdit(updateId);
         }
@@ -512,16 +516,29 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 case 'P':
                     return (
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)),
-                          React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve))
+                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                                React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                            )
                         )
                     );
                 default:
                     return (
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                          React.DOM.li( {role:"presentation", className:"cancelUpdate"}, React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)),
-                          React.DOM.li( {role:"presentation", className:"saveUpdate"}, React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)),
-                          React.DOM.li( {role:"presentation", className:"submitUpdate"}, React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval))
+                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
+                                React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval)
+                            )
                         )
                     );
             }
@@ -531,16 +548,15 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     if (isAdmin) {
                         return (
                             React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                React.DOM.li( {role:"presentation", className:"returnUpdate"}, React.DOM.a(
-                                    {onClick:this.returnForRevision,
-                                    className:"btn btn-default btn-xs"}, i18n.return_for_revision)
+                                React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
+                                    React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18n.return_for_revision)
                                 ),
-                                React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
-                                    {onClick:this.switchEdit,
-                                    className:"btn btn-default btn-xs"}, i18n.edit_update)),
-                                React.DOM.li( {role:"presentation", className:"approveUpdate"}, React.DOM.a(
-                                    {onClick:this.approve,
-                                    className:"btn btn-default btn-xs"}, i18n.approve))
+                                React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                                    React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                )
                             )
                         );
                     } else {
@@ -557,9 +573,9 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
                             React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                React.DOM.li( {role:"presentation", className:"editUpdate"}, React.DOM.a(
-                                    {onClick:this.switchEdit,
-                                    className:"btn btn-default btn-xs"}, i18n.edit_update))
+                                React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                )
                             )
                         );
                     } else {
@@ -616,6 +632,7 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
                             saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
                             saveFileInUpdate: thisList.props.saveFileInUpdate,
                             saveCommentInUpdate: thisList.props.saveCommentInUpdate,
+                            removeUpdate: thisList.props.removeUpdate,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             reloadPeriod: thisList.props.reloadPeriod,
@@ -720,6 +737,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
+                        removeUpdate: this.props.removeUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
@@ -970,6 +988,7 @@ var MainContent = React.createClass({displayName: 'MainContent',
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
+                        removeUpdate: this.props.removeUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         reloadPeriod: this.props.reloadPeriod,
                         lockPeriod: this.lockPeriod,
@@ -1442,6 +1461,17 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         }
     },
 
+    removeUpdate: function(updateId) {
+        var update = this.findUpdate(updateId);
+        var periodId = update.period;
+        var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
+        var thisApp = this;
+        var success = function() {
+            thisApp.reloadPeriod(periodId);
+        };
+        apiCall('DELETE', url, '', success);
+    },
+
     reloadPeriod: function(periodId) {
         var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
@@ -1529,6 +1559,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                                     savePeriodToIndicator: this.savePeriodToIndicator,
                                     saveFileInUpdate: this.saveFileInUpdate,
                                     saveCommentInUpdate: this.saveCommentInUpdate,
+                                    removeUpdate: this.removeUpdate,
                                     reloadPeriod: this.reloadPeriod,
                                     selectedIndicator: this.selectedIndicator(),
                                     selectedPeriod: this.selectedPeriod(),

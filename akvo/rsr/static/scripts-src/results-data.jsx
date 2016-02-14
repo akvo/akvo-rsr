@@ -45,7 +45,7 @@ function apiCall(method, url, data, successCallback, retries) {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            var response = JSON.parse(xmlHttp.responseText);
+            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {
                     if (response.next !== null) {
@@ -253,7 +253,11 @@ var UpdateEntry = React.createClass({
         var updateId = this.props.update.id;
 
         if (this.editing()) {
-            removeEdit(updateId);
+            if (this.props.update.status === 'N') {
+                this.props.removeUpdate(updateId);
+            } else {
+                removeEdit(updateId);
+            }
         } else {
             addEdit(updateId);
         }
@@ -512,16 +516,29 @@ var UpdateEntry = React.createClass({
                 case 'P':
                     return (
                         <ul className="nav-pills bottomRow navbar-right">
-                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a></li>
-                          <li role="presentation" className="approveUpdate"><a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a></li>
+                            <li role="presentation" className="cancelUpdate">
+                                <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                            </li>
+                            <li role="presentation" className="saveUpdate">
+                                <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                            </li>
+                            <li role="presentation" className="approveUpdate">
+                                <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                            </li>
                         </ul>
                     );
                 default:
                     return (
                         <ul className="nav-pills bottomRow navbar-right">
-                          <li role="presentation" className="cancelUpdate"><a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a></li>
-                          <li role="presentation" className="saveUpdate"><a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a></li>
-                          <li role="presentation" className="submitUpdate"><a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a></li>
+                            <li role="presentation" className="cancelUpdate">
+                                <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                            </li>
+                            <li role="presentation" className="saveUpdate">
+                                <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                            </li>
+                            <li role="presentation" className="submitUpdate">
+                                <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a>
+                            </li>
                         </ul>
                     );
             }
@@ -531,16 +548,15 @@ var UpdateEntry = React.createClass({
                     if (isAdmin) {
                         return (
                             <ul className="nav-pills bottomRow navbar-right">
-                                <li role="presentation" className="returnUpdate"><a
-                                    onClick={this.returnForRevision}
-                                    className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
+                                <li role="presentation" className="returnUpdate">
+                                    <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
                                 </li>
-                                <li role="presentation" className="editUpdate"><a
-                                    onClick={this.switchEdit}
-                                    className="btn btn-default btn-xs">{i18n.edit_update}</a></li>
-                                <li role="presentation" className="approveUpdate"><a
-                                    onClick={this.approve}
-                                    className="btn btn-default btn-xs">{i18n.approve}</a></li>
+                                <li role="presentation" className="editUpdate">
+                                    <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                </li>
+                                <li role="presentation" className="approveUpdate">
+                                    <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                                </li>
                             </ul>
                         );
                     } else {
@@ -557,9 +573,9 @@ var UpdateEntry = React.createClass({
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
                             <ul className="nav-pills bottomRow navbar-right">
-                                <li role="presentation" className="editUpdate"><a
-                                    onClick={this.switchEdit}
-                                    className="btn btn-default btn-xs">{i18n.edit_update}</a></li>
+                                <li role="presentation" className="editUpdate">
+                                    <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                </li>
                             </ul>
                         );
                     } else {
@@ -616,6 +632,7 @@ var UpdatesList = React.createClass({
                             saveUpdateToPeriod: thisList.props.saveUpdateToPeriod,
                             saveFileInUpdate: thisList.props.saveFileInUpdate,
                             saveCommentInUpdate: thisList.props.saveCommentInUpdate,
+                            removeUpdate: thisList.props.removeUpdate,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             reloadPeriod: thisList.props.reloadPeriod,
@@ -720,6 +737,7 @@ var IndicatorPeriodMain = React.createClass({
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
+                        removeUpdate: this.props.removeUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
@@ -970,6 +988,7 @@ var MainContent = React.createClass({
                         saveUpdateToPeriod: this.props.saveUpdateToPeriod,
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
+                        removeUpdate: this.props.removeUpdate,
                         selectedPeriod: this.props.selectedPeriod,
                         reloadPeriod: this.props.reloadPeriod,
                         lockPeriod: this.lockPeriod,
@@ -1442,6 +1461,17 @@ var ResultsApp = React.createClass({
         }
     },
 
+    removeUpdate: function(updateId) {
+        var update = this.findUpdate(updateId);
+        var periodId = update.period;
+        var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
+        var thisApp = this;
+        var success = function() {
+            thisApp.reloadPeriod(periodId);
+        };
+        apiCall('DELETE', url, '', success);
+    },
+
     reloadPeriod: function(periodId) {
         var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
@@ -1529,6 +1559,7 @@ var ResultsApp = React.createClass({
                                     savePeriodToIndicator: this.savePeriodToIndicator,
                                     saveFileInUpdate: this.saveFileInUpdate,
                                     saveCommentInUpdate: this.saveCommentInUpdate,
+                                    removeUpdate: this.removeUpdate,
                                     reloadPeriod: this.reloadPeriod,
                                     selectedIndicator: this.selectedIndicator(),
                                     selectedPeriod: this.selectedPeriod(),
