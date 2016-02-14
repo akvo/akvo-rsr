@@ -946,7 +946,7 @@ var MainContent = React.createClass({
     },
 
     basePeriodSave: function(periodId, data) {
-        var url = endpoints.base_url + endpoints.period.replace('{period}', periodId);
+        var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
         var success = function(response) {
             var period = response;
@@ -1274,6 +1274,12 @@ var ResultsApp = React.createClass({
                     result.indicators.push(indicator);
                 }
             }
+            for (var j = 0; j < thisApp.state.results.length; j++) {
+                var stateResult = thisApp.state.results[j];
+                if (stateResult.indicators === undefined) {
+                    stateResult.indicators = [];
+                }
+            }
             thisApp.forceUpdate();
             thisApp.loadPeriods();
         };
@@ -1293,6 +1299,15 @@ var ResultsApp = React.createClass({
                     indicator.periods.push(period);
                 }
             }
+            for (var j = 0; j < thisApp.state.results.length; j++) {
+                var stateResult = thisApp.state.results[j];
+                for (var k = 0; k < stateResult.indicators.length; k++) {
+                    var stateIndicator = stateResult.indicators[k];
+                    if (stateIndicator.periods === undefined) {
+                        stateIndicator.periods = [];
+                    }
+                }
+            }
             thisApp.forceUpdate();
             thisApp.loadDataUpdatesAndComments();
         };
@@ -1310,6 +1325,19 @@ var ResultsApp = React.createClass({
                     period.data = [update];
                 } else {
                     period.data.push(update);
+                }
+            }
+            for (var j = 0; j < thisApp.state.results.length; j++) {
+                var stateResult = thisApp.state.results[j];
+                for (var k = 0; k < stateResult.indicators.length; k++) {
+                    var stateIndicator = stateResult.indicators[k];
+                    for (var l = 0; l < stateIndicator.periods.length; l++) {
+                        var statePeriod = stateIndicator.periods[l];
+                        if (statePeriod.data === undefined) {
+                            console.log(statePeriod.id);
+                            statePeriod.data = [];
+                        }
+                    }
                 }
             }
             thisApp.forceUpdate();
