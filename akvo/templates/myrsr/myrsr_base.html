@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n bootstrap3 rules %}
+{% load i18n rules %}
 
 {% block maincontent %}
     {% has_perm 'rsr.project_management' user as can_manage_projects %}
@@ -38,7 +38,7 @@
 
     <div class="container">
         <div class="row">
-            {% block myrsr_main %}{% endblock %}
+            {% block myrsr_main %}{% endblock myrsr_main %}
         </div>
     </div>
-{% endblock %}
+{% endblock maincontent %}

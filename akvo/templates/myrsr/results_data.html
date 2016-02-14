@@ -1,8 +1,8 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load compressed i18n rsr_utils rsr_tags rules rsr_filters humanize markup_tags %}
+{% load compressed i18n %}
 
-{% block title %}{% trans 'MyRSR - My Results' %}{% endblock %}
+{% block title %}{% trans 'MyRSR - My Results' %}{% endblock title %}
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle"><span>{% trans 'Project' %}:</span> <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a></h4>
@@ -16,11 +16,9 @@
         {% endif %}
         <div id="results-framework"></div>
     {% endif %}
-{% endblock %}
+{% endblock myrsr_main %}
 
 {% block js %}
-    {{ block.super }}
-
     {# React #}
     <script src="https://fb.me/react-0.14.5.js"></script>
     <script src="https://fb.me/react-dom-0.14.5.js"></script>
@@ -30,30 +28,17 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "results_of_project": "/rest/v1/result/?format=json&project={{ project.pk }}",
-            "indicator": "/rest/v1/indicator/{indicator}/?format=json",
-            "indicators": "/rest/v1/indicator/?format=json",
             "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={{ project.pk }}",
-            "period": "/rest/v1/indicator_period/{period}/?format=json",
-            "periods": "/rest/v1/indicator_period/?format=json",
             "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={{ project.pk }}",
+            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={{ project.pk }}",
+            "period": "/rest/v1/indicator_period/{period}/?format=json",
+            "period_framework": "/rest/v1/indicator_period_framework/{period}/?format=json",
             "update": "/rest/v1/indicator_period_data/{update}/?format=json",
             "updates": "/rest/v1/indicator_period_data/?format=json",
-            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={{ project.pk }}",
-            "comment": "/rest/v1/indicator_period_data_comment/{comment}/?format=json",
             "comments": "/rest/v1/indicator_period_data_comment/?format=json",
-            "comments_of_project": "/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project={{ project.pk }}",
             "user": "/rest/v1/user/{{ user.pk }}/?format=json",
             "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
             "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
-        }
-    </script>
-
-    {# Initial settings #}
-    <script type="application/json" id="initial-settings">
-        {
-            "is_admin": {{ is_admin|yesno:"true,false" }},
-            "update_timeout": {{ update_timeout }},
-            "current_datetime": "{{ current_datetime|date:"c" }}"
         }
     </script>
 
@@ -108,4 +93,4 @@
         {% compressed_js 'results_data' %}
     {% endif %}
 
-{% endblock %}
+{% endblock js %}

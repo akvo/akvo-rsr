@@ -516,8 +516,6 @@ def results_data(request, project_id):
         'project': project,
         'user': user,
         'me_managers': me_managers.exists(),
-        'current_datetime': datetime.now(),
-        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 
     return render(request, 'myrsr/results_data.html', context)

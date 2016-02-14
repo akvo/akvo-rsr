@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var csrftoken, endpoints, i18n, initialSettings, isAdmin, permissions, user;
+var csrftoken, endpoints, i18n, isAdmin, permissions, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -25,11 +25,6 @@ function getCookie(name) {
 csrftoken = getCookie('csrftoken');
 
 /** General helper functions **/
-function isInt(value) {
-  return !isNaN(value) &&
-         parseInt(Number(value)) == value &&
-         !isNaN(parseInt(value, 10));
-}
 
 function showGeneralError(message) {
     var errorNode = document.createElement("div");
@@ -143,25 +138,18 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     baseSave: function(data, keepEditing, reloadPeriod) {
         var url = endpoints.base_url + endpoints.update.replace('{update}', this.props.update.id);
         var thisApp = this;
-
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var update = JSON.parse(xmlHttp.responseText);
-                var periodId = thisApp.props.selectedPeriod.id;
-                thisApp.props.saveUpdateToPeriod(update, periodId);
-                if (!keepEditing) {
-                    thisApp.props.removeEditingData(update.id);
-                }
-                if (reloadPeriod) {
-                    thisApp.props.reloadPeriod(periodId);
-                }
+        var success = function(response) {
+            var update = response;
+            var periodId = thisApp.props.selectedPeriod.id;
+            thisApp.props.saveUpdateToPeriod(update, periodId);
+            if (!keepEditing) {
+                thisApp.props.removeEditingData(update.id);
+            }
+            if (reloadPeriod) {
+                thisApp.props.reloadPeriod(periodId);
             }
         };
-        xmlHttp.open("PATCH", url, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify(data));
+        apiCall('PATCH', url, JSON.stringify(data), success);
     },
 
     saveUpdate: function() {
@@ -229,7 +217,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 thisApp.props.saveFileInUpdate(newFile, updateId, type);
             }
         };
-
         xmlHttp.send(formData);
     },
 
@@ -245,25 +232,19 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     addComment: function() {
         var url = endpoints.base_url + endpoints.comments;
-        var thisApp = this;
-
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
-                var comment = JSON.parse(xmlHttp.responseText);
-                var updateId = thisApp.props.update.id;
-                thisApp.props.saveCommentInUpdate(comment, updateId);
-                thisApp.setState({comment: ''});
-            }
-        };
-        xmlHttp.open("POST", url, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
+        var data = JSON.stringify({
             'data': this.props.update.id,
             'user': user.id,
             'comment': this.state.comment
-        }));
+        });
+        var thisApp = this;
+        var success = function(response) {
+            var comment = response;
+            var updateId = thisApp.props.update.id;
+            thisApp.props.saveCommentInUpdate(comment, updateId);
+            thisApp.setState({comment: ''});
+        };
+        apiCall('POST', url, data, success);
     },
 
     switchEdit: function() {
@@ -931,43 +912,31 @@ var MainContent = React.createClass({displayName: 'MainContent',
 
     addNewUpdate: function(periodId) {
         this.setState({addingNewUpdate: true});
-        var xmlHttp = new XMLHttpRequest();
-        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var thisApp = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 201) {
-                var update = JSON.parse(xmlHttp.responseText);
-                thisApp.props.saveUpdateToPeriod(update, periodId);
-                thisApp.setState({addingNewUpdate: false});
-            }
-        };
-        xmlHttp.open("POST", endpoints.base_url + endpoints.updates, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify({
+        var url = endpoints.base_url + endpoints.updates;
+        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
+        var data = JSON.stringify({
             'period': periodId,
             'user': user.id,
             'data': actualValue,
             'period_actual_value': actualValue
-        }));
+        });
+        var success = function(response) {
+            thisApp.props.saveUpdateToPeriod(response, periodId);
+            thisApp.setState({addingNewUpdate: false});
+        };
+        apiCall('POST', url, data, success);
     },
 
     basePeriodSave: function(periodId, data) {
         var url = endpoints.base_url + endpoints.period.replace('{period}', periodId);
         var thisApp = this;
-
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var period = JSON.parse(xmlHttp.responseText);
-                var indicatorId = period.indicator;
-                thisApp.props.savePeriodToIndicator(period, indicatorId);
-            }
+        var success = function(response) {
+            var period = response;
+            var indicatorId = period.indicator;
+            thisApp.props.savePeriodToIndicator(period, indicatorId);
         };
-        xmlHttp.open("PATCH", url, true);
-        xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xmlHttp.send(JSON.stringify(data));
+        apiCall('PATCH', url, JSON.stringify(data), success);
     },
 
     lockPeriod: function(periodId) {
@@ -1475,19 +1444,14 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     reloadPeriod: function(periodId) {
-        var url = endpoints.base_url + endpoints.period.replace('{period}', periodId);
+        var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
-
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                var period = JSON.parse(xmlHttp.responseText);
-                var indicatorId = period.indicator;
-                thisApp.savePeriodToIndicator(period, indicatorId);
-            }
+        var success = function(response) {
+            var period = response;
+            var indicatorId = period.indicator;
+            thisApp.savePeriodToIndicator(period, indicatorId);
         };
-        xmlHttp.open("GET", url, true);
-        xmlHttp.send();
+        apiCall('GET', url, '', success);
     },
 
     selectResult: function(resultId) {
@@ -1637,10 +1601,9 @@ function getUserData() {
 
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
-    // Retrieve data endpoints, translations and page settings
+    // Retrieve data endpoints and translations
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
-    initialSettings = JSON.parse(document.getElementById('initial-settings').innerHTML);
 
     getUserData();
     setPermissions();
