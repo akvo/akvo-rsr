@@ -117,9 +117,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/projects/$',
         'akvo.rsr.views.my_rsr.my_projects', name='my_projects'),
 
-    url(r'^myrsr/project_editor/$',
-        'akvo.rsr.views.my_rsr.project_editor_select', name='project_editor_select'),
-
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         'akvo.rsr.views.my_rsr.project_editor', name='project_editor'),
 
@@ -130,10 +127,10 @@ urlpatterns = i18n_patterns(
         'akvo.rsr.views.my_rsr.my_reports', name='my_reports'),
 
     url(r'^myrsr/results/$',
-        'akvo.rsr.views.my_rsr.results_data_select', name='results_data_select'),
+        'akvo.rsr.views.my_rsr.my_results_select', name='my_results_select'),
 
     url(r'^myrsr/results/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.results_data', name='results_data'),
+        'akvo.rsr.views.my_rsr.my_results', name='my_results'),
 
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),

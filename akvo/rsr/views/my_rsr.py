@@ -469,7 +469,7 @@ def user_management(request):
 
 
 @login_required
-def results_data_select(request):
+def my_results_select(request):
     """
     My results section without a project selected. Only accessible to M&E Managers, Admins and
     Project editors.
@@ -492,11 +492,11 @@ def results_data_select(request):
         'projects': projects.filter(is_impact_project=True),
     }
 
-    return render(request, 'myrsr/select_project.html', context)
+    return render(request, 'myrsr/my_results_select.html', context)
 
 
 @login_required
-def results_data(request, project_id):
+def my_results(request, project_id):
     """
     My results section. Only accessible to M&E Managers, Admins and Project editors.
 
@@ -518,4 +518,4 @@ def results_data(request, project_id):
         'me_managers': me_managers.exists(),
     }
 
-    return render(request, 'myrsr/results_data.html', context)
+    return render(request, 'myrsr/my_results.html', context)

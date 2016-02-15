@@ -65,7 +65,7 @@
                 {% if can_edit_project %}
                   <a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a>
                   {% if project.is_impact_project %}
-                    <a href="{% url 'results_data' project.pk %}">{% trans 'Results data' %}</a>
+                    <a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a>
                   {% endif %}
                 {% endif %}
                 {% if project.is_published and project.is_public %}
