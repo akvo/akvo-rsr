@@ -514,6 +514,8 @@ def my_results(request, project_id):
 
     context = {
         'project': project,
+        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
+        'child_projects_ids': [child_project.id for child_project in project.children()],
         'user': user,
         'me_managers': me_managers.exists(),
     }

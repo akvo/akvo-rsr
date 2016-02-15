@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var csrftoken, endpoints, i18n, isAdmin, permissions, user;
+var csrftoken, endpoints, i18n, isAdmin, permissions, projectIds, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -981,6 +981,18 @@ var MainContent = React.createClass({displayName: 'MainContent',
         }
     },
 
+    renderParentIndicator: function() {
+        if (this.props.selectedResult.parent_result !== null) {
+            return (
+                React.DOM.div( {className:"row"}, "Parent exists!!")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    },
+
     render: function() {
         if (this.props.selectedPeriod !== null) {
             return (
@@ -1030,7 +1042,8 @@ var MainContent = React.createClass({displayName: 'MainContent',
                         savePeriodToIndicator: this.props.savePeriodToIndicator,
                         lockPeriod: this.lockPeriod,
                         unlockPeriod: this.unlockPeriod
-                    })
+                    }),
+                    this.renderParentIndicator()
                 )
             );
         } else {
@@ -1247,33 +1260,55 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
             selectedIndicatorId: defaultIndicator,
             selectedPeriodId: defaultPeriod,
             editingData: [],
-            results: []
+            results: [],
+            parentResults: [],
+            childResults: []
         };
     },
 
     componentDidMount: function() {
-        this.loadResults();
+        this.loadResults('self', projectIds.project_id);
+        for (var i = 0; i < projectIds.parent_projects_ids.length; i++) {
+            this.loadResults('parent', projectIds.parent_projects_ids[i]);
+        }
+        for (var j = 0; j < projectIds.child_projects_ids.length; j++) {
+            this.loadResults('children', projectIds.child_projects_ids[j]);
+        }
     },
 
-    loadResults: function() {
+    loadResults: function(relation, projectId) {
         var thisApp = this;
         var success = function(response) {
-            thisApp.setState({
-                'results': response.results,
-                'loadingResults': false
-            });
-            thisApp.loadIndicators();
+            switch (relation) {
+                case 'self':
+                    thisApp.setState({
+                        'results': thisApp.state.results.concat(response.results),
+                        'loadingResults': false
+                    });
+                    break;
+                case 'parent':
+                    thisApp.setState({
+                        'parentResults': thisApp.state.parentResults.concat(response.results)
+                    });
+                    break;
+                case 'children':
+                    thisApp.setState({
+                        'childResults': thisApp.state.childResults.concat(response.results)
+                    });
+                    break;
+            }
+            thisApp.loadIndicators(relation, projectId);
         };
-        apiCall('GET', endpoints.base_url + endpoints.results_of_project, '', success);
+        apiCall('GET', endpoints.base_url + endpoints.results_of_project.replace('{project}', projectId), '', success);
     },
 
-    loadIndicators: function() {
+    loadIndicators: function(relation, projectId) {
         var thisApp = this;
         var success = function(response) {
             var indicators = response.results;
             for (var i = 0; i < indicators.length; i++) {
                 var indicator = indicators[i];
-                var result = thisApp.findResult(indicator.result);
+                var result = thisApp.findResult(relation, indicator.result);
                 if (result.indicators === undefined) {
                     result.indicators = [indicator];
                 } else {
@@ -1287,18 +1322,18 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                 }
             }
             thisApp.forceUpdate();
-            thisApp.loadPeriods();
+            thisApp.loadPeriods(relation, projectId);
         };
-        apiCall('GET', endpoints.base_url + endpoints.indicators_of_project, '', success);
+        apiCall('GET', endpoints.base_url + endpoints.indicators_of_project.replace('{project}', projectId), '', success);
     },
 
-    loadPeriods: function() {
+    loadPeriods: function(relation, projectId) {
         var thisApp = this;
         var success = function(response) {
             var periods = response.results;
             for (var i = 0; i < periods.length; i++) {
                 var period = periods[i];
-                var indicator = thisApp.findIndicator(period.indicator);
+                var indicator = thisApp.findIndicator(relation, period.indicator);
                 if (indicator.periods === undefined) {
                     indicator.periods = [period];
                 } else {
@@ -1315,18 +1350,18 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                 }
             }
             thisApp.forceUpdate();
-            thisApp.loadDataUpdatesAndComments();
+            thisApp.loadDataUpdatesAndComments(relation, projectId);
         };
-        apiCall('GET', endpoints.base_url + endpoints.periods_of_project, '', success);
+        apiCall('GET', endpoints.base_url + endpoints.periods_of_project.replace('{project}', projectId), '', success);
     },
 
-    loadDataUpdatesAndComments: function() {
+    loadDataUpdatesAndComments: function(relation, projectId) {
         var thisApp = this;
         var success = function(response) {
             var updates = response.results;
             for (var i = 0; i < updates.length; i++) {
                 var update = updates[i];
-                var period = thisApp.findPeriod(update.period);
+                var period = thisApp.findPeriod(relation, update.period);
                 if (period.data === undefined) {
                     period.data = [update];
                 } else {
@@ -1340,7 +1375,6 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                     for (var l = 0; l < stateIndicator.periods.length; l++) {
                         var statePeriod = stateIndicator.periods[l];
                         if (statePeriod.data === undefined) {
-                            console.log(statePeriod.id);
                             statePeriod.data = [];
                         }
                     }
@@ -1348,12 +1382,24 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
             }
             thisApp.forceUpdate();
         };
-        apiCall('GET', endpoints.base_url + endpoints.updates_and_comments_of_project, '', success);
+        apiCall('GET', endpoints.base_url + endpoints.updates_and_comments_of_project.replace('{project}', projectId), '', success);
     },
 
-    findResult: function(resultId) {
-        for (var i = 0; i < this.state.results.length; i++) {
-            var result = this.state.results[i];
+    resultsBasedOnRelation: function(relation) {
+        switch (relation) {
+            case 'self':
+                return this.state.results;
+            case 'parent':
+                return this.state.parentResults;
+            case 'children':
+                return this.state.childResults;
+        }
+    },
+
+    findResult: function(relation, resultId) {
+        var results = this.resultsBasedOnRelation(relation);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
             if (result.id == resultId) {
                 return result;
             }
@@ -1361,9 +1407,10 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         return null;
     },
 
-    findIndicator: function(indicatorId) {
-        for (var i = 0; i < this.state.results.length; i++) {
-            var result = this.state.results[i];
+    findIndicator: function(relation, indicatorId) {
+        var results = this.resultsBasedOnRelation(relation);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
             if (result.indicators !== undefined) {
                 for (var j = 0; j < result.indicators.length; j++) {
                     var indicator = result.indicators[j];
@@ -1376,9 +1423,10 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         return null;
     },
 
-    findPeriod: function(periodId) {
-        for (var i = 0; i < this.state.results.length; i++) {
-            var result = this.state.results[i];
+    findPeriod: function(relation, periodId) {
+        var results = this.resultsBasedOnRelation(relation);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
             if (result.indicators !== undefined) {
                 for (var j = 0; j < result.indicators.length; j++) {
                     var indicator = result.indicators[j];
@@ -1396,9 +1444,10 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         return null;
     },
 
-    findUpdate: function(updateId) {
-        for (var i = 0; i < this.state.results.length; i++) {
-            var result = this.state.results[i];
+    findUpdate: function(relation, updateId) {
+        var results = this.resultsBasedOnRelation(relation);
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
             if (result.indicators !== undefined) {
                 for (var j = 0; j < result.indicators.length; j++) {
                     var indicator = result.indicators[j];
@@ -1422,7 +1471,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     savePeriodToIndicator: function(period, indicatorId) {
-        var indicator = this.findIndicator(indicatorId);
+        var indicator = this.findIndicator('self', indicatorId);
 
         if (indicator !== null) {
             var dataFound = null;
@@ -1445,7 +1494,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     saveUpdateToPeriod: function(update, periodId) {
-        var period = this.findPeriod(periodId);
+        var period = this.findPeriod('self', periodId);
 
         if (period !== null) {
             var dataFound = null;
@@ -1473,7 +1522,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     saveFileInUpdate: function(file, updateId, fileType) {
-        var update = this.findUpdate(updateId);
+        var update = this.findUpdate('self', updateId);
 
         if (update !== null) {
             if (fileType === 'photo') {
@@ -1487,7 +1536,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     saveCommentInUpdate: function(comment, updateId) {
-        var update = this.findUpdate(updateId);
+        var update = this.findUpdate('self', updateId);
 
         if (update !== null) {
             update.comments.push(comment);
@@ -1496,7 +1545,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     removeUpdate: function(updateId) {
-        var update = this.findUpdate(updateId);
+        var update = this.findUpdate('self', updateId);
         var periodId = update.period;
         var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
         var thisApp = this;
@@ -1539,15 +1588,15 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
     },
 
     selectedResult: function() {
-        return this.findResult(this.state.selectedResultId);
+        return this.findResult('self', this.state.selectedResultId);
     },
 
     selectedIndicator: function() {
-        return this.findIndicator(this.state.selectedIndicatorId);
+        return this.findIndicator('self', this.state.selectedIndicatorId);
     },
 
     selectedPeriod: function() {
-        return this.findPeriod(this.state.selectedPeriodId);
+        return this.findPeriod('self', this.state.selectedPeriodId);
     },
 
     addEditingData: function(updateId) {
@@ -1595,6 +1644,7 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
                                     saveCommentInUpdate: this.saveCommentInUpdate,
                                     removeUpdate: this.removeUpdate,
                                     reloadPeriod: this.reloadPeriod,
+                                    selectedResult: this.selectedResult(),
                                     selectedIndicator: this.selectedIndicator(),
                                     selectedPeriod: this.selectedPeriod(),
                                     selectPeriod: this.selectPeriod
@@ -1665,9 +1715,10 @@ function getUserData() {
 
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
-    // Retrieve data endpoints and translations
+    // Retrieve data endpoints, translations and project IDs
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
     getUserData();
     setPermissions();
