@@ -511,7 +511,11 @@ var UpdateEntry = React.createClass({
     },
 
     renderFooter: function() {
-        if (this.editing()) {
+        if (this.props.selectedPeriod.locked) {
+            return (
+                <span />
+            );
+        } else if (this.editing()) {
             switch(this.props.update.status) {
                 case 'P':
                     return (
