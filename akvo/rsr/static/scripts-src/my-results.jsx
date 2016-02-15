@@ -669,7 +669,7 @@ var IndicatorPeriodMain = React.createClass({
     },
 
     unlockPeriod: function() {
-        this.props.unlockPeriod(this.props.selectedPeriod.id);
+        this.props.unlockPeriod('self', this.props.selectedPeriod.id);
     },
 
     renderNewUpdate: function() {
@@ -764,11 +764,29 @@ var IndicatorPeriodEntry = React.createClass({
     },
 
     lockPeriod: function() {
-        this.props.lockPeriod(this.props.period.id);
+        var relation;
+        if (this.props.parent) {
+            relation = 'parent';
+        } else if (this.props.child) {
+            relation = 'children';
+        } else {
+            relation = 'self';
+        }
+
+        this.props.lockPeriod(relation, this.props.period.id);
     },
 
     unlockPeriod: function() {
-        this.props.unlockPeriod(this.props.period.id);
+        var relation;
+        if (this.props.parent) {
+            relation = 'parent';
+        } else if (this.props.child) {
+            relation = 'children';
+        } else {
+            relation = 'self';
+        }
+
+        this.props.unlockPeriod(relation, this.props.period.id);
     },
 
     switchPeriod: function() {
@@ -791,25 +809,50 @@ var IndicatorPeriodEntry = React.createClass({
                 </td>
             );
         } else {
-            return (
-                <td className="period-td">
-                    <a onClick={this.switchPeriod}>
-                        {periodDisplay}
-                    </a>
-                </td>
-            );
+            if (this.props.parent || this.props.child) {
+                var relation = this.props.parent ? 'parent' : 'children';
+                var projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                return (
+                    <td className="period-td">
+                        <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
+                            {periodDisplay}
+                        </a>
+                    </td>
+                );
+            } else {
+                return (
+                    <td className="period-td">
+                        <a onClick={this.switchPeriod}>
+                            {periodDisplay}
+                        </a>
+                    </td>
+                );
+            }
         }
     },
 
     renderActions: function() {
+        var relation, projectId;
+
         if (isAdmin) {
             switch(this.props.period.locked) {
                 case false:
-                    return (
-                        <td className="actions-td">
-                            <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
-                        </td>
-                    );
+                    if (this.props.parent || this.props.child) {
+                        relation = this.props.parent ? 'parent' : 'children';
+                        projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                        return (
+                            <td className="actions-td">
+                                <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
+                            </td>
+                        );
+                    } else {
+                        return (
+                            <td className="actions-td">
+                                <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
+                            </td>
+                        );
+                    }
+                    break;
                 default:
                     return (
                         <td className="actions-td">
@@ -820,11 +863,22 @@ var IndicatorPeriodEntry = React.createClass({
         } else {
             switch(this.props.period.locked) {
                 case false:
-                    return (
-                        <td className="actions-td">
-                            <a onClick={this.switchPeriod}>{i18n.update}</a>
-                        </td>
-                    );
+                    if (this.props.parent || this.props.child) {
+                        relation = this.props.parent ? 'parent' : 'children';
+                        projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                        return (
+                            <td className="actions-td">
+                                <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a>
+                            </td>
+                        );
+                    } else {
+                        return (
+                            <td className="actions-td">
+                                <a onClick={this.switchPeriod}>{i18n.update}</a>
+                            </td>
+                        );
+                    }
+                    break;
                 default:
                     return (
                         <td className="actions-td">
@@ -876,6 +930,30 @@ var IndicatorPeriodList = React.createClass({
         return this.props.selectedIndicator.periods.sort(compare);
     },
 
+    renderBaseline: function() {
+        var baselineYear = this.props.selectedIndicator.baseline_year,
+            baselineValue = this.props.selectedIndicator.baseline_value;
+
+        if (!(baselineYear === null && baselineValue === '')) {
+            return (
+                <div className="baseline">
+                    <div className="baseline-year">
+                        {i18n.baseline_year}
+                        <span>{baselineYear}</span>
+                    </div>
+                    <div className="baseline-value">
+                        {i18n.baseline_value}
+                        <span>{baselineValue}</span>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
+    },
+
     render: function() {
         var thisList = this,
             periods;
@@ -886,12 +964,16 @@ var IndicatorPeriodList = React.createClass({
                     <tbody className="indicator-period bg-transition" key={period.id}>
                         {React.createElement(IndicatorPeriodEntry, {
                             period: period,
+                            selectedIndicator: thisList.props.selectedIndicator,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             addNewUpdate: thisList.props.addNewUpdate,
                             savePeriodToIndicator: thisList.props.savePeriodToIndicator,
                             lockPeriod: thisList.props.lockPeriod,
-                            unlockPeriod: thisList.props.unlockPeriod
+                            unlockPeriod: thisList.props.unlockPeriod,
+                            parent: thisList.props.parent,
+                            child: thisList.props.child,
+                            findProjectOfResult: thisList.props.findProjectOfResult
                         })}
                     </tbody>
                 );
@@ -907,9 +989,19 @@ var IndicatorPeriodList = React.createClass({
             </tbody>;
         }
 
+        var relatedIndication;
+        if (this.props.parent) {
+            relatedIndication = ' | ' + i18n.parent_project;
+        } else if (this.props.child) {
+            relatedIndication = ' | ' + i18n.child_project;
+        } else {
+            relatedIndication = '';
+        }
+
         return (
             <div className="indicator-period-list">
-                <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
+                <h4 className="indicator-periods-title">{i18n.indicator_periods}{relatedIndication}</h4>
+                {this.renderBaseline()}
                 <table className="table table-responsive">
                     <thead>
                         <tr>
@@ -951,46 +1043,84 @@ var MainContent = React.createClass({
         apiCall('POST', url, data, success);
     },
 
-    basePeriodSave: function(periodId, data) {
+    basePeriodSave: function(relation, periodId, data) {
         var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
         var success = function(response) {
             var period = response;
             var indicatorId = period.indicator;
-            thisApp.props.savePeriodToIndicator(period, indicatorId);
+            thisApp.props.savePeriodToIndicator(relation, period, indicatorId);
         };
         apiCall('PATCH', url, JSON.stringify(data), success);
     },
 
-    lockPeriod: function(periodId) {
-        this.basePeriodSave(periodId, {locked: true});
+    lockPeriod: function(relation, periodId) {
+        this.basePeriodSave(relation, periodId, {locked: true});
     },
 
-    unlockPeriod: function(periodId) {
-        this.basePeriodSave(periodId, {locked: false});
+    unlockPeriod: function(relation, periodId) {
+        this.basePeriodSave(relation, periodId, {locked: false});
     },
 
     showMeasure: function() {
         switch(this.props.selectedIndicator.measure) {
             case "1":
-                return i18n.unit;
+                return ' (' + i18n.unit + ')';
             case "2":
-                return i18n.percentage;
+                return ' (' + i18n.percentage + ')';
             default:
                 return "";
         }
     },
 
     renderParentIndicator: function() {
-        if (this.props.selectedResult.parent_result !== null) {
+        if (this.props.selectedIndicatorParent !== null) {
             return (
-                <div className="row">Parent exists!!</div>
+                <div>
+                    {React.createElement(IndicatorPeriodList, {
+                        selectedIndicator: this.props.selectedIndicatorParent,
+                        selectedPeriod: this.props.selectedPeriod,
+                        selectPeriod: this.props.selectPeriod,
+                        addNewUpdate: this.addNewUpdate,
+                        savePeriodToIndicator: this.props.savePeriodToIndicator,
+                        lockPeriod: this.lockPeriod,
+                        unlockPeriod: this.unlockPeriod,
+                        parent: true,
+                        child: false,
+                        findProjectOfResult: this.props.findProjectOfResult
+                    })}
+                </div>
             );
         } else {
             return (
                 <span />
             );
         }
+    },
+
+    renderChildIndicators: function() {
+        var thisList = this;
+        var indicatorEntries = this.props.selectedIndicatorChildren.map(function (indicator) {
+            return (
+                <div key={indicator.id}>
+                    {React.createElement(IndicatorPeriodList, {
+                        selectedIndicator: indicator,
+                        selectedPeriod: thisList.props.selectedPeriod,
+                        selectPeriod: thisList.props.selectPeriod,
+                        addNewUpdate: thisList.addNewUpdate,
+                        savePeriodToIndicator: thisList.props.savePeriodToIndicator,
+                        lockPeriod: thisList.lockPeriod,
+                        unlockPeriod: thisList.unlockPeriod,
+                        parent: false,
+                        child: true,
+                        findProjectOfResult: thisList.props.findProjectOfResult
+                    })}
+                </div>
+            );
+        });
+        return (
+            <div>{indicatorEntries}</div>
+        );
     },
 
     render: function() {
@@ -1018,21 +1148,10 @@ var MainContent = React.createClass({
             return (
                 <div className="indicator opacity-transition">
                     <h4 className="indicator-title">
-                        {this.props.selectedIndicator.title}
-                        ({this.showMeasure()})
+                        {this.props.selectedIndicator.title}{this.showMeasure()}
                     </h4>
                     <div className="indicator-description">
                         {this.props.selectedIndicator.description}
-                    </div>
-                    <div className="baseline">
-                        <div className="baseline-year">
-                            {i18n.baseline_year}
-                            <span>{this.props.selectedIndicator.baseline_year}</span>
-                        </div> 
-                        <div className="baseline-value">
-                            {i18n.baseline_value}
-                            <span>{this.props.selectedIndicator.baseline_value}</span>
-                        </div>
                     </div>
                     {React.createElement(IndicatorPeriodList, {
                         selectedIndicator: this.props.selectedIndicator,
@@ -1041,9 +1160,13 @@ var MainContent = React.createClass({
                         addNewUpdate: this.addNewUpdate,
                         savePeriodToIndicator: this.props.savePeriodToIndicator,
                         lockPeriod: this.lockPeriod,
-                        unlockPeriod: this.unlockPeriod
+                        unlockPeriod: this.unlockPeriod,
+                        parent: false,
+                        child: false,
+                        findProjectOfResult: this.props.findProjectOfResult
                     })}
                     {this.renderParentIndicator()}
+                    {this.renderChildIndicators()}
                 </div>
             );
         } else {
@@ -1396,6 +1519,11 @@ var ResultsApp = React.createClass({
         }
     },
 
+    findProjectOfResult: function(relation, resultId) {
+        var result = this.findResult(relation, resultId);
+        return result.project;
+    },
+
     findResult: function(relation, resultId) {
         var results = this.resultsBasedOnRelation(relation);
         for (var i = 0; i < results.length; i++) {
@@ -1470,8 +1598,8 @@ var ResultsApp = React.createClass({
         return null;
     },
 
-    savePeriodToIndicator: function(period, indicatorId) {
-        var indicator = this.findIndicator('self', indicatorId);
+    savePeriodToIndicator: function(relation, period, indicatorId) {
+        var indicator = this.findIndicator(relation, indicatorId);
 
         if (indicator !== null) {
             var dataFound = null;
@@ -1561,7 +1689,7 @@ var ResultsApp = React.createClass({
         var success = function(response) {
             var period = response;
             var indicatorId = period.indicator;
-            thisApp.savePeriodToIndicator(period, indicatorId);
+            thisApp.savePeriodToIndicator('self', period, indicatorId);
         };
         apiCall('GET', url, '', success);
     },
@@ -1587,12 +1715,75 @@ var ResultsApp = React.createClass({
         }
     },
 
-    selectedResult: function() {
-        return this.findResult('self', this.state.selectedResultId);
+    selectedResult: function(relation) {
+        var selected;
+        switch (relation) {
+            case 'self':
+                return this.findResult(relation, this.state.selectedResultId);
+            case 'parent':
+                selected = this.selectedResult('self');
+                if (selected !== null && selected.parent_result !== null) {
+                    return this.findResult(relation, selected.parent_result);
+                }
+                return null;
+            case 'children':
+                // Returns a list instead
+                var childResults = [];
+                selected = this.selectedResult('self');
+                if (selected !== null) {
+                    for (var i = 0; i < this.state.childResults.length; i++) {
+                        var childResult = this.state.childResults[i];
+                        if (childResult.parent_result === selected.id) {
+                            childResults.push(childResult);
+                        }
+                    }
+                }
+                return childResults;
+        }
     },
 
-    selectedIndicator: function() {
-        return this.findIndicator('self', this.state.selectedIndicatorId);
+    selectedIndicator: function(relation) {
+        var selected, selectedResult;
+        switch (relation) {
+            case 'self':
+                return this.findIndicator('self', this.state.selectedIndicatorId);
+            case 'parent':
+                selected = this.selectedIndicator('self');
+                if (selected !== null) {
+                    selectedResult = this.findResult('self', selected.result);
+                    if (selectedResult.parent_result !== null) {
+                        var selectedResultParent = this.findResult(relation, selectedResult.parent_result);
+                        if (selectedResultParent !== null && selectedResultParent.indicators !== undefined) {
+                            for (var i = 0; i < selectedResultParent.indicators.length; i++) {
+                                var selectedIndicatorParent = selectedResultParent.indicators[i];
+                                if (selectedIndicatorParent.title === selected.title) {
+                                    return selectedIndicatorParent;
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            case 'children':
+                // Returns a list instead
+                var childIndicators = [];
+                selected = this.selectedIndicator('self');
+                if (selected !== null) {
+                    selectedResult = this.findResult('self', selected.result);
+                    for (var j = 0; j < this.state.childResults.length; j++) {
+                        var childResult = this.state.childResults[j];
+                        if (childResult.parent_result === selectedResult.id && childResult.indicators !== undefined) {
+                            for (var k = 0; k < childResult.indicators.length; k++){
+                                var childIndicator = childResult.indicators[k];
+                                if (childIndicator.title === selected.title) {
+                                    childIndicators.push(childIndicator);
+                                }
+                            }
+                        }
+                    }
+                }
+                return childIndicators;
+        }
     },
 
     selectedPeriod: function() {
@@ -1624,8 +1815,8 @@ var ResultsApp = React.createClass({
                                 SideBar, {
                                     results: this.state.results,
                                     loadingResults: this.state.loadingResults,
-                                    selectedResult: this.selectedResult(),
-                                    selectedIndicator: this.selectedIndicator(),
+                                    selectedResult: this.selectedResult('self'),
+                                    selectedIndicator: this.selectedIndicator('self'),
                                     selectResult: this.selectResult,
                                     selectIndicator: this.selectIndicator,
                                     selectPeriod: this.selectPeriod
@@ -1644,10 +1835,12 @@ var ResultsApp = React.createClass({
                                     saveCommentInUpdate: this.saveCommentInUpdate,
                                     removeUpdate: this.removeUpdate,
                                     reloadPeriod: this.reloadPeriod,
-                                    selectedResult: this.selectedResult(),
-                                    selectedIndicator: this.selectedIndicator(),
+                                    selectedIndicator: this.selectedIndicator('self'),
+                                    selectedIndicatorParent: this.selectedIndicator('parent'),
+                                    selectedIndicatorChildren: this.selectedIndicator('children'),
                                     selectedPeriod: this.selectedPeriod(),
-                                    selectPeriod: this.selectPeriod
+                                    selectPeriod: this.selectPeriod,
+                                    findProjectOfResult: this.findProjectOfResult
                                 }
                             )}
                         </div>
