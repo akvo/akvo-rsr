@@ -153,11 +153,13 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     },
 
     saveUpdate: function() {
+        var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
         this.baseSave({
             'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
-            'relative_data': this.state.isRelative
+            'relative_data': this.state.isRelative,
+            'status': status
         }, false, false);
     },
 
