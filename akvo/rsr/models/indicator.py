@@ -634,10 +634,11 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
             # Don't allow to approve an update that has a different actual value of the period
             elif self.status == self.STATUS_APPROVED_CODE and \
-                    self.period_actual_value != self.period.actual_value:
+                    str(self.period_actual_value) != str(self.period.actual):
                 validation_errors['period_actual_value'] = unicode(
-                    _(u'The actual value of the period has changed, please save the update first '
-                      u'before approving it')
+                    _(u'The actual value of the period has changed (from {} to {}), please save '
+                      u'the update first before approving it'.format(self.period_actual_value,
+                                                                     str(self.period.actual)))
                 )
 
             # Don't allow for the indicator period to change
