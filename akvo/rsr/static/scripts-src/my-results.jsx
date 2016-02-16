@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var csrftoken, endpoints, i18n, isAdmin, permissions, projectIds, user;
+var csrftoken, endpoints, i18n, isAdmin, months, permissions, projectIds, user;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -91,13 +91,43 @@ function apiCall(method, url, data, successCallback, retries) {
     xmlHttp.send(data);
 }
 
+function getDateDescription(month) {
+    switch (month) {
+        case 0:
+            return months.january;
+        case 1:
+            return months.february;
+        case 2:
+            return months.march;
+        case 3:
+            return months.april;
+        case 4:
+            return months.may;
+        case 5:
+            return months.june;
+        case 6:
+            return months.july;
+        case 7:
+            return months.august;
+        case 8:
+            return months.september;
+        case 9:
+            return months.october;
+        case 10:
+            return months.november;
+        case 11:
+            return months.december;
+    }
+}
+
 function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
     if (dateString !== undefined && dateString !== null) {
         var locale = "en-gb";
         var date = new Date(dateString.split(".")[0].replace("/", /-/g));
         var day = date.getUTCDate();
-        var month = date.toLocaleString(locale, { month: "short" });
+        var month = getDateDescription(date.getUTCMonth());
+        //var month = date.toLocaleString(locale, { month: "short" });
         var year = date.getUTCFullYear();
         return day + " " + month + " " + year;
     }
@@ -1911,6 +1941,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
     getUserData();
