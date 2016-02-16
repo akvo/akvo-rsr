@@ -7,9 +7,6 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from datetime import datetime
-
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -485,14 +482,7 @@ def my_results_select(request):
             user.in_group(admins) or user.in_group(project_editors)):
         raise PermissionDenied
 
-    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-
-    context = {
-        'user': user,
-        'projects': projects.filter(is_impact_project=True),
-    }
-
-    return render(request, 'myrsr/my_results_select.html', context)
+    return render(request, 'myrsr/my_results_select.html', {})
 
 
 @login_required
