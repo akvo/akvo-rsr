@@ -463,7 +463,7 @@ class IndicatorPeriod(models.Model):
         try:
             return Decimal(baseline)
         except (InvalidOperation, TypeError):
-            return None
+            return Decimal(0)
 
     class Meta:
         app_label = 'rsr'
