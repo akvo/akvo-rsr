@@ -176,7 +176,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 thisApp.props.removeEditingData(update.id);
             }
             if (reloadPeriod) {
-                thisApp.props.reloadPeriod(periodId);
+                thisApp.props.reloadPeriod('self', periodId);
             }
         };
         apiCall('PATCH', url, JSON.stringify(data), success);
@@ -185,7 +185,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     saveUpdate: function() {
         var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
         this.baseSave({
-            'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
             'relative_data': this.state.isRelative,
@@ -195,7 +194,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     askForApproval: function() {
         this.baseSave({
-            'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
             'relative_data': this.state.isRelative,
@@ -205,7 +203,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     approve: function() {
         this.baseSave({
-            'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
             'relative_data': this.state.isRelative,
@@ -215,7 +212,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     returnForRevision: function() {
         this.baseSave({
-            'user': user.id,
             'text': this.state.description.trim(),
             'data': this.state.data.trim(),
             'relative_data': this.state.isRelative,
@@ -761,7 +757,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         React.DOM.div( {className:"period-actual"}, 
                             i18n.actual_value,
                             React.DOM.span(null, 
-                                this.props.selectedPeriod.actual_value,
+                                this.props.selectedPeriod.actual_calculated,
                                 this.renderPercentageComplete()
                             )
                         )
@@ -937,7 +933,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                 this.renderPeriodDisplay(),
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
                 React.DOM.td( {className:"actual-td"}, 
-                    this.props.period.actual_value,
+                    this.props.period.actual_calculated,
                     this.renderPercentageComplete()
                 ),
                 this.renderActions()
@@ -1059,12 +1055,11 @@ var MainContent = React.createClass({displayName: 'MainContent',
         this.setState({addingNewUpdate: true});
         var thisApp = this;
         var url = endpoints.base_url + endpoints.updates_and_comments;
-        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var data = JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': actualValue,
-            'period_actual_value': actualValue
+            'data': this.props.selectedPeriod.actual_calculated,
+            'period_actual_value': this.props.selectedPeriod.actual_calculated
         });
         var success = function(response) {
             thisApp.props.saveUpdateToPeriod(response, periodId);
@@ -1708,18 +1703,21 @@ var ResultsApp = React.createClass({displayName: 'ResultsApp',
         var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
         var thisApp = this;
         var success = function() {
-            thisApp.reloadPeriod(periodId);
+            thisApp.reloadPeriod('self', periodId);
         };
         apiCall('DELETE', url, '', success);
     },
 
-    reloadPeriod: function(periodId) {
+    reloadPeriod: function(relation, periodId) {
         var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
         var thisApp = this;
         var success = function(response) {
             var period = response;
             var indicatorId = period.indicator;
-            thisApp.savePeriodToIndicator('self', period, indicatorId);
+            thisApp.savePeriodToIndicator(relation, period, indicatorId);
+            if (relation === 'self' && period.parent_period !== null) {
+                thisApp.reloadPeriod('parent', period.parent_period);
+            }
         };
         apiCall('GET', url, '', success);
     },

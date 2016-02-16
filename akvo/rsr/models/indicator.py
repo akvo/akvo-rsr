@@ -342,6 +342,7 @@ class IndicatorPeriod(models.Model):
         if self.is_child_period():
             matching_periods = IndicatorPeriod.objects.filter(
                 indicator__result=self.indicator.result.parent_result,
+                indicator__title=self.indicator.title,
                 period_start=self.period_start,
                 period_end=self.period_end
             )
@@ -362,6 +363,7 @@ class IndicatorPeriod(models.Model):
         child_results = self.indicator.result.child_results.all()
         return IndicatorPeriod.objects.filter(
             indicator__result__in=child_results,
+            indicator__title=self.indicator.title,
             period_start=self.period_start,
             period_end=self.period_end
         )
@@ -390,13 +392,20 @@ class IndicatorPeriod(models.Model):
         :param relative_data; Boolean indicating whether the data should be updated based on the
         relative value of the current actual value (True) or overwrite the actual value (False)
         """
-        self.actual_value = str(self.actual + Decimal(data)) if relative_data else data
-        self.save(update_fields=['actual_value'])
+        try:
+            old_actual = self.actual
+            if isinstance(self.actual, Decimal) and relative_data:
+                self.actual_value = str(self.actual + Decimal(data))
+            elif not relative_data:
+                self.actual_value = data
+            self.save(update_fields=['actual_value'])
 
-        # Update parent period
-        parent = self.parent_period()
-        if parent:
-            parent.update_actual_value(data, relative_data)
+            # Update parent period
+            parent = self.parent_period()
+            if parent and isinstance(self.actual, Decimal) and isinstance(old_actual, Decimal):
+                parent.update_actual_value(str(self.actual - old_actual), True)
+        except (InvalidOperation, TypeError):
+            pass
 
     @property
     def percent_accomplishment(self):
@@ -404,17 +413,15 @@ class IndicatorPeriod(models.Model):
         Return the percentage completed for this indicator period. If not possible to convert the
         values to numbers, return None.
         """
-        if not (self.target_value and self.actual_value):
-            return None
-
-        try:
-            return round(
-                (Decimal(self.actual_value) - Decimal(self.baseline)) /
-                (Decimal(self.target_value) - Decimal(self.baseline)) *
-                100, 1
-            )
-        except (InvalidOperation, TypeError, DivisionByZero):
-            return None
+        if isinstance(self.target, Decimal) and isinstance(self.actual, Decimal) and \
+                isinstance(self.baseline, Decimal):
+            try:
+                return round((self.actual - self.baseline) / (self.target - self.baseline) * 100, 1)
+            except DivisionByZero:
+                return round(self.actual / self.target * 100, 1) if self.target > 0 else None
+            except (InvalidOperation, TypeError):
+                return None
+        return None
 
     @property
     def percent_accomplishment_100(self):
@@ -422,31 +429,29 @@ class IndicatorPeriod(models.Model):
         Similar to the percent_accomplishment property. However, it won't return any number bigger
         than 100.
         """
-        if self.percent_accomplishment and self.percent_accomplishment > 100:
-            return 100
-        return self.percent_accomplishment
+        return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
 
     @property
     def actual(self):
         """
         Returns the actual value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return 0.
+        Otherwise it'll return the baseline value, which is a calculated value.
         """
         try:
             return Decimal(self.actual_value)
         except (InvalidOperation, TypeError):
-            return Decimal(self.baseline)
+            return self.actual_value if self.actual_value else self.baseline
 
     @property
     def target(self):
         """
         Returns the target value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return 0.
+        Otherwise it'll return just the target value.
         """
         try:
             return Decimal(self.target_value)
         except (InvalidOperation, TypeError):
-            return Decimal(self.baseline)
+            return self.target_value
 
     @property
     def baseline(self):
@@ -455,15 +460,20 @@ class IndicatorPeriod(models.Model):
 
         - If the period has no previous periods, then it's the baseline value of the indicator
         - If the period has a previous period, then it's the actual value of that period
-        - In all other cases, the baseline defaults to 0
+
+        When this baseline value is empty, it returns 0. Otherwise (e.g. 'Available') it just
+        returns the baseline value.
         """
         previous_period = self.adjacent_period(False)
         baseline = self.indicator.baseline_value if not previous_period else previous_period.actual
 
-        try:
-            return Decimal(baseline)
-        except (InvalidOperation, TypeError):
+        if not baseline:
             return Decimal(0)
+        else:
+            try:
+                return Decimal(baseline)
+            except (InvalidOperation, TypeError):
+                return baseline
 
     class Meta:
         app_label = 'rsr'
@@ -545,12 +555,12 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Process approved data updates.
         """
         # Set the actual value of the indicator period to 0 if it's not present yet
-        if self.period.actual_value == '':
-            self.period.actual_value = '0'
-            self.period.save(update_fields=['actual_value'])
+        # if self.period.actual_value == '':
+        #     self.period.actual_value = '0'
+        #     self.period.save(update_fields=['actual_value'])
 
         # Always copy the period's actual value to the period_actual_value field.
-        self.period_actual_value = self.period.actual_value
+        self.period_actual_value = str(self.period.actual)
 
         if not self.pk:
             # Newly added data update
