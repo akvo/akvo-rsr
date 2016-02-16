@@ -789,30 +789,22 @@ var IndicatorPeriodEntry = React.createClass({
         }
     },
 
-    lockPeriod: function() {
-        var relation;
+    relation: function() {
         if (this.props.parent) {
-            relation = 'parent';
+            return 'parent';
         } else if (this.props.child) {
-            relation = 'children';
+            return 'children';
         } else {
-            relation = 'self';
+            return 'self';
         }
+    },
 
-        this.props.lockPeriod(relation, this.props.period.id);
+    lockPeriod: function() {
+        this.props.lockPeriod(this.relation(), this.props.period.id);
     },
 
     unlockPeriod: function() {
-        var relation;
-        if (this.props.parent) {
-            relation = 'parent';
-        } else if (this.props.child) {
-            relation = 'children';
-        } else {
-            relation = 'self';
-        }
-
-        this.props.unlockPeriod(relation, this.props.period.id);
+        this.props.unlockPeriod(this.relation(), this.props.period.id);
     },
 
     switchPeriod: function() {
@@ -828,7 +820,13 @@ var IndicatorPeriodEntry = React.createClass({
     renderPeriodDisplay: function() {
         var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
 
-        if (this.props.period.data === undefined || this.props.period.data.length === 0) {
+        if (this.props.period.data === undefined) {
+            return (
+                <td className="period-td">
+                    {periodDisplay} <i className="fa fa-spin fa-spinner" />
+                </td>
+            );
+        } else if (this.props.period.data.length === 0) {
             return (
                 <td className="period-td">
                     {periodDisplay}
@@ -836,8 +834,7 @@ var IndicatorPeriodEntry = React.createClass({
             );
         } else {
             if (this.props.parent || this.props.child) {
-                var relation = this.props.parent ? 'parent' : 'children';
-                var projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                 return (
                     <td className="period-td">
                         <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
@@ -858,14 +855,13 @@ var IndicatorPeriodEntry = React.createClass({
     },
 
     renderActions: function() {
-        var relation, projectId;
+        var projectId;
 
         if (isAdmin) {
             switch(this.props.period.locked) {
                 case false:
                     if (this.props.parent || this.props.child) {
-                        relation = this.props.parent ? 'parent' : 'children';
-                        projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                        projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                         return (
                             <td className="actions-td">
                                 <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
@@ -890,8 +886,7 @@ var IndicatorPeriodEntry = React.createClass({
             switch(this.props.period.locked) {
                 case false:
                     if (this.props.parent || this.props.child) {
-                        relation = this.props.parent ? 'parent' : 'children';
-                        projectId = this.props.findProjectOfResult(relation, this.props.selectedIndicator.result);
+                        projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                         return (
                             <td className="actions-td">
                                 <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a>
@@ -1463,8 +1458,9 @@ var ResultsApp = React.createClass({
                     result.indicators.push(indicator);
                 }
             }
-            for (var j = 0; j < thisApp.state.results.length; j++) {
-                var stateResult = thisApp.state.results[j];
+            var results = thisApp.resultsBasedOnRelation(relation);
+            for (var j = 0; j < results.length; j++) {
+                var stateResult = results[j];
                 if (stateResult.indicators === undefined) {
                     stateResult.indicators = [];
                 }
@@ -1488,8 +1484,9 @@ var ResultsApp = React.createClass({
                     indicator.periods.push(period);
                 }
             }
-            for (var j = 0; j < thisApp.state.results.length; j++) {
-                var stateResult = thisApp.state.results[j];
+            var results = thisApp.resultsBasedOnRelation(relation);
+            for (var j = 0; j < results.length; j++) {
+                var stateResult = results[j];
                 for (var k = 0; k < stateResult.indicators.length; k++) {
                     var stateIndicator = stateResult.indicators[k];
                     if (stateIndicator.periods === undefined) {
@@ -1516,8 +1513,9 @@ var ResultsApp = React.createClass({
                     period.data.push(update);
                 }
             }
-            for (var j = 0; j < thisApp.state.results.length; j++) {
-                var stateResult = thisApp.state.results[j];
+            var results = thisApp.resultsBasedOnRelation(relation);
+            for (var j = 0; j < results.length; j++) {
+                var stateResult = results[j];
                 for (var k = 0; k < stateResult.indicators.length; k++) {
                     var stateIndicator = stateResult.indicators[k];
                     for (var l = 0; l < stateIndicator.periods.length; l++) {

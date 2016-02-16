@@ -554,11 +554,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
-        # Set the actual value of the indicator period to 0 if it's not present yet
-        # if self.period.actual_value == '':
-        #     self.period.actual_value = '0'
-        #     self.period.save(update_fields=['actual_value'])
-
         # Always copy the period's actual value to the period_actual_value field.
         self.period_actual_value = str(self.period.actual)
 
