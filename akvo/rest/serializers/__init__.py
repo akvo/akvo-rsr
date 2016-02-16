@@ -27,7 +27,7 @@ from .invoice import InvoiceSerializer
 from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
-from .organisation import OrganisationSerializer
+from .organisation import OrganisationSerializer, OrganisationBasicSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
@@ -87,6 +87,7 @@ __all__ = [
     'MapProjectLocationSerializer',
     'MapProjectUpdateLocationSerializer',
     'OrganisationSerializer',
+    'OrganisationBasicSerializer',
     'OrganisationCustomFieldSerializer',
     'OrganisationLocationSerializer',
     'PartnershipSerializer',

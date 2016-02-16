@@ -327,8 +327,25 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 React.DOM.span( {className:"edit-update"}, i18n.edit_update)
             );
         } else {
+            var approved_organisations = this.props.update.user_details.approved_organisations;
+            var organisations_display;
+            switch (approved_organisations.length) {
+                case 0:
+                    organisations_display = '';
+                    break;
+                case 1:
+                    organisations_display = ' | ' + approved_organisations[0].long_name;
+                    break;
+                case 2:
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
+                    break;
+                default:
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + approved_organisations.length - 1 + ' ' + i18n.others;
+                    break;
+            }
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
                 React.DOM.span( {className:"update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name),
+                React.DOM.span( {className:"update-user-organisation"}, organisations_display),
                 React.DOM.span( {className:"update-created-at"}, displayDate(this.props.update.created_at))
             );
         }
