@@ -3090,6 +3090,14 @@ body {
                     &.target-td,
                     &.actions-td {
                         white-space: nowrap;
+                        .tooltip {
+                            top: -170px;
+                            left: 132.703px;
+                            display: block;
+                            .tooltip-arrow {
+                                left: 77.4336%;
+                            }
+                        }
                     }
                     &.indicator-bar-td {
                         width: 55%;

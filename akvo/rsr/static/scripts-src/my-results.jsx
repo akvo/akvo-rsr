@@ -827,6 +827,12 @@ var IndicatorPeriodMain = React.createClass({
 });
 
 var IndicatorPeriodEntry = React.createClass({
+    getInitialState: function() {
+        return {
+            hover: false
+        };
+    },
+
     selected: function() {
         if (this.props.selectedPeriod !== null) {
             return this.props.selectedPeriod.id === this.props.period.id;
@@ -843,6 +849,27 @@ var IndicatorPeriodEntry = React.createClass({
         } else {
             return 'self';
         }
+    },
+
+    numberOfPendingUpdates: function() {
+        var result = 0;
+        if (this.props.period.data !== undefined) {
+            for (var i = 0; i < this.props.period.data.length; i++) {
+                var update = this.props.period.data[i];
+                if (update.status === 'P') {
+                    result += 1;
+                }
+            }
+        }
+        return result;
+    },
+
+    handleMouseOver: function() {
+        this.setState({hover: true});
+    },
+
+    handleMouseOut: function() {
+        this.setState({hover: false});
     },
 
     lockPeriod: function() {
@@ -865,6 +892,9 @@ var IndicatorPeriodEntry = React.createClass({
 
     renderPeriodDisplay: function() {
         var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
+        var nrPendingUpdates = this.numberOfPendingUpdates();
+        var pendingUpdates = nrPendingUpdates > 0 ? <span className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>{nrPendingUpdates}</span> : <span />;
+        var hover = this.state.hover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.number_of_pending_updates}</div></div> : <span />;
 
         if (this.props.period.data === undefined) {
             return (
@@ -885,7 +915,7 @@ var IndicatorPeriodEntry = React.createClass({
                     <td className="period-td">
                         <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
                             {periodDisplay}
-                        </a>
+                        </a> {pendingUpdates} {hover}
                     </td>
                 );
             } else {
@@ -893,7 +923,7 @@ var IndicatorPeriodEntry = React.createClass({
                     <td className="period-td">
                         <a onClick={this.switchPeriod}>
                             {periodDisplay}
-                        </a>
+                        </a> {pendingUpdates} {hover}
                     </td>
                 );
             }
