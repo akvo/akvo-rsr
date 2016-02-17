@@ -141,7 +141,7 @@ var CommentEntry = React.createClass({
         return (
             <div className="row">
                 <div className="col-xs-12 comment-header">
-                    {user.first_name} {user.last_name} | {displayDate(comment.created_at)}
+                    {user.first_name} {user.last_name} {displayDate(comment.created_at)}
                 </div>
                 <div className="col-xs-12 comment-text">
                     {comment.comment}
@@ -708,7 +708,7 @@ var IndicatorPeriodMain = React.createClass({
         } else if (!this.props.selectedPeriod.locked) {
             return (
                 <div className="new-update">
-                    <a onClick={this.addNewUpdate} className="btn btn-xs btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
+                    <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
                 </div>
             );
         } else if (isAdmin) {

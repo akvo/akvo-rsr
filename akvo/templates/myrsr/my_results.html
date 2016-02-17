@@ -7,12 +7,12 @@
 {% block myrsr_main %}
     <h4 class="resultProjectTitle"><span>{% trans 'Project' %}:</span> <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a></h4>
     {% if not project.is_impact_project %}
-        <div id="draft" class="row">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
+        <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
     {% elif not project.results.all %}
-        <div id="draft" class="row">{% trans 'This project has no results.' %}</div>
+        <div id="draft" class="">{% trans 'This project has no results.' %}</div>
     {% else %}
         {% if not me_managers %}
-            <div id="draft" class="row">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
+            <div id="draft" class="">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
         {% endif %}
         <div id="results-framework"></div>
     {% endif %}
