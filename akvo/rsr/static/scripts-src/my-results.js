@@ -157,7 +157,8 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             data: this.props.update.data,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
-            comment: ''
+            comment: '',
+            askRemove: false
         };
     },
 
@@ -275,6 +276,14 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         apiCall('POST', url, data, success);
     },
 
+    removeUpdate: function() {
+        this.props.removeUpdate(this.props.update.id);
+    },
+
+    switchAskRemove: function() {
+        this.setState({askRemove: !this.state.askRemove});
+    },
+
     switchEdit: function() {
         var addEdit = this.props.addEditingData;
         var removeEdit = this.props.removeEditingData;
@@ -282,7 +291,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
         if (this.editing()) {
             if (this.props.update.status === 'N') {
-                this.props.removeUpdate(updateId);
+                this.removeUpdate();
             } else {
                 removeEdit(updateId);
             }
@@ -560,6 +569,20 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             return (
                 React.DOM.span(null )
             );
+        } else if (this.state.askRemove) {
+            return (
+                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                    React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                        i18n.delete_confirmation
+                    ),
+                    React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
+                        React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18n.yes)
+                    ),
+                    React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
+                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.no)
+                    )
+                )
+            );
         } else if (this.editing()) {
             switch(this.props.update.status) {
                 case 'P':
@@ -567,6 +590,9 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                             React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
                                 React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"removeUpdate"}, 
+                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
                             ),
                             React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
                                 React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
@@ -581,6 +607,9 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                             React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
                                 React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"removeUpdate"}, 
+                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
                             ),
                             React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
                                 React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)

@@ -157,7 +157,8 @@ var UpdateEntry = React.createClass({
             data: this.props.update.data,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
-            comment: ''
+            comment: '',
+            askRemove: false
         };
     },
 
@@ -275,6 +276,14 @@ var UpdateEntry = React.createClass({
         apiCall('POST', url, data, success);
     },
 
+    removeUpdate: function() {
+        this.props.removeUpdate(this.props.update.id);
+    },
+
+    switchAskRemove: function() {
+        this.setState({askRemove: !this.state.askRemove});
+    },
+
     switchEdit: function() {
         var addEdit = this.props.addEditingData;
         var removeEdit = this.props.removeEditingData;
@@ -282,7 +291,7 @@ var UpdateEntry = React.createClass({
 
         if (this.editing()) {
             if (this.props.update.status === 'N') {
-                this.props.removeUpdate(updateId);
+                this.removeUpdate();
             } else {
                 removeEdit(updateId);
             }
@@ -560,6 +569,20 @@ var UpdateEntry = React.createClass({
             return (
                 <span />
             );
+        } else if (this.state.askRemove) {
+            return (
+                <ul className="nav-pills bottomRow navbar-right">
+                    <li role="presentation" className="cancelUpdate">
+                        {i18n.delete_confirmation}
+                    </li>
+                    <li role="presentation" className="removeUpdateConfirm">
+                        <a onClick={this.removeUpdate} className="btn btn-default btn-xs">{i18n.yes}</a>
+                    </li>
+                    <li role="presentation" className="removeUpdateCancel">
+                        <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.no}</a>
+                    </li>
+                </ul>
+            );
         } else if (this.editing()) {
             switch(this.props.update.status) {
                 case 'P':
@@ -567,6 +590,9 @@ var UpdateEntry = React.createClass({
                         <ul className="nav-pills bottomRow navbar-right">
                             <li role="presentation" className="cancelUpdate">
                                 <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                            </li>
+                            <li role="presentation" className="removeUpdate">
+                                <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
                             </li>
                             <li role="presentation" className="saveUpdate">
                                 <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
@@ -581,6 +607,9 @@ var UpdateEntry = React.createClass({
                         <ul className="nav-pills bottomRow navbar-right">
                             <li role="presentation" className="cancelUpdate">
                                 <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                            </li>
+                            <li role="presentation" className="removeUpdate">
+                                <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
                             </li>
                             <li role="presentation" className="saveUpdate">
                                 <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
