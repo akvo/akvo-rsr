@@ -571,53 +571,59 @@ var UpdateEntry = React.createClass({
             );
         } else if (this.state.askRemove) {
             return (
-                <ul className="nav-pills bottomRow navbar-right">
-                    <li role="presentation" className="cancelUpdate">
-                        {i18n.delete_confirmation}
-                    </li>
-                    <li role="presentation" className="removeUpdateConfirm">
-                        <a onClick={this.removeUpdate} className="btn btn-default btn-xs">{i18n.yes}</a>
-                    </li>
-                    <li role="presentation" className="removeUpdateCancel">
-                        <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.no}</a>
-                    </li>
-                </ul>
+                <div className="menuAction">
+                    <ul className="nav-pills bottomRow navbar-right">
+                        <li role="presentation" className="cancelUpdate">
+                            {i18n.delete_confirmation}
+                        </li>
+                        <li role="presentation" className="removeUpdateConfirm">
+                            <a onClick={this.removeUpdate} className="btn btn-default btn-xs">{i18n.yes}</a>
+                        </li>
+                        <li role="presentation" className="removeUpdateCancel">
+                            <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.no}</a>
+                        </li>
+                    </ul>
+                </div>
             );
         } else if (this.editing()) {
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        <ul className="nav-pills bottomRow navbar-right">
-                            <li role="presentation" className="cancelUpdate">
-                                <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
-                            </li>
-                            <li role="presentation" className="removeUpdate">
+                        <div className="menuAction">
+                            <div role="presentation" className="removeUpdate">
                                 <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
-                            </li>
-                            <li role="presentation" className="saveUpdate">
-                                <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
-                            </li>
-                            <li role="presentation" className="approveUpdate">
-                                <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
-                            </li>
-                        </ul>
+                            </div>
+                            <ul className="nav-pills bottomRow navbar-right">
+                                <li role="presentation" className="cancelUpdate">
+                                    <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                                </li>
+                                <li role="presentation" className="saveUpdate">
+                                    <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                                </li>
+                                <li role="presentation" className="approveUpdate">
+                                    <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                                </li>
+                            </ul>
+                        </div>
                     );
                 default:
                     return (
-                        <ul className="nav-pills bottomRow navbar-right">
-                            <li role="presentation" className="cancelUpdate">
-                                <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
-                            </li>
-                            <li role="presentation" className="removeUpdate">
+                        <div className="menuAction">
+                            <div role="presentation" className="removeUpdate">
                                 <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
-                            </li>
-                            <li role="presentation" className="saveUpdate">
-                                <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
-                            </li>
-                            <li role="presentation" className="submitUpdate">
-                                <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a>
-                            </li>
-                        </ul>
+                            </div>
+                            <ul className="nav-pills bottomRow navbar-right">
+                                <li role="presentation" className="cancelUpdate">
+                                    <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                                </li>
+                                <li role="presentation" className="saveUpdate">
+                                    <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                                </li>
+                                <li role="presentation" className="submitUpdate">
+                                    <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a>
+                                </li>
+                            </ul>                        
+                        </div>
                     );
             }
         } else {
@@ -625,17 +631,19 @@ var UpdateEntry = React.createClass({
                 case 'P':
                     if (isAdmin) {
                         return (
-                            <ul className="nav-pills bottomRow navbar-right">
-                                <li role="presentation" className="returnUpdate">
-                                    <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
-                                </li>
-                                <li role="presentation" className="editUpdate">
-                                    <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
-                                </li>
-                                <li role="presentation" className="approveUpdate">
-                                    <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
-                                </li>
-                            </ul>
+                            <div className="menuAction">
+                                <ul className="nav-pills bottomRow navbar-right">
+                                    <li role="presentation" className="returnUpdate">
+                                        <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
+                                    </li>
+                                    <li role="presentation" className="editUpdate">
+                                        <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                    </li>
+                                    <li role="presentation" className="approveUpdate">
+                                        <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                                    </li>
+                                </ul>
+                            </div>
                         );
                     } else {
                         return (
@@ -650,11 +658,13 @@ var UpdateEntry = React.createClass({
                 default:
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
-                            <ul className="nav-pills bottomRow navbar-right">
-                                <li role="presentation" className="editUpdate">
-                                    <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
-                                </li>
-                            </ul>
+                            <div className="menuAction">
+                                <ul className="nav-pills bottomRow navbar-right">
+                                    <li role="presentation" className="editUpdate">
+                                        <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                    </li>
+                                </ul>
+                            </div>
                         );
                     } else {
                         return (

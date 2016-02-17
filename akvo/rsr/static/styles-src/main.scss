@@ -140,12 +140,15 @@ a.moreLink {
     }
 }
 
-
+.btn {
+    @include transition(all 0.1s linear);
+}
 a.btn-primary,
 button.btn-primary {
     border: 1px solid $anchorLink;
     color: white;
     background: $anchorLink;
+    @include transition(all 0.1s linear);
     &:hover {
         color: white;
         background: $anchorLinkHover;
@@ -438,13 +441,18 @@ nav.navbar-fixed-top {
         &.navbar-right {
             li {
                 margin-right: 2px;
+                &:nth-child(2) {
+                    a {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                    }
+                }
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
-
                     &.active {
                         background: rgba($anchorLinkHover, 0.1);
                         color: $anchorLinkHover;
@@ -578,7 +586,7 @@ nav.navbar-fixed-top {
 
 .navContainer {
     background: rgba($akvoBlack, 0.05);
-    margin: -15px 0 10px 0;
+    margin: -20px 0 10px 0;
     padding-top: 10px;
 }
 
@@ -1774,7 +1782,7 @@ div.textBlock {
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
-    @include border-radius(10px);
+    @include border-radius(5px);
 }
 
 #gallery {
@@ -2697,6 +2705,15 @@ body {
     span {
         margin-right: 15px;
     }
+    button {
+        margin: 0px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
 }
 
 
@@ -2791,6 +2808,8 @@ body {
                 margin: 0 auto;
                 @include transition(background-color 0.25s ease-in-out);
             }
+            &.expanded {
+            }
             &:last-child {}
         }
         .result-nav-header {
@@ -2847,7 +2866,6 @@ body {
                             display: block;
                             display: -webkit-box;
                             line-height: 1.4em;
-                            -webkit-line-clamp: 2;
                             -webkit-box-orient: vertical;
                         }
                     }
@@ -2890,7 +2908,6 @@ body {
                 display: none;
             }
             &.expanded {
-                background: white;
                 .fa-chevron-circle-down {
                     display: none;
                 }
@@ -2906,7 +2923,7 @@ body {
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
-                    padding: 0.5em 0 0 0px;
+                    padding: 1px 0 0 0px;
                     background-color: white;
                     div {
                         &:last-child {
@@ -2915,7 +2932,7 @@ body {
                             }
                         }
                         .indicator-nav {
-                            padding: 0.75em 0em 1em 0em;
+                            padding: 0.75em 10px 1em 0em;
                             /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
@@ -3098,6 +3115,9 @@ body {
                                 left: 77.4336%;
                             }
                         }
+                    }
+                    &.period-td {
+                        color: rgba($primary4, 0.5);
                     }
                     &.indicator-bar-td {
                         width: 55%;
@@ -3371,7 +3391,7 @@ body {
         background: rgba($primary4, 0.05);
         border: 1px solid rgba($akvoBlack, 0.2);
         padding: 0 1em;
-        margin-bottom: 20px;
+        margin-bottom: 50px;
         .update-entry-container {
             padding:0 0 10px 0;
             position: relative;
@@ -3427,31 +3447,47 @@ body {
                     .comment-text {}
                 }
             }
-            .bottomRow {
-                margin-top: 20px;
-                padding: 0.75em;
+            .menuAction {
                 position: relative;
-                list-style-type: none;
-                .btn {
-                    padding: 2px 7px;
-                    &.btn-default {
-                        background: $akvoBlack;
+                .removeUpdate {
+                    position: absolute;
+                    top: 30px;
+                    left:0;
+                    .btn {
+                        background: $akvoTvRed;
                         color: white;
-                        .editUpdate & {
-                            background: initial;
-                            color: initial;
-                        }
+                        border-color: $akvoTvRed;
                         &:hover {
-                            background: $akvoPurple;
+                            background: rgba($akvoTvRed, 0.5);
                         }
                     }
                 }
-                .cancelUpdate {}
+                .bottomRow {
+                    margin-top: 20px;
+                    padding: 0.75em;
+                    position: relative;
+                    list-style-type: none;
+                    .btn {
+                        padding: 2px 7px;
+                        &.btn-default {
+                            background: $akvoBlack;
+                            color: white;
+                            .editUpdate & {
+                                background: initial;
+                                color: initial;
+                            }
+                            &:hover {
+                                background: $akvoPurple;
+                            }
+                        }
+                    }
+                    .cancelUpdate {margin-right: 25px;}
 
-                .saveUpdate {}
-                .returnUpdate {}
-                .submitUpdate {}
-                .approveUpdate {}
+                    .saveUpdate {}
+                    .returnUpdate {}
+                    .submitUpdate {}
+                    .approveUpdate {}
+                }
             }
             .upActualValue {
                 margin-top: 47px;

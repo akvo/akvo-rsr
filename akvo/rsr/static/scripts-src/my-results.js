@@ -571,15 +571,17 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             );
         } else if (this.state.askRemove) {
             return (
-                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                    React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                        i18n.delete_confirmation
-                    ),
-                    React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
-                        React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18n.yes)
-                    ),
-                    React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
-                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.no)
+                React.DOM.div( {className:"menuAction"}, 
+                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                        React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                            i18n.delete_confirmation
+                        ),
+                        React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
+                            React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18n.yes)
+                        ),
+                        React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
+                            React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.no)
+                        )
                     )
                 )
             );
@@ -587,36 +589,40 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             switch(this.props.update.status) {
                 case 'P':
                     return (
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"removeUpdate"}, 
+                        React.DOM.div( {className:"menuAction"}, 
+                            React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
                                 React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
                             ),
-                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                    React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                                    React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                )
                             )
                         )
                     );
                 default:
                     return (
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"removeUpdate"}, 
+                        React.DOM.div( {className:"menuAction"}, 
+                            React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
                                 React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
                             ),
-                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                                React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval)
-                            )
+                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                    React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                ),
+                                React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
+                                    React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval)
+                                )
+                            )                        
                         )
                     );
             }
@@ -625,15 +631,17 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 case 'P':
                     if (isAdmin) {
                         return (
-                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
-                                    React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18n.return_for_revision)
-                                ),
-                                React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
-                                ),
-                                React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                    React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                            React.DOM.div( {className:"menuAction"}, 
+                                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                    React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
+                                        React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18n.return_for_revision)
+                                    ),
+                                    React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                    ),
+                                    React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                    )
                                 )
                             )
                         );
@@ -650,9 +658,11 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 default:
                     if (this.props.update.user === user.id || isAdmin) {
                         return (
-                            React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                            React.DOM.div( {className:"menuAction"}, 
+                                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                    React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                    )
                                 )
                             )
                         );
