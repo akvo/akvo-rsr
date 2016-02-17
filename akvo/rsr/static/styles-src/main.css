@@ -142,10 +142,20 @@ a.moreLink {
     float: none;
     width: 100%; } }
 
+.btn {
+  -moz-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear; }
+
 a.btn-primary, button.btn-primary {
   border: 1px solid #00aaff;
   color: white;
-  background: #00aaff; }
+  background: #00aaff;
+  -moz-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear; }
   a.btn-primary:hover, button.btn-primary:hover {
     color: white;
     background: #ff5500;
@@ -407,6 +417,9 @@ nav.navbar-fixed-top {
         color: #ff5500; }
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
+      padding-left: 10px;
+      padding-right: 10px; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
       padding-left: 5px;
       padding-right: 5px; }
@@ -507,7 +520,7 @@ nav.navbar-fixed-top {
 
 .navContainer {
   background: rgba(32, 32, 36, 0.05);
-  margin: -15px 0 10px 0;
+  margin: -20px 0 10px 0;
   padding-top: 10px; }
 
 .myRsrMenu {
@@ -1397,10 +1410,10 @@ div.textBlock {
   padding: 10px;
   text-align: center;
   margin-bottom: 20px;
-  -moz-border-radius: 10px;
-  -o-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px; }
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
 
 #gallery {
   height: 300px;
@@ -2037,6 +2050,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin: 15px 0 25px 0; }
   .resultProjectTitle span {
     margin-right: 15px; }
+  .resultProjectTitle button {
+    margin: 0px 0 0 25px;
+    background: #202024;
+    color: white;
+    border: none; }
+    .resultProjectTitle button:hover {
+      background: #2c2a74; }
 
 .results {
   position: relative;
@@ -2182,7 +2202,6 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               display: block;
               display: -webkit-box;
               line-height: 1.4em;
-              -webkit-line-clamp: 2;
               -webkit-box-orient: vertical; }
       .results .sidebar .result-nav .fa-chevron-circle-up {
         display: none; }
@@ -2208,54 +2227,52 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
         display: none; }
       .results .sidebar .result-nav .indicator-text {
         display: none; }
-      .results .sidebar .result-nav.expanded {
-        background: white; }
-        .results .sidebar .result-nav.expanded .fa-chevron-circle-down {
-          display: none; }
-        .results .sidebar .result-nav.expanded .fa-chevron-circle-up {
-          display: block; }
-        .results .sidebar .result-nav.expanded .indicator-text {
-          display: initial; }
-        .results .sidebar .result-nav.expanded .indicator-count {
-          display: none; }
-        .results .sidebar .result-nav.expanded .result-nav-full {
-          display: block;
-          cursor: pointer;
-          padding: 0.5em 0 0 0px;
-          background-color: white; }
-          .results .sidebar .result-nav.expanded .result-nav-full div:last-child .indicator-nav {
-            border-bottom: none; }
-          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav {
-            padding: 0.75em 0em 1em 0em;
-            /* Transparent border means text doesn't shift when
+      .results .sidebar .result-nav.expanded .fa-chevron-circle-down {
+        display: none; }
+      .results .sidebar .result-nav.expanded .fa-chevron-circle-up {
+        display: block; }
+      .results .sidebar .result-nav.expanded .indicator-text {
+        display: initial; }
+      .results .sidebar .result-nav.expanded .indicator-count {
+        display: none; }
+      .results .sidebar .result-nav.expanded .result-nav-full {
+        display: block;
+        cursor: pointer;
+        padding: 1px 0 0 0px;
+        background-color: white; }
+        .results .sidebar .result-nav.expanded .result-nav-full div:last-child .indicator-nav {
+          border-bottom: none; }
+        .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav {
+          padding: 0.75em 10px 1em 0em;
+          /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
-            background: rgba(44, 42, 116, 0.05);
-            border-bottom: 2px solid white; }
-            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover {
-              background: rgba(44, 42, 116, 0.5); }
-            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
-              background: #2c2a74 url(../images/carretWhite.svg) center right no-repeat;
-              border-left: 10px solid rgba(174, 9, 34, 0);
-              background-size: 5% auto; }
-              .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
-                color: white;
-                font-weight: bold; }
-            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
-              margin-bottom: 0; }
-          .results .sidebar .result-nav.expanded .result-nav-full div a h4 {
-            font-size: 1em;
-            color: #2c2a74;
-            margin-bottom: 1px;
-            font-family: 'Poppins', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
-            line-height: 150%;
-            padding-left: 15px; }
-          .results .sidebar .result-nav.expanded .result-nav-full div a:hover {
-            color: rgba(44, 42, 116, 0.5);
-            text-decoration: none; }
-          .results .sidebar .result-nav.expanded .result-nav-full div .last-update {
-            font-size: 0.9em;
-            color: #aaaaaa; }
+          background: rgba(44, 42, 116, 0.05);
+          border-bottom: 2px solid white; }
+          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover {
+            background: rgba(44, 42, 116, 0.5); }
+          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
+            background: #2c2a74 url(../images/carretWhite.svg) center right no-repeat;
+            border-left: 10px solid rgba(174, 9, 34, 0);
+            background-size: 5% auto; }
+            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
+              color: white;
+              font-weight: bold; }
+          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
+            margin-bottom: 0; }
+        .results .sidebar .result-nav.expanded .result-nav-full div a h4 {
+          font-size: 1em;
+          color: #2c2a74;
+          margin-bottom: 1px;
+          font-family: 'Poppins', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+          line-height: 150%;
+          padding-left: 15px; }
+        .results .sidebar .result-nav.expanded .result-nav-full div a:hover {
+          color: rgba(44, 42, 116, 0.5);
+          text-decoration: none; }
+        .results .sidebar .result-nav.expanded .result-nav-full div .last-update {
+          font-size: 0.9em;
+          color: #aaaaaa; }
   .results .indicator-container {
     vertical-align: top;
     overflow-y: scroll;
@@ -2362,6 +2379,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               display: block; }
               .results .indicator-container .indicator-group .table td.period-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.actual-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.target-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
                 left: 77.4336%; }
+          .results .indicator-container .indicator-group .table td.period-td {
+            color: rgba(153, 153, 153, 0.5); }
           .results .indicator-container .indicator-group .table td.indicator-bar-td {
             width: 55%; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-up {
@@ -2582,7 +2601,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     background: rgba(153, 153, 153, 0.05);
     border: 1px solid rgba(32, 32, 36, 0.2);
     padding: 0 1em;
-    margin-bottom: 20px; }
+    margin-bottom: 50px; }
     .results .update-container .update-entry-container {
       padding: 0 0 10px 0;
       position: relative; }
@@ -2624,21 +2643,35 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
             .results .update-container .update-entry-container .comments .comment .comment-header span:last-child {
               margin-left: 15px;
               color: rgba(32, 32, 36, 0.5); }
-      .results .update-container .update-entry-container .bottomRow {
-        margin-top: 20px;
-        padding: 0.75em;
-        position: relative;
-        list-style-type: none; }
-        .results .update-container .update-entry-container .bottomRow .btn {
-          padding: 2px 7px; }
-          .results .update-container .update-entry-container .bottomRow .btn.btn-default {
-            background: #202024;
-            color: white; }
-            .editUpdate .results .update-container .update-entry-container .bottomRow .btn.btn-default {
-              background: initial;
-              color: initial; }
-            .results .update-container .update-entry-container .bottomRow .btn.btn-default:hover {
-              background: #2c2a74; }
+      .results .update-container .update-entry-container .menuAction {
+        position: relative; }
+        .results .update-container .update-entry-container .menuAction .removeUpdate {
+          position: absolute;
+          top: 30px;
+          left: 0; }
+          .results .update-container .update-entry-container .menuAction .removeUpdate .btn {
+            background: #ee3124;
+            color: white;
+            border-color: #ee3124; }
+            .results .update-container .update-entry-container .menuAction .removeUpdate .btn:hover {
+              background: rgba(238, 49, 36, 0.5); }
+        .results .update-container .update-entry-container .menuAction .bottomRow {
+          margin-top: 20px;
+          padding: 0.75em;
+          position: relative;
+          list-style-type: none; }
+          .results .update-container .update-entry-container .menuAction .bottomRow .btn {
+            padding: 2px 7px; }
+            .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+              background: #202024;
+              color: white; }
+              .editUpdate .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+                background: initial;
+                color: initial; }
+              .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default:hover {
+                background: #2c2a74; }
+          .results .update-container .update-entry-container .menuAction .bottomRow .cancelUpdate {
+            margin-right: 25px; }
       .results .update-container .update-entry-container .upActualValue {
         margin-top: 47px;
         margin-bottom: 15px; }
