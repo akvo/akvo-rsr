@@ -141,7 +141,7 @@ var CommentEntry = React.createClass({displayName: 'CommentEntry',
         return (
             React.DOM.div( {className:"row"}, 
                 React.DOM.div( {className:"col-xs-12 comment-header"}, 
-                    user.first_name, " ", user.last_name, " | ", displayDate(comment.created_at)
+                    user.first_name, " ", user.last_name, " ", displayDate(comment.created_at)
                 ),
                 React.DOM.div( {className:"col-xs-12 comment-text"}, 
                     comment.comment
@@ -725,7 +725,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         } else if (!this.props.selectedPeriod.locked) {
             return (
                 React.DOM.div( {className:"new-update"}, 
-                    React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-xs btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
+                    React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
                 )
             );
         } else if (isAdmin) {
