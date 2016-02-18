@@ -384,13 +384,14 @@ class IndicatorPeriod(models.Model):
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
 
-    def update_actual_value(self, data, relative_data):
+    def update_actual_value(self, data, relative_data, comment=''):
         """
         Updates the actual value of this period and related periods (parent period and next period).
 
         :param data; String or Integer that represents the new actual value data of the period
         :param relative_data; Boolean indicating whether the data should be updated based on the
         relative value of the current actual value (True) or overwrite the actual value (False)
+        :param comment; String that represents the new actual comment data of the period (Optional)
         """
         try:
             old_actual = self.actual
@@ -399,6 +400,10 @@ class IndicatorPeriod(models.Model):
             elif not relative_data:
                 self.actual_value = data
             self.save(update_fields=['actual_value'])
+
+            if comment:
+                self.actual_comment = comment
+                self.save(update_fields=['actual_comment'])
 
             # Update parent period
             parent = self.parent_period()
@@ -561,7 +566,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Newly added data update
             if self.status == self.STATUS_APPROVED_CODE:
                 # Update is immediately approved. Scenario that probably does not happen very often.
-                self.period.update_actual_value(self.data, self.relative_data)
+                self.period.update_actual_value(self.data, self.relative_data, self.text)
         else:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
@@ -594,7 +599,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Process data when the update has been approved and mail the user about it
             elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
-                self.period.update_actual_value(self.data, self.relative_data)
+                self.period.update_actual_value(self.data, self.relative_data, self.text)
                 rsr_send_mail(
                     [self.user.email],
                     subject='results_framework/approved_subject.txt',
@@ -610,15 +615,24 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Perform several checks before we can actually save the update data.
         """
         validation_errors = {}
+
+        # Allow only one update per period
+        if not self.pk and self.period.data.all():
+            validation_errors['period'] = unicode(_(u'Indicator period already has an update, only '
+                                                    u'one update per period is allowed'))
+            raise ValidationError(validation_errors)
+
         # Don't allow a data update to a non-Impact project
         if not self.period.indicator.result.project.is_impact_project:
             validation_errors['period'] = unicode(_(u'Indicator period must be part of an RSR '
                                                     u'Impact project to add data to it'))
+            raise ValidationError(validation_errors)
 
         # Don't allow a data update to a locked period
         if self.period.locked:
             validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
                                                     u'data to it'))
+            raise ValidationError(validation_errors)
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)

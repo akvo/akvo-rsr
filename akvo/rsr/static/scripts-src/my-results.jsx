@@ -65,7 +65,7 @@ function apiCall(method, url, data, successCallback, retries) {
                 var message = i18n.general_error + ': ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
-                         message += key + '; ' + response[key] + '. ';
+                         message += response[key] + '. ';
                     }
                 }
                 showGeneralError(message);
@@ -730,15 +730,21 @@ var UpdatesList = React.createClass({
                 );
             });
         } else {
-            updates = <div className="update-container">
+            updates = <div>
                 <i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.updates}
             </div>;
         }
 
+        var updatesHeader;
+        if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
+            updatesHeader = <h5>{i18n.updates}</h5>;
+        } else {
+            updatesHeader = <h5>{i18n.no_updates_yet}</h5>;
+        }
 
         return (
             <div className="updates-container">
-                <h5>{i18n.updates}</h5>
+                {updatesHeader}
                 {updates}
             </div>
         );
@@ -757,27 +763,31 @@ var IndicatorPeriodMain = React.createClass({
     renderNewUpdate: function() {
         if (this.props.addingNewUpdate) {
             return (
-                <div className="col-xs-3 new-update">
+                <div className="new-update">
                     <i className="fa fa-spin fa-spinner" /> {i18n.adding_update}
                 </div>
             );
         } else if (!this.props.selectedPeriod.locked) {
-            return (
-                <div className="new-update">
-                    <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
-                </div>
-            );
+            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+                return (
+                    <div className="new-update">
+                        <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="new-update"></div>
+                );
+            }
         } else if (isAdmin) {
             return (
-                <div className="col-xs-3 unlock-period">
+                <div className="new-update">
                     <a onClick={this.unlockPeriod}>{i18n.unlock_period}</a>
                 </div>
             );
         } else {
             return (
-                <div className="col-xs-3 new-update">
-                    {i18n.new_update}
-                </div>
+                <div className="new-update"></div>
             );
         }
 

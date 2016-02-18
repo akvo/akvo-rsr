@@ -65,7 +65,7 @@ function apiCall(method, url, data, successCallback, retries) {
                 var message = i18n.general_error + ': ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
-                         message += key + '; ' + response[key] + '. ';
+                         message += response[key] + '. ';
                     }
                 }
                 showGeneralError(message);
@@ -730,15 +730,21 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
                 );
             });
         } else {
-            updates = React.DOM.div( {className:"update-container"}, 
+            updates = React.DOM.div(null, 
                 React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.updates
             );
         }
 
+        var updatesHeader;
+        if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
+            updatesHeader = React.DOM.h5(null, i18n.updates);
+        } else {
+            updatesHeader = React.DOM.h5(null, i18n.no_updates_yet);
+        }
 
         return (
             React.DOM.div( {className:"updates-container"}, 
-                React.DOM.h5(null, i18n.updates),
+                updatesHeader,
                 updates
             )
         );
@@ -757,27 +763,31 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     renderNewUpdate: function() {
         if (this.props.addingNewUpdate) {
             return (
-                React.DOM.div( {className:"col-xs-3 new-update"}, 
+                React.DOM.div( {className:"new-update"}, 
                     React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.adding_update
                 )
             );
         } else if (!this.props.selectedPeriod.locked) {
-            return (
-                React.DOM.div( {className:"new-update"}, 
-                    React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
-                )
-            );
+            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+                return (
+                    React.DOM.div( {className:"new-update"}, 
+                        React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.div( {className:"new-update"})
+                );
+            }
         } else if (isAdmin) {
             return (
-                React.DOM.div( {className:"col-xs-3 unlock-period"}, 
+                React.DOM.div( {className:"new-update"}, 
                     React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
                 )
             );
         } else {
             return (
-                React.DOM.div( {className:"col-xs-3 new-update"}, 
-                    i18n.new_update
-                )
+                React.DOM.div( {className:"new-update"})
             );
         }
 
