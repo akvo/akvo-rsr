@@ -61,6 +61,7 @@ class Employment(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'user employment')
         verbose_name_plural = _(u'user employments')
+        unique_together = ('organisation', 'user', 'group')
 
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
