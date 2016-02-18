@@ -794,15 +794,21 @@ var IndicatorPeriodMain = React.createClass({
     },
 
     renderPercentageComplete: function() {
-        if (this.props.selectedPeriod.percent_accomplishment !== null) {
-            return (
-                <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
-            );
-        } else {
-            return (
-                <span />
-            );
-        }
+        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
+        //
+        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
+        //    return (
+        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
+        //    );
+        //} else {
+        //    return (
+        //        <span />
+        //    );
+        //}
+
+        return (
+            <span />
+        );
     },
 
     render: function() {
@@ -1007,15 +1013,21 @@ var IndicatorPeriodEntry = React.createClass({
     },
 
     renderPercentageComplete: function() {
-        if (this.props.period.percent_accomplishment !== null) {
-            return (
-                <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
-            );
-        } else {
-            return (
-                <span />
-            );
-        }
+        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages
+        //
+        //if (this.props.period.percent_accomplishment !== null) {
+        //    return (
+        //        <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
+        //    );
+        //} else {
+        //    return (
+        //        <span />
+        //    );
+        //}
+
+        return (
+            <span />
+        );
     },
 
     render: function() {

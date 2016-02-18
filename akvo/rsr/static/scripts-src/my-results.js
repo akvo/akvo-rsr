@@ -794,15 +794,21 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
     },
 
     renderPercentageComplete: function() {
-        if (this.props.selectedPeriod.percent_accomplishment !== null) {
-            return (
-                React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
-            );
-        } else {
-            return (
-                React.DOM.span(null )
-            );
-        }
+        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
+        //
+        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
+        //    return (
+        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
+        //    );
+        //} else {
+        //    return (
+        //        <span />
+        //    );
+        //}
+
+        return (
+            React.DOM.span(null )
+        );
     },
 
     render: function() {
@@ -1007,15 +1013,21 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
     },
 
     renderPercentageComplete: function() {
-        if (this.props.period.percent_accomplishment !== null) {
-            return (
-                React.DOM.span( {className:"percentage-complete"},  " (",this.props.period.percent_accomplishment,"%)")
-            );
-        } else {
-            return (
-                React.DOM.span(null )
-            );
-        }
+        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages
+        //
+        //if (this.props.period.percent_accomplishment !== null) {
+        //    return (
+        //        <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
+        //    );
+        //} else {
+        //    return (
+        //        <span />
+        //    );
+        //}
+
+        return (
+            React.DOM.span(null )
+        );
     },
 
     render: function() {
