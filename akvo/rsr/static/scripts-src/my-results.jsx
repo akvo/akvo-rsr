@@ -771,7 +771,7 @@ var IndicatorPeriodMain = React.createClass({
             if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
                 return (
                     <div className="new-update">
-                        <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus"></i> {i18n.new_update}</a>
+                        <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18n.new_update}</a>
                     </div>
                 );
             } else {
@@ -782,7 +782,7 @@ var IndicatorPeriodMain = React.createClass({
         } else if (isAdmin) {
             return (
                 <div className="new-update">
-                    <a onClick={this.unlockPeriod}>{i18n.unlock_period}</a>
+                    <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18n.unlock_period}</a>
                 </div>
             );
         } else {

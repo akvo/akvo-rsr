@@ -771,7 +771,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
             if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
-                        React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"}), " ", i18n.new_update)
+                        React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18n.new_update)
                     )
                 );
             } else {
@@ -782,7 +782,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         } else if (isAdmin) {
             return (
                 React.DOM.div( {className:"new-update"}, 
-                    React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
+                    React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18n.unlock_period)
                 )
             );
         } else {
