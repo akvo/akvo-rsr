@@ -567,6 +567,24 @@ nav.navbar-fixed-top {
   #createProject:hover {
     background: #2c2a74; }
 
+.indicator-period-list.parentProject, .indicator-period-list.childProject {
+  margin-top: 50px;
+  padding: 0 5px 5px 5px;
+  border: 1px solid rgba(44, 42, 116, 0.1); }
+  .indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
+    font-style: italic;
+    font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+    font-size: 150%;
+    color: white;
+    background: rgba(44, 42, 116, 0.7);
+    padding: 3px 7px;
+    margin-left: -5px;
+    -moz-border-radius: 0 0 5px 0;
+    -o-border-radius: 0 0 5px 0;
+    -webkit-border-radius: 0 0 5px 0;
+    border-radius: 0 0 5px 0; }
+    .indicator-period-list.parentProject .relatedInfo + .indicator-periods-title, .indicator-period-list.childProject .relatedInfo + .indicator-periods-title {
+      margin-top: 15px; }
 .indicator-period-list thead tr {
   background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
@@ -596,13 +614,15 @@ nav.navbar-fixed-top {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
-.myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
-  display: inline-block; }
-  @media only screen and (max-width: 992px) {
-    .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
-      display: block; } }
-  .myProjectList div.projectListMenu ul li a:last-child, #updates div.projectListMenu ul li a:last-child, #user_table div.projectListMenu ul li a:last-child {
-    margin-right: 0; }
+.myProjectList div.projectListMenu ul, #updates div.projectListMenu ul, #user_table div.projectListMenu ul {
+  margin-top: -10px; }
+  .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+    display: inline-block; }
+    @media only screen and (max-width: 992px) {
+      .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+        display: block; } }
+    .myProjectList div.projectListMenu ul li a:last-child, #updates div.projectListMenu ul li a:last-child, #user_table div.projectListMenu ul li a:last-child {
+      margin-right: 0; }
 .myProjectList a:last-child, #updates a:last-child, #user_table a:last-child {
   margin-right: 0; }
 .myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled, #user_table a.addUpdate.disabled {
@@ -647,6 +667,9 @@ div.paginationWrap {
 #password h4 {
   margin-top: 65px; }
 
+@media only screen and (max-width: 768px) {
+  .table-responsive {
+    border: none; } }
 .table-responsive.locationTab {
   overflow: hidden; }
   .table-responsive.locationTab thead th {
@@ -659,19 +682,21 @@ div.paginationWrap {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
-.table-responsive .media > a {
-  min-width: 80px; }
-.table-responsive .media .media-body p {
-  max-width: 170px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
-  @media only screen and (max-width: 768px) {
-    .table-responsive .media .media-body p {
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; } }
+.table-responsive .media {
+  width: 39%; }
+  .table-responsive .media > a {
+    min-width: 80px; }
+  .table-responsive .media .media-body p {
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+    @media only screen and (max-width: 768px) {
+      .table-responsive .media .media-body p {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; } }
 
 .twoColumns {
   width: 100%;

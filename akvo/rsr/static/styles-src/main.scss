@@ -647,6 +647,25 @@ nav.navbar-fixed-top {
 }
 
 .indicator-period-list {
+    &.parentProject, &.childProject {
+        margin-top: 50px;
+        padding:0 5px 5px 5px;
+        border: 1px solid rgba($akvoPurple, 0.1);
+        .relatedInfo {
+            font-style: italic;
+            font-family: $scriptFont;
+            font-size: 150%;
+            color: white;
+            background: rgba($akvoPurple, 0.7);
+            padding: 3px 7px;
+            margin-left: -5px;
+            @include border-radius(0 0 5px 0);
+            + .indicator-periods-title {
+                margin-top:15px;
+            }
+        }
+    }
+    &.selfProject {}
     thead {
         tr {
             background-color: rgba($akvoBlack, 0.05);
@@ -701,7 +720,8 @@ nav.navbar-fixed-top {
         }
     }
     div.projectListMenu {
-        ul {              
+        ul {
+            margin-top: -10px;              
             li {
                 display: inline-block;
                 @include responsive (mediums-max-screens) {
@@ -794,6 +814,9 @@ div.paginationWrap {
 }
 
 .table-responsive {
+    @include responsive (small-max-screens) {
+        border:none;
+    }
     &.locationTab {
         overflow: hidden;
         thead {
@@ -814,6 +837,7 @@ div.paginationWrap {
         }
     }
     .media {
+        width: 39%;
         > a {
             min-width: 80px;
         }

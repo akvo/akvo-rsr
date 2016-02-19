@@ -976,13 +976,13 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                     if (this.props.parent || this.props.child) {
                         projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                         return (
-                            React.DOM.td( {className:"actions-td childProject"}, 
+                            React.DOM.td( {className:"actions-td"}, 
                                 React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
                             )
                         );
                     } else {
                         return (
-                            React.DOM.td( {className:"actions-td childProject"}, 
+                            React.DOM.td( {className:"actions-td"}, 
                                 React.DOM.a( {onClick:this.switchPeriod}, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
                             )
                         );
@@ -1132,10 +1132,10 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
         var relatedIndication,
             relatedClass = "indicator-period-list ";
         if (this.props.parent) {
-            relatedIndication = ' | ' + i18n.parent_project;
+            relatedIndication = i18n.parent_project +  ' : ';
             relatedClass += "parentProject";
         } else if (this.props.child) {
-            relatedIndication = ' | ' + i18n.child_project;
+            relatedIndication = i18n.child_project +  ' : ';
             relatedClass += "childProject";
         } else {
             relatedIndication = '';
@@ -1144,7 +1144,8 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 
         return (
             React.DOM.div( {className:relatedClass}, 
-                React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods,relatedIndication),
+                React.DOM.span( {className:"relatedInfo"}, relatedIndication),
+                React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
                 this.renderBaseline(),
                 React.DOM.table( {className:"table table-responsive"}, 
                     React.DOM.thead(null, 

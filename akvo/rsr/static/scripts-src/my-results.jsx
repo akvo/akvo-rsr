@@ -976,13 +976,13 @@ var IndicatorPeriodEntry = React.createClass({
                     if (this.props.parent || this.props.child) {
                         projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                         return (
-                            <td className="actions-td childProject">
+                            <td className="actions-td">
                                 <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
                             </td>
                         );
                     } else {
                         return (
-                            <td className="actions-td childProject">
+                            <td className="actions-td">
                                 <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
                             </td>
                         );
@@ -1132,10 +1132,10 @@ var IndicatorPeriodList = React.createClass({
         var relatedIndication,
             relatedClass = "indicator-period-list ";
         if (this.props.parent) {
-            relatedIndication = ' | ' + i18n.parent_project;
+            relatedIndication = i18n.parent_project +  ' : ';
             relatedClass += "parentProject";
         } else if (this.props.child) {
-            relatedIndication = ' | ' + i18n.child_project;
+            relatedIndication = i18n.child_project +  ' : ';
             relatedClass += "childProject";
         } else {
             relatedIndication = '';
@@ -1144,7 +1144,8 @@ var IndicatorPeriodList = React.createClass({
 
         return (
             <div className={relatedClass}>
-                <h4 className="indicator-periods-title">{i18n.indicator_periods}{relatedIndication}</h4>
+                <span className="relatedInfo">{relatedIndication}</span>
+                <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
                 {this.renderBaseline()}
                 <table className="table table-responsive">
                     <thead>
