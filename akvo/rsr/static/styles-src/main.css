@@ -2105,25 +2105,28 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     width: 100%;
     margin-bottom: 55px;
     font-size: 110%; }
-    .results .baseline .baseline-value, .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .periodValues .baseline-value, .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual {
-      width: 50%;
+    .results .baseline .baseline-value, .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .baseline .period-baseline, .results .periodValues .baseline-value, .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual, .results .periodValues .period-baseline {
       display: inline-block;
       padding: 0 0 0 15px; }
-      .results .baseline .baseline-value > span:first-child, .results .baseline .baseline-year > span:first-child, .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .periodValues .baseline-value > span:first-child, .results .periodValues .baseline-year > span:first-child, .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child {
+      .results .baseline .baseline-value > span:first-child, .results .baseline .baseline-year > span:first-child, .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .baseline .period-baseline > span:first-child, .results .periodValues .baseline-value > span:first-child, .results .periodValues .baseline-year > span:first-child, .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child, .results .periodValues .period-baseline > span:first-child {
         color: rgba(32, 32, 36, 0.4);
         display: block; }
-      .results .baseline .baseline-value span:nth-child(2), .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) {
+      .results .baseline .baseline-value span:nth-child(2), .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .baseline .period-baseline span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2), .results .periodValues .period-baseline span:nth-child(2) {
         display: block;
         font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: 700;
         color: rgba(32, 32, 36, 0.9); }
-        .results .baseline .baseline-value span:nth-child(2) span, .results .baseline .baseline-year span:nth-child(2) span, .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span, .results .periodValues .baseline-year span:nth-child(2) span, .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span {
+        .results .baseline .baseline-value span:nth-child(2) span, .results .baseline .baseline-year span:nth-child(2) span, .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .baseline .period-baseline span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span, .results .periodValues .baseline-year span:nth-child(2) span, .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span, .results .periodValues .period-baseline span:nth-child(2) span {
           display: inline; }
-        .results .baseline .baseline-value span:nth-child(2) span:nth-child(2), .results .baseline .baseline-year span:nth-child(2) span:nth-child(2), .results .baseline .period-target span:nth-child(2) span:nth-child(2), .results .baseline .period-actual span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2) span:nth-child(2), .results .periodValues .period-target span:nth-child(2) span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) span:nth-child(2) {
+        .results .baseline .baseline-value span:nth-child(2) span:nth-child(2), .results .baseline .baseline-year span:nth-child(2) span:nth-child(2), .results .baseline .period-target span:nth-child(2) span:nth-child(2), .results .baseline .period-actual span:nth-child(2) span:nth-child(2), .results .baseline .period-baseline span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2) span:nth-child(2), .results .periodValues .period-target span:nth-child(2) span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) span:nth-child(2), .results .periodValues .period-baseline span:nth-child(2) span:nth-child(2) {
           margin-left: 10px; }
+    .results .baseline .baseline-value, .results .baseline .baseline-year, .results .periodValues .baseline-value, .results .periodValues .baseline-year {
+      width: 50%; }
+    .results .baseline .period-target, .results .baseline .period-actual, .results .baseline .period-baseline, .results .periodValues .period-target, .results .periodValues .period-actual, .results .periodValues .period-baseline {
+      width: 33.3333%; }
     .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
       float: left; }
-    .results .baseline .baseline-year, .results .baseline .period-actual, .results .periodValues .baseline-year, .results .periodValues .period-actual {
+    .results .baseline .baseline-year, .results .baseline .period-baseline, .results .periodValues .baseline-year, .results .periodValues .period-baseline {
       float: right; }
   .results .sidebar {
     width: 30%;

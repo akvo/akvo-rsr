@@ -383,12 +383,13 @@ var UpdateEntry = React.createClass({
                 </div>
             );
         } else {
-            relativeData = relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = this.props.selectedIndicator.baseline_value;
+            relativeDataText += relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
             return (
                 <div className="upActualValue">
                     <span className="update-actual-value-text">{i18n.actual_value}: </span>
                     <span className="update-actual-value-data">{updateData} </span>
-                    <span className="update-relative-value">({relativeData})</span>
+                    <span className="update-relative-value">({relativeDataText})</span>
                 </div>
             );
         }
@@ -450,7 +451,7 @@ var UpdateEntry = React.createClass({
 
         if (this.editing()) {
             descriptionPart = <div className={descriptionClass}>
-                <label htmlFor={inputId}>{i18n.note}</label>
+                <label htmlFor={inputId}>{i18n.actual_value_comment}</label>
                 <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} />
             </div>;
         } else {
@@ -721,6 +722,7 @@ var UpdatesList = React.createClass({
                             saveFileInUpdate: thisList.props.saveFileInUpdate,
                             saveCommentInUpdate: thisList.props.saveCommentInUpdate,
                             removeUpdate: thisList.props.removeUpdate,
+                            selectedIndicator: thisList.props.selectedIndicator,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             reloadPeriod: thisList.props.reloadPeriod,
@@ -833,6 +835,10 @@ var IndicatorPeriodMain = React.createClass({
                                 {this.renderPercentageComplete()}
                             </span>
                         </div>
+                        <div className="period-baseline">
+                            {i18n.baseline_value}
+                            <span>{this.props.selectedIndicator.baseline_value}</span>
+                        </div>
                     </div>
                     {React.createElement(UpdatesList, {
                         addEditingData: this.props.addEditingData,
@@ -842,6 +848,7 @@ var IndicatorPeriodMain = React.createClass({
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
                         removeUpdate: this.props.removeUpdate,
+                        selectedIndicator: this.props.selectedIndicator,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
@@ -938,7 +945,7 @@ var IndicatorPeriodEntry = React.createClass({
             if (this.props.parent || this.props.child) {
                 var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                 return (
-                    <td className="period-td parentProject">
+                    <td className="period-td">
                         <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
                             {periodDisplay}
                         </a> {pendingUpdates} {hover}
@@ -1118,17 +1125,21 @@ var IndicatorPeriodList = React.createClass({
             </tbody>;
         }
 
-        var relatedIndication;
+        var relatedIndication,
+            relatedClass = "indicator-period-list ";
         if (this.props.parent) {
             relatedIndication = ' | ' + i18n.parent_project;
+            relatedClass += "parentProject";
         } else if (this.props.child) {
             relatedIndication = ' | ' + i18n.child_project;
+            relatedClass += "childProject";
         } else {
             relatedIndication = '';
+            relatedClass += "selfProject";
         }
 
         return (
-            <div className="indicator-period-list">
+            <div className={relatedClass}>
                 <h4 className="indicator-periods-title">{i18n.indicator_periods}{relatedIndication}</h4>
                 {this.renderBaseline()}
                 <table className="table table-responsive">
@@ -1265,6 +1276,7 @@ var MainContent = React.createClass({
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
                         removeUpdate: this.props.removeUpdate,
+                        selectedIndicator: this.props.selectedIndicator,
                         selectedPeriod: this.props.selectedPeriod,
                         reloadPeriod: this.props.reloadPeriod,
                         lockPeriod: this.lockPeriod,

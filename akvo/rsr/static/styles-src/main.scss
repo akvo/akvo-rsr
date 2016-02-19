@@ -2769,9 +2769,8 @@ body {
         width: 100%;
         margin-bottom: 55px;
         font-size: 110%;
-        .baseline-value,
-        .baseline-year, .period-target, .period-actual {
-            width: 50%;
+        .baseline-value, .baseline-year,
+        .period-target, .period-actual, .period-baseline {
             display: inline-block;
             padding: 0 0 0 15px;
             > span:first-child {
@@ -2791,10 +2790,16 @@ body {
                 }
             }
         }
+        .baseline-value, .baseline-year {
+            width: 50%;
+        }
+        .period-target, .period-actual, .period-baseline {
+            width: 33.3333%;
+        }
         .baseline-value, .period-target {
             float: left;
         }
-        .baseline-year, .period-actual {
+        .baseline-year, .period-baseline {
             float: right;
         }
     }
