@@ -1129,22 +1129,28 @@ var IndicatorPeriodList = React.createClass({
             </tbody>;
         }
 
-        var relatedIndication,
-            relatedClass = "indicator-period-list ";
+        var relatedClass = "indicator-period-list ",
+            relatedIndication,
+            relatedProjectTitle;
+
         if (this.props.parent) {
-            relatedIndication = i18n.parent_project +  ' : ';
+            relatedIndication = i18n.parent_project;
+            relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
             relatedClass += "parentProject";
         } else if (this.props.child) {
-            relatedIndication = i18n.child_project +  ' : ';
+            relatedIndication = i18n.child_project;
+            relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
             relatedClass += "childProject";
         } else {
             relatedIndication = '';
+            relatedProjectTitle = '';
             relatedClass += "selfProject";
         }
 
         return (
             <div className={relatedClass}>
                 <span className="relatedInfo">{relatedIndication}</span>
+                <span className="relatedInfoProjectTitle">{relatedProjectTitle}</span>
                 <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
                 {this.renderBaseline()}
                 <table className="table table-responsive">
@@ -1668,9 +1674,9 @@ var ResultsApp = React.createClass({
         }
     },
 
-    findProjectOfResult: function(relation, resultId) {
+    findProjectOfResult: function(relation, resultId, type) {
         var result = this.findResult(relation, resultId);
-        return result.project;
+        return type === 'title' ? result.project_title : result.project;
     },
 
     findResult: function(relation, resultId) {
