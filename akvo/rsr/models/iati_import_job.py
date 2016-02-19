@@ -249,9 +249,11 @@ class IatiImportJob(models.Model):
 
     def parse_xml(self, xml_file=None):
         """
+        Parse the XML and check that what we get looks like an IATI activities rooted tree
+        If all is well, set self.activities to the ElementTree
         :param xml_file: optional file like object with the XML to parse if not using
                          self.iati_xml_file
-        :return: ElementTree root of the XML document if all went well, False if not
+        :return: True if self.activities is set, False if we hit problems
         """
         if not xml_file:
             xml_file = self.iati_xml_file
@@ -407,21 +409,32 @@ class IatiImportJob(models.Model):
 
 class CordaidZipIatiImportJob(IatiImportJob):
     """
-    Custom job for Coradiad's ZIP archive IATI delivery
+    Custom job for Coradiad's ZIP archive IATI delivery. The major extensions of functionality are
+    the use of the ZIP archive to extract all information needed, both for the importing of
+    organisations and activities.
+    Note that self.iati_xml_file is used to hold the whole Cordaid ZIP archive, not just the
+    activities XML. The XML is instead put in self._iati_xml_file in check_file()
     """
+    IATI_XML_ACTIVITIES = 'iati-activities'
 
     class Meta:
         proxy = True
 
     def import_organisations(self):
+        """
+        Import Cordaid's partner organisations This is made in a similar way to how activites are
+        imported, using the Organisations mapper class.
+        """
         ORGANISATIONS_FILENAME = 'akvo-organizations.xml'
         ORGANISATIONS_ROOT = 'Relations'
         ORGANISATIONS_CHILDREN = 'object'
         CORDAID_ORG_ID = 273
         self.add_log(u'CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
         organisations_xml = self.get_xml_file(ORGANISATIONS_FILENAME)
-        organisations = self.parse_xml(
-                organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN)
+        if self.parse_xml(organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN):
+            organisations = self._objects_root
+        else:
+            organisations = None
         cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
         if organisations:
             for object in organisations.findall(ORGANISATIONS_CHILDREN):
@@ -441,7 +454,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         self.add_log(u'CordaidZip: Organisations import done.', LOG_ENTRY_TYPE.INFORMATIONAL)
 
     def create_log_entry(self, organisation, action_flag=LOG_ENTRY_TYPE.ACTION_UPDATE,
-                         change_message=''):
+                         change_message=u''):
         """
         Create a record in the django_admin_log table recording the addition or change of a project
         :param action_flag: django.contrib.admin.models ADDITION or CHANGE
@@ -477,26 +490,35 @@ class CordaidZipIatiImportJob(IatiImportJob):
 
     def parse_xml(self, xml_file, root_tag='', children_tag=''):
         """
-        :param xml_file: optional file like object with the XML to parse if not using
-                         self.iati_xml_file
-        :return: ElementTree root of the XML document if all went well, False if not
+        Try to parse the XML and if things go well set self._objects_root to the ElementTree object
+        self._objects_root is then used by the respective callers to get at the organisations and
+        activites respectively
+        :param xml_file: either the Cordaid akvo-organizations.xml or iati-activities.xml.
+        :param root_tag: the XML root
+        :param children_tag: the child tags, here for logging purposes only
+        :return: True if all's well, False if not
         """
         try:
+            # TODO: there seems to be a bug here that I don't understand. When running this I get the
+            # error "*** error: Error -3 while decompressing: invalid stored block lengths" when
+            # parse_xml is called the second time, meaning when the iati-activites.xml is to be
+            # parsed. And I just don't get it :(
             parsed_xml = etree.parse(xml_file)
         except Exception as e:
             self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
-        objects = parsed_xml.getroot()
-        if objects.tag == root_tag:
+        objects_root = parsed_xml.getroot()
+        if objects_root.tag == root_tag:
+            self._objects_root = objects_root
             self.add_log(
                     'CordaidZip: Retrieved {} <{}> objects'.format(
-                        len(objects.findall(children_tag)), children_tag),
+                        len(objects_root.findall(children_tag)), children_tag),
                     LOG_ENTRY_TYPE.INFORMATIONAL)
-            return objects
+            return True
         else:
-            self.add_log('CordaidZip Not a valid XML file, '
+            self.add_log('CordaidZip: Not a valid XML file, '
                          '{} not root of document.'.format(root_tag), LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
@@ -522,26 +544,28 @@ class CordaidZipIatiImportJob(IatiImportJob):
 
     def set_activities(self):
         """
-        Get the XML from the Cordaid ZIP and then call parse_xml() to try parsing it
-
-        :return: ElementTree; the root node of the XML or False when a critical error precludes the
-                 continuation of the import
+        Try parsing the XML and if all is well set self.activities to the result
+        :return: True or False indicating success or failure
         """
-        IATI_XML_ACTIVITIES = 'iati-activities'
         IATI_XML_ACTIVITY = 'iati-activity'
-        xml = self.get_activities_file()
-        if xml:
-            return self.parse_xml(xml, IATI_XML_ACTIVITIES, IATI_XML_ACTIVITY)
+        if self.parse_xml(self._iati_xml_file, self.IATI_XML_ACTIVITIES, IATI_XML_ACTIVITY):
+            self.activities = self._objects_root
+            return True
         else:
+            self.add_log(u"Import cancelled. Error while parsing XML.",
+                         LOG_ENTRY_TYPE.STATUS_CANCELLED)
             return False
 
     def check_file(self):
         """
-        Check that the Cordaid archive contains the iati-activities.xml file
+        Check that the Cordaid ZIP archive contains the iati-activities.xml file, if it does, set
+        self._iati_xml_file to the file.
         """
         file = self.get_activities_file()
         if file:
-            # Cordaid zip delivery found, let's get the iati activities
+            # Since we're using self.iati_xml_file for the Cordaid ZIP archive, we assign the IATI
+            # XML to self._iati_xml_file
+            self._iati_xml_file = file
             self.add_log('Using iati-activities.xml from the Cordaid ZIP: {}'.format(self.iati_xml_file),
                          LOG_ENTRY_TYPE.INFORMATIONAL)
             return True
@@ -550,6 +574,8 @@ class CordaidZipIatiImportJob(IatiImportJob):
         return False
 
     def run(self):
+        """
+        Override to include the importing of Cordaid's organisations
+        """
         self.import_organisations()
         super(CordaidZipIatiImportJob, self).run()
-

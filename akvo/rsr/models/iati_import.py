@@ -14,6 +14,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from akvo.utils import who_am_i, who_is_parent
 from .iati_import_job import IatiImportJob
 from .iati_import_log import LOG_ENTRY_TYPE
 
@@ -26,11 +27,28 @@ def get_subpackages(module):
 
     return filter(is_package, os.listdir(dir))
 
-
 def custom_mappers():
+    "Create a list of available custom mapper, for use in the admin"
     from ...iati.imports import mappers
     subs = get_subpackages(mappers)
     return [(sub, sub) for sub in subs]
+
+import logging
+from inspect import currentframe, getframeinfo
+
+logger = logging.getLogger(__name__)
+
+def debug_enter(func_or_meth, parent, line_no):
+    "Use at start of function/method to log that it is called and from where"
+    logger.debug("L{} Calling {}() from {}()".format(line_no, func_or_meth, parent))
+
+def debug_exit(func_or_meth, line_no):
+    "Use at end of function/method"
+    logger.debug("L{} Exiting {}()".format(line_no, func_or_meth))
+
+def debug_message(msg, *args):
+    "Use to log info"
+    logger.debug(msg.format(*args))
 
 
 class IatiImport(models.Model):
@@ -88,17 +106,18 @@ class IatiImport(models.Model):
     label = models.CharField(max_length=50, verbose_name=_(u'label'), unique=True)
     next_execution = models.DateTimeField(
             verbose_name=_(u'next time the import is run'), null=True, blank=True)
-    frequency = models.PositiveIntegerField(choices=FREQUENCIES)
+    frequency = models.PositiveIntegerField(choices=FREQUENCIES, null=True, blank=True,
+                                            help_text='Set the frequency interval of the import')
     user = models.ForeignKey(
             settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
     url = models.URLField(_(u'url'), blank=True)
     mapper_prefix = models.CharField(
             max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
             help_text='Choose a custom mapper to invoke custom behaviour for this import')
-    enabled = models.BooleanField(verbose_name=_(u'scheduled importing enabled'), default=False,
-                                  help_text='Set to enable scheduled running of this import.')
+    enabled = models.BooleanField(verbose_name=_(u'importing enabled'), default=False,
+                                  help_text='Set to enable running of this import.')
     run_immediately = models.BooleanField(verbose_name=_(u'run immediately'), default=False,
-                                  help_text='Run the job immediately. Overrides the enabled state.')
+                                  help_text='Run the job immediately.')
     running = models.BooleanField(verbose_name=_(u'import currently running'), default=False,
             help_text='Running is set while the import executes. This is to guarantee that the same '
                       'import never runs twice (or more) in parallel.')
@@ -146,9 +165,10 @@ class IatiImport(models.Model):
 
     def set_next_execution(self):
         """
-        Set self.next_execution to the next time the import is going to be run. If run_on_save is
-        set, time is set to now()
+        Set self.next_execution to the next time the import is going to be run. If run_immediately
+        is set, time is set to now()
         """
+        debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
         time_adds = {
             self.EVERY_TWO_MINUTES: timedelta(seconds=120), # used for testing
             self.HOURLY: timedelta(hours=1),
@@ -159,21 +179,24 @@ class IatiImport(models.Model):
             self.BI_WEEKLY: timedelta(weeks=2),
             self.EVERY_FOUR_WEEKS: timedelta(weeks=4),
         }
-        if self.run_immediately:
-            self.next_execution = datetime.now()
-        else:
+        if self.frequency:
             if not self.next_execution:
                 self.next_execution = datetime.now() + time_adds[self.frequency]
             else:
                 self.next_execution += time_adds[self.frequency]
+        else:
+            self.next_execution = None
+        self.save()
+        debug_exit(who_am_i(), getframeinfo(currentframe()).lineno)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            # Set the next execution when the IATI import has been created.
-            self.set_next_execution()
+        if self.run_immediately or self.frequency and not self.next_execution:
+            self.run_immediately = False
+            self.next_execution = datetime.now()
         super(IatiImport, self).save(*args, **kwargs)
 
     def it_is_time_to_execute(self):
+        debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
         return self.enabled and self.next_execution and self.next_execution < datetime.now()
 
     def check_execution(self):
@@ -185,9 +208,12 @@ class IatiImport(models.Model):
         :param job: an IatiImportJob object
         :return:
         """
-        from .iati_import_job import IatiImportJob
+        debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
+
         from .iati_import_log import IatiImportLog
 
+        if not self.enabled:
+            return
         job_model = self.job_model()
         try:
             job = job_model.objects.get(iati_import=self, status=LOG_ENTRY_TYPE.STATUS_PENDING)
@@ -203,7 +229,6 @@ class IatiImport(models.Model):
                 )
             return
         if self.run_immediately or self.it_is_time_to_execute():
-            self.run_immediately = False
             self.execute_import(job)
 
     def execute_import(self, job=None):
