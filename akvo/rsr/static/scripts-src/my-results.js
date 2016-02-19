@@ -396,21 +396,21 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        var checkboxId = "relative-checkbox-" + this.props.update.id;
-        var checkbox;
-        if (this.state.isRelative) {
-            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange, checked:true} ), " ", i18n.relative_data);
-        } else {
-            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange} ), " ", i18n.relative_data);
-        }
+        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
+        //var checkboxId = "relative-checkbox-" + this.props.update.id;
+        //var checkbox;
+        //if (this.state.isRelative) {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+        //} else {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+        //}
 
         if (this.editing()) {
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-6"}, 
                         React.DOM.label( {htmlFor:inputId}, i18n.new_actual_value),
-                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} ),
-                        checkbox
+                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
                     ),
                     React.DOM.div( {className:"col-xs-6"}, 
                         this.renderActualRelative()
@@ -1023,7 +1023,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         //    return (
         //        <span />
         //    );
-        ///}
+        //}
 
         return (
             React.DOM.span(null )

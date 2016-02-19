@@ -541,7 +541,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
                                related_name='data')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)
-    relative_data = models.BooleanField(_(u'relative data'), default=False)
+    relative_data = models.BooleanField(_(u'relative data'), default=True)
     data = ValidXMLCharField(_(u'data'), max_length=300)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,

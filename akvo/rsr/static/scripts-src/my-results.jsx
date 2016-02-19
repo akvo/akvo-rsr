@@ -396,13 +396,14 @@ var UpdateEntry = React.createClass({
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        var checkboxId = "relative-checkbox-" + this.props.update.id;
-        var checkbox;
-        if (this.state.isRelative) {
-            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
-        } else {
-            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
-        }
+        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
+        //var checkboxId = "relative-checkbox-" + this.props.update.id;
+        //var checkbox;
+        //if (this.state.isRelative) {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+        //} else {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+        //}
 
         if (this.editing()) {
             return (
@@ -410,7 +411,6 @@ var UpdateEntry = React.createClass({
                     <div className="col-xs-6">
                         <label htmlFor={inputId}>{i18n.new_actual_value}</label>
                         <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
-                        {checkbox}
                     </div>
                     <div className="col-xs-6">
                         {this.renderActualRelative()}
