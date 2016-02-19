@@ -1399,7 +1399,7 @@ var ResultEntry = React.createClass({displayName: 'ResultEntry',
             );
         }
     },
-
+    
     render: function() {
         var resultNavClass = "result-nav bg-transition";
         resultNavClass += this.expanded() ? " expanded" : "";
