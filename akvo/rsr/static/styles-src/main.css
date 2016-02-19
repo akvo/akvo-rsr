@@ -2267,24 +2267,26 @@ body.translationBarActive div.skiptranslate ~ #map {
     padding: 2em 0;
     position: relative;
     width: 100%;
-    margin-bottom: 55px; }
+    margin-bottom: 55px;
+    font-size: 110%; }
     .results .baseline .baseline-value,
     .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .periodValues .baseline-value,
     .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual {
       width: 50%;
       display: inline-block;
-      padding: 0 0 0 5px; }
-      .results .baseline .baseline-value span:first-child,
-      .results .baseline .baseline-year span:first-child, .results .baseline .period-target span:first-child, .results .baseline .period-actual span:first-child, .results .periodValues .baseline-value span:first-child,
-      .results .periodValues .baseline-year span:first-child, .results .periodValues .period-target span:first-child, .results .periodValues .period-actual span:first-child {
-        color: #818386;
+      padding: 0 0 0 15px; }
+      .results .baseline .baseline-value > span:first-child,
+      .results .baseline .baseline-year > span:first-child, .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .periodValues .baseline-value > span:first-child,
+      .results .periodValues .baseline-year > span:first-child, .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child {
+        color: rgba(32, 32, 36, 0.4);
         display: block; }
       .results .baseline .baseline-value span:nth-child(2),
       .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2),
       .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) {
         display: block;
-        font-weight: bold;
-        color: #515050; }
+        font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        color: rgba(32, 32, 36, 0.9); }
         .results .baseline .baseline-value span:nth-child(2) span,
         .results .baseline .baseline-year span:nth-child(2) span, .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span,
         .results .periodValues .baseline-year span:nth-child(2) span, .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span {
@@ -3366,9 +3368,11 @@ div#my-reports {
     -moz-border-radius: 15px;
     -o-border-radius: 15px;
     -webkit-border-radius: 15px;
-    border-radius: 15px; }
+    border-radius: 15px;
+    font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
     .period-td .badge:hover {
-      background-color: #2c2a74; }
+      background-color: #2c2a74;
+      cursor: pointer; }
   .period-td .result-tooltip {
     position: absolute;
     top: 55px;

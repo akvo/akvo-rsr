@@ -2768,19 +2768,21 @@ body {
         position: relative;
         width: 100%;
         margin-bottom: 55px;
+        font-size: 110%;
         .baseline-value,
         .baseline-year, .period-target, .period-actual {
             width: 50%;
             display: inline-block;
-            padding: 0 0 0 5px;
-            span:first-child {
-                color: rgb(129, 131, 134);
+            padding: 0 0 0 15px;
+            > span:first-child {
+                color: rgba($akvoBlack,0.4);
                 display: block;
             }
             span:nth-child(2) {
                 display: block;
-                font-weight: bold;
-                color: rgb(81, 80, 80);
+                font-family: $titleFont;
+                font-weight: 700;
+                color: rgba($akvoBlack, 0.9);
                 span {
                     display: inline;
                 }
@@ -4095,8 +4097,10 @@ div#my-reports {
             margin-top: -5px;
             padding: 5px 9px;
             @include border-radius(15px);
+            font-family: $scriptFont;
             &:hover {
                 background-color: $akvoPurple;
+                cursor: pointer;
             }
         }
         .result-tooltip {

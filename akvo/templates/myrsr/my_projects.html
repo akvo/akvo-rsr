@@ -73,7 +73,7 @@
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% else %}
-                 <li> <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
+                 <li> <a class="addUpdate disabled" title="{% trans "Can&#39;t update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
                  </ul>
                 {% endif %}
               </div>
