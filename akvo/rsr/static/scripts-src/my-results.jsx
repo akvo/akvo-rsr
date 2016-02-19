@@ -375,7 +375,7 @@ var UpdateEntry = React.createClass({
         var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
         var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
 
-        if (isNaN(updateData) || isNaN(relativeData) || relativeData === 0) {
+        if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 <div className="upActualValue">
                     <span className="update-actual-value-text">{i18n.actual_value}: </span>
@@ -383,8 +383,7 @@ var UpdateEntry = React.createClass({
                 </div>
             );
         } else {
-            var relativeDataText = this.props.selectedIndicator.baseline_value;
-            relativeDataText += relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
             return (
                 <div className="upActualValue">
                     <span className="update-actual-value-text">{i18n.actual_value}: </span>
@@ -410,7 +409,7 @@ var UpdateEntry = React.createClass({
             return (
                 <div className="row">
                     <div className="col-xs-6">
-                        <label htmlFor={inputId}>{i18n.new_actual_value}</label>
+                        <label htmlFor={inputId}>{i18n.actual_value}</label>
                         <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
                     </div>
                     <div className="col-xs-6">
@@ -722,7 +721,6 @@ var UpdatesList = React.createClass({
                             saveFileInUpdate: thisList.props.saveFileInUpdate,
                             saveCommentInUpdate: thisList.props.saveCommentInUpdate,
                             removeUpdate: thisList.props.removeUpdate,
-                            selectedIndicator: thisList.props.selectedIndicator,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             reloadPeriod: thisList.props.reloadPeriod,
@@ -795,6 +793,21 @@ var IndicatorPeriodMain = React.createClass({
 
     },
 
+    renderTargetComment: function() {
+        if (this.props.selectedPeriod.target_comment !== '') {
+            return (
+                <div className="period-target-comment">
+                    {i18n.target_comment}
+                    <span>{this.props.selectedPeriod.target_comment}</span>
+                </div>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
+    },
+
     renderPercentageComplete: function() {
         // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
         //
@@ -831,14 +844,11 @@ var IndicatorPeriodMain = React.createClass({
                         <div className="period-actual">
                             {i18n.actual_value}
                             <span>
-                                {this.props.selectedPeriod.actual_calculated}
+                                {this.props.selectedPeriod.actual_value}
                                 {this.renderPercentageComplete()}
                             </span>
                         </div>
-                        <div className="period-baseline">
-                            {i18n.baseline_value}
-                            <span>{this.props.selectedIndicator.baseline_value}</span>
-                        </div>
+                        {this.renderTargetComment()}
                     </div>
                     {React.createElement(UpdatesList, {
                         addEditingData: this.props.addEditingData,
@@ -848,7 +858,6 @@ var IndicatorPeriodMain = React.createClass({
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
                         removeUpdate: this.props.removeUpdate,
-                        selectedIndicator: this.props.selectedIndicator,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
@@ -916,11 +925,6 @@ var IndicatorPeriodEntry = React.createClass({
     switchPeriod: function() {
         var periodId = this.selected() ? null : this.props.period.id;
         this.props.selectPeriod(periodId);
-    },
-
-    switchPeriodAndUpdate: function() {
-        this.props.addNewUpdate(this.props.selectedPeriod.id);
-        this.switchPeriod();
     },
 
     renderPeriodDisplay: function() {
@@ -1043,7 +1047,7 @@ var IndicatorPeriodEntry = React.createClass({
                 {this.renderPeriodDisplay()}
                 <td className="target-td">{this.props.period.target_value}</td>
                 <td className="actual-td">
-                    {this.props.period.actual_calculated}
+                    {this.props.period.actual_value}
                     {this.renderPercentageComplete()}
                 </td>
                 {this.renderActions()}
@@ -1169,11 +1173,12 @@ var MainContent = React.createClass({
         this.setState({addingNewUpdate: true});
         var thisApp = this;
         var url = endpoints.base_url + endpoints.updates_and_comments;
+        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var data = JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': this.props.selectedPeriod.actual_calculated,
-            'period_actual_value': this.props.selectedPeriod.actual_calculated
+            'data': '0',
+            'period_actual_value': actualValue
         });
         var success = function(response) {
             thisApp.props.saveUpdateToPeriod(response, periodId);

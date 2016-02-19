@@ -13,8 +13,6 @@ from akvo.rsr.models import IndicatorPeriod
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
-    actual_calculated = serializers.Field(source='actual')
-    baseline_calculated = serializers.Field(source='baseline')
     parent_period = serializers.Field(source='parent_period.pk')
 
     class Meta:
@@ -24,8 +22,6 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
     data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False, allow_add_remove=True)
-    actual_calculated = serializers.Field(source='actual')
-    baseline_calculated = serializers.Field(source='baseline')
     parent_period = serializers.Field(source='parent_period.pk')
 
     class Meta:

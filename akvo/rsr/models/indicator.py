@@ -394,11 +394,8 @@ class IndicatorPeriod(models.Model):
         :param comment; String that represents the new actual comment data of the period (Optional)
         """
         try:
-            old_actual = self.actual
-            if isinstance(self.actual, Decimal) and relative_data:
-                self.actual_value = str(self.actual + Decimal(data))
-            elif not relative_data:
-                self.actual_value = data
+            old_actual = Decimal(self.actual_value or '0')
+            self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
             self.save(update_fields=['actual_value'])
 
             if comment:
@@ -407,8 +404,8 @@ class IndicatorPeriod(models.Model):
 
             # Update parent period
             parent = self.parent_period()
-            if parent and isinstance(self.actual, Decimal) and isinstance(old_actual, Decimal):
-                parent.update_actual_value(str(self.actual - old_actual), True)
+            if parent:
+                parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
             pass
 
@@ -562,7 +559,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Process approved data updates.
         """
         # Always copy the period's actual value to the period_actual_value field.
-        self.period_actual_value = str(self.period.actual)
+        self.period_actual_value = str(self.period.actual_value or '0')
 
         if not self.pk:
             # Newly added data update
@@ -645,7 +642,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
             # Don't allow to approve an update that has a different actual value of the period
             elif self.status == self.STATUS_APPROVED_CODE and \
-                    str(self.period_actual_value) != str(self.period.actual):
+                    str(self.period_actual_value) != str(self.period.actual_value or '0'):
                 validation_errors['period_actual_value'] = unicode(
                     _(u'The actual value of the period has changed (from {} to {}), please save '
                       u'the update first before approving it'.format(self.period_actual_value,

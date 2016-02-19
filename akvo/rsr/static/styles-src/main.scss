@@ -2770,9 +2770,9 @@ body {
         margin-bottom: 55px;
         font-size: 110%;
         .baseline-value, .baseline-year,
-        .period-target, .period-actual, .period-baseline {
+        .period-target, .period-actual, .period-target-comment {
             display: inline-block;
-            padding: 0 0 0 15px;
+            padding: 0 0 10px 15px;
             > span:first-child {
                 color: rgba($akvoBlack,0.4);
                 display: block;
@@ -2790,17 +2790,18 @@ body {
                 }
             }
         }
-        .baseline-value, .baseline-year {
-            width: 50%;
-        }
-        .period-target, .period-actual, .period-baseline {
-            width: 33.3333%;
-        }
         .baseline-value, .period-target {
+            width: 50%;
             float: left;
         }
-        .baseline-year, .period-baseline {
+        .baseline-year, .period-actual {
+            width: 50%;
             float: right;
+        }
+        .period-target-comment {
+            width: 100%;
+            float: left;
+            padding: 0 0 40px 15px;
         }
     }
     .sidebar {

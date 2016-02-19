@@ -375,7 +375,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
         var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
 
-        if (isNaN(updateData) || isNaN(relativeData) || relativeData === 0) {
+        if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 React.DOM.div( {className:"upActualValue"}, 
                     React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
@@ -383,8 +383,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                 )
             );
         } else {
-            var relativeDataText = this.props.selectedIndicator.baseline_value;
-            relativeDataText += relativeData > 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
             return (
                 React.DOM.div( {className:"upActualValue"}, 
                     React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
@@ -410,7 +409,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-6"}, 
-                        React.DOM.label( {htmlFor:inputId}, i18n.new_actual_value),
+                        React.DOM.label( {htmlFor:inputId}, i18n.actual_value),
                         React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
                     ),
                     React.DOM.div( {className:"col-xs-6"}, 
@@ -722,7 +721,6 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
                             saveFileInUpdate: thisList.props.saveFileInUpdate,
                             saveCommentInUpdate: thisList.props.saveCommentInUpdate,
                             removeUpdate: thisList.props.removeUpdate,
-                            selectedIndicator: thisList.props.selectedIndicator,
                             selectedPeriod: thisList.props.selectedPeriod,
                             selectPeriod: thisList.props.selectPeriod,
                             reloadPeriod: thisList.props.reloadPeriod,
@@ -795,6 +793,21 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
 
     },
 
+    renderTargetComment: function() {
+        if (this.props.selectedPeriod.target_comment !== '') {
+            return (
+                React.DOM.div( {className:"period-target-comment"}, 
+                    i18n.target_comment,
+                    React.DOM.span(null, this.props.selectedPeriod.target_comment)
+                )
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
+    },
+
     renderPercentageComplete: function() {
         // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
         //
@@ -831,14 +844,11 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         React.DOM.div( {className:"period-actual"}, 
                             i18n.actual_value,
                             React.DOM.span(null, 
-                                this.props.selectedPeriod.actual_calculated,
+                                this.props.selectedPeriod.actual_value,
                                 this.renderPercentageComplete()
                             )
                         ),
-                        React.DOM.div( {className:"period-baseline"}, 
-                            i18n.baseline_value,
-                            React.DOM.span(null, this.props.selectedIndicator.baseline_value)
-                        )
+                        this.renderTargetComment()
                     ),
                     React.createElement(UpdatesList, {
                         addEditingData: this.props.addEditingData,
@@ -848,7 +858,6 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         saveFileInUpdate: this.props.saveFileInUpdate,
                         saveCommentInUpdate: this.props.saveCommentInUpdate,
                         removeUpdate: this.props.removeUpdate,
-                        selectedIndicator: this.props.selectedIndicator,
                         selectedPeriod: this.props.selectedPeriod,
                         selectPeriod: this.props.selectPeriod,
                         reloadPeriod: this.props.reloadPeriod
@@ -916,11 +925,6 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
     switchPeriod: function() {
         var periodId = this.selected() ? null : this.props.period.id;
         this.props.selectPeriod(periodId);
-    },
-
-    switchPeriodAndUpdate: function() {
-        this.props.addNewUpdate(this.props.selectedPeriod.id);
-        this.switchPeriod();
     },
 
     renderPeriodDisplay: function() {
@@ -1043,7 +1047,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                 this.renderPeriodDisplay(),
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
                 React.DOM.td( {className:"actual-td"}, 
-                    this.props.period.actual_calculated,
+                    this.props.period.actual_value,
                     this.renderPercentageComplete()
                 ),
                 this.renderActions()
@@ -1169,11 +1173,12 @@ var MainContent = React.createClass({displayName: 'MainContent',
         this.setState({addingNewUpdate: true});
         var thisApp = this;
         var url = endpoints.base_url + endpoints.updates_and_comments;
+        var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
         var data = JSON.stringify({
             'period': periodId,
             'user': user.id,
-            'data': this.props.selectedPeriod.actual_calculated,
-            'period_actual_value': this.props.selectedPeriod.actual_calculated
+            'data': '0',
+            'period_actual_value': actualValue
         });
         var success = function(response) {
             thisApp.props.saveUpdateToPeriod(response, periodId);
