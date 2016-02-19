@@ -938,7 +938,7 @@ var IndicatorPeriodEntry = React.createClass({
             if (this.props.parent || this.props.child) {
                 var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                 return (
-                    <td className="period-td">
+                    <td className="period-td parentProject">
                         <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
                             {periodDisplay}
                         </a> {pendingUpdates} {hover}
@@ -965,13 +965,13 @@ var IndicatorPeriodEntry = React.createClass({
                     if (this.props.parent || this.props.child) {
                         projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                         return (
-                            <td className="actions-td">
+                            <td className="actions-td childProject">
                                 <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
                             </td>
                         );
                     } else {
                         return (
-                            <td className="actions-td">
+                            <td className="actions-td childProject">
                                 <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
                             </td>
                         );
@@ -1421,7 +1421,7 @@ var ResultEntry = React.createClass({
             );
         }
     },
-
+    
     render: function() {
         var resultNavClass = "result-nav bg-transition";
         resultNavClass += this.expanded() ? " expanded" : "";

@@ -46,7 +46,7 @@ body {
   line-height: 1.42857;
   text-rendering: optimizelegibility;
   font-family: 'Poppins', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
-  padding-top: 80px; }
+  padding-top: 75px; }
   @media only screen and (max-width: 768px) {
     body {
       padding-top: 65px; } }
@@ -596,15 +596,13 @@ nav.navbar-fixed-top {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
-.myProjectList div.projectListMenu a, #updates div.projectListMenu a, #user_table div.projectListMenu a {
-  margin-right: 25px; }
-  .myProjectList div.projectListMenu a:last-child, #updates div.projectListMenu a:last-child, #user_table div.projectListMenu a:last-child {
+.myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+  display: inline-block; }
+  @media only screen and (max-width: 992px) {
+    .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+      display: block; } }
+  .myProjectList div.projectListMenu ul li a:last-child, #updates div.projectListMenu ul li a:last-child, #user_table div.projectListMenu ul li a:last-child {
     margin-right: 0; }
-@media only screen and (min-width: 1200px) {
-  .myProjectList div.projectListMenu, #updates div.projectListMenu, #user_table div.projectListMenu {
-    min-width: 170px; } }
-.myProjectList div.projectListMenu > a, #updates div.projectListMenu > a, #user_table div.projectListMenu > a {
-  min-width: 70px; }
 .myProjectList a:last-child, #updates a:last-child, #user_table a:last-child {
   margin-right: 0; }
 .myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled, #user_table a.addUpdate.disabled {
@@ -795,7 +793,7 @@ footer .navbar {
 
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
-  margin-top: -15px; }
+  margin-top: -10px; }
   @media only screen and (max-width: 768px) {
     .touch-navbar {
       margin-top: -15px; } }
@@ -2056,7 +2054,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     color: white;
     border: none; }
     .resultProjectTitle button:hover {
-      background: #2c2a74; }
+      background: #2c2a74;
+      color: white; }
 
 .results {
   position: relative;
@@ -2104,18 +2103,20 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     padding: 2em 0;
     position: relative;
     width: 100%;
-    margin-bottom: 55px; }
+    margin-bottom: 55px;
+    font-size: 110%; }
     .results .baseline .baseline-value, .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .periodValues .baseline-value, .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual {
       width: 50%;
       display: inline-block;
-      padding: 0 0 0 5px; }
-      .results .baseline .baseline-value span:first-child, .results .baseline .baseline-year span:first-child, .results .baseline .period-target span:first-child, .results .baseline .period-actual span:first-child, .results .periodValues .baseline-value span:first-child, .results .periodValues .baseline-year span:first-child, .results .periodValues .period-target span:first-child, .results .periodValues .period-actual span:first-child {
-        color: #818386;
+      padding: 0 0 0 15px; }
+      .results .baseline .baseline-value > span:first-child, .results .baseline .baseline-year > span:first-child, .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .periodValues .baseline-value > span:first-child, .results .periodValues .baseline-year > span:first-child, .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child {
+        color: rgba(32, 32, 36, 0.4);
         display: block; }
       .results .baseline .baseline-value span:nth-child(2), .results .baseline .baseline-year span:nth-child(2), .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2), .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) {
         display: block;
-        font-weight: bold;
-        color: #515050; }
+        font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        color: rgba(32, 32, 36, 0.9); }
         .results .baseline .baseline-value span:nth-child(2) span, .results .baseline .baseline-year span:nth-child(2) span, .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span, .results .periodValues .baseline-year span:nth-child(2) span, .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span {
           display: inline; }
         .results .baseline .baseline-value span:nth-child(2) span:nth-child(2), .results .baseline .baseline-year span:nth-child(2) span:nth-child(2), .results .baseline .period-target span:nth-child(2) span:nth-child(2), .results .baseline .period-actual span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2) span:nth-child(2), .results .periodValues .period-target span:nth-child(2) span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) span:nth-child(2) {
@@ -2188,7 +2189,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
           .results .sidebar .result-nav .result-nav-summary h3.result-title {
             position: relative;
             box-sizing: border-box;
-            font-weight: 700; }
+            font-weight: 400; }
             .results .sidebar .result-nav .result-nav-summary h3.result-title .fa {
               float: right;
               font-size: 1.3em;
@@ -2380,7 +2381,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
               .results .indicator-container .indicator-group .table td.period-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.actual-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.target-td .tooltip .tooltip-arrow, .results .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
                 left: 77.4336%; }
           .results .indicator-container .indicator-group .table td.period-td {
-            color: rgba(153, 153, 153, 0.5); }
+            color: rgba(153, 153, 153, 0.5);
+            position: relative; }
+            .results .indicator-container .indicator-group .table td.period-td .result-tooltip {
+              position: absolute;
+              top: 0; }
           .results .indicator-container .indicator-group .table td.indicator-bar-td {
             width: 55%; }
         .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-up {
@@ -3146,3 +3151,62 @@ div#my-reports {
 
 .results-list div:last-child .result-nav {
   border-bottom: none; }
+
+.period-td {
+  color: rgba(153, 153, 153, 0.5);
+  position: relative; }
+  .period-td .badge {
+    background-color: #202024;
+    -moz-transition: all 0.1s linear;
+    -o-transition: all 0.1s linear;
+    -webkit-transition: all 0.1s linear;
+    transition: all 0.1s linear;
+    margin-top: -5px;
+    padding: 5px 9px;
+    -moz-border-radius: 15px;
+    -o-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
+    .period-td .badge:hover {
+      background-color: #2c2a74;
+      cursor: pointer; }
+  .period-td .result-tooltip {
+    position: absolute;
+    top: 55px;
+    left: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(153, 153, 153, 0.8);
+    color: #202024;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px; }
+    .period-td .result-tooltip .tooltip-inner {
+      background: rgba(255, 255, 255, 0.5);
+      color: #202024; }
+    .period-td .result-tooltip .tooltip-arrow {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(153, 153, 153, 0.8);
+      right: 8px;
+      top: -2px; }
+      .period-td .result-tooltip .tooltip-arrow:after, .period-td .result-tooltip .tooltip-arrow:before {
+        bottom: 100%;
+        left: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none; }
+      .period-td .result-tooltip .tooltip-arrow:after {
+        border-color: rgba(136, 183, 213, 0);
+        border-bottom-color: rgba(153, 153, 153, 0.5);
+        border-width: 7px;
+        margin-left: -7px; }
+      .period-td .result-tooltip .tooltip-arrow:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-bottom-color: rgba(153, 153, 153, 0.5);
+        border-width: 8px;
+        margin-left: -8px; }
