@@ -19,7 +19,7 @@ body {
     line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
-    padding-top: 80px;
+    padding-top: 75px;
     @include responsive(small-max-screens) {
         padding-top: 65px;
     }
@@ -701,17 +701,24 @@ nav.navbar-fixed-top {
         }
     }
     div.projectListMenu {
-        a {
-            margin-right: 25px;
-            &:last-child {
-                margin-right: 0;
+        ul {              
+            li {
+                display: inline-block;
+                @include responsive (mediums-max-screens) {
+                    display: block;
+                }
+                @include responsive (small-max-screens) {
+                }                       
+                a {
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+                @include responsive (wide-screens) {
+                }
+                > a {
+                }
             }
-        }
-        @include responsive (wide-screens) {
-            min-width: 170px;
-        }
-        > a {
-            min-width: 70px;
         }
     }
     a {
@@ -963,7 +970,7 @@ footer {
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
-    margin-top: -15px;
+    margin-top: -10px;
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
@@ -2712,6 +2719,7 @@ body {
         border: none;
         &:hover {
             background: $rsrBlue;
+            color: white;
         }
     }
 }
@@ -2851,7 +2859,7 @@ body {
                     &.result-title {
                         position: relative;
                         box-sizing: border-box;
-                        font-weight: 700;
+                        font-weight: 400;
                         .fa {
                             float: right;
                             font-size: 1.3em;
@@ -3118,6 +3126,11 @@ body {
                     }
                     &.period-td {
                         color: rgba($primary4, 0.5);
+                        position: relative;
+                        .result-tooltip {
+                            position: absolute;
+                            top: 0;
+                        }
                     }
                     &.indicator-bar-td {
                         width: 55%;
@@ -4073,3 +4086,60 @@ div#my-reports {
         }
     }
 }
+.period-td {
+        color: rgba($primary4, 0.5);
+        position: relative;
+        .badge {
+            background-color: $akvoBlack;
+            @include transition(all 0.1s linear);
+            margin-top: -5px;
+            padding: 5px 9px;
+            @include border-radius(15px);
+            &:hover {
+                background-color: $akvoPurple;
+            }
+        }
+        .result-tooltip {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background: rgba(white, 0.5);
+            border: 1px solid  rgba($primary4, 0.8);
+            color: $akvoBlack;
+            @include border-radius(4px);
+            .tooltip-inner {
+                background: rgba(white, 0.5);
+                color: $akvoBlack;
+                }
+            .tooltip-arrow {
+                position: absolute;
+                background: rgba(white, 0.5);
+                border: 1px solid  rgba($primary4, 0.8);
+                right: 8px;
+                top: -2px;
+                &:after, &:before {
+                    bottom: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    }
+
+                &:after {
+                    border-color: rgba(136, 183, 213, 0);
+                    border-bottom-color: rgba($primary4, 0.5);
+                    border-width: 7px;
+                    margin-left: -7px;
+                }
+                &:before {
+                    border-color: rgba(194, 225, 245, 0);
+                    border-bottom-color:  rgba($primary4, 0.5);
+                    border-width: 8px;
+                    margin-left: -8px;
+                }
+            }
+        }
+    }
