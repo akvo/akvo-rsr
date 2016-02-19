@@ -1024,21 +1024,15 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
     },
 
     renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages
-        //
-        //if (this.props.period.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
-
-        return (
-            React.DOM.span(null )
-        );
+        if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                React.DOM.span( {className:"percentage-complete"},  " (",this.props.period.percent_accomplishment,"%)")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
     },
 
     render: function() {
