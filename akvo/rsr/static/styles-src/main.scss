@@ -605,6 +605,7 @@ nav.navbar-fixed-top {
             li {
                 display: inline;
                 a {
+                    color: $akvoBlack;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
@@ -649,19 +650,21 @@ nav.navbar-fixed-top {
 .indicator-period-list {
     &.parentProject, &.childProject {
         margin-top: 50px;
-        padding:0 5px 5px 5px;
+        padding: 5px;
         border: 1px solid rgba($akvoPurple, 0.1);
         .relatedInfo {
-            font-style: italic;
-            font-family: $scriptFont;
-            font-size: 150%;
-            color: white;
-            background: rgba($akvoPurple, 0.7);
-            padding: 3px 7px;
+            font-size: 110%;
+            background: rgba($akvoPurple, 0.1);
+            color: $akvoPurple;
+            padding: 7px;
             margin-left: -5px;
-            @include border-radius(0 0 5px 0);
+            @include border-radius(0 0 10px 0);
+        }
+        .relatedInfoProjectTitle {
+            display: none;
+            margin-top: 15px;
             + .indicator-periods-title {
-                margin-top:15px;
+                margin-top: 15px;
             }
         }
     }
@@ -2798,7 +2801,7 @@ body {
             display: inline-block;
             padding: 0 0 10px 15px;
             > span:first-child {
-                color: rgba($akvoBlack,0.4);
+                color: rgba($akvoBlack,0.7);
                 display: block;
             }
             span:nth-child(2) {
@@ -2853,7 +2856,7 @@ body {
             &:last-child {}
         }
         .result-nav-header {
-            background: rgba($akvoBlack, 0);
+            background: rgba($akvoPurple, 0);
             h3 {
                 color: rgba(white, 1);
                 display: inline-block;
@@ -2862,7 +2865,7 @@ body {
                 position: relative;
                 padding: 5px 10px;
                 margin-top: 0;
-                background: rgba($rsrBlue2, 1);
+                background: rgba($akvoPurple, 1);
                 margin-bottom: 0;
                 @include border-radius(8px 8px 0 0);
                 > a {
@@ -2980,6 +2983,9 @@ body {
                             border-bottom: 2px solid white;
                             &:hover {
                                 background: rgba($akvoPurple, 0.5);
+                                h4 {
+                                    color:white;
+                                }
                             }
                             &.active {
                                 background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
@@ -2987,7 +2993,6 @@ body {
                                 background-size: 5% auto;
                                 h4 {
                                     color: white;
-                                    font-weight: bold;
                                 }
                             }
                             &:last-child {
@@ -2999,7 +3004,6 @@ body {
                                 font-size: 1em;
                                 color: $akvoPurple;
                                 margin-bottom: 1px;
-                                font-family: $bodyFont;
                                 line-height: 150%;
                                 padding-left: 15px;
                             }
@@ -3147,6 +3151,11 @@ body {
                     &.target-td,
                     &.actions-td {
                         white-space: nowrap;
+                    }
+                    &.target-td {
+                        font-weight: bold;
+                    }
+                    &.actions-td {
                         .tooltip {
                             top: -170px;
                             left: 132.703px;
@@ -3157,8 +3166,8 @@ body {
                         }
                     }
                     &.period-td {
-                        color: rgba($primary4, 0.5);
-                        position: relative;
+                        color: rgba($akvoBlack, 0.6);
+                        position: relative; 
                         .result-tooltip {
                             position: absolute;
                             top: 0;
@@ -3458,7 +3467,7 @@ body {
                 }
                 .update-created-at {
                     margin-left: 15px;
-                    color: rgba($akvoBlack, 0.5);
+                    color: rgba($akvoBlack, 0.7);
                 }
                 .update-status {
                     color: $akvoTvRed;
@@ -3538,7 +3547,7 @@ body {
                 margin-top: 47px;
                 margin-bottom: 15px;
                 .update-actual-value-text {
-                    color: rgba($akvoBlack, 0.4);
+                    color: rgba($akvoBlack, 0.7);
                 }
                 .update-actual-value-data {
                     font-weight: bold;
@@ -4119,7 +4128,7 @@ div#my-reports {
     }
 }
 .period-td {
-        color: rgba($primary4, 0.5);
+        color: rgba($akvoBlack, 0.6);
         position: relative;
         .badge {
             background-color: $akvoBlack;

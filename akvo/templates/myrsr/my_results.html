@@ -6,7 +6,7 @@
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle">
-        <span>{% trans 'Project' %}:</span> <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
+        <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
         <a href="{% url 'project_editor' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-pencil-square-o"></i> {% trans 'Edit project' %}</button></a>
     </h4>
     {% if not project.is_impact_project %}
