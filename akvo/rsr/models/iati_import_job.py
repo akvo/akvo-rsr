@@ -499,10 +499,6 @@ class CordaidZipIatiImportJob(IatiImportJob):
         :return: True if all's well, False if not
         """
         try:
-            # TODO: there seems to be a bug here that I don't understand. When running this I get the
-            # error "*** error: Error -3 while decompressing: invalid stored block lengths" when
-            # parse_xml is called the second time, meaning when the iati-activites.xml is to be
-            # parsed. And I just don't get it :(
             parsed_xml = etree.parse(xml_file)
         except Exception as e:
             self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
