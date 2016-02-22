@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0053_auto_20160208_1218'),
+        ('rsr', '0056_auto_20160219_1007'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='iatiimport',
             name='enabled',
-            field=models.BooleanField(default=False, help_text=b'Set to enable running of this import.', verbose_name='scheduled importing enabled'),
+            field=models.BooleanField(default=False, help_text=b'Set to enable running of this import.', verbose_name='importing enabled'),
             preserve_default=True,
         ),
         migrations.AlterField(
