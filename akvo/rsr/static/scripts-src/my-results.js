@@ -1023,6 +1023,14 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         }
     },
 
+    renderActualValue: function() {
+        var actualValue = this.props.period.actual_value;
+        if (this.props.selectedIndicator.measure === '2') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
     renderPercentageComplete: function() {
         if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
             return (
@@ -1041,7 +1049,7 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
                 this.renderPeriodDisplay(),
                 React.DOM.td( {className:"target-td"}, this.props.period.target_value),
                 React.DOM.td( {className:"actual-td"}, 
-                    this.props.period.actual_value,
+                    this.renderActualValue(),
                     this.renderPercentageComplete()
                 ),
                 this.renderActions()
@@ -1143,8 +1151,7 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 
         return (
             React.DOM.div( {className:relatedClass}, 
-                React.DOM.span( {className:"relatedInfo"}, relatedIndication),
-                React.DOM.span( {className:"relatedInfoProjectTitle"}, relatedProjectTitle),
+                React.DOM.span( {className:"relatedInfo"}, relatedIndication,": ", relatedProjectTitle),
                 React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
                 this.renderBaseline(),
                 React.DOM.table( {className:"table table-responsive"}, 

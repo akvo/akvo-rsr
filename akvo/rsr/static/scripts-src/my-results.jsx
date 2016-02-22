@@ -1151,8 +1151,7 @@ var IndicatorPeriodList = React.createClass({
 
         return (
             <div className={relatedClass}>
-                <span className="relatedInfo">{relatedIndication}</span>
-                <span className="relatedInfoProjectTitle">{relatedProjectTitle}</span>
+                <span className="relatedInfo">{relatedIndication}: {relatedProjectTitle}</span>
                 <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
                 {this.renderBaseline()}
                 <table className="table table-responsive">
