@@ -1193,7 +1193,7 @@ admin.site.register(get_model('rsr', 'IatiImportJob'), IatiImportJobAdmin)
 class IatiImportJobInline(admin.TabularInline):
     model = get_model('rsr', 'IatiImportJob')
     # fk_name = 'iati_import'
-    fields = ('admin_url', 'status', 'sha1_hexdigest',)
+    fields = ('admin_url', 'status', 'iati_xml_file', 'sha1_hexdigest',)
     readonly_fields = ('admin_url', 'status', 'sha1_hexdigest',)
     extra = 0
 

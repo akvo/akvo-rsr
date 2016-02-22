@@ -124,4 +124,3 @@ class Organisations(ImportMapper):
 
         self.set_logo(organisation, identifier)
         return organisation, changes, created
-
