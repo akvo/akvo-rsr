@@ -808,22 +808,32 @@ var IndicatorPeriodMain = React.createClass({
         }
     },
 
-    renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
-        //
-        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
+    renderTargetValue: function() {
+        var targetValue = this.props.selectedPeriod.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
 
-        return (
-            <span />
-        );
+    renderActualValue: function() {
+        var actualValue = this.props.selectedPeriod.actual_value;
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
+    renderPercentageComplete: function() {
+        if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
     },
 
     render: function() {
@@ -839,12 +849,12 @@ var IndicatorPeriodMain = React.createClass({
                     <div className="periodValues">
                         <div className="period-target">
                             {i18n.target_value}
-                            <span>{this.props.selectedPeriod.target_value}</span>
+                            <span>{this.renderTargetValue()}</span>
                         </div>
                         <div className="period-actual">
                             {i18n.actual_value}
                             <span>
-                                {this.props.selectedPeriod.actual_value}
+                                <span>{this.renderActualValue()}</span>
                                 {this.renderPercentageComplete()}
                             </span>
                         </div>
@@ -1023,9 +1033,17 @@ var IndicatorPeriodEntry = React.createClass({
         }
     },
 
+    renderTargetValue: function() {
+        var targetValue = this.props.period.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
+
     renderActualValue: function() {
         var actualValue = this.props.period.actual_value;
-        if (this.props.selectedIndicator.measure === '2') {
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
             actualValue += '%';
         }
         return actualValue;
@@ -1047,7 +1065,9 @@ var IndicatorPeriodEntry = React.createClass({
         return (
             <tr>
                 {this.renderPeriodDisplay()}
-                <td className="target-td">{this.props.period.target_value}</td>
+                <td className="target-td">
+                    {this.renderTargetValue()}
+                </td>
                 <td className="actual-td">
                     {this.renderActualValue()}
                     {this.renderPercentageComplete()}
@@ -1077,6 +1097,10 @@ var IndicatorPeriodList = React.createClass({
             baselineValue = this.props.selectedIndicator.baseline_value;
 
         if (!(baselineYear === null && baselineValue === '')) {
+            if (this.props.selectedIndicator.measure === '2') {
+                baselineValue += '%';
+            }
+
             return (
                 <div className="baseline">
                     <div className="baseline-year">
@@ -1136,22 +1160,21 @@ var IndicatorPeriodList = React.createClass({
             relatedProjectTitle;
 
         if (this.props.parent) {
-            relatedIndication = i18n.parent_project;
             relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
+            relatedIndication = i18n.parent_project + ': ' + relatedProjectTitle;
             relatedClass += "parentProject";
         } else if (this.props.child) {
-            relatedIndication = i18n.child_project;
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
+            relatedIndication = i18n.child_project + ': ' + relatedProjectTitle;
             relatedClass += "childProject";
         } else {
             relatedIndication = '';
-            relatedProjectTitle = '';
             relatedClass += "selfProject";
         }
 
         return (
             <div className={relatedClass}>
-                <span className="relatedInfo">{relatedIndication}: {relatedProjectTitle}</span>
+                <span className="relatedInfo">{relatedIndication}</span>
                 <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
                 {this.renderBaseline()}
                 <table className="table table-responsive">

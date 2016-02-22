@@ -808,22 +808,32 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         }
     },
 
-    renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
-        //
-        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
+    renderTargetValue: function() {
+        var targetValue = this.props.selectedPeriod.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
 
-        return (
-            React.DOM.span(null )
-        );
+    renderActualValue: function() {
+        var actualValue = this.props.selectedPeriod.actual_value;
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
+    renderPercentageComplete: function() {
+        if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
     },
 
     render: function() {
@@ -839,12 +849,12 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                     React.DOM.div( {className:"periodValues"}, 
                         React.DOM.div( {className:"period-target"}, 
                             i18n.target_value,
-                            React.DOM.span(null, this.props.selectedPeriod.target_value)
+                            React.DOM.span(null, this.renderTargetValue())
                         ),
                         React.DOM.div( {className:"period-actual"}, 
                             i18n.actual_value,
                             React.DOM.span(null, 
-                                this.props.selectedPeriod.actual_value,
+                                React.DOM.span(null, this.renderActualValue()),
                                 this.renderPercentageComplete()
                             )
                         ),
@@ -1023,9 +1033,17 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         }
     },
 
+    renderTargetValue: function() {
+        var targetValue = this.props.period.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
+
     renderActualValue: function() {
         var actualValue = this.props.period.actual_value;
-        if (this.props.selectedIndicator.measure === '2') {
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
             actualValue += '%';
         }
         return actualValue;
@@ -1047,7 +1065,9 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         return (
             React.DOM.tr(null, 
                 this.renderPeriodDisplay(),
-                React.DOM.td( {className:"target-td"}, this.props.period.target_value),
+                React.DOM.td( {className:"target-td"}, 
+                    this.renderTargetValue()
+                ),
                 React.DOM.td( {className:"actual-td"}, 
                     this.renderActualValue(),
                     this.renderPercentageComplete()
@@ -1077,6 +1097,10 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
             baselineValue = this.props.selectedIndicator.baseline_value;
 
         if (!(baselineYear === null && baselineValue === '')) {
+            if (this.props.selectedIndicator.measure === '2') {
+                baselineValue += '%';
+            }
+
             return (
                 React.DOM.div( {className:"baseline"}, 
                     React.DOM.div( {className:"baseline-year"}, 
@@ -1136,22 +1160,21 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
             relatedProjectTitle;
 
         if (this.props.parent) {
-            relatedIndication = i18n.parent_project;
             relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
+            relatedIndication = i18n.parent_project + ': ' + relatedProjectTitle;
             relatedClass += "parentProject";
         } else if (this.props.child) {
-            relatedIndication = i18n.child_project;
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
+            relatedIndication = i18n.child_project + ': ' + relatedProjectTitle;
             relatedClass += "childProject";
         } else {
             relatedIndication = '';
-            relatedProjectTitle = '';
             relatedClass += "selfProject";
         }
 
         return (
             React.DOM.div( {className:relatedClass}, 
-                React.DOM.span( {className:"relatedInfo"}, relatedIndication,": ", relatedProjectTitle),
+                React.DOM.span( {className:"relatedInfo"}, relatedIndication),
                 React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
                 this.renderBaseline(),
                 React.DOM.table( {className:"table table-responsive"}, 
