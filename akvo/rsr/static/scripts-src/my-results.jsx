@@ -1023,22 +1023,24 @@ var IndicatorPeriodEntry = React.createClass({
         }
     },
 
-    renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages
-        //
-        //if (this.props.period.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
+    renderActualValue: function() {
+        var actualValue = this.props.period.actual_value;
+        if (this.props.selectedIndicator.measure === '2') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
 
-        return (
-            <span />
-        );
+    renderPercentageComplete: function() {
+        if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                <span className="percentage-complete"> ({this.props.period.percent_accomplishment}%)</span>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
     },
 
     render: function() {
@@ -1047,7 +1049,7 @@ var IndicatorPeriodEntry = React.createClass({
                 {this.renderPeriodDisplay()}
                 <td className="target-td">{this.props.period.target_value}</td>
                 <td className="actual-td">
-                    {this.props.period.actual_value}
+                    {this.renderActualValue()}
                     {this.renderPercentageComplete()}
                 </td>
                 {this.renderActions()}

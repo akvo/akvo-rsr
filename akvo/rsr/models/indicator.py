@@ -402,38 +402,31 @@ class IndicatorPeriod(models.Model):
                 self.actual_comment = comment
                 self.save(update_fields=['actual_comment'])
 
-            # Update parent period
+            # Update parent period (if not percentages)
             parent = self.parent_period()
-            if parent:
+            if parent and self.indicator.measure != '2':
                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
             pass
 
-    # OLD CODE: might be re-used later, if we're clear on how to calculate percentages
-    #
-    # @property
-    # def percent_accomplishment(self):
-    #     """
-    #     Return the percentage completed for this indicator period. If not possible to convert the
-    #     values to numbers, return None.
-    #     """
-    #     if isinstance(self.target, Decimal) and isinstance(self.actual, Decimal) and \
-    #             isinstance(self.baseline, Decimal):
-    #         try:
-    #             return round((self.actual - self.baseline) / (self.target - self.baseline) * 100, 1)
-    #         except DivisionByZero:
-    #             return round(self.actual / self.target * 100, 1) if self.target > 0 else None
-    #         except (InvalidOperation, TypeError):
-    #             return None
-    #     return None
-    #
-    # @property
-    # def percent_accomplishment_100(self):
-    #     """
-    #     Similar to the percent_accomplishment property. However, it won't return any number bigger
-    #     than 100.
-    #     """
-    #     return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
+    @property
+    def percent_accomplishment(self):
+        """
+        Return the percentage completed for this indicator period. If not possible to convert the
+        values to numbers, return None.
+        """
+        try:
+            return round(Decimal(self.actual_value) / Decimal(self.target_value) * 100, 1)
+        except (InvalidOperation, TypeError, DivisionByZero):
+            return None
+
+    @property
+    def percent_accomplishment_100(self):
+        """
+        Similar to the percent_accomplishment property. However, it won't return any number bigger
+        than 100.
+        """
+        return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
 
     @property
     def actual(self):
