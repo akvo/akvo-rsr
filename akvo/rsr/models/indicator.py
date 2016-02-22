@@ -13,6 +13,7 @@ from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_sen
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.exceptions import FieldError, ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -341,6 +342,7 @@ class IndicatorPeriod(models.Model):
         if self.is_child_period():
             matching_periods = IndicatorPeriod.objects.filter(
                 indicator__result=self.indicator.result.parent_result,
+                indicator__title=self.indicator.title,
                 period_start=self.period_start,
                 period_end=self.period_end
             )
@@ -361,6 +363,7 @@ class IndicatorPeriod(models.Model):
         child_results = self.indicator.result.child_results.all()
         return IndicatorPeriod.objects.filter(
             indicator__result__in=child_results,
+            indicator__title=self.indicator.title,
             period_start=self.period_start,
             period_end=self.period_end
         )
@@ -381,21 +384,30 @@ class IndicatorPeriod(models.Model):
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
 
-    def update_actual_value(self, data, relative_data):
+    def update_actual_value(self, data, relative_data, comment=''):
         """
         Updates the actual value of this period and related periods (parent period and next period).
 
         :param data; String or Integer that represents the new actual value data of the period
         :param relative_data; Boolean indicating whether the data should be updated based on the
         relative value of the current actual value (True) or overwrite the actual value (False)
+        :param comment; String that represents the new actual comment data of the period (Optional)
         """
-        self.actual_value = str(self.actual + Decimal(data)) if relative_data else data
-        self.save(update_fields=['actual_value'])
+        try:
+            old_actual = Decimal(self.actual_value or '0')
+            self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
+            self.save(update_fields=['actual_value'])
 
-        # Update parent period
-        parent = self.parent_period()
-        if parent:
-            parent.update_actual_value(data, relative_data)
+            if comment:
+                self.actual_comment = comment
+                self.save(update_fields=['actual_comment'])
+
+            # Update parent period (if not percentages)
+            parent = self.parent_period()
+            if parent and self.indicator.measure != '2':
+                parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
+        except (InvalidOperation, TypeError):
+            pass
 
     @property
     def percent_accomplishment(self):
@@ -403,15 +415,8 @@ class IndicatorPeriod(models.Model):
         Return the percentage completed for this indicator period. If not possible to convert the
         values to numbers, return None.
         """
-        if not (self.target_value and self.actual_value):
-            return None
-
         try:
-            return round(
-                (Decimal(self.actual_value) - Decimal(self.baseline)) /
-                (Decimal(self.target_value) - Decimal(self.baseline)) *
-                100, 1
-            )
+            return round(Decimal(self.actual_value) / Decimal(self.target_value) * 100, 1)
         except (InvalidOperation, TypeError, DivisionByZero):
             return None
 
@@ -421,31 +426,29 @@ class IndicatorPeriod(models.Model):
         Similar to the percent_accomplishment property. However, it won't return any number bigger
         than 100.
         """
-        if self.percent_accomplishment and self.percent_accomplishment > 100:
-            return 100
-        return self.percent_accomplishment
+        return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
 
     @property
     def actual(self):
         """
         Returns the actual value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return 0.
+        Otherwise it'll return the baseline value, which is a calculated value.
         """
         try:
             return Decimal(self.actual_value)
         except (InvalidOperation, TypeError):
-            return Decimal(self.baseline)
+            return self.actual_value if self.actual_value else self.baseline
 
     @property
     def target(self):
         """
         Returns the target value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return 0.
+        Otherwise it'll return just the target value.
         """
         try:
             return Decimal(self.target_value)
         except (InvalidOperation, TypeError):
-            return Decimal(self.baseline)
+            return self.target_value
 
     @property
     def baseline(self):
@@ -454,15 +457,20 @@ class IndicatorPeriod(models.Model):
 
         - If the period has no previous periods, then it's the baseline value of the indicator
         - If the period has a previous period, then it's the actual value of that period
-        - In all other cases, the baseline defaults to 0
+
+        When this baseline value is empty, it returns 0. Otherwise (e.g. 'Available') it just
+        returns the baseline value.
         """
         previous_period = self.adjacent_period(False)
         baseline = self.indicator.baseline_value if not previous_period else previous_period.actual
 
-        try:
-            return Decimal(baseline)
-        except (InvalidOperation, TypeError):
-            return None
+        if not baseline:
+            return Decimal(0)
+        else:
+            try:
+                return Decimal(baseline)
+            except (InvalidOperation, TypeError):
+                return baseline
 
     class Meta:
         app_label = 'rsr'
@@ -497,19 +505,22 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     """
     Model for adding data to an indicator period.
     """
+    STATUS_NEW = unicode(_(u'new'))
     STATUS_DRAFT = unicode(_(u'draft'))
     STATUS_PENDING = unicode(_(u'pending approval'))
     STATUS_REVISION = unicode(_(u'return for revision'))
     STATUS_APPROVED = unicode(_(u'approved'))
 
+    STATUS_NEW_CODE = u'N'
     STATUS_DRAFT_CODE = u'D'
     STATUS_PENDING_CODE = u'P'
     STATUS_REVISION_CODE = u'R'
     STATUS_APPROVED_CODE = u'A'
 
-    STATUS_CODES_LIST = [STATUS_DRAFT_CODE, STATUS_PENDING_CODE, STATUS_REVISION_CODE,
-                         STATUS_APPROVED_CODE]
-    STATUSES_LABELS_LIST = [STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION, STATUS_APPROVED]
+    STATUS_CODES_LIST = [STATUS_NEW_CODE, STATUS_DRAFT_CODE, STATUS_PENDING_CODE,
+                         STATUS_REVISION_CODE, STATUS_APPROVED_CODE]
+    STATUSES_LABELS_LIST = [STATUS_NEW, STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION,
+                            STATUS_APPROVED]
     STATUSES = zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST)
 
     UPDATE_METHODS = (
@@ -520,11 +531,11 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
                                related_name='data')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)
-    relative_data = models.BooleanField(_(u'relative data'), default=False)
+    relative_data = models.BooleanField(_(u'relative data'), default=True)
     data = ValidXMLCharField(_(u'data'), max_length=300)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
-                               default='D')
+                               default=STATUS_NEW_CODE)
     text = ValidXMLTextField(_(u'text'), blank=True)
     photo = ImageField(_(u'photo'), blank=True, upload_to=image_path)
     file = models.FileField(_(u'file'), blank=True, upload_to=file_path)
@@ -540,60 +551,54 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
-        # Set the actual value of the indicator period to 0 if it's not present yet
-        if self.period.actual_value == '':
-            self.period.actual_value = '0'
-            self.period.save(update_fields=['actual_value'])
-
         # Always copy the period's actual value to the period_actual_value field.
-        self.period_actual_value = self.period.actual_value
+        self.period_actual_value = str(self.period.actual_value or '0')
 
         if not self.pk:
             # Newly added data update
             if self.status == self.STATUS_APPROVED_CODE:
                 # Update is immediately approved. Scenario that probably does not happen very often.
-                self.period.update_actual_value(self.data, self.relative_data)
+                self.period.update_actual_value(self.data, self.relative_data, self.text)
         else:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
             # Mail admins of a paying partner when an update needs to be approved
-            # TODO: uncomment before going Live
-            # if orig.status != self.STATUS_PENDING_CODE and \
-            #         self.status == self.STATUS_PENDING_CODE:
-            #     admins = self.period.indicator.result.project.publishing_orgs.employments().\
-            #         filter(group__name='Admins')
-            #
-            #     rsr_send_mail(
-            #         [empl.user.email for empl in admins],
-            #         subject='results_framework/approve_update_subject.txt',
-            #         message='results_framework/approve_update_message.txt',
-            #         html_message='results_framework/approve_update_message.html',
-            #         msg_context={'update': self}
-            #     )
-            #
-            # # Mail the user that created the update when an update needs revision
-            # elif orig.status != self.STATUS_REVISION_CODE and \
-            #         self.status == self.STATUS_REVISION_CODE:
-            #     rsr_send_mail(
-            #         [self.user.email],
-            #         subject='results_framework/revise_update_subject.txt',
-            #         message='results_framework/revise_update_message.txt',
-            #         html_message='results_framework/revise_update_message.html',
-            #         msg_context={'update': self}
-            #     )
+            if orig.status != self.STATUS_PENDING_CODE and \
+                    self.status == self.STATUS_PENDING_CODE:
+                me_managers_group = Group.objects.get(name='M&E Managers')
+                me_managers = self.period.indicator.result.project.publishing_orgs.employments().\
+                    approved().filter(group=me_managers_group)
+
+                rsr_send_mail(
+                    [empl.user.email for empl in me_managers],
+                    subject='results_framework/approve_update_subject.txt',
+                    message='results_framework/approve_update_message.txt',
+                    html_message='results_framework/approve_update_message.html',
+                    msg_context={'update': self}
+                )
+
+            # Mail the user that created the update when an update needs revision
+            elif orig.status != self.STATUS_REVISION_CODE and \
+                    self.status == self.STATUS_REVISION_CODE:
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/revise_update_subject.txt',
+                    message='results_framework/revise_update_message.txt',
+                    html_message='results_framework/revise_update_message.html',
+                    msg_context={'update': self}
+                )
 
             # Process data when the update has been approved and mail the user about it
-            # TODO: elif, uncomment before going Live
-            if orig.status != self.STATUS_APPROVED_CODE and \
+            elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
-                self.period.update_actual_value(self.data, self.relative_data)
-                # rsr_send_mail(
-                #     [self.user.email],
-                #     subject='results_framework/approved_subject.txt',
-                #     message='results_framework/approved_message.txt',
-                #     html_message='results_framework/approved_message.html',
-                #     msg_context={'update': self}
-                # )
+                self.period.update_actual_value(self.data, self.relative_data, self.text)
+                rsr_send_mail(
+                    [self.user.email],
+                    subject='results_framework/approved_subject.txt',
+                    message='results_framework/approved_message.txt',
+                    html_message='results_framework/approved_message.html',
+                    msg_context={'update': self}
+                )
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
@@ -602,15 +607,24 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Perform several checks before we can actually save the update data.
         """
         validation_errors = {}
+
+        # Allow only one update per period
+        if not self.pk and self.period.data.all():
+            validation_errors['period'] = unicode(_(u'Indicator period already has an update, only '
+                                                    u'one update per period is allowed'))
+            raise ValidationError(validation_errors)
+
         # Don't allow a data update to a non-Impact project
         if not self.period.indicator.result.project.is_impact_project:
             validation_errors['period'] = unicode(_(u'Indicator period must be part of an RSR '
                                                     u'Impact project to add data to it'))
+            raise ValidationError(validation_errors)
 
         # Don't allow a data update to a locked period
         if self.period.locked:
             validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
                                                     u'data to it'))
+            raise ValidationError(validation_errors)
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
@@ -621,10 +635,11 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
             # Don't allow to approve an update that has a different actual value of the period
             elif self.status == self.STATUS_APPROVED_CODE and \
-                    self.period_actual_value != self.period.actual_value:
+                    str(self.period_actual_value) != str(self.period.actual_value or '0'):
                 validation_errors['period_actual_value'] = unicode(
-                    _(u'The actual value of the period has changed, please save the update first '
-                      u'before approving it')
+                    _(u'The actual value of the period has changed (from {} to {}), please save '
+                      u'the update first before approving it'.format(self.period_actual_value,
+                                                                     str(self.period.actual)))
                 )
 
             # Don't allow for the indicator period to change
@@ -649,7 +664,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Returns the display of the status.
         """
         try:
-            return dict(self.STATUSES)[self.status]
+            return dict(self.STATUSES)[self.status].capitalize()
         except KeyError:
             return u''
 

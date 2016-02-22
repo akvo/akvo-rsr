@@ -6,14 +6,14 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
 from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer)
 from akvo.rsr.models import Country, Organisation, Project, ProjectUpdate
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 def rejig(queryset, serializer):
@@ -69,6 +69,17 @@ def typeahead_user_projects(request):
     else:
         projects = user.approved_organisations().all_projects()
     projects = projects.exclude(title='')
+    return Response(
+        rejig(projects, TypeaheadProjectSerializer(projects, many=True))
+    )
+
+
+@api_view(['GET'])
+def typeahead_impact_projects(request):
+    user = request.user
+    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
+    projects = projects.filter(is_impact_project=True).order_by('title')
+
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )

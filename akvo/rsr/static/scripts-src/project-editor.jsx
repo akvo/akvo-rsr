@@ -2563,6 +2563,48 @@ function getProjectPublish(publishingStatusId, publishButton) {
 }
 
 function setDatepickers() {
+    function getDatepickerComponent(datepickerId, initialDate, disableInput) {
+        return React.createClass({
+            displayName: datepickerId,
+
+            getInitialState: function () {
+                return {
+                    initialDate: initialDate,
+                    disableInput: disableInput
+                };
+            },
+
+            handleDateChange: function (date) {
+                this.setState({
+                    initialDate: date
+                });
+            },
+
+            render: function () {
+                if (disableInput !== 'true') {
+                    return <div>
+                        <DatePicker
+                        locale = 'en'
+                        placeholderText = ''
+                        dateFormat = 'DD/MM/YYYY'
+                        selected = {this.state.initialDate}
+                        onChange = {this.handleDateChange}
+                        />
+                    </div>;
+                } else {
+                    return <div>
+                        <DatePicker
+                        locale = 'en'
+                        placeholderText = ''
+                        dateFormat = 'DD/MM/YYYY'
+                        selected = {this.state.initialDate}
+                        />
+                    </div>;
+                }
+            }
+        });
+    }
+
     var datepickerContainers;
 
     datepickerContainers = document.getElementsByClassName('datepicker-container');
@@ -2588,47 +2630,7 @@ function setDatepickers() {
 
             var mandatoryOr = datepickerContainer.getAttribute('mandatory-or');
 
-            DatePickerComponent = React.createClass({
-                displayName: datepickerId,
-
-                getInitialState: function () {
-                    return {
-                        initialDate: initialDate,
-                        disableInput: disableInput
-                    };
-                },
-
-                handleDateChange: function (date) {
-                    this.setState({
-                        initialDate: date
-                    });
-                },
-
-                render: function () {
-                    if (disableInput !== 'true') {
-                        return <div>
-                            <DatePicker
-                            locale = 'en'
-                            placeholderText = ''
-                            dateFormat = 'DD/MM/YYYY'
-                            selected = {this.state.initialDate}
-                            onChange = {this.handleDateChange}
-                            />
-                        </div>;
-                    } else {
-                        return <div>
-                            <DatePicker
-                            locale = 'en'
-                            placeholderText = ''
-                            dateFormat = 'DD/MM/YYYY'
-                            selected = {this.state.initialDate}
-                            />
-                        </div>;
-                    }
-                }
-            });
-
-
+            DatePickerComponent = getDatepickerComponent(datepickerId, initialDate, disableInput);
             React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
 
             // Set id, name and saved value of datepicker input

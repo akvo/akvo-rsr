@@ -4,46 +4,25 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from rest_framework import serializers
-
+from akvo.rest.serializers.indicator_period import IndicatorPeriodFrameworkSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.user import UserDetailsSerializer
-from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData,
-                             IndicatorPeriodDataComment)
+from akvo.rsr.models import Indicator
 
-class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
-
-    user_details = UserDetailsSerializer(source='user', required=False)
-
-    class Meta:
-        model = IndicatorPeriodDataComment
-
-
-class IndicatorPeriodDataSerializer(BaseRSRSerializer):
-
-    comments = IndicatorPeriodDataCommentSerializer(many=True, required=False,
-                                                    allow_add_remove=True)
-    user_details = UserDetailsSerializer(source='user', required=False)
-    status_display = serializers.Field(source='status_display')
-    photo_url = serializers.Field(source='photo_url')
-    file_url = serializers.Field(source='file_url')
-
-    class Meta:
-        model = IndicatorPeriodData
-
-
-class IndicatorPeriodSerializer(BaseRSRSerializer):
-
-    data = IndicatorPeriodDataSerializer(many=True, required=False, allow_add_remove=True)
-    percent_accomplishment = serializers.Field(source='percent_accomplishment')
-
-    class Meta:
-        model = IndicatorPeriod
+from rest_framework import serializers
 
 
 class IndicatorSerializer(BaseRSRSerializer):
 
-    periods = IndicatorPeriodSerializer(many=True, required=False, allow_add_remove=True)
+    parent_indicator = serializers.Field(source='parent_indicator.pk')
+
+    class Meta:
+        model = Indicator
+
+
+class IndicatorFrameworkSerializer(BaseRSRSerializer):
+
+    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, allow_add_remove=True)
+    parent_indicator = serializers.Field(source='parent_indicator.pk')
 
     class Meta:
         model = Indicator

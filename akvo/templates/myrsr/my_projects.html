@@ -60,21 +60,22 @@
             <td>{{ project.show_status }}</td>
             <td>
               <div class="projectListMenu text-right">
-                <a href="{% url 'project-main' project.pk %}">{% trans 'View' %}</a>
+              <ul class="nav">
+                <li><a href="{% url 'project-main' project.pk %}">{% trans 'View' %}</a></li>
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 {% if can_edit_project %}
-                  <a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a>
-                {% endif %}
-                {% if project.is_impact_project %}
-                  <a href="{% url 'results_data' project.pk %}">{% trans 'Results data' %}</a>
+                  <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
+                  {% if project.is_impact_project %}
+                    <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
+                  {% endif %}
                 {% endif %}
                 {% if project.is_published and project.is_public %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
-                  <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
+                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% else %}
-                  <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a>
+                 <li> <a class="addUpdate disabled" title="{% trans "Can&#39;t update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
+                 </ul>
                 {% endif %}
-            
               </div>
             </td>
           </tr>

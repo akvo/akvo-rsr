@@ -7,17 +7,13 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from datetime import datetime
-
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
@@ -30,8 +26,23 @@ import json
 
 
 @login_required
+def my_rsr(request):
+    """
+    Redirect to the 'My Details' page in MyRSR, if the user is logged in.
+
+    :param request; A Django request.
+    """
+    return HttpResponseRedirect(reverse('my_details', args=[]))
+
+
+@login_required
 def my_details(request):
-    """First page in My RSR."""
+    """
+    If the user is logged in, he/she can change his user details and password here. In addition,
+    the user can request to join an organisation.
+
+    :param request; A Django request.
+    """
     if request.method == "POST" and 'avatar' in request.FILES:
         request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
@@ -71,7 +82,11 @@ def my_details(request):
 
 @login_required
 def my_updates(request):
-    """Directory of Updates connected to the user."""
+    """
+    If the user is logged in, he/she can view a list of own updates.
+
+    :param request; A Django request.
+    """
     updates = request.user.updates().select_related('project')
 
     q = request.GET.get('q')
@@ -95,7 +110,11 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    """Directory of Projects connected to the user."""
+    """
+    If the user is logged in, he/she can view a list of projects linked to the user account.
+
+    :param request; A Django request.
+    """
 
     # Get user organisation information
     organisations = request.user.approved_employments().organisations()
@@ -148,9 +167,43 @@ def my_projects(request):
     }
     return render(request, 'myrsr/my_projects.html', context)
 
+
+@login_required
+def project_editor_select(request):
+    """
+    Project editor without a project selected. Only accessible to Admins, Project editors and
+    M&E Managers.
+
+    :param request; A Django HTTP request and context
+    """
+    user = request.user
+    me_managers = Group.objects.get(name='M&E Managers')
+    admins = Group.objects.get(name='Admins')
+    project_editors = Group.objects.get(name='Project Editors')
+
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
+            user.in_group(admins) or user.in_group(project_editors)):
+        raise PermissionDenied
+
+    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
+
+    context = {
+        'user': user,
+        'projects': projects,
+    }
+
+    return render(request, 'myrsr/select_project.html', context)
+
+
 @login_required
 def project_editor(request, project_id):
-    """The project admin."""
+    """
+    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
+    Editors), he/she can edit the selected project.
+
+    :param request; A Django request.
+    :param project_id; The selected project's ID.
+    """
     try:
         project = Project.objects.prefetch_related(
             'related_projects',
@@ -235,13 +288,19 @@ def project_editor(request, project_id):
     }
 
     return render(request, 'myrsr/project_editor/project_editor.html', context)
-    
+
+
 @login_required
 def my_iati(request):
-    """IATI reports."""
+    """
+    If the user is logged in and has sufficient permissions (Admins, M&E Managers and Project
+    Editors), he/she can view and create IATI files.
+
+    :param request; A Django request.
+    """
     user = request.user
 
-    if not user.has_perm('rsr.iati_management'):
+    if not user.has_perm('rsr.project_management'):
         raise PermissionDenied
 
     org = request.GET.get('org')
@@ -293,7 +352,11 @@ def my_iati(request):
 
 @login_required
 def my_reports(request):
-    """My reports section."""
+    """
+    If the user is logged in, he/she can create reports based on a project or organisation.
+
+    :param request; A Django request.
+    """
     return render(request, 'myrsr/my_reports.html', {})
 
 
@@ -317,18 +380,18 @@ def user_management(request):
             prefetch_related('country', 'group').order_by('-id')
         organisations = Organisation.objects.all()
         roles = Group.objects.filter(
-            name__in=['Users', 'User Managers', 'Project Editors', 'Admins']
+            name__in=['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
         )
     else:
         # Others can only manage or invite users to their own organisation, or the
         # organisations that they content own
-        connected_orgs = user.employers.approved().organisations().content_owned_organisations()
+        connected_orgs = user.approved_organisations()
         connected_orgs_list = [
             org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
         ]
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
-        employments = organisations.employments().exclude(user=user).select_related().\
-            prefetch_related('country', 'group').order_by('-id')
+        employments = organisations.content_owned_organisations().employments().\
+            exclude(user=user).order_by('-id')
         roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
@@ -349,6 +412,7 @@ def user_management(request):
         Group.objects.get(name='Users'),
         Group.objects.get(name='User Managers'),
         Group.objects.get(name='Project Editors'),
+        Group.objects.get(name='M&E Managers'),
         Group.objects.get(name='Admins')
     ]
 
@@ -402,34 +466,29 @@ def user_management(request):
 
 
 @login_required
-def results_data_select(request):
+def my_results_select(request):
     """
-    My results section without a project selected. Only accessible to Admins and Project editors.
+    My results section without a project selected. Only accessible to M&E Managers, Admins and
+    Project editors.
 
     :param request; A Django HTTP request and context
     """
     user = request.user
+    me_managers = Group.objects.get(name='M&E Managers')
     admins = Group.objects.get(name='Admins')
     project_editors = Group.objects.get(name='Project Editors')
 
-    if not (user.is_admin or user.is_superuser or user.in_group(admins) or
-            user.in_group(project_editors)):
+    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
+            user.in_group(admins) or user.in_group(project_editors)):
         raise PermissionDenied
 
-    projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-
-    context = {
-        'user': user,
-        'projects': projects.filter(is_impact_project=True),
-    }
-
-    return render(request, 'myrsr/results_data_select.html', context)
+    return render(request, 'myrsr/my_results_select.html', {})
 
 
 @login_required
-def results_data(request, project_id):
+def my_results(request, project_id):
     """
-    My results section. Only accessible to Admins and Project editors.
+    My results section. Only accessible to M&E Managers, Admins and Project editors.
 
     :param request; A Django HTTP request and context
     :param project_id; The ID of the project
@@ -440,11 +499,15 @@ def results_data(request, project_id):
     if not user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
+    me_managers_group = Group.objects.get(name='M&E Managers')
+    me_managers = project.publishing_orgs.employments().approved().filter(group=me_managers_group)
+
     context = {
         'project': project,
+        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
+        'child_projects_ids': [child_project.id for child_project in project.children()],
         'user': user,
-        'current_datetime': datetime.now(),
-        'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
+        'me_managers': me_managers.exists(),
     }
 
-    return render(request, 'myrsr/results_data.html', context)
+    return render(request, 'myrsr/my_results.html', context)

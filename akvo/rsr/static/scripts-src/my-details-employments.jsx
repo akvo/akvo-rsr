@@ -70,7 +70,7 @@ var Employment = React.createClass({
 
     render: function() {
         if (!this.state.visible) {
-            return React.createElement("li", {key: this.props.key});
+            return React.createElement("li", {});
         }
 
         var deleteButton;
@@ -87,11 +87,11 @@ var Employment = React.createClass({
 
         if (this.props.employment.is_approved) {
             var groupName = React.createElement("i", null, '(', this.props.employment.group.name.slice(0, -1), ')');
-            var employmentNode = React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
+            var employmentNode = React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
             return React.createElement("b", null, employmentNode);
         } else {
             var notApproved = React.createElement("i", null, '(', i18n.not_approved_text, ')');
-            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
+            return React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
         }
 
     }
@@ -102,7 +102,7 @@ var EmploymentList = React.createClass({
     render: function() {
         var thisEmploymentList = this;
         var employments = this.props.employments.map(function(job) {
-            return React.createElement(Employment, {key: job.organisation_full.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
+            return React.createElement(Employment, {key: job.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
         });
 
         return React.createElement("ul", null, employments);
@@ -350,7 +350,8 @@ var EmploymentApp = React.createClass({
 
     existingEmployment: function(organisationId) {
         for (var i=0; i < this.state.employments.length; i++) {
-            if (this.state.employments[i].organisation_full.id === organisationId) {
+            if (this.state.employments[i].organisation_full.id === organisationId &&
+                this.state.employments[i].group.name === 'Users') {
                 return true;
             }
         }

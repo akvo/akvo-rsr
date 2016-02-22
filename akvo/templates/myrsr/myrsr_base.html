@@ -1,45 +1,41 @@
 {% extends "base.html" %}
 
-{% load i18n bootstrap3 rules %}
+{% load i18n rules %}
 
 {% block maincontent %}
-<div class="navContainer">
-    <div class="container">
-        <div class="row">
-            {% block myrsr_menu %}
-            <div class="col-md-12 myRsrMenu">
-                <h4 class="hidden">MyRSR</h4>
-                {% with current_path=request.get_full_path %}
-                <nav class="navbar navbar-nav nav-justified" role="navigation">
-                    <ul class="nav nav-tabs">
-                        <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">{% trans 'My projects' %}</a></li>
-                        <li class=""><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
-                        {% if '/myrsr/project_editor/' in current_path %}
-                            <li><a href="#" class="active" onclick="return false;">{% trans 'Project editor' %}</a></li>
-                        {% endif %}
-                        <li><a href="{% url 'my_reports' %}" class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">{% trans 'My reports' %}</a></li>
-                        <li><a href="{% url 'results_data_select' %}" class="{% if '/myrsr/results_data/' in current_path %}active{% endif %}">{% trans 'Results data' %}</a></li>
-                        {% has_perm 'rsr.iati_management' user as can_manage_iati %}
-                        {% if can_manage_iati %}
-                            <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
-                        {% endif %}
-                        {% has_perm 'rsr.change_employment' user as can_change_employments %}
-                        {% if can_change_employments %}
-                            <li class="usrMgt"><a href="{% url 'user_management' %}" class="{% if '/myrsr/user_management/' in current_path %}active{% endif %}">{% trans 'User management' %}</a></li>
-                        {% endif %}
-                        <li class=""><a href="{% url 'my_details' %}"  class="{% if '/myrsr/' == current_path|slice:"3:" %}active{% endif %}">{% trans 'My details' %}</a></li>
-                    </ul>
-                </nav>
-                {% endwith %}
+    {% has_perm 'rsr.project_management' user as can_manage_projects %}
+    {% has_perm 'rsr.change_employment' user as can_change_employments %}
+    <div class="navContainer">
+        <div class="container">
+            <div class="row">
+                {% block myrsr_menu %}
+                <div class="col-md-12 myRsrMenu">
+                    {% with current_path=request.get_full_path %}
+                        <nav class="navbar navbar-nav nav-justified" role="navigation">
+                            <ul class="nav nav-tabs">
+                                <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/project' in current_path %}active{% endif %}">{% trans 'My projects' %}</a></li>
+                                <li><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
+                                <li><a href="{% url 'my_reports' %}" class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">{% trans 'My reports' %}</a></li>
+                                {% if can_manage_projects %}
+                                    <li><a href="{% url 'my_results_select' %}" class="{% if '/myrsr/results/' in current_path %}active{% endif %}">{% trans 'My results' %}</a></li>
+                                    <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
+                                {% endif %}
+                                {% if can_change_employments %}
+                                    <li class="usrMgt"><a href="{% url 'user_management' %}" class="{% if '/myrsr/user_management/' in current_path %}active{% endif %}">{% trans 'User management' %}</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'my_details' %}"  class="{% if '/myrsr/details/' in current_path %}active{% endif %}">{% trans 'My details' %}</a></li>
+                            </ul>
+                        </nav>
+                    {% endwith %}
+                </div>
+                {% endblock %}
             </div>
-            {% endblock %}
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-            {% block myrsr_main %}{% endblock %}
+    <div class="container">
+        <div class="row">
+            {% block myrsr_main %}{% endblock myrsr_main %}
+        </div>
     </div>
-</div>
-{% endblock %}
+{% endblock maincontent %}

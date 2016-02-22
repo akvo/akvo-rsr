@@ -19,7 +19,7 @@ body {
     line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
-    padding-top: 80px;
+    padding-top: 75px;
     @include responsive(small-max-screens) {
         padding-top: 65px;
     }
@@ -140,12 +140,15 @@ a.moreLink {
     }
 }
 
-
+.btn {
+    @include transition(all 0.1s linear);
+}
 a.btn-primary,
 button.btn-primary {
     border: 1px solid $anchorLink;
     color: white;
     background: $anchorLink;
+    @include transition(all 0.1s linear);
     &:hover {
         color: white;
         background: $anchorLinkHover;
@@ -367,7 +370,7 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: complement($rsrBlue);
+                    color: $rsrGreen;
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
                     @include border-radius(3px);
@@ -391,14 +394,14 @@ nav.navbar-fixed-top {
             }
             &.navProject {
                 .active {
-                    background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border: thin solid rgba($rsrBlue, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $rsrBlue;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($rsrBlue, 0), 10%);
-                        border: thin solid rgba($rsrBlue, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -406,14 +409,14 @@ nav.navbar-fixed-top {
             }
             &.navUpdate {
                 .active {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $rsrGreen;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($rsrGreen, 0), 10%);
-                        border: thin solid rgba($rsrGreen, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -421,14 +424,14 @@ nav.navbar-fixed-top {
             }
             &.navOrganisation {
                 .active {
-                    background: darken(rgba($akvoTvRed, 0.05), 10%);
-                    border: thin solid rgba($akvoTvRed, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $akvoTvRed;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($akvoTvRed, 0), 10%);
-                        border: thin solid rgba($akvoTvRed, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -438,19 +441,27 @@ nav.navbar-fixed-top {
         &.navbar-right {
             li {
                 margin-right: 2px;
+                &:nth-child(2) {
+                    a {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                    }
+                }
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
-
                     &.active {
-                        background: none;
-                        color: rgba($anchorLinkHover, 0.7);
+                        background: rgba($anchorLinkHover, 0.1);
+                        color: $anchorLinkHover;
                     }
                 }
                 .langDropdown {
+                    .btn-default {
+                        border-color:transparent;
+                    }
                     margin-top: 10px;
                     @include responsive(small-max-screens) {
                         padding-left: 15px;
@@ -575,7 +586,7 @@ nav.navbar-fixed-top {
 
 .navContainer {
     background: rgba($akvoBlack, 0.05);
-    margin: -15px 0 10px 0;
+    margin: -20px 0 10px 0;
     padding-top: 10px;
 }
 
@@ -594,6 +605,7 @@ nav.navbar-fixed-top {
             li {
                 display: inline;
                 a {
+                    color: $akvoBlack;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
@@ -605,8 +617,8 @@ nav.navbar-fixed-top {
                         background-color: rgba($akvoBlack, 0.1);
                     }
                     &.active {
-                        color: $anchorLinkHover;
-                        font-weight: bold;
+                        color:  $anchorLinkHover;
+                        font-weight: normal;
                         background: rgba(white, 1);
                         @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
@@ -636,6 +648,27 @@ nav.navbar-fixed-top {
 }
 
 .indicator-period-list {
+    &.parentProject, &.childProject {
+        margin-top: 50px;
+        padding: 5px;
+        border: 1px solid rgba($akvoPurple, 0.1);
+        .relatedInfo {
+            font-size: 110%;
+            background: rgba($akvoPurple, 0.1);
+            color: $akvoPurple;
+            padding: 3px 7px;
+            margin-left: -5px;
+            @include border-radius(0 0 10px 0);
+        }
+        .relatedInfoProjectTitle {
+            display: none;
+            margin-top: 15px;
+            + .indicator-periods-title {
+                margin-top: 15px;
+            }
+        }
+    }
+    &.selfProject {}
     thead {
         tr {
             background-color: rgba($akvoBlack, 0.05);
@@ -690,17 +723,25 @@ nav.navbar-fixed-top {
         }
     }
     div.projectListMenu {
-        a {
-            margin-right: 25px;
-            &:last-child {
-                margin-right: 0;
+        ul {
+            margin-top: -10px;              
+            li {
+                display: inline-block;
+                @include responsive (mediums-max-screens) {
+                    display: block;
+                }
+                @include responsive (small-max-screens) {
+                }                       
+                a {
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+                @include responsive (wide-screens) {
+                }
+                > a {
+                }
             }
-        }
-        @media only screen and (min-width: $width-large) {
-            min-width: 170px;
-        }
-        > a {
-            min-width: 70px;
         }
     }
     a {
@@ -776,6 +817,9 @@ div.paginationWrap {
 }
 
 .table-responsive {
+    @include responsive (small-max-screens) {
+        border:none;
+    }
     &.locationTab {
         overflow: hidden;
         thead {
@@ -796,6 +840,7 @@ div.paginationWrap {
         }
     }
     .media {
+        width: 39%;
         > a {
             min-width: 80px;
         }
@@ -1765,11 +1810,13 @@ div.textBlock {
 }
 
 #draft {
-    background: #E04F46;
-    color: #fff;
+    background: rgba(#E04F46, 0.2);
+    border:1px solid rgba(#E04F46, 0.2);
+    color: #E04F46;
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
+    @include border-radius(5px);
 }
 
 #gallery {
@@ -2692,7 +2739,19 @@ body {
     span {
         margin-right: 15px;
     }
+    button {
+        margin: 0px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+            color: white;
+        }
+    }
 }
+
+
 
 .results {
     position: relative;
@@ -2706,7 +2765,7 @@ body {
     .clickable {
         cursor: pointer;
         &:hover {
-            opacity: 0.8;
+            opacity: 1;
         }
         &:active {
             opacity: 0.6;
@@ -2736,19 +2795,20 @@ body {
         position: relative;
         width: 100%;
         margin-bottom: 55px;
-        .baseline-value,
-        .baseline-year, .period-target, .period-actual {
-            width: 50%;
+        font-size: 110%;
+        .baseline-value, .baseline-year,
+        .period-target, .period-actual, .period-target-comment {
             display: inline-block;
-            padding: 0 0 0 5px;
-            span:first-child {
-                color: rgb(129, 131, 134);
+            padding: 0 0 10px 15px;
+            > span:first-child {
+                color: rgba($akvoBlack,0.7);
                 display: block;
             }
             span:nth-child(2) {
                 display: block;
-                font-weight: bold;
-                color: rgb(81, 80, 80);
+                font-family: $titleFont;
+                font-weight: 700;
+                color: rgba($akvoBlack, 0.9);
                 span {
                     display: inline;
                 }
@@ -2758,10 +2818,17 @@ body {
             }
         }
         .baseline-value, .period-target {
+            width: 50%;
             float: left;
         }
         .baseline-year, .period-actual {
+            width: 50%;
             float: right;
+        }
+        .period-target-comment {
+            width: 100%;
+            float: left;
+            padding: 0 0 40px 15px;
         }
     }
     .sidebar {
@@ -2784,11 +2851,12 @@ body {
                 margin: 0 auto;
                 @include transition(background-color 0.25s ease-in-out);
             }
+            &.expanded {
+            }
             &:last-child {}
         }
         .result-nav-header {
-            border-bottom: 1px solid rgba($akvoBlack, 0);
-            background: rgba($akvoBlack, 0.1);
+            background: rgba($akvoPurple, 0);
             h3 {
                 color: rgba(white, 1);
                 display: inline-block;
@@ -2797,9 +2865,9 @@ body {
                 position: relative;
                 padding: 5px 10px;
                 margin-top: 0;
-                background: rgba($rsrBlue2, 1);
+                background: rgba($akvoPurple, 1);
                 margin-bottom: 0;
-                @include border-radius(0 0 8px 0);
+                @include border-radius(8px 8px 0 0);
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2826,7 +2894,7 @@ body {
                     &.result-title {
                         position: relative;
                         box-sizing: border-box;
-                        font-weight: 700;
+                        font-weight: 400;
                         .fa {
                             float: right;
                             font-size: 1.3em;
@@ -2841,7 +2909,6 @@ body {
                             display: block;
                             display: -webkit-box;
                             line-height: 1.4em;
-                            -webkit-line-clamp: 2;
                             -webkit-box-orient: vertical;
                         }
                     }
@@ -2865,6 +2932,7 @@ body {
                 }
             }
             .result-indicator-count {
+                display: block;
                 color: $akvoPurple;
                 display: block;
                 margin-top: -5px;
@@ -2883,7 +2951,6 @@ body {
                 display: none;
             }
             &.expanded {
-                background: white;
                 .fa-chevron-circle-down {
                     display: none;
                 }
@@ -2899,7 +2966,7 @@ body {
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
-                    padding: 0.5em 0 0 0px;
+                    padding: 1px 0 0 0px;
                     background-color: white;
                     div {
                         &:last-child {
@@ -2908,7 +2975,7 @@ body {
                             }
                         }
                         .indicator-nav {
-                            padding: 0.75em 0em 1em 0em;
+                            padding: 0.75em 10px 1em 0em;
                             /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
@@ -2916,14 +2983,16 @@ body {
                             border-bottom: 2px solid white;
                             &:hover {
                                 background: rgba($akvoPurple, 0.5);
+                                h4 {
+                                    color:white;
+                                }
                             }
                             &.active {
-                                background: rgba($akvoPurple, 0.8) url(../images/carretWhite.svg) center right no-repeat;
+                                background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
                                 border-left: 10px solid rgba(174, 9, 34, 0);
                                 background-size: 5% auto;
                                 h4 {
                                     color: white;
-                                    font-weight: bold;
                                 }
                             }
                             &:last-child {
@@ -2935,7 +3004,6 @@ body {
                                 font-size: 1em;
                                 color: $akvoPurple;
                                 margin-bottom: 1px;
-                                font-family: $bodyFont;
                                 line-height: 150%;
                                 padding-left: 15px;
                             }
@@ -2956,7 +3024,7 @@ body {
     .indicator-container {
         vertical-align: top;
         overflow-y: scroll;
-        padding: 0.25em 1em;
+        padding:20px 1em 0.25em 1em;
         background-color: rgba(245, 245, 245, 0.2);
         @include flex(1);
         .indicator-period {
@@ -2970,8 +3038,17 @@ body {
                 .new-update {
                     position: absolute;
                     display: inline-block;
-                    top: 0;
+                    top: -5px;
                     right: 0;
+                    .btn {
+                        background: $akvoBlack;
+                        color: white;
+                        @include border-radius(5px);
+                        &:hover {
+                            background: $akvoPurple;
+                            color: white;
+                        }
+                    }
                 }
             }
         }
@@ -3074,6 +3151,27 @@ body {
                     &.target-td,
                     &.actions-td {
                         white-space: nowrap;
+                    }
+                    &.target-td {
+                        font-weight: bold;
+                    }
+                    &.actions-td {
+                        .tooltip {
+                            top: -170px;
+                            left: 132.703px;
+                            display: block;
+                            .tooltip-arrow {
+                                left: 77.4336%;
+                            }
+                        }
+                    }
+                    &.period-td {
+                        color: rgba($akvoBlack, 0.6);
+                        position: relative; 
+                        .result-tooltip {
+                            position: absolute;
+                            top: 0;
+                        }
                     }
                     &.indicator-bar-td {
                         width: 55%;
@@ -3344,25 +3442,32 @@ body {
         }
     }
     .update-container {
-        background: rgba($akvoBlack, 0);
-        border: 1px solid rgba($akvoBlack, 0.1);
-        padding: 0 1em 0.75em 1em;
-        margin-bottom: 20px;
+        background: rgba($primary4, 0.05);
+        border: 1px solid rgba($akvoBlack, 0.2);
+        padding: 0 1em;
+        margin-bottom: 50px;
         .update-entry-container {
-            margin-bottom: 2em;
+            padding:0 0 10px 0;
             position: relative;
             &.edit-in-progress {
-                background-color: #D1E6D1;
-                border-left: none;
+                background: rgba($rsrGreen, 0.05);
+                border: 1px solid rgba($rsrGreen, 0.3);
+                box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+                .update-entry-container-header {
+                    background: rgba(white, 0.5);
+                }
             }
             .update-entry-container-header {
-                background: rgba($akvoBlack, 0.1);
+                background: rgba($akvoBlack, 0);                
+                border-bottom: 1px solid rgba($akvoBlack, 0.1);
                 padding: 0.75em 0;
                 .update-user {
                     color: $akvoPurple;
+                    font-weight: bold;
                 }
                 .update-created-at {
                     margin-left: 15px;
+                    color: rgba($akvoBlack, 0.7);
                 }
                 .update-status {
                     color: $akvoTvRed;
@@ -3385,33 +3490,64 @@ body {
                     .comment-header {
                         margin-bottom: 5px;
                         font-weight: bold;
+                        span {
+                            color: $akvoPurple;
+                            &:last-child {
+                                margin-left: 15px;
+                                color: rgba($akvoBlack, 0.5);
+                            }
+                        }
                     }
                     .comment-text {}
                 }
             }
-            .bottomRow {
-                margin-top: 20px;
-                padding: 0.75em;
+            .menuAction {
                 position: relative;
-                .btn {
-                    background: $akvoBlack;
-                    color: white;
-                    &:hover {
-                        background: $akvoPurple;
+                .removeUpdate {
+                    position: absolute;
+                    top: 30px;
+                    left:0;
+                    .btn {
+                        background: $akvoTvRed;
+                        color: white;
+                        border-color: $akvoTvRed;
+                        &:hover {
+                            background: rgba($akvoTvRed, 0.5);
+                        }
                     }
                 }
-                .cancelUpdate {}
-                .editUpdate {}
-                .saveUpdate {}
-                .returnUpdate {}
-                .submitUpdate {}
-                .approveUpdate {}
+                .bottomRow {
+                    margin-top: 20px;
+                    padding: 0.75em;
+                    position: relative;
+                    list-style-type: none;
+                    .btn {
+                        padding: 2px 7px;
+                        &.btn-default {
+                            background: $akvoBlack;
+                            color: white;
+                            .editUpdate & {
+                                background: initial;
+                                color: initial;
+                            }
+                            &:hover {
+                                background: $akvoPurple;
+                            }
+                        }
+                    }
+                    .cancelUpdate {margin-right: 25px;}
+
+                    .saveUpdate {}
+                    .returnUpdate {}
+                    .submitUpdate {}
+                    .approveUpdate {}
+                }
             }
             .upActualValue {
-                margin-top: 20px;
+                margin-top: 47px;
                 margin-bottom: 15px;
                 .update-actual-value-text {
-                    color: rgba($akvoBlack, 0.4);
+                    color: rgba($akvoBlack, 0.7);
                 }
                 .update-actual-value-data {
                     font-weight: bold;
@@ -3436,7 +3572,6 @@ body {
             padding: 8px 2em;
             .update-entry-container {
                 padding: 2em;
-                margin-bottom: 2em;
                 position: relative;
                 background-color: #ececec;
                 &:first-child {
@@ -3850,11 +3985,11 @@ div.active {
     bottom: 20%;
     left: 100px;
     z-index: 1032;
-    @media only screen and (max-width: $width-small) {
+    @include responsive (small-max-screens) {
         right: 25px;
         left: 25px;
     }
-    @media only screen and (max-width: $xtra-small) {
+    @include responsive (xtra-small-max-screens) {
         right: 5px;
         left: 5px;
     }
@@ -3992,3 +4127,62 @@ div#my-reports {
         }
     }
 }
+.period-td {
+        color: rgba($akvoBlack, 0.6);
+        position: relative;
+        .badge {
+            background-color: $akvoBlack;
+            @include transition(all 0.1s linear);
+            margin-top: -5px;
+            padding: 5px 9px;
+            @include border-radius(15px);
+            font-family: $scriptFont;
+            &:hover {
+                background-color: $akvoPurple;
+                cursor: pointer;
+            }
+        }
+        .result-tooltip {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background: rgba(white, 0.5);
+            border: 1px solid  rgba($primary4, 0.8);
+            color: $akvoBlack;
+            @include border-radius(4px);
+            .tooltip-inner {
+                background: rgba(white, 0.5);
+                color: $akvoBlack;
+                }
+            .tooltip-arrow {
+                position: absolute;
+                background: rgba(white, 0.5);
+                border: 1px solid  rgba($primary4, 0.8);
+                right: 8px;
+                top: -2px;
+                &:after, &:before {
+                    bottom: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    }
+
+                &:after {
+                    border-color: rgba(136, 183, 213, 0);
+                    border-bottom-color: rgba($primary4, 0.5);
+                    border-width: 7px;
+                    margin-left: -7px;
+                }
+                &:before {
+                    border-color: rgba(194, 225, 245, 0);
+                    border-bottom-color:  rgba($primary4, 0.5);
+                    border-width: 8px;
+                    margin-left: -8px;
+                }
+            }
+        }
+    }
