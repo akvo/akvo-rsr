@@ -402,9 +402,9 @@ class IndicatorPeriod(models.Model):
                 self.actual_comment = comment
                 self.save(update_fields=['actual_comment'])
 
-            # Update parent period
+            # Update parent period (if not percentages)
             parent = self.parent_period()
-            if parent:
+            if parent and self.indicator.measure != '2':
                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
             pass

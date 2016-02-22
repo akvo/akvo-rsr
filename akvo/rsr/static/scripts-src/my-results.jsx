@@ -1023,6 +1023,14 @@ var IndicatorPeriodEntry = React.createClass({
         }
     },
 
+    renderActualValue: function() {
+        var actualValue = this.props.period.actual_value;
+        if (this.props.selectedIndicator.measure === '2') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
     renderPercentageComplete: function() {
         if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
             return (
@@ -1041,7 +1049,7 @@ var IndicatorPeriodEntry = React.createClass({
                 {this.renderPeriodDisplay()}
                 <td className="target-td">{this.props.period.target_value}</td>
                 <td className="actual-td">
-                    {this.props.period.actual_value}
+                    {this.renderActualValue()}
                     {this.renderPercentageComplete()}
                 </td>
                 {this.renderActions()}
