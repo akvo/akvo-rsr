@@ -54,7 +54,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
                 for obj in private_objects:
                     if user.has_perm(permission, obj):
                         # See if user has permission to change and remove item from queryset if not
-                        permitted_obj_pks += obj.pk
+                        permitted_obj_pks.append(obj.pk)
 
                 queryset = public_objects | queryset.filter(pk__in=permitted_obj_pks).distinct()
 

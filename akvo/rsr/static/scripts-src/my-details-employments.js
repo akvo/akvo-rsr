@@ -70,7 +70,7 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         if (!this.state.visible) {
-            return React.createElement("li", {key: this.props.key});
+            return React.createElement("li", {});
         }
 
         var deleteButton;
@@ -87,11 +87,11 @@ var Employment = React.createClass({displayName: 'Employment',
 
         if (this.props.employment.is_approved) {
             var groupName = React.createElement("i", null, '(', this.props.employment.group.name.slice(0, -1), ')');
-            var employmentNode = React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
+            var employmentNode = React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
             return React.createElement("b", null, employmentNode);
         } else {
             var notApproved = React.createElement("i", null, '(', i18n.not_approved_text, ')');
-            return React.createElement("li", {key: this.props.key}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
+            return React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
         }
 
     }
@@ -102,7 +102,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
     render: function() {
         var thisEmploymentList = this;
         var employments = this.props.employments.map(function(job) {
-            return React.createElement(Employment, {key: job.organisation_full.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
+            return React.createElement(Employment, {key: job.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
         });
 
         return React.createElement("ul", null, employments);
@@ -207,7 +207,7 @@ var FormButton = React.createClass({displayName: 'FormButton',
             return button(
                 {
                     onClick: this.handleAddEmployment,
-                    className: 'btn btn-primary',
+                    className: 'btn btn-default btn-sm',
                     type: "button"
                 },
                 i18n.request_join_text
@@ -350,7 +350,8 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
 
     existingEmployment: function(organisationId) {
         for (var i=0; i < this.state.employments.length; i++) {
-            if (this.state.employments[i].organisation_full.id === organisationId) {
+            if (this.state.employments[i].organisation_full.id === organisationId &&
+                this.state.employments[i].group.name === 'Users') {
                 return true;
             }
         }
@@ -377,7 +378,7 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     render: function() {
         var icon = React.createFactory("i");
         var headingIcon = icon({className: 'fa fa-users'});
-        var heading = React.createElement("h3", null, headingIcon, ' ', i18n.my_organisations_text);
+        var heading = React.createElement("h4", null, ' ', i18n.my_organisations_text);
         var employmentList = React.createElement(EmploymentList, {employments: this.state.employments, removeEmployment: this.removeEmployment});
         var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment, existingEmployment: this.existingEmployment});
         return React.createElement("span", null, heading, employmentList, addEmploymentForm);

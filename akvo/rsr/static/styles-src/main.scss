@@ -19,7 +19,7 @@ body {
     line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
-    padding-top: 80px;
+    padding-top: 75px;
     @include responsive(small-max-screens) {
         padding-top: 65px;
     }
@@ -36,7 +36,9 @@ h6 {
     color: $akvoPurple;
 }
 
-a, a:link, a:visited {
+a,
+a:link,
+a:visited {
     outline: none;
     color: $anchorLink;
     text-decoration: none;
@@ -51,6 +53,9 @@ a, a:link, a:visited {
 }
 
 /****************** Miscellanous Typography ********************/
+.inlined {
+    display: inline;
+}
 
 img {
     max-width: 100%;
@@ -60,8 +65,9 @@ img {
 }
 
 .noItem {
-    color: rgba($akvoPurple, 0.2);
+    color: rgba($akvoPurple, 0.8);
     font-weight: bold;
+    margin-top: 25px;
 }
 
 .emTxt {
@@ -126,6 +132,7 @@ a.moreLink {
 }
 
 /* Force full-width columns below 570px (when using col-xs-N) */
+
 @include responsive(small-screens) {
     .col-ty-12 {
         float: none;
@@ -133,11 +140,15 @@ a.moreLink {
     }
 }
 
-
-a.btn-primary, button.btn-primary {
+.btn {
+    @include transition(all 0.1s linear);
+}
+a.btn-primary,
+button.btn-primary {
     border: 1px solid $anchorLink;
     color: white;
     background: $anchorLink;
+    @include transition(all 0.1s linear);
     &:hover {
         color: white;
         background: $anchorLinkHover;
@@ -151,18 +162,23 @@ a.btn-primary, button.btn-primary {
     text-align: left;
 }
 
-.btn-group, .form-group {
+.btn-group,
+.form-group {
     button {
         @include border-radius(5px);
     }
 }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
-.tt-input, .tt-hint {
+
+.tt-input,
+.tt-hint {
     @include border-radius(5px 0 0 5px);
 }
 
-.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+.input-group-addon:not(:first-child):not(:last-child),
+.input-group-btn:not(:first-child):not(:last-child),
+.input-group .form-control:not(:first-child):not(:last-child) {
     @include border-radius(5px 0 0 5px);
 }
 
@@ -280,21 +296,20 @@ dl {
 }
 
 label {
-    color: $rsrGreen;
+    margin-top: 15px;
     font-weight: normal;
 }
 
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
+
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
-    @include box-shadow(0 2px 3px rgba(132, 132, 136, 0.2));
     @include border-radius(0);
-    border-bottom: 1px solid rgb(228, 228, 228);
+    border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
         background: $rsrBlue;
         border: 1px solid $rsrBlue;
@@ -345,17 +360,17 @@ nav.navbar-fixed-top {
     }
     .navbar-nav {
         li {
+            font-weight: normal;
             padding-top: 3px;
             &:first-child {}
             a {
-                color: $anchorLink;
-                font-family: $titleFont;
+                color: $akvoPurple;
                 border: thin solid transparent;
                 &:hover {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: complement($rsrBlue);
+                    color: $rsrGreen;
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
                     @include border-radius(3px);
@@ -364,13 +379,11 @@ nav.navbar-fixed-top {
                     }
                 }
                 &.addUpdateBtn {
-                    margin-top: 10px;
-                    color: white;
-                    background-color: $rsrGreen;
-                    border-color: $rsrGreen;
+                    margin-right: 15px;
+                    background-color: transparent;
+                    border-color: transparent;
                     &:hover {
-                        background-color: $anchorLinkHover;
-                        border-color: $anchorLinkHover;
+                        color: $anchorLinkHover;
                     }
                     @include responsive(tablets) {
                         width: 95%;
@@ -381,14 +394,14 @@ nav.navbar-fixed-top {
             }
             &.navProject {
                 .active {
-                    background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border: thin solid rgba($rsrBlue, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $rsrBlue;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($rsrBlue, 0), 10%);
-                        border: thin solid rgba($rsrBlue, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -396,14 +409,14 @@ nav.navbar-fixed-top {
             }
             &.navUpdate {
                 .active {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $rsrGreen;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($rsrGreen, 0), 10%);
-                        border: thin solid rgba($rsrGreen, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -411,14 +424,14 @@ nav.navbar-fixed-top {
             }
             &.navOrganisation {
                 .active {
-                    background: darken(rgba($akvoTvRed, 0.05), 10%);
-                    border: thin solid rgba($akvoTvRed, 0.2);
+                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
+                    border: thin solid rgba($anchorLinkHover, 0);
                     @include border-radius(3px);
-                    color: $akvoTvRed;
+                    color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
                     &:hover {
-                        background: darken(rgba($akvoTvRed, 0), 10%);
-                        border: thin solid rgba($akvoTvRed, 0);
+                        background: darken(rgba($anchorLinkHover, 0), 10%);
+                        border: thin solid rgba($anchorLinkHover, 0);
                         @include border-radius(3px);
                         color: $anchorLinkHover;
                     }
@@ -428,19 +441,27 @@ nav.navbar-fixed-top {
         &.navbar-right {
             li {
                 margin-right: 2px;
+                &:nth-child(2) {
+                    a {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                    }
+                }
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
-
                     &.active {
-                        background: none;
+                        background: rgba($anchorLinkHover, 0.1);
                         color: $anchorLinkHover;
                     }
                 }
                 .langDropdown {
+                    .btn-default {
+                        border-color:transparent;
+                    }
                     margin-top: 10px;
                     @include responsive(small-max-screens) {
                         padding-left: 15px;
@@ -505,7 +526,8 @@ nav.navbar-fixed-top {
     .navbar-header {
         float: none;
     }
-    .navbar-left, .navbar-right {
+    .navbar-left,
+    .navbar-right {
         float: none !important;
     }
     .navbar-toggle {
@@ -557,49 +579,133 @@ nav.navbar-fixed-top {
 
 
 /* My RSR stuff */
+
 .btnHeader {
-    padding: 15px 0 25px 0;
+    padding: 10px 0 25px 0;
+}
+
+.navContainer {
+    background: rgba($akvoBlack, 0.05);
+    margin: -20px 0 10px 0;
+    padding-top: 10px;
 }
 
 .myRsrMenu {
-    min-height: 100%;
-    bottom: 0;
-    top: 0;
+    position: relative;
+    margin: 5px auto 0 auto;
+    .nav-tabs {
+        border-bottom: none;
+    }
     h4 {
         padding-top: 15px;
     }
     nav[role=navigation] {
-        background: rgba($akvoBlack, 0.05);
+        background: rgba($akvoBlack, 0);
         ul {
             li {
+                display: inline;
                 a {
-                    color: $anchorLink;
-                    font-family: $titleFont;
-                    padding-top: 15px;
-                    padding-bottom: 15px;
+                    color: $akvoBlack;
+                    padding: 15px;
                     @include responsive(small-max-screens) {
-                        padding-top: 20px;
-                        padding-bottom: 20px;
+                        padding: 20px 10px;
                     }
 
                     &:hover {
                         color: $anchorLinkHover;
-                        background: rgba($anchorLinkHover, 0.05) url(../images/carret.png) 98% center no-repeat;
-                        background-size: 5px auto;
+                        border-color: transparent;
+                        background-color: rgba($akvoBlack, 0.1);
                     }
                     &.active {
-                        color: $anchorLinkHover;
-                        font-weight: bold;
-                        background: rgba($anchorLinkHover, 0.05) url(../images/carretWhite.png) 98% center no-repeat;
-                        background-size: 5px auto;
+                        color:  $anchorLinkHover;
+                        font-weight: normal;
+                        background: rgba(white, 1);
+                        @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
+                }
+                &.usrMgt {
+                    position: absolute;
+                    right: 0;
                 }
             }
         }
     }
 }
 
-.myProjectList {
+.navbar-form {
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+
+#createProject {
+    margin: 20px 0 0 25px;
+    background: $akvoBlack;
+    color: white;
+    border: none;
+    &:hover {
+        background: $rsrBlue;
+    }
+}
+
+.indicator-period-list {
+    &.parentProject, &.childProject {
+        margin-top: 50px;
+        padding: 5px;
+        border: 1px solid rgba($akvoPurple, 0.1);
+        .relatedInfo {
+            font-size: 110%;
+            background: rgba($akvoPurple, 0.1);
+            color: $akvoPurple;
+            padding: 3px 7px;
+            margin-left: -5px;
+            @include border-radius(0 0 10px 0);
+        }
+        .relatedInfoProjectTitle {
+            display: none;
+            margin-top: 15px;
+            + .indicator-periods-title {
+                margin-top: 15px;
+            }
+        }
+    }
+    &.selfProject {}
+    thead {
+        tr {
+            background-color: rgba($akvoBlack, 0.05);
+            border-bottom: none;
+            th {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
+    }
+    tbody {
+        &.indicator-period {
+            border: none;
+            tr {
+                td {
+                    padding-top: 25px;
+                    padding-bottom: 25px;
+                    border: none;
+                }
+            }
+        }
+    }
+}
+
+.myProjectList,
+#updates,
+#user_table {
+    thead {
+        tr {
+            background-color: rgba($akvoBlack, 0.05);
+            border-bottom: none;
+            th {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
+    }
     tbody {
         tr {
             background: white !important;
@@ -609,17 +715,39 @@ nav.navbar-fixed-top {
             &.isPrivate {
                 background: rgba($progressNot, 0.1) !important;
             }
+            td {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                border: none;
+            }
         }
     }
-    div.twoColumns.clearfix {
-        @media only screen and (min-width: $width-large) {
-            min-width: 170px;
-        }
-        > a {
-            min-width: 70px;
+    div.projectListMenu {
+        ul {
+            margin-top: -10px;              
+            li {
+                display: inline-block;
+                @include responsive (mediums-max-screens) {
+                    display: block;
+                }
+                @include responsive (small-max-screens) {
+                }                       
+                a {
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+                @include responsive (wide-screens) {
+                }
+                > a {
+                }
+            }
         }
     }
     a {
+        &:last-child {
+            margin-right: 0;
+        }
         &.addUpdate {
             &.disabled {
                 background-color: #AB9F9F;
@@ -672,9 +800,26 @@ div.paginationWrap {
         background-color: rgba($akvoBlack, 0);
         padding: 10px 0 10px 0;
     }
+    .btn {
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
+}
+
+#password {
+    h4 {
+        margin-top: 65px;
+    }
 }
 
 .table-responsive {
+    @include responsive (small-max-screens) {
+        border:none;
+    }
     &.locationTab {
         overflow: hidden;
         thead {
@@ -695,6 +840,10 @@ div.paginationWrap {
         }
     }
     .media {
+        width: 39%;
+        > a {
+            min-width: 80px;
+        }
         .media-body {
             p {
                 max-width: 170px;
@@ -712,19 +861,6 @@ div.paginationWrap {
     width: 100%;
     display: block;
     a {
-        width: 45%;
-        padding: 2px 0.5%;
-        float: left;
-        text-align: center;
-        background: rgba($anchorLink, 0.2);
-        color: $anchorLink;
-        margin: 2px 2%;
-        @include border-radius(3px);
-        @include noWrapTxt;
-        &:hover {
-            background: $anchorLinkHover;
-            color: white;
-        }
         @include responsive(small-max-screens) {
             width: 98%;
             padding: 2px 1%;
@@ -744,8 +880,9 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: darken(rgba($anchorLinkHover, 0.05), 0);
+    background: rgba($akvoBlack, 0.1);
     padding-bottom: 15px;
+    margin-top: 25px;
     @include border-radius(5px);
     @include responsive(small-max-screens) {
         margin-top: 20px;
@@ -755,6 +892,14 @@ div.paginationWrap {
         }
     }
 
+    .btn {
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
@@ -791,6 +936,7 @@ div.paginationWrap {
 }
 
 /* FOOTER */
+
 body > footer {
     margin-top: 1em;
 }
@@ -849,6 +995,7 @@ footer {
 }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
+
 .touch-navbar {
     margin-top: -10px;
     @include responsive(small-max-screens) {
@@ -890,6 +1037,7 @@ h4.detailedInfo {
 }
 
 /* LISTINGS */
+
 #map {
     height: 400px;
     @include responsive(xtra-small-max-screens) {
@@ -953,13 +1101,19 @@ h4.detailedInfo {
     }
 }
 
+.showingTxt {
+    color: rgba($akvoPurple, 0.5);
+    margin-top: 20px;
+}
+
 .paginationWrap {
-    background: rgba(58, 58, 58, 0.05);
+    background: rgba(58, 58, 58, 0);
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
         li {
-            a, span {
+            a,
+            span {
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
@@ -1325,6 +1479,7 @@ h4.detailedInfo {
 }
 
 /* PROJECT */
+
 header {
     &.projectHeader {
         margin-bottom: 0;
@@ -1384,9 +1539,10 @@ header {
                 }
             }
             /* Style buttons and logos for Akvo Pages project pages */
-            .btn, img {
+            .btn,
+            img {
                 display: inline-block;
-                margin: 10px 3px  3px  3px;
+                margin: 10px 3px 3px 3px;
             }
         }
     }
@@ -1547,6 +1703,12 @@ div.projectTopRow {
     }
 }
 
+#invite_button {
+    button {
+        margin: 20px 0 0 25px;
+    }
+}
+
 div.textBlock {
     margin: 10px auto;
     .panel {
@@ -1648,11 +1810,13 @@ div.textBlock {
 }
 
 #draft {
-    background: #E04F46;
-    color: #fff;
+    background: rgba(#E04F46, 0.2);
+    border:1px solid rgba(#E04F46, 0.2);
+    color: #E04F46;
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
+    @include border-radius(5px);
 }
 
 #gallery {
@@ -1664,13 +1828,15 @@ div.textBlock {
     .budgetItem {
         margin-top: 12px;
         width: 60%;
-        &:nth-child(1), &:nth-child(2) {
+        &:nth-child(1),
+        &:nth-child(2) {
             margin-top: 0;
         }
     }
 }
 
 /* Project hierarchy */
+
 .project-hierarchy-window {
     border: 0.1em solid #d3d3d3;
     width: 150px;
@@ -1729,6 +1895,7 @@ div.textBlock {
 }
 
 /* Tooltips */
+
 .tooltip {
     z-index: 99999;
     .tooltip-arrow {}
@@ -1780,6 +1947,7 @@ ul.typeahead-selector {
 }
 
 /* Organisation Page */
+
 .organisationDetail {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
@@ -1833,7 +2001,8 @@ ul.typeahead-selector {
         max-width: 325px;
         margin-right: auto;
         margin-left: auto;
-        dd, dt {
+        dd,
+        dt {
             display: inline-block;
         }
         dt {
@@ -1848,6 +2017,7 @@ ul.typeahead-selector {
 }
 
 /* Update Page */
+
 .updateMain {
     h2 {
         color: $rsrGreen;
@@ -2002,7 +2172,9 @@ section.projectPartners {
         background: rgba(245, 245, 245, 0.5);
         border: thin solid rgba($rsrBlue, 0.1);
         @include border-radius(3px);
-        h2, h3, h4 {
+        h2,
+        h3,
+        h4 {
             margin-top: 0;
         }
         img {
@@ -2028,7 +2200,8 @@ section.projectPartners {
         }
         a.org-link {
             &:hover {
-                i, h2 {
+                i,
+                h2 {
                     color: rgb(255, 85, 0);
                 }
             }
@@ -2056,6 +2229,7 @@ section.projectPartners {
 }
 
 /* Display currency totals right-aligned */
+
 .currencyAmount {
     text-align: right;
 }
@@ -2108,7 +2282,6 @@ dd {
 }
 
 a.addUpdateBtn {
-    margin-top: 10px;
     color: white;
     background-color: $rsrGreen;
     border-color: $rsrGreen;
@@ -2344,7 +2517,8 @@ body {
             }
         }
     }
-    .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
+    .col-md-4 a.btn.btn-link,
+    .col-md-3 a.btn.btn-link {
         margin-top: 23px;
     }
     .add-object-link {
@@ -2358,12 +2532,14 @@ body {
         background-color: rgba($akvoPurple, 0.3);
         /* Modern Browsers */
     }
-    input, textarea, select {
+    input,
+    textarea,
+    select {
         & + label,
         & + span + label,
         & + ul + label {
             position: absolute;
-            top: 0px;
+            top: -20px;
             transition: top 0.7s ease, opacity 0.7s ease;
             opacity: 1;
             // Some nice styling
@@ -2512,7 +2688,7 @@ body {
 }
 
 #publishProject {
-   margin-top: -7px;
+    margin-top: -7px;
 }
 
 #editor-feedback {
@@ -2540,7 +2716,8 @@ body {
         padding: 0.5em;
         margin: 0 1em;
         color: $anchorLink;
-        &:hover, &.selected {
+        &:hover,
+        &.selected {
             border-bottom: 3px solid $newResultColor;
             color: $newResultColor;
         }
@@ -2552,20 +2729,43 @@ body {
 
 /* Results framework display */
 
+#results-framework {
+    padding: 0;
+    margin: 0;
+}
+
+.resultProjectTitle {
+    margin: 15px 0 25px 0;
+    span {
+        margin-right: 15px;
+    }
+    button {
+        margin: 0px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+            color: white;
+        }
+    }
+}
+
+
+
 .results {
     position: relative;
     * {
         box-sizing: border-box;
     }
     article {
-        margin: 0 1em;
-        @include border-radius(3px);
+        margin: 0;
         overflow: hidden;
     }
     .clickable {
         cursor: pointer;
         &:hover {
-            opacity: 0.8;
+            opacity: 1;
         }
         &:active {
             opacity: 0.6;
@@ -2588,38 +2788,86 @@ body {
     }
     .results-container {
         @include display-flex;
+        padding-left: 0;
+    }
+    .baseline, .periodValues {
+        padding: 2em 0;
+        position: relative;
+        width: 100%;
+        margin-bottom: 55px;
+        font-size: 110%;
+        .baseline-value, .baseline-year,
+        .period-target, .period-actual, .period-target-comment {
+            display: inline-block;
+            padding: 0 0 10px 15px;
+            > span:first-child {
+                color: rgba($akvoBlack,0.7);
+                display: block;
+            }
+            span:nth-child(2) {
+                display: block;
+                font-family: $titleFont;
+                font-weight: 700;
+                color: rgba($akvoBlack, 0.9);
+                span {
+                    display: inline;
+                }
+                span:nth-child(2) {
+                    margin-left: 10px;
+                }
+            }
+        }
+        .baseline-value, .period-target {
+            width: 50%;
+            float: left;
+        }
+        .baseline-year, .period-actual {
+            width: 50%;
+            float: right;
+        }
+        .period-target-comment {
+            width: 100%;
+            float: left;
+            padding: 0 0 40px 15px;
+        }
     }
     .sidebar {
         width: 30%;
         min-width: 200px;
         overflow-y: auto;
-        background-color: rgb(239, 239, 229);
         vertical-align: top;
-        border: 1px solid rgb(224, 225, 226);
+        .results-list {
+            border: 1px solid rgba($akvoBlack, 0.3);
+        }
         .result-nav {
-            padding: 1px 0.75em 1.75em 0.75em;
+            padding: 0.2em 0em 0 0em;
+            border-bottom: 1px solid rgba($akvoBlack, 0.6);
             &:before {
                 height: 1px;
-                background-color: rgb(224, 225, 226);
+                background-color: rgba(224, 225, 226, 0);
                 width: 100%;
                 display: block;
                 content: '';
                 margin: 0 auto;
                 @include transition(background-color 0.25s ease-in-out);
             }
-            &:last-child {
-                padding-bottom: 1em;
+            &.expanded {
             }
+            &:last-child {}
         }
         .result-nav-header {
-            padding: 0.25em 0.75em 0 0.75em;
+            background: rgba($akvoPurple, 0);
             h3 {
-                color: rgba($akvoBlack, 0.4);
-                font-size: 0.9em;
+                color: rgba(white, 1);
+                display: inline-block;
+                font-size: 1em;
                 text-transform: uppercase;
-                margin-top: 5px;
-                margin-right: 5px;
                 position: relative;
+                padding: 5px 10px;
+                margin-top: 0;
+                background: rgba($akvoPurple, 1);
+                margin-bottom: 0;
+                @include border-radius(8px 8px 0 0);
                 > a {
                     position: absolute;
                     right: -5px;
@@ -2627,20 +2875,55 @@ body {
             }
         }
         .result-nav {
+            opacity: 1;
             cursor: pointer;
-            .fa-chevron-up {
+            @include transition(all 0.2s linear);
+            &:hover {
+                opacity: 1;
+                background: rgba($rsrBlue2, 0.1);
+            }
+            .result-nav-summary {
+                padding: 25px 0 10px 10px;
+                h3 {
+                    font-size: 1.3em;
+                    color: rgba($rsrBlue2, 1);
+                    @include transition(all 0.2s linear);
+                    &:hover {
+                        color: $rsrBlue;
+                    }
+                    &.result-title {
+                        position: relative;
+                        box-sizing: border-box;
+                        font-weight: 400;
+                        .fa {
+                            float: right;
+                            font-size: 1.3em;
+                            margin-right: 6px;
+                            text-shadow: 0 1px 0 rgb(255, 255, 255);
+                            color: rgba($akvoPurple, 0.6);
+                        }
+                        > span {
+                            box-sizing: border-box;
+                            max-width: 80%;
+                            margin: 0 auto 0 0;
+                            display: block;
+                            display: -webkit-box;
+                            line-height: 1.4em;
+                            -webkit-box-orient: vertical;
+                        }
+                    }
+                }
+            }
+            .fa-chevron-circle-up {
                 display: none;
             }
-            h3 {
-                font-size: 1.1em;
-                color: $secondary6;
-            }
             &.expanded {
+                opacity: 1;
                 &:before {
                     background-color: transparent;
                 }
                 h3 {
-                    color: $akvoBlack;
+                    color: $rsrBlue;
                 }
                 ~ .result-nav {
                     &:before {
@@ -2648,35 +2931,18 @@ body {
                     }
                 }
             }
-            .result-title {
-                position: relative;
-                height: 2.8em;
-                overflow: hidden;
-                box-sizing: border-box;
-                .fa {
-                    float: right;
-                    font-size: 1.3em;
-                    margin-right: 6px;
-                    text-shadow: 0 1px 0 rgb(255, 255, 255);
-                }
-                > span {
-                    box-sizing: border-box;
-                    max-width: 80%;
-                    margin: 0 auto 0 0;
-                    display: block;
-                    display: -webkit-box;
-                    line-height: 1.4em;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-word;
-                }
-            }
             .result-indicator-count {
-                color: rgb(188, 188, 166);
-                margin-top: -10px;
                 display: block;
+                color: $akvoPurple;
+                display: block;
+                margin-top: -5px;
+                span {
+                    margin-left: 5px;
+                }
+                p {
+                    display: inline-block;
+                    margin-left: 5px;
+                }
             }
             .result-nav-full {
                 display: none;
@@ -2685,11 +2951,10 @@ body {
                 display: none;
             }
             &.expanded {
-                background: white;
-                .fa-chevron-down {
+                .fa-chevron-circle-down {
                     display: none;
                 }
-                .fa-chevron-up {
+                .fa-chevron-circle-up {
                     display: block;
                 }
                 .indicator-text {
@@ -2701,40 +2966,56 @@ body {
                 .result-nav-full {
                     display: block;
                     cursor: pointer;
-                    padding: 0.5em 0 0 5px;
+                    padding: 1px 0 0 0px;
                     background-color: white;
-                    margin-top: 1em;
-                    background-color: transparent;
-                    .indicator-nav {
-                        padding: 0.25em 0em 0.75em 0.5em;
-                        /* Transparent border means text doesn't shift when
-                        ** we add a colored border to active elements.
-                        */
-                        border-left: 4px solid rgba(0, 0, 0, 0);
-                        &.active {
-                            background-color: rgb(236, 236, 236);
-                            border-left: 4px solid rgb(174, 9, 34);
-                        }
+                    div {
                         &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-                    a {
-                        h4 {
-                            font-size: 1.1em;
-                            color: rgb(100, 100, 100);
-                            margin-bottom: 1px;
-                            @include noWrapTxt;
-                        }
-                        &.active {
-                            h4 {
-                                color: #ae0922;
+                            .indicator-nav {
+                                border-bottom: none;
                             }
                         }
-                    }
-                    .last-update {
-                        font-size: 0.9em;
-                        color: rgb(170, 170, 170);
+                        .indicator-nav {
+                            padding: 0.75em 10px 1em 0em;
+                            /* Transparent border means text doesn't shift when
+                            ** we add a colored border to active elements.
+                            */
+                            background: rgba($akvoPurple, 0.05);
+                            border-bottom: 2px solid white;
+                            &:hover {
+                                background: rgba($akvoPurple, 0.5);
+                                h4 {
+                                    color:white;
+                                }
+                            }
+                            &.active {
+                                background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
+                                border-left: 10px solid rgba(174, 9, 34, 0);
+                                background-size: 5% auto;
+                                h4 {
+                                    color: white;
+                                }
+                            }
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
+                        }
+                        a {
+                            h4 {
+                                font-size: 1em;
+                                color: $akvoPurple;
+                                margin-bottom: 1px;
+                                line-height: 150%;
+                                padding-left: 15px;
+                            }
+                            &:hover {
+                                color: rgba($akvoPurple, 0.5);
+                                text-decoration: none;
+                            }
+                        }
+                        .last-update {
+                            font-size: 0.9em;
+                            color: rgb(170, 170, 170);
+                        }
                     }
                 }
             }
@@ -2743,10 +3024,39 @@ body {
     .indicator-container {
         vertical-align: top;
         overflow-y: scroll;
-        padding: 0.25em 1em;
-        background-color: rgb(255, 255, 255);
-        border: 1px solid rgb(241, 241, 242);
+        padding:20px 1em 0.25em 1em;
+        background-color: rgba(245, 245, 245, 0.2);
         @include flex(1);
+        .indicator-period {
+            .indicTitle {
+                position: relative;
+                .indicator-title {
+                    i {
+                        display: none;
+                    }
+                }
+                .new-update {
+                    position: absolute;
+                    display: inline-block;
+                    top: -5px;
+                    right: 0;
+                    .btn {
+                        background: $akvoBlack;
+                        color: white;
+                        @include border-radius(5px);
+                        &:hover {
+                            background: $akvoPurple;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+        .indicator-periods-title {
+            font-size: 1em;
+            color: $akvoBlack;
+            margin-top: 40px;
+        }
         .result-summary {
             display: none;
             opacity: 0;
@@ -2788,7 +3098,7 @@ body {
         .indicator-group {
             padding: 0;
             display: none;
-            h4.indicator-title {
+            .indicator-title {
                 color: rgb(174, 9, 34);
                 font-size: 1em;
                 .glyphicon {
@@ -2796,32 +3106,13 @@ body {
                     margin-right: 4px;
                 }
             }
-            .baseline {
-                padding: 2em 0;
-                .baseline-value, .baseline-year {
-                    width: 30%;
-                    display: inline-block;
-                    padding: 0 0 0 5%;
-                    dt {
-                        color: rgb(129, 131, 134);
-                    }
-                    dd {
-                        font-size: 1.5em;
-                        font-weight: bold;
-                        color: rgb(81, 80, 80);
-                    }
-                }
-            }
-            .indicator-periods-title {
-                font-size: 1em;
-                color: rgb(81, 80, 80);
-            }
             .table {
                 padding: 0.5em 0.25em;
                 /*background-color: rgb(235,235,231);*/
                 tbody {
                     &.indicator-period {
-                        border-top: 1px solid #E7E8E8;
+                        border: none;
+                        padding: 15px 0;
                     }
                     &.expanded {
                         background-color: white;
@@ -2834,7 +3125,8 @@ body {
                         background-color: #ececec;
                     }
                 }
-                tr, td {
+                tr,
+                td {
                     border: none;
                     color: rgb(172, 172, 172);
                 }
@@ -2854,25 +3146,49 @@ body {
                 }
                 td {
                     vertical-align: middle;
-                    &.fromTime, &.toTime, &.target-td, &.expand-td {
+                    &.period-td,
+                    &.actual-td,
+                    &.target-td,
+                    &.actions-td {
                         white-space: nowrap;
+                    }
+                    &.target-td {
+                        font-weight: bold;
+                    }
+                    &.actions-td {
+                        .tooltip {
+                            top: -170px;
+                            left: 132.703px;
+                            display: block;
+                            .tooltip-arrow {
+                                left: 77.4336%;
+                            }
+                        }
+                    }
+                    &.period-td {
+                        color: rgba($akvoBlack, 0.6);
+                        position: relative; 
+                        .result-tooltip {
+                            position: absolute;
+                            top: 0;
+                        }
                     }
                     &.indicator-bar-td {
                         width: 55%;
                     }
                 }
                 .expand-indicator-period {
-                    .fa-chevron-up {
+                    .fa-chevron-circle-up {
                         display: none;
                     }
-                    .fa-chevron-down {
+                    .fa-chevron-circle-down {
                         display: initial;
                     }
                     &.expanded {
-                        .fa-chevron-up {
+                        .fa-chevron-circle-up {
                             display: initial;
                         }
-                        .fa-chevron-down {
+                        .fa-chevron-circle-down {
                             display: none;
                         }
                     }
@@ -2884,8 +3200,7 @@ body {
         }
     }
     /* Styling for the indicator period progress bar */
-    .indicator-bar-td,
-    .target-td {
+    .indicator-bar-td {
         height: 80px;
         padding: 0;
     }
@@ -2907,7 +3222,8 @@ body {
         height: 100%;
         margin-left: 50px;
         margin-right: 15px;
-        .indicator-bar, .indicator-bar-progress-amount {
+        .indicator-bar,
+        .indicator-bar-progress-amount {
             position: absolute;
             top: 38px;
             bottom: 24px;
@@ -2943,7 +3259,8 @@ body {
             .indicator-bar-progress {
                 position: absolute;
                 width: 4px;
-                margin-left: -2px; /* Offset half the width */
+                margin-left: -2px;
+                /* Offset half the width */
                 height: 23px;
                 top: 30px;
                 background-color: #A3C7E3;
@@ -2973,37 +3290,33 @@ body {
     .indicator-container .indicator-group .table tbody {
         background-color: white;
         border-bottom: none !important;
-
         &:last-child {
-          margin-bottom: 0;
+            margin-bottom: 0;
         }
-
         .edit-button {
-          position: absolute;
-          height: 20px;
-          width: 20px;
-          top: 15px;
-          right: 10px;
-          color: $akvoBlack;
-          font-size: 1.5em;
-          &.activated {
-            display: none;
-          }
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            top: 15px;
+            right: 10px;
+            color: $akvoBlack;
+            font-size: 1.5em;
+            &.activated {
+                display: none;
+            }
         }
-
         .delete-button {
-          position: absolute;
-          height: 20px;
-          width: 20px;
-          top: 13px;
-          right: 35px;
-          font-size: 1.5em;
-          color: $akvoBlack;
-          &.activated {
-            display: none;
-          }
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            top: 13px;
+            right: 35px;
+            font-size: 1.5em;
+            color: $akvoBlack;
+            &.activated {
+                display: none;
+            }
         }
-
         .delete-confirm {
             display: none;
             position: absolute;
@@ -3014,18 +3327,15 @@ body {
             color: $akvoBlack;
             padding: 1em;
             z-index: 101;
-
             > div {
                 height: 40px;
                 position: relative;
             }
-
             .delete-confirm-no {
                 position: absolute;
                 left: 10px;
                 top: 10px;
             }
-
             .delete-confirm-yes {
                 background-color: #ae0922;
                 border-color: #ae0922;
@@ -3033,99 +3343,220 @@ body {
                 position: absolute;
                 right: 10px;
                 top: 10px;
-
                 &:hover {
                     background-color: #ff5500;
                     border-color: #ff5500;
                 }
             }
         }
-
         .update-date {
-          display: inline-block;
-          text-align: left;
-          width: 50%;
+            display: inline-block;
+            text-align: left;
+            width: 50%;
         }
         .update-name {
-          display: inline-block;
-          text-align: left;
-          width: 30%;
-          margin-right: 10%;
-          color: $akvoBlack;
-
-          &.delete-pending {
-            margin-bottom: 90px;
-          }
+            display: inline-block;
+            text-align: left;
+            width: 30%;
+            margin-right: 10%;
+            color: $akvoBlack;
+            &.delete-pending {
+                margin-bottom: 90px;
+            }
         }
         .update-timeline {
-          display: inline-block;
-          width: 75%;
-          height: 80px;
-          padding-top: 1em;
-          z-index: 99;
-          position: relative;
+            display: inline-block;
+            width: 75%;
+            height: 80px;
+            padding-top: 1em;
+            z-index: 99;
+            position: relative;
         }
         .update-target {
-          position: absolute;
-          margin-top: 48px;
-          display: inline-block;
-          width: 24%;
-          height: 80px;
-          text-align: center;
-          span {
-            font-size: 1.1em;
-            color: rgb(81, 80, 80);
-            vertical-align: text-top;
-            &.update-target-actual {
-              padding-left: 15px;
-              font-size: 1.1em;
-              font-weight: bold;
-              color: #A3C7E3;
-              vertical-align: bottom;
+            position: absolute;
+            margin-top: 48px;
+            display: inline-block;
+            width: 24%;
+            height: 80px;
+            text-align: center;
+            span {
+                font-size: 1.1em;
+                color: rgb(81, 80, 80);
+                vertical-align: text-top;
+                &.update-target-actual {
+                    padding-left: 15px;
+                    font-size: 1.1em;
+                    font-weight: bold;
+                    color: #A3C7E3;
+                    vertical-align: bottom;
+                }
             }
-          }
         }
         .update-description {
-          padding: 0.5em;
-          margin: 20px auto 30px;
-          &.editable {
-            background: whitesmoke;
-            border: 1px solid #A3C7E3;
-          }
-          .update-photo {
-            float: right;
-            width: 150px;
-            height: 100px;
-            background-size: cover;
-          }
+            padding: 0.5em;
+            margin: 20px auto 30px;
+            &.editable {
+                background: whitesmoke;
+                border: 1px solid #A3C7E3;
+            }
+            .update-photo {
+                float: right;
+                width: 150px;
+                height: 100px;
+                background-size: cover;
+            }
         }
         .save-button {
-          position: absolute;
-          display: none;
-          right: 10px;
-          bottom: 10px;
-          &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: white;
-            background-color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-          }
+            position: absolute;
+            display: none;
+            right: 10px;
+            bottom: 10px;
+            &.active {
+                display: inline-block;
+                padding: 3px 7px;
+                color: white;
+                background-color: rgb(0, 122, 184);
+                @include border-radius(2px);
+                text-align: center;
+            }
         }
         .cancel-button {
-          position: absolute;
-          display: none;
-          right: 60px;
-          bottom: 10px;
-          background-color: none;
-          &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-          }
+            position: absolute;
+            display: none;
+            right: 60px;
+            bottom: 10px;
+            background-color: none;
+            &.active {
+                display: inline-block;
+                padding: 3px 7px;
+                color: rgb(0, 122, 184);
+                @include border-radius(2px);
+                text-align: center;
+            }
+        }
+    }
+    label.imageUpload, label.fileUpload {
+        input[type="file"] {
+            position: fixed;
+            top: -1000px;
+        }
+    }
+    .update-container {
+        background: rgba($primary4, 0.05);
+        border: 1px solid rgba($akvoBlack, 0.2);
+        padding: 0 1em;
+        margin-bottom: 50px;
+        .update-entry-container {
+            padding:0 0 10px 0;
+            position: relative;
+            &.edit-in-progress {
+                background: rgba($rsrGreen, 0.05);
+                border: 1px solid rgba($rsrGreen, 0.3);
+                box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+                .update-entry-container-header {
+                    background: rgba(white, 0.5);
+                }
+            }
+            .update-entry-container-header {
+                background: rgba($akvoBlack, 0);                
+                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                padding: 0.75em 0;
+                .update-user {
+                    color: $akvoPurple;
+                    font-weight: bold;
+                }
+                .update-created-at {
+                    margin-left: 15px;
+                    color: rgba($akvoBlack, 0.7);
+                }
+                .update-status {
+                    color: $akvoTvRed;
+                }
+            }
+            .comments {
+                .input-group {
+                    margin-top: 20px;
+                    /* button {
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/
+                }
+                .comment {
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                    .comment-header {
+                        margin-bottom: 5px;
+                        font-weight: bold;
+                        span {
+                            color: $akvoPurple;
+                            &:last-child {
+                                margin-left: 15px;
+                                color: rgba($akvoBlack, 0.5);
+                            }
+                        }
+                    }
+                    .comment-text {}
+                }
+            }
+            .menuAction {
+                position: relative;
+                .removeUpdate {
+                    position: absolute;
+                    top: 30px;
+                    left:0;
+                    .btn {
+                        background: $akvoTvRed;
+                        color: white;
+                        border-color: $akvoTvRed;
+                        &:hover {
+                            background: rgba($akvoTvRed, 0.5);
+                        }
+                    }
+                }
+                .bottomRow {
+                    margin-top: 20px;
+                    padding: 0.75em;
+                    position: relative;
+                    list-style-type: none;
+                    .btn {
+                        padding: 2px 7px;
+                        &.btn-default {
+                            background: $akvoBlack;
+                            color: white;
+                            .editUpdate & {
+                                background: initial;
+                                color: initial;
+                            }
+                            &:hover {
+                                background: $akvoPurple;
+                            }
+                        }
+                    }
+                    .cancelUpdate {margin-right: 25px;}
+
+                    .saveUpdate {}
+                    .returnUpdate {}
+                    .submitUpdate {}
+                    .approveUpdate {}
+                }
+            }
+            .upActualValue {
+                margin-top: 47px;
+                margin-bottom: 15px;
+                .update-actual-value-text {
+                    color: rgba($akvoBlack, 0.7);
+                }
+                .update-actual-value-data {
+                    font-weight: bold;
+                }
+                .update-relative-value {
+                    margin-left: 5px;
+                    font-weight: bold;
+                }
+            }
         }
     }
     .update-dialog-container {
@@ -3141,7 +3572,6 @@ body {
             padding: 8px 2em;
             .update-entry-container {
                 padding: 2em;
-                margin-bottom: 2em;
                 position: relative;
                 background-color: #ececec;
                 &:first-child {
@@ -3163,7 +3593,6 @@ body {
                     }
                     .update-exceed-target-checkbox {
                         margin-right: 10px;
-
                         &:checked {
                             ~ input.exceed-value {
                                 opacity: 1;
@@ -3177,7 +3606,7 @@ body {
                     margin-left: 45px;
                     margin-right: 0;
                     .indicator-baseline {
-                        top:34px;
+                        top: 34px;
                         left: -60px;
                     }
                     .indicator-bar-progress-text {
@@ -3217,7 +3646,8 @@ body {
                                 background-color: white;
                                 width: 100px;
                                 height: auto;
-                                margin-left: -28px; /* Half of the width of this - half the width of the parent */
+                                margin-left: -28px;
+                                /* Half of the width of this - half the width of the parent */
                                 padding: 5px 0;
                                 &:before {
                                     content: '';
@@ -3233,7 +3663,8 @@ body {
                             }
                         }
                     }
-                    .indicator-bar, .indicator-bar-progress-amount {
+                    .indicator-bar,
+                    .indicator-bar-progress-amount {
                         position: absolute;
                         top: 38px;
                         bottom: 24px;
@@ -3407,7 +3838,7 @@ body {
                         width: 3px;
                         margin-left: -2px;
                         height: 20px;
-                        position:absolute;
+                        position: absolute;
                         background-color: #B5B5B5;
                         top: -3px;
                         z-index: 102;
@@ -3423,7 +3854,8 @@ body {
                             background-color: red;
                         }
                     }
-                    .noUi-base, &.noUi-horizontal {
+                    .noUi-base,
+                    &.noUi-horizontal {
                         height: 5px;
                         border: 0;
                         background-color: rgba(white, 0);
@@ -3553,11 +3985,11 @@ div.active {
     bottom: 20%;
     left: 100px;
     z-index: 1032;
-    @media only screen and (max-width: $width-small) {
+    @include responsive (small-max-screens) {
         right: 25px;
         left: 25px;
     }
-    @media only screen and (max-width: $xtra-small) {
+    @include responsive (xtra-small-max-screens) {
         right: 5px;
         left: 5px;
     }
@@ -3585,7 +4017,9 @@ div.active {
             .inputContainer {
                 margin-top: 2.75em;
                 margin-bottom: 1em;
-                input, select, textarea {
+                input,
+                select,
+                textarea {
                     & + label {
                         position: absolute;
                         top: -25px;
@@ -3683,3 +4117,72 @@ div#my-reports {
         pointer-events: initial;
     }
 }
+
+.results-list {
+    div {
+        &:last-child {
+            .result-nav {
+                border-bottom: none;
+            }
+        }
+    }
+}
+.period-td {
+        color: rgba($akvoBlack, 0.6);
+        position: relative;
+        .badge {
+            background-color: $akvoBlack;
+            @include transition(all 0.1s linear);
+            margin-top: -5px;
+            padding: 5px 9px;
+            @include border-radius(15px);
+            font-family: $scriptFont;
+            &:hover {
+                background-color: $akvoPurple;
+                cursor: pointer;
+            }
+        }
+        .result-tooltip {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background: rgba(white, 0.5);
+            border: 1px solid  rgba($primary4, 0.8);
+            color: $akvoBlack;
+            @include border-radius(4px);
+            .tooltip-inner {
+                background: rgba(white, 0.5);
+                color: $akvoBlack;
+                }
+            .tooltip-arrow {
+                position: absolute;
+                background: rgba(white, 0.5);
+                border: 1px solid  rgba($primary4, 0.8);
+                right: 8px;
+                top: -2px;
+                &:after, &:before {
+                    bottom: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    }
+
+                &:after {
+                    border-color: rgba(136, 183, 213, 0);
+                    border-bottom-color: rgba($primary4, 0.5);
+                    border-width: 7px;
+                    margin-left: -7px;
+                }
+                &:before {
+                    border-color: rgba(194, 225, 245, 0);
+                    border-bottom-color:  rgba($primary4, 0.5);
+                    border-width: 8px;
+                    margin-left: -8px;
+                }
+            }
+        }
+    }

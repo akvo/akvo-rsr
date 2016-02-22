@@ -14,7 +14,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         iati_imports = (
-            IatiImport.objects.filter(run_immediately=True) |
             IatiImport.objects.filter(enabled=True)
         )
 

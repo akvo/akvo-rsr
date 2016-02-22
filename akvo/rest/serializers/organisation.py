@@ -34,3 +34,14 @@ class OrganisationExtraSerializer(OrganisationSerializer):
             'name',
             'primary_location',
         )
+
+
+class OrganisationBasicSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Organisation
+        fields = (
+            'id',
+            'name',
+            'long_name'
+        )

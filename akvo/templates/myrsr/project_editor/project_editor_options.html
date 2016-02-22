@@ -16,13 +16,13 @@
                                 <div class="checkbox">
                                     <label for="impactProject" class="control-label">
                                         <input id="impact-project" type="checkbox" name="impact-project"{% if project.is_impact_project %} checked{% endif %}>
-                                            {% trans 'RSR Impact project' %}
+                                            {% trans 'Activate results framework' %}
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-9 help-block">
-                            {% trans 'Indicate whether the project is an RSR Impact project. When this option is set, the project page will display the results framework, and it will be possible to update the actual values of indicators through updates. Only available for superusers.' %}
+                            {% trans 'Indicate whether the results framework should be activated or not. When this option is set, actual values and comments of results can only be filled in the My results section. Only available for superusers.' %}
                         </div>
                     </div>
                     {% if project.parents.count == 1 and project.is_impact_project %}

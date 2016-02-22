@@ -18,6 +18,7 @@ def is_rsr_admin(user):
         return True
     return False
 
+
 @rules.predicate
 def is_org_admin(user, obj):
     if not user.is_authenticated():
@@ -61,6 +62,20 @@ def is_org_admin(user, obj):
                 except:
                     pass
                 try:
+                    if obj.period.indicator.result.project and \
+                            obj.period.indicator.result.project in employment.organisation.\
+                                    all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.data.period.indicator.result.project and \
+                            obj.data.period.indicator.result.project in employment.organisation.\
+                                    all_projects():
+                        return True
+                except:
+                    pass
+                try:
                     if obj.location.location_target and obj.location.location_target in \
                             employment.organisation.all_projects():
                         return True
@@ -86,6 +101,7 @@ def is_org_admin(user, obj):
                     pass
     return False
 
+
 @rules.predicate
 def is_org_user_manager(user, obj):
     if not user.is_authenticated():
@@ -108,15 +124,16 @@ def is_org_user_manager(user, obj):
                 return True
     return False
 
+
 @rules.predicate
 def is_org_project_editor(user, obj):
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
-        if employment.group == Group.objects.get(name='Project Editors'):
+        if employment.group in Group.objects.filter(name__in=['Project Editors', 'M&E Managers']):
             if not obj:
                 return True
-            elif isinstance(obj, Organisation):
+            if isinstance(obj, Organisation):
                 if obj in employment.organisation.content_owned_organisations():
                     return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
@@ -142,6 +159,20 @@ def is_org_project_editor(user, obj):
                 except:
                     pass
                 try:
+                    if obj.period.indicator.result.project and \
+                            obj.period.indicator.result.project in employment.organisation.\
+                                    all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.data.period.indicator.result.project and \
+                            obj.data.period.indicator.result.project in employment.organisation.\
+                                    all_projects():
+                        return True
+                except:
+                    pass
+                try:
                     if obj.location.location_target and obj.location.location_target in \
                             employment.organisation.all_projects():
                         return True
@@ -161,6 +192,7 @@ def is_org_project_editor(user, obj):
                     pass
     return False
 
+
 @rules.predicate
 def is_org_user(user, obj):
     if not user.is_authenticated():
@@ -174,6 +206,7 @@ def is_org_user(user, obj):
             if isinstance(obj, ProjectUpdate) and obj.user == user:
                 return True
     return False
+
 
 @rules.predicate
 def is_self(user, obj):

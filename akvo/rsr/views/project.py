@@ -166,7 +166,7 @@ def _check_project_viewing_permissions(user, project):
 
 def _get_accordion_data(project):
     results_data = []
-    if project.results.all() and not project.is_impact_project:
+    if project.results.all():
         for result in project.results.all():
             result_data = dict()
             result_data['id'] = str(result.pk)
@@ -220,15 +220,10 @@ def _get_carousel_data(project):
         if len(photos) > 9:
             break
         if update.photo:
-            if update.indicator_period:
-                direct_to = reverse('project-main', kwargs={
-                    'project_id': project.pk
-                }) + '#results'
-            else:
-                direct_to = reverse('update-main', kwargs={
-                    'project_id': project.pk,
-                    'update_id': update.pk
-                })
+            direct_to = reverse('update-main', kwargs={
+                'project_id': project.pk,
+                'update_id': update.pk
+            })
             try:
                 im = get_thumbnail(update.photo, '750x400', quality=99)
                 photos.append({
@@ -299,40 +294,6 @@ def _get_partners_with_types(project):
     return collections.OrderedDict(sorted(partners_dict.items()))
 
 
-def _get_indicator_updates_data(updates, child_projects, child=True):
-    updates_list = []
-    for update in updates:
-        if child:
-            indicator_period = update.indicator_period
-        else:
-            indicator_period = update.indicator_period.parent_period()
-
-        updates_list.append({
-            "id": update.pk,
-            "indicator_period": {
-                "id": indicator_period.pk if indicator_period else '',
-                "target_value": str(indicator_period.target_value) if indicator_period else ''
-            },
-            "period_update": str(update.period_update),
-            "created_at": str(update.created_at),
-            "user": {
-                "id": update.user.id,
-                "first_name": update.user.first_name,
-                "last_name": update.user.last_name,
-            },
-            "text": update.text,
-            "photo": update.photo.url if update.photo else '',
-        })
-
-    for child_project in child_projects:
-        updates = child_project.project_updates.select_related('user').order_by('-created_at').\
-            filter(indicator_period__gt=0)
-        child_updates_list = _get_indicator_updates_data(updates, child_project.children(), False)
-        updates_list += child_updates_list
-
-    return updates_list
-
-
 def main(request, project_id):
     """The main project page."""
     try:
@@ -377,25 +338,20 @@ def main(request, project_id):
 
     # Updates
     updates = project.project_updates.prefetch_related('user').order_by('-created_at')
-    narrative_updates = updates.exclude(indicator_period__isnull=False)
-    indicator_updates = updates.filter(indicator_period__isnull=False)
 
     # JSON data
-    indicator_updates_data = json.dumps(_get_indicator_updates_data(indicator_updates,
-                                                                    project.children()))
     carousel_data = json.dumps(_get_carousel_data(project))
     accordion_data = json.dumps(_get_accordion_data(project))
     partner_types = _get_partners_with_types(project)
 
     # Updates pagination
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, narrative_updates, 10)
+    page, paginator, page_range = pagination(page, updates, 10)
 
     context = {
         'accordion_data': accordion_data,
         'carousel_data': carousel_data,
         'current_datetime': datetime.now(),
-        'indicator_updates': indicator_updates_data,
         'page': page,
         'page_range': page_range,
         'paginator': paginator,
@@ -403,7 +359,7 @@ def main(request, project_id):
         'pledged': project.get_pledged(),
         'project': project,
         'project_admin': project_admin,
-        'updates': narrative_updates[:5] if narrative_updates else None,
+        'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
     }
 

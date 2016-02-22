@@ -2,7 +2,7 @@
 
 {% load bootstrap3 compressed i18n rsr_utils %}
 
-{% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
+{% block title %}{% trans 'MyRSR - My details' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
 {% block head_js %}{% endblock head_js %}
 
@@ -10,7 +10,7 @@
 
 
 {% block myrsr_main %}
-    <div class="col-sm-7 col-xs-12" id="profile">
+    <div class="col-sm-6 col-xs-12" id="profile">
         <h3>{% trans 'My details' %}</h3>
         <div class="usrAvatar">
             {% img user 100 100 user.get_full_name %}
@@ -29,14 +29,32 @@
                 {% bootstrap_field field %}
             {% endfor %}
             {% buttons %}
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-default btn-sm">
                     {% trans 'Update details' %}
                 </button>
             {% endbuttons %}
         </form>
+        <div id="password">
+            <h4>{% trans 'Change your password' %}</h4>
+            <form method="post" action="" id="passwordForm">
+                {% for field in change_password_form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-default btn-sm">
+                        {% trans 'Update password' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xs-12" id="organisations">
+      
+
     </div>
 
-    <div class="col-sm-5 col-xs-12" id="organisations"></div>
+
+
 {% endblock %}
 
 {% block js %}
@@ -87,11 +105,24 @@
             "request_join_text": "{% trans 'Request to join' %}",
             "sending_request_text": "{% trans 'Sending request...' %}",
             "required_text": "{% trans 'This field is required.' %}",
-            "already_connected_text": "{% trans 'You are already connected to this organisation. Only one connection per organisation is allowed.' %}",
+            "already_connected_text": "{% trans 'You are already connected to this organisation as a user or your request is pending approval.' %}",
             "not_connected_text": "{% trans 'Could not connect to organisation.' %}"
         }
     </script>
+  {# App data #}
+  <script type="application/json" id="akvo-rsr-ajax-url">
+    {"ajaxUrl": "{% url 'user_change_password' user.id %}?format=json"}
+  </script>
 
+  {# Translation strings #}
+  <script type="application/json" id="password-change-strings">
+    {
+        "close_text": "{% trans 'Close' %}",
+        "password_update_text": "{% trans 'Password has been updated.' %}"
+    }
+  </script>
+
+  {% compressed_js 'my_change_password' %}
     {% compressed_js 'react_typeahead_1_1_5' %}
     {% compressed_js 'my_details' %}
 {% endblock js %}

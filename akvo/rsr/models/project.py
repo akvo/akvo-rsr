@@ -371,17 +371,6 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
-        # Check if project should be converted to an Impact project
-        if not last_updated:
-            if self.pk:
-                # Existing project, only convert if original project was not an Impact project
-                orig = get_model('rsr', 'project').objects.get(pk=self.pk)
-                if self.is_impact_project and not orig.is_impact_project:
-                    self.convert_to_impact_project()
-            elif self.is_impact_project:
-                # New project, so convert to Impact project
-                self.convert_to_impact_project()
-
         super(Project, self).save(*args, **kwargs)
 
     def clean(self):
@@ -1081,36 +1070,6 @@ class Project(TimestampsMixin, models.Model):
     ###################################
     ####### RSR Impact projects #######
     ###################################
-
-    def convert_to_impact_project(self):
-        """
-        When a project is converted to an RSR Impact project, it is not possible to edit the actual
-        values of the indicators and the actual values should be converted to updates.
-        """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                for period in indicator.periods.all():
-                    if period.actual_value:
-                        try:
-                            update_value = Decimal(period.actual_value) - period.baseline
-                        except (InvalidOperation, TypeError):
-                            continue
-
-                        period.actual_value = str(period.baseline)
-                        period.save(update_fields=['actual_value'])
-
-                        get_model('rsr', 'ProjectUpdate').objects.create(
-                            project=self,
-                            # TODO: What user should we link to a 'system' update?
-                            # We could make sure that the 1st user in the database is a 'system'
-                            # user.
-                            user=get_model('rsr', 'user').objects.all()[0],
-                            title=u'Initial value of indicator period',
-                            text=u'Initial value of indicator period, added by system while '
-                                 u'calculating the actual value of this indicator period.',
-                            indicator_period=period,
-                            period_update=update_value,
-                        )
 
     def import_results(self):
         """Import results from the parent project."""

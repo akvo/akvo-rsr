@@ -24,7 +24,12 @@ router.register(r'employment', views.EmploymentViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
 router.register(r'indicator', views.IndicatorViewSet)
+router.register(r'indicator_framework', views.IndicatorFrameworkViewSet)
 router.register(r'indicator_period', views.IndicatorPeriodViewSet)
+router.register(r'indicator_period_framework', views.IndicatorPeriodFrameworkViewSet)
+router.register(r'indicator_period_data', views.IndicatorPeriodDataViewSet)
+router.register(r'indicator_period_data_framework', views.IndicatorPeriodDataFrameworkViewSet)
+router.register(r'indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
 router.register(r'internal_organisation_id',
                 views.InternalOrganisationIDViewSet)
 router.register(r'invoice', views.InvoiceViewSet)
@@ -63,7 +68,8 @@ router.register(r'publishing_status', views.PublishingStatusViewSet)
 router.register(r'recipient_country', views.RecipientCountryViewSet)
 router.register(r'recipient_region', views.RecipientRegionViewSet)
 router.register(r'related_project', views.RelatedProjectViewSet)
-router.register(r'result', views.ResultViewSet)
+router.register(r'result', views.ResultsViewSet)
+router.register(r'results_framework', views.ResultsFrameworkViewSet)
 router.register(r'sector', views.SectorViewSet)
 router.register(r'transaction', views.TransactionViewSet)
 router.register(r'transaction_sector', views.TransactionSectorViewSet)
@@ -96,6 +102,9 @@ urlpatterns = patterns(
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+    url(r'^indicator_period_data/(?P<pk>[0-9]+)/upload_file/$',
+        views.indicator_upload_file,
+        name='indicator_upload_file'),
     url(r'^server_info/$', views.server_info, name='server_info'),
 )
 
@@ -149,6 +158,9 @@ urlpatterns += patterns(
     url(r'typeaheads/user_projects$',
         views.typeahead_user_projects,
         name='user_projects_typeahead'),
+    url(r'typeaheads/impact_projects$',
+        views.typeahead_impact_projects,
+        name='impact_projects_typeahead'),
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),

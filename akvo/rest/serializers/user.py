@@ -10,8 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
+from .employment import EmploymentSerializer
+from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
 from .rsr_serializer import BaseRSRSerializer
-from .organisation import OrganisationExtraSerializer
 
 
 class UserSerializer(BaseRSRSerializer):
@@ -19,6 +20,9 @@ class UserSerializer(BaseRSRSerializer):
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False)
     organisations = OrganisationExtraSerializer(
         source='organisations', many=True, required=False, allow_add_remove=True
+    )
+    approved_employments = EmploymentSerializer(
+        source='approved_employments', many=True, required=False
     )
 
     class Meta:
@@ -28,8 +32,14 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
+            'is_active',
+            'is_staff',
+            'is_admin',
+            'is_support',
+            'is_superuser',
             'organisation',
             'organisations',
+            'approved_employments',
         )
         exclude = ('absolute_url',)
 
@@ -77,12 +87,18 @@ class UserPasswordSerializer(serializers.Serializer):
 
 
 class UserDetailsSerializer(BaseRSRSerializer):
+
+    approved_organisations = OrganisationBasicSerializer(
+        source='approved_organisations', many=True, required=False, allow_add_remove=True
+    )
+
     class Meta:
         model = get_user_model()
         fields = (
             'id',
             'first_name',
             'last_name',
+            'approved_organisations',
         )
         exclude = ('absolute_url',)
 

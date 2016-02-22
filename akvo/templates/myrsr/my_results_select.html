@@ -1,0 +1,37 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load i18n compressed %}
+
+{% block title %}{% trans 'MyRSR' %} - {% trans 'My results' %}{% endblock %}
+
+{% block myrsr_main %}
+    <div id="container" class="col-sm-12"></div>
+{% endblock myrsr_main %}
+
+{% block js %}
+    {# React #}
+    <script src="https://fb.me/react-0.14.5.js"></script>
+    <script src="https://fb.me/react-dom-0.14.5.js"></script>
+    {% compressed_js 'react_typeahead_1_1_5' %}
+
+    {# Initial data endpoints #}
+    <script type="application/json" id="data-endpoints">
+        {
+            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "impact_projects": "{% url 'impact_projects_typeahead' %}"
+        }
+    </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="translation-texts">
+        {
+            "my_results": "{% trans 'My results' %}",
+            "loading_projects": "{% trans 'Loading projects' %}",
+            "no_projects_found": "{% trans 'No projects found' %}",
+            "select_project": "{% trans 'Select a project' %}",
+            "typeahead_placeholder": "{% trans 'Select a project by typing the project name or ID' %}"
+        }
+    </script>
+
+    {% compressed_js 'my_results_select' %}
+{% endblock %}
