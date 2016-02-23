@@ -558,7 +558,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Newly added data update
             if self.status == self.STATUS_APPROVED_CODE:
                 # Update is immediately approved. Scenario that probably does not happen very often.
-                self.period.update_actual_value(self.data, self.relative_data, self.text)
+                self.period.update_actual_value(self.data, self.relative_data)
         else:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
@@ -591,7 +591,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Process data when the update has been approved and mail the user about it
             elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
-                self.period.update_actual_value(self.data, self.relative_data, self.text)
+                self.period.update_actual_value(self.data, self.relative_data)
                 rsr_send_mail(
                     [self.user.email],
                     subject='results_framework/approved_subject.txt',
