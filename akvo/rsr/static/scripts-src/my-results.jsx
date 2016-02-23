@@ -1190,7 +1190,7 @@ var IndicatorPeriodList = React.createClass({
                 <div className={relatedClass}>
                     <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
                 </div>
-            )
+            );
         } else if (this.props.child) {
             relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
@@ -1203,7 +1203,7 @@ var IndicatorPeriodList = React.createClass({
                 <div className={relatedClass}>
                     <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
                 </div>
-            )
+            );
         } else {
             relatedIndication = '';
             relatedClass += "selfProject";
@@ -1567,7 +1567,7 @@ var SideBar = React.createClass({
 
 var ResultsApp = React.createClass({
     getInitialState: function() {
-        var hash = window.location.hash,
+        var hash = location.hash,
             defaultResult = null,
             defaultIndicator = null,
             defaultPeriod = null;
