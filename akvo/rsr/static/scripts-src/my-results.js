@@ -153,8 +153,10 @@ var CommentEntry = React.createClass({displayName: 'CommentEntry',
 
 var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     getInitialState: function() {
+        var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+
         return {
-            data: this.props.update.data,
+            data: updateData,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
             comment: '',
@@ -349,7 +351,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                     break;
                 default:
-                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + approved_organisations.length - 1 + ' ' + i18n.others;
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
                     break;
             }
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -378,15 +380,15 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 React.DOM.div( {className:"upActualValue"}, 
-                    React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
+                    React.DOM.span( {className:"update-actual-value-text"}, i18n.new_total_value,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, this.state.data),React.DOM.br(null)
                 )
             );
         } else {
-            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? relativeData.toString() + '+' + periodActualValue.toString() : periodActualValue.toString() + relativeData.toString();
             return (
                 React.DOM.div( {className:"upActualValue"}, 
-                    React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
+                    React.DOM.span( {className:"update-actual-value-text"}, i18n.new_total_value,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, updateData, " " ),
                     React.DOM.span( {className:"update-relative-value"}, "(",relativeDataText,")")
                 )
@@ -396,21 +398,21 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
-        //var checkboxId = "relative-checkbox-" + this.props.update.id;
-        //var checkbox;
-        //if (this.state.isRelative) {
-        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
-        //} else {
-        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
-        //}
+        var checkboxId = "relative-checkbox-" + this.props.update.id;
+        var checkbox;
+        if (this.state.isRelative) {
+            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange, checked:true} ), " ", i18n.relative_data);
+        } else {
+            checkbox = React.DOM.label(null, React.DOM.input( {type:"checkbox", id:checkboxId, onChange:this.handleRelativeChange} ), " ", i18n.relative_data);
+        }
 
         if (this.editing()) {
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-6"}, 
                         React.DOM.label( {htmlFor:inputId}, i18n.actual_value),
-                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
+                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange} ),
+                        checkbox
                     ),
                     React.DOM.div( {className:"col-xs-6"}, 
                         this.renderActualRelative()
@@ -768,7 +770,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                 )
             );
         } else if (!this.props.selectedPeriod.locked) {
-            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+            if (this.props.selectedPeriod.data !== undefined) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
                         React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18n.new_update)

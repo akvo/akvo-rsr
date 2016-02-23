@@ -608,12 +608,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         validation_errors = {}
 
-        # Allow only one update per period
-        if not self.pk and self.period.data.all():
-            validation_errors['period'] = unicode(_(u'Indicator period already has an update, only '
-                                                    u'one update per period is allowed'))
-            raise ValidationError(validation_errors)
-
         # Don't allow a data update to a non-Impact project
         if not self.period.indicator.result.project.is_impact_project:
             validation_errors['period'] = unicode(_(u'Indicator period must be part of an RSR '

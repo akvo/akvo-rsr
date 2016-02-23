@@ -153,8 +153,10 @@ var CommentEntry = React.createClass({
 
 var UpdateEntry = React.createClass({
     getInitialState: function() {
+        var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+
         return {
-            data: this.props.update.data,
+            data: updateData,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
             comment: '',
@@ -349,7 +351,7 @@ var UpdateEntry = React.createClass({
                     organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                     break;
                 default:
-                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + approved_organisations.length - 1 + ' ' + i18n.others;
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
                     break;
             }
             headerLeft = <div className="col-xs-9">
@@ -378,15 +380,15 @@ var UpdateEntry = React.createClass({
         if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-text">{i18n.new_total_value}: </span>
                     <span className="update-actual-value-data">{this.state.data}</span><br/>
                 </div>
             );
         } else {
-            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? relativeData.toString() + '+' + periodActualValue.toString() : periodActualValue.toString() + relativeData.toString();
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-text">{i18n.new_total_value}: </span>
                     <span className="update-actual-value-data">{updateData} </span>
                     <span className="update-relative-value">({relativeDataText})</span>
                 </div>
@@ -396,21 +398,21 @@ var UpdateEntry = React.createClass({
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
-        //var checkboxId = "relative-checkbox-" + this.props.update.id;
-        //var checkbox;
-        //if (this.state.isRelative) {
-        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
-        //} else {
-        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
-        //}
+        var checkboxId = "relative-checkbox-" + this.props.update.id;
+        var checkbox;
+        if (this.state.isRelative) {
+            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+        } else {
+            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+        }
 
         if (this.editing()) {
             return (
                 <div className="row">
                     <div className="col-xs-6">
                         <label htmlFor={inputId}>{i18n.actual_value}</label>
-                        <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
+                        <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} />
+                        {checkbox}
                     </div>
                     <div className="col-xs-6">
                         {this.renderActualRelative()}
@@ -768,7 +770,7 @@ var IndicatorPeriodMain = React.createClass({
                 </div>
             );
         } else if (!this.props.selectedPeriod.locked) {
-            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+            if (this.props.selectedPeriod.data !== undefined) {
                 return (
                     <div className="new-update">
                         <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18n.new_update}</a>
