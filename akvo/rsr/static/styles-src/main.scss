@@ -2834,6 +2834,9 @@ body {
                 }
                 &.actualValueSpan {
                     display: block;
+                    span:nth-child(1) {
+                        margin-right: 0;
+                    }
                     span {
                         display: inline;
                     }
