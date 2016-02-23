@@ -2335,6 +2335,8 @@ body.translationBarActive div.skiptranslate ~ #map {
           font-weight: 700; }
         .results .baseline .baseline-year span.actualValueSpan, .results .baseline .period-actual span.actualValueSpan, .results .periodValues .baseline-year span.actualValueSpan, .results .periodValues .period-actual span.actualValueSpan {
           display: block; }
+          .results .baseline .baseline-year span.actualValueSpan span:nth-child(1), .results .baseline .period-actual span.actualValueSpan span:nth-child(1), .results .periodValues .baseline-year span.actualValueSpan span:nth-child(1), .results .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
+            margin-right: 0; }
           .results .baseline .baseline-year span.actualValueSpan span, .results .baseline .period-actual span.actualValueSpan span, .results .periodValues .baseline-year span.actualValueSpan span, .results .periodValues .period-actual span.actualValueSpan span {
             display: inline; }
       .results .baseline .baseline-year .badge, .results .baseline .period-actual .badge, .results .periodValues .baseline-year .badge, .results .periodValues .period-actual .badge {
