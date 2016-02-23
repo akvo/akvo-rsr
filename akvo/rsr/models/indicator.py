@@ -393,21 +393,26 @@ class IndicatorPeriod(models.Model):
         relative value of the current actual value (True) or overwrite the actual value (False)
         :param comment; String that represents the new actual comment data of the period (Optional)
         """
+        updated_actual_value = False
         try:
             old_actual = Decimal(self.actual_value or '0')
             self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
             self.save(update_fields=['actual_value'])
-
-            if comment:
-                self.actual_comment = comment
-                self.save(update_fields=['actual_comment'])
+            updated_actual_value = True
 
             # Update parent period (if not percentages)
             parent = self.parent_period()
             if parent and self.indicator.measure != '2':
                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
-            pass
+            if data and not updated_actual_value:
+                self.actual_value = data
+                self.save(update_fields=['actual_value'])
+
+        if comment:
+            self.actual_comment = comment
+            self.save(update_fields=['actual_comment'])
+
 
     @property
     def percent_accomplishment(self):
