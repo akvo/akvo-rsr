@@ -591,19 +591,10 @@ nav.navbar-fixed-top {
     background: #2c2a74; }
 
 .indicator-period-list.parentProject, .indicator-period-list.childProject {
-  margin-top: 50px;
   padding: 5px;
   border: 1px solid rgba(44, 42, 116, 0.1); }
   .indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
-    font-size: 110%;
-    background: rgba(44, 42, 116, 0.1);
-    color: #2c2a74;
-    padding: 3px 7px;
-    margin-left: -5px;
-    -moz-border-radius: 0 0 10px 0;
-    -o-border-radius: 0 0 10px 0;
-    -webkit-border-radius: 0 0 10px 0;
-    border-radius: 0 0 10px 0; }
+    color: #2c2a74; }
   .indicator-period-list.parentProject .relatedInfoProjectTitle, .indicator-period-list.childProject .relatedInfoProjectTitle {
     display: none;
     margin-top: 15px; }
@@ -2309,32 +2300,38 @@ body.translationBarActive div.skiptranslate ~ #map {
       .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child, .results .periodValues .period-target-comment > span:first-child {
         color: rgba(32, 32, 36, 0.7);
         display: block; }
-      .results .baseline .baseline-value span:nth-child(2), .results .baseline .baseline-value span:nth-child(4), .results .baseline .baseline-value span:nth-child(5), .results .baseline .baseline-year span:nth-child(2),
+      .results .baseline .baseline-value span:nth-child(2n), .results .baseline .baseline-value span:nth-child(4), .results .baseline .baseline-value span:nth-child(5), .results .baseline .baseline-value span:nth-child(3), .results .baseline .baseline-year span:nth-child(2n),
       .results .baseline .baseline-year span:nth-child(4),
       .results .baseline .baseline-year span:nth-child(5),
-      .results .baseline .period-target span:nth-child(2), .results .baseline .period-target span:nth-child(4), .results .baseline .period-target span:nth-child(5), .results .baseline .period-actual span:nth-child(2), .results .baseline .period-actual span:nth-child(4), .results .baseline .period-actual span:nth-child(5), .results .baseline .period-target-comment span:nth-child(2), .results .baseline .period-target-comment span:nth-child(4), .results .baseline .period-target-comment span:nth-child(5), .results .periodValues .baseline-value span:nth-child(2), .results .periodValues .baseline-value span:nth-child(4), .results .periodValues .baseline-value span:nth-child(5), .results .periodValues .baseline-year span:nth-child(2),
+      .results .baseline .baseline-year span:nth-child(3),
+      .results .baseline .period-target span:nth-child(2n), .results .baseline .period-target span:nth-child(4), .results .baseline .period-target span:nth-child(5), .results .baseline .period-target span:nth-child(3), .results .baseline .period-actual span:nth-child(2n), .results .baseline .period-actual span:nth-child(4), .results .baseline .period-actual span:nth-child(5), .results .baseline .period-actual span:nth-child(3), .results .baseline .period-target-comment span:nth-child(2n), .results .baseline .period-target-comment span:nth-child(4), .results .baseline .period-target-comment span:nth-child(5), .results .baseline .period-target-comment span:nth-child(3), .results .periodValues .baseline-value span:nth-child(2n), .results .periodValues .baseline-value span:nth-child(4), .results .periodValues .baseline-value span:nth-child(5), .results .periodValues .baseline-value span:nth-child(3), .results .periodValues .baseline-year span:nth-child(2n),
       .results .periodValues .baseline-year span:nth-child(4),
       .results .periodValues .baseline-year span:nth-child(5),
-      .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-target span:nth-child(4), .results .periodValues .period-target span:nth-child(5), .results .periodValues .period-actual span:nth-child(2), .results .periodValues .period-actual span:nth-child(4), .results .periodValues .period-actual span:nth-child(5), .results .periodValues .period-target-comment span:nth-child(2), .results .periodValues .period-target-comment span:nth-child(4), .results .periodValues .period-target-comment span:nth-child(5) {
+      .results .periodValues .baseline-year span:nth-child(3),
+      .results .periodValues .period-target span:nth-child(2n), .results .periodValues .period-target span:nth-child(4), .results .periodValues .period-target span:nth-child(5), .results .periodValues .period-target span:nth-child(3), .results .periodValues .period-actual span:nth-child(2n), .results .periodValues .period-actual span:nth-child(4), .results .periodValues .period-actual span:nth-child(5), .results .periodValues .period-actual span:nth-child(3), .results .periodValues .period-target-comment span:nth-child(2n), .results .periodValues .period-target-comment span:nth-child(4), .results .periodValues .period-target-comment span:nth-child(5), .results .periodValues .period-target-comment span:nth-child(3) {
         display: inline-block;
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: 700;
         color: rgba(32, 32, 36, 0.9); }
-        .results .baseline .baseline-value span:nth-child(2) span, .results .baseline .baseline-value span:nth-child(4) span, .results .baseline .baseline-value span:nth-child(5) span, .results .baseline .baseline-year span:nth-child(2) span,
+        .results .baseline .baseline-value span:nth-child(2n) span, .results .baseline .baseline-value span:nth-child(4) span, .results .baseline .baseline-value span:nth-child(5) span, .results .baseline .baseline-value span:nth-child(3) span, .results .baseline .baseline-year span:nth-child(2n) span,
         .results .baseline .baseline-year span:nth-child(4) span,
         .results .baseline .baseline-year span:nth-child(5) span,
-        .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-target span:nth-child(4) span, .results .baseline .period-target span:nth-child(5) span, .results .baseline .period-actual span:nth-child(2) span, .results .baseline .period-actual span:nth-child(4) span, .results .baseline .period-actual span:nth-child(5) span, .results .baseline .period-target-comment span:nth-child(2) span, .results .baseline .period-target-comment span:nth-child(4) span, .results .baseline .period-target-comment span:nth-child(5) span, .results .periodValues .baseline-value span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(4) span, .results .periodValues .baseline-value span:nth-child(5) span, .results .periodValues .baseline-year span:nth-child(2) span,
+        .results .baseline .baseline-year span:nth-child(3) span,
+        .results .baseline .period-target span:nth-child(2n) span, .results .baseline .period-target span:nth-child(4) span, .results .baseline .period-target span:nth-child(5) span, .results .baseline .period-target span:nth-child(3) span, .results .baseline .period-actual span:nth-child(2n) span, .results .baseline .period-actual span:nth-child(4) span, .results .baseline .period-actual span:nth-child(5) span, .results .baseline .period-actual span:nth-child(3) span, .results .baseline .period-target-comment span:nth-child(2n) span, .results .baseline .period-target-comment span:nth-child(4) span, .results .baseline .period-target-comment span:nth-child(5) span, .results .baseline .period-target-comment span:nth-child(3) span, .results .periodValues .baseline-value span:nth-child(2n) span, .results .periodValues .baseline-value span:nth-child(4) span, .results .periodValues .baseline-value span:nth-child(5) span, .results .periodValues .baseline-value span:nth-child(3) span, .results .periodValues .baseline-year span:nth-child(2n) span,
         .results .periodValues .baseline-year span:nth-child(4) span,
         .results .periodValues .baseline-year span:nth-child(5) span,
-        .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-target span:nth-child(4) span, .results .periodValues .period-target span:nth-child(5) span, .results .periodValues .period-actual span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(4) span, .results .periodValues .period-actual span:nth-child(5) span, .results .periodValues .period-target-comment span:nth-child(2) span, .results .periodValues .period-target-comment span:nth-child(4) span, .results .periodValues .period-target-comment span:nth-child(5) span {
+        .results .periodValues .baseline-year span:nth-child(3) span,
+        .results .periodValues .period-target span:nth-child(2n) span, .results .periodValues .period-target span:nth-child(4) span, .results .periodValues .period-target span:nth-child(5) span, .results .periodValues .period-target span:nth-child(3) span, .results .periodValues .period-actual span:nth-child(2n) span, .results .periodValues .period-actual span:nth-child(4) span, .results .periodValues .period-actual span:nth-child(5) span, .results .periodValues .period-actual span:nth-child(3) span, .results .periodValues .period-target-comment span:nth-child(2n) span, .results .periodValues .period-target-comment span:nth-child(4) span, .results .periodValues .period-target-comment span:nth-child(5) span, .results .periodValues .period-target-comment span:nth-child(3) span {
           display: inline; }
-        .results .baseline .baseline-value span:nth-child(2) span:nth-child(1), .results .baseline .baseline-value span:nth-child(4) span:nth-child(1), .results .baseline .baseline-value span:nth-child(5) span:nth-child(1), .results .baseline .baseline-year span:nth-child(2) span:nth-child(1),
+        .results .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .results .baseline .baseline-value span:nth-child(4) span:nth-child(1), .results .baseline .baseline-value span:nth-child(5) span:nth-child(1), .results .baseline .baseline-value span:nth-child(3) span:nth-child(1), .results .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
         .results .baseline .baseline-year span:nth-child(4) span:nth-child(1),
         .results .baseline .baseline-year span:nth-child(5) span:nth-child(1),
-        .results .baseline .period-target span:nth-child(2) span:nth-child(1), .results .baseline .period-target span:nth-child(4) span:nth-child(1), .results .baseline .period-target span:nth-child(5) span:nth-child(1), .results .baseline .period-actual span:nth-child(2) span:nth-child(1), .results .baseline .period-actual span:nth-child(4) span:nth-child(1), .results .baseline .period-actual span:nth-child(5) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(2) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(4) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(5) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(4) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(5) span:nth-child(1), .results .periodValues .baseline-year span:nth-child(2) span:nth-child(1),
+        .results .baseline .baseline-year span:nth-child(3) span:nth-child(1),
+        .results .baseline .period-target span:nth-child(2n) span:nth-child(1), .results .baseline .period-target span:nth-child(4) span:nth-child(1), .results .baseline .period-target span:nth-child(5) span:nth-child(1), .results .baseline .period-target span:nth-child(3) span:nth-child(1), .results .baseline .period-actual span:nth-child(2n) span:nth-child(1), .results .baseline .period-actual span:nth-child(4) span:nth-child(1), .results .baseline .period-actual span:nth-child(5) span:nth-child(1), .results .baseline .period-actual span:nth-child(3) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(2n) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(4) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(5) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(3) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(2n) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(4) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(5) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(3) span:nth-child(1), .results .periodValues .baseline-year span:nth-child(2n) span:nth-child(1),
         .results .periodValues .baseline-year span:nth-child(4) span:nth-child(1),
         .results .periodValues .baseline-year span:nth-child(5) span:nth-child(1),
-        .results .periodValues .period-target span:nth-child(2) span:nth-child(1), .results .periodValues .period-target span:nth-child(4) span:nth-child(1), .results .periodValues .period-target span:nth-child(5) span:nth-child(1), .results .periodValues .period-actual span:nth-child(2) span:nth-child(1), .results .periodValues .period-actual span:nth-child(4) span:nth-child(1), .results .periodValues .period-actual span:nth-child(5) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(2) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(4) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(5) span:nth-child(1) {
+        .results .periodValues .baseline-year span:nth-child(3) span:nth-child(1),
+        .results .periodValues .period-target span:nth-child(2n) span:nth-child(1), .results .periodValues .period-target span:nth-child(4) span:nth-child(1), .results .periodValues .period-target span:nth-child(5) span:nth-child(1), .results .periodValues .period-target span:nth-child(3) span:nth-child(1), .results .periodValues .period-actual span:nth-child(2n) span:nth-child(1), .results .periodValues .period-actual span:nth-child(4) span:nth-child(1), .results .periodValues .period-actual span:nth-child(5) span:nth-child(1), .results .periodValues .period-actual span:nth-child(3) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(4) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(5) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(3) span:nth-child(1) {
           margin-left: 10px; }
     .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
       width: 50%;
@@ -2352,6 +2349,8 @@ body.translationBarActive div.skiptranslate ~ #map {
         .results .baseline .baseline-year span:nth-child(4), .results .baseline .period-actual span:nth-child(4), .results .periodValues .baseline-year span:nth-child(4), .results .periodValues .period-actual span:nth-child(4) {
           display: block;
           font-weight: 700; }
+        .results .baseline .baseline-year span.actualValueSpan, .results .baseline .period-actual span.actualValueSpan, .results .periodValues .baseline-year span.actualValueSpan, .results .periodValues .period-actual span.actualValueSpan {
+          display: block; }
       .results .baseline .baseline-year .badge, .results .baseline .period-actual .badge, .results .periodValues .baseline-year .badge, .results .periodValues .period-actual .badge {
         background-color: #202024;
         -moz-transition: all 0.1s linear;
@@ -2369,6 +2368,7 @@ body.translationBarActive div.skiptranslate ~ #map {
           background-color: #2c2a74;
           cursor: pointer; }
       .results .baseline .baseline-year .result-tooltip, .results .baseline .period-actual .result-tooltip, .results .periodValues .baseline-year .result-tooltip, .results .periodValues .period-actual .result-tooltip {
+        clear: both;
         position: absolute;
         top: 35px;
         left: 60px;

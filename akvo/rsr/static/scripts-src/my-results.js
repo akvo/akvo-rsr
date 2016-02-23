@@ -869,11 +869,12 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                             React.DOM.span(null, this.renderTargetValue())
                         ),
                         React.DOM.div( {className:"period-actual"}, 
-                            i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"), " ", hover,
-                            React.DOM.span(null, 
+                            i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
+                            React.DOM.span( {className:"actualValueSpan"}, 
                                 React.DOM.span(null, this.renderActualValue()),
                                 this.renderPercentageComplete()
-                            )
+                            ),
+                             hover
                         ),
                         this.renderTargetComment()
                     ),
@@ -1190,7 +1191,7 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
                 React.DOM.div( {className:relatedClass}, 
                     React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
                 )
-            )
+            );
         } else if (this.props.child) {
             relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
@@ -1203,7 +1204,7 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
                 React.DOM.div( {className:relatedClass}, 
                     React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
                 )
-            )
+            );
         } else {
             relatedIndication = '';
             relatedClass += "selfProject";

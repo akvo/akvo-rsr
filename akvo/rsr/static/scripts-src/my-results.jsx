@@ -869,11 +869,12 @@ var IndicatorPeriodMain = React.createClass({
                             <span>{this.renderTargetValue()}</span>
                         </div>
                         <div className="period-actual">
-                            {i18n.actual_value}<div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div> {hover}
-                            <br/><span>
+                            {i18n.actual_value}<div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div>
+                            <span className="actualValueSpan">
                                 <span>{this.renderActualValue()}</span>
                                 {this.renderPercentageComplete()}
                             </span>
+                             {hover}
                         </div>
                         {this.renderTargetComment()}
                     </div>
@@ -1190,7 +1191,7 @@ var IndicatorPeriodList = React.createClass({
                 <div className={relatedClass}>
                     <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
                 </div>
-            )
+            );
         } else if (this.props.child) {
             relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
@@ -1203,7 +1204,7 @@ var IndicatorPeriodList = React.createClass({
                 <div className={relatedClass}>
                     <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
                 </div>
-            )
+            );
         } else {
             relatedIndication = '';
             relatedClass += "selfProject";

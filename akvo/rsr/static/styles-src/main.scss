@@ -649,16 +649,10 @@ nav.navbar-fixed-top {
 
 .indicator-period-list {
     &.parentProject, &.childProject {
-        margin-top: 50px;
         padding: 5px;
         border: 1px solid rgba($akvoPurple, 0.1);
         .relatedInfo {
-            font-size: 110%;
-            background: rgba($akvoPurple, 0.1);
             color: $akvoPurple;
-            padding: 3px 7px;
-            margin-left: -5px;
-            @include border-radius(0 0 10px 0);
         }
         .relatedInfoProjectTitle {
             display: none;
@@ -2804,7 +2798,7 @@ body {
                 color: rgba($akvoBlack,0.7);
                 display: block;
             }
-            span:nth-child(2), span:nth-child(4), span:nth-child(5) {
+            span:nth-child(2n), span:nth-child(4), span:nth-child(5), span:nth-child(3) {
                 display: inline-block;
                 font-family: $titleFont;
                 font-weight: 700;
@@ -2836,6 +2830,9 @@ body {
                     display: block;
                     font-weight: 700;
                 }
+                &.actualValueSpan {
+                    display: block;
+                }
             }
             .badge {
                 background-color: $akvoBlack;
@@ -2846,10 +2843,11 @@ body {
                 font-family: $scriptFont;
                 &:hover {
                     background-color: $akvoPurple;
-                    cursor: pointer;
+                    cursor: pointer; 
                 }
             }
             .result-tooltip {
+                clear:both;
                 position: absolute;
                 top: 35px;
                 left: 60px;
