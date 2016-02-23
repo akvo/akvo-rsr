@@ -649,8 +649,7 @@ nav.navbar-fixed-top {
 
 .indicator-period-list {
     &.parentProject, &.childProject {
-        padding: 5px;
-        border: 1px solid rgba($akvoPurple, 0.1);
+
         .relatedInfo {
             color: $akvoPurple;
         }
@@ -2792,14 +2791,17 @@ body {
         font-size: 110%;
         .baseline-value, .baseline-year,
         .period-target, .period-actual, .period-target-comment {
-            display: inline-block;
+            display: inline-block !important;
             padding: 0 0 10px 15px;
             > span:first-child {
                 color: rgba($akvoBlack,0.7);
                 display: block;
+                span {
+                    display: inline;
+                }
             }
-            span:nth-child(2n), span:nth-child(4), span:nth-child(5), span:nth-child(3) {
-                display: inline-block;
+            span:nth-child(2n) {
+                display: block;
                 font-family: $titleFont;
                 font-weight: 700;
                 color: rgba($akvoBlack, 0.9);
@@ -2832,6 +2834,9 @@ body {
                 }
                 &.actualValueSpan {
                     display: block;
+                    span {
+                        display: inline;
+                    }
                 }
             }
             .badge {
