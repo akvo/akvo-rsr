@@ -371,7 +371,7 @@ var UpdateEntry = React.createClass({
         );
     },
 
-    renderActualRelative: function() {
+    renderActualRelative: function(label) {
         var periodActualValue = parseFloat(this.props.update.period_actual_value);
         var originalData = parseFloat(this.state.data);
         var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
@@ -380,15 +380,15 @@ var UpdateEntry = React.createClass({
         if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.new_total_value}: </span>
+                    <span className="update-actual-value-text">{label}: </span>
                     <span className="update-actual-value-data">{this.state.data}</span><br/>
                 </div>
             );
         } else {
-            var relativeDataText = relativeData >= 0 ? relativeData.toString() + '+' + periodActualValue.toString() : periodActualValue.toString() + relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.new_total_value}: </span>
+                    <span className="update-actual-value-text">{label}: </span>
                     <span className="update-actual-value-data">{updateData} </span>
                     <span className="update-relative-value">({relativeDataText})</span>
                 </div>
@@ -398,24 +398,23 @@ var UpdateEntry = React.createClass({
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        var checkboxId = "relative-checkbox-" + this.props.update.id;
-        var checkbox;
-        if (this.state.isRelative) {
-            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
-        } else {
-            checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
-        }
+        //var checkboxId = "relative-checkbox-" + this.props.update.id;
+        //var checkbox;
+        //if (this.state.isRelative) {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+        //} else {
+        //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+        //}
 
         if (this.editing()) {
             return (
                 <div className="row">
                     <div className="col-xs-6">
-                        <label htmlFor={inputId}>{i18n.actual_value}</label>
-                        <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} />
-                        {checkbox}
+                        <label htmlFor={inputId}>{i18n.add_to_actual_value}</label>
+                        <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} placeholder={i18n.input_placeholder} />
                     </div>
                     <div className="col-xs-6">
-                        {this.renderActualRelative()}
+                        {this.renderActualRelative(i18n.new_total_value)}
                     </div>
                 </div>
             );
@@ -423,7 +422,7 @@ var UpdateEntry = React.createClass({
             return (
                 <div className="row">
                     <div className="col-xs-12">
-                        {this.renderActualRelative()}
+                        {this.renderActualRelative(i18n.total_value_after_update)}
                     </div>
                 </div>
             );
@@ -453,7 +452,7 @@ var UpdateEntry = React.createClass({
         if (this.editing()) {
             descriptionPart = <div className={descriptionClass}>
                 <label htmlFor={inputId}>{i18n.actual_value_comment}</label>
-                <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} />
+                <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} placeholder={i18n.comment_placeholder} />
             </div>;
         } else {
             descriptionPart = <div className={descriptionClass}>
@@ -754,6 +753,20 @@ var UpdatesList = React.createClass({
 });
 
 var IndicatorPeriodMain = React.createClass({
+    getInitialState: function() {
+        return {
+            actualValueHover: false
+        };
+    },
+
+    handleMouseOver: function() {
+        this.setState({actualValueHover: true});
+    },
+
+    handleMouseOut: function() {
+        this.setState({actualValueHover: false});
+    },
+
     addNewUpdate: function() {
         this.props.addNewUpdate(this.props.selectedPeriod.id);
     },
@@ -839,6 +852,8 @@ var IndicatorPeriodMain = React.createClass({
     },
 
     render: function() {
+        var hover = this.state.actualValueHover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.actual_value_info}</div></div> : <span />;
+
         return (
             <div className="indicator-period opacity-transition">
                 <div className="indicTitle">
@@ -854,7 +869,7 @@ var IndicatorPeriodMain = React.createClass({
                             <span>{this.renderTargetValue()}</span>
                         </div>
                         <div className="period-actual">
-                            {i18n.actual_value}
+                            {i18n.actual_value} <div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div> {hover}
                             <span>
                                 <span>{this.renderActualValue()}</span>
                                 {this.renderPercentageComplete()}
