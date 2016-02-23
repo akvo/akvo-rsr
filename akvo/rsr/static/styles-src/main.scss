@@ -2804,8 +2804,8 @@ body {
                 color: rgba($akvoBlack,0.7);
                 display: block;
             }
-            span:nth-child(2) {
-                display: block;
+            span:nth-child(2), span:nth-child(4), span:nth-child(5) {
+                display: inline-block;
                 font-family: $titleFont;
                 font-weight: 700;
                 color: rgba($akvoBlack, 0.9);
@@ -2826,9 +2826,16 @@ body {
             float: right;
             color: rgba($akvoBlack, 0.6);
             position: relative;
-            span:nth-child(1) {
-                display: inline-block;
-                margin-right: 10px;
+            span {
+                font-weight: 700;
+                &:nth-child(1) {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                &:nth-child(4) {
+                    display: block;
+                    font-weight: 700;
+                }
             }
             .badge {
                 background-color: $akvoBlack;
@@ -2846,17 +2853,18 @@ body {
                 position: absolute;
                 top: 35px;
                 left: 60px;
-                background: rgba(white, 0.5);
+                background: rgba(white, 1);
                 border: 1px solid  rgba($primary4, 0.8);
                 color: $akvoBlack;
                 @include border-radius(4px);
                 .tooltip-inner {
-                    background: rgba(white, 0.5);
+                    background: rgba(white, 1);
                     color: $akvoBlack;
+                    @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
                     }
                 .tooltip-arrow {
                     position: absolute;
-                    background: rgba(white, 0.5);
+                    background: rgba(white, 1);
                     border: 1px solid  rgba($primary4, 0.8);
                     left: 68px;
                     top: -2px;
@@ -4207,17 +4215,18 @@ div#my-reports {
             position: absolute;
             top: 55px;
             left: 0;
-            background: rgba(white, 0.5);
+            background: rgba(white, 1);
             border: 1px solid  rgba($primary4, 0.8);
             color: $akvoBlack;
             @include border-radius(4px);
             .tooltip-inner {
-                background: rgba(white, 0.5);
+                background: rgba(white, 1);
                 color: $akvoBlack;
+                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
                 }
             .tooltip-arrow {
                 position: absolute;
-                background: rgba(white, 0.5);
+                background: rgba(white, 1);
                 border: 1px solid  rgba($primary4, 0.8);
                 right: 8px;
                 top: -2px;

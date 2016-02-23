@@ -870,7 +870,6 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                         ),
                         React.DOM.div( {className:"period-actual"}, 
                             i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"), " ", hover,
-
                             React.DOM.span(null, 
                                 React.DOM.span(null, this.renderActualValue()),
                                 this.renderPercentageComplete()
