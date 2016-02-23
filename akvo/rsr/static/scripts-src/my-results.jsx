@@ -1174,39 +1174,59 @@ var IndicatorPeriodList = React.createClass({
 
         var relatedClass = "indicator-period-list ",
             relatedIndication,
-            relatedProjectTitle;
+            relatedProjectId,
+            relatedProjectTitle,
+            relatedProjectUrl,
+            relatedProjectLink;
 
         if (this.props.parent) {
+            relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
-            relatedIndication = i18n.parent_project + ': ' + relatedProjectTitle;
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.parent_project + ': ';
+            relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
             relatedClass += "parentProject";
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
+                </div>
+            )
         } else if (this.props.child) {
+            relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
-            relatedIndication = i18n.child_project + ': ' + relatedProjectTitle;
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.child_project + ': ';
+            relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
             relatedClass += "childProject";
+
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
+                </div>
+            )
         } else {
             relatedIndication = '';
             relatedClass += "selfProject";
-        }
 
-        return (
-            <div className={relatedClass}>
-                <span className="relatedInfo">{relatedIndication}</span>
-                <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
-                {this.renderBaseline()}
-                <table className="table table-responsive">
-                    <thead>
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}</span>
+                    <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
+                    {this.renderBaseline()}
+                    <table className="table table-responsive">
+                        <thead>
                         <tr>
                             <td className="th-period">{i18n.period}</td>
                             <td className="th-target">{i18n.target_value}</td>
                             <td className="th-actual">{i18n.actual_value}</td>
-                            <td className="th-actions" />
+                            <td className="th-actions"/>
                         </tr>
-                    </thead>
-                    {periods}
-                </table>
-            </div>
-        );
+                        </thead>
+                        {periods}
+                    </table>
+                </div>
+            );
+        }
     }
 });
 
