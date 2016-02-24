@@ -17,10 +17,23 @@
                 <p class="help-block">{% trans 'Indicators help us to measure progress on these various types of results. They are usually easy to determine for outputs (e.g. 9 trainings), harder for outcomes (e.g. number of policy documents written) and hardest (or near to impossible) for impacts. You can set a target value (e.g. 9 trainings) and later add the actual value (e.g. 8 trainings took place). This gives you progress information against set targets for monitoring and evaluation purposes. Sometimes baseline values are used to measure against (e.g. average income level at project start).' %}</p>
                 <p class="help-block">{% trans 'Lastly, indicators can be separated per period. Especially for longer projects this is helpful to track progress during the project. For example, you can set a target of 3 trainings per year for a 3 year project. When you don’t add a period for an indicator, it is assumed that the indicator (and the target and actual values) applies to the full project period. A full example:' %}</p>
                 <p class="help-block"><i>{% trans 'Result: "Organise training sessions for staff"' %}<br/>
-                <span class="tab"></span>{% trans 'Indicator: "Organise 10 training sessions"' %}<br/>
+                <span class="tab"></span>{% trans 'Indicator: "Training sessions organised"' %}<br/>
                 <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
             </div>
             <form role="form">
+                {% if project.parents.count == 1 and project.is_impact_project and user.can_import_results %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="help-block">
+                                {% trans 'Import the results framework of the parent project' %}: <a href="{% url 'project-main' project.parents.0.pk %}" target="_blank">{{ project.parents.0.title }}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_result" }}">
                     <h5>{% trans 'Results' %}</h5>
                     <div class="result-container" id="result-container">

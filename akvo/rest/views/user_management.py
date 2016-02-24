@@ -87,12 +87,18 @@ def invite_user(request):
     if invited_user.is_active:
         # For active users, we know their email address is correct so we approve their new
         # employment immediately. They'll get a mail that their employment is approved.
-        if Employment.objects.filter(user=invited_user, organisation=organisation).exists():
-            employment = Employment.objects.get(user=invited_user, organisation=organisation)
+        if Employment.objects.filter(user=invited_user,
+                                     organisation=organisation,
+                                     group=group).exists():
+            employment = Employment.objects.get(user=invited_user, organisation=organisation,
+                                                group=group)
             if not employment.is_approved:
-                # Set new group first, then approve and save
-                employment.group = group
+                # Approve the employment
                 employment.approve(user)
+            else:
+                # Employment already exists and is already approved
+                return Response('Employment already exists', status=status.HTTP_200_OK)
+
         else:
             employment = Employment.objects.create(
                 user=invited_user, organisation=organisation, group=group, is_approved=True

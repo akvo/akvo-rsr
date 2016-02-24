@@ -6,14 +6,21 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import Result
-from ..serializers import ResultSerializer
+from ..serializers import ResultSerializer, ResultsFrameworkSerializer
 from ..viewsets import PublicProjectViewSet
 
 
-class ResultViewSet(PublicProjectViewSet):
+class ResultsViewSet(PublicProjectViewSet):
+    """Results resource."""
 
-    """Result resource."""
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+    filter_fields = ('project', 'type', 'aggregation_status', 'parent_result')
+
+
+class ResultsFrameworkViewSet(PublicProjectViewSet):
+    """Results framework resource."""
 
     queryset = Result.objects.prefetch_related('indicators')
-    serializer_class = ResultSerializer
-    filter_fields = ('project', 'type', )
+    serializer_class = ResultsFrameworkSerializer
+    filter_fields = ('project', 'type', 'aggregation_status', 'parent_result')

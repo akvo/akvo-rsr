@@ -10,6 +10,7 @@
                   {% endif %}
                   saved-value="{{ obj_value }}"
                   rows="4"
+                  {% if disabled %}disabled{% endif %}
         >{{ obj_value }}</textarea>
         <label for="{{ obj_field_id }}" class="control-label">
             {{ obj|field_name:field }}

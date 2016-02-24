@@ -602,13 +602,14 @@ def project_editor_upload_file(request, pk=None):
         }
     )
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
 
-    if not user.is_superuser:
+    if not (user.is_superuser or user.can_import_results()):
         return HttpResponseForbidden()
 
     status_code, message = project.import_results()

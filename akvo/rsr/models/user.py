@@ -367,6 +367,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         return False
 
+    def can_import_results(self):
+        """
+        Check to see if the user can import results.
+
+        :return: Boolean to indicate whether the user can import results
+        """
+        if self.is_superuser or self.is_admin:
+            return True
+
+        if not self.can_create_project():
+            return False
+
+        for employment in self.approved_employments():
+            org = employment.organisation
+            if self.admin_of(org) or self.me_manager_of(org):
+                return True
+
+        return False
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
@@ -388,12 +407,40 @@ class User(AbstractBaseUser, PermissionsMixin):
             employments=employments_array,
         )
 
+    def has_role_in_org(self, org, group):
+        """
+        Helper function to determine if a user is in a certain group at an organisation.
+
+        :param org; an Organisation instance.
+        :param group; a Group instance.
+        """
+        if self.approved_employments().filter(organisation=org, group=group).exists():
+            return True
+        return False
+
     def admin_of(self, org):
         """
         Checks if the user is an Admin of this organisation.
+
+        :param org; an Organisation instance.
         """
         admin_group = Group.objects.get(name='Admins')
-        for employment in Employment.objects.filter(user=self, group=admin_group):
-            if employment.organisation == org:
-                return True
-        return False
+        return self.has_role_in_org(org, admin_group)
+
+    def me_manager_of(self, org):
+        """
+        Checks if the user is an M&E Manager of this organisation.
+
+        :param org; an Organisation instance
+        """
+        editor_group = Group.objects.get(name='M&E Managers')
+        return self.has_role_in_org(org, editor_group)
+
+    def project_editor_of(self, org):
+        """
+        Checks if the user is a Project editor of this organisation.
+
+        :param org; an Organisation instance
+        """
+        editor_group = Group.objects.get(name='Project editors')
+        return self.has_role_in_org(org, editor_group)

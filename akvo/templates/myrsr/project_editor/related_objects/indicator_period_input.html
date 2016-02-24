@@ -28,6 +28,10 @@
                     {% include text_input with obj=period field='actual_value' %}
                 {% else %}
                     {% include text_input with obj=period field='actual_value' disabled=True %}
+                    <p class="help-block">
+                        {% trans 'It is not possible to edit the actual value when the results framework is enabled. ' %}
+                        {% trans 'Go to the' %} <a href="{% url 'my_results' project.pk %}" target="_blank">{% trans 'My results' %}</a> {% trans 'section to update this value.' %}
+                    </p>
                 {% endif %}
             </div>
         </div>
