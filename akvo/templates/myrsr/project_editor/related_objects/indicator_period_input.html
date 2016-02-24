@@ -40,15 +40,7 @@
                 {% include textarea_input with obj=period field='target_comment' %}
             </div>
             <div class="col-md-6">
-                {% if not project.is_impact_project %}
-                    {% include textarea_input with obj=period field='actual_comment' %}
-                {% else %}
-                    {% include textarea_input with obj=period field='actual_comment' disabled=True %}
-                    <p class="help-block">
-                        {% trans 'It is not possible to edit the actual comment when the results framework is enabled. ' %}
-                        {% trans 'Go to the' %} <a href="{% url 'my_results' project.pk %}" target="_blank">{% trans 'My results' %}</a> {% trans 'section to update this comment.' %}
-                    </p>
-                {% endif %}
+                {% include textarea_input with obj=period field='actual_comment' %}
             </div>
         </div>
     </div>

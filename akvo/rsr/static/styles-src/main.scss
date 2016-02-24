@@ -649,16 +649,9 @@ nav.navbar-fixed-top {
 
 .indicator-period-list {
     &.parentProject, &.childProject {
-        margin-top: 50px;
-        padding: 5px;
-        border: 1px solid rgba($akvoPurple, 0.1);
+
         .relatedInfo {
-            font-size: 110%;
-            background: rgba($akvoPurple, 0.1);
             color: $akvoPurple;
-            padding: 3px 7px;
-            margin-left: -5px;
-            @include border-radius(0 0 10px 0);
         }
         .relatedInfoProjectTitle {
             display: none;
@@ -2798,13 +2791,16 @@ body {
         font-size: 110%;
         .baseline-value, .baseline-year,
         .period-target, .period-actual, .period-target-comment {
-            display: inline-block;
+            display: inline-block !important;
             padding: 0 0 10px 15px;
             > span:first-child {
                 color: rgba($akvoBlack,0.7);
                 display: block;
+                span {
+                    display: inline;
+                }
             }
-            span:nth-child(2) {
+            span:nth-child(2n) {
                 display: block;
                 font-family: $titleFont;
                 font-weight: 700;
@@ -2812,7 +2808,7 @@ body {
                 span {
                     display: inline;
                 }
-                span:nth-child(2) {
+                span:nth-child(1) {
                     margin-left: 10px;
                 }
             }
@@ -2824,6 +2820,85 @@ body {
         .baseline-year, .period-actual {
             width: 50%;
             float: right;
+            color: rgba($akvoBlack, 0.6);
+            position: relative;
+            span {
+                font-weight: 700;
+                &:nth-child(1) {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                &:nth-child(4) {
+                    display: block;
+                    font-weight: 700;
+                }
+                &.actualValueSpan {
+                    display: block;
+                    span:nth-child(1) {
+                        margin-right: 0;
+                    }
+                    span {
+                        display: inline;
+                    }
+                }
+            }
+            .badge {
+                background-color: $akvoBlack;
+                @include transition(all 0.1s linear);
+                margin-top: -5px;
+                padding: 5px 9px;
+                @include border-radius(15px);
+                font-family: $scriptFont;
+                &:hover {
+                    background-color: $akvoPurple;
+                    cursor: pointer; 
+                }
+            }
+            .result-tooltip {
+                clear:both;
+                position: absolute;
+                top: 35px;
+                left: 60px;
+                background: rgba(white, 1);
+                border: 1px solid  rgba($primary4, 0.8);
+                color: $akvoBlack;
+                @include border-radius(4px);
+                .tooltip-inner {
+                    background: rgba(white, 1);
+                    color: $akvoBlack;
+                    @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
+                    }
+                .tooltip-arrow {
+                    position: absolute;
+                    background: rgba(white, 1);
+                    border: 1px solid  rgba($primary4, 0.8);
+                    left: 68px;
+                    top: -2px;
+                    &:after, &:before {
+                        bottom: 100%;
+                        left: 50%;
+                        border: solid transparent;
+                        content: " ";
+                        height: 0;
+                        width: 0;
+                        position: absolute;
+                        pointer-events: none;
+                        }
+
+                    &:after {
+                        border-color: rgba(136, 183, 213, 0);
+                        border-bottom-color: rgba($primary4, 0.5);
+                        border-width: 7px;
+                        margin-left: -7px;
+                    }
+                    &:before {
+                        border-color: rgba(194, 225, 245, 0);
+                        border-bottom-color:  rgba($primary4, 0.5);
+                        border-width: 8px;
+                        margin-left: -8px;
+                    }
+                }
+            }
         }
         .period-target-comment {
             width: 100%;
@@ -4146,17 +4221,18 @@ div#my-reports {
             position: absolute;
             top: 55px;
             left: 0;
-            background: rgba(white, 0.5);
+            background: rgba(white, 1);
             border: 1px solid  rgba($primary4, 0.8);
             color: $akvoBlack;
             @include border-radius(4px);
             .tooltip-inner {
-                background: rgba(white, 0.5);
+                background: rgba(white, 1);
                 color: $akvoBlack;
+                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
                 }
             .tooltip-arrow {
                 position: absolute;
-                background: rgba(white, 0.5);
+                background: rgba(white, 1);
                 border: 1px solid  rgba($primary4, 0.8);
                 right: 8px;
                 top: -2px;

@@ -153,8 +153,10 @@ var CommentEntry = React.createClass({displayName: 'CommentEntry',
 
 var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
     getInitialState: function() {
+        var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+
         return {
-            data: this.props.update.data,
+            data: updateData,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
             comment: '',
@@ -349,7 +351,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
                     organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                     break;
                 default:
-                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + approved_organisations.length - 1 + ' ' + i18n.others;
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
                     break;
             }
             headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -369,7 +371,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         );
     },
 
-    renderActualRelative: function() {
+    renderActualRelative: function(label) {
         var periodActualValue = parseFloat(this.props.update.period_actual_value);
         var originalData = parseFloat(this.state.data);
         var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
@@ -378,15 +380,15 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 React.DOM.div( {className:"upActualValue"}, 
-                    React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
+                    React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, this.state.data),React.DOM.br(null)
                 )
             );
         } else {
-            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
             return (
                 React.DOM.div( {className:"upActualValue"}, 
-                    React.DOM.span( {className:"update-actual-value-text"}, i18n.actual_value,": " ),
+                    React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
                     React.DOM.span( {className:"update-actual-value-data"}, updateData, " " ),
                     React.DOM.span( {className:"update-relative-value"}, "(",relativeDataText,")")
                 )
@@ -396,7 +398,6 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
         //var checkboxId = "relative-checkbox-" + this.props.update.id;
         //var checkbox;
         //if (this.state.isRelative) {
@@ -409,11 +410,11 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-6"}, 
-                        React.DOM.label( {htmlFor:inputId}, i18n.actual_value),
-                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.props.update.data, onChange:this.handleDataChange} )
+                        React.DOM.label( {htmlFor:inputId}, i18n.add_to_actual_value),
+                        React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18n.input_placeholder} )
                     ),
                     React.DOM.div( {className:"col-xs-6"}, 
-                        this.renderActualRelative()
+                        this.renderActualRelative(i18n.new_total_value)
                     )
                 )
             );
@@ -421,7 +422,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-xs-12"}, 
-                        this.renderActualRelative()
+                        this.renderActualRelative(i18n.total_value_after_update)
                     )
                 )
             );
@@ -451,7 +452,7 @@ var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         if (this.editing()) {
             descriptionPart = React.DOM.div( {className:descriptionClass}, 
                 React.DOM.label( {htmlFor:inputId}, i18n.actual_value_comment),
-                React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange} )
+                React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18n.comment_placeholder} )
             );
         } else {
             descriptionPart = React.DOM.div( {className:descriptionClass}, 
@@ -752,6 +753,20 @@ var UpdatesList = React.createClass({displayName: 'UpdatesList',
 });
 
 var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
+    getInitialState: function() {
+        return {
+            actualValueHover: false
+        };
+    },
+
+    handleMouseOver: function() {
+        this.setState({actualValueHover: true});
+    },
+
+    handleMouseOut: function() {
+        this.setState({actualValueHover: false});
+    },
+
     addNewUpdate: function() {
         this.props.addNewUpdate(this.props.selectedPeriod.id);
     },
@@ -768,7 +783,7 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                 )
             );
         } else if (!this.props.selectedPeriod.locked) {
-            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+            if (this.props.selectedPeriod.data !== undefined) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
                         React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18n.new_update)
@@ -808,25 +823,37 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         }
     },
 
-    renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
-        //
-        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
+    renderTargetValue: function() {
+        var targetValue = this.props.selectedPeriod.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
 
-        return (
-            React.DOM.span(null )
-        );
+    renderActualValue: function() {
+        var actualValue = this.props.selectedPeriod.actual_value;
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
+    renderPercentageComplete: function() {
+        if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
+            );
+        } else {
+            return (
+                React.DOM.span(null )
+            );
+        }
     },
 
     render: function() {
+        var hover = this.state.actualValueHover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.actual_value_info)) : React.DOM.span(null );
+
         return (
             React.DOM.div( {className:"indicator-period opacity-transition"}, 
                 React.DOM.div( {className:"indicTitle"}, 
@@ -839,14 +866,15 @@ var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
                     React.DOM.div( {className:"periodValues"}, 
                         React.DOM.div( {className:"period-target"}, 
                             i18n.target_value,
-                            React.DOM.span(null, this.props.selectedPeriod.target_value)
+                            React.DOM.span(null, this.renderTargetValue())
                         ),
                         React.DOM.div( {className:"period-actual"}, 
-                            i18n.actual_value,
-                            React.DOM.span(null, 
-                                this.props.selectedPeriod.actual_value,
+                            i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
+                            React.DOM.span( {className:"actualValueSpan"}, 
+                                React.DOM.span(null, this.renderActualValue()),
                                 this.renderPercentageComplete()
-                            )
+                            ),
+                             hover
                         ),
                         this.renderTargetComment()
                     ),
@@ -1023,6 +1051,22 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         }
     },
 
+    renderTargetValue: function() {
+        var targetValue = this.props.period.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
+
+    renderActualValue: function() {
+        var actualValue = this.props.period.actual_value;
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
     renderPercentageComplete: function() {
         if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
             return (
@@ -1039,9 +1083,11 @@ var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry
         return (
             React.DOM.tr(null, 
                 this.renderPeriodDisplay(),
-                React.DOM.td( {className:"target-td"}, this.props.period.target_value),
+                React.DOM.td( {className:"target-td"}, 
+                    this.renderTargetValue()
+                ),
                 React.DOM.td( {className:"actual-td"}, 
-                    this.props.period.actual_value,
+                    this.renderActualValue(),
                     this.renderPercentageComplete()
                 ),
                 this.renderActions()
@@ -1069,6 +1115,10 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
             baselineValue = this.props.selectedIndicator.baseline_value;
 
         if (!(baselineYear === null && baselineValue === '')) {
+            if (this.props.selectedIndicator.measure === '2') {
+                baselineValue += '%';
+            }
+
             return (
                 React.DOM.div( {className:"baseline"}, 
                     React.DOM.div( {className:"baseline-year"}, 
@@ -1125,41 +1175,59 @@ var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
 
         var relatedClass = "indicator-period-list ",
             relatedIndication,
-            relatedProjectTitle;
+            relatedProjectId,
+            relatedProjectTitle,
+            relatedProjectUrl,
+            relatedProjectLink;
 
         if (this.props.parent) {
-            relatedIndication = i18n.parent_project;
+            relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.parent_project + ': ';
+            relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
             relatedClass += "parentProject";
+            return (
+                React.DOM.div( {className:relatedClass}, 
+                    React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
+                )
+            );
         } else if (this.props.child) {
-            relatedIndication = i18n.child_project;
+            relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.child_project + ': ';
+            relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
             relatedClass += "childProject";
+
+            return (
+                React.DOM.div( {className:relatedClass}, 
+                    React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
+                )
+            );
         } else {
             relatedIndication = '';
-            relatedProjectTitle = '';
             relatedClass += "selfProject";
-        }
 
-        return (
-            React.DOM.div( {className:relatedClass}, 
-                React.DOM.span( {className:"relatedInfo"}, relatedIndication),
-                React.DOM.span( {className:"relatedInfoProjectTitle"}, relatedProjectTitle),
-                React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
-                this.renderBaseline(),
-                React.DOM.table( {className:"table table-responsive"}, 
-                    React.DOM.thead(null, 
+            return (
+                React.DOM.div( {className:relatedClass}, 
+                    React.DOM.span( {className:"relatedInfo"}, relatedIndication),
+                    React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
+                    this.renderBaseline(),
+                    React.DOM.table( {className:"table table-responsive"}, 
+                        React.DOM.thead(null, 
                         React.DOM.tr(null, 
                             React.DOM.td( {className:"th-period"}, i18n.period),
                             React.DOM.td( {className:"th-target"}, i18n.target_value),
                             React.DOM.td( {className:"th-actual"}, i18n.actual_value),
-                            React.DOM.td( {className:"th-actions"} )
+                            React.DOM.td( {className:"th-actions"})
                         )
-                    ),
-                    periods
+                        ),
+                        periods
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 });
 

@@ -153,8 +153,10 @@ var CommentEntry = React.createClass({
 
 var UpdateEntry = React.createClass({
     getInitialState: function() {
+        var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+
         return {
-            data: this.props.update.data,
+            data: updateData,
             description: this.props.update.text,
             isRelative: this.props.update.relative_data,
             comment: '',
@@ -349,7 +351,7 @@ var UpdateEntry = React.createClass({
                     organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                     break;
                 default:
-                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + approved_organisations.length - 1 + ' ' + i18n.others;
+                    organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
                     break;
             }
             headerLeft = <div className="col-xs-9">
@@ -369,7 +371,7 @@ var UpdateEntry = React.createClass({
         );
     },
 
-    renderActualRelative: function() {
+    renderActualRelative: function(label) {
         var periodActualValue = parseFloat(this.props.update.period_actual_value);
         var originalData = parseFloat(this.state.data);
         var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
@@ -378,15 +380,15 @@ var UpdateEntry = React.createClass({
         if (isNaN(updateData) || isNaN(relativeData)) {
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-text">{label}: </span>
                     <span className="update-actual-value-data">{this.state.data}</span><br/>
                 </div>
             );
         } else {
-            var relativeDataText = relativeData >= 0 ? '+' + relativeData.toString() : relativeData.toString();
+            var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
             return (
                 <div className="upActualValue">
-                    <span className="update-actual-value-text">{i18n.actual_value}: </span>
+                    <span className="update-actual-value-text">{label}: </span>
                     <span className="update-actual-value-data">{updateData} </span>
                     <span className="update-relative-value">({relativeDataText})</span>
                 </div>
@@ -396,7 +398,6 @@ var UpdateEntry = React.createClass({
 
     renderActual: function() {
         var inputId = "actual-input-" + this.props.update.id;
-        // OLD CODE: Re-use later if we want to switch between cumulative and non-cumulative updates
         //var checkboxId = "relative-checkbox-" + this.props.update.id;
         //var checkbox;
         //if (this.state.isRelative) {
@@ -409,11 +410,11 @@ var UpdateEntry = React.createClass({
             return (
                 <div className="row">
                     <div className="col-xs-6">
-                        <label htmlFor={inputId}>{i18n.actual_value}</label>
-                        <input className="form-control" id={inputId} defaultValue={this.props.update.data} onChange={this.handleDataChange} />
+                        <label htmlFor={inputId}>{i18n.add_to_actual_value}</label>
+                        <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} placeholder={i18n.input_placeholder} />
                     </div>
                     <div className="col-xs-6">
-                        {this.renderActualRelative()}
+                        {this.renderActualRelative(i18n.new_total_value)}
                     </div>
                 </div>
             );
@@ -421,7 +422,7 @@ var UpdateEntry = React.createClass({
             return (
                 <div className="row">
                     <div className="col-xs-12">
-                        {this.renderActualRelative()}
+                        {this.renderActualRelative(i18n.total_value_after_update)}
                     </div>
                 </div>
             );
@@ -451,7 +452,7 @@ var UpdateEntry = React.createClass({
         if (this.editing()) {
             descriptionPart = <div className={descriptionClass}>
                 <label htmlFor={inputId}>{i18n.actual_value_comment}</label>
-                <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} />
+                <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} placeholder={i18n.comment_placeholder} />
             </div>;
         } else {
             descriptionPart = <div className={descriptionClass}>
@@ -752,6 +753,20 @@ var UpdatesList = React.createClass({
 });
 
 var IndicatorPeriodMain = React.createClass({
+    getInitialState: function() {
+        return {
+            actualValueHover: false
+        };
+    },
+
+    handleMouseOver: function() {
+        this.setState({actualValueHover: true});
+    },
+
+    handleMouseOut: function() {
+        this.setState({actualValueHover: false});
+    },
+
     addNewUpdate: function() {
         this.props.addNewUpdate(this.props.selectedPeriod.id);
     },
@@ -768,7 +783,7 @@ var IndicatorPeriodMain = React.createClass({
                 </div>
             );
         } else if (!this.props.selectedPeriod.locked) {
-            if (this.props.selectedPeriod.data !== undefined && this.props.selectedPeriod.data.length === 0) {
+            if (this.props.selectedPeriod.data !== undefined) {
                 return (
                     <div className="new-update">
                         <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18n.new_update}</a>
@@ -808,25 +823,37 @@ var IndicatorPeriodMain = React.createClass({
         }
     },
 
-    renderPercentageComplete: function() {
-        // OLD CODE: might be re-used later, if we're clear on how to calculate percentages.
-        //
-        //if (this.props.selectedPeriod.percent_accomplishment !== null) {
-        //    return (
-        //        <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
-        //    );
-        //} else {
-        //    return (
-        //        <span />
-        //    );
-        //}
+    renderTargetValue: function() {
+        var targetValue = this.props.selectedPeriod.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
 
-        return (
-            <span />
-        );
+    renderActualValue: function() {
+        var actualValue = this.props.selectedPeriod.actual_value;
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
+            actualValue += '%';
+        }
+        return actualValue;
+    },
+
+    renderPercentageComplete: function() {
+        if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            return (
+                <span className="percentage-complete"> ({this.props.selectedPeriod.percent_accomplishment}%)</span>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
     },
 
     render: function() {
+        var hover = this.state.actualValueHover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.actual_value_info}</div></div> : <span />;
+
         return (
             <div className="indicator-period opacity-transition">
                 <div className="indicTitle">
@@ -839,14 +866,15 @@ var IndicatorPeriodMain = React.createClass({
                     <div className="periodValues">
                         <div className="period-target">
                             {i18n.target_value}
-                            <span>{this.props.selectedPeriod.target_value}</span>
+                            <span>{this.renderTargetValue()}</span>
                         </div>
                         <div className="period-actual">
-                            {i18n.actual_value}
-                            <span>
-                                {this.props.selectedPeriod.actual_value}
+                            {i18n.actual_value}<div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div>
+                            <span className="actualValueSpan">
+                                <span>{this.renderActualValue()}</span>
                                 {this.renderPercentageComplete()}
                             </span>
+                             {hover}
                         </div>
                         {this.renderTargetComment()}
                     </div>
@@ -1023,9 +1051,17 @@ var IndicatorPeriodEntry = React.createClass({
         }
     },
 
+    renderTargetValue: function() {
+        var targetValue = this.props.period.target_value;
+        if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
+            targetValue += '%';
+        }
+        return targetValue;
+    },
+
     renderActualValue: function() {
         var actualValue = this.props.period.actual_value;
-        if (this.props.selectedIndicator.measure === '2') {
+        if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
             actualValue += '%';
         }
         return actualValue;
@@ -1047,7 +1083,9 @@ var IndicatorPeriodEntry = React.createClass({
         return (
             <tr>
                 {this.renderPeriodDisplay()}
-                <td className="target-td">{this.props.period.target_value}</td>
+                <td className="target-td">
+                    {this.renderTargetValue()}
+                </td>
                 <td className="actual-td">
                     {this.renderActualValue()}
                     {this.renderPercentageComplete()}
@@ -1077,6 +1115,10 @@ var IndicatorPeriodList = React.createClass({
             baselineValue = this.props.selectedIndicator.baseline_value;
 
         if (!(baselineYear === null && baselineValue === '')) {
+            if (this.props.selectedIndicator.measure === '2') {
+                baselineValue += '%';
+            }
+
             return (
                 <div className="baseline">
                     <div className="baseline-year">
@@ -1133,41 +1175,59 @@ var IndicatorPeriodList = React.createClass({
 
         var relatedClass = "indicator-period-list ",
             relatedIndication,
-            relatedProjectTitle;
+            relatedProjectId,
+            relatedProjectTitle,
+            relatedProjectUrl,
+            relatedProjectLink;
 
         if (this.props.parent) {
-            relatedIndication = i18n.parent_project;
+            relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.parent_project + ': ';
+            relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
             relatedClass += "parentProject";
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
+                </div>
+            );
         } else if (this.props.child) {
-            relatedIndication = i18n.child_project;
+            relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
             relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
+            relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
+            relatedIndication = i18n.child_project + ': ';
+            relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
             relatedClass += "childProject";
+
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}{relatedProjectLink}</span>
+                </div>
+            );
         } else {
             relatedIndication = '';
-            relatedProjectTitle = '';
             relatedClass += "selfProject";
-        }
 
-        return (
-            <div className={relatedClass}>
-                <span className="relatedInfo">{relatedIndication}</span>
-                <span className="relatedInfoProjectTitle">{relatedProjectTitle}</span>
-                <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
-                {this.renderBaseline()}
-                <table className="table table-responsive">
-                    <thead>
+            return (
+                <div className={relatedClass}>
+                    <span className="relatedInfo">{relatedIndication}</span>
+                    <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
+                    {this.renderBaseline()}
+                    <table className="table table-responsive">
+                        <thead>
                         <tr>
                             <td className="th-period">{i18n.period}</td>
                             <td className="th-target">{i18n.target_value}</td>
                             <td className="th-actual">{i18n.actual_value}</td>
-                            <td className="th-actions" />
+                            <td className="th-actions"/>
                         </tr>
-                    </thead>
-                    {periods}
-                </table>
-            </div>
-        );
+                        </thead>
+                        {periods}
+                    </table>
+                </div>
+            );
+        }
     }
 });
 
@@ -1508,7 +1568,7 @@ var SideBar = React.createClass({
 
 var ResultsApp = React.createClass({
     getInitialState: function() {
-        var hash = window.location.hash,
+        var hash = location.hash,
             defaultResult = null,
             defaultIndicator = null,
             defaultPeriod = null;

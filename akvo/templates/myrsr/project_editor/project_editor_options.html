@@ -25,13 +25,6 @@
                             {% trans 'Indicate whether the results framework should be activated or not. When this option is set, actual values and comments of results can only be filled in the My results section. Only available for superusers.' %}
                         </div>
                     </div>
-                    {% if project.parents.count == 1 and project.is_impact_project %}
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
-                            </div>
-                        </div>
-                    {% endif %}
                     <hr/>
                     <div class="row">
                         <div class="col-md-3">

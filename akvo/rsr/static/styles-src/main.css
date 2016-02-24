@@ -590,25 +590,14 @@ nav.navbar-fixed-top {
   #createProject:hover {
     background: #2c2a74; }
 
-.indicator-period-list.parentProject, .indicator-period-list.childProject {
-  margin-top: 50px;
-  padding: 5px;
-  border: 1px solid rgba(44, 42, 116, 0.1); }
-  .indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
-    font-size: 110%;
-    background: rgba(44, 42, 116, 0.1);
-    color: #2c2a74;
-    padding: 3px 7px;
-    margin-left: -5px;
-    -moz-border-radius: 0 0 10px 0;
-    -o-border-radius: 0 0 10px 0;
-    -webkit-border-radius: 0 0 10px 0;
-    border-radius: 0 0 10px 0; }
-  .indicator-period-list.parentProject .relatedInfoProjectTitle, .indicator-period-list.childProject .relatedInfoProjectTitle {
-    display: none;
+.indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
+  color: #2c2a74; }
+
+.indicator-period-list.parentProject .relatedInfoProjectTitle, .indicator-period-list.childProject .relatedInfoProjectTitle {
+  display: none;
+  margin-top: 15px; }
+  .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title, .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
     margin-top: 15px; }
-    .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title, .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
-      margin-top: 15px; }
 
 .indicator-period-list thead tr {
   background-color: rgba(32, 32, 36, 0.05);
@@ -2302,34 +2291,114 @@ body.translationBarActive div.skiptranslate ~ #map {
     .results .baseline .baseline-value, .results .baseline .baseline-year,
     .results .baseline .period-target, .results .baseline .period-actual, .results .baseline .period-target-comment, .results .periodValues .baseline-value, .results .periodValues .baseline-year,
     .results .periodValues .period-target, .results .periodValues .period-actual, .results .periodValues .period-target-comment {
-      display: inline-block;
+      display: inline-block !important;
       padding: 0 0 10px 15px; }
       .results .baseline .baseline-value > span:first-child, .results .baseline .baseline-year > span:first-child,
       .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .baseline .period-target-comment > span:first-child, .results .periodValues .baseline-value > span:first-child, .results .periodValues .baseline-year > span:first-child,
       .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child, .results .periodValues .period-target-comment > span:first-child {
         color: rgba(32, 32, 36, 0.7);
         display: block; }
-      .results .baseline .baseline-value span:nth-child(2), .results .baseline .baseline-year span:nth-child(2),
-      .results .baseline .period-target span:nth-child(2), .results .baseline .period-actual span:nth-child(2), .results .baseline .period-target-comment span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2),
-      .results .periodValues .period-target span:nth-child(2), .results .periodValues .period-actual span:nth-child(2), .results .periodValues .period-target-comment span:nth-child(2) {
+        .results .baseline .baseline-value > span:first-child span, .results .baseline .baseline-year > span:first-child span,
+        .results .baseline .period-target > span:first-child span, .results .baseline .period-actual > span:first-child span, .results .baseline .period-target-comment > span:first-child span, .results .periodValues .baseline-value > span:first-child span, .results .periodValues .baseline-year > span:first-child span,
+        .results .periodValues .period-target > span:first-child span, .results .periodValues .period-actual > span:first-child span, .results .periodValues .period-target-comment > span:first-child span {
+          display: inline; }
+      .results .baseline .baseline-value span:nth-child(2n), .results .baseline .baseline-year span:nth-child(2n),
+      .results .baseline .period-target span:nth-child(2n), .results .baseline .period-actual span:nth-child(2n), .results .baseline .period-target-comment span:nth-child(2n), .results .periodValues .baseline-value span:nth-child(2n), .results .periodValues .baseline-year span:nth-child(2n),
+      .results .periodValues .period-target span:nth-child(2n), .results .periodValues .period-actual span:nth-child(2n), .results .periodValues .period-target-comment span:nth-child(2n) {
         display: block;
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: 700;
         color: rgba(32, 32, 36, 0.9); }
-        .results .baseline .baseline-value span:nth-child(2) span, .results .baseline .baseline-year span:nth-child(2) span,
-        .results .baseline .period-target span:nth-child(2) span, .results .baseline .period-actual span:nth-child(2) span, .results .baseline .period-target-comment span:nth-child(2) span, .results .periodValues .baseline-value span:nth-child(2) span, .results .periodValues .baseline-year span:nth-child(2) span,
-        .results .periodValues .period-target span:nth-child(2) span, .results .periodValues .period-actual span:nth-child(2) span, .results .periodValues .period-target-comment span:nth-child(2) span {
+        .results .baseline .baseline-value span:nth-child(2n) span, .results .baseline .baseline-year span:nth-child(2n) span,
+        .results .baseline .period-target span:nth-child(2n) span, .results .baseline .period-actual span:nth-child(2n) span, .results .baseline .period-target-comment span:nth-child(2n) span, .results .periodValues .baseline-value span:nth-child(2n) span, .results .periodValues .baseline-year span:nth-child(2n) span,
+        .results .periodValues .period-target span:nth-child(2n) span, .results .periodValues .period-actual span:nth-child(2n) span, .results .periodValues .period-target-comment span:nth-child(2n) span {
           display: inline; }
-        .results .baseline .baseline-value span:nth-child(2) span:nth-child(2), .results .baseline .baseline-year span:nth-child(2) span:nth-child(2),
-        .results .baseline .period-target span:nth-child(2) span:nth-child(2), .results .baseline .period-actual span:nth-child(2) span:nth-child(2), .results .baseline .period-target-comment span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-value span:nth-child(2) span:nth-child(2), .results .periodValues .baseline-year span:nth-child(2) span:nth-child(2),
-        .results .periodValues .period-target span:nth-child(2) span:nth-child(2), .results .periodValues .period-actual span:nth-child(2) span:nth-child(2), .results .periodValues .period-target-comment span:nth-child(2) span:nth-child(2) {
+        .results .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .results .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
+        .results .baseline .period-target span:nth-child(2n) span:nth-child(1), .results .baseline .period-actual span:nth-child(2n) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(2n) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(2n) span:nth-child(1), .results .periodValues .baseline-year span:nth-child(2n) span:nth-child(1),
+        .results .periodValues .period-target span:nth-child(2n) span:nth-child(1), .results .periodValues .period-actual span:nth-child(2n) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1) {
           margin-left: 10px; }
     .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
       width: 50%;
       float: left; }
     .results .baseline .baseline-year, .results .baseline .period-actual, .results .periodValues .baseline-year, .results .periodValues .period-actual {
       width: 50%;
-      float: right; }
+      float: right;
+      color: rgba(32, 32, 36, 0.6);
+      position: relative; }
+      .results .baseline .baseline-year span, .results .baseline .period-actual span, .results .periodValues .baseline-year span, .results .periodValues .period-actual span {
+        font-weight: 700; }
+        .results .baseline .baseline-year span:nth-child(1), .results .baseline .period-actual span:nth-child(1), .results .periodValues .baseline-year span:nth-child(1), .results .periodValues .period-actual span:nth-child(1) {
+          display: inline-block;
+          margin-right: 10px; }
+        .results .baseline .baseline-year span:nth-child(4), .results .baseline .period-actual span:nth-child(4), .results .periodValues .baseline-year span:nth-child(4), .results .periodValues .period-actual span:nth-child(4) {
+          display: block;
+          font-weight: 700; }
+        .results .baseline .baseline-year span.actualValueSpan, .results .baseline .period-actual span.actualValueSpan, .results .periodValues .baseline-year span.actualValueSpan, .results .periodValues .period-actual span.actualValueSpan {
+          display: block; }
+          .results .baseline .baseline-year span.actualValueSpan span:nth-child(1), .results .baseline .period-actual span.actualValueSpan span:nth-child(1), .results .periodValues .baseline-year span.actualValueSpan span:nth-child(1), .results .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
+            margin-right: 0; }
+          .results .baseline .baseline-year span.actualValueSpan span, .results .baseline .period-actual span.actualValueSpan span, .results .periodValues .baseline-year span.actualValueSpan span, .results .periodValues .period-actual span.actualValueSpan span {
+            display: inline; }
+      .results .baseline .baseline-year .badge, .results .baseline .period-actual .badge, .results .periodValues .baseline-year .badge, .results .periodValues .period-actual .badge {
+        background-color: #202024;
+        -moz-transition: all 0.1s linear;
+        -o-transition: all 0.1s linear;
+        -webkit-transition: all 0.1s linear;
+        transition: all 0.1s linear;
+        margin-top: -5px;
+        padding: 5px 9px;
+        -moz-border-radius: 15px;
+        -o-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        border-radius: 15px;
+        font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
+        .results .baseline .baseline-year .badge:hover, .results .baseline .period-actual .badge:hover, .results .periodValues .baseline-year .badge:hover, .results .periodValues .period-actual .badge:hover {
+          background-color: #2c2a74;
+          cursor: pointer; }
+      .results .baseline .baseline-year .result-tooltip, .results .baseline .period-actual .result-tooltip, .results .periodValues .baseline-year .result-tooltip, .results .periodValues .period-actual .result-tooltip {
+        clear: both;
+        position: absolute;
+        top: 35px;
+        left: 60px;
+        background: white;
+        border: 1px solid rgba(153, 153, 153, 0.8);
+        color: #202024;
+        -moz-border-radius: 4px;
+        -o-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px; }
+        .results .baseline .baseline-year .result-tooltip .tooltip-inner, .results .baseline .period-actual .result-tooltip .tooltip-inner, .results .periodValues .baseline-year .result-tooltip .tooltip-inner, .results .periodValues .period-actual .result-tooltip .tooltip-inner {
+          background: white;
+          color: #202024;
+          -moz-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+          -o-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+          -webkit-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+          box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5); }
+        .results .baseline .baseline-year .result-tooltip .tooltip-arrow, .results .baseline .period-actual .result-tooltip .tooltip-arrow, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow, .results .periodValues .period-actual .result-tooltip .tooltip-arrow {
+          position: absolute;
+          background: white;
+          border: 1px solid rgba(153, 153, 153, 0.8);
+          left: 68px;
+          top: -2px; }
+          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .results .baseline .baseline-year .result-tooltip .tooltip-arrow:before, .results .baseline .period-actual .result-tooltip .tooltip-arrow:after, .results .baseline .period-actual .result-tooltip .tooltip-arrow:before, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:after, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:before, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:after, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
+            bottom: 100%;
+            left: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none; }
+          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .results .baseline .period-actual .result-tooltip .tooltip-arrow:after, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:after, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:after {
+            border-color: rgba(136, 183, 213, 0);
+            border-bottom-color: rgba(153, 153, 153, 0.5);
+            border-width: 7px;
+            margin-left: -7px; }
+          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:before, .results .baseline .period-actual .result-tooltip .tooltip-arrow:before, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:before, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
+            border-color: rgba(194, 225, 245, 0);
+            border-bottom-color: rgba(153, 153, 153, 0.5);
+            border-width: 8px;
+            margin-left: -8px; }
     .results .baseline .period-target-comment, .results .periodValues .period-target-comment {
       width: 100%;
       float: left;
@@ -3408,7 +3477,7 @@ div#my-reports {
     position: absolute;
     top: 55px;
     left: 0;
-    background: rgba(255, 255, 255, 0.5);
+    background: white;
     border: 1px solid rgba(153, 153, 153, 0.8);
     color: #202024;
     -moz-border-radius: 4px;
@@ -3416,11 +3485,15 @@ div#my-reports {
     -webkit-border-radius: 4px;
     border-radius: 4px; }
     .period-td .result-tooltip .tooltip-inner {
-      background: rgba(255, 255, 255, 0.5);
-      color: #202024; }
+      background: white;
+      color: #202024;
+      -moz-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+      -o-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+      -webkit-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+      box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5); }
     .period-td .result-tooltip .tooltip-arrow {
       position: absolute;
-      background: rgba(255, 255, 255, 0.5);
+      background: white;
       border: 1px solid rgba(153, 153, 153, 0.8);
       right: 8px;
       top: -2px; }

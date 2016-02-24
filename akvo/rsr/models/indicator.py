@@ -393,21 +393,26 @@ class IndicatorPeriod(models.Model):
         relative value of the current actual value (True) or overwrite the actual value (False)
         :param comment; String that represents the new actual comment data of the period (Optional)
         """
+        updated_actual_value = False
         try:
             old_actual = Decimal(self.actual_value or '0')
             self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
             self.save(update_fields=['actual_value'])
-
-            if comment:
-                self.actual_comment = comment
-                self.save(update_fields=['actual_comment'])
+            updated_actual_value = True
 
             # Update parent period (if not percentages)
             parent = self.parent_period()
             if parent and self.indicator.measure != '2':
                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
-            pass
+            if data and not updated_actual_value:
+                self.actual_value = data
+                self.save(update_fields=['actual_value'])
+
+        if comment:
+            self.actual_comment = comment
+            self.save(update_fields=['actual_comment'])
+
 
     @property
     def percent_accomplishment(self):
@@ -558,7 +563,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Newly added data update
             if self.status == self.STATUS_APPROVED_CODE:
                 # Update is immediately approved. Scenario that probably does not happen very often.
-                self.period.update_actual_value(self.data, self.relative_data, self.text)
+                self.period.update_actual_value(self.data, self.relative_data)
         else:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
@@ -591,7 +596,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             # Process data when the update has been approved and mail the user about it
             elif orig.status != self.STATUS_APPROVED_CODE and \
                     self.status == self.STATUS_APPROVED_CODE:
-                self.period.update_actual_value(self.data, self.relative_data, self.text)
+                self.period.update_actual_value(self.data, self.relative_data)
                 rsr_send_mail(
                     [self.user.email],
                     subject='results_framework/approved_subject.txt',
@@ -607,12 +612,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         Perform several checks before we can actually save the update data.
         """
         validation_errors = {}
-
-        # Allow only one update per period
-        if not self.pk and self.period.data.all():
-            validation_errors['period'] = unicode(_(u'Indicator period already has an update, only '
-                                                    u'one update per period is allowed'))
-            raise ValidationError(validation_errors)
 
         # Don't allow a data update to a non-Impact project
         if not self.period.indicator.result.project.is_impact_project:
