@@ -1568,7 +1568,7 @@ var SideBar = React.createClass({displayName: 'SideBar',
 
 var ResultsApp = React.createClass({displayName: 'ResultsApp',
     getInitialState: function() {
-        var hash = window.location.hash,
+        var hash = location.hash,
             defaultResult = null,
             defaultIndicator = null,
             defaultPeriod = null;
