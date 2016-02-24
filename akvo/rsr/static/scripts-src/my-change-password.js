@@ -15,7 +15,7 @@ $(function() {
 
     $.ajax({
       type:"POST",
-      url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML).ajaxUrl,
+      url: JSON.parse(document.getElementById("akvo-rsr-password-url").innerHTML).ajaxUrl,
       data : JSON.stringify(serializedData),
       contentType : 'application/json; charset=UTF-8',
       success: function(response) {

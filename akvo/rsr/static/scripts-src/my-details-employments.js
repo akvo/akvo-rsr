@@ -7,10 +7,7 @@
 
 
 /* Global variables */
-var Button = ReactBootstrap.Button,
-    Modal = ReactBootstrap.Modal,
-    ModalTrigger = ReactBootstrap.ModalTrigger,
-    Typeahead = ReactTypeahead.Typeahead;
+var Typeahead = ReactTypeahead.Typeahead;
 
 var countries,
     i18n,

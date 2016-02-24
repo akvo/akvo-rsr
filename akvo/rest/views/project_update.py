@@ -23,10 +23,8 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
     serializer_class = ProjectUpdateSerializer
     filter_fields = {
         'project': ['exact', ],
-        'indicator_period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
-        'period_update': ['exact', 'gt', 'gte', 'lt', 'lte', ],
     }
 
     paginate_by_param = 'limit'
@@ -90,10 +88,8 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
     serializer_class = ProjectUpdateExtraSerializer
     filter_fields = {
         'project': ['exact', ],
-        'indicator_period': ['exact', ],
         'user': ['exact', ],
         'uuid': ['exact', 'icontains', ],
-        'period_update': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # These filters only accept a date, not a datetime
         # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
