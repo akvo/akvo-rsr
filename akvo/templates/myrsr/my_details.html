@@ -60,9 +60,9 @@
 {% block js %}
   {{ block.super }}
 
-    {# React #}
-    <script src="https://fb.me/react-0.14.5.js"></script>
-    <script src="https://fb.me/react-dom-0.14.5.js"></script>
+    {# React 0.14.5 #}
+    <script src="//fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpf1/t39.3284-6/12466399_996488240432099_737718532_n.js"></script>
+    <script src="//fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpa1/t39.3284-6/12466398_928862397148834_43538167_n.js"></script>
 
   {# App data #}
   <script type="application/json" id="akvo-rsr-typeahead-thumbs">
@@ -110,7 +110,7 @@
         }
     </script>
   {# App data #}
-  <script type="application/json" id="akvo-rsr-ajax-url">
+  <script type="application/json" id="akvo-rsr-password-url">
     {"ajaxUrl": "{% url 'user_change_password' user.id %}?format=json"}
   </script>
 
@@ -122,7 +122,7 @@
     }
   </script>
 
-  {% compressed_js 'my_change_password' %}
+    {% compressed_js 'my_change_password' %}
     {% compressed_js 'react_typeahead_1_1_5' %}
     {% compressed_js 'my_details' %}
 {% endblock js %}
