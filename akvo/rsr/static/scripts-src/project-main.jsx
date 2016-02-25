@@ -5,14 +5,10 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var defaultValues,
+var Carousel,
+    CarouselItem,
+    defaultValues,
     i18n;
-
-if (ReactBootstrap !== undefined) {
-    // KB: Hack, ReactBootstrap does not always get loaded.
-    var Carousel = ReactBootstrap.Carousel,
-        CarouselItem = ReactBootstrap.CarouselItem;
-}
 
 IndicatorPeriodValue = React.createClass({
     render: function() {
@@ -378,6 +374,12 @@ function readTabFromFragment() {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
+    if (ReactBootstrap !== undefined) {
+        // KB: Hack, in case ReactBootstrap does not get loaded
+        Carousel = ReactBootstrap.Carousel;
+        CarouselItem = ReactBootstrap.CarouselItem;
+    }
+
     i18n = JSON.parse(document.getElementById("project-main-text").innerHTML);
     defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 

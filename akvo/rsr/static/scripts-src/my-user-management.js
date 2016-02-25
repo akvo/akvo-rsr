@@ -6,17 +6,17 @@
 // < http://www.gnu.org/licenses/agpl.html >.
 
 var ApproveModal,
-    Button = ReactBootstrap.Button,
+    Button,
     CountryJobTitle,
     DeleteModal,
     DropDownItem,
-    DropdownButton = ReactBootstrap.DropdownButton,
+    DropdownButton,
     Employment,
     EmploymentList,
-    MenuItem = ReactBootstrap.MenuItem,
-    Modal = ReactBootstrap.Modal,
-    ModalTrigger = ReactBootstrap.ModalTrigger,
-    Table = ReactBootstrap.Table,
+    MenuItem,
+    Modal,
+    ModalTrigger,
+    Table,
     TriggerModal,
     UserTable,
     initial_data,
@@ -562,12 +562,20 @@ InviteButton = React.createClass({displayName: 'InviteButton',
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    Button = ReactBootstrap.Button;
+    DropdownButton = ReactBootstrap.DropdownButton;
+    MenuItem = ReactBootstrap.MenuItem;
+    Modal = ReactBootstrap.Modal;
+    ModalTrigger = ReactBootstrap.ModalTrigger;
+    Table = ReactBootstrap.Table;
 
-initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
-organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
-role_data = JSON.parse(document.getElementById("role-data").innerHTML);
-i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
+    initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+    organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
+    role_data = JSON.parse(document.getElementById("role-data").innerHTML);
+    i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
-React.renderComponent(UserTable( {source:initial_employment_data} ),
-                      document.getElementById('user_table'));
-React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));
+    React.renderComponent(UserTable( {source:initial_employment_data} ),
+                          document.getElementById('user_table'));
+    React.renderComponent(InviteButton(null ), document.getElementById('invite_button'));
+});
