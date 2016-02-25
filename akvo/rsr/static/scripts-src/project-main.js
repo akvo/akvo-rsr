@@ -5,14 +5,17 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var Accordion = ReactBootstrap.Accordion,
-    AccordionInstance,
-    Carousel = ReactBootstrap.Carousel,
-    CarouselInstance,
-    CarouselItem = ReactBootstrap.CarouselItem,
-    Panel = ReactBootstrap.Panel,
-    defaultValues,
+var defaultValues,
     i18n;
+
+if (ReactBootstrap !== undefined) {
+    var Accordion = ReactBootstrap.Accordion,
+        AccordionInstance,
+        Carousel = ReactBootstrap.Carousel,
+        CarouselInstance,
+        CarouselItem = ReactBootstrap.CarouselItem,
+        Panel = ReactBootstrap.Panel;
+}
 
 IndicatorPeriodValue = React.createClass({displayName: 'IndicatorPeriodValue',
     render: function() {
