@@ -9,12 +9,9 @@ var defaultValues,
     i18n;
 
 if (ReactBootstrap !== undefined) {
-    var Accordion = ReactBootstrap.Accordion,
-        AccordionInstance,
-        Carousel = ReactBootstrap.Carousel,
-        CarouselInstance,
-        CarouselItem = ReactBootstrap.CarouselItem,
-        Panel = ReactBootstrap.Panel;
+    // KB: Hack, ReactBootstrap does not always get loaded.
+    var Carousel = ReactBootstrap.Carousel,
+        CarouselItem = ReactBootstrap.CarouselItem;
 }
 
 IndicatorPeriodValue = React.createClass({
@@ -116,8 +113,64 @@ ResultList = React.createClass({
     }
 });
 
+var AccordionPanel = React.createClass({
+    handleClick: function() {
+        this.props.changeOpened(this.props.key);
+        return false;
+    },
 
-AccordionInstance = React.createClass({
+    opened: function() {
+        return this.props.key === this.props.opened;
+    },
+
+    render: function() {
+        var panelClass = "panel panel-default " + this.props.panelClass,
+            headerCollapse,
+            panelCollapse,
+            panelStyle;
+
+        if (this.opened()) {
+            headerCollapse = '';
+            panelCollapse = 'panel-collapse';
+            panelStyle = {};
+        } else {
+            headerCollapse = 'collapsed';
+            panelCollapse = 'panel-collapse collapse';
+            panelStyle = {height: '0px'};
+        }
+
+        return (
+            <div className={panelClass}>
+                <div className="panel-heading" onClick={this.handleClick}>
+                    <h4 className="panel-title">
+                        <a href='#' className={headerCollapse}>
+                            {this.props.header}
+                        </a>
+                    </h4>
+                </div>
+                <div className={panelCollapse} style={panelStyle}>
+                    <div className="panel-body">
+                        {this.props.content}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+var AccordionInstance = React.createClass({
+    getInitialState: function() {
+        return {
+            opened: 0
+        };
+    },
+
+    changeOpened: function(key) {
+        this.setState({
+            opened: this.state.opened === key ? null : key
+        });
+    },
+
     splitLines: function(text) {
         var i = 0;
         return text.match(/[^\r\n]+/g).map(function(line) {
@@ -138,49 +191,36 @@ AccordionInstance = React.createClass({
             panel_id = 0;
 
         if (background !== null) {
-            background = <Panel key={panel_id++} className="background" header={i18n.background_text} eventKey={'background'}>
-                {this.splitLines(background)}
-            </Panel>;
+            background = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(background)} panelClass="background" header={i18n.background_text} />;
         }
 
         if (current_status !== null) {
-            current_status = <Panel key={panel_id++} className="current_status" header={i18n.current_situation_text} eventKey={'current_status'}>
-                {this.splitLines(current_status)}
-            </Panel>;
+            current_status = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(current_status)} panelClass="current_status" header={i18n.current_situation_text} />;
         }
 
         if (goals_overview !== null) {
-            goals_overview = <Panel key={panel_id++} className="goals_overview" header={i18n.goals_overview_text} eventKey={'goals_overview'}>
-                {this.splitLines(goals_overview)}
-            </Panel>;
+            goals_overview = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(goals_overview)} panelClass="goals_overview" header={i18n.goals_overview_text} />;
         }
 
         if (project_plan !== null) {
-            project_plan = <Panel key={panel_id++} className="project_plan" header={i18n.project_plan_text} eventKey={'project_plan'}>
-                {this.splitLines(project_plan)}
-            </Panel>;
+            project_plan = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(project_plan)} panelClass="project_plan" header={i18n.project_plan_text} />;
         }
 
         if (sustainability !== null) {
-            sustainability = <Panel key={panel_id++} className="sustainability" header={i18n.sustainability_text} eventKey={'sustainability'}>
-                {this.splitLines(sustainability)}
-            </Panel>;
+            sustainability = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(sustainability)} panelClass="sustainability" header={i18n.sustainability_text} />;
         }
 
         if (target_group !== null) {
-            target_group = <Panel key={panel_id++} className="target_group" header={i18n.target_group_text} eventKey={'target_group'}>
-                {this.splitLines(target_group)}
-            </Panel>;
+            target_group = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={this.splitLines(target_group)} panelClass="target_group" header={i18n.target_group_text} />;
         }
 
         if (results !== null) {
-            results = <Panel key={panel_id++} className="result" header={i18n.results_text} eventKey={'results'}>
-                <ResultList key={0} results={results} />
-            </Panel>;
+            var resultsContent = <ResultList results={results} />;
+            results = <AccordionPanel key={panel_id++} opened={this.state.opened} changeOpened={this.changeOpened} content={resultsContent} panelClass="result" header={i18n.results_text} />;
         }
 
         return (
-            <Accordion>
+            <div className="panel-group">
                 {background}
                 {current_status}
                 {project_plan}
@@ -188,29 +228,56 @@ AccordionInstance = React.createClass({
                 {sustainability}
                 {goals_overview}
                 {results}
-            </Accordion>
+            </div>
         );
     }
 });
 
-CarouselInstance = React.createClass({
+var CarouselInstance = React.createClass({
     render: function() {
-        var photos = this.props.source.photos.map(function(photo) {
+        // KB: Hack to see if we can use ReactBootstrap or not
+        if (ReactBootstrap !== undefined) {
+            var photos = this.props.source.photos.map(function (photo) {
+                return (
+                    <CarouselItem key={photo.url}>
+                        <a target="_blank" href={photo.direct_to_url}><img src={photo.url}/></a>
+                        <div className="carousel-caption">
+                            <h4>{photo.caption}</h4>
+                            <p>{photo.credit}</p>
+                        </div>
+                    </CarouselItem>
+                );
+            });
             return (
-                <CarouselItem key={photo.url} >
-                    <a target="_blank" href={photo.direct_to_url}><img src={photo.url} /></a>
-                    <div className="carousel-caption">
-                        <h4>{photo.caption}</h4>
-                        <p>{photo.credit}</p>
-                    </div>
-                </CarouselItem>
+                <Carousel>
+                    {photos}
+                </Carousel>
             );
-        });
-        return (
-            <Carousel>
-                {photos}
-            </Carousel>
-        );
+        } else if (this.props.source.photos.length > 0) {
+            var photo = this.props.source.photos[0];
+            return (
+                <div className="carousel slide">
+                    <ol className="carousel-indicators">
+                        <li className="active" />
+                    </ol>
+                    <div className="carousel-inner">
+                        <div className="item active">
+                            <a target="_blank" href={photo.direct_to_url}>
+                                <img src={photo.url} />
+                            </a>
+                            <div className="carousel-caption">
+                                <h4>{photo.caption}</h4>
+                                <p>{photo.credit}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <span />
+            );
+        }
     }
 });
 
@@ -224,12 +291,6 @@ function renderCarousel() {
     React.renderComponent(
         <CarouselInstance source={JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML)} />,
         document.getElementById('carousel'));
-
-    // Open the first accordion item on load
-    var firstAccordionChild = document.querySelector('#accordion div.panel-group div:first-child div a');
-    if (firstAccordionChild !== null) {
-        firstAccordionChild.click();
-    }
 }
 
 function readMoreOnClicks() {
