@@ -1,11 +1,11 @@
 /** @jsx React.DOM */
 // jshint asi:true
 
-var Button = ReactBootstrap.Button;
-var Modal = ReactBootstrap.Modal;
-var ModalTrigger = ReactBootstrap.ModalTrigger;
-var Input = ReactBootstrap.Input;
-var i18n;
+var Button,
+    Modal,
+    ModalTrigger,
+    Input,
+    i18n;
 
 var ResetModal = React.createClass({
   resetPassword: function() {
@@ -54,7 +54,15 @@ var TriggerModal = React.createClass({
   }
 });
 
-// Initial data
-i18n = JSON.parse(document.getElementById("reset-password-text").innerHTML);
+document.addEventListener('DOMContentLoaded', function() {
+    if (ReactBootstrap !== undefined) {
+        // KB: Hack, do not show if ReactBootstrap can't be loaded
+        Button = ReactBootstrap.Button;
+        Modal = ReactBootstrap.Modal;
+        ModalTrigger = ReactBootstrap.ModalTrigger;
+        Input = ReactBootstrap.Input;
+        i18n = JSON.parse(document.getElementById("reset-password-text").innerHTML);
 
-React.renderComponent(<TriggerModal />, document.getElementById('reset-pw'));
+        React.renderComponent(<TriggerModal />, document.getElementById('reset-pw'));
+    }
+});
