@@ -4,20 +4,21 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.rsr.models.custom_field import ProjectCustomField
+from akvo.rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
+from akvo.rsr.models.internal_organisation_id import InternalOrganisationID
+from akvo.rsr.models.organisation import Organisation, ORG_TYPE_NGO
+from akvo.rsr.models.project import Project
+
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from django.conf import settings
 from django.db.models.fields import FieldDoesNotExist
 
-from ...rsr.models.custom_field import ProjectCustomField
-from ...rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
-from ...rsr.models.internal_organisation_id import InternalOrganisationID
-from ...rsr.models.organisation import Organisation, ORG_TYPE_NGO
-from ...rsr.models.project import Project
-
 TRUE_VALUES = ['true', '1', 't', 'yes']
 FALSE_VALUES = ['false', '0', 'f', 'no']
+
 
 def akvo_ns(tag_or_attr):
     """
@@ -27,6 +28,7 @@ def akvo_ns(tag_or_attr):
     :return: the string prefixed with the akvo namespace
     """
     return "{{{}}}{}".format(settings.AKVO_NS, tag_or_attr)
+
 
 def xml_ns(tag_or_attr):
     """

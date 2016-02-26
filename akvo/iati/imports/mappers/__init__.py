@@ -8,7 +8,8 @@ from .classifications import Sectors, PolicyMarkers
 from .contacts import Contacts
 from .dates import ActualEndDate, ActualStartDate, PlannedEndDate, PlannedStartDate
 from .defaults import (Conditions, Currency, CollaborationType, DefaultAidType,
-        DefaultFinanceType, DefaultFlowType, DefaultTiedStatus, Hierarchy, Language, Scope, Status)
+                       DefaultFinanceType, DefaultFlowType, DefaultTiedStatus, Hierarchy,
+                       Humanitarian, Language, Scope, Status)
 from .descriptions import CustomFields, Descriptions
 from .financials import (
         Transactions, BudgetItems, PlannedDisbursements, CountryBudgetItems,  CapitalSpend)
@@ -40,6 +41,7 @@ __all__ = [
     'Documents',
     'FSSs',
     'Hierarchy',
+    'Humanitarian',
     'Language',
     'LegacyDatas',
     'Links',
