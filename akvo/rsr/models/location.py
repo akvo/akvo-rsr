@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
 from akvo.codelists.models import (GeographicExactness, GeographicLocationClass,
                                    GeographicLocationReach, GeographicVocabulary, LocationType)
-from akvo.codelists.store.codelists_v201 import (GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS,
+from akvo.codelists.store.codelists_v202 import (GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS,
                                                  GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_VOCABULARY,
                                                  LOCATION_TYPE)
 from akvo.utils import codelist_choices, codelist_value
@@ -80,9 +80,9 @@ class ProjectLocation(BaseLocation):
         _(u'reference'), blank=True, max_length=50,
         help_text=_(u'An internal reference that describes the location in the reporting '
                     u'organisation\'s own system. For reference see: '
-                    u'<a href="http://iatistandard.org/201/activity-standard/iati-activities/'
+                    u'<a href="http://iatistandard.org/202/activity-standard/iati-activities/'
                     u'iati-activity/location/#attributes" target="_blank">'
-                    u'http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/'
+                    u'http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/'
                     u'location/#attributes</a>.')
     )
     location_code = ValidXMLCharField(
@@ -128,16 +128,16 @@ class ProjectLocation(BaseLocation):
         help_text=_(u'Does the location refer to a physical structure such as a building, a '
                     u'populated place (e.g. city or village), an administrative division, or '
                     u'another topological feature (e.g. river, nature reserve)? For reference: '
-                    u'<a href="http://iatistandard.org/201/codelists/GeographicLocationClass/" '
-                    u'target="_blank">http://iatistandard.org/201/codelists/'
+                    u'<a href="http://iatistandard.org/202/codelists/GeographicLocationClass/" '
+                    u'target="_blank">http://iatistandard.org/202/codelists/'
                     u'GeographicLocationClass/</a>.')
     )
     feature_designation = ValidXMLCharField(
         _(u'feature designation'), blank=True, max_length=5,
         choices=codelist_choices(LOCATION_TYPE),
         help_text=_(u'A more refined coded classification of the type of feature referred to by '
-                    u'this location. For reference: <a href="http://iatistandard.org/201/codelists/'
-                    u'LocationType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'this location. For reference: <a href="http://iatistandard.org/202/codelists/'
+                    u'LocationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'LocationType/</a>.')
     )
 
@@ -185,8 +185,8 @@ class AdministrativeLocation(models.Model):
     vocabulary = ValidXMLCharField(
         _(u'administrative vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(GEOGRAPHIC_VOCABULARY),
-        help_text=_(u'For reference: <a href="http://iatistandard.org/201/codelists/'
-                    u'GeographicVocabulary/" target="_blank">http://iatistandard.org/201/codelists/'
+        help_text=_(u'For reference: <a href="http://iatistandard.org/202/codelists/'
+                    u'GeographicVocabulary/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'GeographicVocabulary/</a>.')
     )
 

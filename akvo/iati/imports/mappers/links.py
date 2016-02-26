@@ -207,7 +207,7 @@ class Documents(ImportMapper):
                 format=format,
                 title=title,
                 title_language=title_language,
-                category=category,
+                # TODO: category=category,
                 language=language
             )
             if created:

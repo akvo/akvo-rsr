@@ -522,9 +522,10 @@ class V201Checks(object):
                 checks.append((u'error', u'document link (id: %s) has no title '
                                          u'specified' % str(doc.pk)))
 
-            if not doc.category:
-                checks.append((u'error', u'document link (id: %s) has no category '
-                                         u'specified' % str(doc.pk)))
+            # TODO: Category now has its' own model
+            # if not doc.category:
+            #     checks.append((u'error', u'document link (id: %s) has no category '
+            #                              u'specified' % str(doc.pk)))
 
         if self.project.documents.all() and not checks:
             checks.append((u'success', u'has valid document(s)'))

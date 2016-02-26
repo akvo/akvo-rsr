@@ -73,9 +73,10 @@ def document_link(project):
             narrative_element = etree.SubElement(title_element, "narrative")
             narrative_element.text = document.title if document.title else "Project document"
 
-            if document.category:
-                category_element = etree.SubElement(document_element, "category")
-                category_element.attrib['code'] = document.category
+            # TODO: Category now has its' own model
+            # if document.category:
+            #     category_element = etree.SubElement(document_element, "category")
+            #     category_element.attrib['code'] = document.category
 
             if document.language:
                 language_element = etree.SubElement(document_element, "language")

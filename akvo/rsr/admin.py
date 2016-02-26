@@ -364,7 +364,7 @@ class ProjectDocumentInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectDocument')
     fieldsets = (
         (None, {
-            'fields': ('url', 'document', 'title', 'format', 'category', 'language')
+            'fields': ('url', 'document', 'title', 'format', 'language')
         }),
     )
 

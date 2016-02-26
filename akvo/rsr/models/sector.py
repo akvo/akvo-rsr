@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
-from akvo.codelists.store.codelists_v201 import SECTOR_VOCABULARY
+from akvo.codelists.store.codelists_v202 import SECTOR_VOCABULARY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -24,8 +24,8 @@ class Sector(models.Model):
                     u'will be populated with the corresponding codes. For other vocabularies, it '
                     u'is possible to fill in any code. '
                     u'See these lists for the DAC-5 and DAC-3 sector codes: '
-                    u'<a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">'
-                    u'DAC-5 sector codes</a> and <a href="http://iatistandard.org/201/codelists/'
+                    u'<a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">'
+                    u'DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/'
                     u'SectorCategory/" target="_blank">DAC-3 sector codes</a>.')
     )
     text = ValidXMLCharField(
@@ -37,6 +37,11 @@ class Sector(models.Model):
         choices=codelist_choices(SECTOR_VOCABULARY),
         help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
                     u'should be mapped to DAC sectors to enable international comparison.')
+    )
+    vocabulary_uri = ValidXMLCharField(
+        _(u'sector vocabulary URI'), blank=True, max_length=1000,
+        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
+                    u'internal vocabulary is defined.')
     )
     percentage = models.DecimalField(
         _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,

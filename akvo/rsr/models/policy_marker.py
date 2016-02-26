@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
-from akvo.codelists.store.codelists_v201 import (POLICY_MARKER, POLICY_SIGNIFICANCE,
+from akvo.codelists.store.codelists_v202 import (POLICY_MARKER, POLICY_SIGNIFICANCE,
                                                  POLICY_MARKER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value
 
@@ -46,6 +46,10 @@ class PolicyMarker(models.Model):
     )
     vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=5,
                                    choices=codelist_choices(POLICY_MARKER_VOCABULARY))
+    vocabulary_uri = ValidXMLCharField(_(u'vocabulary URI'), blank=True, max_length=1000,
+                                       help_text=_(u'If the vocabulary is 99 (reporting '
+                                                   u'organisation), the URI where this internal '
+                                                   u'vocabulary is defined.'))
     description = ValidXMLCharField(_(u'policy marker description'), max_length=255, blank=True)
 
     def __unicode__(self):

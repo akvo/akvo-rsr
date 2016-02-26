@@ -11,9 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod, Currency
-from akvo.codelists.store.codelists_v201 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
-                                                 LOAN_REPAYMENT_PERIOD, CURRENCY)
+from akvo.codelists.models import (CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod,
+                                   Currency, CRSChannelCode)
+from akvo.codelists.store.codelists_v202 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
+                                                 LOAN_REPAYMENT_PERIOD, CURRENCY,
+                                                 C_R_S_CHANNEL_CODE)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -58,6 +60,8 @@ class CrsAdd(models.Model):
     interest_arrears = models.DecimalField(
         _(u'interest arrears'), max_digits=10, decimal_places=2, blank=True, null=True
     )
+    channel_code = ValidXMLCharField(
+        _(u'channel code'), blank=True, max_length=5, choices=codelist_choices(C_R_S_CHANNEL_CODE))
 
     def iati_repayment_type(self):
         return codelist_value(LoanRepaymentType, self, 'repayment_type')
@@ -67,6 +71,9 @@ class CrsAdd(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')
+
+    def iati_channel_code(self):
+        return codelist_value(CRSChannelCode, self, 'channel_code')
 
     class Meta:
         app_label = 'rsr'

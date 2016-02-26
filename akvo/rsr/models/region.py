@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Region, RegionVocabulary
-from akvo.codelists.store.codelists_v201 import REGION, REGION_VOCABULARY
+from akvo.codelists.store.codelists_v202 import REGION, REGION_VOCABULARY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -26,16 +26,21 @@ class RecipientRegion(models.Model):
                     u'supra-national (a geographical or administrative grouping of countries into '
                     u'a region - e.g. Sub-Saharan Africa, Mekong Delta) or \'global\' (activities '
                     u'benefiting substantially all developing countries). For the codes to use, '
-                    u'please see <a href="http://iatistandard.org/201/codelists/Region/" '
-                    u'target="_blank">http://iatistandard.org/201/codelists/Region/</a>.')
+                    u'please see <a href="http://iatistandard.org/202/codelists/Region/" '
+                    u'target="_blank">http://iatistandard.org/202/codelists/Region/</a>.')
     )
     region_vocabulary = ValidXMLCharField(
         _(u'recipient region vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(REGION_VOCABULARY),
         help_text=_(u'The vocabulary from which the region code is drawn. If it is not present 1 – '
                     u'\'OECD DAC\' is assumed. For more information, see '
-                    u'<a href="http://iatistandard.org/201/codelists/RegionVocabulary/" '
-                    u'target="_blank">http://iatistandard.org/201/codelists/RegionVocabulary/</a>.')
+                    u'<a href="http://iatistandard.org/202/codelists/RegionVocabulary/" '
+                    u'target="_blank">http://iatistandard.org/202/codelists/RegionVocabulary/</a>.')
+    )
+    region_vocabulary_uri = ValidXMLCharField(
+        _(u'recipient region vocabulary URI'), blank=True, max_length=1000,
+        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
+                    u'internal vocabulary is defined.')
     )
     percentage = models.DecimalField(
         _(u'recipient region percentage'), blank=True, null=True, max_digits=4, decimal_places=1,

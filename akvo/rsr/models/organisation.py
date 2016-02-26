@@ -17,7 +17,7 @@ from akvo.utils import codelist_choices, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
-from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v202 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 
 from .country import Country
 from .partner_site import PartnerSite
