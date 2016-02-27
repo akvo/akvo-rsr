@@ -375,6 +375,7 @@ class ImportMapper(object):
             except ValueError as e:
                 self.add_log(element, field, str(e))
                 return None
+        return None
 
     def get_child_as_date(self, parent, tag, attr, field):
         """

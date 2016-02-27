@@ -237,13 +237,16 @@ class RecipientRegions(ImportMapper):
             percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
 
             region_vocabulary = self.get_attrib(region, 'vocabulary', 'region_vocabulary')
+            region_vocabulary_uri = self.get_attrib(region, 'vocabulary-uri',
+                                                    'region_vocabulary_uri')
 
             region_obj, created = RecipientRegion.objects.get_or_create(
                 project=self.project,
                 region=region_code,
                 percentage=percentage,
                 text=text,
-                region_vocabulary=region_vocabulary
+                region_vocabulary=region_vocabulary,
+                region_vocabulary_uri=region_vocabulary_uri
             )
             if created:
                 changes.append(

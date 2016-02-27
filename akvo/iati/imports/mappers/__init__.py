@@ -13,6 +13,7 @@ from .defaults import (Conditions, Currency, CollaborationType, DefaultAidType,
 from .descriptions import CustomFields, Descriptions
 from .financials import (
         Transactions, BudgetItems, PlannedDisbursements, CountryBudgetItems,  CapitalSpend)
+from .humanitarian import HumanitarianScopes
 from .links import CurrentImage, Links, Documents
 from .locations import Locations, RecipientCountries, RecipientRegions
 from .partnerships import Partnerships
@@ -42,6 +43,7 @@ __all__ = [
     'FSSs',
     'Hierarchy',
     'Humanitarian',
+    'HumanitarianScopes',
     'Language',
     'LegacyDatas',
     'Links',

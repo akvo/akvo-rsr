@@ -100,9 +100,9 @@ class ProjectDocumentCategory(models.Model):
     document = models.ForeignKey(ProjectDocument, related_name='categories',
                                  verbose_name=_(u'document'))
     category = ValidXMLCharField(_(u'document category'), max_length=3, blank=True,
-        choices=codelist_choices(DOCUMENT_CATEGORY),
-        help_text=_(u'The description of the type of content contained within the document.')
-    )
+                                 choices=codelist_choices(DOCUMENT_CATEGORY),
+                                 help_text=_(u'The description of the type of content contained '
+                                             u'within the document.'))
 
     class Meta:
         app_label = 'rsr'
