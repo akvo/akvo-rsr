@@ -111,10 +111,13 @@ class ProjectDocumentCategory(models.Model):
         ordering = ['-id', ]
 
     def __unicode__(self):
-        try:
-            return self.iati_category()
-        except:
-            return '%s' % _(u'Category not found')
+        if self.category:
+            try:
+                return self.iati_category().name
+            except AttributeError:
+                return self.iati_category()
+        else:
+            return '%s' % _(u'No category specified')
 
     def iati_category(self):
         return codelist_value(DocumentCategory, self, 'category')

@@ -57,7 +57,10 @@ class RecipientRegion(models.Model):
 
     def __unicode__(self):
         if self.region:
-            region_unicode = self.iati_region().name
+            try:
+                region_unicode = self.iati_region().name
+            except AttributeError:
+                region_unicode = self.iati_region()
         else:
             region_unicode = u'%s' % _(u'No region specified')
 
