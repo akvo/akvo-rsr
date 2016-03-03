@@ -5,48 +5,46 @@
 {% block title %}{% trans 'MyRSR - User management' %}{% endblock %}
 
 {% block myrsr_main %}
-
-            <div class="col-sm-6">
-                <h3  style="display: inline-block; float:left;">{% trans 'User management' %}</h3>
-                {% has_perm 'rsr.change_employment' user as can_change_employments %}
-                {% if not can_change_employments %}
-                <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
-                    {% trans "You don't have the rights to manage users." %}
-                </p>
-                {% else %}
-
-            <div id="invite_button"></div>
-            </div>
-            <div class="col-sm-6 btnHeader text-right">
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{ q_search }}"{% endif %}>
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit">
-                                <i class="glyphicon glyphicon-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        {% if employments %}
-        <div id="user_table" class="col-sm-12"></div>
-        <div class="text-center small showingTxt">
-          <p>
-          {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-              Viewing {{start_index}} - {{end_index}} of {{paginator_count}} users
-          {% endblocktrans %}
-          </p>
-          {% include 'navigation/pagination.html' %}
-        </div>
-        {% else %}
+<div class="col-sm-6">
+    <h3  style="display: inline-block; float:left;">{% trans 'User management' %}</h3>
+    {% has_perm 'rsr.change_employment' user as can_change_employments %}
+    {% if not can_change_employments %}
         <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
-            {% if q_search %}
-                {% blocktrans %}Your search - {{ q_search }} - did not match any users.{% endblocktrans %}
-            {% else %}
-                {% trans "No users that you can manage." %}
-            {% endif %}
+            {% trans "You don't have the rights to manage users." %}
         </p>
+    {% else %}
+        <div id="invite_button"></div>
+            </div>
+        <div class="col-sm-6 btnHeader text-right">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{ q_search }}"{% endif %}>
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if employments %}
+            <div id="user_table" class="col-sm-12"></div>
+            <div class="text-center small showingTxt">
+                <p>
+                    {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+                        Viewing {{start_index}} - {{end_index}} of {{paginator_count}} users
+                    {% endblocktrans %}
+                </p>
+                {% include 'navigation/pagination.html' %}
+            </div>
+        {% else %}
+            <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
+                {% if q_search %}
+                    {% blocktrans %}Your search - {{ q_search }} - did not match any users.{% endblocktrans %}
+                {% else %}
+                    {% trans "No users that you can manage." %}
+                {% endif %}
+            </p>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -55,37 +53,43 @@
     {{ block.super }}
 
     {% if employments %}
-    {# App data #}
-    <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
-    <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
-    <script type="application/json" id="role-data">{{ roles|safe }}</script>
+        {# React #}
+        <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
+        <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
+        <script id="react-bootstrap" src="//cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.3/react-bootstrap.min.js"></script>
 
-    {# Translation strings #}
-    <script type="application/json" id="user-management-text">
-        {
-            "remove_user_text": "{% trans 'Remove user from organisation' %}",
-            "remove_text": "{% trans 'Are you sure you want to remove' %}",
-            "from_text": "{% trans 'from' %}",
-            "close_text": "{% trans 'Close' %}",
-            "remove_button_text": "{% trans 'Remove' %}",
-            "approve_text": "{% trans 'Are you sure you want to approve' %}",
-            "approve_button_text": "{% trans 'Approve' %}",
-            "at_text": "{% trans 'at' %}",
-            "loading_text": "{% trans 'Loading...' %}",
-            "in_text": "{% trans 'in' %}",
-            "none_text": "{% trans 'None' %}",
-            "email_text": "{% trans 'Email' %}",
-            "first_name_text": "{% trans 'First name' %}",
-            "last_name_text": "{% trans 'Last name' %}",
-            "invite_users_text": "{% trans 'Invite users' %}",
-            "invite_users_heading": "{% trans 'Invite a user to your organisation(s) by filling in an email address, organisation and role. It is possible to invite multiple users by clicking on the green +. Each user will receive an email with an activation link that is valid for 7 days, and you will be notified when a user has activated his or her account.' %}",
-            "organisations_text": "{% trans 'Organisation' %}",
-            "role_text": "{% trans 'Role' %}",
-            "select_org_text": "{% trans 'Select organisation' %}",
-            "select_role_text": "{% trans 'Select role' %}"
-        }
-    </script>
+        {# App data #}
+        <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
+        <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
+        <script type="application/json" id="role-data">{{ roles|safe }}</script>
 
-    {% compressed_js 'my_user_management' %}
+        {# Translation strings #}
+        <script type="application/json" id="user-management-text">
+            {
+                "remove_user_text": "{% trans 'Remove user from organisation' %}",
+                "remove_text": "{% trans 'Are you sure you want to remove' %}",
+                "from_text": "{% trans 'from' %}",
+                "close_text": "{% trans 'Close' %}",
+                "remove_button_text": "{% trans 'Remove' %}",
+                "approve_text": "{% trans 'Are you sure you want to approve' %}",
+                "approve_button_text": "{% trans 'Approve' %}",
+                "approve_user_text": "{% trans 'Approve user' %}",
+                "at_text": "{% trans 'at' %}",
+                "loading_text": "{% trans 'Loading...' %}",
+                "in_text": "{% trans 'in' %}",
+                "none_text": "{% trans 'None' %}",
+                "email_text": "{% trans 'Email' %}",
+                "first_name_text": "{% trans 'First name' %}",
+                "last_name_text": "{% trans 'Last name' %}",
+                "invite_users_text": "{% trans 'Invite users' %}",
+                "invite_users_heading": "{% trans 'Invite a user to your organisation(s) by filling in an email address, organisation and role. It is possible to invite multiple users by clicking on the green +. Each user will receive an email with an activation link that is valid for 7 days, and you will be notified when a user has activated his or her account.' %}",
+                "organisations_text": "{% trans 'Organisation' %}",
+                "role_text": "{% trans 'Role' %}",
+                "select_org_text": "{% trans 'Select organisation' %}",
+                "select_role_text": "{% trans 'Select role' %}"
+            }
+        </script>
+
+        {% compressed_js 'my_user_management' %}
     {% endif %}
 {% endblock js %}

@@ -887,54 +887,56 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorClass = document.getElementById(selector);
 
     TypeaheadContainer = React.createClass({
-
         getInitialState: function() {
             return ({focusClass: 'inactive'});
         },
-        onKeyUp: function() {
 
-            /* Only activate the "add org" button for typeaheads that are for organisations. */
+        onKeyUp: function() {
+            // Only activate the "add org" button for typeaheads that are for organisations
             if (inputType === 'org') {
                 this.setState({focusClass: 'active'});
             }
         },
+
         onBlur: function() {
             this.setState({focusClass: 'inactive'});
         },
+
         render: function() {
-            return (
-                    <div className={this.state.focusClass}>
-                        <Typeahead
-                            placeholder=''
-                            options={typeaheadOptions}
-                            onOptionSelected={typeaheadCallback}
-                            maxVisible={10}
-                            displayOption={displayOption}
-                            filterOption={filterOption}
-                            childID={selector}
-                            onKeyUp={this.onKeyUp}
-                            onBlur={this.onBlur}
-                            customClasses={{
-                              typeahead: "",
-                              input: inputClass,
-                              results: "",
-                              listItem: "",
-                              token: "",
-                              customAdd: ""
-                            }}
-                            inputProps={{
-                                name: selector,
-                                id: selector
-                            }} />
-                        <div className="addOrg" onMouseDown={addOrgModal}>+ {defaultValues.add_new_organisation}</div>
-                    </div>
+            return React.createElement('div', {className: this.state.focusClass},
+                React.createElement(Typeahead, {
+                    placeholder: '',
+                    options: typeaheadOptions,
+                    onOptionSelected: typeaheadCallback,
+                    maxVisible: 10,
+                    displayOption: displayOption,
+                    filterOption: filterOption,
+                    childID: selector,
+                    onKeyUp: this.onKeyUp,
+                    onBlur: this.onBlur,
+                    customClasses: {
+                        typeahead: "",
+                        input: inputClass,
+                        results: "",
+                        listItem: "",
+                        token: "",
+                        customAdd: ""
+                    },
+                    inputProps: {
+                        name: selector,
+                        id: selector
+                    }
+                }),
+                React.createElement('div', {
+                    className: "addOrg",
+                    onMouseDown: addOrgModal
+                }, '+ ' + defaultValues.add_new_organisation)
             );
         }
     });
 
-    React.render(
-        <TypeaheadContainer />,
-        selectorClass
+    ReactDOM.render(
+        React.createElement(TypeaheadContainer), selectorClass
     );
 
     selectorClass.removeAttribute('id');
@@ -2582,32 +2584,30 @@ function setDatepickers() {
 
             render: function () {
                 if (disableInput !== 'true') {
-                    return <div>
-                        <DatePicker
-                        locale = 'en'
-                        placeholderText = ''
-                        dateFormat = 'DD/MM/YYYY'
-                        selected = {this.state.initialDate}
-                        onChange = {this.handleDateChange}
-                        />
-                    </div>;
+                    return React.createElement('div', null,
+                        React.createElement(DatePicker, {
+                            locale: 'en',
+                            placeholderText: '',
+                            dateFormat: 'DD/MM/YYYY',
+                            selected: this.state.initialDate,
+                            onChange: this.handleDateChange
+                        })
+                    );
                 } else {
-                    return <div>
-                        <DatePicker
-                        locale = 'en'
-                        placeholderText = ''
-                        dateFormat = 'DD/MM/YYYY'
-                        selected = {this.state.initialDate}
-                        />
-                    </div>;
+                    return React.createElement('div', null,
+                        React.createElement(DatePicker, {
+                            locale: 'en',
+                            placeholderText: '',
+                            dateFormat: 'DD/MM/YYYY',
+                            selected: this.state.initialDate
+                        })
+                    );
                 }
             }
         });
     }
 
-    var datepickerContainers;
-
-    datepickerContainers = document.getElementsByClassName('datepicker-container');
+    var datepickerContainers = document.getElementsByClassName('datepicker-container');
 
     for (var i=0; i < datepickerContainers.length; i++) {
         var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
@@ -2631,7 +2631,9 @@ function setDatepickers() {
             var mandatoryOr = datepickerContainer.getAttribute('mandatory-or');
 
             DatePickerComponent = getDatepickerComponent(datepickerId, initialDate, disableInput);
-            React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
+            ReactDOM.render(
+                React.createElement(DatePickerComponent, {key: datepickerId}), datepickerContainer
+            );
 
             // Set id, name and saved value of datepicker input
             inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
@@ -2927,7 +2929,7 @@ function addOrgModal() {
         return result;
     }
 
-    Modal = React.createClass({
+    var Modal = React.createClass({
         render: function() {
             var country_option_list = countryValues.map(function(country) {
               return (
@@ -3053,11 +3055,8 @@ function addOrgModal() {
         }
     });
 
-    React.render(
-        <Modal />,
-
-        // Use the footer to prevent page scroll on injection
-        document.querySelector('footer')
+    ReactDOM.render(
+        React.createElement(Modal), document.querySelector('footer')
     );    
 }
 
@@ -3256,7 +3255,7 @@ function elIsVisible(el) {
     return el.offsetWidth > 0 && el.offsetHeight > 0;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initApp() {
     getAllOrganisations();
     getAllProjects();
 
@@ -3282,4 +3281,53 @@ document.addEventListener('DOMContentLoaded', function() {
     setAllSectionsChangeListener();
 
     setLocalStorage();
+}
+
+var loadJS = function(url, implementationCode, location){
+    //url is URL of external file, implementationCode is the code
+    //to be called from the file, location is the location to
+    //insert the <script> element
+
+    var scriptTag = document.createElement('script');
+    scriptTag.src = url;
+
+    scriptTag.onload = implementationCode;
+    scriptTag.onreadystatechange = implementationCode;
+
+    location.appendChild(scriptTag);
+};
+
+function loadAndRenderReact() {
+    function loadReactDatepicker() {
+        var reactDatepickerSrc = document.getElementById('react-datepicker-compat').src;
+        loadJS(reactDatepickerSrc, initApp, document.body);
+    }
+
+    function loadReactOnclickoutside() {
+        var reactOnclickoutsideSrc = document.getElementById('react-onclickoutside').src;
+        loadJS(reactOnclickoutsideSrc, loadReactDatepicker, document.body);
+    }
+
+    function loadReactTypeahead() {
+        var reactTypeaheadSrc = document.getElementById('react-typeahead').src;
+        loadJS(reactTypeaheadSrc, loadReactOnclickoutside, document.body);
+    }
+
+    function loadReactDOM() {
+        var reactDOMSrc = document.getElementById('react-dom').src;
+        loadJS(reactDOMSrc, loadReactTypeahead, document.body);
+    }
+
+    console.log('No React, load again.');
+    var reactSrc = document.getElementById('react').src;
+    loadJS(reactSrc, loadReactDOM, document.body);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if React is loaded
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined' && typeof DatePicker !== 'undefined') {
+        initApp();
+    } else {
+        loadAndRenderReact();
+    }
 });

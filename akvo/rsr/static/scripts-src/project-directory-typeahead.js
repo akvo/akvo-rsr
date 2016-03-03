@@ -5,7 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n;
+var i18n,
+    Typeahead;
 
 function loadAsync(url, retryCount, retryLimit) {
     var xmlHttp;
@@ -115,59 +116,91 @@ function updateIdElement(filter) {
 }
 
 function getPlaceholder(filter) {
-    var placeholder;
-
-    placeholder = filter.name;
-
-    return placeholder;
+    return filter.name;
 }
 
 function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) {
-    var Typeahead, TypeaheadLabel, TypeaheadContainer;
-
-    Typeahead = ReactTypeahead.Typeahead;
-
-    TypeaheadLabel = React.createClass({displayName: 'TypeaheadLabel',
+    var TypeaheadLabel = React.createClass({displayName: 'TypeaheadLabel',
         render: function() {
-            return (
-                React.DOM.div(null, 
-                    React.DOM.label( {className:'control-label'}, i18n.organisation_text)
-                )
+            return React.createElement('div', null,
+                React.createElement('label', {className: 'control-label'}, i18n.organisation_text)
             );
         }
     });    
 
-    TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
+    var TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
         render: function() {
-            return (
-                React.DOM.div(null, 
-                    TypeaheadLabel(null ),
-                    Typeahead(
-                        {placeholder:placeholder,
-                        options:typeaheadOptions,
-                        onOptionSelected:typeaheadCallback,
-                        maxVisible:10,
-                        customClasses:{
-                          typeahead: "",
-                          input: "form-group form-control",
-                          results: "",
-                          listItem: "",
-                          token: "",
-                          customAdd: ""            
-                        },
-                        className:"partnerTest"} )
-                )
+            return React.createElement('div', null,
+                React.createElement(TypeaheadLabel),
+                React.createElement(Typeahead, {
+                    placeholder: placeholder,
+                    options: typeaheadOptions,
+                    onOptionSelected: typeaheadCallback,
+                    maxVisible: 10,
+                    customClasses: {
+                        typeahead: "",
+                        input: "form-group form-control",
+                        results: "",
+                        listItem: "",
+                        token: "",
+                        customAdd: ""
+                    },
+                    className: "partnerTest"
+                })
             );
         }
     });
 
-    React.render(
-        TypeaheadContainer(null ),
-        document.getElementById('org-filter-container')
+    ReactDOM.render(
+        React.createElement(TypeaheadContainer), document.getElementById('org-filter-container')
     );
 }
 
-// Initial data
-i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+function initReact() {
+    // Load globals
+    Typeahead = ReactTypeahead.Typeahead;
 
-loadAsync('/rest/v1/typeaheads/organisations?format=json', 0, 3);
+    loadAsync('/rest/v1/typeaheads/organisations?format=json', 0, 3);
+}
+
+var loadJS = function(url, implementationCode, location){
+    //url is URL of external file, implementationCode is the code
+    //to be called from the file, location is the location to
+    //insert the <script> element
+
+    var scriptTag = document.createElement('script');
+    scriptTag.src = url;
+
+    scriptTag.onload = implementationCode;
+    scriptTag.onreadystatechange = implementationCode;
+
+    location.appendChild(scriptTag);
+};
+
+function loadAndRenderReact() {
+    function loadReactTypeahead() {
+        var reactTypeaheadSrc = document.getElementById('react-typeahead').src;
+        loadJS(reactTypeaheadSrc, initReact, document.body);
+    }
+
+    function loadReactDOM() {
+        var reactDOMSrc = document.getElementById('react-dom').src;
+        loadJS(reactDOMSrc, loadReactTypeahead, document.body);
+    }
+
+    console.log('No React, load again.');
+    var reactSrc = document.getElementById('react').src;
+    loadJS(reactSrc, loadReactDOM, document.body);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial data
+    i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+
+    // Check if React is loaded
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {
+        initReact();
+    } else {
+        loadAndRenderReact();
+    }
+});
