@@ -28,6 +28,11 @@
 {% block js %}
     {{ block.super }}
 
+    {# React #}
+    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="//cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.3/react-bootstrap.min.js"></script>
+
     {# Descriptions #}
     <script type="application/json" id="akvo-rsr-accordion">
         {{ accordion_data|safe }}

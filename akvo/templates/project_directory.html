@@ -186,22 +186,30 @@
   </div>
 {% endblock %}
 
-{% block react_js %}
-  <script src="//fb.me/react-0.12.0.js"></script>
-{% endblock react_js %}
-
 {% block js %}
-  {{ block.super }}
-  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-  <script type="application/json" id="akvo-rsr-typeahead-thumbs">
-   {
-     "numberOfProjects": {{ project_count }}
-   }
-  </script>
-  <script type="application/javascript">
-   AKVO_RSR.typeahead = {};
-   AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
-  </script>
+    {{ block.super }}
+
+    {# Twitter Typeahead #}
+    <script id="typeahead" src="{{ STATIC_URL }}lib/scripts/typeahead.js"></script>
+
+    {# React #}
+    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
+    <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
+
+    {# Google Maps API #}
+    <script src="http://maps.google.com/maps/api/js"></script>
+
+    <script type="application/json" id="akvo-rsr-typeahead-thumbs">
+        {
+            "numberOfProjects": {{ project_count }}
+        }
+    </script>
+
+    <script type="application/javascript">
+        AKVO_RSR.typeahead = {};
+        AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+    </script>
 
     {# Translation strings #}
     <script type="application/json" id="typeahead-header-text">
@@ -222,5 +230,4 @@
 
   {% compressed_js 'project_directory' %}
   {% compressed_js 'project_directory_typeahead' %}
-  {% compressed_js 'react_typeahead' %}
 {% endblock js %}

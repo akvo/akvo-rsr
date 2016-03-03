@@ -204,42 +204,44 @@ def project_editor(request, project_id):
     :param request; A Django request.
     :param project_id; The selected project's ID.
     """
-    try:
-        project = Project.objects.prefetch_related(
-            'related_projects',
-            'related_projects__project',
-            'contacts',
-            'partnerships',
-            'partnerships__organisation',
-            'results',
-            'results__indicators',
-            'results__indicators__periods',
-            'conditions',
-            'budget_items',
-            'budget_items__label',
-            'country_budget_items',
-            'transactions',
-            'transactions__provider_organisation',
-            'transactions__receiver_organisation',
-            'transactions__sectors',
-            'planned_disbursements',
-            'locations',
-            'locations__country',
-            'locations__administratives',
-            'recipient_countries',
-            'recipient_regions',
-            'sectors',
-            'policy_markers',
-            'links',
-            'documents',
-            'keywords',
-        ).select_related(
-            'publishingstatus__status',
-            'primary_location',
-            'primary_location__country'
-        ).get(pk=project_id)
-    except Project.DoesNotExist:
-        return Http404
+    # try:
+    #     project = Project.objects.prefetch_related(
+    #         'related_projects',
+    #         'related_projects__project',
+    #         'contacts',
+    #         'partnerships',
+    #         'partnerships__organisation',
+    #         'results',
+    #         'results__indicators',
+    #         'results__indicators__periods',
+    #         'conditions',
+    #         'budget_items',
+    #         'budget_items__label',
+    #         'country_budget_items',
+    #         'transactions',
+    #         'transactions__provider_organisation',
+    #         'transactions__receiver_organisation',
+    #         'transactions__sectors',
+    #         'planned_disbursements',
+    #         'locations',
+    #         'locations__country',
+    #         'locations__administratives',
+    #         'recipient_countries',
+    #         'recipient_regions',
+    #         'sectors',
+    #         'policy_markers',
+    #         'links',
+    #         'documents',
+    #         'keywords',
+    #     ).select_related(
+    #         'publishingstatus__status',
+    #         'primary_location',
+    #         'primary_location__country'
+    #     ).get(pk=project_id)
+    # except Project.DoesNotExist:
+    #     return Http404
+
+    project = Project.objects.get(pk=project_id)
 
     if not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
@@ -263,7 +265,6 @@ def project_editor(request, project_id):
 
     # Countries
     countries = Country.objects.all()
-
 
     context = {
         'id': project_id,
