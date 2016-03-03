@@ -53,7 +53,7 @@
                 {% include "myrsr/project_editor/section_6.html" %}
                 {% include "myrsr/project_editor/section_7.html" %}
                 {% include "myrsr/project_editor/section_8.html" %}
-{#                {% include "myrsr/project_editor/section_9.html" %}#}
+                {% include "myrsr/project_editor/section_9.html" %}
                 {% include "myrsr/project_editor/section_10.html" %}
             </fieldset>
         {% endwith %}
@@ -118,7 +118,7 @@
 
         {# Section 9 #}
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}</script>
-{#        <script type="text/template" id="document-input">{% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>#}
+        <script type="text/template" id="document-input">{% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>
 
         {# Section 10 #}
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
