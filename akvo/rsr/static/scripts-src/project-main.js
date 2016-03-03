@@ -11,6 +11,10 @@ var Carousel,
     i18n;
 
 function renderReactComponents() {
+    // Load globals
+    Carousel = ReactBootstrap.Carousel;
+    CarouselItem = ReactBootstrap.CarouselItem;
+
     var IndicatorPeriodValue = React.createClass({displayName: 'IndicatorPeriodValue',
         render: function() {
             var target_value = this.props.indicator.target_value;
@@ -421,16 +425,9 @@ var loadJS = function(url, implementationCode, location){
 };
 
 function loadAndRenderReact() {
-    function loadGlobalsAndInit() {
-        Carousel = ReactBootstrap.Carousel;
-        CarouselItem = ReactBootstrap.CarouselItem;
-
-        renderReactComponents();
-    }
-
     function loadReactBootstrap() {
         var reactBootstrapSrc = document.getElementById('react-bootstrap').src;
-        loadJS(reactBootstrapSrc, loadGlobalsAndInit, document.body);
+        loadJS(reactBootstrapSrc, renderReactComponents, document.body);
     }
 
     function loadReactDOM() {
