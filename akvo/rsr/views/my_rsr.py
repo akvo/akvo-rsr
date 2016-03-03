@@ -264,7 +264,6 @@ def project_editor(request, project_id):
     # Countries
     countries = Country.objects.all()
 
-
     context = {
         'id': project_id,
         'project': project,

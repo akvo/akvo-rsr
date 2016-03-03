@@ -71,6 +71,18 @@
 {% block js %}
     {{ block.super }}
 
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+
+    {# React CSS #}
+    {% compressed_css 'react_datepicker_style' %}
+
+    {# React #}
+    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
+    <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
+    <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script id="react-datepicker-compat" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
@@ -111,10 +123,6 @@
         {# Section 10 #}
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
     {% endwith %}
- 
-    {% block react_js %}
-        <script src="//fb.me/react-0.12.0.js"></script>
-    {% endblock react_js %}
 
     <script type="application/json" id="default-values">
         {
@@ -193,12 +201,5 @@
         [{% for country in countries %}{"pk": "{{ country.pk }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
-    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-
-    {% compressed_css 'react_datepicker_style' %}
-
-    {% compressed_js 'react_typeahead' %}
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
     {% compressed_js 'project_editor' %}
 {% endblock %}

@@ -37,6 +37,11 @@
 {% endblock %}
 
 {% block js %}
+    {# React #}
+    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="//cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.3/react-bootstrap.min.js"></script>
+
     {# Translation strings #}
     <script type="application/json" id="reset-password-text">
         {
@@ -44,7 +49,8 @@
             "fill_email_text": "{% trans 'Fill in your email address in the field below. We will send you instructions on how to reset your password.' %}",
             "email_text": "{% trans 'Email' %}",
             "reset_password_text": "{% trans 'Reset password' %}",
-            "forgot_password_text": "{% trans 'I forgot my password' %}"
+            "forgot_password_text": "{% trans 'I forgot my password' %}",
+            "close_text": "{% trans 'Close' %}"
         }
     </script>
 
