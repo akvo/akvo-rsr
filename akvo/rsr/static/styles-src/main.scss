@@ -2527,7 +2527,8 @@ body {
     }
     input,
     textarea,
-    select {
+    select,
+    div.input-group {
         & + label,
         & + span + label,
         & + ul + label {
@@ -2543,19 +2544,6 @@ body {
         &:focus + span + label,
         &:focus + ul + label {
             color: $rsrBlue;
-        }
-    }
-    div.input-group {
-        & + label,
-        & + span + label,
-        & + ul + label {
-            position: absolute;
-            top: 0px;
-            transition: top 0.7s ease, opacity 0.7s ease;
-            opacity: 1;
-            // Some nice styling
-            font-size: $label-font-size;
-            font-weight: 600;
         }
     }
     .delete-related-object {

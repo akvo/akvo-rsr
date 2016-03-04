@@ -100,22 +100,57 @@ function loadComponent(component_id) {
                     <p>
                         <button onClick={this.handleClick} className='btn btn-primary'>{i18n.perform_checks}</button>
                     </p>
-                    );
+                );
             } else {
                 return (
-                    <p></p>
-                    );
+                    <p />
+                );
             }
         }
     });
 
-    React.render(
-        <Container />,
-        document.getElementById(component_id)
+    ReactDOM.render(
+        React.createElement(Container), document.getElementById(component_id)
     );
 }
 
-i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
-if (document.getElementById('react_iati_checks')) {
-    loadComponent('react_iati_checks');
+var loadJS = function(url, implementationCode, location){
+    //url is URL of external file, implementationCode is the code
+    //to be called from the file, location is the location to
+    //insert the <script> element
+
+    var scriptTag = document.createElement('script');
+    scriptTag.src = url;
+
+    scriptTag.onload = implementationCode;
+    scriptTag.onreadystatechange = implementationCode;
+
+    location.appendChild(scriptTag);
+};
+
+function loadAndRenderReact() {
+    function initReact() {
+        loadComponent('react_iati_checks');
+    }
+
+    function loadReactDOM() {
+        var reactDOMSrc = document.getElementById('react-dom').src;
+        loadJS(reactDOMSrc, initReact, document.body);
+    }
+
+    console.log('No React, load again.');
+    var reactSrc = document.getElementById('react').src;
+    loadJS(reactSrc, loadReactDOM, document.body);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
+
+    if (document.getElementById('react_iati_checks')) {
+        if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+            loadComponent('react_iati_checks');
+        } else {
+            loadAndRenderReact();
+        }
+    }
+});

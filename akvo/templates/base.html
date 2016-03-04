@@ -82,11 +82,7 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
-    {% block react_js %}
-        {# React v0.10.0 #}
-        <script src="//dragon.ak.fbcdn.net/hphotos-ak-prn1/t39.3284-6/851567_673854412678843_1478589082_n.js"></script>
-    {% endblock react_js %}
-
+    {# RSR default libraries #}
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
@@ -110,9 +106,9 @@
         }
     </script>
 
-    {% piwik_tracking_code %}
+    {# RSR support center help #}
+    <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>
 
-    {# RSR support center help, disabled since it causes errors #}
-{#    <script async data-cfasync='false' src='https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>#}
+    {% piwik_tracking_code %}
   </body>
 </html>
