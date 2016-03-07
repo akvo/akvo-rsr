@@ -6,11 +6,12 @@
             <div class="col-sm-6 col-md-3">
                 <p><span class="detailedInfo"><i class="fa fa-file-text"></i> {% trans "Related documents" %}:</span></p>
                 <p>
-                    {% for doc in project.documents.all %}
-                        {{doc.show_link|safe}}<br>
-                    {% empty %}
-                        <i class="noItem">{% trans "No related documents" %}</i>
-                    {% endfor %}
+                    <i class="noItem">{% trans "No related documents" %}</i>
+{#                    {% for doc in project.documents.all %}#}
+{#                        {{doc.show_link|safe}}<br>#}
+{#                    {% empty %}#}
+{#                        <i class="noItem">{% trans "No related documents" %}</i>#}
+{#                    {% endfor %}#}
                 </p>
             </div>
             <div class="col-sm-6 col-md-3">

@@ -408,25 +408,25 @@
                   </table>
               {% endif %}
 
-              {% if project.links.all or project.documents.all %}
-              <h4>{% trans "Activity links" %}</h4>
-              <table class="table table-striped table-bordered table-responsive">
-                  <tbody>
-                      {% for link in project.links.all %}
-                      <tr>
-                          <th scope="row">{% trans "Link" %}</th>
-                          <td>{{link|safe}}</td>
-                      </tr>
-                      {% endfor %}
-                      {% for doc in project.documents.all %}
-                      <tr>
-                          <th scope="row">{% trans "Document" %}</th>
-                          <td>{{doc|safe}}</td>
-                      </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-              {% endif %}
+{#              {% if project.links.all or project.documents.all %}#}
+{#              <h4>{% trans "Activity links" %}</h4>#}
+{#              <table class="table table-striped table-bordered table-responsive">#}
+{#                  <tbody>#}
+{#                      {% for link in project.links.all %}#}
+{#                      <tr>#}
+{#                          <th scope="row">{% trans "Link" %}</th>#}
+{#                          <td>{{link|safe}}</td>#}
+{#                      </tr>#}
+{#                      {% endfor %}#}
+{#                      {% for doc in project.documents.all %}#}
+{#                      <tr>#}
+{#                          <th scope="row">{% trans "Document" %}</th>#}
+{#                          <td>{{doc|safe}}</td>#}
+{#                      </tr>#}
+{#                      {% endfor %}#}
+{#                  </tbody>#}
+{#              </table>#}
+{#              {% endif %}#}
 
               {% if project.conditions.all %}
               <h4>{% trans "Conditions" %}</h4>

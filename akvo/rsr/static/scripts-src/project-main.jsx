@@ -402,6 +402,8 @@ function readTabFromFragment() {
             showTab(fragment);
         } else if (fragment === 'updates' && defaultValues.show_updates_tab) {
             showTab(fragment);
+        } else if (fragment === 'results' && defaultValues.show_results_tab) {
+            showTab(fragment);
         } else {
             showTab('summary');
         }

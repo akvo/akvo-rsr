@@ -199,7 +199,7 @@ def _get_accordion_data(project):
         target_group=project.target_group,
         sustainability=project.sustainability,
         goals_overview=project.goals_overview,
-        results=results_data if results_data else ''
+        results=results_data if not project.is_impact_project and results_data else ''
     )
 
 
@@ -315,7 +315,7 @@ def main(request, project_id):
             'policy_markers',
             'country_budget_items',
             'links',
-            'documents',
+            # 'documents',
             'contacts',
             'invoices',
         ).select_related(
@@ -361,6 +361,8 @@ def main(request, project_id):
         'project_admin': project_admin,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
+        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
+        'child_projects_ids': [child_project.id for child_project in project.children()],
     }
 
     return render(request, 'project_main.html', context)
