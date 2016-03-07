@@ -30,10 +30,28 @@
                 {% include choice_input with obj=document field='format' %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=document field='category' %}
+                {% include choice_input with obj=document field='language' %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=document field='language' %}
+                {% include date_input with obj=document field='document_date' %}
+            </div>
+        </div>
+
+        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_projectdocumentcategory" }}">
+            <h5>{% trans 'Project document categories' %}</h5>
+            <div class="document-category-container" id="document-category-container">
+                {% for category in document.categories.all %}
+                    {% include "myrsr/project_editor/related_objects/document_category_input.html" %}
+                {% empty %}
+                    {% with category_id_string=category.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/related_objects/document_category_input.html" with category='ProjectDocumentCategory.'|add:project_id_string|add:'_'|add:category_id_string %}
+                    {% endwith %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                         <a href="#" class="add-document-category"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project document category' %}</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

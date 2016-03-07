@@ -43,11 +43,15 @@ var localStorageName = 'cachedAPIResponses';
 var localStorageResponses = localStorage.getItem(localStorageName);
 
 // PARTIALS
-var partials = ['related-project', 'budget-item', 'condition', 'contact-information',
-    'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner',
-    'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
-    'related-project','result', 'sector', 'transaction', 'transaction-sector',
-    'location-administrative', 'project-location', 'keyword'];
+var partials = [
+    'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
+    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-period',
+    'indicator-period-actual-dimension', 'indicator-period-actual-location',
+    'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
+    'planned-disbursement', 'policy-marker',
+    'recipient-country', 'recipient-region', 'related-project','result', 'sector', 'transaction',
+    'transaction-sector', 'location-administrative', 'project-location', 'keyword', 'crs-add'
+];
 
 // Measure the percentage of completion for each panel and display the results to the user
 // Which elements count as inputs?
@@ -1457,9 +1461,14 @@ function addPartial(partialName, partialContainer) {
 
         // Indicate the hierarchy of partials
         var partialHierarchy = [
-            ['result', 'indicator', 'indicator-period'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-actual-dimension'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-actual-location'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-target-dimension'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-target-location'],
+            ['result', 'indicator', 'indicator-reference'],
             ['transaction', 'transaction-sector'],
-            ['project-location', 'location-administrative']
+            ['project-location', 'location-administrative'],
+            ['document', 'document-category']
         ];
 
         // Get partial from partial templates and add it to DOM
@@ -1628,6 +1637,22 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.rsr_transaction-receiver_organisation');
+    labelText = defaultValues.recipient_org_label;
+    helpText = defaultValues.recipient_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.rsr_planneddisbursement-provider_organisation');
+    labelText = defaultValues.provider_org_label;
+    helpText = defaultValues.provider_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.rsr_planneddisbursement-receiver_organisation');
     labelText = defaultValues.recipient_org_label;
     helpText = defaultValues.recipient_org_helptext;
     filterOption = 'name';

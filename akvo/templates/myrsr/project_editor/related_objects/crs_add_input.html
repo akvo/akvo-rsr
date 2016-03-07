@@ -1,0 +1,16 @@
+{% load i18n project_editor %}
+
+{# TODO: hier gebleven (obj_id werkt niet) #}
+<div class="crs-add-item parent" id="crs_add.{{ crs|obj_id }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=crs %}
+    <div class="hide-partial {% if crs.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% include percentage_input with obj=crs field='loan_terms_rate1' %}
+            </div>
+            <div class="col-md-6">
+                {% include percentage_input with obj=crs field='loan_terms_rate2' %}
+            </div>
+        </div>
+    </div>
+</div>

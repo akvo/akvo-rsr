@@ -1,0 +1,37 @@
+{% load i18n project_editor %}
+
+<div class="myPanel borderBottom" id="panel11">
+    <div class="formStep stepEleven">
+        <div class="toggleSection">
+            <label for="stepEleven" class="stepLabel"><h4>11 - {% trans 'Special reporting' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special hidden" toggleid="step-11-helptext"></span></h4></label>
+        </div>
+        <input type="radio" name="step" id="stepEleven">
+        <div class="progress section-progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+        <div class="formBlock hidden">
+            <p class="help-block hidden" id="step-11-helptext">{% trans 'This part of the project editor is only relevant to organisations that actively report to CRS++ and/or the OECD DAC Forward Spending Survey. OECD Reporting Directives should be followed for guidance. For more information, see' %} <a href="http://iatistandard.org/202/activity-standard/overview/crs-fss/" target="_blank">{% trans 'CRS & FSS documentation' %}</a>.</p>
+            <form role="form">
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_crsadd" }}">
+                    <h5>{% trans 'CRS++' %}</h5>
+                    <div class="form-group">
+                        <div class="crs-add-container">
+                            {% if project.crsadd %}
+                                {% include "myrsr/project_editor/related_objects/crs_add_input.html" with crs=project.crsadd %}
+                            {% else %}
+                                {% include "myrsr/project_editor/related_objects/crs_add_input.html" with crs='CrsAdd.'|add:project_id_string %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% for customfield in custom_fields_section_11 %}
+                    {% include custom_field_input %}
+                {% endfor %}
+                {% include "myrsr/project_editor/partials/save_row.html" %}
+            </form>
+        </div>
+    </div>
+</div>

@@ -26,7 +26,10 @@ def retrieve_id(obj):
     Retrieves the id from 'obj', which can be either a Django Object or a string.
     """
     if not isinstance(obj, basestring):
-        return obj.id
+        try:
+            return obj.id
+        except AttributeError:
+            return obj.project.id
     else:
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 

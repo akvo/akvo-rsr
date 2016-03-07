@@ -4,9 +4,11 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=ps %}
     <div class="hide-partial {% if ps.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 {% include typeahead_input with obj=ps field="organisation" %}
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 {% include choice_input with obj=ps field="iati_organisation_role" %}
             </div>
@@ -21,6 +23,9 @@
                     {% include currency_input with obj=ps field="funding_amount" disabled=True %}
                     {% include boolean_input with obj=ps field="is_secondary_reporter" nullboolean=True always_hidden=True %}
                 {% endif %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=ps field="iati_activity_id" %}
             </div>
         </div>
     </div>

@@ -24,5 +24,21 @@
                 {% include date_input with obj=pd field='period_end' %}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include typeahead_input with obj=pd field='provider_organisation' %}
+            </div>
+            <div class="col-md-6">
+                {% include typeahead_input with obj=pd field='receiver_organisation' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=pd field='provider_organisation_activity' %}
+            </div>
+            <div class="col-md-6">
+                {% include text_input with obj=pd field='receiver_organisation_activity' %}
+            </div>
+        </div>
     </div>
 </div>

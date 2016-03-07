@@ -13,6 +13,12 @@
             <div class="col-md-4">
                 {% include text_input with obj=marker field='description' %}
             </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=marker field='vocabulary' %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=marker field='vocabulary_uri' %}
+            </div>
         </div>
     </div>
 </div>
