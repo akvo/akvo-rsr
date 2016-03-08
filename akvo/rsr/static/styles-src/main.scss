@@ -1712,6 +1712,17 @@ div.textBlock {
                 a {
                     display: block;
                     padding: 15px 15px;
+                    outline: none;
+                    color: $anchorLink;
+                    text-decoration: none;
+                    cursor: pointer;
+                    @include transition(color 0.2s linear);
+                    &:link {
+                        -webkit-tap-highlight-color: #fcd700;
+                    }
+                    &:hover {
+                        color: $anchorLinkHover;
+                    }
                 }
             }
         }
