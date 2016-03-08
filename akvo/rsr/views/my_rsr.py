@@ -234,9 +234,7 @@ def project_editor(request, project_id):
             'documents',
             'keywords',
         ).select_related(
-            'publishingstatus__status',
-            'primary_location',
-            'primary_location__country'
+            'publishingstatus__status'
         ).get(pk=project_id)
     except Project.DoesNotExist:
         return Http404

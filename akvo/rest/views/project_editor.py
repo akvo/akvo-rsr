@@ -10,13 +10,13 @@ import decimal
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
-from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, Indicator,
-                             IndicatorPeriod, IndicatorReference, IndicatorPeriodActualDimension,
+from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, CrsAdd,
+                             CrsAddOtherFlag, Fss, FssForecast, Indicator, IndicatorPeriod,
+                             IndicatorReference, IndicatorPeriodActualDimension,
                              IndicatorPeriodActualLocation, IndicatorPeriodTargetDimension,
-                             IndicatorPeriodTargetLocation,
-                             Keyword, Organisation, Project, ProjectDocument,
-                             ProjectDocumentCategory, ProjectEditorValidationSet, ProjectLocation,
-                             Result, Transaction, TransactionSector)
+                             IndicatorPeriodTargetLocation, Keyword, Organisation, Project,
+                             ProjectDocument, ProjectDocumentCategory, ProjectEditorValidationSet,
+                             ProjectLocation, Result, Transaction, TransactionSector)
 
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -46,7 +46,9 @@ RELATED_OBJECTS_MAPPING = {
     TransactionSector: (Transaction, 'transaction'),
     ProjectLocation: (Project, 'location_target'),
     AdministrativeLocation: (ProjectLocation, 'location'),
-    ProjectDocumentCategory: (ProjectDocument, 'document')
+    ProjectDocumentCategory: (ProjectDocument, 'document'),
+    CrsAddOtherFlag: (CrsAdd, 'crs'),
+    FssForecast: (Fss, 'fss'),
 }
 
 MANY_TO_MANY_FIELDS = {
@@ -262,6 +264,10 @@ def convert_related_objects(rel_objects):
         'policymarker': 'policy_marker',
         'projectdocument': 'project_document',
         'projectdocumentcategory': 'project_document_category',
+        'crsadd': 'crs_add',
+        'crsaddotherflag': 'crsadd_other_flag',
+        'fssforecast': 'fss_forecast',
+        'legacydata': 'legacy_data',
     }
 
     new_rel_objects = []

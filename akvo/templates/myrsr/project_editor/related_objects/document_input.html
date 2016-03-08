@@ -4,7 +4,7 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=document %}
     <div class="hide-partial {% if document.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {% if document.document %}
                     {% include text_input with obj=document field='url' always_hidden=True %}
                     {% include file_input with obj=document field='document' %}
@@ -21,8 +21,11 @@
                     {% trans 'You can upload a document to your project. We kindly request you not to upload files larger than 5 MB. These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight into your project activities. Only use this function when your document is not already available online. To upload multiple documents, click "Add another document".' %}
                 </p>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {% include text_input with obj=document field='title' %}
+            </div>
+            <div class="col-md-4">
+                {% include choice_input with obj=document field='title_language' %}
             </div>
         </div>
         <div class="row">

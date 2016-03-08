@@ -27,6 +27,37 @@
                     </div>
                 </div>
 
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_fss" }}">
+                    <h5>{% trans 'FSS' %}</h5>
+                    <div class="form-group">
+                        <div class="fss-container">
+                            {% if project.fss %}
+                                {% include "myrsr/project_editor/related_objects/fss_input.html" with fss=project.fss %}
+                            {% else %}
+                                {% include "myrsr/project_editor/related_objects/fss_input.html" with fss='Fss.'|add:project_id_string %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_legacydata" }}">
+                    <h5>{% trans 'Legacy data' %}</h5>
+                    <div class="form-group">
+                        <div class="legacy-data-container">
+                            {% for legacy in project.legacy_data.all %}
+                                {% include "myrsr/project_editor/related_objects/legacy_data_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/legacy_data_input.html" with legacy='LegacyData.'|add:project_id_string %}
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-legacy-data"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another legacy data' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {% for customfield in custom_fields_section_11 %}
                     {% include custom_field_input %}
                 {% endfor %}

@@ -53,11 +53,14 @@
         {% include choice_input with obj=transaction field='tied_status' %}
         {% include choice_input with obj=transaction field='recipient_country' %}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {% include choice_input with obj=transaction field='recipient_region' %}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {% include choice_input with obj=transaction field='recipient_region_vocabulary' %}
+            </div>
+            <div class="col-md-4">
+                {% include text_input with obj=transaction field='recipient_region_vocabulary_uri' %}
             </div>
         </div>
 

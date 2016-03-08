@@ -130,7 +130,10 @@
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
 
         {# Section 11 #}
-{#        <script type="text/template" id="crs-add-input">{% include "myrsr/project_editor/related_objects/crs_add_input.html" with keyword='CrsAdd.'|add:project_id_string %}</script>#}
+        <script type="text/template" id="crsadd-other-flag-input">{% include "myrsr/project_editor/related_objects/crsadd_other_flags_input.html" with flag='CrsAddOtherFlag.'|add:project_id_string %}</script>
+        <script type="text/template" id="fss-forecast-input">{% include "myrsr/project_editor/related_objects/fss_forecast_input.html" with forecast='FssForecast.'|add:project_id_string %}</script>
+        <script type="text/template" id="legacy-data-input">{% include "myrsr/project_editor/related_objects/legacy_data_input.html" with legacy='LegacyData.'|add:project_id_string %}</script>
+
     {% endwith %}
 
     <script type="application/json" id="default-values">

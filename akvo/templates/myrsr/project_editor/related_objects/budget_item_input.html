@@ -4,6 +4,11 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=item %}
     <div class="hide-partial {% if item.pk %}hidden{% endif %}">
         <div class="row">
+            <div class="col-md-12">
+                {% include choice_input with obj=item field='currency' %}
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 {% include choice_input with obj=item field='label' %}
             </div>

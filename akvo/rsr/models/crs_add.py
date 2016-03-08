@@ -33,10 +33,12 @@ class CrsAdd(models.Model):
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     repayment_type = ValidXMLCharField(
-        _(u'repayment type'), max_length=1, choices=codelist_choices(LOAN_REPAYMENT_TYPE)
+        _(u'repayment type'), max_length=1, choices=codelist_choices(LOAN_REPAYMENT_TYPE),
+        blank=True
     )
     repayment_plan = ValidXMLCharField(
-        _(u'repayment plan'), max_length=2, choices=codelist_choices(LOAN_REPAYMENT_PERIOD)
+        _(u'repayment plan'), max_length=2, choices=codelist_choices(LOAN_REPAYMENT_PERIOD),
+        blank=True
     )
     commitment_date = models.DateField(_(u'commitment date'), null=True, blank=True)
     repayment_first_date = models.DateField(_(u'first repayment date'), null=True, blank=True)
@@ -62,6 +64,9 @@ class CrsAdd(models.Model):
     )
     channel_code = ValidXMLCharField(
         _(u'channel code'), blank=True, max_length=5, choices=codelist_choices(C_R_S_CHANNEL_CODE))
+
+    def __unicode__(self):
+        return u'CRS++'
 
     def iati_repayment_type(self):
         return codelist_value(LoanRepaymentType, self, 'repayment_type')
@@ -90,6 +95,15 @@ class CrsAddOtherFlag(models.Model):
         _(u'code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS)
     )
     significance = models.NullBooleanField(_(u'significance'), blank=True)
+
+    def __unicode__(self):
+        if self.code:
+            try:
+                return self.iati_code().name
+            except AttributeError:
+                return self.iati_code()
+        else:
+            return u'%s' % _(u'No other flag code specified')
 
     def iati_code(self):
         return codelist_value(CRSAddOtherFlags, self, 'code')

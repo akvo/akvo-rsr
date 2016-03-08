@@ -48,9 +48,10 @@ var partials = [
     'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-period',
     'indicator-period-actual-dimension', 'indicator-period-actual-location',
     'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
-    'planned-disbursement', 'policy-marker',
-    'recipient-country', 'recipient-region', 'related-project','result', 'sector', 'transaction',
-    'transaction-sector', 'location-administrative', 'project-location', 'keyword', 'crs-add'
+    'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
+    'related-project','result', 'sector', 'transaction', 'transaction-sector',
+    'location-administrative', 'project-location', 'keyword', 'crs-add', 'crsadd-other-flag', 'fss',
+    'fss-forecast', 'legacy-data'
 ];
 
 // Measure the percentage of completion for each panel and display the results to the user
@@ -1468,7 +1469,9 @@ function addPartial(partialName, partialContainer) {
             ['result', 'indicator', 'indicator-reference'],
             ['transaction', 'transaction-sector'],
             ['project-location', 'location-administrative'],
-            ['document', 'document-category']
+            ['document', 'document-category'],
+            ['crs-add', 'crsadd-other-flag'],
+            ['fss', 'fss-forecast']
         ];
 
         // Get partial from partial templates and add it to DOM
@@ -2734,7 +2737,8 @@ function checkUnsavedChanges() {
         '07 - Project locations',
         '08 - Project focus',
         '09 - Links and documents',
-        '10 - Project comments'
+        '10 - Project comments',
+        '11 - Special reporting'
     ];
 
     forms = document.querySelectorAll('form');
