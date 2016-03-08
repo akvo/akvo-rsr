@@ -1440,7 +1440,19 @@ div.textBlock {
       padding: 0; }
       div.textBlock .panel .panel-heading .panel-title a {
         display: block;
-        padding: 15px 15px; }
+        padding: 15px 15px;
+        outline: none;
+        color: #00aaff;
+        text-decoration: none;
+        cursor: pointer;
+        -moz-transition: color 0.2s linear;
+        -o-transition: color 0.2s linear;
+        -webkit-transition: color 0.2s linear;
+        transition: color 0.2s linear; }
+        div.textBlock .panel .panel-heading .panel-title a:link {
+          -webkit-tap-highlight-color: #fcd700; }
+        div.textBlock .panel .panel-heading .panel-title a:hover {
+          color: #ff5500; }
     div.textBlock .panel .panel-collapse .panel-body {
       background: rgba(44, 42, 116, 0); }
   div.textBlock .udpateComponent {
