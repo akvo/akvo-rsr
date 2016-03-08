@@ -11,10 +11,10 @@
     <div class="projectTopRow">
       <div class="container">
         <div class="row">
-          <div class="col-sm-8">
+          <div class="col-sm-6">
             <div id="carousel"></div>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-5 col-sm-offset-1">
             <aside class="projectSideInfo">
               <ul>
                 <li>
@@ -108,7 +108,7 @@
                       <dt class="totalBudgetLabel">{% trans 'Total Budget' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
                       <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed|floatformat|intcomma}}</dd>
                     </dl>
-                    <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
+                    <a href="{% url 'project-donate' project.id %}" class="btn btn-default donateButton">{% trans "Donate" %}</a>
                   </li>
                 {% endif %}
               </ul>
@@ -135,21 +135,23 @@
     </div>
     <div class="container textBlock">
       <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
           <div id="accordion"></div>
         </div>
+      </div>
         {% if updates %}
-          <div class="col-sm-4 udpateComponent">
-            <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
-            {% for update in updates %}
-              <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
-            {% endfor %}
-            <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}">
-              <i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a>
+          <div class="row">
+            <div class="col-sm-12 udpateComponent">
+              <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
+              {% for update in updates %}
+                <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
+              {% endfor %}
+              <div class="allUpdates"><a href="{% url 'project-updates' project.pk %}">
+                <i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a>
+              </div>
             </div>
           </div>
         {% endif %}
-      </div>
     </div>
   </article>
 </div>

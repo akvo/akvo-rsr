@@ -6,14 +6,22 @@
     <div class="header-container">
       {% include "partials/project_header.html" %}
     </div>
-    <div class="tab-menu container">
-      <div class="row">
-        <a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a>
-        <a href="#report" class="tab-link">{% trans 'Full report' %}</a>
-        {% if project.partners.all %}<a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>{% endif %}
-        <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
-        {% if updates %}<a href="#updates" class="tab-link">{% trans 'Updates' %}</a>{% endif %}
-      </div>
+    <div class="projectMenu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <nav class="navbar navbar-nav nav-justified">
+                      <ul class="nav nav-tabs">
+                        <li><a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a></li>
+                        <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
+                        {% if project.partners.all %}<li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>{% endif %}
+                        <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
+                        {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
+                      </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
     {% include "project_main_tabs/summary.html" %}
     {% include "project_main_tabs/report.html" %}

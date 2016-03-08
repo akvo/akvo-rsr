@@ -6,7 +6,6 @@
 /*---------------------------------------------------------------------------------*/
 
 @import "library.scss";
-
 html {
     width: 100%;
     overflow-y: scroll;
@@ -52,7 +51,9 @@ a:visited {
     }
 }
 
+
 /****************** Miscellanous Typography ********************/
+
 .inlined {
     display: inline;
 }
@@ -131,6 +132,7 @@ a.moreLink {
     padding: 20px 0;
 }
 
+
 /* Force full-width columns below 570px (when using col-xs-N) */
 
 @include responsive(small-screens) {
@@ -143,6 +145,7 @@ a.moreLink {
 .btn {
     @include transition(all 0.1s linear);
 }
+
 a.btn-primary,
 button.btn-primary {
     border: 1px solid $anchorLink;
@@ -168,6 +171,7 @@ button.btn-primary {
         @include border-radius(5px);
     }
 }
+
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
@@ -300,6 +304,7 @@ label {
     font-weight: normal;
 }
 
+
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
@@ -345,7 +350,6 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
-
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -460,14 +464,13 @@ nav.navbar-fixed-top {
                 }
                 .langDropdown {
                     .btn-default {
-                        border-color:transparent;
+                        border-color: transparent;
                     }
                     margin-top: 10px;
                     @include responsive(small-max-screens) {
                         padding-left: 15px;
                         padding-right: 15px;
                     }
-
                     .dropdown-menu {
                         @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
                             position: initial;
@@ -560,7 +563,6 @@ nav.navbar-fixed-top {
     }
 }
 
-
 .navbar-inverse {
     .navbar-collapse {
         border-color: rgb(228, 228, 228);
@@ -610,14 +612,13 @@ nav.navbar-fixed-top {
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
                     }
-
                     &:hover {
                         color: $anchorLinkHover;
                         border-color: transparent;
                         background-color: rgba($akvoBlack, 0.1);
                     }
                     &.active {
-                        color:  $anchorLinkHover;
+                        color: $anchorLinkHover;
                         font-weight: normal;
                         background: rgba(white, 1);
                         @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
@@ -648,8 +649,8 @@ nav.navbar-fixed-top {
 }
 
 .indicator-period-list {
-    &.parentProject, &.childProject {
-
+    &.parentProject,
+    &.childProject {
         .relatedInfo {
             color: $akvoPurple;
         }
@@ -717,23 +718,20 @@ nav.navbar-fixed-top {
     }
     div.projectListMenu {
         ul {
-            margin-top: -10px;              
+            margin-top: -10px;
             li {
                 display: inline-block;
                 @include responsive (mediums-max-screens) {
                     display: block;
                 }
-                @include responsive (small-max-screens) {
-                }                       
+                @include responsive (small-max-screens) {}
                 a {
                     &:last-child {
                         margin-right: 0;
                     }
                 }
-                @include responsive (wide-screens) {
-                }
-                > a {
-                }
+                @include responsive (wide-screens) {}
+                > a {}
             }
         }
     }
@@ -811,7 +809,7 @@ div.paginationWrap {
 
 .table-responsive {
     @include responsive (small-max-screens) {
-        border:none;
+        border: none;
     }
     &.locationTab {
         overflow: hidden;
@@ -861,7 +859,6 @@ div.paginationWrap {
             margin: 2px 0 2px 0;
             display: block;
         }
-
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -873,10 +870,10 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: rgba($akvoBlack, 0.1);
+    background: rgba($akvoBlack, 0.0);
     padding-bottom: 15px;
     margin-top: 25px;
-    @include border-radius(5px);
+    @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
     @include responsive(small-max-screens) {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -884,7 +881,6 @@ div.paginationWrap {
             margin: 10px auto;
         }
     }
-
     .btn {
         background: $akvoBlack;
         color: white;
@@ -927,6 +923,7 @@ div.paginationWrap {
         width: 100%;
     }
 }
+
 
 /* FOOTER */
 
@@ -987,6 +984,7 @@ footer {
     }
 }
 
+
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
@@ -994,7 +992,6 @@ footer {
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
-
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -1029,6 +1026,7 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
+
 /* LISTINGS */
 
 #map {
@@ -1042,7 +1040,6 @@ h4.detailedInfo {
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
-
     margin-top: -30px;
     z-index: 99;
     opacity: 0.8;
@@ -1123,7 +1120,6 @@ h4.detailedInfo {
             text-align: center;
             margin: 20px auto;
         }
-
         .dropdown {
             .dropdown-menu {
                 li {
@@ -1219,14 +1215,12 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
-
     #search {
         color: #fff;
         text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
-
         button {
             padding-top: 5px;
             padding-bottom: 5px;
@@ -1241,6 +1235,7 @@ h4.detailedInfo {
         text-align: center;
     }
 }
+
 
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -1308,7 +1303,6 @@ h4.detailedInfo {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
                     }
-
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1353,7 +1347,6 @@ h4.detailedInfo {
                         @include responsive(mediums-max-screens) {
                             margin-top: 0.6em;
                         }
-
                         @include responsive(small-max-screens) {
                             margin-top: 1em;
                         }
@@ -1471,6 +1464,7 @@ h4.detailedInfo {
     }
 }
 
+
 /* PROJECT */
 
 header {
@@ -1500,7 +1494,14 @@ header {
                 @include responsive(small-max-screens) {
                     text-align: left;
                 }
-
+                .btn {
+                    background: $akvoBlack;
+                    color: white;
+                    border: none;
+                    &:hover {
+                        background: $rsrBlue;
+                    }
+                }
                 a {
                     position: relative;
                     top: 0px;
@@ -1508,7 +1509,6 @@ header {
                         left: 0;
                         top: 0;
                     }
-
                     &.fullPdf {
                         @include noWrapTxt;
                     }
@@ -1542,12 +1542,20 @@ header {
 }
 
 .donateSection {
-    background: rgba(complement($rsrBlue2), 0.2);
+    @include box-sizing(border-box);  
+    background: rgba(complement($rsrBlue2), 0.1);
     padding: 10px 15px;
-    box-shadow: 1px 1px 0 rgba(complement($rsrBlue2), 0.5);
-    @include border-radius(5px);
+    box-shadow: 0 0 1px rgba(complement($rsrBlue2), 0.8);
     a {
         margin: -10px auto 5px auto;
+        &.donateButton {
+            background: $akvoBlack;
+            color: white;
+            border: none;
+            &:hover {
+                background: $rsrBlue;
+            }
+        }
     }
 }
 
@@ -1566,21 +1574,26 @@ header {
         }
     }
 }
-
+.project-tab {
+    &.summary {
+        margin-top:-20px;
+    }
+}
 div.projectTopRow {
     position: relative;
-    background: rgba(245, 245, 245, 0.5);
-    margin-top: 1px;
+    background: rgba(245, 245, 245, 0);
+    margin-top: 0px;
     margin-bottom: 20px;
-    /*border-bottom: 1px solid rgba($akvoBlack, 0.1);*/
-    box-shadow: 0 3px 6px rgba($akvoBlack, 0.1);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba($akvoBlack, 0);
+    box-shadow: 0 3px 3px rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
         margin-left: -15px;
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
-
         .carousel-indicators {
             bottom: -5px;
             li {
@@ -1600,12 +1613,12 @@ div.projectTopRow {
                     }
                 }
                 .carousel-caption {
-                    background-color: rgba(255, 255, 255, 0.6);
-                    border: thin solid rgba(255, 255, 255, 0.8);
-                    bottom: 1px;
-                    padding-top: 5px;
+                    background-color: rgba(255, 255, 255, 0.7);
+                    bottom: 0px;
+                    left: 0;
+                    padding-top: 10px;
                     padding-bottom: 5px;
-                    @include border-radius(5px 5px 0 0);
+                    width:100%;
                     h4 {
                         margin-top: 0;
                         margin-bottom: 0;
@@ -1631,7 +1644,6 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
-
         ul {
             margin: 0;
             padding: 0;
@@ -1735,7 +1747,7 @@ div.textBlock {
     .udpateComponent {
         padding-top: 10px;
         padding-bottom: 15px;
-        background: lighten($veryLightOrange, 25%);
+        background: transparent;
         h4 {
             margin-bottom: 10px;
         }
@@ -1743,6 +1755,7 @@ div.textBlock {
             display: block;
             color: $rsrGreen;
             margin-bottom: 5px;
+            margin-left: 10px;
             i {
                 margin-right: 5px;
             }
@@ -1772,6 +1785,40 @@ div.textBlock {
     }
 }
 
+.projectMenu {
+    position: relative;
+    margin: -15px 0 20px 0;
+    padding-top: 10px;
+    background: rgba($akvoBlack, 0.05);
+    .nav-tabs {
+        border-bottom: none;
+    }
+    nav{
+        ul {
+            li {
+                display: inline;
+                a.tab-link {
+                    color: $akvoBlack;
+                    padding: 15px;
+                    @include responsive(small-max-screens) {
+                        padding: 20px 10px;
+                    }
+                    &:hover {
+                        color: $anchorLinkHover;
+                        border-color: transparent;
+                        background-color: rgba($akvoBlack, 0.1);
+                    }
+                    &.selected {
+                        color: $anchorLinkHover;
+                        font-weight: normal;
+                        background: rgba(white, 1);
+                        @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
+                    }
+                }
+            }
+        }
+    }
+}
 .allUpdates {
     margin-top: 25px;
 }
@@ -1815,7 +1862,7 @@ div.textBlock {
 
 #draft {
     background: rgba(#E04F46, 0.2);
-    border:1px solid rgba(#E04F46, 0.2);
+    border: 1px solid rgba(#E04F46, 0.2);
     color: #E04F46;
     padding: 10px;
     text-align: center;
@@ -1838,6 +1885,7 @@ div.textBlock {
         }
     }
 }
+
 
 /* Project hierarchy */
 
@@ -1898,6 +1946,7 @@ div.textBlock {
     }
 }
 
+
 /* Tooltips */
 
 .tooltip {
@@ -1915,6 +1964,7 @@ div.textBlock {
         }
     }
 }
+
 
 /* Typeahead Styling */
 
@@ -1949,6 +1999,7 @@ ul.typeahead-selector {
         }
     }
 }
+
 
 /* Organisation Page */
 
@@ -2020,6 +2071,7 @@ ul.typeahead-selector {
     }
 }
 
+
 /* Update Page */
 
 .updateMain {
@@ -2040,6 +2092,7 @@ ul.typeahead-selector {
     }
 }
 
+
 /* Donate Page*/
 
 .projectDonate {
@@ -2056,7 +2109,6 @@ ul.typeahead-selector {
             text-align: center;
         }
     }
-
     .donateButton {
         margin-bottom: 2em;
     }
@@ -2090,7 +2142,6 @@ ul.typeahead-selector {
             }
         }
     }
-
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
@@ -2110,6 +2161,7 @@ ul.typeahead-selector {
         }
     }
 }
+
 
 /* Financial details page */
 
@@ -2135,7 +2187,6 @@ section.projectFinancial {
             }
         }
     }
-
     @include responsive(mediums-max-screens) {
         @include responsive(small-screens) {
             .dl-horizontal {
@@ -2162,6 +2213,7 @@ section.projectFinancial {
         }
     }
 }
+
 
 /* Project Partners details page */
 
@@ -2193,7 +2245,6 @@ section.projectPartners {
                 max-width: 60%;
             }
         }
-
         h2 {
             display: inline-block;
             font-size: 1.3em;
@@ -2232,6 +2283,7 @@ section.projectPartners {
     }
 }
 
+
 /* Display currency totals right-aligned */
 
 .currencyAmount {
@@ -2244,6 +2296,7 @@ dd {
     }
 }
 
+
 /* Project report page */
 
 .projectReport {
@@ -2252,10 +2305,9 @@ dd {
         margin-left: auto;
         margin-right: auto;
     }
-
     @media only screen and (min-width: $width-medium) {
         table {
-            table-layout: fixed;
+            table-layout: auto;
             th {
                 @media only screen and (max-width: $width-large) {
                     width: 90px;
@@ -2268,6 +2320,7 @@ dd {
         }
     }
 }
+
 
 /* Project update page */
 
@@ -2295,6 +2348,7 @@ a.addUpdateBtn {
     }
 }
 
+
 /* Google translation bar styles */
 
 body {
@@ -2320,6 +2374,7 @@ body {
     }
 }
 
+
 /* Cookie */
 
 #cookie-law {
@@ -2340,6 +2395,7 @@ body {
         }
     }
 }
+
 
 /* Project Admin */
 
@@ -2700,6 +2756,7 @@ body {
     }
 }
 
+
 /* New concatenated project page */
 
 .tab-menu {
@@ -2718,6 +2775,7 @@ body {
         }
     }
 }
+
 
 /* Results framework display */
 
@@ -2743,1277 +2801,1303 @@ body {
     }
 }
 
+* {
+    box-sizing: border-box;
+}
 
+article {
+    margin: 0;
+    overflow: hidden;
+}
 
-.results {
+.clickable {
+    cursor: pointer;
+    &:hover {
+        opacity: 1;
+    }
+    &:active {
+        opacity: 0.6;
+    }
+}
+
+.bg-transition {
+    @include transition(background-color 0.25s ease-in-out);
+}
+
+.border-transition {
+    @include transition(border 0.25s ease-in-out);
+}
+
+.bg-border-transition {
+    -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+}
+
+.opacity-transition {
+    @include transition(opacity 0.25s ease-in-out);
+}
+
+.results-container {
+    @include display-flex;
+    padding-left: 0;
+}
+
+.baseline,
+.periodValues {
+    padding: 2em 0;
     position: relative;
-    * {
-        box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 55px;
+    font-size: 110%;
+    .baseline-value,
+    .baseline-year,
+    .period-target,
+    .period-actual,
+    .period-target-comment {
+        display: inline-block !important;
+        padding: 0 0 10px 15px;
+        > span:first-child {
+            color: rgba($akvoBlack, 0.7);
+            display: block;
+            span {
+                display: inline;
+            }
+        }
+        span:nth-child(2n) {
+            display: block;
+            font-family: $titleFont;
+            font-weight: 700;
+            color: rgba($akvoBlack, 0.9);
+            span {
+                display: inline;
+            }
+            span:nth-child(1) {
+                margin-left: 10px;
+            }
+        }
     }
-    article {
-        margin: 0;
-        overflow: hidden;
+    .baseline-value,
+    .period-target {
+        width: 50%;
+        float: left;
     }
-    .clickable {
+    .baseline-year,
+    .period-actual {
+        width: 50%;
+        float: right;
+        color: rgba($akvoBlack, 0.6);
+        position: relative;
+        span {
+            font-weight: 700;
+            &:nth-child(1) {
+                display: inline-block;
+                margin-right: 10px;
+            }
+            &:nth-child(4) {
+                display: block;
+                font-weight: 700;
+            }
+            &.actualValueSpan {
+                display: block;
+                span:nth-child(1) {
+                    margin-right: 0;
+                }
+                span {
+                    display: inline;
+                }
+            }
+        }
+        .badge {
+            background-color: $akvoBlack;
+            @include transition(all 0.1s linear);
+            margin-top: -5px;
+            padding: 5px 9px;
+            @include border-radius(15px);
+            font-family: $scriptFont;
+            &:hover {
+                background-color: $akvoPurple;
+                cursor: pointer;
+            }
+        }
+        .result-tooltip {
+            clear: both;
+            position: absolute;
+            top: 35px;
+            left: 60px;
+            background: rgba(white, 1);
+            border: 1px solid rgba($primary4, 0.8);
+            color: $akvoBlack;
+            @include border-radius(4px);
+            .tooltip-inner {
+                background: rgba(white, 1);
+                color: $akvoBlack;
+                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
+            }
+            .tooltip-arrow {
+                position: absolute;
+                background: rgba(white, 1);
+                border: 1px solid rgba($primary4, 0.8);
+                left: 68px;
+                top: -2px;
+                &:after,
+                &:before {
+                    bottom: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                }
+                &:after {
+                    border-color: rgba(136, 183, 213, 0);
+                    border-bottom-color: rgba($primary4, 0.5);
+                    border-width: 7px;
+                    margin-left: -7px;
+                }
+                &:before {
+                    border-color: rgba(194, 225, 245, 0);
+                    border-bottom-color: rgba($primary4, 0.5);
+                    border-width: 8px;
+                    margin-left: -8px;
+                }
+            }
+        }
+    }
+    .period-target-comment {
+        width: 100%;
+        float: left;
+        padding: 0 0 40px 15px;
+    }
+}
+
+.sidebar {
+    width: 30%;
+    min-width: 200px;
+    overflow-y: auto;
+    vertical-align: top;
+    .results-list {
+        border: 1px solid rgba($akvoBlack, 0.3);
+    }
+    .result-nav {
+        padding: 0.2em 0em 0 0em;
+        border-bottom: 1px solid rgba($akvoBlack, 0.6);
+        &:before {
+            height: 1px;
+            background-color: rgba(224, 225, 226, 0);
+            width: 100%;
+            display: block;
+            content: '';
+            margin: 0 auto;
+            @include transition(background-color 0.25s ease-in-out);
+        }
+        &.expanded {}
+        &:last-child {}
+    }
+    .result-nav-header {
+        background: rgba($akvoPurple, 0);
+        h3 {
+            color: rgba(white, 1);
+            display: inline-block;
+            font-size: 1em;
+            text-transform: uppercase;
+            position: relative;
+            padding: 5px 10px;
+            margin-top: 0;
+            background: rgba($akvoPurple, 1);
+            margin-bottom: 0;
+            @include border-radius(8px 8px 0 0);
+            > a {
+                position: absolute;
+                right: -5px;
+            }
+        }
+    }
+    .result-nav {
+        opacity: 1;
         cursor: pointer;
+        @include transition(all 0.2s linear);
         &:hover {
             opacity: 1;
+            background: rgba($rsrBlue2, 0.1);
         }
-        &:active {
-            opacity: 0.6;
-        }
-    }
-    .bg-transition {
-        @include transition(background-color 0.25s ease-in-out);
-    }
-    .border-transition {
-        @include transition(border 0.25s ease-in-out);
-    }
-    .bg-border-transition {
-        -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-        transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-    }
-    .opacity-transition {
-        @include transition(opacity 0.25s ease-in-out);
-    }
-    .results-container {
-        @include display-flex;
-        padding-left: 0;
-    }
-    .baseline, .periodValues {
-        padding: 2em 0;
-        position: relative;
-        width: 100%;
-        margin-bottom: 55px;
-        font-size: 110%;
-        .baseline-value, .baseline-year,
-        .period-target, .period-actual, .period-target-comment {
-            display: inline-block !important;
-            padding: 0 0 10px 15px;
-            > span:first-child {
-                color: rgba($akvoBlack,0.7);
-                display: block;
-                span {
-                    display: inline;
-                }
-            }
-            span:nth-child(2n) {
-                display: block;
-                font-family: $titleFont;
-                font-weight: 700;
-                color: rgba($akvoBlack, 0.9);
-                span {
-                    display: inline;
-                }
-                span:nth-child(1) {
-                    margin-left: 10px;
-                }
-            }
-        }
-        .baseline-value, .period-target {
-            width: 50%;
-            float: left;
-        }
-        .baseline-year, .period-actual {
-            width: 50%;
-            float: right;
-            color: rgba($akvoBlack, 0.6);
-            position: relative;
-            span {
-                font-weight: 700;
-                &:nth-child(1) {
-                    display: inline-block;
-                    margin-right: 10px;
-                }
-                &:nth-child(4) {
-                    display: block;
-                    font-weight: 700;
-                }
-                &.actualValueSpan {
-                    display: block;
-                    span:nth-child(1) {
-                        margin-right: 0;
-                    }
-                    span {
-                        display: inline;
-                    }
-                }
-            }
-            .badge {
-                background-color: $akvoBlack;
-                @include transition(all 0.1s linear);
-                margin-top: -5px;
-                padding: 5px 9px;
-                @include border-radius(15px);
-                font-family: $scriptFont;
-                &:hover {
-                    background-color: $akvoPurple;
-                    cursor: pointer; 
-                }
-            }
-            .result-tooltip {
-                clear:both;
-                position: absolute;
-                top: 35px;
-                left: 60px;
-                background: rgba(white, 1);
-                border: 1px solid  rgba($primary4, 0.8);
-                color: $akvoBlack;
-                @include border-radius(4px);
-                .tooltip-inner {
-                    background: rgba(white, 1);
-                    color: $akvoBlack;
-                    @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
-                    }
-                .tooltip-arrow {
-                    position: absolute;
-                    background: rgba(white, 1);
-                    border: 1px solid  rgba($primary4, 0.8);
-                    left: 68px;
-                    top: -2px;
-                    &:after, &:before {
-                        bottom: 100%;
-                        left: 50%;
-                        border: solid transparent;
-                        content: " ";
-                        height: 0;
-                        width: 0;
-                        position: absolute;
-                        pointer-events: none;
-                        }
-
-                    &:after {
-                        border-color: rgba(136, 183, 213, 0);
-                        border-bottom-color: rgba($primary4, 0.5);
-                        border-width: 7px;
-                        margin-left: -7px;
-                    }
-                    &:before {
-                        border-color: rgba(194, 225, 245, 0);
-                        border-bottom-color:  rgba($primary4, 0.5);
-                        border-width: 8px;
-                        margin-left: -8px;
-                    }
-                }
-            }
-        }
-        .period-target-comment {
-            width: 100%;
-            float: left;
-            padding: 0 0 40px 15px;
-        }
-    }
-    .sidebar {
-        width: 30%;
-        min-width: 200px;
-        overflow-y: auto;
-        vertical-align: top;
-        .results-list {
-            border: 1px solid rgba($akvoBlack, 0.3);
-        }
-        .result-nav {
-            padding: 0.2em 0em 0 0em;
-            border-bottom: 1px solid rgba($akvoBlack, 0.6);
-            &:before {
-                height: 1px;
-                background-color: rgba(224, 225, 226, 0);
-                width: 100%;
-                display: block;
-                content: '';
-                margin: 0 auto;
-                @include transition(background-color 0.25s ease-in-out);
-            }
-            &.expanded {
-            }
-            &:last-child {}
-        }
-        .result-nav-header {
-            background: rgba($akvoPurple, 0);
+        .result-nav-summary {
+            padding: 25px 0 10px 10px;
             h3 {
-                color: rgba(white, 1);
-                display: inline-block;
-                font-size: 1em;
-                text-transform: uppercase;
-                position: relative;
-                padding: 5px 10px;
-                margin-top: 0;
-                background: rgba($akvoPurple, 1);
-                margin-bottom: 0;
-                @include border-radius(8px 8px 0 0);
-                > a {
-                    position: absolute;
-                    right: -5px;
+                font-size: 1.3em;
+                color: rgba($rsrBlue2, 1);
+                @include transition(all 0.2s linear);
+                &:hover {
+                    color: $rsrBlue;
+                }
+                &.result-title {
+                    position: relative;
+                    box-sizing: border-box;
+                    font-weight: 400;
+                    .fa {
+                        float: right;
+                        font-size: 1.3em;
+                        margin-right: 6px;
+                        text-shadow: 0 1px 0 rgb(255, 255, 255);
+                        color: rgba($akvoPurple, 0.6);
+                    }
+                    > span {
+                        box-sizing: border-box;
+                        max-width: 80%;
+                        margin: 0 auto 0 0;
+                        display: block;
+                        display: -webkit-box;
+                        line-height: 1.4em;
+                        -webkit-box-orient: vertical;
+                    }
                 }
             }
         }
-        .result-nav {
+        .fa-chevron-circle-up {
+            display: none;
+        }
+        &.expanded {
             opacity: 1;
-            cursor: pointer;
-            @include transition(all 0.2s linear);
-            &:hover {
-                opacity: 1;
-                background: rgba($rsrBlue2, 0.1);
+            &:before {
+                background-color: transparent;
             }
-            .result-nav-summary {
-                padding: 25px 0 10px 10px;
-                h3 {
-                    font-size: 1.3em;
-                    color: rgba($rsrBlue2, 1);
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        color: $rsrBlue;
-                    }
-                    &.result-title {
-                        position: relative;
-                        box-sizing: border-box;
-                        font-weight: 400;
-                        .fa {
-                            float: right;
-                            font-size: 1.3em;
-                            margin-right: 6px;
-                            text-shadow: 0 1px 0 rgb(255, 255, 255);
-                            color: rgba($akvoPurple, 0.6);
-                        }
-                        > span {
-                            box-sizing: border-box;
-                            max-width: 80%;
-                            margin: 0 auto 0 0;
-                            display: block;
-                            display: -webkit-box;
-                            line-height: 1.4em;
-                            -webkit-box-orient: vertical;
-                        }
-                    }
-                }
+            h3 {
+                color: $rsrBlue;
             }
-            .fa-chevron-circle-up {
-                display: none;
-            }
-            &.expanded {
-                opacity: 1;
+            ~ .result-nav {
                 &:before {
                     background-color: transparent;
                 }
-                h3 {
-                    color: $rsrBlue;
-                }
-                ~ .result-nav {
-                    &:before {
-                        background-color: transparent;
-                    }
-                }
             }
-            .result-indicator-count {
-                display: block;
-                color: $akvoPurple;
-                display: block;
-                margin-top: -5px;
-                span {
-                    margin-left: 5px;
-                }
-                p {
-                    display: inline-block;
-                    margin-left: 5px;
-                }
+        }
+        .result-indicator-count {
+            display: block;
+            color: $akvoPurple;
+            display: block;
+            margin-top: -5px;
+            span {
+                margin-left: 5px;
             }
-            .result-nav-full {
+            p {
+                display: inline-block;
+                margin-left: 5px;
+            }
+        }
+        .result-nav-full {
+            display: none;
+        }
+        .indicator-text {
+            display: none;
+        }
+        &.expanded {
+            .fa-chevron-circle-down {
                 display: none;
+            }
+            .fa-chevron-circle-up {
+                display: block;
             }
             .indicator-text {
+                display: initial;
+            }
+            .indicator-count {
                 display: none;
             }
-            &.expanded {
-                .fa-chevron-circle-down {
-                    display: none;
-                }
-                .fa-chevron-circle-up {
-                    display: block;
-                }
-                .indicator-text {
-                    display: initial;
-                }
-                .indicator-count {
-                    display: none;
-                }
-                .result-nav-full {
-                    display: block;
-                    cursor: pointer;
-                    padding: 1px 0 0 0px;
-                    background-color: white;
-                    div {
-                        &:last-child {
-                            .indicator-nav {
-                                border-bottom: none;
-                            }
-                        }
+            .result-nav-full {
+                display: block;
+                cursor: pointer;
+                padding: 1px 0 0 0px;
+                background-color: white;
+                div {
+                    &:last-child {
                         .indicator-nav {
-                            padding: 0.75em 10px 1em 0em;
-                            /* Transparent border means text doesn't shift when
+                            border-bottom: none;
+                        }
+                    }
+                    .indicator-nav {
+                        padding: 0.75em 10px 1em 0em;
+                        /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
-                            background: rgba($akvoPurple, 0.05);
-                            border-bottom: 2px solid white;
-                            &:hover {
-                                background: rgba($akvoPurple, 0.5);
-                                h4 {
-                                    color:white;
-                                }
-                            }
-                            &.active {
-                                background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
-                                border-left: 10px solid rgba(174, 9, 34, 0);
-                                background-size: 5% auto;
-                                h4 {
-                                    color: white;
-                                }
-                            }
-                            &:last-child {
-                                margin-bottom: 0;
-                            }
-                        }
-                        a {
+                        background: rgba($akvoPurple, 0.05);
+                        border-bottom: 2px solid white;
+                        &:hover {
+                            background: rgba($akvoPurple, 0.5);
                             h4 {
-                                font-size: 1em;
-                                color: $akvoPurple;
-                                margin-bottom: 1px;
-                                line-height: 150%;
-                                padding-left: 15px;
-                            }
-                            &:hover {
-                                color: rgba($akvoPurple, 0.5);
-                                text-decoration: none;
+                                color: white;
                             }
                         }
-                        .last-update {
-                            font-size: 0.9em;
-                            color: rgb(170, 170, 170);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .indicator-container {
-        vertical-align: top;
-        overflow-y: scroll;
-        padding:20px 1em 0.25em 1em;
-        background-color: rgba(245, 245, 245, 0.2);
-        @include flex(1);
-        .indicator-period {
-            .indicTitle {
-                position: relative;
-                .indicator-title {
-                    i {
-                        display: none;
-                    }
-                }
-                .new-update {
-                    position: absolute;
-                    display: inline-block;
-                    top: -5px;
-                    right: 0;
-                    .btn {
-                        background: $akvoBlack;
-                        color: white;
-                        @include border-radius(5px);
-                        &:hover {
-                            background: $akvoPurple;
-                            color: white;
-                        }
-                    }
-                }
-            }
-        }
-        .indicator-periods-title {
-            font-size: 1em;
-            color: $akvoBlack;
-            margin-top: 40px;
-        }
-        .result-summary {
-            display: none;
-            opacity: 0;
-            h4 {
-                font-size: 0.9em;
-                color: #aaaaaa;
-                font-variant: small-caps;
-                text-transform: lowercase;
-            }
-            h3 {
-                font-size: 1.2em;
-                color: #424c2b;
-                margin-bottom: 4px;
-            }
-            .result-parent {
-                font-size: 0.8em;
-                color: #aaaaaa;
-            }
-            .indicator-link {
-                cursor: pointer;
-                &:hover {
-                    opacity: 0.8;
-                }
-                &:active {
-                    opacity: 0.6;
-                }
-            }
-            .result-indicators {
-                margin-top: 20px;
-                ul {
-                    list-style-type: none;
-                    padding-left: 5px;
-                    li {
-                        color: $anchorLink;
-                    }
-                }
-            }
-        }
-        .indicator-group {
-            padding: 0;
-            display: none;
-            .indicator-title {
-                color: rgb(174, 9, 34);
-                font-size: 1em;
-                .glyphicon {
-                    float: left;
-                    margin-right: 4px;
-                }
-            }
-            .table {
-                padding: 0.5em 0.25em;
-                /*background-color: rgb(235,235,231);*/
-                tbody {
-                    &.indicator-period {
-                        border: none;
-                        padding: 15px 0;
-                    }
-                    &.expanded {
-                        background-color: white;
-                    }
-                }
-                thead {
-                    font-weight: normal;
-                    color: rgb(192, 192, 192);
-                    tr {
-                        background-color: #ececec;
-                    }
-                }
-                tr,
-                td {
-                    border: none;
-                    color: rgb(172, 172, 172);
-                }
-                tr {
-                    min-height: 125px;
-                    .add-button {
-                        display: none;
-                    }
-                    &.expanded ~ .add-button-tr td {
-                        text-align: right;
-                        .add-button {
-                            border: none;
-                            display: inline-block;
-                            margin-right: 1.4em;
-                        }
-                    }
-                }
-                td {
-                    vertical-align: middle;
-                    &.period-td,
-                    &.actual-td,
-                    &.target-td,
-                    &.actions-td {
-                        white-space: nowrap;
-                    }
-                    &.target-td {
-                        font-weight: bold;
-                    }
-                    &.actions-td {
-                        .tooltip {
-                            top: -170px;
-                            left: 132.703px;
-                            display: block;
-                            .tooltip-arrow {
-                                left: 77.4336%;
+                        &.active {
+                            background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
+                            border-left: 10px solid rgba(174, 9, 34, 0);
+                            background-size: 5% auto;
+                            h4 {
+                                color: white;
                             }
-                        }
-                    }
-                    &.period-td {
-                        color: rgba($akvoBlack, 0.6);
-                        position: relative; 
-                        .result-tooltip {
-                            position: absolute;
-                            top: 0;
-                        }
-                    }
-                    &.indicator-bar-td {
-                        width: 55%;
-                    }
-                }
-                .expand-indicator-period {
-                    .fa-chevron-circle-up {
-                        display: none;
-                    }
-                    .fa-chevron-circle-down {
-                        display: initial;
-                    }
-                    &.expanded {
-                        .fa-chevron-circle-up {
-                            display: initial;
-                        }
-                        .fa-chevron-circle-down {
-                            display: none;
-                        }
-                    }
-                }
-            }
-            .indicator {
-                display: none;
-            }
-        }
-    }
-    /* Styling for the indicator period progress bar */
-    .indicator-bar-td {
-        height: 80px;
-        padding: 0;
-    }
-    /* Insert some transparent text to space the "progress" label */
-    .th-progress {
-        &:before {
-            content: 'spacer';
-            width: 40px;
-            height: 1px;
-            display: inline-block;
-            color: transparent;
-            @media only screen and (max-width: 800px) {
-                display: none;
-            }
-        }
-    }
-    .indicator-bar-display-container {
-        position: relative;
-        height: 100%;
-        margin-left: 50px;
-        margin-right: 15px;
-        .indicator-bar,
-        .indicator-bar-progress-amount {
-            position: absolute;
-            top: 38px;
-            bottom: 24px;
-            left: 0px;
-            height: 8px;
-            @include border-radius(2px);
-            border: 1px solid #CDDFEF;
-        }
-        .indicator-baseline {
-            position: absolute;
-            left: -45px;
-            top: 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-            vertical-align: bottom;
-            width: 35px;
-            text-align: right;
-        }
-        .indicator-bar {
-            background-color: #E2EBF5;
-            right: 0px;
-        }
-        .indicator-bar-progress-amount {
-            background-color: rgba(0, 0, 0, 0.2);
-        }
-        .indicator-bar-progress-container {
-            /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
-            position: relative;
-            height: 100%;
-            .indicator-bar-progress {
-                position: absolute;
-                width: 4px;
-                margin-left: -2px;
-                /* Offset half the width */
-                height: 23px;
-                top: 30px;
-                background-color: #A3C7E3;
-                text-align: center;
-            }
-        }
-    }
-    .target-td {
-        vertical-align: middle;
-    }
-    .indicator-bar-progress-complete-container {
-        .indicator-bar-progress-complete {
-            padding-left: 15px;
-            font-size: 1.1em;
-            font-weight: normal;
-            color: rgb(81, 80, 80);
-            vertical-align: bottom;
-        }
-        .indicator-bar-progress-text {
-            padding-left: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #A3C7E3;
-            vertical-align: bottom;
-        }
-    }
-    .indicator-container .indicator-group .table tbody {
-        background-color: white;
-        border-bottom: none !important;
-        &:last-child {
-            margin-bottom: 0;
-        }
-        .edit-button {
-            position: absolute;
-            height: 20px;
-            width: 20px;
-            top: 15px;
-            right: 10px;
-            color: $akvoBlack;
-            font-size: 1.5em;
-            &.activated {
-                display: none;
-            }
-        }
-        .delete-button {
-            position: absolute;
-            height: 20px;
-            width: 20px;
-            top: 13px;
-            right: 35px;
-            font-size: 1.5em;
-            color: $akvoBlack;
-            &.activated {
-                display: none;
-            }
-        }
-        .delete-confirm {
-            display: none;
-            position: absolute;
-            right: 10px;
-            top: 55px;
-            height: 90px;
-            background-color: white;
-            color: $akvoBlack;
-            padding: 1em;
-            z-index: 101;
-            > div {
-                height: 40px;
-                position: relative;
-            }
-            .delete-confirm-no {
-                position: absolute;
-                left: 10px;
-                top: 10px;
-            }
-            .delete-confirm-yes {
-                background-color: #ae0922;
-                border-color: #ae0922;
-                margin-left: auto;
-                position: absolute;
-                right: 10px;
-                top: 10px;
-                &:hover {
-                    background-color: #ff5500;
-                    border-color: #ff5500;
-                }
-            }
-        }
-        .update-date {
-            display: inline-block;
-            text-align: left;
-            width: 50%;
-        }
-        .update-name {
-            display: inline-block;
-            text-align: left;
-            width: 30%;
-            margin-right: 10%;
-            color: $akvoBlack;
-            &.delete-pending {
-                margin-bottom: 90px;
-            }
-        }
-        .update-timeline {
-            display: inline-block;
-            width: 75%;
-            height: 80px;
-            padding-top: 1em;
-            z-index: 99;
-            position: relative;
-        }
-        .update-target {
-            position: absolute;
-            margin-top: 48px;
-            display: inline-block;
-            width: 24%;
-            height: 80px;
-            text-align: center;
-            span {
-                font-size: 1.1em;
-                color: rgb(81, 80, 80);
-                vertical-align: text-top;
-                &.update-target-actual {
-                    padding-left: 15px;
-                    font-size: 1.1em;
-                    font-weight: bold;
-                    color: #A3C7E3;
-                    vertical-align: bottom;
-                }
-            }
-        }
-        .update-description {
-            padding: 0.5em;
-            margin: 20px auto 30px;
-            &.editable {
-                background: whitesmoke;
-                border: 1px solid #A3C7E3;
-            }
-            .update-photo {
-                float: right;
-                width: 150px;
-                height: 100px;
-                background-size: cover;
-            }
-        }
-        .save-button {
-            position: absolute;
-            display: none;
-            right: 10px;
-            bottom: 10px;
-            &.active {
-                display: inline-block;
-                padding: 3px 7px;
-                color: white;
-                background-color: rgb(0, 122, 184);
-                @include border-radius(2px);
-                text-align: center;
-            }
-        }
-        .cancel-button {
-            position: absolute;
-            display: none;
-            right: 60px;
-            bottom: 10px;
-            background-color: none;
-            &.active {
-                display: inline-block;
-                padding: 3px 7px;
-                color: rgb(0, 122, 184);
-                @include border-radius(2px);
-                text-align: center;
-            }
-        }
-    }
-    label.imageUpload, label.fileUpload {
-        input[type="file"] {
-            position: fixed;
-            top: -1000px;
-        }
-    }
-    .update-container {
-        background: rgba($primary4, 0.05);
-        border: 1px solid rgba($akvoBlack, 0.2);
-        padding: 0 1em;
-        margin-bottom: 50px;
-        .update-entry-container {
-            padding:0 0 10px 0;
-            position: relative;
-            &.edit-in-progress {
-                background: rgba($rsrGreen, 0.05);
-                border: 1px solid rgba($rsrGreen, 0.3);
-                box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
-                .update-entry-container-header {
-                    background: rgba(white, 0.5);
-                }
-            }
-            .update-entry-container-header {
-                background: rgba($akvoBlack, 0);                
-                border-bottom: 1px solid rgba($akvoBlack, 0.1);
-                padding: 0.75em 0;
-                .update-user {
-                    color: $akvoPurple;
-                    font-weight: bold;
-                }
-                .update-created-at {
-                    margin-left: 15px;
-                    color: rgba($akvoBlack, 0.7);
-                }
-                .update-status {
-                    color: $akvoTvRed;
-                }
-            }
-            .comments {
-                .input-group {
-                    margin-top: 20px;
-                    /* button {
-                           background: $akvoBlack;
-                           color:white;
-                           &:hover {
-                               background: $akvoPurple;
-                           }
-                       }*/
-                }
-                .comment {
-                    margin-top: 20px;
-                    margin-bottom: 20px;
-                    .comment-header {
-                        margin-bottom: 5px;
-                        font-weight: bold;
-                        span {
-                            color: $akvoPurple;
-                            &:last-child {
-                                margin-left: 15px;
-                                color: rgba($akvoBlack, 0.5);
-                            }
-                        }
-                    }
-                    .comment-text {}
-                }
-            }
-            .menuAction {
-                position: relative;
-                .removeUpdate {
-                    position: absolute;
-                    top: 30px;
-                    left:0;
-                    .btn {
-                        background: $akvoTvRed;
-                        color: white;
-                        border-color: $akvoTvRed;
-                        &:hover {
-                            background: rgba($akvoTvRed, 0.5);
-                        }
-                    }
-                }
-                .bottomRow {
-                    margin-top: 20px;
-                    padding: 0.75em;
-                    position: relative;
-                    list-style-type: none;
-                    .btn {
-                        padding: 2px 7px;
-                        &.btn-default {
-                            background: $akvoBlack;
-                            color: white;
-                            .editUpdate & {
-                                background: initial;
-                                color: initial;
-                            }
-                            &:hover {
-                                background: $akvoPurple;
-                            }
-                        }
-                    }
-                    .cancelUpdate {margin-right: 25px;}
-
-                    .saveUpdate {}
-                    .returnUpdate {}
-                    .submitUpdate {}
-                    .approveUpdate {}
-                }
-            }
-            .upActualValue {
-                margin-top: 47px;
-                margin-bottom: 15px;
-                .update-actual-value-text {
-                    color: rgba($akvoBlack, 0.7);
-                }
-                .update-actual-value-data {
-                    font-weight: bold;
-                }
-                .update-relative-value {
-                    margin-left: 5px;
-                    font-weight: bold;
-                }
-            }
-        }
-    }
-    .update-dialog-container {
-        &.pending-new-update {
-            .update-entry-container {
-                background-color: #D1E6D1;
-                &:first-child {
-                    border-left: none;
-                }
-            }
-        }
-        td {
-            padding: 8px 2em;
-            .update-entry-container {
-                padding: 2em;
-                position: relative;
-                background-color: #ececec;
-                &:first-child {
-                    border-left: 4px solid #ae0922;
-                }
-                &.edit-in-progress {
-                    background-color: #D1E6D1;
-                    border-left: none;
-                }
-                .update-exceed-target {
-                    margin: 3em 0 1em 0;
-                    text-align: right;
-                    input.exceed-value {
-                        opacity: 0;
-                    }
-                    label {
-                        margin-right: 10px;
-                        color: rgba($akvoBlack, 0.5);
-                    }
-                    .update-exceed-target-checkbox {
-                        margin-right: 10px;
-                        &:checked {
-                            ~ input.exceed-value {
-                                opacity: 1;
-                            }
-                        }
-                    }
-                }
-                .indicator-bar-display-container {
-                    position: relative;
-                    height: 100%;
-                    margin-left: 45px;
-                    margin-right: 0;
-                    .indicator-baseline {
-                        top: 34px;
-                        left: -60px;
-                    }
-                    .indicator-bar-progress-text {
-                        position: absolute;
-                        bottom: -18px;
-                        width: 44px;
-                        margin-left: -22px;
-                        text-align: center;
-                        color: #B5B5B5;
-                        border: 1px solid #B5B5B5;
-                        background-color: #ececec;
-                        cursor: pointer;
-                        .progress-hover-text {
-                            content: '';
-                            opacity: 0;
-                            height: 0px;
-                            width: 0px;
-                            padding: 0;
-                            margin: 0;
-                            font-size: 0;
                         }
                         &:last-child {
-                            color: #A3C7E3;
-                            border-color: #A3C7E3;
+                            margin-bottom: 0;
+                        }
+                    }
+                    a {
+                        h4 {
+                            font-size: 1em;
+                            color: $akvoPurple;
+                            margin-bottom: 1px;
+                            line-height: 150%;
+                            padding-left: 15px;
                         }
                         &:hover {
-                            z-index: 101;
-                            background-color: white;
-                            .progress-hover-text {
-                                display: block;
-                                font-size: initial;
-                                opacity: 1;
-                                position: absolute;
-                                top: 26px;
-                                color: inherit;
-                                content: initial;
-                                background-color: white;
-                                width: 100px;
-                                height: auto;
-                                margin-left: -28px;
-                                /* Half of the width of this - half the width of the parent */
-                                padding: 5px 0;
-                                &:before {
-                                    content: '';
-                                    width: 0;
-                                    height: 0;
-                                    border-left: 5px solid transparent;
-                                    border-right: 5px solid transparent;
-                                    border-bottom: 5px solid white;
-                                    position: absolute;
-                                    top: -5px;
-                                    left: 45px;
-                                }
-                            }
+                            color: rgba($akvoPurple, 0.5);
+                            text-decoration: none;
                         }
                     }
-                    .indicator-bar,
-                    .indicator-bar-progress-amount {
-                        position: absolute;
-                        top: 38px;
-                        bottom: 24px;
-                        left: 0px;
-                        height: 14px;
-                        @include border-radius(2px);
-                        border: 1px solid #CDDFEF;
-                    }
-                    .indicator-bar {
-                        background-color: #fff;
-                        right: 0px;
-                    }
-                    .indicator-bar-progress-amount {
-                        background-color: #fff;
-                        border-right: none;
-                    }
-                    .indicator-bar-progress-container {
-                        /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-                        position: relative;
-                        height: 100%;
-                        .indicator-bar-progress {
-                            position: absolute;
-                            width: 3px;
-                            height: 20px;
-                            top: 35px;
-                            background-color: #B5B5B5;
-                            &:nth-last-child(2) {
-                                background-color: #A3C7E3;
-                            }
-                            text-align: center;
-                            &.update-dialog-timeline-marker {
-                                border: none;
-                            }
-                        }
-                    }
-                }
-                .target-td {
-                    vertical-align: middle;
-                }
-                .indicator-bar-progress-complete-container {
-                    .indicator-bar-progress-complete {
-                        padding-left: 15px;
-                        font-size: 1.5em;
-                        font-weight: normal;
-                        color: rgb(81, 80, 80);
-                        vertical-align: bottom;
-                    }
-                    .indicator-bar-progress-text {
-                        padding-left: 15px;
-                        font-size: 1.5em;
-                        font-weight: bold;
-                        color: #A3C7E3;
-                        vertical-align: bottom;
-                        z-index: 19999;
-                    }
-                }
-                &:last-child {
-                    margin-bottom: 0;
-                }
-                .edit-button {
-                    position: absolute;
-                    height: 20px;
-                    width: 20px;
-                    top: 15px;
-                    right: 10px;
-                    color: $akvoBlack;
-                    font-size: 1.5em;
-                    &.activated {
-                        display: none;
-                    }
-                }
-                .delete-button {
-                    position: absolute;
-                    height: 20px;
-                    width: 20px;
-                    top: 13px;
-                    right: 35px;
-                    font-size: 1.5em;
-                    color: $akvoBlack;
-                    &.activated {
-                        display: none;
-                    }
-                }
-                .update-date {
-                    display: inline-block;
-                    text-align: left;
-                    width: 50%;
-                }
-                .update-name {
-                    display: inline-block;
-                    text-align: left;
-                    width: 30%;
-                    margin-right: 10%;
-                    color: $akvoBlack;
-                }
-                .update-timeline {
-                    display: inline-block;
-                    width: 84%;
-                    height: 80px;
-                    padding-top: 1em;
-                    z-index: 99;
-                    position: relative;
-                }
-                .update-target {
-                    position: absolute;
-                    margin-top: 49px;
-                    display: inline-block;
-                    width: 15%;
-                    height: 80px;
-                    text-align: right;
-                    span {
-                        font-size: 1.1em;
-                        color: rgb(81, 80, 80);
-                        vertical-align: text-top;
-                        &.update-target-actual {
-                            padding-left: 15px;
-                            font-size: 1.1em;
-                            font-weight: bold;
-                            color: #A3C7E3;
-                            vertical-align: bottom;
-                        }
-                    }
-                }
-                .update-description {
-                    padding: 0.5em;
-                    margin: 20px auto 30px;
-                    &.editable {
-                        background: whitesmoke;
-                        border: 1px solid #A3C7E3;
-                    }
-                    .update-photo {
-                        float: right;
-                        width: 150px;
-                        height: 100px;
-                        background-size: cover;
-                    }
-                }
-                .save-button {
-                    position: absolute;
-                    display: none;
-                    right: 10px;
-                    bottom: 10px;
-                    &.active {
-                        display: inline-block;
-                        padding: 3px 7px;
-                        color: white;
-                        background-color: $akvoBlack;
-                        @include border-radius(2px);
-                        text-align: center;
-                    }
-                }
-                .cancel-button {
-                    position: absolute;
-                    display: none;
-                    right: 60px;
-                    bottom: 10px;
-                    &.active {
-                        display: inline-block;
-                        padding: 3px 7px;
-                        color: $akvoBlack;
-                        @include border-radius(2px);
-                        text-align: center;
-                    }
-                }
-                .edit-slider {
-                    z-index: 9999;
-                    .original-position-marker {
-                        width: 3px;
-                        margin-left: -2px;
-                        height: 20px;
-                        position: absolute;
-                        background-color: #B5B5B5;
-                        top: -3px;
-                        z-index: 102;
-                    }
-                    .change-indicator {
-                        position: absolute;
-                        background-color: green;
-                        height: 12px;
-                        top: 1px;
-                        z-index: 101;
-                        opacity: 0.5;
-                        &.negative {
-                            background-color: red;
-                        }
-                    }
-                    .noUi-base,
-                    &.noUi-horizontal {
-                        height: 5px;
-                        border: 0;
-                        background-color: rgba(white, 0);
-                        margin-top: -28px;
-                        z-index: 99999;
-                        @include border-radius(4px);
-                        box-shadow: none;
-                        .noUi-origin {
-                            background-color: rgba(white, 0);
-                            @include border-radius(4px);
-                        }
-                        .noUi-handle {
-                            position: relative;
-                            width: 28px;
-                            height: 28px;
-                            z-index: 9999;
-                            background-color: rgb(0, 122, 184);
-                            cursor: pointer;
-                            left: -14px;
-                            box-shadow: none;
-                            top: -7px;
-                            color: white;
-                            &:after {
-                                display: block;
-                                content: '|||';
-                                color: white;
-                                width: 26px;
-                                height: 26px;
-                                line-height: 23px;
-                                text-align: center;
-                                letter-spacing: -2px;
-                                color: white;
-                                background-color: transparent;
-                                top: 0;
-                                left: -1px;
-                            }
-                            &:before {
-                                display: none;
-                            }
-                            &:hover {
-                                background-color: lighten(rgb(0, 122, 184), 10%);
-                            }
-                            &:active {
-                                background-color: $flowOrange;
-                            }
-                            .handle-label {
-                                position: absolute;
-                                top: -32px;
-                                background-color: rgb(0, 122, 184);
-                                padding: 3px;
-                                width: 44px;
-                                left: -8px;
-                                text-align: center;
-                                &:after {
-                                    content: '';
-                                    height: 0px;
-                                    width: 0px;
-                                    position: absolute;
-                                    bottom: -5px;
-                                    left: 17px;
-                                    border-left: 5px solid transparent;
-                                    border-right: 5px solid transparent;
-                                    border-top: 5px solid rgb(0, 122, 184);
-                                }
-                            }
-                            .handle-change-label {
-                                position: absolute;
-                                width: 42px;
-                                text-align: center;
-                                bottom: -25px;
-                                left: -8px;
-                                background-color: white;
-                                color: rgb(0, 122, 184);
-                            }
-                        }
-                    }
-                    &.active {
-                        display: initial;
+                    .last-update {
+                        font-size: 0.9em;
+                        color: rgb(170, 170, 170);
                     }
                 }
             }
         }
     }
 }
+
+.indicator-container {
+    vertical-align: top;
+    overflow-y: scroll;
+    padding: 20px 1em 0.25em 1em;
+    background-color: rgba(245, 245, 245, 0.2);
+    @include flex(1);
+    .indicator-period {
+        .indicTitle {
+            position: relative;
+            .indicator-title {
+                i {
+                    display: none;
+                }
+            }
+            .new-update {
+                position: absolute;
+                display: inline-block;
+                top: -5px;
+                right: 0;
+                .btn {
+                    background: $akvoBlack;
+                    color: white;
+                    @include border-radius(5px);
+                    &:hover {
+                        background: $akvoPurple;
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+    .indicator-periods-title {
+        font-size: 1em;
+        color: $akvoBlack;
+        margin-top: 40px;
+    }
+    .result-summary {
+        display: none;
+        opacity: 0;
+        h4 {
+            font-size: 0.9em;
+            color: #aaaaaa;
+            font-variant: small-caps;
+            text-transform: lowercase;
+        }
+        h3 {
+            font-size: 1.2em;
+            color: #424c2b;
+            margin-bottom: 4px;
+        }
+        .result-parent {
+            font-size: 0.8em;
+            color: #aaaaaa;
+        }
+        .indicator-link {
+            cursor: pointer;
+            &:hover {
+                opacity: 0.8;
+            }
+            &:active {
+                opacity: 0.6;
+            }
+        }
+        .result-indicators {
+            margin-top: 20px;
+            ul {
+                list-style-type: none;
+                padding-left: 5px;
+                li {
+                    color: $anchorLink;
+                }
+            }
+        }
+    }
+    .indicator-group {
+        padding: 0;
+        display: none;
+        .indicator-title {
+            color: rgb(174, 9, 34);
+            font-size: 1em;
+            .glyphicon {
+                float: left;
+                margin-right: 4px;
+            }
+        }
+        .table {
+            padding: 0.5em 0.25em;
+            /*background-color: rgb(235,235,231);*/
+            tbody {
+                &.indicator-period {
+                    border: none;
+                    padding: 15px 0;
+                }
+                &.expanded {
+                    background-color: white;
+                }
+            }
+            thead {
+                font-weight: normal;
+                color: rgb(192, 192, 192);
+                tr {
+                    background-color: #ececec;
+                }
+            }
+            tr,
+            td {
+                border: none;
+                color: rgb(172, 172, 172);
+            }
+            tr {
+                min-height: 125px;
+                .add-button {
+                    display: none;
+                }
+                &.expanded ~ .add-button-tr td {
+                    text-align: right;
+                    .add-button {
+                        border: none;
+                        display: inline-block;
+                        margin-right: 1.4em;
+                    }
+                }
+            }
+            td {
+                vertical-align: middle;
+                &.period-td,
+                &.actual-td,
+                &.target-td,
+                &.actions-td {
+                    white-space: nowrap;
+                }
+                &.target-td {
+                    font-weight: bold;
+                }
+                &.actions-td {
+                    .tooltip {
+                        top: -170px;
+                        left: 132.703px;
+                        display: block;
+                        .tooltip-arrow {
+                            left: 77.4336%;
+                        }
+                    }
+                }
+                &.period-td {
+                    color: rgba($akvoBlack, 0.6);
+                    position: relative;
+                    .result-tooltip {
+                        position: absolute;
+                        top: 0;
+                    }
+                }
+                &.indicator-bar-td {
+                    width: 55%;
+                }
+            }
+            .expand-indicator-period {
+                .fa-chevron-circle-up {
+                    display: none;
+                }
+                .fa-chevron-circle-down {
+                    display: initial;
+                }
+                &.expanded {
+                    .fa-chevron-circle-up {
+                        display: initial;
+                    }
+                    .fa-chevron-circle-down {
+                        display: none;
+                    }
+                }
+            }
+        }
+        .indicator {
+            display: none;
+        }
+    }
+}
+
+
+/* Styling for the indicator period progress bar */
+
+.indicator-bar-td {
+    height: 80px;
+    padding: 0;
+}
+
+
+/* Insert some transparent text to space the "progress" label */
+
+.th-progress {
+    &:before {
+        content: 'spacer';
+        width: 40px;
+        height: 1px;
+        display: inline-block;
+        color: transparent;
+        @media only screen and (max-width: 800px) {
+            display: none;
+        }
+    }
+}
+
+.indicator-bar-display-container {
+    position: relative;
+    height: 100%;
+    margin-left: 50px;
+    margin-right: 15px;
+    .indicator-bar,
+    .indicator-bar-progress-amount {
+        position: absolute;
+        top: 38px;
+        bottom: 24px;
+        left: 0px;
+        height: 8px;
+        @include border-radius(2px);
+        border: 1px solid #CDDFEF;
+    }
+    .indicator-baseline {
+        position: absolute;
+        left: -45px;
+        top: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        vertical-align: bottom;
+        width: 35px;
+        text-align: right;
+    }
+    .indicator-bar {
+        background-color: #E2EBF5;
+        right: 0px;
+    }
+    .indicator-bar-progress-amount {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    .indicator-bar-progress-container {
+        /* The progress box has non-zero width, so add some
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
+        position: relative;
+        height: 100%;
+        .indicator-bar-progress {
+            position: absolute;
+            width: 4px;
+            margin-left: -2px;
+            /* Offset half the width */
+            height: 23px;
+            top: 30px;
+            background-color: #A3C7E3;
+            text-align: center;
+        }
+    }
+}
+
+.target-td {
+    vertical-align: middle;
+}
+
+.indicator-bar-progress-complete-container {
+    .indicator-bar-progress-complete {
+        padding-left: 15px;
+        font-size: 1.1em;
+        font-weight: normal;
+        color: rgb(81, 80, 80);
+        vertical-align: bottom;
+    }
+    .indicator-bar-progress-text {
+        padding-left: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #A3C7E3;
+        vertical-align: bottom;
+    }
+}
+
+.indicator-container .indicator-group .table tbody {
+    background-color: white;
+    border-bottom: none !important;
+    &:last-child {
+        margin-bottom: 0;
+    }
+    .edit-button {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        top: 15px;
+        right: 10px;
+        color: $akvoBlack;
+        font-size: 1.5em;
+        &.activated {
+            display: none;
+        }
+    }
+    .delete-button {
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        top: 13px;
+        right: 35px;
+        font-size: 1.5em;
+        color: $akvoBlack;
+        &.activated {
+            display: none;
+        }
+    }
+    .delete-confirm {
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: 55px;
+        height: 90px;
+        background-color: white;
+        color: $akvoBlack;
+        padding: 1em;
+        z-index: 101;
+        > div {
+            height: 40px;
+            position: relative;
+        }
+        .delete-confirm-no {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        .delete-confirm-yes {
+            background-color: #ae0922;
+            border-color: #ae0922;
+            margin-left: auto;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            &:hover {
+                background-color: #ff5500;
+                border-color: #ff5500;
+            }
+        }
+    }
+    .update-date {
+        display: inline-block;
+        text-align: left;
+        width: 50%;
+    }
+    .update-name {
+        display: inline-block;
+        text-align: left;
+        width: 30%;
+        margin-right: 10%;
+        color: $akvoBlack;
+        &.delete-pending {
+            margin-bottom: 90px;
+        }
+    }
+    .update-timeline {
+        display: inline-block;
+        width: 75%;
+        height: 80px;
+        padding-top: 1em;
+        z-index: 99;
+        position: relative;
+    }
+    .update-target {
+        position: absolute;
+        margin-top: 48px;
+        display: inline-block;
+        width: 24%;
+        height: 80px;
+        text-align: center;
+        span {
+            font-size: 1.1em;
+            color: rgb(81, 80, 80);
+            vertical-align: text-top;
+            &.update-target-actual {
+                padding-left: 15px;
+                font-size: 1.1em;
+                font-weight: bold;
+                color: #A3C7E3;
+                vertical-align: bottom;
+            }
+        }
+    }
+    .update-description {
+        padding: 0.5em;
+        margin: 20px auto 30px;
+        &.editable {
+            background: whitesmoke;
+            border: 1px solid #A3C7E3;
+        }
+        .update-photo {
+            float: right;
+            width: 150px;
+            height: 100px;
+            background-size: cover;
+        }
+    }
+    .save-button {
+        position: absolute;
+        display: none;
+        right: 10px;
+        bottom: 10px;
+        &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: white;
+            background-color: rgb(0, 122, 184);
+            @include border-radius(2px);
+            text-align: center;
+        }
+    }
+    .cancel-button {
+        position: absolute;
+        display: none;
+        right: 60px;
+        bottom: 10px;
+        background-color: none;
+        &.active {
+            display: inline-block;
+            padding: 3px 7px;
+            color: rgb(0, 122, 184);
+            @include border-radius(2px);
+            text-align: center;
+        }
+    }
+}
+
+label.imageUpload,
+label.fileUpload {
+    input[type="file"] {
+        position: fixed;
+        top: -1000px;
+    }
+}
+
+.update-container {
+    background: rgba($primary4, 0.05);
+    border: 1px solid rgba($akvoBlack, 0.2);
+    padding: 0 1em;
+    margin-bottom: 50px;
+    .update-entry-container {
+        padding: 0 0 10px 0;
+        position: relative;
+        &.edit-in-progress {
+            background: rgba($rsrGreen, 0.05);
+            border: 1px solid rgba($rsrGreen, 0.3);
+            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+            .update-entry-container-header {
+                background: rgba(white, 0.5);
+            }
+        }
+        .update-entry-container-header {
+            background: rgba($akvoBlack, 0);
+            border-bottom: 1px solid rgba($akvoBlack, 0.1);
+            padding: 0.75em 0;
+            .update-user {
+                color: $akvoPurple;
+                font-weight: bold;
+            }
+            .update-created-at {
+                margin-left: 15px;
+                color: rgba($akvoBlack, 0.7);
+            }
+            .update-status {
+                color: $akvoTvRed;
+            }
+        }
+        .comments {
+            .input-group {
+                margin-top: 20px;
+                /* button {
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/
+            }
+            .comment {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                .comment-header {
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                    span {
+                        color: $akvoPurple;
+                        &:last-child {
+                            margin-left: 15px;
+                            color: rgba($akvoBlack, 0.5);
+                        }
+                    }
+                }
+                .comment-text {}
+            }
+        }
+        .menuAction {
+            position: relative;
+            .removeUpdate {
+                position: absolute;
+                top: 30px;
+                left: 0;
+                .btn {
+                    background: $akvoTvRed;
+                    color: white;
+                    border-color: $akvoTvRed;
+                    &:hover {
+                        background: rgba($akvoTvRed, 0.5);
+                    }
+                }
+            }
+            .bottomRow {
+                margin-top: 20px;
+                padding: 0.75em;
+                position: relative;
+                list-style-type: none;
+                .btn {
+                    padding: 2px 7px;
+                    &.btn-default {
+                        background: $akvoBlack;
+                        color: white;
+                        .editUpdate & {
+                            background: initial;
+                            color: initial;
+                        }
+                        &:hover {
+                            background: $akvoPurple;
+                        }
+                    }
+                }
+                .cancelUpdate {
+                    margin-right: 25px;
+                }
+                .saveUpdate {}
+                .returnUpdate {}
+                .submitUpdate {}
+                .approveUpdate {}
+            }
+        }
+        .upActualValue {
+            margin-top: 47px;
+            margin-bottom: 15px;
+            .update-actual-value-text {
+                color: rgba($akvoBlack, 0.7);
+            }
+            .update-actual-value-data {
+                font-weight: bold;
+            }
+            .update-relative-value {
+                margin-left: 5px;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.update-dialog-container {
+    &.pending-new-update {
+        .update-entry-container {
+            background-color: #D1E6D1;
+            &:first-child {
+                border-left: none;
+            }
+        }
+    }
+    td {
+        padding: 8px 2em;
+        .update-entry-container {
+            padding: 2em;
+            position: relative;
+            background-color: #ececec;
+            &:first-child {
+                border-left: 4px solid #ae0922;
+            }
+            &.edit-in-progress {
+                background-color: #D1E6D1;
+                border-left: none;
+            }
+            .update-exceed-target {
+                margin: 3em 0 1em 0;
+                text-align: right;
+                input.exceed-value {
+                    opacity: 0;
+                }
+                label {
+                    margin-right: 10px;
+                    color: rgba($akvoBlack, 0.5);
+                }
+                .update-exceed-target-checkbox {
+                    margin-right: 10px;
+                    &:checked {
+                        ~ input.exceed-value {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+            .indicator-bar-display-container {
+                position: relative;
+                height: 100%;
+                margin-left: 45px;
+                margin-right: 0;
+                .indicator-baseline {
+                    top: 34px;
+                    left: -60px;
+                }
+                .indicator-bar-progress-text {
+                    position: absolute;
+                    bottom: -18px;
+                    width: 44px;
+                    margin-left: -22px;
+                    text-align: center;
+                    color: #B5B5B5;
+                    border: 1px solid #B5B5B5;
+                    background-color: #ececec;
+                    cursor: pointer;
+                    .progress-hover-text {
+                        content: '';
+                        opacity: 0;
+                        height: 0px;
+                        width: 0px;
+                        padding: 0;
+                        margin: 0;
+                        font-size: 0;
+                    }
+                    &:last-child {
+                        color: #A3C7E3;
+                        border-color: #A3C7E3;
+                    }
+                    &:hover {
+                        z-index: 101;
+                        background-color: white;
+                        .progress-hover-text {
+                            display: block;
+                            font-size: initial;
+                            opacity: 1;
+                            position: absolute;
+                            top: 26px;
+                            color: inherit;
+                            content: initial;
+                            background-color: white;
+                            width: 100px;
+                            height: auto;
+                            margin-left: -28px;
+                            /* Half of the width of this - half the width of the parent */
+                            padding: 5px 0;
+                            &:before {
+                                content: '';
+                                width: 0;
+                                height: 0;
+                                border-left: 5px solid transparent;
+                                border-right: 5px solid transparent;
+                                border-bottom: 5px solid white;
+                                position: absolute;
+                                top: -5px;
+                                left: 45px;
+                            }
+                        }
+                    }
+                }
+                .indicator-bar,
+                .indicator-bar-progress-amount {
+                    position: absolute;
+                    top: 38px;
+                    bottom: 24px;
+                    left: 0px;
+                    height: 14px;
+                    @include border-radius(2px);
+                    border: 1px solid #CDDFEF;
+                }
+                .indicator-bar {
+                    background-color: #fff;
+                    right: 0px;
+                }
+                .indicator-bar-progress-amount {
+                    background-color: #fff;
+                    border-right: none;
+                }
+                .indicator-bar-progress-container {
+                    /* The progress box has non-zero width, so add some
+                        ** padding to ensure it doesn't overflow the parent
+                        ** container.
+                        */
+                    position: relative;
+                    height: 100%;
+                    .indicator-bar-progress {
+                        position: absolute;
+                        width: 3px;
+                        height: 20px;
+                        top: 35px;
+                        background-color: #B5B5B5;
+                        &:nth-last-child(2) {
+                            background-color: #A3C7E3;
+                        }
+                        text-align: center;
+                        &.update-dialog-timeline-marker {
+                            border: none;
+                        }
+                    }
+                }
+            }
+            .target-td {
+                vertical-align: middle;
+            }
+            .indicator-bar-progress-complete-container {
+                .indicator-bar-progress-complete {
+                    padding-left: 15px;
+                    font-size: 1.5em;
+                    font-weight: normal;
+                    color: rgb(81, 80, 80);
+                    vertical-align: bottom;
+                }
+                .indicator-bar-progress-text {
+                    padding-left: 15px;
+                    font-size: 1.5em;
+                    font-weight: bold;
+                    color: #A3C7E3;
+                    vertical-align: bottom;
+                    z-index: 19999;
+                }
+            }
+            &:last-child {
+                margin-bottom: 0;
+            }
+            .edit-button {
+                position: absolute;
+                height: 20px;
+                width: 20px;
+                top: 15px;
+                right: 10px;
+                color: $akvoBlack;
+                font-size: 1.5em;
+                &.activated {
+                    display: none;
+                }
+            }
+            .delete-button {
+                position: absolute;
+                height: 20px;
+                width: 20px;
+                top: 13px;
+                right: 35px;
+                font-size: 1.5em;
+                color: $akvoBlack;
+                &.activated {
+                    display: none;
+                }
+            }
+            .update-date {
+                display: inline-block;
+                text-align: left;
+                width: 50%;
+            }
+            .update-name {
+                display: inline-block;
+                text-align: left;
+                width: 30%;
+                margin-right: 10%;
+                color: $akvoBlack;
+            }
+            .update-timeline {
+                display: inline-block;
+                width: 84%;
+                height: 80px;
+                padding-top: 1em;
+                z-index: 99;
+                position: relative;
+            }
+            .update-target {
+                position: absolute;
+                margin-top: 49px;
+                display: inline-block;
+                width: 15%;
+                height: 80px;
+                text-align: right;
+                span {
+                    font-size: 1.1em;
+                    color: rgb(81, 80, 80);
+                    vertical-align: text-top;
+                    &.update-target-actual {
+                        padding-left: 15px;
+                        font-size: 1.1em;
+                        font-weight: bold;
+                        color: #A3C7E3;
+                        vertical-align: bottom;
+                    }
+                }
+            }
+            .update-description {
+                padding: 0.5em;
+                margin: 20px auto 30px;
+                &.editable {
+                    background: whitesmoke;
+                    border: 1px solid #A3C7E3;
+                }
+                .update-photo {
+                    float: right;
+                    width: 150px;
+                    height: 100px;
+                    background-size: cover;
+                }
+            }
+            .save-button {
+                position: absolute;
+                display: none;
+                right: 10px;
+                bottom: 10px;
+                &.active {
+                    display: inline-block;
+                    padding: 3px 7px;
+                    color: white;
+                    background-color: $akvoBlack;
+                    @include border-radius(2px);
+                    text-align: center;
+                }
+            }
+            .cancel-button {
+                position: absolute;
+                display: none;
+                right: 60px;
+                bottom: 10px;
+                &.active {
+                    display: inline-block;
+                    padding: 3px 7px;
+                    color: $akvoBlack;
+                    @include border-radius(2px);
+                    text-align: center;
+                }
+            }
+            .edit-slider {
+                z-index: 9999;
+                .original-position-marker {
+                    width: 3px;
+                    margin-left: -2px;
+                    height: 20px;
+                    position: absolute;
+                    background-color: #B5B5B5;
+                    top: -3px;
+                    z-index: 102;
+                }
+                .change-indicator {
+                    position: absolute;
+                    background-color: green;
+                    height: 12px;
+                    top: 1px;
+                    z-index: 101;
+                    opacity: 0.5;
+                    &.negative {
+                        background-color: red;
+                    }
+                }
+                .noUi-base,
+                &.noUi-horizontal {
+                    height: 5px;
+                    border: 0;
+                    background-color: rgba(white, 0);
+                    margin-top: -28px;
+                    z-index: 99999;
+                    @include border-radius(4px);
+                    box-shadow: none;
+                    .noUi-origin {
+                        background-color: rgba(white, 0);
+                        @include border-radius(4px);
+                    }
+                    .noUi-handle {
+                        position: relative;
+                        width: 28px;
+                        height: 28px;
+                        z-index: 9999;
+                        background-color: rgb(0, 122, 184);
+                        cursor: pointer;
+                        left: -14px;
+                        box-shadow: none;
+                        top: -7px;
+                        color: white;
+                        &:after {
+                            display: block;
+                            content: '|||';
+                            color: white;
+                            width: 26px;
+                            height: 26px;
+                            line-height: 23px;
+                            text-align: center;
+                            letter-spacing: -2px;
+                            color: white;
+                            background-color: transparent;
+                            top: 0;
+                            left: -1px;
+                        }
+                        &:before {
+                            display: none;
+                        }
+                        &:hover {
+                            background-color: lighten(rgb(0, 122, 184), 10%);
+                        }
+                        &:active {
+                            background-color: $flowOrange;
+                        }
+                        .handle-label {
+                            position: absolute;
+                            top: -32px;
+                            background-color: rgb(0, 122, 184);
+                            padding: 3px;
+                            width: 44px;
+                            left: -8px;
+                            text-align: center;
+                            &:after {
+                                content: '';
+                                height: 0px;
+                                width: 0px;
+                                position: absolute;
+                                bottom: -5px;
+                                left: 17px;
+                                border-left: 5px solid transparent;
+                                border-right: 5px solid transparent;
+                                border-top: 5px solid rgb(0, 122, 184);
+                            }
+                        }
+                        .handle-change-label {
+                            position: absolute;
+                            width: 42px;
+                            text-align: center;
+                            bottom: -25px;
+                            left: -8px;
+                            background-color: white;
+                            color: rgb(0, 122, 184);
+                        }
+                    }
+                }
+                &.active {
+                    display: initial;
+                }
+            }
+        }
+    }
+}
+
 
 /* Modal dialog stuff for the Project Editor */
 
@@ -4131,6 +4215,7 @@ div.active {
     }
 }
 
+
 /* My reports section */
 
 div#my-reports {
@@ -4201,63 +4286,64 @@ div#my-reports {
         }
     }
 }
-.period-td {
-        color: rgba($akvoBlack, 0.6);
-        position: relative;
-        .badge {
-            background-color: $akvoBlack;
-            @include transition(all 0.1s linear);
-            margin-top: -5px;
-            padding: 5px 9px;
-            @include border-radius(15px);
-            font-family: $scriptFont;
-            &:hover {
-                background-color: $akvoPurple;
-                cursor: pointer;
-            }
-        }
-        .result-tooltip {
-            position: absolute;
-            top: 55px;
-            left: 0;
-            background: rgba(white, 1);
-            border: 1px solid  rgba($primary4, 0.8);
-            color: $akvoBlack;
-            @include border-radius(4px);
-            .tooltip-inner {
-                background: rgba(white, 1);
-                color: $akvoBlack;
-                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
-                }
-            .tooltip-arrow {
-                position: absolute;
-                background: rgba(white, 1);
-                border: 1px solid  rgba($primary4, 0.8);
-                right: 8px;
-                top: -2px;
-                &:after, &:before {
-                    bottom: 100%;
-                    left: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                    }
 
-                &:after {
-                    border-color: rgba(136, 183, 213, 0);
-                    border-bottom-color: rgba($primary4, 0.5);
-                    border-width: 7px;
-                    margin-left: -7px;
-                }
-                &:before {
-                    border-color: rgba(194, 225, 245, 0);
-                    border-bottom-color:  rgba($primary4, 0.5);
-                    border-width: 8px;
-                    margin-left: -8px;
-                }
+.period-td {
+    color: rgba($akvoBlack, 0.6);
+    position: relative;
+    .badge {
+        background-color: $akvoBlack;
+        @include transition(all 0.1s linear);
+        margin-top: -5px;
+        padding: 5px 9px;
+        @include border-radius(15px);
+        font-family: $scriptFont;
+        &:hover {
+            background-color: $akvoPurple;
+            cursor: pointer;
+        }
+    }
+    .result-tooltip {
+        position: absolute;
+        top: 55px;
+        left: 0;
+        background: rgba(white, 1);
+        border: 1px solid rgba($primary4, 0.8);
+        color: $akvoBlack;
+        @include border-radius(4px);
+        .tooltip-inner {
+            background: rgba(white, 1);
+            color: $akvoBlack;
+            @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
+        }
+        .tooltip-arrow {
+            position: absolute;
+            background: rgba(white, 1);
+            border: 1px solid rgba($primary4, 0.8);
+            right: 8px;
+            top: -2px;
+            &:after,
+            &:before {
+                bottom: 100%;
+                left: 50%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+            }
+            &:after {
+                border-color: rgba(136, 183, 213, 0);
+                border-bottom-color: rgba($primary4, 0.5);
+                border-width: 7px;
+                margin-left: -7px;
+            }
+            &:before {
+                border-color: rgba(194, 225, 245, 0);
+                border-bottom-color: rgba($primary4, 0.5);
+                border-width: 8px;
+                margin-left: -8px;
             }
         }
     }
+}

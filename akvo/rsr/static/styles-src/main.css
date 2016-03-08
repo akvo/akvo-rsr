@@ -45,18 +45,25 @@ body {
   color: #394c50;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: 'Poppins', 'Questrial', 'Lato', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Poppins", "Questrial", "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 75px; }
   @media only screen and (max-width: 768px) {
     body {
       padding-top: 65px; } }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74; }
 
-a, a:link, a:visited {
+a,
+a:link,
+a:visited {
   outline: none;
   color: #00aaff;
   text-decoration: none;
@@ -65,9 +72,13 @@ a, a:link, a:visited {
   -o-transition: color 0.2s linear;
   -webkit-transition: color 0.2s linear;
   transition: color 0.2s linear; }
-  a:link, a:link:link, a:visited:link {
+  a:link,
+  a:link:link,
+  a:visited:link {
     -webkit-tap-highlight-color: #fcd700; }
-  a:hover, a:link:hover, a:visited:hover {
+  a:hover,
+  a:link:hover,
+  a:visited:hover {
     color: #ff5500; }
 
 /****************** Miscellanous Typography ********************/
@@ -97,7 +108,7 @@ time {
   color: #de8929; }
 
 em {
-  font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+  font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
   margin: 0 5px 0em 0em;
   font-style: italic; }
@@ -148,7 +159,8 @@ a.moreLink {
   -webkit-transition: all 0.1s linear;
   transition: all 0.1s linear; }
 
-a.btn-primary, button.btn-primary {
+a.btn-primary,
+button.btn-primary {
   border: 1px solid #00aaff;
   color: white;
   background: #00aaff;
@@ -156,7 +168,8 @@ a.btn-primary, button.btn-primary {
   -o-transition: all 0.1s linear;
   -webkit-transition: all 0.1s linear;
   transition: all 0.1s linear; }
-  a.btn-primary:hover, button.btn-primary:hover {
+  a.btn-primary:hover,
+  button.btn-primary:hover {
     color: white;
     background: #ff5500;
     border: 1px solid #ff5500; }
@@ -166,20 +179,24 @@ a.btn-primary, button.btn-primary {
   color: rgba(0, 167, 157, 0.7);
   text-align: left; }
 
-.btn-group button, .form-group button {
+.btn-group button,
+.form-group button {
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
-.tt-input, .tt-hint {
+.tt-input,
+.tt-hint {
   -moz-border-radius: 5px 0 0 5px;
   -o-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
-.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+.input-group-addon:not(:first-child):not(:last-child),
+.input-group-btn:not(:first-child):not(:last-child),
+.input-group .form-control:not(:first-child):not(:last-child) {
   -moz-border-radius: 5px 0 0 5px;
   -o-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
@@ -222,7 +239,8 @@ span.twitter-typeahead .tt-suggestion > p {
   color: rgba(0, 0, 0, 0.7);
   white-space: nowrap; }
 
-span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
   color: #ffffff;
   text-decoration: none;
   outline: 0;
@@ -257,13 +275,16 @@ dl.dl-horizontal dt {
     font-weight: bold; }
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
+
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+
 dl.dl-horizontal dd.funders {
   margin-top: 5px; }
   dl.dl-horizontal dd.funders span.iati-activity-id {
     font-style: italic; }
+
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
@@ -449,7 +470,7 @@ nav.navbar-fixed-top {
           -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
             color: #00aaff;
-            font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
             border: thin solid transparent; }
             nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
               color: #ff5500; }
@@ -460,10 +481,10 @@ nav.navbar-fixed-top {
               -moz-border-radius: 3px;
               -o-border-radius: 3px;
               -webkit-border-radius: 3px;
-              border-radius: 3px; }
-              @media only screen and (max-width: 1024px) {
-                nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
-                  background: rgba(255, 85, 0, 0.1); } } }
+              border-radius: 3px; } }
+      @media only screen and (max-width: 768px) and (max-width: 1024px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+          background: rgba(255, 85, 0, 0.1); } }
 
 .navbar .container {
   /* nav menu overflows to two lines in spanish and french unless container width
@@ -481,7 +502,8 @@ nav.navbar-fixed-top {
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {
     float: none; }
-  .navbar-left, .navbar-right {
+  .navbar-left,
+  .navbar-right {
     float: none !important; }
   .navbar-toggle {
     display: block; }
@@ -568,19 +590,25 @@ nav.navbar-fixed-top {
   #createProject:hover {
     background: #2c2a74; }
 
-.indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
+.indicator-period-list.parentProject .relatedInfo,
+.indicator-period-list.childProject .relatedInfo {
   color: #2c2a74; }
-.indicator-period-list.parentProject .relatedInfoProjectTitle, .indicator-period-list.childProject .relatedInfoProjectTitle {
+
+.indicator-period-list.parentProject .relatedInfoProjectTitle,
+.indicator-period-list.childProject .relatedInfoProjectTitle {
   display: none;
   margin-top: 15px; }
-  .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title, .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
+  .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title,
+  .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
     margin-top: 15px; }
+
 .indicator-period-list thead tr {
   background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
   .indicator-period-list thead tr th {
     padding-top: 15px;
     padding-bottom: 15px; }
+
 .indicator-period-list tbody.indicator-period {
   border: none; }
   .indicator-period-list tbody.indicator-period tr td {
@@ -588,40 +616,70 @@ nav.navbar-fixed-top {
     padding-bottom: 25px;
     border: none; }
 
-.myProjectList thead tr, #updates thead tr, #user_table thead tr {
+.myProjectList thead tr,
+#updates thead tr,
+#user_table thead tr {
   background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
-  .myProjectList thead tr th, #updates thead tr th, #user_table thead tr th {
+  .myProjectList thead tr th,
+  #updates thead tr th,
+  #user_table thead tr th {
     padding-top: 15px;
     padding-bottom: 15px; }
-.myProjectList tbody tr, #updates tbody tr, #user_table tbody tr {
+
+.myProjectList tbody tr,
+#updates tbody tr,
+#user_table tbody tr {
   background: white !important; }
-  .myProjectList tbody tr.notPublished, #updates tbody tr.notPublished, #user_table tbody tr.notPublished {
+  .myProjectList tbody tr.notPublished,
+  #updates tbody tr.notPublished,
+  #user_table tbody tr.notPublished {
     background: rgba(217, 83, 79, 0.1) !important; }
-  .myProjectList tbody tr.isPrivate, #updates tbody tr.isPrivate, #user_table tbody tr.isPrivate {
+  .myProjectList tbody tr.isPrivate,
+  #updates tbody tr.isPrivate,
+  #user_table tbody tr.isPrivate {
     background: rgba(240, 173, 78, 0.1) !important; }
-  .myProjectList tbody tr td, #updates tbody tr td, #user_table tbody tr td {
+  .myProjectList tbody tr td,
+  #updates tbody tr td,
+  #user_table tbody tr td {
     padding-top: 30px;
     padding-bottom: 30px;
     border: none; }
-.myProjectList div.projectListMenu ul, #updates div.projectListMenu ul, #user_table div.projectListMenu ul {
+
+.myProjectList div.projectListMenu ul,
+#updates div.projectListMenu ul,
+#user_table div.projectListMenu ul {
   margin-top: -10px; }
-  .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+  .myProjectList div.projectListMenu ul li,
+  #updates div.projectListMenu ul li,
+  #user_table div.projectListMenu ul li {
     display: inline-block; }
     @media only screen and (max-width: 992px) {
-      .myProjectList div.projectListMenu ul li, #updates div.projectListMenu ul li, #user_table div.projectListMenu ul li {
+      .myProjectList div.projectListMenu ul li,
+      #updates div.projectListMenu ul li,
+      #user_table div.projectListMenu ul li {
         display: block; } }
-    .myProjectList div.projectListMenu ul li a:last-child, #updates div.projectListMenu ul li a:last-child, #user_table div.projectListMenu ul li a:last-child {
+    .myProjectList div.projectListMenu ul li a:last-child,
+    #updates div.projectListMenu ul li a:last-child,
+    #user_table div.projectListMenu ul li a:last-child {
       margin-right: 0; }
-.myProjectList a:last-child, #updates a:last-child, #user_table a:last-child {
+
+.myProjectList a:last-child,
+#updates a:last-child,
+#user_table a:last-child {
   margin-right: 0; }
-.myProjectList a.addUpdate.disabled, #updates a.addUpdate.disabled, #user_table a.addUpdate.disabled {
+
+.myProjectList a.addUpdate.disabled,
+#updates a.addUpdate.disabled,
+#user_table a.addUpdate.disabled {
   background-color: #AB9F9F;
   color: #E9E9E9;
   pointer-events: initial;
   cursor: not-allowed;
   border: none; }
-  .myProjectList a.addUpdate.disabled:hover, #updates a.addUpdate.disabled:hover, #user_table a.addUpdate.disabled:hover {
+  .myProjectList a.addUpdate.disabled:hover,
+  #updates a.addUpdate.disabled:hover,
+  #user_table a.addUpdate.disabled:hover {
     text-decoration: none; }
 
 div.paginationWrap {
@@ -647,6 +705,7 @@ div.paginationWrap {
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
+
 #profile .btn {
   background: #202024;
   color: white;
@@ -660,6 +719,7 @@ div.paginationWrap {
 @media only screen and (max-width: 768px) {
   .table-responsive {
     border: none; } }
+
 .table-responsive.locationTab {
   overflow: hidden; }
   .table-responsive.locationTab thead th {
@@ -672,6 +732,7 @@ div.paginationWrap {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important; }
+
 .table-responsive .media {
   width: 39%; }
   .table-responsive .media > a {
@@ -707,13 +768,13 @@ div.paginationWrap {
       display: block; } }
 
 #organisations {
-  background: rgba(32, 32, 36, 0.1);
+  background: rgba(32, 32, 36, 0);
   padding-bottom: 15px;
   margin-top: 25px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
+  -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  -o-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  -webkit-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
   @media only screen and (max-width: 768px) {
     #organisations {
       margin-top: 20px;
@@ -902,7 +963,8 @@ h4.detailedInfo {
   border-radius: 3px;
   margin-bottom: 15px; }
   @media only screen and (max-width: 768px) {
-    .paginationWrap .pagination li a, .paginationWrap .pagination li span {
+    .paginationWrap .pagination li a,
+    .paginationWrap .pagination li span {
       padding: 10px 16px;
       font-size: 18px; } }
   .paginationWrap .sortList {
@@ -1056,10 +1118,12 @@ h4.detailedInfo {
     .main-list li dl.dl-horizontal dd {
       margin-left: 0px;
       display: block; } }
+
 .main-list .excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal; }
+
 .main-list.projects ul li {
   border: thin solid rgba(44, 42, 116, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1090,6 +1154,7 @@ h4.detailedInfo {
         margin-top: 1em; } }
     .main-list.projects ul li .donateButton .totalBudgetLabel {
       width: initial; }
+
 .main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1122,6 +1187,7 @@ h4.detailedInfo {
     list-style-type: initial;
     margin: initial;
     padding: initial; }
+
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
@@ -1154,7 +1220,7 @@ h4.detailedInfo {
   .main-list.organisations ul li img {
     filter: gray;
     -webkit-filter: grayscale(100%);
-    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+    filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
     filter: grayscale(100%);
     transition: all 0.2s ease-in; }
   .main-list.organisations ul li:hover img {
@@ -1191,6 +1257,12 @@ header.projectHeader {
       @media only screen and (max-width: 768px) {
         header.projectHeader .shareBlock div {
           text-align: left; } }
+      header.projectHeader .shareBlock div .btn {
+        background: #202024;
+        color: white;
+        border: none; }
+        header.projectHeader .shareBlock div .btn:hover {
+          background: #2c2a74; }
       header.projectHeader .shareBlock div a {
         position: relative;
         top: 0px; }
@@ -1216,20 +1288,26 @@ header.projectHeader {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
-    header.projectHeader .shareBlock .btn, header.projectHeader .shareBlock img {
+    header.projectHeader .shareBlock .btn,
+    header.projectHeader .shareBlock img {
       display: inline-block;
       margin: 10px 3px 3px 3px; }
 
 .donateSection {
-  background: rgba(255, 164, 114, 0.2);
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background: rgba(255, 164, 114, 0.1);
   padding: 10px 15px;
-  box-shadow: 1px 1px 0 rgba(255, 164, 114, 0.5);
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
+  box-shadow: 0 0 1px rgba(255, 164, 114, 0.8); }
   .donateSection a {
     margin: -10px auto 5px auto; }
+    .donateSection a.donateButton {
+      background: #202024;
+      color: white;
+      border: none; }
+      .donateSection a.donateButton:hover {
+        background: #2c2a74; }
 
 #project-map {
   border: 1px solid #f9d7b9; }
@@ -1240,13 +1318,18 @@ header.projectHeader {
 .orgMap .mapInfoWindow img {
   display: none; }
 
+.project-tab.summary {
+  margin-top: -20px; }
+
 div.projectTopRow {
   position: relative;
-  background: rgba(245, 245, 245, 0.5);
-  margin-top: 1px;
+  background: rgba(245, 245, 245, 0);
+  margin-top: 0px;
   margin-bottom: 20px;
-  /*border-bottom: 1px solid rgba($akvoBlack, 0.1);*/
-  box-shadow: 0 3px 6px rgba(32, 32, 36, 0.1); }
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(32, 32, 36, 0);
+  box-shadow: 0 3px 3px rgba(32, 32, 36, 0.1); }
   div.projectTopRow #carousel {
     padding: 15px 0;
     margin-left: -15px; }
@@ -1265,15 +1348,12 @@ div.projectTopRow {
         max-height: 400px;
         margin: auto; }
       div.projectTopRow #carousel .carousel-inner .item .carousel-caption {
-        background-color: rgba(255, 255, 255, 0.6);
-        border: thin solid rgba(255, 255, 255, 0.8);
-        bottom: 1px;
-        padding-top: 5px;
+        background-color: rgba(255, 255, 255, 0.7);
+        bottom: 0px;
+        left: 0;
+        padding-top: 10px;
         padding-bottom: 5px;
-        -moz-border-radius: 5px 5px 0 0;
-        -o-border-radius: 5px 5px 0 0;
-        -webkit-border-radius: 5px 5px 0 0;
-        border-radius: 5px 5px 0 0; }
+        width: 100%; }
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption h4 {
           margin-top: 0;
           margin-bottom: 0;
@@ -1318,7 +1398,7 @@ div.projectTopRow {
               width: 80%;
               filter: gray;
               -webkit-filter: grayscale(100%);
-              filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+              filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
               filter: grayscale(100%);
               transition: all 0.2s ease-in;
               margin: inherit; }
@@ -1378,13 +1458,14 @@ div.textBlock {
   div.textBlock .udpateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
-    background: #fff6f1; }
+    background: transparent; }
     div.textBlock .udpateComponent h4 {
       margin-bottom: 10px; }
     div.textBlock .udpateComponent .updateLinkTitle {
       display: block;
       color: #00a79d;
-      margin-bottom: 5px; }
+      margin-bottom: 5px;
+      margin-left: 10px; }
       div.textBlock .udpateComponent .updateLinkTitle i {
         margin-right: 5px; }
       div.textBlock .udpateComponent .updateLinkTitle:hover {
@@ -1393,9 +1474,38 @@ div.textBlock {
 #accordion .panel-group .panel-heading a:before {
   content: '- ';
   position: relative; }
+
 #accordion .panel-group .panel-heading a.collapsed:before {
   content: '+ ';
   top: 1px; }
+
+.projectMenu {
+  position: relative;
+  margin: -15px 0 20px 0;
+  padding-top: 10px;
+  background: rgba(32, 32, 36, 0.05); }
+  .projectMenu .nav-tabs {
+    border-bottom: none; }
+  .projectMenu nav ul li {
+    display: inline; }
+    .projectMenu nav ul li a.tab-link {
+      color: #202024;
+      padding: 15px; }
+      @media only screen and (max-width: 768px) {
+        .projectMenu nav ul li a.tab-link {
+          padding: 20px 10px; } }
+      .projectMenu nav ul li a.tab-link:hover {
+        color: #ff5500;
+        border-color: transparent;
+        background-color: rgba(32, 32, 36, 0.1); }
+      .projectMenu nav ul li a.tab-link.selected {
+        color: #ff5500;
+        font-weight: normal;
+        background: white;
+        -moz-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+        -o-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+        -webkit-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
+        box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1); }
 
 .allUpdates {
   margin-top: 25px; }
@@ -1447,7 +1557,8 @@ div.textBlock {
 .projectFinancial .budgetItem {
   margin-top: 12px;
   width: 60%; }
-  .projectFinancial .budgetItem:nth-child(1), .projectFinancial .budgetItem:nth-child(2) {
+  .projectFinancial .budgetItem:nth-child(1),
+  .projectFinancial .budgetItem:nth-child(2) {
     margin-top: 0; }
 
 /* Project hierarchy */
@@ -1463,7 +1574,9 @@ div.textBlock {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
-.project-hierarchy-window:hover, .project-hierarchy-window._jsPlumb_source_hover, .project-hierarchy-window._jsPlumb_target_hover {
+.project-hierarchy-window:hover,
+.project-hierarchy-window._jsPlumb_source_hover,
+.project-hierarchy-window._jsPlumb_target_hover {
   border: 1px solid orange;
   color: orange; }
 
@@ -1527,7 +1640,8 @@ ul.typeahead-selector {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
+    ul.typeahead-selector li:hover,
+    ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
     ul.typeahead-selector li a {
@@ -1539,10 +1653,12 @@ ul.typeahead-selector {
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
+
 .organisationDetail .orgDescr {
   background-color: rgba(244, 116, 107, 0); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
+
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1553,20 +1669,26 @@ ul.typeahead-selector {
   .organisationDetail h1 i {
     font-size: 0.75em;
     top: -5px; }
+
 .organisationDetail .orgLogo {
   padding: 10px 0; }
   .organisationDetail .orgLogo img {
     width: 35%;
     margin-left: 5px; }
+
 .organisationDetail .orgDetails {
   background: rgba(255, 255, 255, 0.45);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
-.organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
+
+.organisationDetail .orgUrl,
+.organisationDetail .orgIati,
+.organisationDetail .orgEmail {
   display: block;
   padding-bottom: 0.75em; }
+
 @media only screen and (max-width: 768px) {
   .organisationDetail .orgDetails > h4 {
     padding-top: 0.75em; } }
@@ -1576,7 +1698,8 @@ ul.typeahead-selector {
     max-width: 325px;
     margin-right: auto;
     margin-left: auto; }
-    .organisationInfo dd, .organisationInfo dt {
+    .organisationInfo dd,
+    .organisationInfo dt {
       display: inline-block; }
     .organisationInfo dt {
       width: 49%;
@@ -1589,6 +1712,7 @@ ul.typeahead-selector {
 .updateMain h2 {
   color: #00a79d;
   margin-top: 0; }
+
 .updateMain .asideUpList .row {
   padding: 15px 0; }
   .updateMain .asideUpList .row:nth-of-type(2n+1) {
@@ -1606,7 +1730,9 @@ ul.typeahead-selector {
       width: 95%;
       max-width: 450px;
       text-align: justify; }
-      .projectDonate .paymentOption, .projectDonate .donateTitle, .projectDonate h3 {
+      .projectDonate .paymentOption,
+      .projectDonate .donateTitle,
+      .projectDonate h3 {
         text-align: center; } }
   .projectDonate .donateButton {
     margin-bottom: 2em; }
@@ -1627,10 +1753,10 @@ ul.typeahead-selector {
     clear: both; }
   .projectDonate .paymentSystemInfo {
     background-color: #f2f0e6; }
-  @media only screen and (min-width: 768px) {
-    @media only screen and (max-width: 992px) {
-      .projectDonate h3 {
-        font-size: 1.3em; } } }
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .projectDonate h3 {
+    font-size: 1.3em; } }
   @media only screen and (max-width: 768px) {
     .projectDonate .paymentOption {
       margin-top: 3em; }
@@ -1648,8 +1774,10 @@ ul.typeahead-selector {
 /* Financial details page */
 section.projectFinancial .currentFunders dl > dd {
   text-align: right; }
+
 section.projectFinancial .donationBreak {
   display: none; }
+
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;
@@ -1658,21 +1786,22 @@ section.projectFinancial .donationBreak {
     margin-right: auto; }
     section.projectFinancial .dl-horizontal dt {
       float: left; } }
-@media only screen and (max-width: 992px) {
-  @media only screen and (min-width: 768px) {
-    section.projectFinancial .dl-horizontal dt {
-      width: initial; }
-    section.projectFinancial .donationBreak {
-      display: initial;
-      clear: both; }
-    section.projectFinancial .currentFunders dd.donation {
-      float: right; }
-    section.projectFinancial .currentFunders dt.donation {
-      clear: both; } } }
+
+@media only screen and (max-width: 992px) and (min-width: 768px) {
+  section.projectFinancial .dl-horizontal dt {
+    width: initial; }
+  section.projectFinancial .donationBreak {
+    display: initial;
+    clear: both; }
+  section.projectFinancial .currentFunders dd.donation {
+    float: right; }
+  section.projectFinancial .currentFunders dt.donation {
+    clear: both; } }
 
 /* Project Partners details page */
 section.projectPartners .title {
   margin-bottom: 1em; }
+
 section.projectPartners .row {
   margin-left: 0;
   margin-right: 0;
@@ -1683,7 +1812,9 @@ section.projectPartners .row {
   -o-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px; }
-  section.projectPartners .row h2, section.projectPartners .row h3, section.projectPartners .row h4 {
+  section.projectPartners .row h2,
+  section.projectPartners .row h3,
+  section.projectPartners .row h4 {
     margin-top: 0; }
   section.projectPartners .row img {
     max-height: 120px;
@@ -1700,13 +1831,15 @@ section.projectPartners .row {
   section.projectPartners .row .fa {
     font-size: 1.3em;
     color: #2c2a74; }
-  section.projectPartners .row a.org-link:hover i, section.projectPartners .row a.org-link:hover h2 {
+  section.projectPartners .row a.org-link:hover i,
+  section.projectPartners .row a.org-link:hover h2 {
     color: #ff5500; }
   section.projectPartners .row ul {
     margin: 0;
     padding: 0; }
   section.projectPartners .row li {
     list-style: none; }
+
 @media only screen and (max-width: 768px) {
   section.projectPartners .container {
     padding-left: 0;
@@ -1730,17 +1863,18 @@ dd.currencyAmount {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto; } }
+
 @media only screen and (min-width: 992px) {
   .projectReport table {
-    table-layout: fixed; }
+    table-layout: auto; }
     .projectReport table th {
-      word-break: break-word; }
-      @media only screen and (max-width: 1200px) {
-        .projectReport table th {
-          width: 90px; } }
-      @media only screen and (min-width: 1200px) {
-        .projectReport table th {
-          width: 120px; } } }
+      word-break: break-word; } }
+    @media only screen and (min-width: 992px) and (max-width: 1200px) {
+      .projectReport table th {
+        width: 90px; } }
+    @media only screen and (min-width: 992px) and (min-width: 1200px) {
+      .projectReport table th {
+        width: 120px; } }
 
 /* Project update page */
 .updateText {
@@ -1765,11 +1899,20 @@ a.addUpdateBtn {
 /* Google translation bar styles */
 body.translationBarActive .nav {
   padding-top: 39px; }
+
 body.translationBarActive .navbar-brand {
   margin-top: 39px; }
-body.translationBarActive article, body.translationBarActive .updateMain, body.translationBarActive .organisationDetail, body.translationBarActive #map {
+
+body.translationBarActive article,
+body.translationBarActive .updateMain,
+body.translationBarActive .organisationDetail,
+body.translationBarActive #map {
   padding-top: 39px; }
-body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
+
+body.translationBarActive div.skiptranslate ~ article,
+body.translationBarActive div.skiptranslate ~ .updateMain,
+body.translationBarActive div.skiptranslate ~ .organisationDetail,
+body.translationBarActive div.skiptranslate ~ #map {
   padding-top: 0px; }
 
 /* Cookie */
@@ -1795,10 +1938,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 /* Project Admin */
 .progress .progress-bar[data-completion='empty'] {
   background: #d9534f; }
+
 .progress .progress-bar[data-completion='incomplete'] {
   background: #f0ad4e; }
+
 .progress .progress-bar[data-completion='complete'] {
   background: #5cb85c; }
+
 .progress .progress-bar .progress-percentage {
   display: none; }
 
@@ -1807,23 +1953,31 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   transition: background 0.1s linear; }
   .formProgress .panel-heading:hover {
     background: rgba(92, 184, 92, 0.1); }
+
 .formProgress .progress .progress-bar .progress-percentage {
   display: initial; }
+
 .formProgress .progress-and-publish {
   top: 20px; }
+
 .formProgress .redLegenda {
   background: #d9534f;
   color: #d9534f; }
+
 .formProgress .orangeLegenda {
   background: #f0ad4e;
   color: #f0ad4e; }
+
 .formProgress .greenLegenda {
   background: #5cb85c;
   color: #5cb85c; }
+
 .formProgress .mandatoryIndicator {
   color: #d9534f; }
+
 .formProgress .published {
   color: #5cb85c; }
+
 .formProgress .notPublished {
   color: #e31b23; }
 
@@ -1832,6 +1986,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   transition: background 0.1s linear; }
   .formOverviewInfo .panel-heading:hover {
     background: rgba(114, 205, 255, 0.1); }
+
 .formOverviewInfo label {
   color: rgba(44, 42, 116, 0.5); }
 
@@ -1840,6 +1995,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   text-transform: uppercase;
   font-size: 1.5em;
   display: block; }
+
 .projectEdit .myPanel {
   overflow: hidden;
   line-height: 25px;
@@ -1850,7 +2006,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     display: block;
     overflow: hidden;
     box-sizing: border-box;
-    transition: all .5s linear;
+    transition: all 0.5s linear;
     padding: 5px 15px;
     margin: 0 auto;
     -moz-border-radius: 5px;
@@ -1862,8 +2018,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     overflow: auto;
     background: rgba(253, 242, 232, 0);
     box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
+
 .projectEdit input[type='radio'] {
   display: none; }
+
 .projectEdit .formStep {
   position: relative; }
   .projectEdit .formStep > div > label {
@@ -1895,11 +2053,16 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     padding-top: 10px; }
   .projectEdit .formStep span.tab {
     padding-left: 5em; }
+
 .projectEdit .borderBottom {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(44, 42, 116, 0); }
-.projectEdit *, .projectEdit *:before, .projectEdit *:after {
+
+.projectEdit *,
+.projectEdit *:before,
+.projectEdit *:after {
   box-sizing: border-box; }
+
 .projectEdit .control {
   position: relative;
   padding-top: 23px;
@@ -1911,16 +2074,22 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     padding-left: 10px; }
   .projectEdit .control:last-child {
     border: 0; }
+
 .projectEdit .control-label {
   min-width: 90%; }
+
 .projectEdit a.btn {
   margin-top: 23px; }
   .projectEdit a.btn.btn-link {
     margin-top: 0; }
-.projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
+
+.projectEdit .col-md-4 a.btn.btn-link,
+.projectEdit .col-md-3 a.btn.btn-link {
   margin-top: 23px; }
+
 .projectEdit .add-object-link {
   top: 8px; }
+
 .projectEdit hr {
   border: none;
   height: 1px;
@@ -1928,21 +2097,49 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   /* old IE */
   background-color: rgba(44, 42, 116, 0.3);
   /* Modern Browsers */ }
-.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label, .projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+
+.projectEdit input + label,
+.projectEdit input + span + label,
+.projectEdit input + ul + label,
+.projectEdit textarea + label,
+.projectEdit textarea + span + label,
+.projectEdit textarea + ul + label,
+.projectEdit select + label,
+.projectEdit select + span + label,
+.projectEdit select + ul + label,
+.projectEdit div.input-group + label,
+.projectEdit div.input-group + span + label,
+.projectEdit div.input-group + ul + label {
   position: absolute;
   top: -20px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label, .projectEdit div.input-group:focus + label, .projectEdit div.input-group:focus + span + label, .projectEdit div.input-group:focus + ul + label {
+
+.projectEdit input:focus + label,
+.projectEdit input:focus + span + label,
+.projectEdit input:focus + ul + label,
+.projectEdit textarea:focus + label,
+.projectEdit textarea:focus + span + label,
+.projectEdit textarea:focus + ul + label,
+.projectEdit select:focus + label,
+.projectEdit select:focus + span + label,
+.projectEdit select:focus + ul + label,
+.projectEdit div.input-group:focus + label,
+.projectEdit div.input-group:focus + span + label,
+.projectEdit div.input-group:focus + ul + label {
   color: #2c2a74; }
+
 .projectEdit .delete-related-object {
   color: #d9534f; }
+
 .projectEdit .delete-photo-button {
   color: #d9534f; }
+
 .projectEdit .delete-document {
   color: #d9534f; }
+
 .projectEdit .info-icon {
   padding-left: 0.5em;
   cursor: pointer;
@@ -1950,48 +2147,62 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+
 .projectEdit .mandatory, .projectEdit .mandatory-block {
   color: #d9534f;
   font-size: 125%;
   margin-left: 4px;
   margin-right: -4px; }
+
 .projectEdit .mandatory-block {
   font-size: 90%;
   margin-left: 0px;
   margin-right: 0px; }
+
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
+
 .projectEdit label.progress-bar[aria-valuenow="10"] {
   background: #d9534f;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="20"] {
   background: #d9534f;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="30"] {
   background: #d9534f;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="40"] {
   background: #f0ad4e;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="50"] {
   background: #f0ad4e;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="60"] {
   background: #f0ad4e;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="70"] {
   background: #5cb85c;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="80"] {
   background: #5cb85c;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="90"] {
   background: #5cb85c;
   color: white; }
+
 .projectEdit label.progress-bar[aria-valuenow="100"] {
   background: #5cb85c;
   color: white; }
+
 .projectEdit div.parent {
   background: rgba(240, 173, 78, 0.15);
   -webkit-border-radius: 10px;
@@ -2003,6 +2214,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin-top: 10px;
   margin-bottom: 10px;
   transition: background 0.1s linear; }
+
 .projectEdit div.partial-header {
   font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
@@ -2011,10 +2223,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin-top: 10px;
   margin-bottom: 10px;
   cursor: pointer; }
+
 .projectEdit .save-message {
   text-align: center; }
+
 .projectEdit .save-button {
   text-align: right; }
+
 .projectEdit .toggle-help {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
@@ -2053,7 +2268,8 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     padding: 0.5em;
     margin: 0 1em;
     color: #00aaff; }
-    .tab-menu a:hover, .tab-menu a.selected {
+    .tab-menu a:hover,
+    .tab-menu a.selected {
       border-bottom: 3px solid #646363;
       color: #646363; }
     .tab-menu a:active {
@@ -2077,510 +2293,991 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       background: #2c2a74;
       color: white; }
 
-.results {
+* {
+  box-sizing: border-box; }
+
+article {
+  margin: 0;
+  overflow: hidden; }
+
+.clickable {
+  cursor: pointer; }
+  .clickable:hover {
+    opacity: 1; }
+  .clickable:active {
+    opacity: 0.6; }
+
+.bg-transition {
+  -moz-transition: background-color 0.25s ease-in-out;
+  -o-transition: background-color 0.25s ease-in-out;
+  -webkit-transition: background-color 0.25s ease-in-out;
+  transition: background-color 0.25s ease-in-out; }
+
+.border-transition {
+  -moz-transition: border 0.25s ease-in-out;
+  -o-transition: border 0.25s ease-in-out;
+  -webkit-transition: border 0.25s ease-in-out;
+  transition: border 0.25s ease-in-out; }
+
+.bg-border-transition {
+  -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+  -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+  -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
+  transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out; }
+
+.opacity-transition {
+  -moz-transition: opacity 0.25s ease-in-out;
+  -o-transition: opacity 0.25s ease-in-out;
+  -webkit-transition: opacity 0.25s ease-in-out;
+  transition: opacity 0.25s ease-in-out; }
+
+.results-container {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  padding-left: 0; }
+
+.baseline,
+.periodValues {
+  padding: 2em 0;
   position: relative;
-  /* Styling for the indicator period progress bar */
-  /* Insert some transparent text to space the "progress" label */ }
-  .results * {
-    box-sizing: border-box; }
-  .results article {
-    margin: 0;
-    overflow: hidden; }
-  .results .clickable {
-    cursor: pointer; }
-    .results .clickable:hover {
-      opacity: 1; }
-    .results .clickable:active {
-      opacity: 0.6; }
-  .results .bg-transition {
-    -moz-transition: background-color 0.25s ease-in-out;
-    -o-transition: background-color 0.25s ease-in-out;
-    -webkit-transition: background-color 0.25s ease-in-out;
-    transition: background-color 0.25s ease-in-out; }
-  .results .border-transition {
-    -moz-transition: border 0.25s ease-in-out;
-    -o-transition: border 0.25s ease-in-out;
-    -webkit-transition: border 0.25s ease-in-out;
-    transition: border 0.25s ease-in-out; }
-  .results .bg-border-transition {
-    -moz-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-    -o-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-    -webkit-transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out;
-    transition: background-color 0.25s ease-in-out, border 0.25s ease-in-out; }
-  .results .opacity-transition {
-    -moz-transition: opacity 0.25s ease-in-out;
-    -o-transition: opacity 0.25s ease-in-out;
-    -webkit-transition: opacity 0.25s ease-in-out;
-    transition: opacity 0.25s ease-in-out; }
-  .results .results-container {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    padding-left: 0; }
-  .results .baseline, .results .periodValues {
-    padding: 2em 0;
-    position: relative;
-    width: 100%;
-    margin-bottom: 55px;
-    font-size: 110%; }
-    .results .baseline .baseline-value, .results .baseline .baseline-year, .results .baseline .period-target, .results .baseline .period-actual, .results .baseline .period-target-comment, .results .periodValues .baseline-value, .results .periodValues .baseline-year, .results .periodValues .period-target, .results .periodValues .period-actual, .results .periodValues .period-target-comment {
-      display: inline-block !important;
-      padding: 0 0 10px 15px; }
-      .results .baseline .baseline-value > span:first-child, .results .baseline .baseline-year > span:first-child, .results .baseline .period-target > span:first-child, .results .baseline .period-actual > span:first-child, .results .baseline .period-target-comment > span:first-child, .results .periodValues .baseline-value > span:first-child, .results .periodValues .baseline-year > span:first-child, .results .periodValues .period-target > span:first-child, .results .periodValues .period-actual > span:first-child, .results .periodValues .period-target-comment > span:first-child {
-        color: rgba(32, 32, 36, 0.7);
-        display: block; }
-        .results .baseline .baseline-value > span:first-child span, .results .baseline .baseline-year > span:first-child span, .results .baseline .period-target > span:first-child span, .results .baseline .period-actual > span:first-child span, .results .baseline .period-target-comment > span:first-child span, .results .periodValues .baseline-value > span:first-child span, .results .periodValues .baseline-year > span:first-child span, .results .periodValues .period-target > span:first-child span, .results .periodValues .period-actual > span:first-child span, .results .periodValues .period-target-comment > span:first-child span {
-          display: inline; }
-      .results .baseline .baseline-value span:nth-child(2n), .results .baseline .baseline-year span:nth-child(2n), .results .baseline .period-target span:nth-child(2n), .results .baseline .period-actual span:nth-child(2n), .results .baseline .period-target-comment span:nth-child(2n), .results .periodValues .baseline-value span:nth-child(2n), .results .periodValues .baseline-year span:nth-child(2n), .results .periodValues .period-target span:nth-child(2n), .results .periodValues .period-actual span:nth-child(2n), .results .periodValues .period-target-comment span:nth-child(2n) {
+  width: 100%;
+  margin-bottom: 55px;
+  font-size: 110%; }
+  .baseline .baseline-value,
+  .baseline .baseline-year,
+  .baseline .period-target,
+  .baseline .period-actual,
+  .baseline .period-target-comment,
+  .periodValues .baseline-value,
+  .periodValues .baseline-year,
+  .periodValues .period-target,
+  .periodValues .period-actual,
+  .periodValues .period-target-comment {
+    display: inline-block !important;
+    padding: 0 0 10px 15px; }
+    .baseline .baseline-value > span:first-child,
+    .baseline .baseline-year > span:first-child,
+    .baseline .period-target > span:first-child,
+    .baseline .period-actual > span:first-child,
+    .baseline .period-target-comment > span:first-child,
+    .periodValues .baseline-value > span:first-child,
+    .periodValues .baseline-year > span:first-child,
+    .periodValues .period-target > span:first-child,
+    .periodValues .period-actual > span:first-child,
+    .periodValues .period-target-comment > span:first-child {
+      color: rgba(32, 32, 36, 0.7);
+      display: block; }
+      .baseline .baseline-value > span:first-child span,
+      .baseline .baseline-year > span:first-child span,
+      .baseline .period-target > span:first-child span,
+      .baseline .period-actual > span:first-child span,
+      .baseline .period-target-comment > span:first-child span,
+      .periodValues .baseline-value > span:first-child span,
+      .periodValues .baseline-year > span:first-child span,
+      .periodValues .period-target > span:first-child span,
+      .periodValues .period-actual > span:first-child span,
+      .periodValues .period-target-comment > span:first-child span {
+        display: inline; }
+    .baseline .baseline-value span:nth-child(2n),
+    .baseline .baseline-year span:nth-child(2n),
+    .baseline .period-target span:nth-child(2n),
+    .baseline .period-actual span:nth-child(2n),
+    .baseline .period-target-comment span:nth-child(2n),
+    .periodValues .baseline-value span:nth-child(2n),
+    .periodValues .baseline-year span:nth-child(2n),
+    .periodValues .period-target span:nth-child(2n),
+    .periodValues .period-actual span:nth-child(2n),
+    .periodValues .period-target-comment span:nth-child(2n) {
+      display: block;
+      font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      color: rgba(32, 32, 36, 0.9); }
+      .baseline .baseline-value span:nth-child(2n) span,
+      .baseline .baseline-year span:nth-child(2n) span,
+      .baseline .period-target span:nth-child(2n) span,
+      .baseline .period-actual span:nth-child(2n) span,
+      .baseline .period-target-comment span:nth-child(2n) span,
+      .periodValues .baseline-value span:nth-child(2n) span,
+      .periodValues .baseline-year span:nth-child(2n) span,
+      .periodValues .period-target span:nth-child(2n) span,
+      .periodValues .period-actual span:nth-child(2n) span,
+      .periodValues .period-target-comment span:nth-child(2n) span {
+        display: inline; }
+      .baseline .baseline-value span:nth-child(2n) span:nth-child(1),
+      .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
+      .baseline .period-target span:nth-child(2n) span:nth-child(1),
+      .baseline .period-actual span:nth-child(2n) span:nth-child(1),
+      .baseline .period-target-comment span:nth-child(2n) span:nth-child(1),
+      .periodValues .baseline-value span:nth-child(2n) span:nth-child(1),
+      .periodValues .baseline-year span:nth-child(2n) span:nth-child(1),
+      .periodValues .period-target span:nth-child(2n) span:nth-child(1),
+      .periodValues .period-actual span:nth-child(2n) span:nth-child(1),
+      .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1) {
+        margin-left: 10px; }
+  .baseline .baseline-value,
+  .baseline .period-target,
+  .periodValues .baseline-value,
+  .periodValues .period-target {
+    width: 50%;
+    float: left; }
+  .baseline .baseline-year,
+  .baseline .period-actual,
+  .periodValues .baseline-year,
+  .periodValues .period-actual {
+    width: 50%;
+    float: right;
+    color: rgba(32, 32, 36, 0.6);
+    position: relative; }
+    .baseline .baseline-year span,
+    .baseline .period-actual span,
+    .periodValues .baseline-year span,
+    .periodValues .period-actual span {
+      font-weight: 700; }
+      .baseline .baseline-year span:nth-child(1),
+      .baseline .period-actual span:nth-child(1),
+      .periodValues .baseline-year span:nth-child(1),
+      .periodValues .period-actual span:nth-child(1) {
+        display: inline-block;
+        margin-right: 10px; }
+      .baseline .baseline-year span:nth-child(4),
+      .baseline .period-actual span:nth-child(4),
+      .periodValues .baseline-year span:nth-child(4),
+      .periodValues .period-actual span:nth-child(4) {
         display: block;
-        font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-weight: 700;
-        color: rgba(32, 32, 36, 0.9); }
-        .results .baseline .baseline-value span:nth-child(2n) span, .results .baseline .baseline-year span:nth-child(2n) span, .results .baseline .period-target span:nth-child(2n) span, .results .baseline .period-actual span:nth-child(2n) span, .results .baseline .period-target-comment span:nth-child(2n) span, .results .periodValues .baseline-value span:nth-child(2n) span, .results .periodValues .baseline-year span:nth-child(2n) span, .results .periodValues .period-target span:nth-child(2n) span, .results .periodValues .period-actual span:nth-child(2n) span, .results .periodValues .period-target-comment span:nth-child(2n) span {
-          display: inline; }
-        .results .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .results .baseline .baseline-year span:nth-child(2n) span:nth-child(1), .results .baseline .period-target span:nth-child(2n) span:nth-child(1), .results .baseline .period-actual span:nth-child(2n) span:nth-child(1), .results .baseline .period-target-comment span:nth-child(2n) span:nth-child(1), .results .periodValues .baseline-value span:nth-child(2n) span:nth-child(1), .results .periodValues .baseline-year span:nth-child(2n) span:nth-child(1), .results .periodValues .period-target span:nth-child(2n) span:nth-child(1), .results .periodValues .period-actual span:nth-child(2n) span:nth-child(1), .results .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1) {
-          margin-left: 10px; }
-    .results .baseline .baseline-value, .results .baseline .period-target, .results .periodValues .baseline-value, .results .periodValues .period-target {
-      width: 50%;
-      float: left; }
-    .results .baseline .baseline-year, .results .baseline .period-actual, .results .periodValues .baseline-year, .results .periodValues .period-actual {
-      width: 50%;
-      float: right;
-      color: rgba(32, 32, 36, 0.6);
-      position: relative; }
-      .results .baseline .baseline-year span, .results .baseline .period-actual span, .results .periodValues .baseline-year span, .results .periodValues .period-actual span {
         font-weight: 700; }
-        .results .baseline .baseline-year span:nth-child(1), .results .baseline .period-actual span:nth-child(1), .results .periodValues .baseline-year span:nth-child(1), .results .periodValues .period-actual span:nth-child(1) {
-          display: inline-block;
-          margin-right: 10px; }
-        .results .baseline .baseline-year span:nth-child(4), .results .baseline .period-actual span:nth-child(4), .results .periodValues .baseline-year span:nth-child(4), .results .periodValues .period-actual span:nth-child(4) {
-          display: block;
-          font-weight: 700; }
-        .results .baseline .baseline-year span.actualValueSpan, .results .baseline .period-actual span.actualValueSpan, .results .periodValues .baseline-year span.actualValueSpan, .results .periodValues .period-actual span.actualValueSpan {
-          display: block; }
-          .results .baseline .baseline-year span.actualValueSpan span:nth-child(1), .results .baseline .period-actual span.actualValueSpan span:nth-child(1), .results .periodValues .baseline-year span.actualValueSpan span:nth-child(1), .results .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
-            margin-right: 0; }
-          .results .baseline .baseline-year span.actualValueSpan span, .results .baseline .period-actual span.actualValueSpan span, .results .periodValues .baseline-year span.actualValueSpan span, .results .periodValues .period-actual span.actualValueSpan span {
-            display: inline; }
-      .results .baseline .baseline-year .badge, .results .baseline .period-actual .badge, .results .periodValues .baseline-year .badge, .results .periodValues .period-actual .badge {
-        background-color: #202024;
-        -moz-transition: all 0.1s linear;
-        -o-transition: all 0.1s linear;
-        -webkit-transition: all 0.1s linear;
-        transition: all 0.1s linear;
-        margin-top: -5px;
-        padding: 5px 9px;
-        -moz-border-radius: 15px;
-        -o-border-radius: 15px;
-        -webkit-border-radius: 15px;
-        border-radius: 15px;
-        font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
-        .results .baseline .baseline-year .badge:hover, .results .baseline .period-actual .badge:hover, .results .periodValues .baseline-year .badge:hover, .results .periodValues .period-actual .badge:hover {
-          background-color: #2c2a74;
-          cursor: pointer; }
-      .results .baseline .baseline-year .result-tooltip, .results .baseline .period-actual .result-tooltip, .results .periodValues .baseline-year .result-tooltip, .results .periodValues .period-actual .result-tooltip {
-        clear: both;
+      .baseline .baseline-year span.actualValueSpan,
+      .baseline .period-actual span.actualValueSpan,
+      .periodValues .baseline-year span.actualValueSpan,
+      .periodValues .period-actual span.actualValueSpan {
+        display: block; }
+        .baseline .baseline-year span.actualValueSpan span:nth-child(1),
+        .baseline .period-actual span.actualValueSpan span:nth-child(1),
+        .periodValues .baseline-year span.actualValueSpan span:nth-child(1),
+        .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
+          margin-right: 0; }
+        .baseline .baseline-year span.actualValueSpan span,
+        .baseline .period-actual span.actualValueSpan span,
+        .periodValues .baseline-year span.actualValueSpan span,
+        .periodValues .period-actual span.actualValueSpan span {
+          display: inline; }
+    .baseline .baseline-year .badge,
+    .baseline .period-actual .badge,
+    .periodValues .baseline-year .badge,
+    .periodValues .period-actual .badge {
+      background-color: #202024;
+      -moz-transition: all 0.1s linear;
+      -o-transition: all 0.1s linear;
+      -webkit-transition: all 0.1s linear;
+      transition: all 0.1s linear;
+      margin-top: -5px;
+      padding: 5px 9px;
+      -moz-border-radius: 15px;
+      -o-border-radius: 15px;
+      -webkit-border-radius: 15px;
+      border-radius: 15px;
+      font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
+      .baseline .baseline-year .badge:hover,
+      .baseline .period-actual .badge:hover,
+      .periodValues .baseline-year .badge:hover,
+      .periodValues .period-actual .badge:hover {
+        background-color: #2c2a74;
+        cursor: pointer; }
+    .baseline .baseline-year .result-tooltip,
+    .baseline .period-actual .result-tooltip,
+    .periodValues .baseline-year .result-tooltip,
+    .periodValues .period-actual .result-tooltip {
+      clear: both;
+      position: absolute;
+      top: 35px;
+      left: 60px;
+      background: white;
+      border: 1px solid rgba(153, 153, 153, 0.8);
+      color: #202024;
+      -moz-border-radius: 4px;
+      -o-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      border-radius: 4px; }
+      .baseline .baseline-year .result-tooltip .tooltip-inner,
+      .baseline .period-actual .result-tooltip .tooltip-inner,
+      .periodValues .baseline-year .result-tooltip .tooltip-inner,
+      .periodValues .period-actual .result-tooltip .tooltip-inner {
+        background: white;
+        color: #202024;
+        -moz-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+        -o-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+        -webkit-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
+        box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5); }
+      .baseline .baseline-year .result-tooltip .tooltip-arrow,
+      .baseline .period-actual .result-tooltip .tooltip-arrow,
+      .periodValues .baseline-year .result-tooltip .tooltip-arrow,
+      .periodValues .period-actual .result-tooltip .tooltip-arrow {
         position: absolute;
-        top: 35px;
-        left: 60px;
         background: white;
         border: 1px solid rgba(153, 153, 153, 0.8);
-        color: #202024;
-        -moz-border-radius: 4px;
-        -o-border-radius: 4px;
-        -webkit-border-radius: 4px;
-        border-radius: 4px; }
-        .results .baseline .baseline-year .result-tooltip .tooltip-inner, .results .baseline .period-actual .result-tooltip .tooltip-inner, .results .periodValues .baseline-year .result-tooltip .tooltip-inner, .results .periodValues .period-actual .result-tooltip .tooltip-inner {
-          background: white;
-          color: #202024;
-          -moz-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-          -o-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-          -webkit-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-          box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5); }
-        .results .baseline .baseline-year .result-tooltip .tooltip-arrow, .results .baseline .period-actual .result-tooltip .tooltip-arrow, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow, .results .periodValues .period-actual .result-tooltip .tooltip-arrow {
+        left: 68px;
+        top: -2px; }
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:after,
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
+        .baseline .period-actual .result-tooltip .tooltip-arrow:after,
+        .baseline .period-actual .result-tooltip .tooltip-arrow:before,
+        .periodValues .baseline-year .result-tooltip .tooltip-arrow:after,
+        .periodValues .baseline-year .result-tooltip .tooltip-arrow:before,
+        .periodValues .period-actual .result-tooltip .tooltip-arrow:after,
+        .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
+          bottom: 100%;
+          left: 50%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
           position: absolute;
-          background: white;
-          border: 1px solid rgba(153, 153, 153, 0.8);
-          left: 68px;
-          top: -2px; }
-          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .results .baseline .baseline-year .result-tooltip .tooltip-arrow:before, .results .baseline .period-actual .result-tooltip .tooltip-arrow:after, .results .baseline .period-actual .result-tooltip .tooltip-arrow:before, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:after, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:before, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:after, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
-            bottom: 100%;
-            left: 50%;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none; }
-          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .results .baseline .period-actual .result-tooltip .tooltip-arrow:after, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:after, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:after {
-            border-color: rgba(136, 183, 213, 0);
-            border-bottom-color: rgba(153, 153, 153, 0.5);
-            border-width: 7px;
-            margin-left: -7px; }
-          .results .baseline .baseline-year .result-tooltip .tooltip-arrow:before, .results .baseline .period-actual .result-tooltip .tooltip-arrow:before, .results .periodValues .baseline-year .result-tooltip .tooltip-arrow:before, .results .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
-            border-color: rgba(194, 225, 245, 0);
-            border-bottom-color: rgba(153, 153, 153, 0.5);
-            border-width: 8px;
-            margin-left: -8px; }
-    .results .baseline .period-target-comment, .results .periodValues .period-target-comment {
+          pointer-events: none; }
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:after,
+        .baseline .period-actual .result-tooltip .tooltip-arrow:after,
+        .periodValues .baseline-year .result-tooltip .tooltip-arrow:after,
+        .periodValues .period-actual .result-tooltip .tooltip-arrow:after {
+          border-color: rgba(136, 183, 213, 0);
+          border-bottom-color: rgba(153, 153, 153, 0.5);
+          border-width: 7px;
+          margin-left: -7px; }
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
+        .baseline .period-actual .result-tooltip .tooltip-arrow:before,
+        .periodValues .baseline-year .result-tooltip .tooltip-arrow:before,
+        .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
+          border-color: rgba(194, 225, 245, 0);
+          border-bottom-color: rgba(153, 153, 153, 0.5);
+          border-width: 8px;
+          margin-left: -8px; }
+  .baseline .period-target-comment,
+  .periodValues .period-target-comment {
+    width: 100%;
+    float: left;
+    padding: 0 0 40px 15px; }
+
+.sidebar {
+  width: 30%;
+  min-width: 200px;
+  overflow-y: auto;
+  vertical-align: top; }
+  .sidebar .results-list {
+    border: 1px solid rgba(32, 32, 36, 0.3); }
+  .sidebar .result-nav {
+    padding: 0.2em 0em 0 0em;
+    border-bottom: 1px solid rgba(32, 32, 36, 0.6); }
+    .sidebar .result-nav:before {
+      height: 1px;
+      background-color: rgba(224, 225, 226, 0);
       width: 100%;
-      float: left;
-      padding: 0 0 40px 15px; }
-  .results .sidebar {
-    width: 30%;
-    min-width: 200px;
-    overflow-y: auto;
-    vertical-align: top; }
-    .results .sidebar .results-list {
-      border: 1px solid rgba(32, 32, 36, 0.3); }
-    .results .sidebar .result-nav {
-      padding: 0.2em 0em 0 0em;
-      border-bottom: 1px solid rgba(32, 32, 36, 0.6); }
-      .results .sidebar .result-nav:before {
-        height: 1px;
-        background-color: rgba(224, 225, 226, 0);
-        width: 100%;
-        display: block;
-        content: '';
-        margin: 0 auto;
-        -moz-transition: background-color 0.25s ease-in-out;
-        -o-transition: background-color 0.25s ease-in-out;
-        -webkit-transition: background-color 0.25s ease-in-out;
-        transition: background-color 0.25s ease-in-out; }
-    .results .sidebar .result-nav-header {
-      background: rgba(44, 42, 116, 0); }
-      .results .sidebar .result-nav-header h3 {
-        color: white;
-        display: inline-block;
-        font-size: 1em;
-        text-transform: uppercase;
-        position: relative;
-        padding: 5px 10px;
-        margin-top: 0;
-        background: #2c2a74;
-        margin-bottom: 0;
-        -moz-border-radius: 8px 8px 0 0;
-        -o-border-radius: 8px 8px 0 0;
-        -webkit-border-radius: 8px 8px 0 0;
-        border-radius: 8px 8px 0 0; }
-        .results .sidebar .result-nav-header h3 > a {
-          position: absolute;
-          right: -5px; }
-    .results .sidebar .result-nav {
+      display: block;
+      content: '';
+      margin: 0 auto;
+      -moz-transition: background-color 0.25s ease-in-out;
+      -o-transition: background-color 0.25s ease-in-out;
+      -webkit-transition: background-color 0.25s ease-in-out;
+      transition: background-color 0.25s ease-in-out; }
+  .sidebar .result-nav-header {
+    background: rgba(44, 42, 116, 0); }
+    .sidebar .result-nav-header h3 {
+      color: white;
+      display: inline-block;
+      font-size: 1em;
+      text-transform: uppercase;
+      position: relative;
+      padding: 5px 10px;
+      margin-top: 0;
+      background: #2c2a74;
+      margin-bottom: 0;
+      -moz-border-radius: 8px 8px 0 0;
+      -o-border-radius: 8px 8px 0 0;
+      -webkit-border-radius: 8px 8px 0 0;
+      border-radius: 8px 8px 0 0; }
+      .sidebar .result-nav-header h3 > a {
+        position: absolute;
+        right: -5px; }
+  .sidebar .result-nav {
+    opacity: 1;
+    cursor: pointer;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    -webkit-transition: all 0.2s linear;
+    transition: all 0.2s linear; }
+    .sidebar .result-nav:hover {
       opacity: 1;
-      cursor: pointer;
-      -moz-transition: all 0.2s linear;
-      -o-transition: all 0.2s linear;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear; }
-      .results .sidebar .result-nav:hover {
-        opacity: 1;
-        background: rgba(114, 205, 255, 0.1); }
-      .results .sidebar .result-nav .result-nav-summary {
-        padding: 25px 0 10px 10px; }
-        .results .sidebar .result-nav .result-nav-summary h3 {
-          font-size: 1.3em;
-          color: #72cdff;
-          -moz-transition: all 0.2s linear;
-          -o-transition: all 0.2s linear;
-          -webkit-transition: all 0.2s linear;
-          transition: all 0.2s linear; }
-          .results .sidebar .result-nav .result-nav-summary h3:hover {
-            color: #2c2a74; }
-          .results .sidebar .result-nav .result-nav-summary h3.result-title {
-            position: relative;
-            box-sizing: border-box;
-            font-weight: 400; }
-            .results .sidebar .result-nav .result-nav-summary h3.result-title .fa {
-              float: right;
-              font-size: 1.3em;
-              margin-right: 6px;
-              text-shadow: 0 1px 0 white;
-              color: rgba(44, 42, 116, 0.6); }
-            .results .sidebar .result-nav .result-nav-summary h3.result-title > span {
-              box-sizing: border-box;
-              max-width: 80%;
-              margin: 0 auto 0 0;
-              display: block;
-              display: -webkit-box;
-              line-height: 1.4em;
-              -webkit-box-orient: vertical; }
-      .results .sidebar .result-nav .fa-chevron-circle-up {
-        display: none; }
-      .results .sidebar .result-nav.expanded {
-        opacity: 1; }
-        .results .sidebar .result-nav.expanded:before {
-          background-color: transparent; }
-        .results .sidebar .result-nav.expanded h3 {
+      background: rgba(114, 205, 255, 0.1); }
+    .sidebar .result-nav .result-nav-summary {
+      padding: 25px 0 10px 10px; }
+      .sidebar .result-nav .result-nav-summary h3 {
+        font-size: 1.3em;
+        color: #72cdff;
+        -moz-transition: all 0.2s linear;
+        -o-transition: all 0.2s linear;
+        -webkit-transition: all 0.2s linear;
+        transition: all 0.2s linear; }
+        .sidebar .result-nav .result-nav-summary h3:hover {
           color: #2c2a74; }
-        .results .sidebar .result-nav.expanded ~ .result-nav:before {
-          background-color: transparent; }
-      .results .sidebar .result-nav .result-indicator-count {
-        display: block;
-        color: #2c2a74;
-        display: block;
-        margin-top: -5px; }
-        .results .sidebar .result-nav .result-indicator-count span {
-          margin-left: 5px; }
-        .results .sidebar .result-nav .result-indicator-count p {
-          display: inline-block;
-          margin-left: 5px; }
-      .results .sidebar .result-nav .result-nav-full {
-        display: none; }
-      .results .sidebar .result-nav .indicator-text {
-        display: none; }
-      .results .sidebar .result-nav.expanded .fa-chevron-circle-down {
-        display: none; }
-      .results .sidebar .result-nav.expanded .fa-chevron-circle-up {
-        display: block; }
-      .results .sidebar .result-nav.expanded .indicator-text {
-        display: initial; }
-      .results .sidebar .result-nav.expanded .indicator-count {
-        display: none; }
-      .results .sidebar .result-nav.expanded .result-nav-full {
-        display: block;
-        cursor: pointer;
-        padding: 1px 0 0 0px;
-        background-color: white; }
-        .results .sidebar .result-nav.expanded .result-nav-full div:last-child .indicator-nav {
-          border-bottom: none; }
-        .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav {
-          padding: 0.75em 10px 1em 0em;
-          /* Transparent border means text doesn't shift when
+        .sidebar .result-nav .result-nav-summary h3.result-title {
+          position: relative;
+          box-sizing: border-box;
+          font-weight: 400; }
+          .sidebar .result-nav .result-nav-summary h3.result-title .fa {
+            float: right;
+            font-size: 1.3em;
+            margin-right: 6px;
+            text-shadow: 0 1px 0 white;
+            color: rgba(44, 42, 116, 0.6); }
+          .sidebar .result-nav .result-nav-summary h3.result-title > span {
+            box-sizing: border-box;
+            max-width: 80%;
+            margin: 0 auto 0 0;
+            display: block;
+            display: -webkit-box;
+            line-height: 1.4em;
+            -webkit-box-orient: vertical; }
+    .sidebar .result-nav .fa-chevron-circle-up {
+      display: none; }
+    .sidebar .result-nav.expanded {
+      opacity: 1; }
+      .sidebar .result-nav.expanded:before {
+        background-color: transparent; }
+      .sidebar .result-nav.expanded h3 {
+        color: #2c2a74; }
+      .sidebar .result-nav.expanded ~ .result-nav:before {
+        background-color: transparent; }
+    .sidebar .result-nav .result-indicator-count {
+      display: block;
+      color: #2c2a74;
+      display: block;
+      margin-top: -5px; }
+      .sidebar .result-nav .result-indicator-count span {
+        margin-left: 5px; }
+      .sidebar .result-nav .result-indicator-count p {
+        display: inline-block;
+        margin-left: 5px; }
+    .sidebar .result-nav .result-nav-full {
+      display: none; }
+    .sidebar .result-nav .indicator-text {
+      display: none; }
+    .sidebar .result-nav.expanded .fa-chevron-circle-down {
+      display: none; }
+    .sidebar .result-nav.expanded .fa-chevron-circle-up {
+      display: block; }
+    .sidebar .result-nav.expanded .indicator-text {
+      display: initial; }
+    .sidebar .result-nav.expanded .indicator-count {
+      display: none; }
+    .sidebar .result-nav.expanded .result-nav-full {
+      display: block;
+      cursor: pointer;
+      padding: 1px 0 0 0px;
+      background-color: white; }
+      .sidebar .result-nav.expanded .result-nav-full div:last-child .indicator-nav {
+        border-bottom: none; }
+      .sidebar .result-nav.expanded .result-nav-full div .indicator-nav {
+        padding: 0.75em 10px 1em 0em;
+        /* Transparent border means text doesn't shift when
                             ** we add a colored border to active elements.
                             */
-          background: rgba(44, 42, 116, 0.05);
-          border-bottom: 2px solid white; }
-          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover {
-            background: rgba(44, 42, 116, 0.5); }
-            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover h4 {
-              color: white; }
-          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
-            background: #2c2a74 url(../images/carretWhite.svg) center right no-repeat;
-            border-left: 10px solid rgba(174, 9, 34, 0);
-            background-size: 5% auto; }
-            .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
-              color: white; }
-          .results .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
-            margin-bottom: 0; }
-        .results .sidebar .result-nav.expanded .result-nav-full div a h4 {
-          font-size: 1em;
-          color: #2c2a74;
-          margin-bottom: 1px;
-          line-height: 150%;
-          padding-left: 15px; }
-        .results .sidebar .result-nav.expanded .result-nav-full div a:hover {
-          color: rgba(44, 42, 116, 0.5);
-          text-decoration: none; }
-        .results .sidebar .result-nav.expanded .result-nav-full div .last-update {
-          font-size: 0.9em;
-          color: #aaaaaa; }
-  .results .indicator-container {
-    vertical-align: top;
-    overflow-y: scroll;
-    padding: 20px 1em 0.25em 1em;
-    background-color: rgba(245, 245, 245, 0.2);
-    -webkit-box-flex: 1;
-    -moz-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1; }
-    .results .indicator-container .indicator-period .indicTitle {
-      position: relative; }
-      .results .indicator-container .indicator-period .indicTitle .indicator-title i {
-        display: none; }
-      .results .indicator-container .indicator-period .indicTitle .new-update {
-        position: absolute;
-        display: inline-block;
-        top: -5px;
-        right: 0; }
-        .results .indicator-container .indicator-period .indicTitle .new-update .btn {
-          background: #202024;
-          color: white;
-          -moz-border-radius: 5px;
-          -o-border-radius: 5px;
-          -webkit-border-radius: 5px;
-          border-radius: 5px; }
-          .results .indicator-container .indicator-period .indicTitle .new-update .btn:hover {
-            background: #2c2a74;
+        background: rgba(44, 42, 116, 0.05);
+        border-bottom: 2px solid white; }
+        .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover {
+          background: rgba(44, 42, 116, 0.5); }
+          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover h4 {
             color: white; }
-    .results .indicator-container .indicator-periods-title {
-      font-size: 1em;
-      color: #202024;
-      margin-top: 40px; }
-    .results .indicator-container .result-summary {
-      display: none;
-      opacity: 0; }
-      .results .indicator-container .result-summary h4 {
+        .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
+          background: #2c2a74 url(../images/carretWhite.svg) center right no-repeat;
+          border-left: 10px solid rgba(174, 9, 34, 0);
+          background-size: 5% auto; }
+          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
+            color: white; }
+        .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
+          margin-bottom: 0; }
+      .sidebar .result-nav.expanded .result-nav-full div a h4 {
+        font-size: 1em;
+        color: #2c2a74;
+        margin-bottom: 1px;
+        line-height: 150%;
+        padding-left: 15px; }
+      .sidebar .result-nav.expanded .result-nav-full div a:hover {
+        color: rgba(44, 42, 116, 0.5);
+        text-decoration: none; }
+      .sidebar .result-nav.expanded .result-nav-full div .last-update {
         font-size: 0.9em;
-        color: #aaaaaa;
-        font-variant: small-caps;
-        text-transform: lowercase; }
-      .results .indicator-container .result-summary h3 {
-        font-size: 1.2em;
-        color: #424c2b;
-        margin-bottom: 4px; }
-      .results .indicator-container .result-summary .result-parent {
-        font-size: 0.8em;
         color: #aaaaaa; }
-      .results .indicator-container .result-summary .indicator-link {
-        cursor: pointer; }
-        .results .indicator-container .result-summary .indicator-link:hover {
-          opacity: 0.8; }
-        .results .indicator-container .result-summary .indicator-link:active {
-          opacity: 0.6; }
-      .results .indicator-container .result-summary .result-indicators {
-        margin-top: 20px; }
-        .results .indicator-container .result-summary .result-indicators ul {
-          list-style-type: none;
-          padding-left: 5px; }
-          .results .indicator-container .result-summary .result-indicators ul li {
-            color: #00aaff; }
-    .results .indicator-container .indicator-group {
-      padding: 0;
+
+.indicator-container {
+  vertical-align: top;
+  overflow-y: scroll;
+  padding: 20px 1em 0.25em 1em;
+  background-color: rgba(245, 245, 245, 0.2);
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+  .indicator-container .indicator-period .indicTitle {
+    position: relative; }
+    .indicator-container .indicator-period .indicTitle .indicator-title i {
       display: none; }
-      .results .indicator-container .indicator-group .indicator-title {
-        color: #ae0922;
-        font-size: 1em; }
-        .results .indicator-container .indicator-group .indicator-title .glyphicon {
-          float: left;
-          margin-right: 4px; }
-      .results .indicator-container .indicator-group .table {
-        padding: 0.5em 0.25em;
-        /*background-color: rgb(235,235,231);*/ }
-        .results .indicator-container .indicator-group .table tbody.indicator-period {
-          border: none;
-          padding: 15px 0; }
-        .results .indicator-container .indicator-group .table tbody.expanded {
-          background-color: white; }
-        .results .indicator-container .indicator-group .table thead {
-          font-weight: normal;
-          color: silver; }
-          .results .indicator-container .indicator-group .table thead tr {
-            background-color: #ececec; }
-        .results .indicator-container .indicator-group .table tr, .results .indicator-container .indicator-group .table td {
-          border: none;
-          color: #acacac; }
-        .results .indicator-container .indicator-group .table tr {
-          min-height: 125px; }
-          .results .indicator-container .indicator-group .table tr .add-button {
-            display: none; }
-          .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
-            text-align: right; }
-            .results .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
-              border: none;
-              display: inline-block;
-              margin-right: 1.4em; }
-        .results .indicator-container .indicator-group .table td {
-          vertical-align: middle; }
-          .results .indicator-container .indicator-group .table td.period-td, .results .indicator-container .indicator-group .table td.actual-td, .results .indicator-container .indicator-group .table td.target-td, .results .indicator-container .indicator-group .table td.actions-td {
-            white-space: nowrap; }
-          .results .indicator-container .indicator-group .table td.target-td {
-            font-weight: bold; }
-          .results .indicator-container .indicator-group .table td.actions-td .tooltip {
-            top: -170px;
-            left: 132.703px;
-            display: block; }
-            .results .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
-              left: 77.4336%; }
-          .results .indicator-container .indicator-group .table td.period-td {
-            color: rgba(32, 32, 36, 0.6);
-            position: relative; }
-            .results .indicator-container .indicator-group .table td.period-td .result-tooltip {
-              position: absolute;
-              top: 0; }
-          .results .indicator-container .indicator-group .table td.indicator-bar-td {
-            width: 55%; }
-        .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-up {
-          display: none; }
-        .results .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-down {
-          display: initial; }
-        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-circle-up {
-          display: initial; }
-        .results .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-circle-down {
-          display: none; }
-      .results .indicator-container .indicator-group .indicator {
-        display: none; }
-  .results .indicator-bar-td {
-    height: 80px;
-    padding: 0; }
-  .results .th-progress:before {
-    content: 'spacer';
-    width: 40px;
-    height: 1px;
-    display: inline-block;
-    color: transparent; }
-    @media only screen and (max-width: 800px) {
-      .results .th-progress:before {
-        display: none; } }
-  .results .indicator-bar-display-container {
-    position: relative;
-    height: 100%;
-    margin-left: 50px;
-    margin-right: 15px; }
-    .results .indicator-bar-display-container .indicator-bar, .results .indicator-bar-display-container .indicator-bar-progress-amount {
+    .indicator-container .indicator-period .indicTitle .new-update {
       position: absolute;
-      top: 38px;
-      bottom: 24px;
-      left: 0px;
-      height: 8px;
+      display: inline-block;
+      top: -5px;
+      right: 0; }
+      .indicator-container .indicator-period .indicTitle .new-update .btn {
+        background: #202024;
+        color: white;
+        -moz-border-radius: 5px;
+        -o-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px; }
+        .indicator-container .indicator-period .indicTitle .new-update .btn:hover {
+          background: #2c2a74;
+          color: white; }
+  .indicator-container .indicator-periods-title {
+    font-size: 1em;
+    color: #202024;
+    margin-top: 40px; }
+  .indicator-container .result-summary {
+    display: none;
+    opacity: 0; }
+    .indicator-container .result-summary h4 {
+      font-size: 0.9em;
+      color: #aaaaaa;
+      font-variant: small-caps;
+      text-transform: lowercase; }
+    .indicator-container .result-summary h3 {
+      font-size: 1.2em;
+      color: #424c2b;
+      margin-bottom: 4px; }
+    .indicator-container .result-summary .result-parent {
+      font-size: 0.8em;
+      color: #aaaaaa; }
+    .indicator-container .result-summary .indicator-link {
+      cursor: pointer; }
+      .indicator-container .result-summary .indicator-link:hover {
+        opacity: 0.8; }
+      .indicator-container .result-summary .indicator-link:active {
+        opacity: 0.6; }
+    .indicator-container .result-summary .result-indicators {
+      margin-top: 20px; }
+      .indicator-container .result-summary .result-indicators ul {
+        list-style-type: none;
+        padding-left: 5px; }
+        .indicator-container .result-summary .result-indicators ul li {
+          color: #00aaff; }
+  .indicator-container .indicator-group {
+    padding: 0;
+    display: none; }
+    .indicator-container .indicator-group .indicator-title {
+      color: #ae0922;
+      font-size: 1em; }
+      .indicator-container .indicator-group .indicator-title .glyphicon {
+        float: left;
+        margin-right: 4px; }
+    .indicator-container .indicator-group .table {
+      padding: 0.5em 0.25em;
+      /*background-color: rgb(235,235,231);*/ }
+      .indicator-container .indicator-group .table tbody.indicator-period {
+        border: none;
+        padding: 15px 0; }
+      .indicator-container .indicator-group .table tbody.expanded {
+        background-color: white; }
+      .indicator-container .indicator-group .table thead {
+        font-weight: normal;
+        color: silver; }
+        .indicator-container .indicator-group .table thead tr {
+          background-color: #ececec; }
+      .indicator-container .indicator-group .table tr,
+      .indicator-container .indicator-group .table td {
+        border: none;
+        color: #acacac; }
+      .indicator-container .indicator-group .table tr {
+        min-height: 125px; }
+        .indicator-container .indicator-group .table tr .add-button {
+          display: none; }
+        .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
+          text-align: right; }
+          .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
+            border: none;
+            display: inline-block;
+            margin-right: 1.4em; }
+      .indicator-container .indicator-group .table td {
+        vertical-align: middle; }
+        .indicator-container .indicator-group .table td.period-td,
+        .indicator-container .indicator-group .table td.actual-td,
+        .indicator-container .indicator-group .table td.target-td,
+        .indicator-container .indicator-group .table td.actions-td {
+          white-space: nowrap; }
+        .indicator-container .indicator-group .table td.target-td {
+          font-weight: bold; }
+        .indicator-container .indicator-group .table td.actions-td .tooltip {
+          top: -170px;
+          left: 132.703px;
+          display: block; }
+          .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
+            left: 77.4336%; }
+        .indicator-container .indicator-group .table td.period-td {
+          color: rgba(32, 32, 36, 0.6);
+          position: relative; }
+          .indicator-container .indicator-group .table td.period-td .result-tooltip {
+            position: absolute;
+            top: 0; }
+        .indicator-container .indicator-group .table td.indicator-bar-td {
+          width: 55%; }
+      .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-up {
+        display: none; }
+      .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-circle-down {
+        display: initial; }
+      .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-circle-up {
+        display: initial; }
+      .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-circle-down {
+        display: none; }
+    .indicator-container .indicator-group .indicator {
+      display: none; }
+
+/* Styling for the indicator period progress bar */
+.indicator-bar-td {
+  height: 80px;
+  padding: 0; }
+
+/* Insert some transparent text to space the "progress" label */
+.th-progress:before {
+  content: 'spacer';
+  width: 40px;
+  height: 1px;
+  display: inline-block;
+  color: transparent; }
+  @media only screen and (max-width: 800px) {
+    .th-progress:before {
+      display: none; } }
+
+.indicator-bar-display-container {
+  position: relative;
+  height: 100%;
+  margin-left: 50px;
+  margin-right: 15px; }
+  .indicator-bar-display-container .indicator-bar,
+  .indicator-bar-display-container .indicator-bar-progress-amount {
+    position: absolute;
+    top: 38px;
+    bottom: 24px;
+    left: 0px;
+    height: 8px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #CDDFEF; }
+  .indicator-bar-display-container .indicator-baseline {
+    position: absolute;
+    left: -45px;
+    top: 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    vertical-align: bottom;
+    width: 35px;
+    text-align: right; }
+  .indicator-bar-display-container .indicator-bar {
+    background-color: #E2EBF5;
+    right: 0px; }
+  .indicator-bar-display-container .indicator-bar-progress-amount {
+    background-color: rgba(0, 0, 0, 0.2); }
+  .indicator-bar-display-container .indicator-bar-progress-container {
+    /* The progress box has non-zero width, so add some
+            ** padding to ensure it doesn't overflow the parent
+            ** container.
+            */
+    position: relative;
+    height: 100%; }
+    .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+      position: absolute;
+      width: 4px;
+      margin-left: -2px;
+      /* Offset half the width */
+      height: 23px;
+      top: 30px;
+      background-color: #A3C7E3;
+      text-align: center; }
+
+.target-td {
+  vertical-align: middle; }
+
+.indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+  padding-left: 15px;
+  font-size: 1.1em;
+  font-weight: normal;
+  color: #515050;
+  vertical-align: bottom; }
+
+.indicator-bar-progress-complete-container .indicator-bar-progress-text {
+  padding-left: 15px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #A3C7E3;
+  vertical-align: bottom; }
+
+.indicator-container .indicator-group .table tbody {
+  background-color: white;
+  border-bottom: none !important; }
+  .indicator-container .indicator-group .table tbody:last-child {
+    margin-bottom: 0; }
+  .indicator-container .indicator-group .table tbody .edit-button {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    top: 15px;
+    right: 10px;
+    color: #202024;
+    font-size: 1.5em; }
+    .indicator-container .indicator-group .table tbody .edit-button.activated {
+      display: none; }
+  .indicator-container .indicator-group .table tbody .delete-button {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    top: 13px;
+    right: 35px;
+    font-size: 1.5em;
+    color: #202024; }
+    .indicator-container .indicator-group .table tbody .delete-button.activated {
+      display: none; }
+  .indicator-container .indicator-group .table tbody .delete-confirm {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 55px;
+    height: 90px;
+    background-color: white;
+    color: #202024;
+    padding: 1em;
+    z-index: 101; }
+    .indicator-container .indicator-group .table tbody .delete-confirm > div {
+      height: 40px;
+      position: relative; }
+    .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
+      position: absolute;
+      left: 10px;
+      top: 10px; }
+    .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
+      background-color: #ae0922;
+      border-color: #ae0922;
+      margin-left: auto;
+      position: absolute;
+      right: 10px;
+      top: 10px; }
+      .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
+        background-color: #ff5500;
+        border-color: #ff5500; }
+  .indicator-container .indicator-group .table tbody .update-date {
+    display: inline-block;
+    text-align: left;
+    width: 50%; }
+  .indicator-container .indicator-group .table tbody .update-name {
+    display: inline-block;
+    text-align: left;
+    width: 30%;
+    margin-right: 10%;
+    color: #202024; }
+    .indicator-container .indicator-group .table tbody .update-name.delete-pending {
+      margin-bottom: 90px; }
+  .indicator-container .indicator-group .table tbody .update-timeline {
+    display: inline-block;
+    width: 75%;
+    height: 80px;
+    padding-top: 1em;
+    z-index: 99;
+    position: relative; }
+  .indicator-container .indicator-group .table tbody .update-target {
+    position: absolute;
+    margin-top: 48px;
+    display: inline-block;
+    width: 24%;
+    height: 80px;
+    text-align: center; }
+    .indicator-container .indicator-group .table tbody .update-target span {
+      font-size: 1.1em;
+      color: #515050;
+      vertical-align: text-top; }
+      .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
+        padding-left: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #A3C7E3;
+        vertical-align: bottom; }
+  .indicator-container .indicator-group .table tbody .update-description {
+    padding: 0.5em;
+    margin: 20px auto 30px; }
+    .indicator-container .indicator-group .table tbody .update-description.editable {
+      background: whitesmoke;
+      border: 1px solid #A3C7E3; }
+    .indicator-container .indicator-group .table tbody .update-description .update-photo {
+      float: right;
+      width: 150px;
+      height: 100px;
+      background-size: cover; }
+  .indicator-container .indicator-group .table tbody .save-button {
+    position: absolute;
+    display: none;
+    right: 10px;
+    bottom: 10px; }
+    .indicator-container .indicator-group .table tbody .save-button.active {
+      display: inline-block;
+      padding: 3px 7px;
+      color: white;
+      background-color: #007ab8;
       -moz-border-radius: 2px;
       -o-border-radius: 2px;
       -webkit-border-radius: 2px;
       border-radius: 2px;
-      border: 1px solid #CDDFEF; }
-    .results .indicator-bar-display-container .indicator-baseline {
-      position: absolute;
-      left: -45px;
-      top: 30px;
-      font-size: 1.1em;
-      font-weight: bold;
-      vertical-align: bottom;
-      width: 35px;
-      text-align: right; }
-    .results .indicator-bar-display-container .indicator-bar {
-      background-color: #E2EBF5;
-      right: 0px; }
-    .results .indicator-bar-display-container .indicator-bar-progress-amount {
-      background-color: rgba(0, 0, 0, 0.2); }
-    .results .indicator-bar-display-container .indicator-bar-progress-container {
-      /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
-      position: relative;
-      height: 100%; }
-      .results .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+      text-align: center; }
+  .indicator-container .indicator-group .table tbody .cancel-button {
+    position: absolute;
+    display: none;
+    right: 60px;
+    bottom: 10px;
+    background-color: none; }
+    .indicator-container .indicator-group .table tbody .cancel-button.active {
+      display: inline-block;
+      padding: 3px 7px;
+      color: #007ab8;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      text-align: center; }
+
+label.imageUpload input[type="file"],
+label.fileUpload input[type="file"] {
+  position: fixed;
+  top: -1000px; }
+
+.update-container {
+  background: rgba(153, 153, 153, 0.05);
+  border: 1px solid rgba(32, 32, 36, 0.2);
+  padding: 0 1em;
+  margin-bottom: 50px; }
+  .update-container .update-entry-container {
+    padding: 0 0 10px 0;
+    position: relative; }
+    .update-container .update-entry-container.edit-in-progress {
+      background: rgba(0, 167, 157, 0.05);
+      border: 1px solid rgba(0, 167, 157, 0.3);
+      box-shadow: 0 0 10px rgba(0, 167, 157, 0.5); }
+      .update-container .update-entry-container.edit-in-progress .update-entry-container-header {
+        background: rgba(255, 255, 255, 0.5); }
+    .update-container .update-entry-container .update-entry-container-header {
+      background: rgba(32, 32, 36, 0);
+      border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+      padding: 0.75em 0; }
+      .update-container .update-entry-container .update-entry-container-header .update-user {
+        color: #2c2a74;
+        font-weight: bold; }
+      .update-container .update-entry-container .update-entry-container-header .update-created-at {
+        margin-left: 15px;
+        color: rgba(32, 32, 36, 0.7); }
+      .update-container .update-entry-container .update-entry-container-header .update-status {
+        color: #ee3124; }
+    .update-container .update-entry-container .comments .input-group {
+      margin-top: 20px;
+      /* button {
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/ }
+    .update-container .update-entry-container .comments .comment {
+      margin-top: 20px;
+      margin-bottom: 20px; }
+      .update-container .update-entry-container .comments .comment .comment-header {
+        margin-bottom: 5px;
+        font-weight: bold; }
+        .update-container .update-entry-container .comments .comment .comment-header span {
+          color: #2c2a74; }
+          .update-container .update-entry-container .comments .comment .comment-header span:last-child {
+            margin-left: 15px;
+            color: rgba(32, 32, 36, 0.5); }
+    .update-container .update-entry-container .menuAction {
+      position: relative; }
+      .update-container .update-entry-container .menuAction .removeUpdate {
         position: absolute;
-        width: 4px;
-        margin-left: -2px;
-        /* Offset half the width */
-        height: 23px;
         top: 30px;
-        background-color: #A3C7E3;
-        text-align: center; }
-  .results .target-td {
-    vertical-align: middle; }
-  .results .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
-    padding-left: 15px;
-    font-size: 1.1em;
-    font-weight: normal;
-    color: #515050;
-    vertical-align: bottom; }
-  .results .indicator-bar-progress-complete-container .indicator-bar-progress-text {
-    padding-left: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #A3C7E3;
-    vertical-align: bottom; }
-  .results .indicator-container .indicator-group .table tbody {
-    background-color: white;
-    border-bottom: none !important; }
-    .results .indicator-container .indicator-group .table tbody:last-child {
+        left: 0; }
+        .update-container .update-entry-container .menuAction .removeUpdate .btn {
+          background: #ee3124;
+          color: white;
+          border-color: #ee3124; }
+          .update-container .update-entry-container .menuAction .removeUpdate .btn:hover {
+            background: rgba(238, 49, 36, 0.5); }
+      .update-container .update-entry-container .menuAction .bottomRow {
+        margin-top: 20px;
+        padding: 0.75em;
+        position: relative;
+        list-style-type: none; }
+        .update-container .update-entry-container .menuAction .bottomRow .btn {
+          padding: 2px 7px; }
+          .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+            background: #202024;
+            color: white; }
+            .editUpdate .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+              background: initial;
+              color: initial; }
+            .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default:hover {
+              background: #2c2a74; }
+        .update-container .update-entry-container .menuAction .bottomRow .cancelUpdate {
+          margin-right: 25px; }
+    .update-container .update-entry-container .upActualValue {
+      margin-top: 47px;
+      margin-bottom: 15px; }
+      .update-container .update-entry-container .upActualValue .update-actual-value-text {
+        color: rgba(32, 32, 36, 0.7); }
+      .update-container .update-entry-container .upActualValue .update-actual-value-data {
+        font-weight: bold; }
+      .update-container .update-entry-container .upActualValue .update-relative-value {
+        margin-left: 5px;
+        font-weight: bold; }
+
+.update-dialog-container.pending-new-update .update-entry-container {
+  background-color: #D1E6D1; }
+  .update-dialog-container.pending-new-update .update-entry-container:first-child {
+    border-left: none; }
+
+.update-dialog-container td {
+  padding: 8px 2em; }
+  .update-dialog-container td .update-entry-container {
+    padding: 2em;
+    position: relative;
+    background-color: #ececec; }
+    .update-dialog-container td .update-entry-container:first-child {
+      border-left: 4px solid #ae0922; }
+    .update-dialog-container td .update-entry-container.edit-in-progress {
+      background-color: #D1E6D1;
+      border-left: none; }
+    .update-dialog-container td .update-entry-container .update-exceed-target {
+      margin: 3em 0 1em 0;
+      text-align: right; }
+      .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
+        opacity: 0; }
+      .update-dialog-container td .update-entry-container .update-exceed-target label {
+        margin-right: 10px;
+        color: rgba(32, 32, 36, 0.5); }
+      .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
+        margin-right: 10px; }
+        .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
+          opacity: 1; }
+    .update-dialog-container td .update-entry-container .indicator-bar-display-container {
+      position: relative;
+      height: 100%;
+      margin-left: 45px;
+      margin-right: 0; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
+        top: 34px;
+        left: -60px; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
+        position: absolute;
+        bottom: -18px;
+        width: 44px;
+        margin-left: -22px;
+        text-align: center;
+        color: #B5B5B5;
+        border: 1px solid #B5B5B5;
+        background-color: #ececec;
+        cursor: pointer; }
+        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
+          content: '';
+          opacity: 0;
+          height: 0px;
+          width: 0px;
+          padding: 0;
+          margin: 0;
+          font-size: 0; }
+        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
+          color: #A3C7E3;
+          border-color: #A3C7E3; }
+        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
+          z-index: 101;
+          background-color: white; }
+          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
+            display: block;
+            font-size: initial;
+            opacity: 1;
+            position: absolute;
+            top: 26px;
+            color: inherit;
+            content: initial;
+            background-color: white;
+            width: 100px;
+            height: auto;
+            margin-left: -28px;
+            /* Half of the width of this - half the width of the parent */
+            padding: 5px 0; }
+            .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
+              content: '';
+              width: 0;
+              height: 0;
+              border-left: 5px solid transparent;
+              border-right: 5px solid transparent;
+              border-bottom: 5px solid white;
+              position: absolute;
+              top: -5px;
+              left: 45px; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar,
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        position: absolute;
+        top: 38px;
+        bottom: 24px;
+        left: 0px;
+        height: 14px;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        border: 1px solid #CDDFEF; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
+        background-color: #fff;
+        right: 0px; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
+        background-color: #fff;
+        border-right: none; }
+      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
+        /* The progress box has non-zero width, so add some
+                        ** padding to ensure it doesn't overflow the parent
+                        ** container.
+                        */
+        position: relative;
+        height: 100%; }
+        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
+          position: absolute;
+          width: 3px;
+          height: 20px;
+          top: 35px;
+          background-color: #B5B5B5;
+          text-align: center; }
+          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
+            background-color: #A3C7E3; }
+          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
+            border: none; }
+    .update-dialog-container td .update-entry-container .target-td {
+      vertical-align: middle; }
+    .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
+      padding-left: 15px;
+      font-size: 1.5em;
+      font-weight: normal;
+      color: #515050;
+      vertical-align: bottom; }
+    .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
+      padding-left: 15px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #A3C7E3;
+      vertical-align: bottom;
+      z-index: 19999; }
+    .update-dialog-container td .update-entry-container:last-child {
       margin-bottom: 0; }
-    .results .indicator-container .indicator-group .table tbody .edit-button {
+    .update-dialog-container td .update-entry-container .edit-button {
       position: absolute;
       height: 20px;
       width: 20px;
@@ -2588,9 +3285,9 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       right: 10px;
       color: #202024;
       font-size: 1.5em; }
-      .results .indicator-container .indicator-group .table tbody .edit-button.activated {
+      .update-dialog-container td .update-entry-container .edit-button.activated {
         display: none; }
-    .results .indicator-container .indicator-group .table tbody .delete-button {
+    .update-dialog-container td .update-entry-container .delete-button {
       position: absolute;
       height: 20px;
       width: 20px;
@@ -2598,523 +3295,186 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
       right: 35px;
       font-size: 1.5em;
       color: #202024; }
-      .results .indicator-container .indicator-group .table tbody .delete-button.activated {
+      .update-dialog-container td .update-entry-container .delete-button.activated {
         display: none; }
-    .results .indicator-container .indicator-group .table tbody .delete-confirm {
-      display: none;
-      position: absolute;
-      right: 10px;
-      top: 55px;
-      height: 90px;
-      background-color: white;
-      color: #202024;
-      padding: 1em;
-      z-index: 101; }
-      .results .indicator-container .indicator-group .table tbody .delete-confirm > div {
-        height: 40px;
-        position: relative; }
-      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
-        position: absolute;
-        left: 10px;
-        top: 10px; }
-      .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
-        background-color: #ae0922;
-        border-color: #ae0922;
-        margin-left: auto;
-        position: absolute;
-        right: 10px;
-        top: 10px; }
-        .results .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
-          background-color: #ff5500;
-          border-color: #ff5500; }
-    .results .indicator-container .indicator-group .table tbody .update-date {
+    .update-dialog-container td .update-entry-container .update-date {
       display: inline-block;
       text-align: left;
       width: 50%; }
-    .results .indicator-container .indicator-group .table tbody .update-name {
+    .update-dialog-container td .update-entry-container .update-name {
       display: inline-block;
       text-align: left;
       width: 30%;
       margin-right: 10%;
       color: #202024; }
-      .results .indicator-container .indicator-group .table tbody .update-name.delete-pending {
-        margin-bottom: 90px; }
-    .results .indicator-container .indicator-group .table tbody .update-timeline {
+    .update-dialog-container td .update-entry-container .update-timeline {
       display: inline-block;
-      width: 75%;
+      width: 84%;
       height: 80px;
       padding-top: 1em;
       z-index: 99;
       position: relative; }
-    .results .indicator-container .indicator-group .table tbody .update-target {
+    .update-dialog-container td .update-entry-container .update-target {
       position: absolute;
-      margin-top: 48px;
+      margin-top: 49px;
       display: inline-block;
-      width: 24%;
+      width: 15%;
       height: 80px;
-      text-align: center; }
-      .results .indicator-container .indicator-group .table tbody .update-target span {
+      text-align: right; }
+      .update-dialog-container td .update-entry-container .update-target span {
         font-size: 1.1em;
         color: #515050;
         vertical-align: text-top; }
-        .results .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
+        .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
           padding-left: 15px;
           font-size: 1.1em;
           font-weight: bold;
           color: #A3C7E3;
           vertical-align: bottom; }
-    .results .indicator-container .indicator-group .table tbody .update-description {
+    .update-dialog-container td .update-entry-container .update-description {
       padding: 0.5em;
       margin: 20px auto 30px; }
-      .results .indicator-container .indicator-group .table tbody .update-description.editable {
+      .update-dialog-container td .update-entry-container .update-description.editable {
         background: whitesmoke;
         border: 1px solid #A3C7E3; }
-      .results .indicator-container .indicator-group .table tbody .update-description .update-photo {
+      .update-dialog-container td .update-entry-container .update-description .update-photo {
         float: right;
         width: 150px;
         height: 100px;
         background-size: cover; }
-    .results .indicator-container .indicator-group .table tbody .save-button {
+    .update-dialog-container td .update-entry-container .save-button {
       position: absolute;
       display: none;
       right: 10px;
       bottom: 10px; }
-      .results .indicator-container .indicator-group .table tbody .save-button.active {
+      .update-dialog-container td .update-entry-container .save-button.active {
         display: inline-block;
         padding: 3px 7px;
         color: white;
-        background-color: #007ab8;
+        background-color: #202024;
         -moz-border-radius: 2px;
         -o-border-radius: 2px;
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
-    .results .indicator-container .indicator-group .table tbody .cancel-button {
+    .update-dialog-container td .update-entry-container .cancel-button {
       position: absolute;
       display: none;
       right: 60px;
-      bottom: 10px;
-      background-color: none; }
-      .results .indicator-container .indicator-group .table tbody .cancel-button.active {
+      bottom: 10px; }
+      .update-dialog-container td .update-entry-container .cancel-button.active {
         display: inline-block;
         padding: 3px 7px;
-        color: #007ab8;
+        color: #202024;
         -moz-border-radius: 2px;
         -o-border-radius: 2px;
         -webkit-border-radius: 2px;
         border-radius: 2px;
         text-align: center; }
-  .results label.imageUpload input[type="file"], .results label.fileUpload input[type="file"] {
-    position: fixed;
-    top: -1000px; }
-  .results .update-container {
-    background: rgba(153, 153, 153, 0.05);
-    border: 1px solid rgba(32, 32, 36, 0.2);
-    padding: 0 1em;
-    margin-bottom: 50px; }
-    .results .update-container .update-entry-container {
-      padding: 0 0 10px 0;
-      position: relative; }
-      .results .update-container .update-entry-container.edit-in-progress {
-        background: rgba(0, 167, 157, 0.05);
-        border: 1px solid rgba(0, 167, 157, 0.3);
-        box-shadow: 0 0 10px rgba(0, 167, 157, 0.5); }
-        .results .update-container .update-entry-container.edit-in-progress .update-entry-container-header {
-          background: rgba(255, 255, 255, 0.5); }
-      .results .update-container .update-entry-container .update-entry-container-header {
-        background: rgba(32, 32, 36, 0);
-        border-bottom: 1px solid rgba(32, 32, 36, 0.1);
-        padding: 0.75em 0; }
-        .results .update-container .update-entry-container .update-entry-container-header .update-user {
-          color: #2c2a74;
-          font-weight: bold; }
-        .results .update-container .update-entry-container .update-entry-container-header .update-created-at {
-          margin-left: 15px;
-          color: rgba(32, 32, 36, 0.7); }
-        .results .update-container .update-entry-container .update-entry-container-header .update-status {
-          color: #ee3124; }
-      .results .update-container .update-entry-container .comments .input-group {
-        margin-top: 20px;
-        /* button {
-                           background: $akvoBlack;
-                           color:white;
-                           &:hover {
-                               background: $akvoPurple;
-                           }
-                       }*/ }
-      .results .update-container .update-entry-container .comments .comment {
-        margin-top: 20px;
-        margin-bottom: 20px; }
-        .results .update-container .update-entry-container .comments .comment .comment-header {
-          margin-bottom: 5px;
-          font-weight: bold; }
-          .results .update-container .update-entry-container .comments .comment .comment-header span {
-            color: #2c2a74; }
-            .results .update-container .update-entry-container .comments .comment .comment-header span:last-child {
-              margin-left: 15px;
-              color: rgba(32, 32, 36, 0.5); }
-      .results .update-container .update-entry-container .menuAction {
-        position: relative; }
-        .results .update-container .update-entry-container .menuAction .removeUpdate {
-          position: absolute;
-          top: 30px;
-          left: 0; }
-          .results .update-container .update-entry-container .menuAction .removeUpdate .btn {
-            background: #ee3124;
-            color: white;
-            border-color: #ee3124; }
-            .results .update-container .update-entry-container .menuAction .removeUpdate .btn:hover {
-              background: rgba(238, 49, 36, 0.5); }
-        .results .update-container .update-entry-container .menuAction .bottomRow {
-          margin-top: 20px;
-          padding: 0.75em;
-          position: relative;
-          list-style-type: none; }
-          .results .update-container .update-entry-container .menuAction .bottomRow .btn {
-            padding: 2px 7px; }
-            .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
-              background: #202024;
-              color: white; }
-              .editUpdate .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
-                background: initial;
-                color: initial; }
-              .results .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default:hover {
-                background: #2c2a74; }
-          .results .update-container .update-entry-container .menuAction .bottomRow .cancelUpdate {
-            margin-right: 25px; }
-      .results .update-container .update-entry-container .upActualValue {
-        margin-top: 47px;
-        margin-bottom: 15px; }
-        .results .update-container .update-entry-container .upActualValue .update-actual-value-text {
-          color: rgba(32, 32, 36, 0.7); }
-        .results .update-container .update-entry-container .upActualValue .update-actual-value-data {
-          font-weight: bold; }
-        .results .update-container .update-entry-container .upActualValue .update-relative-value {
-          margin-left: 5px;
-          font-weight: bold; }
-  .results .update-dialog-container.pending-new-update .update-entry-container {
-    background-color: #D1E6D1; }
-    .results .update-dialog-container.pending-new-update .update-entry-container:first-child {
-      border-left: none; }
-  .results .update-dialog-container td {
-    padding: 8px 2em; }
-    .results .update-dialog-container td .update-entry-container {
-      padding: 2em;
-      position: relative;
-      background-color: #ececec; }
-      .results .update-dialog-container td .update-entry-container:first-child {
-        border-left: 4px solid #ae0922; }
-      .results .update-dialog-container td .update-entry-container.edit-in-progress {
-        background-color: #D1E6D1;
-        border-left: none; }
-      .results .update-dialog-container td .update-entry-container .update-exceed-target {
-        margin: 3em 0 1em 0;
-        text-align: right; }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
-          opacity: 0; }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target label {
-          margin-right: 10px;
-          color: rgba(32, 32, 36, 0.5); }
-        .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
-          margin-right: 10px; }
-          .results .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
-            opacity: 1; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-display-container {
-        position: relative;
-        height: 100%;
-        margin-left: 45px;
-        margin-right: 0; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
-          top: 34px;
-          left: -60px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
-          position: absolute;
-          bottom: -18px;
-          width: 44px;
-          margin-left: -22px;
-          text-align: center;
-          color: #B5B5B5;
-          border: 1px solid #B5B5B5;
-          background-color: #ececec;
-          cursor: pointer; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
-            content: '';
-            opacity: 0;
-            height: 0px;
-            width: 0px;
-            padding: 0;
-            margin: 0;
-            font-size: 0; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
-            color: #A3C7E3;
-            border-color: #A3C7E3; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
-            z-index: 101;
-            background-color: white; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
-              display: block;
-              font-size: initial;
-              opacity: 1;
-              position: absolute;
-              top: 26px;
-              color: inherit;
-              content: initial;
-              background-color: white;
-              width: 100px;
-              height: auto;
-              margin-left: -28px;
-              /* Half of the width of this - half the width of the parent */
-              padding: 5px 0; }
-              .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
-                content: '';
-                width: 0;
-                height: 0;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-bottom: 5px solid white;
-                position: absolute;
-                top: -5px;
-                left: 45px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar, .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
-          position: absolute;
-          top: 38px;
-          bottom: 24px;
-          left: 0px;
-          height: 14px;
-          -moz-border-radius: 2px;
-          -o-border-radius: 2px;
-          -webkit-border-radius: 2px;
-          border-radius: 2px;
-          border: 1px solid #CDDFEF; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
-          background-color: #fff;
-          right: 0px; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
-          background-color: #fff;
-          border-right: none; }
-        .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
-          /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-          position: relative;
-          height: 100%; }
-          .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
-            position: absolute;
-            width: 3px;
-            height: 20px;
-            top: 35px;
-            background-color: #B5B5B5;
-            text-align: center; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
-              background-color: #A3C7E3; }
-            .results .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
-              border: none; }
-      .results .update-dialog-container td .update-entry-container .target-td {
-        vertical-align: middle; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
-        padding-left: 15px;
-        font-size: 1.5em;
-        font-weight: normal;
-        color: #515050;
-        vertical-align: bottom; }
-      .results .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
-        padding-left: 15px;
-        font-size: 1.5em;
-        font-weight: bold;
-        color: #A3C7E3;
-        vertical-align: bottom;
-        z-index: 19999; }
-      .results .update-dialog-container td .update-entry-container:last-child {
-        margin-bottom: 0; }
-      .results .update-dialog-container td .update-entry-container .edit-button {
-        position: absolute;
+    .update-dialog-container td .update-entry-container .edit-slider {
+      z-index: 9999; }
+      .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
+        width: 3px;
+        margin-left: -2px;
         height: 20px;
-        width: 20px;
-        top: 15px;
-        right: 10px;
-        color: #202024;
-        font-size: 1.5em; }
-        .results .update-dialog-container td .update-entry-container .edit-button.activated {
-          display: none; }
-      .results .update-dialog-container td .update-entry-container .delete-button {
         position: absolute;
-        height: 20px;
-        width: 20px;
-        top: 13px;
-        right: 35px;
-        font-size: 1.5em;
-        color: #202024; }
-        .results .update-dialog-container td .update-entry-container .delete-button.activated {
-          display: none; }
-      .results .update-dialog-container td .update-entry-container .update-date {
-        display: inline-block;
-        text-align: left;
-        width: 50%; }
-      .results .update-dialog-container td .update-entry-container .update-name {
-        display: inline-block;
-        text-align: left;
-        width: 30%;
-        margin-right: 10%;
-        color: #202024; }
-      .results .update-dialog-container td .update-entry-container .update-timeline {
-        display: inline-block;
-        width: 84%;
-        height: 80px;
-        padding-top: 1em;
-        z-index: 99;
-        position: relative; }
-      .results .update-dialog-container td .update-entry-container .update-target {
+        background-color: #B5B5B5;
+        top: -3px;
+        z-index: 102; }
+      .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
         position: absolute;
-        margin-top: 49px;
-        display: inline-block;
-        width: 15%;
-        height: 80px;
-        text-align: right; }
-        .results .update-dialog-container td .update-entry-container .update-target span {
-          font-size: 1.1em;
-          color: #515050;
-          vertical-align: text-top; }
-          .results .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
-            padding-left: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #A3C7E3;
-            vertical-align: bottom; }
-      .results .update-dialog-container td .update-entry-container .update-description {
-        padding: 0.5em;
-        margin: 20px auto 30px; }
-        .results .update-dialog-container td .update-entry-container .update-description.editable {
-          background: whitesmoke;
-          border: 1px solid #A3C7E3; }
-        .results .update-dialog-container td .update-entry-container .update-description .update-photo {
-          float: right;
-          width: 150px;
-          height: 100px;
-          background-size: cover; }
-      .results .update-dialog-container td .update-entry-container .save-button {
-        position: absolute;
-        display: none;
-        right: 10px;
-        bottom: 10px; }
-        .results .update-dialog-container td .update-entry-container .save-button.active {
-          display: inline-block;
-          padding: 3px 7px;
-          color: white;
-          background-color: #202024;
-          -moz-border-radius: 2px;
-          -o-border-radius: 2px;
-          -webkit-border-radius: 2px;
-          border-radius: 2px;
-          text-align: center; }
-      .results .update-dialog-container td .update-entry-container .cancel-button {
-        position: absolute;
-        display: none;
-        right: 60px;
-        bottom: 10px; }
-        .results .update-dialog-container td .update-entry-container .cancel-button.active {
-          display: inline-block;
-          padding: 3px 7px;
-          color: #202024;
-          -moz-border-radius: 2px;
-          -o-border-radius: 2px;
-          -webkit-border-radius: 2px;
-          border-radius: 2px;
-          text-align: center; }
-      .results .update-dialog-container td .update-entry-container .edit-slider {
-        z-index: 9999; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
-          width: 3px;
-          margin-left: -2px;
-          height: 20px;
-          position: absolute;
-          background-color: #B5B5B5;
-          top: -3px;
-          z-index: 102; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
-          position: absolute;
-          background-color: green;
-          height: 12px;
-          top: 1px;
-          z-index: 101;
-          opacity: 0.5; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
-            background-color: red; }
-        .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
-          height: 5px;
-          border: 0;
+        background-color: green;
+        height: 12px;
+        top: 1px;
+        z-index: 101;
+        opacity: 0.5; }
+        .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
+          background-color: red; }
+      .update-dialog-container td .update-entry-container .edit-slider .noUi-base,
+      .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
+        height: 5px;
+        border: 0;
+        background-color: rgba(255, 255, 255, 0);
+        margin-top: -28px;
+        z-index: 99999;
+        -moz-border-radius: 4px;
+        -o-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        box-shadow: none; }
+        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin,
+        .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
           background-color: rgba(255, 255, 255, 0);
-          margin-top: -28px;
-          z-index: 99999;
           -moz-border-radius: 4px;
           -o-border-radius: 4px;
           -webkit-border-radius: 4px;
-          border-radius: 4px;
-          box-shadow: none; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
-            background-color: rgba(255, 255, 255, 0);
-            -moz-border-radius: 4px;
-            -o-border-radius: 4px;
-            -webkit-border-radius: 4px;
-            border-radius: 4px; }
-          .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
-            position: relative;
-            width: 28px;
-            height: 28px;
-            z-index: 9999;
+          border-radius: 4px; }
+        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle,
+        .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+          position: relative;
+          width: 28px;
+          height: 28px;
+          z-index: 9999;
+          background-color: #007ab8;
+          cursor: pointer;
+          left: -14px;
+          box-shadow: none;
+          top: -7px;
+          color: white; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+            display: block;
+            content: '|||';
+            color: white;
+            width: 26px;
+            height: 26px;
+            line-height: 23px;
+            text-align: center;
+            letter-spacing: -2px;
+            color: white;
+            background-color: transparent;
+            top: 0;
+            left: -1px; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+            display: none; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+            background-color: #009ceb; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+            background-color: #de8929; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+            position: absolute;
+            top: -32px;
             background-color: #007ab8;
-            cursor: pointer;
-            left: -14px;
-            box-shadow: none;
-            top: -7px;
-            color: white; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
-              display: block;
-              content: '|||';
-              color: white;
-              width: 26px;
-              height: 26px;
-              line-height: 23px;
-              text-align: center;
-              letter-spacing: -2px;
-              color: white;
-              background-color: transparent;
-              top: 0;
-              left: -1px; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
-              display: none; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
-              background-color: #009ceb; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
-              background-color: #de8929; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+            padding: 3px;
+            width: 44px;
+            left: -8px;
+            text-align: center; }
+            .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after,
+            .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+              content: '';
+              height: 0px;
+              width: 0px;
               position: absolute;
-              top: -32px;
-              background-color: #007ab8;
-              padding: 3px;
-              width: 44px;
-              left: -8px;
-              text-align: center; }
-              .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
-                content: '';
-                height: 0px;
-                width: 0px;
-                position: absolute;
-                bottom: -5px;
-                left: 17px;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 5px solid #007ab8; }
-            .results .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .results .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
-              position: absolute;
-              width: 42px;
-              text-align: center;
-              bottom: -25px;
-              left: -8px;
-              background-color: white;
-              color: #007ab8; }
-        .results .update-dialog-container td .update-entry-container .edit-slider.active {
-          display: initial; }
+              bottom: -5px;
+              left: 17px;
+              border-left: 5px solid transparent;
+              border-right: 5px solid transparent;
+              border-top: 5px solid #007ab8; }
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+            position: absolute;
+            width: 42px;
+            text-align: center;
+            bottom: -25px;
+            left: -8px;
+            background-color: white;
+            color: #007ab8; }
+      .update-dialog-container td .update-entry-container .edit-slider.active {
+        display: initial; }
 
 /* Modal dialog stuff for the Project Editor */
 div.inactive .addOrg {
@@ -3185,16 +3545,22 @@ div.active .addOrg {
       .modalContainer .orgModal .modalContents .inputContainer {
         margin-top: 2.75em;
         margin-bottom: 1em; }
-        .modalContainer .orgModal .modalContents .inputContainer input + label, .modalContainer .orgModal .modalContents .inputContainer select + label, .modalContainer .orgModal .modalContents .inputContainer textarea + label {
+        .modalContainer .orgModal .modalContents .inputContainer input + label,
+        .modalContainer .orgModal .modalContents .inputContainer select + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea + label {
           position: absolute;
           top: -25px;
           transition: top 0.7s ease, opacity 0.7s ease;
           opacity: 0;
           font-size: 13px;
           font-weight: 600; }
-        .modalContainer .orgModal .modalContents .inputContainer input:valid + label, .modalContainer .orgModal .modalContents .inputContainer select:valid + label, .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
+        .modalContainer .orgModal .modalContents .inputContainer input:valid + label,
+        .modalContainer .orgModal .modalContents .inputContainer select:valid + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea:valid + label {
           opacity: 1; }
-        .modalContainer .orgModal .modalContents .inputContainer input:focus + label, .modalContainer .orgModal .modalContents .inputContainer select:focus + label, .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
+        .modalContainer .orgModal .modalContents .inputContainer input:focus + label,
+        .modalContainer .orgModal .modalContents .inputContainer select:focus + label,
+        .modalContainer .orgModal .modalContents .inputContainer textarea:focus + label {
           color: #2c2a74; }
     .modalContainer .orgModal .controls {
       position: absolute;
@@ -3272,7 +3638,7 @@ div#my-reports {
     -o-border-radius: 15px;
     -webkit-border-radius: 15px;
     border-radius: 15px;
-    font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
+    font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
     .period-td .badge:hover {
       background-color: #2c2a74;
       cursor: pointer; }
@@ -3300,7 +3666,8 @@ div#my-reports {
       border: 1px solid rgba(153, 153, 153, 0.8);
       right: 8px;
       top: -2px; }
-      .period-td .result-tooltip .tooltip-arrow:after, .period-td .result-tooltip .tooltip-arrow:before {
+      .period-td .result-tooltip .tooltip-arrow:after,
+      .period-td .result-tooltip .tooltip-arrow:before {
         bottom: 100%;
         left: 50%;
         border: solid transparent;
