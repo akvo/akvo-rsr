@@ -97,9 +97,10 @@ def indicator_upload_file(request, pk=None):
     if not user:
         return Response({'error': 'User is not logged in'}, status=status.HTTP_403_FORBIDDEN)
 
-    if not user.has_perm('rsr.change_project', update.period.indicator.result.project):
-        return Response({'error': 'User has no permission to place an update'},
-                        status=status.HTTP_403_FORBIDDEN)
+    # TODO: Check if user is allowed to upload a file
+    # if not user.has_perm('rsr.change_project', update.period.indicator.result.project):
+    #     return Response({'error': 'User has no permission to place an update'},
+    #                     status=status.HTTP_403_FORBIDDEN)
 
     try:
         file_type = request.POST.copy()['type']
