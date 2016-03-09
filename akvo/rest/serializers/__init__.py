@@ -23,6 +23,10 @@ from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFramewor
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
+from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerializer,
+                                         IndicatorPeriodTargetDimensionSerializer)
+from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
+                                        IndicatorPeriodTargetLocationSerializer)
 from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .invoice import InvoiceSerializer
@@ -76,11 +80,15 @@ __all__ = [
     'HumanitarianScopeSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
-    'IndicatorPeriodSerializer',
-    'IndicatorPeriodFrameworkSerializer',
-    'IndicatorPeriodDataSerializer',
-    'IndicatorPeriodDataFrameworkSerializer',
+    'IndicatorPeriodActualDimensionSerializer',
+    'IndicatorPeriodActualLocationSerializer',
     'IndicatorPeriodDataCommentSerializer',
+    'IndicatorPeriodDataFrameworkSerializer',
+    'IndicatorPeriodDataSerializer',
+    'IndicatorPeriodFrameworkSerializer',
+    'IndicatorPeriodSerializer',
+    'IndicatorPeriodTargetDimensionSerializer',
+    'IndicatorPeriodTargetLocationSerializer',
     'IndicatorReferenceSerializer',
     'InternalOrganisationIDSerializer',
     'InvoiceSerializer',

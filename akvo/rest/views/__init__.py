@@ -22,6 +22,10 @@ from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
+from .indicator_period_dimension import (IndicatorPeriodActualDimensionViewSet,
+                                         IndicatorPeriodTargetDimensionViewSet)
+from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
+                                        IndicatorPeriodTargetLocationViewSet)
 from .indicator_reference import IndicatorReferenceViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
@@ -92,11 +96,15 @@ __all__ = [
     'HumanitarianScopeViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
+    'IndicatorPeriodActualDimensionViewSet',
+    'IndicatorPeriodActualLocationViewSet',
     'IndicatorPeriodViewSet',
     'IndicatorPeriodFrameworkViewSet',
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
     'IndicatorPeriodDataCommentViewSet',
+    'IndicatorPeriodTargetDimensionViewSet',
+    'IndicatorPeriodTargetLocationViewSet',
     'IndicatorReferenceViewSet',
     'indicator_upload_file',
     'InternalOrganisationIDViewSet',
