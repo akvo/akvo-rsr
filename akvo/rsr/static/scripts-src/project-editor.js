@@ -46,7 +46,7 @@ var localStorageResponses = localStorage.getItem(localStorageName);
 var partials = [
     'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
     'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-period',
-    'indicator-period-actual-dimension', 'indicator-period-actual-location',
+    'indicator-reference', 'indicator-period-actual-dimension', 'indicator-period-actual-location',
     'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
     'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
     'related-project','result', 'sector', 'transaction', 'transaction-sector',
