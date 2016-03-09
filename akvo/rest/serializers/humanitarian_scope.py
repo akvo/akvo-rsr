@@ -5,18 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectDocument, ProjectDocumentCategory
+from akvo.rsr.models import HumanitarianScope
 
 from .rsr_serializer import BaseRSRSerializer
 
 
-class ProjectDocumentSerializer(BaseRSRSerializer):
+class HumanitarianScopeSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = ProjectDocument
-
-
-class ProjectDocumentCategorySerializer(BaseRSRSerializer):
-
-    class Meta:
-        model = ProjectDocumentCategory
+        model = HumanitarianScope
