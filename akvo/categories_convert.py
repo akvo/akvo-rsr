@@ -104,11 +104,12 @@ for project in projects:
                 if project_prop == 'trainees' and category.name == 'Training':
                     set_training = True
                     print "set_training: True"
-                if set_training == False or (project_prop != 'trainees' or category.name != 'Education'):                        
-                    benchmark = Benchmark.objects.get(project=project, category=category, name__name=bm_name)
-                    benchmark.value = getattr(project, project_prop, 0)
-                    benchmark.save()
-                    print '    "%s" category benchmark "%s" set to %d.' % (category.name, benchmark.name, benchmark.value)
+                # Benchmarks are not used anymore
+                # if set_training == False or (project_prop != 'trainees' or category.name != 'Education'):
+                #     benchmark = Benchmark.objects.get(project=project, category=category, name__name=bm_name)
+                #     benchmark.value = getattr(project, project_prop, 0)
+                #     benchmark.save()
+                #     print '    "%s" category benchmark "%s" set to %d.' % (category.name, benchmark.name, benchmark.value)
             
 #projects = Project.objects.all()
 #water_cat = Category.objects.get(name='Water')
