@@ -29,9 +29,9 @@
     {{ block.super }}
 
     {# React #}
-    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
-    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
-    <script id="react-bootstrap" src="//cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.3/react-bootstrap.min.js"></script>
+    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
 
     {# Descriptions #}
     <script type="application/json" id="akvo-rsr-accordion">
@@ -72,8 +72,8 @@
     </script>
 
     {# Slider library #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css" type="text/css">
+    <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
     {% compressed_js 'project_main' %}
 {% endblock js %}
