@@ -148,11 +148,15 @@ def create_benchmark_objects(project):
     """
     create the relevant Benchmark objects for this project based on the Categories of the project
     """
-    from .models import Benchmark
+    # Benchmarks are not used anymore
 
-    for category in project.categories.all():
-        for benchmarkname in category.benchmarknames.all():
-            benchmark, created = Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
+    # from .models import Benchmark
+    #
+    # for category in project.categories.all():
+    #     for benchmarkname in category.benchmarknames.all():
+    #         benchmark, created = Benchmark.objects.get_or_create(project=project,
+    # category=category, name=benchmarkname, defaults={'value': 0})
+    pass
 
 
 def act_on_log_entry(sender, **kwargs):
