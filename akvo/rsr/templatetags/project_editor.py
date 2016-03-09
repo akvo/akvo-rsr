@@ -149,8 +149,6 @@ def value(obj, field):
     :returns 1234 (in case of related object)
     """
     if isinstance(obj, basestring):
-        # default = retrieve_model(obj)._meta.get_field(field).default
-        # return default if default != NOT_PROVIDED else ''
         return ''
     else:
         field_value = getattr(obj, field)
@@ -162,6 +160,8 @@ def value(obj, field):
             return '1'
         elif field_value is False:
             return '2'
+        elif field_value in [0, 0.]:
+            return '0'
         else:
             return field_value or ''
 

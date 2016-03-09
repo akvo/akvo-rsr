@@ -293,7 +293,7 @@ class ImportMapper(object):
 
     def get_attrib_as_int(self, element, attr, field, default=None):
         value = self.get_attrib(element, attr, field, default)
-        if value:
+        if value == '0' or value:
             return self.cast_to_int(value, attr, field)
         else:
             return default
@@ -432,7 +432,7 @@ class ImportMapper(object):
         :return: Decimal of the value OR None if the casting fails
         """
         value = self.get_child_element_text(parent, tag, field, default)
-        if value:
+        if value == '0' or value:
             value = self.cast_to_decimal(value, tag, field)
         return value
 

@@ -235,13 +235,13 @@ class IndicatorPeriods(ImportMapper):
 
                 # Process target dimensions and locations
                 if target_element is not None:
-                    target_dimensions = PeriodTargetDimensions(self.iati_import_job, period,
+                    target_dimensions = PeriodTargetDimensions(self.iati_import_job, target_element,
                                                                self.project, self.globals,
                                                                related_obj=period_obj)
                     for dimension_change in target_dimensions.do_import():
                         changes.append(dimension_change)
 
-                    target_locations = PeriodTargetLocations(self.iati_import_job, period,
+                    target_locations = PeriodTargetLocations(self.iati_import_job, target_element,
                                                              self.project, self.globals,
                                                              related_obj=period_obj)
                     for location_change in target_locations.do_import():
@@ -249,13 +249,13 @@ class IndicatorPeriods(ImportMapper):
 
                 # Process actual dimensions and locations
                 if actual_element is not None:
-                    actual_dimensions = PeriodActualDimensions(self.iati_import_job, period,
+                    actual_dimensions = PeriodActualDimensions(self.iati_import_job, actual_element,
                                                                self.project, self.globals,
                                                                related_obj=period_obj)
                     for dimension_change in actual_dimensions.do_import():
                         changes.append(dimension_change)
 
-                    actual_locations = PeriodActualLocations(self.iati_import_job, period,
+                    actual_locations = PeriodActualLocations(self.iati_import_job, actual_element,
                                                              self.project, self.globals,
                                                              related_obj=period_obj)
                     for location_change in actual_locations.do_import():
