@@ -587,7 +587,7 @@ nav.navbar-fixed-top {
 }
 
 .navContainer {
-    background: rgba($akvoBlack, 0.05);
+    background: rgba($primary5, 0.1);
     margin: -20px 0 10px 0;
     padding-top: 10px;
 }
@@ -607,7 +607,7 @@ nav.navbar-fixed-top {
             li {
                 display: inline;
                 a {
-                    color: $akvoBlack;
+                    color: $primary5;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
@@ -806,16 +806,14 @@ div.paginationWrap {
         margin-top: 65px;
     }
 }
-
-.table-responsive {
-    @include responsive (small-max-screens) {
-        border: none;
-    }
-    &.locationTab {
+.table {
+        &.locationTab {
         overflow: hidden;
+        overflow-x: scroll;
+        max-width: 100%;        
         thead {
             th {
-                max-width: 8.33% !important;
+                width: 15.33% !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
                 white-space: nowrap !important;
@@ -823,13 +821,19 @@ div.paginationWrap {
         }
         tbody {
             td {
-                max-width: 8.33% !important;
+                width: 15.33% !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
                 white-space: nowrap !important;
             }
         }
     }
+}
+.table-responsive {
+    @include responsive (small-max-screens) {
+        border: none;
+    }
+
     .media {
         width: 39%;
         > a {
@@ -1657,6 +1661,10 @@ div.projectTopRow {
                 &:first-child {
                     padding-top: 5px;
                     border-top: none;
+                    .detailedInfo {
+                        margin-bottom: 10px;
+                        display: block;
+                    }
                 }
                 &:last-child {
                     padding-bottom: 0;
@@ -1766,18 +1774,23 @@ div.textBlock {
     }
 }
 
-#accordion {
-    .panel-group {
-        .panel-heading {
-            a {
-                &:before {
-                    content: '- ';
-                    position: relative;
-                }
-                &.collapsed {
+.accordionContainer{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: auto;
+    #accordion {
+        .panel-group {
+            .panel-heading {
+                a {
                     &:before {
-                        content: '+ ';
-                        top: 1px;
+                        content: '- ';
+                        position: relative;
+                    }
+                    &.collapsed {
+                        &:before {
+                            content: '+ ';
+                            top: 1px;
+                        }
                     }
                 }
             }
@@ -1789,7 +1802,7 @@ div.textBlock {
     position: relative;
     margin: -15px 0 20px 0;
     padding-top: 10px;
-    background: rgba($akvoBlack, 0.05);
+    background: rgba($primary5, 0.1);
     .nav-tabs {
         border-bottom: none;
     }
@@ -1798,7 +1811,7 @@ div.textBlock {
             li {
                 display: inline;
                 a.tab-link {
-                    color: $akvoBlack;
+                    color: $primary5;
                     padding: 15px;
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
@@ -2304,6 +2317,32 @@ dd {
         max-width: 95%;
         margin-left: auto;
         margin-right: auto;
+    }
+    table {
+        color: rgba($akvoBlack, 0.7);
+        th {
+            color: rgba($primary5, 0.8);
+        }
+        &.table-striped {
+            thead > tr:nth-child(1) {
+                background-color: rgba($primary6, 0.1) !important;
+            }
+            tr:nth-child(even) {
+                background-color: rgba($primary6, 0.1);
+            }     
+            tr:nth-child(odd) {
+                background-color: rgba($primary5, 0.1);
+            }       
+        }
+        &.table-bordered {
+            border: 2px solid rgb(255,255,255);
+            td, th {
+                border: 2px solid rgb(255,255,255);
+            }
+        }
+    }
+    h4 {
+        margin: 50px 0 10px 0;
     }
     @media only screen and (min-width: $width-medium) {
         table {
