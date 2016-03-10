@@ -209,7 +209,7 @@ class IndicatorReference(models.Model):
         help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
                     u'should be mapped to DAC sectors to enable international comparison.'))
     vocabulary_uri = ValidXMLCharField(
-        _(u'reference vocabulary URI'), blank=True, max_length=1000,
+        _(u'reference indicator URI'), blank=True, max_length=1000,
         help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
                     u'internal vocabulary is defined.'))
 

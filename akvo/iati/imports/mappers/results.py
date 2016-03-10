@@ -155,13 +155,13 @@ class IndicatorReferences(ImportMapper):
 
         for reference in self.parent_elem.findall('reference'):
 
-            code = self.get_attrib(reference, 'reference', 'reference')
+            reference_code = self.get_attrib(reference, 'code', 'code')
             vocabulary = self.get_attrib(reference, 'vocabulary', 'vocabulary')
-            vocabulary_uri = self.get_attrib(reference, 'vocabulary-uri', 'vocabulary_uri')
+            vocabulary_uri = self.get_attrib(reference, 'indicator-uri', 'vocabulary_uri')
             
             reference_obj, created = IndicatorReference.objects.get_or_create(
                 indicator=self.related_obj,
-                reference=code,
+                reference=reference_code,
                 vocabulary=vocabulary,
                 vocabulary_uri=vocabulary_uri,
             )
