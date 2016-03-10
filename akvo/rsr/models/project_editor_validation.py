@@ -17,11 +17,6 @@ class ProjectEditorValidationSet(Model):
     name = CharField(_(u'name'), max_length=255)
     description = TextField(_(u'description'), max_length=5000)
 
-    def save(self, *args, **kwargs):
-        if not self.pk == 1:
-            # Do not allow the RSR validation set to be edited
-            super(ProjectEditorValidationSet, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
         if not self.pk == 1:
             # Do not allow the RSR validation set to be deleted
@@ -71,16 +66,6 @@ class ProjectEditorValidation(Model):
     )
     validation = CharField(_(u'validation'), max_length=255)
     action = PositiveSmallIntegerField(_(u'action'), choices=ACTIONS, db_index=True)
-
-    def save(self, *args, **kwargs):
-        if not self.validation_set.pk == 1:
-            # Do not allow any validations from the RSR validation set to be edited
-            super(ProjectEditorValidation, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if not self.validation_set.pk == 1:
-            # Do not allow any validations from the RSR validation set to be deleted
-            super(ProjectEditorValidation, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return "{0} ({1})".format(self.validation, unicode(dict(self.ACTIONS)[self.action]))
