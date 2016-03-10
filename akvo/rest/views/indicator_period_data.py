@@ -11,8 +11,10 @@ from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFra
                            IndicatorPeriodDataCommentSerializer)
 from ..viewsets import PublicProjectViewSet
 
+from django.http import HttpResponseForbidden
+
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
@@ -80,7 +82,6 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def indicator_upload_file(request, pk=None):
     """
     Special API call for directly uploading a file.
@@ -91,18 +92,25 @@ def indicator_upload_file(request, pk=None):
     update = IndicatorPeriodData.objects.get(pk=pk)
     upload_file = request.FILES['file']
 
-    # TODO: Permissions
-    # user = request.user
+    # Permissions
+    user = getattr(request, 'user', None)
+    if not user:
+        return Response({'error': 'User is not logged in'}, status=status.HTTP_403_FORBIDDEN)
 
-    file_type = request.POST.copy()['type']
-    if file_type == 'photo':
-        update.photo = upload_file
-        update.save(update_fields=['photo'])
-        return Response({'file': update.photo.url})
-    elif file_type == 'file':
-        update.file = upload_file
-        update.save(update_fields=['file'])
-        return Response({'file': update.file.url})
+    # TODO: Check if user is allowed to upload a file
+    # if not user.has_perm('rsr.change_project', update.period.indicator.result.project):
+    #     return Response({'error': 'User has no permission to place an update'},
+    #                     status=status.HTTP_403_FORBIDDEN)
 
-    # TODO: Error response
-    return Response({})
+    try:
+        file_type = request.POST.copy()['type']
+        if file_type == 'photo':
+            update.photo = upload_file
+            update.save(update_fields=['photo'])
+            return Response({'file': update.photo.url})
+        elif file_type == 'file':
+            update.file = upload_file
+            update.save(update_fields=['file'])
+            return Response({'file': update.file.url})
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

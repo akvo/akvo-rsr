@@ -144,7 +144,7 @@ function renderReactComponents() {
                 React.DOM.div( {className:panelClass}, 
                     React.DOM.div( {className:"panel-heading"}, 
                         React.DOM.h4( {className:"panel-title"}, 
-                            React.DOM.a( {href:"", className:headerCollapse, onClick:this.handleClick}, 
+                            React.DOM.a( {className:headerCollapse, onClick:this.handleClick}, 
                                 this.props.header
                             )
                         )
@@ -161,28 +161,28 @@ function renderReactComponents() {
 
     var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
         getInitialState: function() {
-            if (this.props.source.background !== undefined) {
+            if (this.props.source.background !== "") {
                 return {opened: "background"};
-            } else if (this.props.source.current_status !== undefined) {
+            } else if (this.props.source.current_status !== "") {
                 return {opened: "current_status"};
-            } else if (this.props.source.goals_overview !== undefined) {
+            } else if (this.props.source.goals_overview !== "") {
                 return {opened: "goals_overview"};
-            } else if (this.props.source.project_plan !== undefined) {
+            } else if (this.props.source.project_plan !== "") {
                 return {opened: "project_plan"};
-            } else if (this.props.source.sustainability !== undefined) {
+            } else if (this.props.source.sustainability !== "") {
                 return {opened: "sustainability"};
-            } else if (this.props.source.target_group !== undefined) {
+            } else if (this.props.source.target_group !== "") {
                 return {opened: "target_group"};
-            } else if (this.props.source.results !== undefined) {
+            } else if (this.props.source.results !== "") {
                 return {opened: "result"};
             } else {
-                return {opened: null};
+                return {opened: ""};
             }
         },
 
         changeOpened: function(key) {
             this.setState({
-                opened: this.state.opened === key ? null : key
+                opened: this.state.opened === key ? "" : key
             });
         },
 

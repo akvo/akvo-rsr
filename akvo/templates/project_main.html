@@ -6,15 +6,23 @@
     <div class="header-container">
       {% include "partials/project_header.html" %}
     </div>
-    <div class="tab-menu container">
-      <div class="row">
-        <a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a>
-        <a href="#report" class="tab-link">{% trans 'Full report' %}</a>
-        {% if project.partners.all %}<a href="#partners" class="tab-link">{% trans 'Project partners' %}</a>{% endif %}
-        <a href="#finance" class="tab-link">{% trans 'Finances' %}</a>
-        {% if project.is_impact_project and project.results.all %}<a href="#results" class="tab-link">{% trans 'Results' %}</a>{% endif %}
-        {% if updates %}<a href="#updates" class="tab-link">{% trans 'Updates' %}</a>{% endif %}
-      </div>
+    <div class="projectMenu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <nav class="navbar navbar-nav nav-justified">
+                      <ul class="nav nav-tabs">
+                        <li><a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a></li>
+                        <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
+                        {% if project.partners.all %}<li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>{% endif %}
+                        <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
+                        {% if project.is_impact_project and project.results.all %}<a href="#results" class="tab-link">{% trans 'Results' %}</a>{% endif %}
+                        {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
+                      </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
     {% include "project_main_tabs/summary.html" %}
     {% include "project_main_tabs/report.html" %}
@@ -33,9 +41,9 @@
     {{ block.super }}
 
     {# React #}
-    <script id="react" src="//fb.me/react-0.14.7.min.js"></script>
-    <script id="react-dom" src="//fb.me/react-dom-0.14.7.min.js"></script>
-    <script id="react-bootstrap" src="//cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.3/react-bootstrap.min.js"></script>
+    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
 
     {# Descriptions #}
     <script type="application/json" id="akvo-rsr-accordion">
@@ -190,8 +198,8 @@
     {% endif %}
 
     {# Slider library #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.0.2/nouislider.min.css" type="text/css">
+    <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
     {% compressed_js 'project_main' %}
 
