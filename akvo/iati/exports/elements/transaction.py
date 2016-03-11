@@ -20,6 +20,9 @@ def _provider_organisation(element, trans):
     if org.iati_org_id:
         provider_org_element.attrib['ref'] = org.iati_org_id
 
+    if org.new_organisation_type:
+        provider_org_element.attrib['type'] = str(org.new_organisation_type)
+
     if org.long_name:
         narrative_element = etree.SubElement(provider_org_element, "narrative")
         narrative_element.text = org.long_name
@@ -43,6 +46,9 @@ def _receiver_organisation(element, trans):
     if org.iati_org_id:
         receiver_org_element.attrib['ref'] = org.iati_org_id
 
+    if org.new_organisation_type:
+        receiver_org_element.attrib['type'] = str(org.new_organisation_type)
+
     if org.long_name:
         narrative_element = etree.SubElement(receiver_org_element, "narrative")
         narrative_element.text = org.long_name
@@ -57,22 +63,21 @@ def _sector(element, sector):
     """
     Helper function for transaction()
     """
-    if sector.code:
+    if sector.code or sector.vocabulary or sector.vocabulary_uri or sector.text:
         sector_element = etree.SubElement(element, "sector")
-        sector_element.attrib['code'] = sector.code
 
-        if not sector.vocabulary or sector.vocabulary == 'DAC':
-            sector_element.attrib['vocabulary'] = '1'
-        elif sector.vocabulary == 'DAC-3':
-            sector_element.attrib['vocabulary'] = '2'
-        else:
+        if sector.code:
+            sector_element.attrib['code'] = sector.code
+
+        if sector.vocabulary:
             sector_element.attrib['vocabulary'] = sector.vocabulary
 
-        if sector.percentage:
-            sector_element.attrib['percentage'] = str(sector.percentage)
+        if sector.vocabulary_uri:
+            sector_element.attrib['vocabulary-uri'] = sector.vocabulary_uri
 
         if sector.text:
-            sector_element.text = sector.text
+            narrative_element = etree.SubElement(sector_element, "narrative")
+            narrative_element.text = sector.text
 
     return element
 
@@ -88,74 +93,94 @@ def transaction(project):
     transaction_elements = []
 
     for trans in project.transactions.all():
-        element = etree.Element("transaction")
+        if trans.reference or trans.humanitarian is not None or trans.transaction_type or \
+                trans.transaction_date or trans.value or trans.currency or trans.value_date or \
+                trans.description or trans.provider_organisation or \
+                trans.provider_organisation_activity or trans.receiver_organisation or \
+                trans.receiver_organisation_activity or trans.disbursement_channel or \
+                trans.sectors.all() or trans.recipient_country or trans.recipient_region or \
+                trans.recipient_region_vocabulary or trans.recipient_region_vocabulary_uri or \
+                trans.flow_type or trans.finance_type or trans.aid_type or trans.tied_status:
+            element = etree.Element("transaction")
 
-        if trans.reference:
-            element.attrib['ref'] = trans.reference
+            if trans.reference:
+                element.attrib['ref'] = trans.reference
 
-        if trans.transaction_type:
-            type_element = etree.SubElement(element, "transaction-type")
-            type_element.attrib['code'] = trans.transaction_type
+            if trans.humanitarian is not None:
+                element.attrib['humanitarian'] = '1' if trans.humanitarian else '0'
 
-        if trans.transaction_date:
-            date_element = etree.SubElement(element, "transaction-date")
-            date_element.attrib['iso-date'] = str(trans.transaction_date)
+            if trans.transaction_type:
+                type_element = etree.SubElement(element, "transaction-type")
+                type_element.attrib['code'] = trans.transaction_type
 
-        if trans.value:
-            value_element = etree.SubElement(element, "value")
-            value_element.text = str(trans.value)
+            if trans.transaction_date:
+                date_element = etree.SubElement(element, "transaction-date")
+                date_element.attrib['iso-date'] = str(trans.transaction_date)
 
-            if trans.currency:
-                value_element.attrib['currency'] = trans.currency
+            if trans.value or trans.currency or trans.value_date:
+                value_element = etree.SubElement(element, "value")
 
-            if trans.value_date:
-                value_element.attrib['value-date'] = str(trans.value_date)
+                if trans.value:
+                    value_element.text = str(trans.value)
 
-        if trans.description:
-            description_element = etree.SubElement(element, "description")
-            narrative_element = etree.SubElement(description_element, "narrative")
-            narrative_element.text = trans.description
+                if trans.currency:
+                    value_element.attrib['currency'] = trans.currency
 
-        if trans.provider_organisation:
-            element = _provider_organisation(element, trans)
+                if trans.value_date:
+                    value_element.attrib['value-date'] = str(trans.value_date)
 
-        if trans.receiver_organisation:
-            element = _receiver_organisation(element, trans)
+            if trans.description:
+                description_element = etree.SubElement(element, "description")
+                narrative_element = etree.SubElement(description_element, "narrative")
+                narrative_element.text = trans.description
 
-        if trans.disbursement_channel:
-            disbursement_channel_element = etree.SubElement(element, "disbursement-channel")
-            disbursement_channel_element.attrib['code'] = trans.disbursement_channel
+            if trans.provider_organisation:
+                element = _provider_organisation(element, trans)
 
-        for sector in trans.sectors.all():
-            element = _sector(element, sector)
+            if trans.receiver_organisation:
+                element = _receiver_organisation(element, trans)
 
-        if trans.recipient_country:
-            recipient_country_element = etree.SubElement(element, "recipient-country")
-            recipient_country_element.attrib['code'] = trans.recipient_country
+            if trans.disbursement_channel:
+                disbursement_channel_element = etree.SubElement(element, "disbursement-channel")
+                disbursement_channel_element.attrib['code'] = trans.disbursement_channel
 
-        if trans.recipient_region:
-            recipient_region_element = etree.SubElement(element, "recipient-region")
-            recipient_region_element.attrib['code'] = trans.recipient_region
+            for sector in trans.sectors.all():
+                element = _sector(element, sector)
 
-            if trans.recipient_region_vocabulary:
-                recipient_region_element.attrib['vocabulary'] = trans.recipient_region_vocabulary
+            if trans.recipient_country:
+                recipient_country_element = etree.SubElement(element, "recipient-country")
+                recipient_country_element.attrib['code'] = trans.recipient_country
 
-        if trans.flow_type:
-            flow_type_element = etree.SubElement(element, "flow-type")
-            flow_type_element.attrib['code'] = trans.flow_type
+            if trans.recipient_region or trans.recipient_region_vocabulary or \
+                    trans.recipient_region_vocabulary_uri:
+                recipient_region_element = etree.SubElement(element, "recipient-region")
 
-        if trans.finance_type:
-            finance_type_element = etree.SubElement(element, "finance-type")
-            finance_type_element.attrib['code'] = trans.finance_type
+                if trans.recipient_region_vocabulary_uri:
+                    recipient_region_element.attrib['code'] = trans.recipient_region
 
-        if trans.aid_type:
-            aid_type_element = etree.SubElement(element, "aid-type")
-            aid_type_element.attrib['code'] = trans.aid_type
+                if trans.recipient_region_vocabulary:
+                    recipient_region_element.attrib['vocabulary'] = trans.recipient_region_vocabulary
 
-        if trans.tied_status:
-            tied_status_element = etree.SubElement(element, "tied-status")
-            tied_status_element.attrib['code'] = trans.tied_status
+                if trans.recipient_region_vocabulary_uri:
+                    recipient_region_element.attrib['vocabulary-uri'] = trans.\
+                        recipient_region_vocabulary_uri
 
-        transaction_elements.append(element)
+            if trans.flow_type:
+                flow_type_element = etree.SubElement(element, "flow-type")
+                flow_type_element.attrib['code'] = trans.flow_type
+
+            if trans.finance_type:
+                finance_type_element = etree.SubElement(element, "finance-type")
+                finance_type_element.attrib['code'] = trans.finance_type
+
+            if trans.aid_type:
+                aid_type_element = etree.SubElement(element, "aid-type")
+                aid_type_element.attrib['code'] = trans.aid_type
+
+            if trans.tied_status:
+                tied_status_element = etree.SubElement(element, "tied-status")
+                tied_status_element.attrib['code'] = trans.tied_status
+
+            transaction_elements.append(element)
 
     return transaction_elements

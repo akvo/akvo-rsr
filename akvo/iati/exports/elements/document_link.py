@@ -58,7 +58,8 @@ def document_link(project):
             document_link_elements.append(link_element)
 
     for document in project.documents.all():
-        if document.url or document.document:
+        if document.url or document.document or document.format or document.title or \
+                document.categories.all() or document.language or document.document_date:
             document_element = etree.Element("document-link")
 
             if document.url:
@@ -69,24 +70,29 @@ def document_link(project):
             if document.format:
                 document_element.attrib['format'] = document.format
 
-            title_element = etree.SubElement(document_element, "title")
-            narrative_element = etree.SubElement(title_element, "narrative")
-            narrative_element.text = document.title if document.title else "Project document"
+            if document.title:
+                title_element = etree.SubElement(document_element, "title")
+                narrative_element = etree.SubElement(title_element, "narrative")
+                narrative_element.text = document.title
 
-            # TODO: Category now has its' own model
-            # if document.category:
-            #     category_element = etree.SubElement(document_element, "category")
-            #     category_element.attrib['code'] = document.category
+            for category in document.categories.all():
+                category_element = etree.SubElement(document_element, "category")
+                category_element.attrib['code'] = category.category
 
             if document.language:
                 language_element = etree.SubElement(document_element, "language")
                 language_element.attrib['code'] = document.language
 
+            if document.document_date:
+                date_element = etree.SubElement(document_element, "document-date")
+                date_element.attrib['iso-date'] = str(document.document_date)
+
             document_link_elements.append(document_element)
 
     for update in project.project_updates.all():
         update_element = etree.Element("document-link")
-        update_element.attrib['url'] = "http://rsr.akvo.org/project/%s/update/%s/" % (str(project.pk), str(update.pk))
+        update_element.attrib['url'] = "http://rsr.akvo.org/project/%s/update/%s/" % \
+                                       (str(project.pk), str(update.pk))
         update_element.attrib['format'] = "application/http"
 
         title_element = etree.SubElement(update_element, "title")

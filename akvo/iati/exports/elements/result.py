@@ -17,86 +17,154 @@ def result(project):
     result_elements = []
 
     for res in project.results.all():
-        element = etree.Element("result")
+        if res.type or res.aggregation_status is not None or res.title or res.description or \
+                res.indicators.all():
+            element = etree.Element("result")
 
-        if res.type:
-            element.attrib['type'] = res.type
+            if res.type:
+                element.attrib['type'] = res.type
 
-        if res.aggregation_status is not None:
-            element.attrib['aggregation-status'] = '1' if res.aggregation_status else '0'
+            if res.aggregation_status is not None:
+                element.attrib['aggregation-status'] = '1' if res.aggregation_status else '0'
 
-        if res.title:
-            title_element = etree.SubElement(element, "title")
-            narrative_element = etree.SubElement(title_element, "narrative")
-            narrative_element.text = res.title
-
-        if res.description:
-            description_element = etree.SubElement(element, "description")
-            narrative_element = etree.SubElement(description_element, "narrative")
-            narrative_element.text = res.description
-
-        for indicator in res.indicators.all():
-            indicator_element = etree.SubElement(element, "indicator")
-
-            if indicator.measure:
-                indicator_element.attrib['measure'] = indicator.measure
-
-            if indicator.ascending is not None:
-                indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
-
-            if indicator.title:
-                title_element = etree.SubElement(indicator_element, "title")
+            if res.title:
+                title_element = etree.SubElement(element, "title")
                 narrative_element = etree.SubElement(title_element, "narrative")
-                narrative_element.text = indicator.title
+                narrative_element.text = res.title
 
-            if indicator.description:
-                description_element = etree.SubElement(indicator_element, "description")
+            if res.description:
+                description_element = etree.SubElement(element, "description")
                 narrative_element = etree.SubElement(description_element, "narrative")
                 narrative_element.text = res.description
 
-            if indicator.baseline_year and indicator.baseline_value:
-                baseline_element = etree.SubElement(indicator_element, "baseline")
-                baseline_element.attrib['year'] = str(indicator.baseline_year)
-                baseline_element.attrib['value'] = indicator.baseline_value
+            for indicator in res.indicators.all():
+                if indicator.measure or indicator.ascending is not None or indicator.title or \
+                        indicator.description or indicator.references.all() or \
+                        indicator.baseline_year or indicator.baseline_value or \
+                        indicator.baseline_comment or indicator.periods.all():
+                    indicator_element = etree.SubElement(element, "indicator")
 
-                if indicator.baseline_comment:
-                    comment_element = etree.SubElement(baseline_element, "comment")
-                    narrative_element = etree.SubElement(comment_element, "narrative")
-                    narrative_element.text = indicator.baseline_comment
+                    if indicator.measure:
+                        indicator_element.attrib['measure'] = indicator.measure
 
-            for period in indicator.periods.all():
-                period_element = etree.SubElement(indicator_element, "period")
+                    if indicator.ascending is not None:
+                        indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
 
-                if period.period_start:
-                    period_start_element = etree.SubElement(period_element, "period-start")
-                    period_start_element.attrib['iso-date'] = str(period.period_start)
+                    if indicator.title:
+                        title_element = etree.SubElement(indicator_element, "title")
+                        narrative_element = etree.SubElement(title_element, "narrative")
+                        narrative_element.text = indicator.title
 
-                if period.period_end:
-                    period_end_element = etree.SubElement(period_element, "period-end")
-                    period_end_element.attrib['iso-date'] = str(period.period_end)
+                    if indicator.description:
+                        description_element = etree.SubElement(indicator_element, "description")
+                        narrative_element = etree.SubElement(description_element, "narrative")
+                        narrative_element.text = res.description
 
-                if period.target_value:
-                    target_element = etree.SubElement(period_element, "target")
-                    target_element.attrib['value'] = period.target_value
+                    for reference in indicator.references.all():
+                        if reference.vocabulary or reference.reference or reference.vocabulary_uri:
+                            reference_element = etree.SubElement(indicator_element, "reference")
 
-                    if period.target_comment:
-                        comment_element = etree.SubElement(target_element, "comment")
-                        narrative_element = etree.SubElement(comment_element, "narrative")
-                        narrative_element.text = period.target_comment
+                            if reference.vocabulary:
+                                reference_element.attrib['vocabulary'] = reference.vocabulary
 
-                if period.actual_value:
-                    actual_element = etree.SubElement(period_element, "actual")
-                    actual_element.attrib['value'] = period.actual_value
+                            if reference.reference:
+                                reference_element.attrib['code'] = reference.reference
 
-                    if period.actual_comment:
-                        comment_element = etree.SubElement(actual_element, "comment")
-                        narrative_element = etree.SubElement(comment_element, "narrative")
-                        narrative_element.text = period.actual_comment
+                            if reference.vocabulary_uri:
+                                reference_element.attrib['indicator-uri'] = reference.vocabulary_uri
 
-                indicator_element.append(period_element)
+                    if indicator.baseline_year or indicator.baseline_value or \
+                            indicator.baseline_comment:
+                            baseline_element = etree.SubElement(indicator_element, "baseline")
 
-            element.append(indicator_element)
+                            if indicator.baseline_year:
+                                baseline_element.attrib['year'] = str(indicator.baseline_year)
 
-        result_elements.append(element)
+                            if indicator.baseline_value:
+                                baseline_element.attrib['value'] = indicator.baseline_value
+
+                            if indicator.baseline_comment:
+                                comment_element = etree.SubElement(baseline_element, "comment")
+                                narrative_element = etree.SubElement(comment_element, "narrative")
+                                narrative_element.text = indicator.baseline_comment
+
+                    for period in indicator.periods.all():
+                        if period.period_start or period.period_end or period.target_value or \
+                                period.target_locations.all() or period.target_dimensions.all() or \
+                                period.target_comment or period.actual_value or \
+                                period.actual_locations.all() or period.actual_dimensions.all() or \
+                                period.actual_comment:
+                            period_element = etree.SubElement(indicator_element, "period")
+
+                            if period.period_start:
+                                period_start_element = etree.SubElement(period_element,
+                                                                        "period-start")
+                                period_start_element.attrib['iso-date'] = str(period.period_start)
+
+                            if period.period_end:
+                                period_end_element = etree.SubElement(period_element, "period-end")
+                                period_end_element.attrib['iso-date'] = str(period.period_end)
+
+                            if period.target_value or period.target_locations.all() or \
+                                    period.target_dimensions.all() or period.target_comment:
+                                target_element = etree.SubElement(period_element, "target")
+
+                                if period.target_value:
+                                    target_element.attrib['value'] = period.target_value
+
+                                for target_location in period.target_locations.all():
+                                    target_location_element = etree.SubElement(target_element,
+                                                                               "location")
+                                    target_location_element.attrib['ref'] = target_location.location
+
+                                for target_dimension in period.target_dimensions.all():
+                                    if target_dimension.name or target_dimension.value:
+                                        target_dimension_element = etree.SubElement(target_element,
+                                                                                    "dimension")
+
+                                        if target_dimension.name:
+                                            target_dimension_element.attrib['name'] = \
+                                                target_dimension.name
+
+                                        if target_dimension.value:
+                                            target_dimension_element.attrib['value'] = \
+                                                target_dimension.value
+
+                                if period.target_comment:
+                                    comment_element = etree.SubElement(target_element, "comment")
+                                    narrative_element = etree.SubElement(comment_element,
+                                                                         "narrative")
+                                    narrative_element.text = period.target_comment
+
+                            if period.actual_value or period.actual_locations.all() or \
+                                    period.actual_dimensions.all() or period.actual_comment:
+                                actual_element = etree.SubElement(period_element, "actual")
+                                actual_element.attrib['value'] = period.actual_value
+
+                                for actual_location in period.actual_locations.all():
+                                    actual_location_element = etree.SubElement(actual_element,
+                                                                               "location")
+                                    actual_location_element.attrib['ref'] = actual_location.location
+
+                                for actual_dimension in period.actual_dimensions.all():
+                                    if actual_dimension.name or actual_dimension.value:
+                                        actual_dimension_element = etree.SubElement(actual_element,
+                                                                                    "dimension")
+
+                                        if actual_dimension.name:
+                                            actual_dimension_element.attrib['name'] = \
+                                                actual_dimension.name
+
+                                        if actual_dimension.value:
+                                            actual_dimension_element.attrib['value'] = \
+                                                actual_dimension.value
+
+                                if period.actual_comment:
+                                    comment_element = etree.SubElement(actual_element, "comment")
+                                    narrative_element = etree.SubElement(comment_element,
+                                                                         "narrative")
+                                    narrative_element.text = period.actual_comment
+
+            result_elements.append(element)
 
     return result_elements

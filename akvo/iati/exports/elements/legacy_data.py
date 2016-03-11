@@ -17,10 +17,14 @@ def legacy_data(project):
     legacy_data_elements = []
 
     for legacy in project.legacy_data.all():
-        if legacy.name and legacy.value:
+        if legacy.name or legacy.value or legacy.iati_equivalent:
             element = etree.Element("legacy-data")
-            element.attrib['name'] = legacy.name
-            element.attrib['value'] = legacy.value
+
+            if legacy.name:
+                element.attrib['name'] = legacy.name
+
+            if legacy.value:
+                element.attrib['value'] = legacy.value
 
             if legacy.iati_equivalent:
                 element.attrib['iati-equivalent'] = legacy.iati_equivalent

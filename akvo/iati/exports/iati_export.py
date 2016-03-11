@@ -33,6 +33,7 @@ ELEMENTS = [
     'location',
     'sector',
     'country_budget_items',
+    'humanitarian_scope',
     'policy_marker',
     'collaboration_type',
     'default_flow_type',
@@ -93,12 +94,15 @@ class IatiXML(object):
         if project.hierarchy:
             project_element.attrib['hierarchy'] = str(project.hierarchy)
 
+        if project.humanitarian is not None:
+            project_element.attrib['humanitarian'] = '1' if project.humanitarian else '0'
+
         for element in ELEMENTS:
             tree_elements = getattr(elements, element)(project)
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-    def __init__(self, projects, version='2.01', excluded_elements=None):
+    def __init__(self, projects, version='2.02', excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-activities' etree Element as root.
 
