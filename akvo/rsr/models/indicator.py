@@ -202,12 +202,18 @@ class IndicatorReference(models.Model):
                                   related_name='references')
     reference = ValidXMLCharField(
         _(u'reference code'), blank=True, max_length=25,
-        help_text=_(u'A code for an indicator defined in the specified vocabulary specified.'))
+        help_text=_(u'A code for an indicator defined in the specified vocabulary specified. '
+                    u'For more information on the indicator reference, see the '
+                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
+                    u'target="_blank">IATI codelist</a>.'))
     vocabulary = ValidXMLCharField(
         _(u'reference vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(INDICATOR_VOCABULARY),
         help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
-                    u'should be mapped to DAC sectors to enable international comparison.'))
+                    u'should be mapped to DAC sectors to enable international comparison. '
+                    u'For more information on the indicator reference, see the '
+                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
+                    u'target="_blank">IATI codelist</a>.'))
     vocabulary_uri = ValidXMLCharField(
         _(u'reference indicator URI'), blank=True, max_length=1000,
         help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
@@ -749,8 +755,8 @@ class IndicatorPeriodTargetLocation(models.Model):
                                related_name='target_locations')
     location = ValidXMLCharField(
         _(u'location'), blank=True, max_length=25,
-        help_text=_(u'A location of the target of this indicator period. The location must be an '
-                    u'existing location of the current project.'))
+        help_text=_(u'A location of the target of this indicator period. The location must be the '
+                    u'reference of an existing location of the current project.'))
 
     class Meta:
         app_label = 'rsr'
@@ -766,8 +772,8 @@ class IndicatorPeriodActualLocation(models.Model):
                                related_name='actual_locations')
     location = ValidXMLCharField(
         _(u'location'), blank=True, max_length=25,
-        help_text=_(u'A location of the actual of this indicator period. The location must be an '
-                    u'existing location of the current project.'))
+        help_text=_(u'A location of the actual of this indicator period. The location must be the '
+                    u'reference of an existing location of the current project.'))
 
     class Meta:
         app_label = 'rsr'
@@ -787,7 +793,7 @@ class IndicatorPeriodTargetDimension(models.Model):
                     u'indicator period (e.g. "Age").'))
     value = ValidXMLCharField(
         _(u'dimension value'), blank=True, max_length=100,
-        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years".'))
+        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years").'))
 
     class Meta:
         app_label = 'rsr'
@@ -807,7 +813,7 @@ class IndicatorPeriodActualDimension(models.Model):
                     u'indicator period (e.g. "Age").'))
     value = ValidXMLCharField(
         _(u'dimension value'), blank=True, max_length=100,
-        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years".'))
+        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years").'))
 
     class Meta:
         app_label = 'rsr'

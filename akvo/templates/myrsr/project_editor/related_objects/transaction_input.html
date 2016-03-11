@@ -4,16 +4,16 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=transaction %}
     <div class="hide-partial {% if transaction.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-12">
-                {% include choice_input with obj=transaction field='currency' %}
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
-                {% include choice_input with obj=transaction field='transaction_type' %}
+                {% include choice_input with obj=transaction field='currency' %}
             </div>
             <div class="col-md-6">
                 {% include boolean_input with obj=transaction field="humanitarian" nullboolean=True %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% include choice_input with obj=transaction field='transaction_type' %}
             </div>
         </div>
         <div class="row">

@@ -25,12 +25,12 @@
                 {% include text_input with obj=document field='title' %}
             </div>
             <div class="col-md-4">
-                {% include choice_input with obj=document field='title_language' %}
+                {% include choice_input with obj=document field='format' %}
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                {% include choice_input with obj=document field='format' %}
+                {% include choice_input with obj=document field='title_language' %}
             </div>
             <div class="col-md-4">
                 {% include choice_input with obj=document field='language' %}

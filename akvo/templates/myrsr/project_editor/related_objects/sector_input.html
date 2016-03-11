@@ -5,21 +5,21 @@
     <div class="hide-partial {% if sector.pk %}hidden{% endif %}">
         <p class="help-block">{% trans 'Please visit these links for more information on sector codes: ' %}<a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">{% trans 'DAC-3 sector codes' %}</a> {% trans 'or' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">{% trans 'DAC-5 sector codes' %}</a>.</p>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {% include choice_input with obj=sector field='vocabulary' %}
             </div>
-            <div class="col-md-6">
-                {% include text_input with obj=sector field='sector_code' %}
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-4">
-                {% include text_input with obj=sector field='vocabulary_uri' %}
+                {% include text_input with obj=sector field='sector_code' %}
             </div>
             <div class="col-md-4">
                 {% include percentage_input with obj=sector field='percentage' %}
             </div>
-            <div class="col-md-4">
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=sector field='vocabulary_uri' %}
+            </div>
+            <div class="col-md-6">
                 {% include text_input with obj=sector field='text' %}
             </div>
         </div>

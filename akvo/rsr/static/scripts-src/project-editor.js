@@ -1850,6 +1850,17 @@ function setHiddenFields() {
             elAddClass(relatedObjectContainer, 'hidden');
         }
     }
+
+    // Finally, even check the sections if they should be hidden or not
+    var sections = document.querySelectorAll('.myPanel');
+    for (var l = 0; l < sections.length; l++) {
+        var section = sections[l];
+        if (!shouldBeHidden(section)) {
+            elRemoveClass(section, 'hidden');
+        } else {
+            elAddClass(section, 'hidden');
+        }
+    }
 }
 
 function setSectionCompletionPercentage(section) {

@@ -4,12 +4,14 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=marker %}
     <div class="hide-partial {% if marker.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include choice_input with obj=marker field='policy_marker' %}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include choice_input with obj=marker field='significance' %}
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 {% include text_input with obj=marker field='description' %}
             </div>

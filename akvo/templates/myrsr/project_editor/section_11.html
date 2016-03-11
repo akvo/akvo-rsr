@@ -1,9 +1,10 @@
 {% load i18n project_editor %}
 
-<div class="myPanel borderBottom" id="panel11">
+{# KB hack: this section is not displayed when CRS++ is not displayed #}
+<div class="myPanel borderBottom {{ validations|mandatory_or_hidden:"rsr_crsadd" }}" id="panel11">
     <div class="formStep stepEleven">
         <div class="toggleSection">
-            <label for="stepEleven" class="stepLabel"><h4>11 - {% trans 'Special reporting' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special hidden" toggleid="step-11-helptext"></span></h4></label>
+            <label for="stepEleven" class="stepLabel"><h4>11 - {% trans 'CRS++ and FSS reporting' %}<span class="glyphicon glyphicon-info-sign info-icon info-icon-special hidden" toggleid="step-11-helptext"></span></h4></label>
         </div>
         <input type="radio" name="step" id="stepEleven">
         <div class="progress section-progress">
