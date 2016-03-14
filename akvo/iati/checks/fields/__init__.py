@@ -13,6 +13,7 @@ from .dates import dates
 from .description import description
 from .document_links import document_links
 from .fss import fss
+from .humanitarian_scope import humanitarian_scope
 from .iati_identifier import iati_identifier
 from .legacy_data import legacy_data
 from .locations import locations
@@ -38,6 +39,7 @@ __all__ = [
     'description',
     'document_links',
     'fss',
+    'humanitarian_scope',
     'iati_identifier',
     'legacy_data',
     'locations',

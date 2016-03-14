@@ -48,6 +48,23 @@ def results(project):
                 checks.append((u'error', u'indicator (id: %s) baseline has no value or year '
                                          u'specified' % str(indicator.pk)))
 
+            for reference in indicator.references.all():
+                if not reference.reference:
+                    all_checks_passed = False
+                    checks.append((u'error', u'indicator reference (id: %s) has no code '
+                                             u'specified' % str(reference.pk)))
+
+                if not reference.vocabulary:
+                    all_checks_passed = False
+                    checks.append((u'error', u'indicator reference (id: %s) has no vocabulary '
+                                             u'specified' % str(reference.pk)))
+
+                if reference.vocabulary == '99' and not reference.vocabulary_uri:
+                    all_checks_passed = False
+                    checks.append((u'error', u'indicator reference (id: %s) has vocabulary 99 '
+                                             u'(reporting organisation) but no vocabulary URI '
+                                             u'specified' % str(reference.pk)))
+
             for period in indicator.periods.all():
                 if not period.period_start:
                     all_checks_passed = False
@@ -64,6 +81,22 @@ def results(project):
                     all_checks_passed = False
                     checks.append((u'error', u'indicator period (id: %s) has a start date '
                                              u'later than the end date' % str(period.pk)))
+
+                if not period.target_value and (period.target_comment or
+                                                period.target_locations.all() or
+                                                period.target_dimensions.all()):
+                    all_checks_passed = False
+                    checks.append((u'error', u'indicator period (id: %s) has no target value, but '
+                                             u'does have a target comment, target location(s) or '
+                                             u'target dimension(s)' % str(period.pk)))
+
+                if not period.actual_value and (period.actual_comment or
+                                                period.actual_locations.all() or
+                                                period.actual_dimensions.all()):
+                    all_checks_passed = False
+                    checks.append((u'error', u'indicator period (id: %s) has no actual value, but '
+                                             u'does have an actual comment, actual location(s) or '
+                                             u'actual dimension(s)' % str(period.pk)))
 
     if project.results.all() and all_checks_passed:
         checks.append((u'success', u'has valid result(s)'))

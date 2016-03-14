@@ -18,7 +18,7 @@ def budgets(project):
     all_checks_passed = True
 
     for budget in project.budget_items.all():
-        if not budget.amount:
+        if budget.amount is None:
             all_checks_passed = False
             checks.append((u'error', u'budget (id: %s) has no amount' % str(budget.pk)))
 

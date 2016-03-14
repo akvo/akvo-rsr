@@ -22,10 +22,11 @@ def locations(project):
                            str(location.pk)))
 
         for administrative in location.administratives.all():
-            if administrative.code and not administrative.vocabulary:
+            if (administrative.code and not administrative.vocabulary) or \
+                    (administrative.code and not administrative.vocabulary):
                 all_checks_passed = False
-                checks.append((u'error', u'administrative location (id: %s) has code, but no '
-                                         u'vocabulary' % str(administrative.pk)))
+                checks.append((u'error', u'administrative location (id: %s) code or vocabulary is '
+                                         u'missing' % str(administrative.pk)))
 
     if project.locations.all() and all_checks_passed:
         checks.append((u'success', u'has valid location(s)'))

@@ -25,9 +25,9 @@ def partners(project):
             org = partnership.organisation
             org_name = org.long_name or org.name
 
-            if (partnership.iati_organisation_role and
-                    partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4] and
-                    (org.iati_org_id or org_name)):
+            if partnership.iati_organisation_role and \
+                    partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4] and \
+                    (org.iati_org_id or org_name):
                 valid_partner = True
 
             if not partnership.iati_organisation_role:

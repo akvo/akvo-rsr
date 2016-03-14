@@ -18,7 +18,7 @@ def planned_disbursements(project):
     all_checks_passed = True
 
     for pd in project.planned_disbursements.all():
-        if not pd.value:
+        if pd.value is None:
             all_checks_passed = False
             checks.append((u'error', u'planned disbursement (id: %s) has no amount' % str(pd.pk)))
 
@@ -41,6 +41,14 @@ def planned_disbursements(project):
             all_checks_passed = False
             checks.append((u'error', u'planned disbursement (id: %s) has no currency and no '
                                      u'default currency specified' % str(pd.pk)))
+
+        if pd.receiver_organisation and not pd.receiver_organisation.iati_org_id:
+            checks.append((u'warning', u'receiver organisation of planned disbursement (id: %s) '
+                                       u'has no IATI identifier' % str(pd.pk)))
+
+        if pd.provider_organisation and not pd.provider_organisation.iati_org_id:
+            checks.append((u'warning', u'provider organisation of planned disbursement (id: %s) '
+                                       u'has no IATI identifier' % str(pd.pk)))
 
     if project.planned_disbursements.all() and all_checks_passed:
         checks.append((u'success', u'has valid planned disbursements'))

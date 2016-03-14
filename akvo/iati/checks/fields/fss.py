@@ -25,7 +25,7 @@ def fss(project):
                            str(fss_obj.pk)))
 
         for forecast in fss_obj.forecasts.all():
-            if not forecast.value:
+            if forecast.value is None:
                 all_checks_passed = False
                 checks.append((u'error', u'FSS forecast (id: %s) has no value specified' %
                                str(forecast.pk)))

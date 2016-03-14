@@ -24,7 +24,7 @@ def sectors(project):
         for transaction in project.transactions.all():
             if transaction.sectors.all():
                 all_checks_passed = False
-                checks.append((u'error', u'sectors present on project and transaction level'))
+                checks.append((u'error', u'sectors present both on project and transaction level'))
 
         if all_checks_passed:
             sectors_dict = {}
@@ -55,6 +55,17 @@ def sectors(project):
                         checks.append((u'error', u'sector percentages for vocabulary \'%s\' '
                                                  u'do not add up to 100' % str(voc_key)))
 
+        for sector in project.sectors.all():
+            if not sector.sector_code:
+                all_checks_passed = False
+                checks.append((u'error', u'sector (id: %s) is missing sector code' %
+                               str(sector.pk)))
+
+            if sector.vocabulary in ['98', '99'] and not sector.vocabulary_uri:
+                checks.append((u'warning', u'sector (id: %s) with vocabulary 98 or 99 (reporting '
+                                           u'organisation) has no vocabulary URI specified' %
+                               str(sector.pk)))
+
     elif not project.transactions.all():
         all_checks_passed = False
         checks.append((u'error', u'no sectors present on project or transaction level'))
@@ -69,6 +80,16 @@ def sectors(project):
             else:
                 sectors_vocs = []
                 for sector in transaction.sectors.all():
+                    if not sector.code:
+                        all_checks_passed = False
+                        checks.append((u'error', u'transaction sector (id: %s) is missing code' %
+                                       str(sector.pk)))
+
+                    if sector.vocabulary in ['98', '99'] and not sector.vocabulary_uri:
+                        checks.append((u'warning', u'sector (id: %s) with vocabulary 98 or 99 '
+                                                   u'(reporting organisation) has no vocabulary '
+                                                   u'URI specified' % str(sector.pk)))
+
                     voc = sector.vocabulary or '1'
 
                     if voc in sectors_vocs:

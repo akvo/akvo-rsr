@@ -23,7 +23,7 @@ def country_budget_items(project):
     if project.country_budget_items.all().count() > 1:
         percentage = 0
         for budget in project.country_budget_items.all():
-            if not budget.percentage:
+            if budget.percentage is None:
                 checks.append((u'warning', u'country budget item (id: %s) has no percentage' %
                                str(budget.pk)))
 

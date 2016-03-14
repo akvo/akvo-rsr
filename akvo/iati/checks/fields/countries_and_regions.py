@@ -51,7 +51,7 @@ def countries_and_regions(project):
         percentage = 0
 
         for country in project.recipient_countries.all():
-            if not country.percentage:
+            if country.percentage is None:
                 all_checks_passed = False
                 checks.append((u'error', u'recipient country %s has no percentage' %
                                country.country))
@@ -60,7 +60,7 @@ def countries_and_regions(project):
                 percentage += country.percentage
 
         for region in project.recipient_regions.all():
-            if not region.percentage:
+            if region.percentage is None:
                 all_checks_passed = False
                 checks.append((u'error', u'recipient region %s has no percentage' % region.region))
 
@@ -74,6 +74,23 @@ def countries_and_regions(project):
             all_checks_passed = False
             checks.append((u'error', u'country or region recipients percentage does not add up to '
                                      u'100'))
+
+    for country in project.recipient_countries.all():
+        if not country.country:
+            all_checks_passed = False
+            checks.append((u'error', u'recipient country (id: %s) has no country specified' %
+                           str(country.pk)))
+
+    for region in project.recipient_regions.all():
+        if not region.region:
+            all_checks_passed = False
+            checks.append((u'error', u'recipient region (id: %s) has no region specified' %
+                           str(region.pk)))
+
+        if region.region_vocabulary == '99' and not region.region_vocabulary_uri:
+            checks.append((u'warning', u'recipient region (id: %s) vocabulary is 99 (reporting '
+                                       u'organisation), but no vocabulary URI is specified' %
+                           str(region.pk)))
 
     if (project.recipient_countries.all() or project.recipient_regions.all()) and all_checks_passed:
         checks.append((u'success', u'has valid country or region recipient(s)'))

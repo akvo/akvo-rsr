@@ -32,7 +32,7 @@ def transactions(project):
             checks.append((u'error', u'transaction (id: %s) has a date in the future' %
                            str(transaction.pk)))
 
-        if not transaction.value:
+        if transaction.value is None:
             all_checks_passed = False
             checks.append((u'error', u'transaction (id: %s) has no value' % str(transaction.pk)))
 
@@ -53,6 +53,19 @@ def transactions(project):
         if transaction.provider_organisation and not transaction.provider_organisation.iati_org_id:
             checks.append((u'warning', u'provider organisation of transaction (id: %s) has no '
                                        u'IATI identifier' % str(transaction.pk)))
+
+        if (transaction.recipient_region_vocabulary or
+                transaction.recipient_region_vocabulary_uri) and not transaction.recipient_region:
+            all_checks_passed = False
+            checks.append((u'error', u'transaction (id: %s) is missing a recipient region' %
+                           str(transaction.pk)))
+
+        if transaction.recipient_region_vocabulary == '99' and \
+                not transaction.recipient_region_vocabulary_uri:
+            checks.append((u'warning', u'transaction (id: %s) recipient region has vocabulary 99 '
+                                       u'(reporting organisation), but no vocabulary URI '
+                                       u'specified' %
+                           str(transaction.pk)))
 
     if project.transactions.all() and all_checks_passed:
         checks.append((u'success', u'has valid transaction(s)'))
