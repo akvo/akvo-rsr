@@ -83,7 +83,8 @@ class IatiXML(object):
         project_element = etree.SubElement(self.iati_activities, "iati-activity")
 
         if project.last_modified_at:
-            project_element.attrib['last-updated-datetime'] = project.last_modified_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+            project_element.attrib['last-updated-datetime'] = project.last_modified_at.\
+                strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if project.language:
             project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
@@ -112,9 +113,11 @@ class IatiXML(object):
         """
         self.projects, self.version, self.excluded_elements = projects, version, excluded_elements
 
-        self.iati_activities = etree.Element("iati-activities", nsmap={'akvo': 'http://akvo.org/iati-activities'})
+        self.iati_activities = etree.Element("iati-activities",
+                                             nsmap={'akvo': 'http://akvo.org/iati-activities'})
         self.iati_activities.attrib['version'] = self.version
-        self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().\
+            strftime("%Y-%m-%dT%H:%M:%SZ")
 
         for project in projects:
             self.add_project(project)

@@ -68,40 +68,37 @@ def planned_disbursement(project):
     """
     planned_disbursement_elements = []
 
-    for planned_disbursement in project.planned_disbursements.all():
-        if planned_disbursement.value or planned_disbursement.type or \
-                planned_disbursement.period_start or planned_disbursement.period_end or \
-                planned_disbursement.value_date or planned_disbursement.currency or \
-                planned_disbursement.provider_organisation or \
-                planned_disbursement.receiver_organisation:
+    for pd in project.planned_disbursements.all():
+        if pd.value or pd.type or pd.period_start or pd.period_end or pd.value_date or \
+                pd.currency or pd.provider_organisation or pd.receiver_organisation:
             element = etree.Element("planned-disbursement")
 
-            if planned_disbursement.type:
-                element.attrib['type'] = planned_disbursement.type
+            if pd.type:
+                element.attrib['type'] = pd.type
 
-            if planned_disbursement.period_start:
+            if pd.period_start:
                 period_start_element = etree.SubElement(element, "period-start")
-                period_start_element.attrib['iso-date'] = str(planned_disbursement.period_start)
+                period_start_element.attrib['iso-date'] = str(pd.period_start)
 
-            if planned_disbursement.period_end:
+            if pd.period_end:
                 period_end_element = etree.SubElement(element, "period-end")
-                period_end_element.attrib['iso-date'] = str(planned_disbursement.period_end)
+                period_end_element.attrib['iso-date'] = str(pd.period_end)
 
-            if planned_disbursement.value:
+            if pd.value == 0 or pd.value:
                 value_element = etree.SubElement(element, "value")
-                value_element.text = str(planned_disbursement.value)
+                value_element.text = str(pd.value)
 
-            if planned_disbursement.value_date:
-                value_element.attrib['value-date'] = str(planned_disbursement.value_date)
+            if pd.value_date:
+                value_element.attrib['value-date'] = str(pd.value_date)
 
-            if planned_disbursement.currency:
-                value_element.attrib['currency'] = planned_disbursement.currency
+            if pd.currency:
+                value_element.attrib['currency'] = pd.currency
 
-            if planned_disbursement.provider_organisation:
-                element = _provider_organisation(element, planned_disbursement)
+            if pd.provider_organisation:
+                element = _provider_organisation(element, pd)
 
-            if planned_disbursement.receiver_organisation:
-                element = _receiver_organisation(element, planned_disbursement)
+            if pd.receiver_organisation:
+                element = _receiver_organisation(element, pd)
 
             planned_disbursement_elements.append(element)
 

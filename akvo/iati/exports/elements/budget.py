@@ -36,7 +36,7 @@ def budget(project):
                 period_end_element = etree.SubElement(element, "period-end")
                 period_end_element.attrib['iso-date'] = str(budget_item.period_end)
 
-            if budget_item.amount:
+            if budget_item.amount == 0 or budget_item.amount:
                 value_element = etree.SubElement(element, "value")
                 value_element.text = str(budget_item.amount)
 

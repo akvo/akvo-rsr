@@ -36,10 +36,10 @@ def crs_add(project):
                 crs.repayment_final_date:
             loan_terms_element = etree.SubElement(element, "loan-terms")
 
-            if crs.loan_terms_rate1:
+            if crs.loan_terms_rate1 == 0 or crs.loan_terms_rate1:
                 loan_terms_element.attrib['rate-1'] = str(crs.loan_terms_rate1)
 
-            if crs.loan_terms_rate2:
+            if crs.loan_terms_rate2 == 0 or crs.loan_terms_rate2:
                 loan_terms_element.attrib['rate-2'] = str(crs.loan_terms_rate2)
 
             if crs.repayment_type:
@@ -78,19 +78,22 @@ def crs_add(project):
             if crs.loan_status_value_date:
                 loan_status_element.attrib['value-date'] = str(crs.loan_status_value_date)
 
-            if crs.interest_received:
-                interest_received_element = etree.SubElement(loan_status_element, "interest-received")
+            if crs.interest_received == 0 or crs.interest_received:
+                interest_received_element = etree.SubElement(loan_status_element,
+                                                             "interest-received")
                 interest_received_element.text = str(crs.interest_received)
 
-            if crs.principal_outstanding:
-                principal_outstanding_element = etree.SubElement(loan_status_element, "principal-outstanding")
+            if crs.principal_outstanding == 0 or crs.principal_outstanding:
+                principal_outstanding_element = etree.SubElement(loan_status_element,
+                                                                 "principal-outstanding")
                 principal_outstanding_element.text = str(crs.principal_outstanding)
 
-            if crs.principal_arrears:
-                principal_arrears_element = etree.SubElement(loan_status_element, "principal-arrears")
+            if crs.principal_arrears == 0 or crs.principal_arrears:
+                principal_arrears_element = etree.SubElement(loan_status_element,
+                                                             "principal-arrears")
                 principal_arrears_element.text = str(crs.principal_arrears)
 
-            if crs.interest_arrears:
+            if crs.interest_arrears == 0 or crs.interest_arrears:
                 interest_arrears_element = etree.SubElement(loan_status_element, "interest-arrears")
                 interest_arrears_element.text = str(crs.interest_arrears)
 

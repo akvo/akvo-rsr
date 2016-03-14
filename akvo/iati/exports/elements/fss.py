@@ -32,7 +32,7 @@ def fss(project):
             if forecast.value or forecast.year or forecast.value_date or forecast.currency:
                 forecast_element = etree.SubElement(element, "forecast")
 
-                if forecast.value:
+                if forecast.value == 0 or forecast.value:
                     forecast_element.text = str(forecast.value)
 
                 if forecast.year:

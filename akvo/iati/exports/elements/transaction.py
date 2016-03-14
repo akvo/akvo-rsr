@@ -120,7 +120,7 @@ def transaction(project):
             if trans.value or trans.currency or trans.value_date:
                 value_element = etree.SubElement(element, "value")
 
-                if trans.value:
+                if trans.value == 0 or trans.value:
                     value_element.text = str(trans.value)
 
                 if trans.currency:

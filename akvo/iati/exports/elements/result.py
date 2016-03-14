@@ -139,7 +139,9 @@ def result(project):
                             if period.actual_value or period.actual_locations.all() or \
                                     period.actual_dimensions.all() or period.actual_comment:
                                 actual_element = etree.SubElement(period_element, "actual")
-                                actual_element.attrib['value'] = period.actual_value
+
+                                if period.actual_value:
+                                    actual_element.attrib['value'] = period.actual_value
 
                                 for actual_location in period.actual_locations.all():
                                     actual_location_element = etree.SubElement(actual_element,

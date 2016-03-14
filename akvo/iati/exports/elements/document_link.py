@@ -75,6 +75,10 @@ def document_link(project):
                 narrative_element = etree.SubElement(title_element, "narrative")
                 narrative_element.text = document.title
 
+                if document.title_language:
+                    narrative_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = \
+                        document.title_language
+
             for category in document.categories.all():
                 category_element = etree.SubElement(document_element, "category")
                 category_element.attrib['code'] = category.category

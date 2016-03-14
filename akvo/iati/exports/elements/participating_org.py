@@ -38,6 +38,8 @@ def participating_org(project):
             if partnership.iati_activity_id:
                 element.attrib['activity-id'] = partnership.iati_activity_id
 
+            # TODO: Funding amount
+
             narrative_element = etree.SubElement(element, "narrative")
 
             if org.long_name:

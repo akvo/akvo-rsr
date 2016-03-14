@@ -67,7 +67,7 @@ def location(project):
                     if administrative.level:
                         administrative_element.attrib['level'] = str(administrative.level)
 
-            if loc.latitude and loc.longitude:
+            if (loc.latitude == 0 or loc.latitude) and (loc.longitude == 0 or loc.longitude):
                 point_element = etree.SubElement(element, "point")
                 point_element.attrib['srsName'] = 'http://www.opengis.net/def/crs/EPSG/0/4326'
                 pos_element = etree.SubElement(point_element, "pos")
