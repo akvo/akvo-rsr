@@ -71,6 +71,8 @@ def iati_validation_set_changes(apps, schema_editor):
             'rsr_crsaddotherflag.significance',
             'rsr_fss.extraction_date',
             'rsr_fssforecast.year',
+            'rsr_legacydata.name',
+            'rsr_legacydata.value',
         ]
         set_fields(apps, iati_validation_set, mandatory_fields, 1)
     except:
