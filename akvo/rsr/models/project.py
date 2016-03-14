@@ -31,7 +31,7 @@ from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLA
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
-from ...iati.checks.mandatory_fields import check_export_fields
+from ...iati.checks.iati_checks import IatiChecks
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -1063,8 +1063,9 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
-    def check_mandatory_fields(self, version='2.01'):
-        return check_export_fields(self, version)
+    def check_mandatory_fields(self):
+        iati_checks = IatiChecks(self)
+        return iati_checks.perform_checks()
 
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""
