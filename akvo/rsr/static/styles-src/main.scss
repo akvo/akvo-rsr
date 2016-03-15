@@ -806,7 +806,13 @@ div.paginationWrap {
         margin-top: 65px;
     }
 }
+.oneLocation {
+    margin-bottom: 50px;
+}
 .table {
+        .locationTab & {
+            margin-bottom: 25px;
+        }
         &.locationTab {
         overflow: hidden;
         overflow-x: scroll;
@@ -1582,6 +1588,14 @@ header {
     &.summary {
         margin-top:-20px;
     }
+    &.partners {
+        margin-top: 60px;
+    }
+    &.updates {
+        .updateAsset:first-child {
+            margin-top: 25px;
+        }
+    }
 }
 div.projectTopRow {
     position: relative;
@@ -2328,10 +2342,10 @@ dd {
                 background-color: rgba($primary6, 0.1) !important;
             }
             tr:nth-child(even) {
-                background-color: rgba($primary6, 0.1);
+                background-color: rgba(white, 0.1);
             }     
             tr:nth-child(odd) {
-                background-color: rgba($primary5, 0.1);
+                background-color: rgba($primary5, 0.05);
             }       
         }
         &.table-bordered {
