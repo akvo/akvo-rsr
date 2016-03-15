@@ -20,8 +20,10 @@ def participating_org(project):
 
     for partnership in project.partnerships.all():
         # Don't include reporting orgs or sponsor partners
-        if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4]:
+        if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4] and \
+                partnership.organisation:
             org = partnership.organisation
+
             element = etree.Element("participating-org")
 
             if org.iati_org_id:
@@ -32,6 +34,11 @@ def participating_org(project):
 
             if partnership.iati_organisation_role:
                 element.attrib['role'] = str(partnership.iati_organisation_role)
+
+            if partnership.iati_activity_id:
+                element.attrib['activity-id'] = partnership.iati_activity_id
+
+            # TODO: Funding amount
 
             narrative_element = etree.SubElement(element, "narrative")
 

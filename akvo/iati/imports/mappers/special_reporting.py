@@ -126,6 +126,8 @@ class CrsAdds(ImportMapper):
                 principal_arrears = None
                 interest_arrears = None
 
+            channel_code = self.get_child_element_text(crs_element, 'channel-code', 'channel_code')
+
             defaults = dict(
                 loan_terms_rate1=loan_terms_rate1,
                 loan_terms_rate2=loan_terms_rate2,
@@ -141,6 +143,7 @@ class CrsAdds(ImportMapper):
                 principal_outstanding=principal_outstanding,
                 principal_arrears=principal_arrears,
                 interest_arrears=interest_arrears,
+                channel_code=channel_code
             )
             crs_obj, created = CrsAdd.objects.update_or_create(
                     project=self.project, defaults=defaults)

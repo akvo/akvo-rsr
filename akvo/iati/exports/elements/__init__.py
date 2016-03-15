@@ -23,6 +23,7 @@ from .default_tied_status import default_tied_status
 from .document_link import document_link
 from .fss import fss
 from .goals_overview import goals_overview
+from .humanitarian_scope import humanitarian_scope
 from .iati_identifier import iati_identifier
 from .legacy_data import legacy_data
 from .location import location
@@ -64,6 +65,7 @@ __all__ = [
     'document_link',
     'fss',
     'goals_overview',
+    'humanitarian_scope',
     'iati_identifier',
     'legacy_data',
     'location',

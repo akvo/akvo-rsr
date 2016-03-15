@@ -203,13 +203,13 @@ class IatiActivityImport(TimestampsMixin):
                 return False
 
             if 'secondary-reporter' in reporting_org_element.attrib.keys():
-                # TODO: check if other "truthy" values can be used in the XML
+                reporting_partnership = self.project.reporting_partner
                 if reporting_org_element.attrib['secondary-reporter'] == '1':
-                    self.project.reporting_partner.is_secondary_reporter = True
-                    self.project.reporting_partner.save()
+                    reporting_partnership.is_secondary_reporter = True
+                    reporting_partnership.save()
                 elif reporting_org_element.attrib['secondary-reporter'] == '0':
-                    self.project.reporting_partner.is_secondary_reporter = False
-                    self.project.reporting_partner.save()
+                    reporting_partnership.is_secondary_reporter = False
+                    reporting_partnership.save()
 
             return True
 

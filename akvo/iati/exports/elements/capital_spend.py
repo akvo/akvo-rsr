@@ -14,7 +14,7 @@ def capital_spend(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    if project.capital_spend_percentage:
+    if project.capital_spend_percentage == 0 or project.capital_spend_percentage:
         element = etree.Element("capital-spend")
         element.attrib['percentage'] = str(project.capital_spend_percentage)
         return [element]

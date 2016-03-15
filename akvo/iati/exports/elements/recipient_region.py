@@ -17,15 +17,21 @@ def recipient_region(project):
     recipient_region_elements = []
 
     for region in project.recipient_regions.all():
-        if region.region:
+        if region.region or region.percentage or region.region_vocabulary or \
+                region.region_vocabulary_uri or region.text:
             element = etree.Element("recipient-region")
-            element.attrib['code'] = region.region
+
+            if region.region:
+                element.attrib['code'] = region.region
 
             if region.percentage:
                 element.attrib['percentage'] = str(region.percentage)
 
             if region.region_vocabulary:
                 element.attrib['vocabulary'] = str(region.region_vocabulary)
+
+            if region.region_vocabulary_uri:
+                element.attrib['vocabulary-uri'] = region.region_vocabulary_uri
 
             if region.text:
                 narrative_element = etree.SubElement(element, "narrative")

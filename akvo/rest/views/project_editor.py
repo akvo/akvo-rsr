@@ -10,10 +10,13 @@ import decimal
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
-from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, Indicator,
-                             IndicatorPeriod, Keyword, Organisation, Project,
-                             ProjectEditorValidationSet, ProjectLocation, Result, Transaction,
-                             TransactionSector)
+from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, CrsAdd,
+                             CrsAddOtherFlag, Fss, FssForecast, Indicator, IndicatorPeriod,
+                             IndicatorReference, IndicatorPeriodActualDimension,
+                             IndicatorPeriodActualLocation, IndicatorPeriodTargetDimension,
+                             IndicatorPeriodTargetLocation, Keyword, Organisation, Project,
+                             ProjectDocument, ProjectDocumentCategory, ProjectEditorValidationSet,
+                             ProjectLocation, Result, Transaction, TransactionSector)
 
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
@@ -35,9 +38,17 @@ RELATED_OBJECTS_MAPPING = {
     # Special mapping for related objects without a 'project' field
     Indicator: (Result, 'result'),
     IndicatorPeriod: (Indicator, 'indicator'),
+    IndicatorReference: (Indicator, 'indicator'),
+    IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
+    IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
+    IndicatorPeriodTargetDimension: (IndicatorPeriod, 'period'),
+    IndicatorPeriodTargetLocation: (IndicatorPeriod, 'period'),
     TransactionSector: (Transaction, 'transaction'),
     ProjectLocation: (Project, 'location_target'),
-    AdministrativeLocation: (ProjectLocation, 'location')
+    AdministrativeLocation: (ProjectLocation, 'location'),
+    ProjectDocumentCategory: (ProjectDocument, 'document'),
+    CrsAddOtherFlag: (CrsAdd, 'crs'),
+    FssForecast: (Fss, 'fss'),
 }
 
 MANY_TO_MANY_FIELDS = {
@@ -233,8 +244,14 @@ def convert_related_objects(rel_objects):
 
     model_to_api = {
         'relatedproject': 'related_project',
+        'humanitarianscope': 'humanitarian_scope',
         'projectcontact': 'project_contact',
         'indicatorperiod': 'indicator_period',
+        'indicatorperiodactualdimension': 'indicator_period_actual_dimension',
+        'indicatorperiodactuallocation': 'indicator_period_actual_location',
+        'indicatorperiodtargetdimension': 'indicator_period_target_dimension',
+        'indicatorperiodtargetlocation': 'indicator_period_target_location',
+        'indicatorreference': 'indicator_reference',
         'projectcondition': 'project_condition',
         'budgetitem': 'budget_item',
         'countrybudgetitem': 'country_budget_item',
@@ -246,6 +263,11 @@ def convert_related_objects(rel_objects):
         'recipientregion': 'recipient_region',
         'policymarker': 'policy_marker',
         'projectdocument': 'project_document',
+        'projectdocumentcategory': 'project_document_category',
+        'crsadd': 'crs_add',
+        'crsaddotherflag': 'crsadd_other_flag',
+        'fssforecast': 'fss_forecast',
+        'legacydata': 'legacy_data',
     }
 
     new_rel_objects = []
@@ -399,11 +421,11 @@ def project_editor(request, pk=None):
     # (second last id is also 'new-0'), with a new result (second id is also 'new-0'), on an
     # existing project (project id is '1234').
 
-    # This script runs 3 times if needed, the first time it is at least able to connect the result
+    # This script runs 4 times if needed, the first time it is at least able to connect the result
     # to the project and create a result id, which will be stored in rel_objects. The second time
     # it will definitely be able to create the indicator id, etc.
 
-    for i in range(3):
+    for i in range(4):
         for key in data.keys():
             # The keys in form data are of format "rsr_project.title.1234".
             # Separated by .'s, the data contains the model name, field name and object id list
@@ -542,6 +564,7 @@ def project_editor(request, pk=None):
             'need_saving': [data],
         }
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

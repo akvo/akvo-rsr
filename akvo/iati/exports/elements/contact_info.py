@@ -17,48 +17,51 @@ def contact_info(project):
     contact_info_elements = []
 
     for contact in project.contacts.all():
-        element = etree.Element("contact-info")
+        if contact.type or contact.organisation or contact.department or contact.person_name or \
+                contact.job_title or contact.telephone or contact.email or contact.website or \
+                contact.mailing_address:
+            element = etree.Element("contact-info")
 
-        if contact.type:
-            element.attrib['type'] = str(contact.type)
+            if contact.type:
+                element.attrib['type'] = str(contact.type)
 
-        if contact.organisation:
-            organisation_element = etree.SubElement(element, "organisation")
-            narrative_element = etree.SubElement(organisation_element, "narrative")
-            narrative_element.text = contact.organisation
+            if contact.organisation:
+                organisation_element = etree.SubElement(element, "organisation")
+                narrative_element = etree.SubElement(organisation_element, "narrative")
+                narrative_element.text = contact.organisation
 
-        if contact.department:
-            department_element = etree.SubElement(element, "department")
-            narrative_element = etree.SubElement(department_element, "narrative")
-            narrative_element.text = contact.department
+            if contact.department:
+                department_element = etree.SubElement(element, "department")
+                narrative_element = etree.SubElement(department_element, "narrative")
+                narrative_element.text = contact.department
 
-        if contact.person_name:
-            person_name_element = etree.SubElement(element, "person-name")
-            narrative_element = etree.SubElement(person_name_element, "narrative")
-            narrative_element.text = contact.person_name
+            if contact.person_name:
+                person_name_element = etree.SubElement(element, "person-name")
+                narrative_element = etree.SubElement(person_name_element, "narrative")
+                narrative_element.text = contact.person_name
 
-        if contact.job_title:
-            job_title_element = etree.SubElement(element, "job-title")
-            narrative_element = etree.SubElement(job_title_element, "narrative")
-            narrative_element.text = contact.job_title
+            if contact.job_title:
+                job_title_element = etree.SubElement(element, "job-title")
+                narrative_element = etree.SubElement(job_title_element, "narrative")
+                narrative_element.text = contact.job_title
 
-        if contact.telephone:
-            telephone_element = etree.SubElement(element, "telephone")
-            telephone_element.text = contact.telephone
+            if contact.telephone:
+                telephone_element = etree.SubElement(element, "telephone")
+                telephone_element.text = contact.telephone
 
-        if contact.email:
-            email_element = etree.SubElement(element, "email")
-            email_element.text = contact.email
+            if contact.email:
+                email_element = etree.SubElement(element, "email")
+                email_element.text = contact.email
 
-        if contact.website:
-            website_element = etree.SubElement(element, "website")
-            website_element.text = contact.website
+            if contact.website:
+                website_element = etree.SubElement(element, "website")
+                website_element.text = contact.website
 
-        if contact.mailing_address:
-            mailing_address_element = etree.SubElement(element, "mailing-address")
-            narrative_element = etree.SubElement(mailing_address_element, "narrative")
-            narrative_element.text = contact.mailing_address
+            if contact.mailing_address:
+                mailing_address_element = etree.SubElement(element, "mailing-address")
+                narrative_element = etree.SubElement(mailing_address_element, "narrative")
+                narrative_element.text = contact.mailing_address
 
-        contact_info_elements.append(element)
+            contact_info_elements.append(element)
 
     return contact_info_elements

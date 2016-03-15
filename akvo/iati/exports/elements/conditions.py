@@ -22,9 +22,10 @@ def conditions(project):
         conditions_element.attrib['attached'] = '0'
 
     for condition in project.conditions.all():
-        if condition.type:
-            condition_element = etree.SubElement(conditions_element, "condition")
-            condition_element.attrib['type'] = condition.type
+        if condition.type or condition.text:
+            if condition.type:
+                condition_element = etree.SubElement(conditions_element, "condition")
+                condition_element.attrib['type'] = condition.type
 
             if condition.text:
                 narrative_element = etree.SubElement(condition_element, "narrative")

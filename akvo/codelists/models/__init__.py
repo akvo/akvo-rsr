@@ -14,12 +14,14 @@ from .budget_identifier import BudgetIdentifier
 from .budget_identifier_sector import BudgetIdentifierSector
 from .budget_identifier_sector_category import BudgetIdentifierSectorCategory
 from .budget_identifier_vocabulary import BudgetIdentifierVocabulary
+from .budget_status import BudgetStatus
 from .budget_type import BudgetType
 from .collaboration_type import CollaborationType
 from .condition_type import ConditionType
 from .contact_type import ContactType
 from .country import Country
 from .crs_add_other_flags import CRSAddOtherFlags
+from .crs_channel_code import CRSChannelCode
 from .currency import Currency
 from .description_type import DescriptionType
 from .disbursement_channel import DisbursementChannel
@@ -35,7 +37,10 @@ from .geographic_location_class import GeographicLocationClass
 from .geographic_location_reach import GeographicLocationReach
 from .geographic_vocabulary import GeographicVocabulary
 from .geographical_precision import GeographicalPrecision
+from .humanitarian_scope_type import HumanitarianScopeType
+from .humanitarian_scope_vocabulary import HumanitarianScopeVocabulary
 from .indicator_measure import IndicatorMeasure
+from .indicator_vocabulary import IndicatorVocabulary
 from .language import Language
 from .loan_repayment_period import LoanRepaymentPeriod
 from .loan_repayment_type import LoanRepaymentType
@@ -75,12 +80,14 @@ __all__ = [
     'BudgetIdentifierSector',
     'BudgetIdentifierSectorCategory',
     'BudgetIdentifierVocabulary',
+    'BudgetStatus',
     'BudgetType',
     'CollaborationType',
     'ConditionType',
     'ContactType',
     'Country',
     'CRSAddOtherFlags',
+    'CRSChannelCode',
     'Currency',
     'DescriptionType',
     'DisbursementChannel',
@@ -96,7 +103,10 @@ __all__ = [
     'GeographicLocationReach',
     'GeographicVocabulary',
     'GeographicalPrecision',
+    'HumanitarianScopeType',
+    'HumanitarianScopeVocabulary',
     'IndicatorMeasure',
+    'IndicatorVocabulary',
     'Language',
     'LoanRepaymentPeriod',
     'LoanRepaymentType',

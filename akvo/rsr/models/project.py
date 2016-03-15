@@ -26,12 +26,12 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
                                    TiedStatus)
-from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
-from ...iati.checks.mandatory_fields import check_export_fields
+from ...iati.checks.iati_checks import IatiChecks
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -249,7 +249,7 @@ class Project(TimestampsMixin, models.Model):
                     u'to be compliant with the IATI standard. This code consists of: '
                     u'[country code]-[Chamber of Commerce number]-[organisation’s internal project '
                     u'code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more '
-                    u'information see') + ' <a href="http://iatistandard.org/201/activity-standard/'
+                    u'information see') + ' <a href="http://iatistandard.org/202/activity-standard/'
                                           'iati-activities/iati-activity/iati-identifier/'
                                           '#definition" target="_blank">http://iatistandard.org/'
                                           '201/activity-standard/iati-activities/iati-activity/'
@@ -275,8 +275,8 @@ class Project(TimestampsMixin, models.Model):
         _(u'collaboration type'), blank=True, max_length=1,
         choices=codelist_choices(COLLABORATION_TYPE),
         help_text=_(u'This is the IATI identifier for the type of collaboration involved. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
-                    u'CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    u'CollaborationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'CollaborationType/</a>.')
     )
     default_aid_type = ValidXMLCharField(
@@ -284,8 +284,8 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'This is the IATI identifier for the type of aid being supplied or activity '
                     u'being undertaken. This element specifies a default for all the project’s '
                     u'financial transactions. This can be overridden at the individual transaction '
-                    u'level. For reference, please visit: <a href="http://iatistandard.org/201/'
-                    u'codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'level. For reference, please visit: <a href="http://iatistandard.org/202/'
+                    u'codelists/AidType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'AidType/</a>.')
     )
     default_finance_type = ValidXMLCharField(
@@ -294,22 +294,22 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'This is the IATI identifier for the type of finance. This element specifies '
                     u'a default for all the transactions in the project’s activity report; it can '
                     u'be overridden at the individual transaction level. For reference visit: '
-                    u'<a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">'
-                    u'http://iatistandard.org/201/codelists/FinanceType/</a>.')
+                    u'<a href="http://iatistandard.org/202/codelists/FinanceType/" target="_blank">'
+                    u'http://iatistandard.org/202/codelists/FinanceType/</a>.')
     )
     default_flow_type = ValidXMLCharField(
         _(u'default flow type'), blank=True, max_length=2, choices=codelist_choices(FLOW_TYPE),
         help_text=_(u'This is the IATI identifier for how the activity (project) is funded. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
-                    u'FlowType/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    u'FlowType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'FlowType/</a>.')
     )
     default_tied_status = ValidXMLCharField(
         _(u'default tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS),
         help_text=_(u'This element specifies a default for all the activity’s financial '
                     u'transactions; it can be overridden at the individual transaction level. For '
-                    u'reference, please visit: <a href="http://iatistandard.org/201/codelists/'
-                    u'TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/'
+                    u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
+                    u'TiedStatus/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'TiedStatus/</a>.')
     )
     country_budget_vocabulary = ValidXMLCharField(
@@ -318,10 +318,13 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'Enter an IATI code for the common functional classification or country '
                     u'system (this allows for common codes, country-specific codes, or any other '
                     u'classification agreed between countries and donors) see: '
-                    u'<a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" '
-                    u'target="_blank">http://iatistandard.org/201/codelists/'
+                    u'<a href="http://iatistandard.org/202/codelists/BudgetIdentifierVocabulary/" '
+                    u'target="_blank">http://iatistandard.org/202/codelists/'
                     u'BudgetIdentifierVocabulary/</a>.')
     )
+    humanitarian = models.NullBooleanField(
+        _(u'humanitarian project'), help_text=_(u'Determines whether this project relates entirely '
+                                                u'or partially to humanitarian aid.'))
 
     # Project editor settings
     validations = models.ManyToManyField(
@@ -1060,8 +1063,9 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
-    def check_mandatory_fields(self, version='2.01'):
-        return check_export_fields(self, version)
+    def check_mandatory_fields(self):
+        iati_checks = IatiChecks(self)
+        return iati_checks.perform_checks()
 
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""

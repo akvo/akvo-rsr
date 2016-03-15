@@ -4,8 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.codelists.models import IndicatorMeasure
-from akvo.codelists.store.codelists_v201 import INDICATOR_MEASURE
+from akvo.codelists.models import IndicatorMeasure, IndicatorVocabulary
+from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOCABULARY
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_send_mail
@@ -195,6 +195,40 @@ class Indicator(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator')
         verbose_name_plural = _(u'indicators')
+
+
+class IndicatorReference(models.Model):
+    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+                                  related_name='references')
+    reference = ValidXMLCharField(
+        _(u'reference code'), blank=True, max_length=25,
+        help_text=_(u'A code for an indicator defined in the specified vocabulary specified. '
+                    u'For more information on the indicator reference, see the '
+                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
+                    u'target="_blank">IATI codelist</a>.'))
+    vocabulary = ValidXMLCharField(
+        _(u'reference vocabulary'), blank=True, max_length=2,
+        choices=codelist_choices(INDICATOR_VOCABULARY),
+        help_text=_(u'This is the code for the vocabulary used to describe the sector. Sectors '
+                    u'should be mapped to DAC sectors to enable international comparison. '
+                    u'For more information on the indicator reference, see the '
+                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
+                    u'target="_blank">IATI codelist</a>.'))
+    vocabulary_uri = ValidXMLCharField(
+        _(u'reference indicator URI'), blank=True, max_length=1000,
+        help_text=_(u'If the vocabulary is 99 (reporting organisation), the URI where this '
+                    u'internal vocabulary is defined.'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator reference')
+        verbose_name_plural = _(u'indicator references')
+
+    def __unicode__(self):
+        return self.reference
+
+    def iati_vocabulary(self):
+        return codelist_value(IndicatorVocabulary, self, 'vocabulary')
 
 
 class IndicatorPeriod(models.Model):
@@ -714,3 +748,77 @@ class IndicatorPeriodDataComment(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period data comment')
         verbose_name_plural = _(u'indicator period data comments')
+
+
+class IndicatorPeriodTargetLocation(models.Model):
+    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+                               related_name='target_locations')
+    location = ValidXMLCharField(
+        _(u'location'), blank=True, max_length=25,
+        help_text=_(u'A location of the target of this indicator period. The location must be the '
+                    u'reference of an existing location of the current project.'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator period target location')
+        verbose_name_plural = _(u'indicator period target locations')
+
+    def __unicode__(self):
+        return self.location
+
+
+class IndicatorPeriodActualLocation(models.Model):
+    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+                               related_name='actual_locations')
+    location = ValidXMLCharField(
+        _(u'location'), blank=True, max_length=25,
+        help_text=_(u'A location of the actual of this indicator period. The location must be the '
+                    u'reference of an existing location of the current project.'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator period actual location')
+        verbose_name_plural = _(u'indicator period actual locations')
+
+    def __unicode__(self):
+        return self.location
+
+
+class IndicatorPeriodTargetDimension(models.Model):
+    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+                               related_name='target_dimensions')
+    name = ValidXMLCharField(
+        _(u'dimension name'), blank=True, max_length=100,
+        help_text=_(u'The name of a category being disaggregated in this target value of the '
+                    u'indicator period (e.g. "Age").'))
+    value = ValidXMLCharField(
+        _(u'dimension value'), blank=True, max_length=100,
+        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years").'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator period target dimension')
+        verbose_name_plural = _(u'indicator period target dimensions')
+
+    def __unicode__(self):
+        return self.name + ': ' + self.value if self.name and self.value else ''
+
+
+class IndicatorPeriodActualDimension(models.Model):
+    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+                               related_name='actual_dimensions')
+    name = ValidXMLCharField(
+        _(u'dimension name'), blank=True, max_length=100,
+        help_text=_(u'The name of a category being disaggregated in this actual value of the '
+                    u'indicator period (e.g. "Age").'))
+    value = ValidXMLCharField(
+        _(u'dimension value'), blank=True, max_length=100,
+        help_text=_(u'The value that is being being disaggregated (e.g. "Older than 60 years").'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator period actual dimension')
+        verbose_name_plural = _(u'indicator period actual dimensions')
+
+    def __unicode__(self):
+        return self.name + ': ' + self.value if self.name and self.value else ''

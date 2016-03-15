@@ -17,19 +17,24 @@ def sector(project):
     sector_elements = []
 
     for sec in project.sectors.all():
-        if sec.sector_code:
+        if sec.sector_code or sec.vocabulary or sec.vocabulary_uri or sec.percentage or sec.text:
             element = etree.Element("sector")
-            element.attrib['code'] = sec.sector_code
 
-            if not sec.vocabulary or sec.vocabulary == 'DAC':
-                element.attrib['vocabulary'] = '1'
-            elif sec.vocabulary == 'DAC-3':
-                element.attrib['vocabulary'] = '2'
-            else:
+            if sec.sector_code:
+                element.attrib['code'] = sec.sector_code
+
+            if sec.vocabulary:
                 element.attrib['vocabulary'] = sec.vocabulary
+
+            if sec.vocabulary_uri:
+                element.attrib['vocabulary-uri'] = sec.vocabulary_uri
 
             if sec.percentage:
                 element.attrib['percentage'] = str(sec.percentage)
+
+            if sec.text:
+                narrative_element = etree.SubElement(element, "narrative")
+                narrative_element.text = sec.text
 
             sector_elements.append(element)
 
