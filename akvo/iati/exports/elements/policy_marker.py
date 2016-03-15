@@ -17,13 +17,21 @@ def policy_marker(project):
     policy_marker_elements = []
 
     for policy in project.policy_markers.all():
-        if policy.policy_marker and policy.significance:
+        if policy.policy_marker or policy.significance or policy.vocabulary or \
+                policy.vocabulary_uri or policy.description:
             element = etree.Element("policy-marker")
-            element.attrib['code'] = policy.policy_marker
-            element.attrib['significance'] = policy.significance
+
+            if policy.policy_marker:
+                element.attrib['code'] = policy.policy_marker
+
+            if policy.significance:
+                element.attrib['significance'] = policy.significance
 
             if policy.vocabulary:
                 element.attrib['vocabulary'] = policy.vocabulary
+
+            if policy.vocabulary_uri:
+                element.attrib['vocabulary-uri'] = policy.vocabulary_uri
 
             if policy.description:
                 narrative_element = etree.SubElement(element, "narrative")

@@ -12,8 +12,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import BudgetIdentifier, BudgetType, Currency
-from akvo.codelists.store.codelists_v201 import BUDGET_IDENTIFIER, BUDGET_TYPE, CURRENCY
+from akvo.codelists.models import BudgetIdentifier, BudgetStatus, BudgetType, Currency
+from akvo.codelists.store.codelists_v202 import (BUDGET_IDENTIFIER, BUDGET_TYPE, BUDGET_STATUS,
+                                                 CURRENCY)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -72,6 +73,10 @@ class BudgetItem(models.Model):
     )
     currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True,
                                  choices=codelist_choices(CURRENCY))
+    status = ValidXMLCharField(
+        _(u'status'), max_length=1, blank=True, choices=codelist_choices(BUDGET_STATUS),
+        help_text=_(u'The status explains whether the budget being reported is indicative or has '
+                    u'been formally committed.'))
 
     def __unicode__(self):
         if self.label:
@@ -117,6 +122,9 @@ class BudgetItem(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
+
+    def iati_status(self):
+        return codelist_value(BudgetStatus, self, 'status')
 
     class Meta:
         app_label = 'rsr'

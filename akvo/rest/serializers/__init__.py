@@ -17,11 +17,17 @@ from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldS
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
+from .humanitarian_scope import HumanitarianScopeSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
+from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerializer,
+                                         IndicatorPeriodTargetDimensionSerializer)
+from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
+                                        IndicatorPeriodTargetLocationSerializer)
+from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .invoice import InvoiceSerializer
 from .keyword import KeywordSerializer
@@ -38,7 +44,7 @@ from .project import ProjectSerializer, ProjectExtraSerializer, ProjectUpSeriali
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
-from .project_document import ProjectDocumentSerializer
+from .project_document import ProjectDocumentSerializer, ProjectDocumentCategorySerializer
 from .project_location import (ProjectLocationSerializer, AdministrativeLocationSerializer,
                                MapProjectLocationSerializer)
 from .project_update import (ProjectUpdateSerializer,
@@ -71,13 +77,19 @@ __all__ = [
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
+    'HumanitarianScopeSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
-    'IndicatorPeriodSerializer',
-    'IndicatorPeriodFrameworkSerializer',
-    'IndicatorPeriodDataSerializer',
-    'IndicatorPeriodDataFrameworkSerializer',
+    'IndicatorPeriodActualDimensionSerializer',
+    'IndicatorPeriodActualLocationSerializer',
     'IndicatorPeriodDataCommentSerializer',
+    'IndicatorPeriodDataFrameworkSerializer',
+    'IndicatorPeriodDataSerializer',
+    'IndicatorPeriodFrameworkSerializer',
+    'IndicatorPeriodSerializer',
+    'IndicatorPeriodTargetDimensionSerializer',
+    'IndicatorPeriodTargetLocationSerializer',
+    'IndicatorReferenceSerializer',
     'InternalOrganisationIDSerializer',
     'InvoiceSerializer',
     'KeywordSerializer',
@@ -99,6 +111,7 @@ __all__ = [
     'ProjectContactSerializer',
     'ProjectCustomFieldSerializer',
     'ProjectDocumentSerializer',
+    'ProjectDocumentCategorySerializer',
     'ProjectExtraSerializer',
     'ProjectLocationSerializer',
     'ProjectSerializer',

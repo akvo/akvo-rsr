@@ -126,7 +126,10 @@ class Partnership(models.Model):
         help_text=_(u'RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True
+        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True,
+        help_text=_(u'A valid activity identifier published by the participating organisation '
+                    u'which points to the activity that it has published to IATI that describes '
+                    u'its role in this activity.')
     )
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,

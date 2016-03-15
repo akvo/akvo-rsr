@@ -58,7 +58,7 @@
         </p>
         <div id="react_iati_checks"></div>
         <p>
-            <form method="POST" action="" id="iati_export_form">
+            <form method="POST" action="" id="iati_export_form" class="iatiCheck">
                 {% csrf_token %}
                 {% for field in iati_export_form %}
                     {% bootstrap_field field %}
@@ -108,7 +108,9 @@
     {# Translation strings #}
     <script type="application/json" id="perform-checks-text">
         {
-            "perform_checks": "{% trans 'Perform checks' %}"
+            "perform_checks": "{% trans 'Perform checks' %}",
+            "performing_checks": "{% trans 'Performing checks' %}",
+            "warning": "{% trans 'Warning' %}"
         }
     </script>
 

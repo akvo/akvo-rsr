@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Currency
-from akvo.codelists.store.codelists_v201 import CURRENCY
+from akvo.codelists.store.codelists_v202 import CURRENCY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -24,6 +24,9 @@ class Fss(models.Model):
     priority = models.NullBooleanField(_(u'priority'), blank=True)
     phaseout_year = models.PositiveIntegerField(_(u'phaseout year'), blank=True, null=True,
                                                 max_length=4)
+
+    def __unicode__(self):
+        return u'%s' % _(u'Forward Spending Survey')
 
     class Meta:
         app_label = 'rsr'
@@ -42,6 +45,15 @@ class FssForecast(models.Model):
                                  choices=codelist_choices(CURRENCY))
     value = models.DecimalField(_(u'interest received'), max_digits=10, decimal_places=2,
                                 blank=True, null=True)
+
+    def __unicode__(self):
+        if self.value and self.currency:
+            try:
+                return u'{0} {1}'.format(self.iati_currency().name, self.value)
+            except AttributeError:
+                return u'{0} {1}'.format(self.iati_currency(), self.value)
+        else:
+            return u'%s' % _(u'No currency or interest received specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')

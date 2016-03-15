@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import ConditionType
-from akvo.codelists.store.codelists_v201 import CONDITION_TYPE
+from akvo.codelists.store.codelists_v202 import CONDITION_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 

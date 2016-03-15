@@ -21,6 +21,7 @@ VERSIONS = {
     "1.04": "http://iatistandard.org/104/codelists/downloads/clv2/",
     "1.05": "http://iatistandard.org/105/codelists/downloads/clv2/",
     "2.01": "http://iatistandard.org/201/codelists/downloads/clv2/",
+    "2.02": "http://iatistandard.org/202/codelists/downloads/clv2/",
 }
 
 

@@ -13,15 +13,17 @@ from ..fields import ValidXMLCharField
 
 class LegacyData(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='legacy_data')
-    name = ValidXMLCharField(
-        _(u'name'), blank=True, max_length=100, help_text=_(u'(100 characters).')
-    )
-    value = ValidXMLCharField(
-        _(u'value'), max_length=100, blank=True, help_text=_(u'(100 characters).')
-    )
-    iati_equivalent = ValidXMLCharField(
-        _(u'iati equivalent'), blank=True, max_length=100, help_text=_(u'(100 characters).')
-    )
+    name = ValidXMLCharField(_(u'name'), blank=True, max_length=1000)
+    value = ValidXMLCharField(_(u'value'), blank=True, max_length=1000)
+    iati_equivalent = ValidXMLCharField(_(u'iati equivalent'), blank=True, max_length=1000)
+
+    def __unicode__(self):
+        if self.name and self.value:
+            return u'{0}: {1}'.format(self.name, self.value)
+        elif self.value:
+            return self.value
+        else:
+            return u'%s' % _(u'No value specified')
 
     class Meta:
         app_label = 'rsr'
