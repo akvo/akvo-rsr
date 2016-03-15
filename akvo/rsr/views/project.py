@@ -122,9 +122,13 @@ def directory(request):
     )
 
     # Get all sector categories in a dict
-    iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
-    sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
-    sectors = Sector.objects.filter(version=iati_version_obj)
+    try:
+        iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
+        sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
+        sectors = Sector.objects.filter(version=iati_version_obj)
+    except (Version.MultipleObjectsReturned, Version.DoesNotExist):
+        sector_cats = []
+        sectors = []
 
     sectors_dict = {}
     for sector_cat in sector_cats:
