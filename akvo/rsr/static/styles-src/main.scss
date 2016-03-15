@@ -507,6 +507,9 @@ nav.navbar-fixed-top {
 }
 
 .navbar {
+    .active {
+        color: #2A6297;
+    }
     .container {
         /* nav menu overflows to two lines in spanish and french unless container width
         is increased slightly just above the threshold for switching to dropdown */
