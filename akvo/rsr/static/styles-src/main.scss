@@ -4400,3 +4400,18 @@ div#my-reports {
         }
     }
 }
+
+.iatiCheck {
+    span.noCheck {
+        color: $akvoBlack;
+    }
+    span.success {
+        color: $progressSuccess;
+    }
+    span.warning {
+        color: $flowOrange;
+    }
+    span.error {
+        color: $akvoTvRed;
+    }
+}

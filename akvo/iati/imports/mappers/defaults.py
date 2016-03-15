@@ -4,8 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.models.project import Project
-from ....rsr.models.project_condition import ProjectCondition
+from akvo.rsr.models.project import Project
+from akvo.rsr.models.project_condition import ProjectCondition
 
 from .. import ImportMapper, xml_ns
 
@@ -228,3 +228,19 @@ class Conditions(ImportMapper):
 
         changes += self.delete_objects(self.project.conditions, imported_conditions, 'condition')
         return changes
+
+
+class Humanitarian(ImportMapper):
+
+    def do_import(self):
+        """
+        Retrieve and store the humanitarian field.
+        The humanitarian field will be extracted from the 'humanitarian' attribute of the activity
+        root element.
+
+        :return: List; contains fields that have changed
+        """
+
+        humanitarian = self.get_attrib(self.parent_elem, 'humanitarian', 'humanitarian', None)
+        humanitarian = self.to_boolean(humanitarian)
+        return self.update_project_field('humanitarian', humanitarian)

@@ -17,10 +17,16 @@ from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldView
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
+from .humanitarian_scope import HumanitarianScopeViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
+from .indicator_period_dimension import (IndicatorPeriodActualDimensionViewSet,
+                                         IndicatorPeriodTargetDimensionViewSet)
+from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
+                                        IndicatorPeriodTargetLocationViewSet)
+from .indicator_reference import IndicatorReferenceViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
@@ -42,7 +48,7 @@ from .project_editor import (project_editor,
                              project_editor_remove_keyword,
                              project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
-from .project_document import ProjectDocumentViewSet
+from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
 from .project_iati_checks import ProjectIatiCheckView
@@ -87,13 +93,19 @@ __all__ = [
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
+    'HumanitarianScopeViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
+    'IndicatorPeriodActualDimensionViewSet',
+    'IndicatorPeriodActualLocationViewSet',
     'IndicatorPeriodViewSet',
     'IndicatorPeriodFrameworkViewSet',
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
     'IndicatorPeriodDataCommentViewSet',
+    'IndicatorPeriodTargetDimensionViewSet',
+    'IndicatorPeriodTargetLocationViewSet',
+    'IndicatorReferenceViewSet',
     'indicator_upload_file',
     'InternalOrganisationIDViewSet',
     'invite_user',
@@ -116,6 +128,7 @@ __all__ = [
     'ProjectContactViewSet',
     'ProjectCustomFieldViewSet',
     'ProjectDocumentViewSet',
+    'ProjectDocumentCategoryViewSet',
     'ProjectExtraViewSet',
     'ProjectIatiCheckView',
     'ProjectLocationViewSet',

@@ -234,9 +234,7 @@ def project_editor(request, project_id):
             'documents',
             'keywords',
         ).select_related(
-            'publishingstatus__status',
-            'primary_location',
-            'primary_location__country'
+            'publishingstatus__status'
         ).get(pk=project_id)
     except Project.DoesNotExist:
         return Http404
@@ -255,6 +253,7 @@ def project_editor(request, project_id):
     custom_fields_section_8 = project.custom_fields.filter(section=8).order_by('order', 'id')
     custom_fields_section_9 = project.custom_fields.filter(section=9).order_by('order', 'id')
     custom_fields_section_10 = project.custom_fields.filter(section=10).order_by('order', 'id')
+    custom_fields_section_11 = project.custom_fields.filter(section=11).order_by('order', 'id')
 
     # Validations / progress bars
     validations = ProjectEditorValidation.objects.select_related('validation_set')
@@ -284,6 +283,7 @@ def project_editor(request, project_id):
         'custom_fields_section_8': custom_fields_section_8,
         'custom_fields_section_9': custom_fields_section_9,
         'custom_fields_section_10': custom_fields_section_10,
+        'custom_fields_section_11': custom_fields_section_11,
     }
 
     return render(request, 'myrsr/project_editor/project_editor.html', context)

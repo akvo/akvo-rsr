@@ -364,7 +364,7 @@ class ProjectDocumentInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectDocument')
     fieldsets = (
         (None, {
-            'fields': ('url', 'document', 'title', 'format', 'category', 'language')
+            'fields': ('url', 'document', 'title', 'format', 'language')
         }),
     )
 
@@ -1197,7 +1197,7 @@ class IatiImportJobInline(admin.TabularInline):
 
 class IatiImportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IatiImport')
-    list_display = ('__unicode__', 'user', 'next_execution', 'running',)
+    list_display = ('__unicode__', 'user', 'next_execution', 'enabled', 'running',)
     readonly_fields = ('next_execution', 'running',)
     inlines = (IatiImportJobInline,)
 

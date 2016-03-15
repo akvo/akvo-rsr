@@ -51,6 +51,23 @@
                 </div>
                 {% include choice_input with obj=project field="currency" not_empty=True %}
                 {% include choice_input with obj=project field="language" %}
+                {% include boolean_input with obj=project field="humanitarian" nullboolean=True %}
+
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_humanitarianscope" }}">
+                    <h5>{% trans 'Humanitarian scope' %}</h5>
+                    <div class="humanitarian-scope-container">
+                        {% for scope in project.humanitarian_scopes.all %}
+                            {% include "myrsr/project_editor/related_objects/humanitarian_scope_input.html" %}
+                        {% empty %}
+                            {% include "myrsr/project_editor/related_objects/humanitarian_scope_input.html" with scope='HumanitarianScope.'|add:project_id_string %}
+                        {% endfor %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-humanitarian-scope"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another humanitarian scope' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_project.current_image" }}">
                     <h5>{% trans 'Project photo' %}</h5>

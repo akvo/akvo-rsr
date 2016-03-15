@@ -13,7 +13,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 from ....rsr.models.link import Link
-from ....rsr.models.project_document import ProjectDocument
+from ....rsr.models.project_document import ProjectDocument, ProjectDocumentCategory
 from .. import ImportMapper, akvo_ns, xml_ns
 
 VALID_IMAGE_EXTENSIONS = ['.gif', '.jpg', '.jpeg', '.png', '.tiff']
@@ -198,8 +198,13 @@ class Documents(ImportMapper):
                     title_language = self.get_child_elem_attrib(
                             title_element, 'narrative', xml_ns('lang'), 'title_language')
 
-            category = self.get_child_elem_attrib(doc_link, 'category', 'code', 'category')
             language = self.get_child_elem_attrib(doc_link, 'language', 'code', 'language')
+
+            document_date_element = doc_link.find("document-date")
+            if document_date_element is not None:
+                document_date = self.get_date(document_date_element, 'iso-date', 'document_date')
+            else:
+                document_date = None
 
             doc, created = ProjectDocument.objects.get_or_create(
                 project=self.project,
@@ -207,12 +212,52 @@ class Documents(ImportMapper):
                 format=format,
                 title=title,
                 title_language=title_language,
-                category=category,
-                language=language
+                language=language,
+                document_date=document_date
             )
             if created:
                 changes.append(u'added project document (id: {}): {}'.format(doc.pk, doc))
             imported_docs.append(doc)
 
+            # Process document categories
+            document_categories = DocumentCategories(self.iati_import_job, doc_link, self.project,
+                                                     self.globals, related_obj=doc)
+            for category_change in document_categories.do_import():
+                changes.append(category_change)
+
         changes += self.delete_objects(self.project.documents, imported_docs, 'project document')
+        return changes
+
+
+class DocumentCategories(ImportMapper):
+
+    def __init__(self, iati_import_job, parent_elem, project, globals, related_obj):
+        super(DocumentCategories, self).__init__(iati_import_job, parent_elem, project, globals,
+                                                 related_obj)
+        self.model = ProjectDocumentCategory
+
+    def do_import(self):
+        """
+        Retrieve and store the project document categories.
+        The document categories will be extracted from the 'category' elements within a
+        'document-link' element.
+        :return: List; contains fields that have changed
+        """
+        imported_categories = []
+        changes = []
+
+        for category_elem in self.parent_elem.findall('category'):
+            category = self.get_attrib(category_elem, 'code', 'category')
+
+            category_obj, created = ProjectDocumentCategory.objects.get_or_create(
+                document=self.related_obj,
+                category=category
+            )
+            if created:
+                changes.append(u'added document category (id: {}): {}'.format(
+                        category_obj.pk, category_obj))
+            imported_categories.append(category_obj)
+
+        changes += self.delete_objects(self.related_obj.categories, imported_categories,
+                                       'document category')
         return changes

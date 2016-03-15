@@ -32,12 +32,16 @@ from .employment import Employment
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
+from .humanitarian_scope import HumanitarianScope
 from .iati_activity_import import IatiActivityImport
 from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
+from .indicator import (Indicator, IndicatorPeriod, IndicatorPeriodData,
+                        IndicatorPeriodDataComment, IndicatorReference,
+                        IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension,
+                        IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation)
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
@@ -56,7 +60,7 @@ from .project import Project
 from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
-from .project_document import ProjectDocument
+from .project_document import ProjectDocument, ProjectDocumentCategory
 from .project_editor_validation import ProjectEditorValidation, ProjectEditorValidationSet
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
@@ -83,6 +87,7 @@ __all__ = [
     'Fss',
     'FssForecast',
     'Goal',
+    'HumanitarianScope',
     'IatiActivityImport',
     'IatiExport',
     'IatiImport',
@@ -91,8 +96,13 @@ __all__ = [
     'IatiImportLog',
     'Indicator',
     'IndicatorPeriod',
+    'IndicatorPeriodActualDimension',
+    'IndicatorPeriodActualLocation',
     'IndicatorPeriodData',
     'IndicatorPeriodDataComment',
+    'IndicatorPeriodTargetDimension',
+    'IndicatorPeriodTargetLocation',
+    'IndicatorReference',
     'Invoice',
     'InternalOrganisationID',
     'Keyword',
@@ -118,6 +128,7 @@ __all__ = [
     'ProjectContact',
     'ProjectCustomField',
     'ProjectDocument',
+    'ProjectDocumentCategory',
     'ProjectEditorValidation',
     'ProjectEditorValidationSet',
     'ProjectUpdate',

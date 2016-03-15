@@ -25,6 +25,7 @@ TYPE_TO_CODE = {
     'CG': '10'
 }
 
+
 class Transactions(ImportMapper):
 
     def __init__(self, iati_import_job, parent_elem, project, globals,
@@ -46,6 +47,8 @@ class Transactions(ImportMapper):
         for transaction in self.parent_elem.findall('transaction'):
 
             reference = self.get_attrib(transaction, 'ref', 'reference')
+
+            humanitarian = self.get_attrib(transaction, 'humanitarian', 'humanitarian', None)
 
             transaction_type = self.get_child_elem_attrib(
                     transaction, 'transaction-type', 'code', 'transaction_type')
@@ -105,13 +108,17 @@ class Transactions(ImportMapper):
                 recipient_region = self.get_attrib(region_element, 'code', 'recipient_region')
                 recipient_region_vocabulary = self.get_attrib(
                     region_element, 'vocabulary', 'recipient_region_vocabulary')
+                recipient_region_vocabulary_uri = self.get_attrib(
+                    region_element, 'vocabulary-uri', 'recipient_region_vocabulary_uri')
             else:
                 recipient_region = ''
                 recipient_region_vocabulary = ''
+                recipient_region_vocabulary_uri = ''
 
             transaction_obj, created = Transaction.objects.get_or_create(
                 project=self.project,
                 reference=reference,
+                humanitarian=humanitarian,
                 aid_type=aid_type,
                 description=description,
                 disbursement_channel=disbursement_channel,
@@ -129,7 +136,8 @@ class Transactions(ImportMapper):
                 receiver_organisation_activity=receiver_organisation_activity,
                 recipient_country=recipient_country,
                 recipient_region=recipient_region,
-                recipient_region_vocabulary=recipient_region_vocabulary
+                recipient_region_vocabulary=recipient_region_vocabulary,
+                recipient_region_vocabulary_uri=recipient_region_vocabulary_uri
             )
 
             # Disregard double transactions
@@ -174,13 +182,15 @@ class TransactionsSectors(ImportMapper):
 
             code = self.get_attrib(sector, 'code', 'code')
             vocabulary = self.get_attrib(sector, 'vocabulary', 'vocabulary')
+            vocabulary_uri = self.get_attrib(sector, 'vocabulary-uri', 'vocabulary_uri')
             text = self.get_element_text(sector, 'text')
 
             sector_obj, created = TransactionSector.objects.get_or_create(
                 transaction=self.related_obj,
                 code=code,
                 text=text,
-                vocabulary=vocabulary
+                vocabulary=vocabulary,
+                vocabulary_uri=vocabulary_uri
             )
             if created:
                 changes.append(u'added transaction sector (id: {}): {}'.format(
@@ -236,6 +246,8 @@ class BudgetItems(ImportMapper):
                     self.add_log('budget[@type]', 'budget_item_label', str(e),
                                  LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
 
+            budget_status = self.get_attrib(budget, 'status', 'status')
+
             akvo_budget_label = budget.attrib.get(akvo_ns('label'))
             if akvo_budget_label:
                 other_extra = akvo_budget_label
@@ -266,6 +278,7 @@ class BudgetItems(ImportMapper):
             budget_obj, created = BudgetItem.objects.get_or_create(
                 project=self.project,
                 type=budget_type,
+                status=budget_status,
                 period_start=period_start,
                 period_end=period_end,
                 amount=amount,
@@ -389,6 +402,28 @@ class PlannedDisbursements(ImportMapper):
                 value_date = None
                 currency = ''
 
+            prov_org_element = planned_disbursement.find('provider-org')
+            if prov_org_element is not None:
+                provider_org = self.get_or_create_organisation(
+                        prov_org_element.get('ref', ''), self.get_text(prov_org_element))
+                provider_org_activity = self.get_child_elem_attrib(
+                        planned_disbursement, 'provider-org', 'provider-activity-id',
+                        'provider_organisation_activity')
+            else:
+                provider_org = None
+                provider_org_activity = ''
+
+            rec_org_element = planned_disbursement.find('receiver-org')
+            if rec_org_element is not None:
+                receiver_org = self.get_or_create_organisation(
+                        rec_org_element.get('ref'), self.get_text(rec_org_element))
+                receiver_org_activity = self.get_child_elem_attrib(
+                        planned_disbursement, 'receiver-org', 'receiver-activity-id',
+                        'receiver_organisation_activity')
+            else:
+                receiver_org = None
+                receiver_org_activity = ''
+
             disbursement_obj, created = PlannedDisbursement.objects.get_or_create(
                 project=self.project,
                 value=value,
@@ -397,7 +432,11 @@ class PlannedDisbursements(ImportMapper):
                 updated=updated,
                 period_start=period_start,
                 period_end=period_end,
-                type=disbursement_type
+                type=disbursement_type,
+                provider_organisation=provider_org,
+                provider_organisation_activity=provider_org_activity,
+                receiver_organisation=receiver_org,
+                receiver_organisation_activity=receiver_org_activity
             )
             if created:
                 changes.append(u'added planned disbursement (id: {}): {}'.format(

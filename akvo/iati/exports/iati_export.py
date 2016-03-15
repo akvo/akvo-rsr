@@ -33,6 +33,7 @@ ELEMENTS = [
     'location',
     'sector',
     'country_budget_items',
+    'humanitarian_scope',
     'policy_marker',
     'collaboration_type',
     'default_flow_type',
@@ -82,7 +83,8 @@ class IatiXML(object):
         project_element = etree.SubElement(self.iati_activities, "iati-activity")
 
         if project.last_modified_at:
-            project_element.attrib['last-updated-datetime'] = project.last_modified_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+            project_element.attrib['last-updated-datetime'] = project.last_modified_at.\
+                strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if project.language:
             project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
@@ -93,12 +95,15 @@ class IatiXML(object):
         if project.hierarchy:
             project_element.attrib['hierarchy'] = str(project.hierarchy)
 
+        if project.humanitarian is not None:
+            project_element.attrib['humanitarian'] = '1' if project.humanitarian else '0'
+
         for element in ELEMENTS:
             tree_elements = getattr(elements, element)(project)
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-    def __init__(self, projects, version='2.01', excluded_elements=None):
+    def __init__(self, projects, version='2.02', excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-activities' etree Element as root.
 
@@ -108,9 +113,11 @@ class IatiXML(object):
         """
         self.projects, self.version, self.excluded_elements = projects, version, excluded_elements
 
-        self.iati_activities = etree.Element("iati-activities", nsmap={'akvo': 'http://akvo.org/iati-activities'})
+        self.iati_activities = etree.Element("iati-activities",
+                                             nsmap={'akvo': 'http://akvo.org/iati-activities'})
         self.iati_activities.attrib['version'] = self.version
-        self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.iati_activities.attrib['generated-datetime'] = datetime.utcnow().\
+            strftime("%Y-%m-%dT%H:%M:%SZ")
 
         for project in projects:
             self.add_project(project)

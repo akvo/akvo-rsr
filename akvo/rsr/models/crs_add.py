@@ -11,9 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod, Currency
-from akvo.codelists.store.codelists_v201 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
-                                                 LOAN_REPAYMENT_PERIOD, CURRENCY)
+from akvo.codelists.models import (CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod,
+                                   Currency, CRSChannelCode)
+from akvo.codelists.store.codelists_v202 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
+                                                 LOAN_REPAYMENT_PERIOD, CURRENCY,
+                                                 C_R_S_CHANNEL_CODE)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -23,41 +25,51 @@ class CrsAdd(models.Model):
     """
     project = models.OneToOneField('Project', primary_key=True)
     loan_terms_rate1 = models.DecimalField(
-        _(u'rate 1'), blank=True, null=True, max_digits=5, decimal_places=2,
+        _(u'loan terms rate 1'), blank=True, null=True, max_digits=5, decimal_places=2,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     loan_terms_rate2 = models.DecimalField(
-        _(u'rate 2'), blank=True, null=True, max_digits=5, decimal_places=2,
+        _(u'loan terms rate 2'), blank=True, null=True, max_digits=5, decimal_places=2,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     repayment_type = ValidXMLCharField(
-        _(u'repayment type'), max_length=1, choices=codelist_choices(LOAN_REPAYMENT_TYPE)
+        _(u'loan terms repayment type'), max_length=1,
+        choices=codelist_choices(LOAN_REPAYMENT_TYPE), blank=True
     )
     repayment_plan = ValidXMLCharField(
-        _(u'repayment plan'), max_length=2, choices=codelist_choices(LOAN_REPAYMENT_PERIOD)
+        _(u'loan terms repayment plan'), max_length=2,
+        choices=codelist_choices(LOAN_REPAYMENT_PERIOD), blank=True
     )
-    commitment_date = models.DateField(_(u'commitment date'), null=True, blank=True)
-    repayment_first_date = models.DateField(_(u'first repayment date'), null=True, blank=True)
-    repayment_final_date = models.DateField(_(u'final repayment date'), null=True, blank=True)
+    commitment_date = models.DateField(_(u'loan terms commitment date'), null=True, blank=True)
+    repayment_first_date = models.DateField(_(u'loan terms first repayment date'), null=True,
+                                            blank=True)
+    repayment_final_date = models.DateField(_(u'loan terms final repayment date'), null=True,
+                                            blank=True)
     loan_status_year = models.PositiveIntegerField(
         _(u'loan status year'), blank=True, null=True, max_length=4
     )
     loan_status_currency = ValidXMLCharField(
-        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
+        _(u'loan status currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
     loan_status_value_date = models.DateField(_(u'loan status value date'), blank=True, null=True)
     interest_received = models.DecimalField(
-        _(u'interest received'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status interest received'), max_digits=10, decimal_places=2, blank=True, null=True
     )
     principal_outstanding = models.DecimalField(
-        _(u'principal outstanding'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status principal outstanding'), max_digits=10, decimal_places=2, blank=True,
+        null=True
     )
     principal_arrears = models.DecimalField(
-        _(u'principal arrears'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status principal arrears'), max_digits=10, decimal_places=2, blank=True, null=True
     )
     interest_arrears = models.DecimalField(
-        _(u'interest arrears'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status interest arrears'), max_digits=10, decimal_places=2, blank=True, null=True
     )
+    channel_code = ValidXMLCharField(
+        _(u'channel code'), blank=True, max_length=5, choices=codelist_choices(C_R_S_CHANNEL_CODE))
+
+    def __unicode__(self):
+        return u'CRS++'
 
     def iati_repayment_type(self):
         return codelist_value(LoanRepaymentType, self, 'repayment_type')
@@ -67,6 +79,9 @@ class CrsAdd(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')
+
+    def iati_channel_code(self):
+        return codelist_value(CRSChannelCode, self, 'channel_code')
 
     class Meta:
         app_label = 'rsr'
@@ -83,6 +98,15 @@ class CrsAddOtherFlag(models.Model):
         _(u'code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS)
     )
     significance = models.NullBooleanField(_(u'significance'), blank=True)
+
+    def __unicode__(self):
+        if self.code:
+            try:
+                return self.iati_code().name
+            except AttributeError:
+                return self.iati_code()
+        else:
+            return u'%s' % _(u'No other flag code specified')
 
     def iati_code(self):
         return codelist_value(CRSAddOtherFlags, self, 'code')
