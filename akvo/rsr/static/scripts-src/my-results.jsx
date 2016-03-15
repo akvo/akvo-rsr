@@ -9,6 +9,7 @@ var csrftoken,
     endpoints,
     i18n,
     isAdmin,
+    isPublic,
     months,
     permissions,
     projectIds,
@@ -587,6 +588,12 @@ function initReact() {
         renderComments: function() {
             var comments;
 
+            if (isPublic) {
+                return (
+                    <span />
+                );
+            }
+
             if (this.props.update.comments !== undefined) {
                 comments = this.props.update.comments.map(function(comment) {
                     return (
@@ -629,7 +636,7 @@ function initReact() {
         },
 
         renderFooter: function() {
-            if (this.props.selectedPeriod.locked) {
+            if (this.props.selectedPeriod.locked || isPublic) {
                 return (
                     <span />
                 );
@@ -839,6 +846,12 @@ function initReact() {
         },
 
         renderNewUpdate: function() {
+            if (isPublic) {
+                return (
+                    <div className="new-update"></div>
+                );
+            }
+
             if (this.props.addingNewUpdate) {
                 return (
                     <div className="new-update">
@@ -1061,7 +1074,22 @@ function initReact() {
         renderActions: function() {
             var projectId;
 
-            if (isAdmin) {
+            if (isPublic) {
+                switch(this.props.period.locked) {
+                    case false:
+                        return (
+                            <td className="actions-td">
+                                <i className="fa fa-unlock" /> {i18n.period_unlocked}
+                            </td>
+                        );
+                    default:
+                        return (
+                            <td className="actions-td">
+                                <i className="fa fa-lock" /> {i18n.period_locked}
+                            </td>
+                        );
+                }
+            } else if (isAdmin) {
                 switch(this.props.period.locked) {
                     case false:
                         if (this.props.parent || this.props.child) {
@@ -2169,6 +2197,8 @@ function loadAndRenderReact() {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
+    isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
+    console.log('isPublic: ' + isPublic);
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);

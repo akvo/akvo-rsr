@@ -87,6 +87,13 @@
     {###### RESULTS FRAMEWORK ######}
     {% if project.is_impact_project and project.results.all %}
 
+        {# Settings #}
+        <script type="application/json" id="settings">
+            {
+                "public": true
+            }
+        </script>
+
         {#  Initial data endpoints #}
         <script type="application/json" id="data-endpoints">
             {
@@ -151,6 +158,7 @@
                 "lock_period": "{% trans 'Lock period' %}",
                 "unlock_period": "{% trans 'Unlock period' %}",
                 "period_locked": "{% trans 'Period locked' %}",
+                "period_unlocked": "{% trans 'Period unlocked' %}",
                 "parent_project": "{% trans 'Parent project' %}",
                 "child_project": "{% trans 'Child project' %}",
                 "request_update": "{% trans 'Request update' %}",
