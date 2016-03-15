@@ -16,7 +16,7 @@
                         <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
                         {% if project.partners.all %}<li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>{% endif %}
                         <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
-                        {% if project.is_impact_project and project.results.all %}<a href="#results" class="tab-link">{% trans 'Results' %}</a>{% endif %}
+                        {% if project.is_impact_project and project.results.all %}<li><a href="#results" class="tab-link">{% trans 'Results' %}</a></li>{% endif %}
                         {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
                       </ul>
                     </nav>
