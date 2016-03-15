@@ -395,7 +395,8 @@ function initReact() {
         },
 
         renderHeader: function() {
-            var headerLeft;
+            var headerLeft,
+                headerRight;
 
             if (this.editing()) {
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -425,12 +426,18 @@ function initReact() {
                 );
             }
 
+            if (isPublic) {
+                headerRight = React.DOM.span(null );
+            } else {
+                headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
+                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
+                );
+            }
+
             return (
                 React.DOM.div( {className:"row update-entry-container-header"}, 
                     headerLeft,
-                    React.DOM.div( {className:"col-xs-3 text-right"}, 
-                        React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
-                    )
+                    headerRight
                 )
             );
         },
@@ -773,6 +780,16 @@ function initReact() {
                     return 0;
                 }
             }
+            if (isPublic) {
+                var approvedUpdates = [];
+                for (var i = 0; i < this.props.selectedPeriod.data.length; i++) {
+                    var thisData = this.props.selectedPeriod.data[i];
+                    if (thisData.status === 'A') {
+                        approvedUpdates.push(thisData);
+                    }
+                }
+                return approvedUpdates.sort(compare);
+            }
             return this.props.selectedPeriod.data.sort(compare);
         },
 
@@ -1031,19 +1048,39 @@ function initReact() {
             this.props.selectPeriod(periodId);
         },
 
+        getPeriodData: function() {
+            if (this.props.period.data === undefined) {
+                return undefined;
+            } else if (isPublic) {
+                // In the public view, we only show approved updates.
+                var approvedData = [];
+                for (var i = 0; i < this.props.period.data.length; i++) {
+                    var thisData = this.props.period.data[i];
+                    if (thisData.status === 'A') {
+                        approvedData.push(thisData);
+                    }
+                }
+                return approvedData;
+            } else {
+                // In the 'MyRSR' view, we show all updates.
+                return this.props.period.data;
+            }
+
+        },
+
         renderPeriodDisplay: function() {
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
-            var pendingUpdates = nrPendingUpdates > 0 ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
+            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
             var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.number_of_pending_updates)) : React.DOM.span(null );
 
-            if (this.props.period.data === undefined) {
+            if (this.getPeriodData() === undefined) {
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay, " ", React.DOM.i( {className:"fa fa-spin fa-spinner"} )
                     )
                 );
-            } else if (this.props.period.data.length === 0) {
+            } else if (this.getPeriodData().length === 0) {
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay

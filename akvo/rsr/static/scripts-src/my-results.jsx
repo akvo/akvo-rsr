@@ -395,7 +395,8 @@ function initReact() {
         },
 
         renderHeader: function() {
-            var headerLeft;
+            var headerLeft,
+                headerRight;
 
             if (this.editing()) {
                 headerLeft = <div className="col-xs-9">
@@ -425,12 +426,18 @@ function initReact() {
                 </div>;
             }
 
+            if (isPublic) {
+                headerRight = <span />;
+            } else {
+                headerRight = <div className="col-xs-3 text-right">
+                    <span className="update-status"> {this.props.update.status_display}</span>
+                </div>;
+            }
+
             return (
                 <div className="row update-entry-container-header">
                     {headerLeft}
-                    <div className="col-xs-3 text-right">
-                        <span className="update-status"> {this.props.update.status_display}</span>
-                    </div>
+                    {headerRight}
                 </div>
             );
         },
@@ -773,6 +780,16 @@ function initReact() {
                     return 0;
                 }
             }
+            if (isPublic) {
+                var approvedUpdates = [];
+                for (var i = 0; i < this.props.selectedPeriod.data.length; i++) {
+                    var thisData = this.props.selectedPeriod.data[i];
+                    if (thisData.status === 'A') {
+                        approvedUpdates.push(thisData);
+                    }
+                }
+                return approvedUpdates.sort(compare);
+            }
             return this.props.selectedPeriod.data.sort(compare);
         },
 
@@ -1031,19 +1048,39 @@ function initReact() {
             this.props.selectPeriod(periodId);
         },
 
+        getPeriodData: function() {
+            if (this.props.period.data === undefined) {
+                return undefined;
+            } else if (isPublic) {
+                // In the public view, we only show approved updates.
+                var approvedData = [];
+                for (var i = 0; i < this.props.period.data.length; i++) {
+                    var thisData = this.props.period.data[i];
+                    if (thisData.status === 'A') {
+                        approvedData.push(thisData);
+                    }
+                }
+                return approvedData;
+            } else {
+                // In the 'MyRSR' view, we show all updates.
+                return this.props.period.data;
+            }
+
+        },
+
         renderPeriodDisplay: function() {
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
-            var pendingUpdates = nrPendingUpdates > 0 ? <span className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>{nrPendingUpdates}</span> : <span />;
+            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? <span className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>{nrPendingUpdates}</span> : <span />;
             var hover = this.state.hover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.number_of_pending_updates}</div></div> : <span />;
 
-            if (this.props.period.data === undefined) {
+            if (this.getPeriodData() === undefined) {
                 return (
                     <td className="period-td">
                         {periodDisplay} <i className="fa fa-spin fa-spinner" />
                     </td>
                 );
-            } else if (this.props.period.data.length === 0) {
+            } else if (this.getPeriodData().length === 0) {
                 return (
                     <td className="period-td">
                         {periodDisplay}
