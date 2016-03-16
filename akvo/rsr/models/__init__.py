@@ -51,6 +51,13 @@ from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocat
                        AdministrativeLocation)
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
+from .organisation_budget import (OrganisationCountryBudget, OrganisationRegionBudget,
+                                  OrganisationRecipientOrgBudget, OrganisationTotalBudget,
+                                  OrganisationTotalExpenditure, OrganisationCountryBudgetLine,
+                                  OrganisationExpenseLine, OrganisationRecipientOrgBudgetLine,
+                                  OrganisationRegionBudgetLine, OrganisationTotalBudgetLine)
+from .organisation_document import (OrganisationDocument, OrganisationDocumentCategory,
+                                    OrganisationDocumentCountry)
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
@@ -72,6 +79,7 @@ from .transaction import Transaction, TransactionSector
 from .user import User
 
 __all__ = [
+    'AdministrativeLocation',
     'Benchmark',
     'Benchmarkname',
     'BudgetItem',
@@ -108,13 +116,25 @@ __all__ = [
     'Keyword',
     'LegacyData',
     'Link',
-    'OrganisationLocation',
     'ProjectLocation',
-    'AdministrativeLocation',
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCountryBudget',
+    'OrganisationCountryBudgetLine',
     'OrganisationCustomField',
+    'OrganisationDocument',
+    'OrganisationDocumentCategory',
+    'OrganisationDocumentCountry',
+    'OrganisationExpenseLine',
+    'OrganisationLocation',
+    'OrganisationRecipientOrgBudget',
+    'OrganisationRecipientOrgBudgetLine',
+    'OrganisationRegionBudget',
+    'OrganisationRegionBudgetLine',
+    'OrganisationTotalBudget',
+    'OrganisationTotalBudgetLine',
+    'OrganisationTotalExpenditure',
     'PartnerSite',
     'Partnership',
     'PayPalGateway',
