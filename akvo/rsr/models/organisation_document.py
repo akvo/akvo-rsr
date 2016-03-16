@@ -17,7 +17,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 def document_path(self, filename):
-    return 'db/organisation/%s/document/%s' % (str(self.organisation.pk), filename)
+    return 'db/org/%s/document/%s' % (str(self.organisation.pk), filename)
 
 
 class OrganisationDocument(models.Model):

@@ -236,7 +236,8 @@ class OrganisationRecipientOrgBudgetLine(LineBasic):
 
 class OrganisationRegionBudgetLine(LineBasic):
     budget = models.ForeignKey(
-        OrganisationRegionBudget, verbose_name=_(u'organisation budget'), related_name='budget_lines'
+        OrganisationRegionBudget, verbose_name=_(u'organisation budget'),
+        related_name='budget_lines'
     )
 
     class Meta:
