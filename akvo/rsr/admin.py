@@ -35,7 +35,8 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
-from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
+from nested_inlines.admin import (BaseNestedModelForm, NestedModelAdmin, NestedStackedInline,
+                                  NestedTabularInline)
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -54,7 +55,7 @@ class CountryAdmin(admin.ModelAdmin):
         return u'name', u'continent', u'continent_code'
 
 
-class OrganisationLocationInline(admin.StackedInline):
+class OrganisationLocationInline(NestedStackedInline):
     model = get_model('rsr', 'organisationlocation')
     fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
               'country')
@@ -66,8 +67,148 @@ class OrganisationLocationInline(admin.StackedInline):
             return 1
 
 
-class OrganisationCustomFieldInline(admin.StackedInline):
+class OrganisationTotalBudgetLineInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationtotalbudgetline')
+    inlines = ()
+    fields = ('currency', 'value', 'value_date', 'reference', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationTotalBudgetInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationtotalbudget')
+    inlines = (OrganisationTotalBudgetLineInline,)
+    fields = ('currency', 'value', 'value_date', 'period_start', 'period_end', 'status')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.total_budgets.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationRecipientOrgBudgetLineInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationrecipientorgbudgetline')
+    inlines = ()
+    fields = ('currency', 'value', 'value_date', 'reference', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationRecipientOrgBudgetInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationrecipientorgbudget')
+    inlines = (OrganisationRecipientOrgBudgetLineInline, )
+    fields = ('recipient_organisation', 'currency', 'value', 'value_date', 'period_start',
+              'period_end', 'status')
+    fk_name = 'organisation'
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.recipient_org_budgets.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationRegionBudgetLineInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationregionbudgetline')
+    inlines = ()
+    fields = ('currency', 'value', 'value_date', 'reference', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationRegionBudgetInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationregionbudget')
+    inlines = (OrganisationRegionBudgetLineInline, )
+    fields = ('region', 'region_vocabulary', 'region_vocabulary_uri', 'text', 'currency', 'value',
+              'value_date', 'period_start', 'period_end', 'status')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.recipient_region_budgets.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationCountryBudgetLineInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationcountrybudgetline')
+    inlines = ()
+    fields = ('currency', 'value', 'value_date', 'reference', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationCountryBudgetInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationcountrybudget')
+    inlines = (OrganisationCountryBudgetLineInline, )
+    fields = ('country', 'text', 'currency', 'value', 'value_date', 'period_start', 'period_end',
+              'status')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.recipient_country_budgets.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationTotalExpenditureLineInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationexpenseline')
+    inlines = ()
+    fields = ('currency', 'value', 'value_date', 'reference', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationTotalExpenditureInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationtotalexpenditure')
+    inlines = (OrganisationTotalExpenditureLineInline, )
+    fields = ('currency', 'value', 'value_date', 'period_start', 'period_end')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.total_expenditures.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationDocumentCategoryInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationdocumentcategory')
+    inlines = ()
+    fields = ('category', )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationDocumentCountryInline(NestedTabularInline):
+    model = get_model('rsr', 'organisationdocumentcountry')
+    inlines = ()
+    fields = ('country', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
+
+class OrganisationDocumentInline(NestedStackedInline):
+    model = get_model('rsr', 'organisationdocument')
+    inlines = (OrganisationDocumentCategoryInline, OrganisationDocumentCountryInline)
+    fields = ('url', 'document', 'format', 'title', 'title_language', 'language', 'document_date')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.documents.count() == 0 else 0
+        else:
+            return 1
+
+
+class OrganisationCustomFieldInline(NestedTabularInline):
     model = get_model('rsr', 'organisationcustomfield')
+    inlines = ()
     fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text')
 
     def get_extra(self, request, obj=None, **kwargs):
@@ -84,12 +225,12 @@ class InternalOrganisationIDAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
-class OrganisationAdminForm(forms.ModelForm):
+class OrganisationAdminForm(BaseNestedModelForm):
     def clean_iati_org_id(self):
         return self.cleaned_data['iati_org_id'] or None
 
 
-class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin):
+class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
 
     """OrganisationAdmin.
 
@@ -98,20 +239,22 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     """
 
     fieldsets = (
-        (_(u'General information'), {'fields': (
-            'name', 'long_name', 'organisation_type', 'new_organisation_type',
-            'can_create_projects', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
-            'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
+        (_(u'General information'),
+            {'fields': ('name', 'long_name', 'iati_org_id', 'description', 'new_organisation_type',
+                        'logo', 'language', 'currency')}),
         (_(u'Contact information'),
-            {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
+            {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
+                        'contact_person', 'contact_email', )}),
+        (_(u'Organisation settings'),
+            {'fields': ('can_create_projects', 'public_iati_file', 'allow_edit', 'content_owner')}),
+        (_(u'Notes'), {'fields': ('notes', )}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline, OrganisationCustomFieldInline)
+    inlines = (OrganisationLocationInline, OrganisationTotalBudgetInline,
+               OrganisationRecipientOrgBudgetInline, OrganisationRegionBudgetInline,
+               OrganisationCountryBudgetInline, OrganisationTotalExpenditureInline,
+               OrganisationDocumentInline, OrganisationCustomFieldInline)
     exclude = ('internal_org_ids',)
-    # note that readonly_fields is changed by get_readonly_fields()
-    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    # readonly_fields = ('created_at', 'last_modified_at',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
 
