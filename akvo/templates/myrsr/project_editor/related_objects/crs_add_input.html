@@ -5,14 +5,6 @@
     <div class="hide-partial {% if crs.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-6">
-                {% include percentage_input with obj=crs field='loan_terms_rate1' %}
-            </div>
-            <div class="col-md-6">
-                {% include percentage_input with obj=crs field='loan_terms_rate2' %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
                 {% include choice_input with obj=crs field='repayment_type' %}
             </div>
             <div class="col-md-6">
@@ -28,6 +20,14 @@
             </div>
             <div class="col-md-4">
                 {% include date_input with obj=crs field='repayment_final_date' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include percentage_input with obj=crs field='loan_terms_rate1' %}
+            </div>
+            <div class="col-md-6">
+                {% include percentage_input with obj=crs field='loan_terms_rate2' %}
             </div>
         </div>
         <div class="row">
