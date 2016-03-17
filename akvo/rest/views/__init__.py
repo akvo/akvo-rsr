@@ -33,6 +33,16 @@ from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .organisation import OrganisationViewSet
+from .organisation_budget import (OrganisationTotalBudgetViewSet,
+                                  OrganisationTotalBudgetLineViewSet,
+                                  OrganisationRecipientOrgBudgetViewSet,
+                                  OrganisationRecipientOrgBudgetLineViewSet,
+                                  OrganisationRegionBudgetViewSet,
+                                  OrganisationRegionBudgetLineViewSet,
+                                  OrganisationCountryBudgetViewSet,
+                                  OrganisationCountryBudgetLineViewSet,
+                                  OrganisationTotalExpenditureViewSet,
+                                  OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet
@@ -118,7 +128,17 @@ __all__ = [
     'MapProjectUpdateLocationViewSet',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
+    'OrganisationCountryBudgetViewSet',
+    'OrganisationCountryBudgetLineViewSet',
     'OrganisationCustomFieldViewSet',
+    'OrganisationExpenseLineViewSet',
+    'OrganisationRecipientOrgBudgetViewSet',
+    'OrganisationRecipientOrgBudgetLineViewSet',
+    'OrganisationRegionBudgetViewSet',
+    'OrganisationRegionBudgetLineViewSet',
+    'OrganisationTotalBudgetViewSet',
+    'OrganisationTotalBudgetLineViewSet',
+    'OrganisationTotalExpenditureViewSet',
     'PartnershipViewSet',
     'PartnerSiteViewSet',
     'PlannedDisbursementViewSet',

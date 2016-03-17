@@ -17,7 +17,7 @@ from akvo.utils import codelist_choices, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
-from akvo.codelists.store.codelists_v202 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
 
 from .country import Country
 from .partner_site import PartnerSite
@@ -70,7 +70,7 @@ class Organisation(TimestampsMixin, models.Model):
     def org_type_from_iati_type(cls, iati_type):
         """ utility that maps the IATI organisation types to the old Akvo organisation types
         """
-        types = dict(zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
+        types = dict(zip([int(type) for type, name in ORGANISATION_TYPE[1:]],
             cls.NEW_TO_OLD_TYPES
         ))
         return types[iati_type]
@@ -92,9 +92,14 @@ class Organisation(TimestampsMixin, models.Model):
         _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES, blank=True,
         null=True
     )
+    currency = ValidXMLCharField(
+        _(u'currency'), choices=codelist_choices(CURRENCY), max_length=3, default='EUR',
+        help_text=_(u'The default currency for this organisation. Used in all financial '
+                    u'aspects of the organisation.')
+    )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,
-        choices=[(int(c[0]), c[1]) for c in codelist_choices(IATI_LIST_ORGANISATION_TYPE)],
+        choices=[(int(c[0]), c[1]) for c in codelist_choices(ORGANISATION_TYPE)],
         default=22, help_text=_(u'Check that this field is set to an organisation type that '
                                 u'matches your organisation.'),
     )
@@ -329,7 +334,7 @@ class Organisation(TimestampsMixin, models.Model):
         return self.name
 
     def iati_org_type(self):
-        return dict(IATI_LIST_ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
+        return dict(ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
             self.new_organisation_type else ""
 
     def partnersites(self):

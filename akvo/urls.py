@@ -179,6 +179,10 @@ urlpatterns += patterns(
     url(r'^project/(?P<project_id>\d+)/iati/$',
         'akvo.rsr.views.project.iati', name='project-iati'),
 
+    # IATI organisation file
+    url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
+        'akvo.rsr.views.organisation.iati_org', name='org-iati'),
+
     # TastyPie API
     (r'^api/', include(named_api('v1').urls)),
 

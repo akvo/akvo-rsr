@@ -204,8 +204,9 @@ class IndicatorReference(models.Model):
         _(u'reference code'), blank=True, max_length=25,
         help_text=_(u'A code for an indicator defined in the specified vocabulary specified. '
                     u'For more information on the indicator reference, see the '
-                    u'<a href="http://iatistandard.org/202/codelists/IndicatorVocabulary/" '
-                    u'target="_blank">IATI codelist</a>.'))
+                    u'<a href="http://iatistandard.org/202/activity-standard/iati-activities/'
+                    u'iati-activity/result/indicator/reference/" target="_blank">IATI '
+                    u'codelist</a>.'))
     vocabulary = ValidXMLCharField(
         _(u'reference vocabulary'), blank=True, max_length=2,
         choices=codelist_choices(INDICATOR_VOCABULARY),
