@@ -54,6 +54,7 @@
     {# Default values #}
     <script type="application/json" id="default-values">
         {
+            "project_id": {{ project.pk }},
             "show_partners_tab": {% if project.partners.all %}true{% else %}false{% endif %},
             "show_updates_tab": {% if updates %}true{% else %}false{% endif %},
             "show_results_tab": {% if project.results.all %}true{% else %}false{% endif %}
@@ -210,11 +211,21 @@
         }
     </script>
 
+    {# Partner tab translations #}
+    <script type="application/json" id="partner-translations">
+        {
+            "loading": "{% trans 'Loading' %}",
+            "roles": "{% trans 'Roles' %}",
+            "partners": "{% trans 'partners' %}"
+        }
+    </script>
+
     {# Slider library #}
     <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
     {% compressed_js 'project_main' %}
+    {% compressed_js 'project_main_partners' %}
     {% compressed_js 'more_partners' %}
 
     {% if project.results.all %}

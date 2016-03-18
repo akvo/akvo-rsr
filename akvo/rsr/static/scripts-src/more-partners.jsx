@@ -28,11 +28,6 @@ csrftoken = getCookie('csrftoken');
 function loadMorePartners() {
     var MorePartnersToolTip = React.createClass({
         render: function() {
-            var tooltipStyle = {
-                // TODO: Correct positioning of height
-
-            };
-
             var partnershipsArray = [];
             for (var orgId in this.props.partnerships) {
                 if(this.props.partnerships.hasOwnProperty(orgId)) {
@@ -73,7 +68,7 @@ function loadMorePartners() {
             });
 
             return (
-                <div className="tooltip right in" style={tooltipStyle}>
+                <div className="tooltip right in">
                     <div className="tooltip-arrow"></div>
                     <div className="tooltip-inner">
                         {organisations}

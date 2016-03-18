@@ -28,11 +28,6 @@ csrftoken = getCookie('csrftoken');
 function loadMorePartners() {
     var MorePartnersToolTip = React.createClass({displayName: 'MorePartnersToolTip',
         render: function() {
-            var tooltipStyle = {
-                // TODO: Correct positioning of height
-                display: 'inline-block'
-            };
-
             var partnershipsArray = [];
             for (var orgId in this.props.partnerships) {
                 if(this.props.partnerships.hasOwnProperty(orgId)) {
@@ -73,7 +68,7 @@ function loadMorePartners() {
             });
 
             return (
-                React.DOM.div( {className:"tooltip right in", style:tooltipStyle}, 
+                React.DOM.div( {className:"tooltip right in"}, 
                     React.DOM.div( {className:"tooltip-arrow"}),
                     React.DOM.div( {className:"tooltip-inner"}, 
                         organisations

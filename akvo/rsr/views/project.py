@@ -248,13 +248,6 @@ def _get_hierarchy_grid(project):
     return grid
 
 
-def _get_partners_with_types(project):
-    partners_dict = {}
-    for partner in project.partners.all():
-        partners_dict[partner] = partner.has_partner_types(project)
-    return collections.OrderedDict(sorted(partners_dict.items()))
-
-
 def main(request, project_id):
     """
     The main project page, consisting of 6 tabs:
@@ -290,7 +283,6 @@ def main(request, project_id):
         'sustainability': project.sustainability,
         'goals_overview': project.goals_overview
     })
-    partner_types = _get_partners_with_types(project)
 
     context = {
         'accordion_data': accordion_data,
@@ -299,7 +291,6 @@ def main(request, project_id):
         'page': page,
         'page_range': page_range,
         'paginator': paginator,
-        'partners': partner_types,
         'pledged': project.get_pledged(),
         'project': project,
         'updates': updates[:5] if updates else None,
