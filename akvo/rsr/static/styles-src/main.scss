@@ -94,15 +94,18 @@ em {
     font-style: italic;
 }
 
-a.moreLink {
-    margin-left: 5px;
-    padding: 3px 5px;
-    background: rgba($anchorLink, 0.2);
-    @include border-radius(4px);
-    font-weight: bold;
-    &:hover {
-        background: rgba($anchorLinkHover, 0.8);
-        color: white;
+div.morePartners {
+    display: inline-block;
+    a.moreLink {
+        margin-left: 5px;
+        padding: 3px 5px;
+        background: rgba($anchorLink, 0.2);
+        @include border-radius(4px);
+        font-weight: bold;
+        &:hover {
+            background: rgba($anchorLinkHover, 0.8);
+            color: white;
+        }
     }
 }
 
@@ -1769,7 +1772,7 @@ div.textBlock {
             }
         }
     }
-    .udpateComponent {
+    .updateComponent {
         padding-top: 10px;
         padding-bottom: 15px;
         background: transparent;
@@ -1853,7 +1856,7 @@ div.textBlock {
     margin-top: 25px;
 }
 
-.udpateComponent {
+.updateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
     background: lighten($veryLightOrange, 25%);

@@ -50,7 +50,7 @@ from .organisation_document import (OrganisationDocumentCategorySerializer,
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
-from .partnership import PartnershipSerializer
+from .partnership import PartnershipSerializer, PartnershipBasicSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
 from .project import ProjectSerializer, ProjectExtraSerializer, ProjectUpSerializer
@@ -129,6 +129,7 @@ __all__ = [
     'OrganisationTotalBudgetLineSerializer',
     'OrganisationTotalExpenditureSerializer',
     'PartnershipSerializer',
+    'PartnershipBasicSerializer',
     'PartnerSiteSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',

@@ -45,7 +45,7 @@ from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
-from .partnership import PartnershipViewSet
+from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
@@ -140,6 +140,7 @@ __all__ = [
     'OrganisationTotalBudgetLineViewSet',
     'OrganisationTotalExpenditureViewSet',
     'PartnershipViewSet',
+    'PartnershipMoreLinkViewSet',
     'PartnerSiteViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',

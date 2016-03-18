@@ -56,6 +56,7 @@ router.register(r'organisation_total_budget_line', views.OrganisationTotalBudget
 router.register(r'organisation_total_expenditure', views.OrganisationTotalExpenditureViewSet)
 router.register(r'partner_site', views.PartnerSiteViewSet)
 router.register(r'partnership', views.PartnershipViewSet)
+router.register(r'partnership_more_link', views.PartnershipMoreLinkViewSet)
 router.register(r'planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'policy_marker', views.PolicyMarkerViewSet)
 router.register(r'project', views.ProjectViewSet)

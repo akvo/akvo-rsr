@@ -102,18 +102,20 @@ em {
   margin: 0 5px 0em 0em;
   font-style: italic; }
 
-a.moreLink {
-  margin-left: 5px;
-  padding: 3px 5px;
-  background: rgba(0, 170, 255, 0.2);
-  -moz-border-radius: 4px;
-  -o-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  font-weight: bold; }
-  a.moreLink:hover {
-    background: rgba(255, 85, 0, 0.8);
-    color: white; }
+div.morePartners {
+  display: inline-block; }
+  div.morePartners a.moreLink {
+    margin-left: 5px;
+    padding: 3px 5px;
+    background: rgba(0, 170, 255, 0.2);
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    font-weight: bold; }
+    div.morePartners a.moreLink:hover {
+      background: rgba(255, 85, 0, 0.8);
+      color: white; }
 
 ::-moz-selection {
   background: #72cdff;
@@ -1405,20 +1407,20 @@ div.textBlock {
           color: #ff5500; }
     div.textBlock .panel .panel-collapse .panel-body {
       background: rgba(44, 42, 116, 0); }
-  div.textBlock .udpateComponent {
+  div.textBlock .updateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
     background: transparent; }
-    div.textBlock .udpateComponent h4 {
+    div.textBlock .updateComponent h4 {
       margin-bottom: 10px; }
-    div.textBlock .udpateComponent .updateLinkTitle {
+    div.textBlock .updateComponent .updateLinkTitle {
       display: block;
       color: #00a79d;
       margin-bottom: 5px;
       margin-left: 10px; }
-      div.textBlock .udpateComponent .updateLinkTitle i {
+      div.textBlock .updateComponent .updateLinkTitle i {
         margin-right: 5px; }
-      div.textBlock .udpateComponent .updateLinkTitle:hover {
+      div.textBlock .updateComponent .updateLinkTitle:hover {
         color: #ff5500; }
 
 .accordionContainer {
@@ -1463,21 +1465,21 @@ div.textBlock {
 .allUpdates {
   margin-top: 25px; }
 
-.udpateComponent {
+.updateComponent {
   padding-top: 10px;
   padding-bottom: 15px;
   background: #fff6f1; }
-  .udpateComponent h4 {
+  .updateComponent h4 {
     margin-bottom: 10px; }
-  .udpateComponent .updateLinkTitle {
+  .updateComponent .updateLinkTitle {
     display: block;
     color: #00a79d;
     margin-bottom: 5px; }
-    .udpateComponent .updateLinkTitle i {
+    .updateComponent .updateLinkTitle i {
       margin-right: 5px; }
-    .udpateComponent .updateLinkTitle:hover {
+    .updateComponent .updateLinkTitle:hover {
       color: #ff5500; }
-  .udpateComponent .updateLine {
+  .updateComponent .updateLine {
     margin-bottom: 5px; }
 
 #project-footer {

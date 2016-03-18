@@ -8,7 +8,7 @@
 var csrftoken,
     endpoints,
     i18n,
-    isAdmin,
+    isAdmin = false,
     isPublic,
     months,
     permissions,
@@ -159,8 +159,6 @@ function setPermissions() {
 
 function userIsAdmin() {
     // Check if the user is an M&E manager, resulting in different actions than other users.
-    isAdmin = false;
-
     var adminOrgIds = [],
         partnerships;
 
@@ -2235,14 +2233,15 @@ function loadAndRenderReact() {
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
     isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
-    console.log('isPublic: ' + isPublic);
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
-    getUserData();
-    setPermissions();
+    if (!isPublic) {
+        getUserData();
+        setPermissions();
+    }
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {

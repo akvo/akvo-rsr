@@ -4,21 +4,21 @@
 {% block title %}{{ project.title }}{% endblock title %}
 {% block maincontent %}
     <div class="header-container">
-      {% include "partials/project_header.html" %}
+        {% include "partials/project_header.html" %}
     </div>
     <div class="projectMenu">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 ">
                     <nav class="navbar navbar-nav nav-justified">
-                      <ul class="nav nav-tabs">
-                        <li><a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a></li>
-                        <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
-                        {% if project.partners.all %}<li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>{% endif %}
-                        <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
-                        {% if project.is_impact_project and project.results.all %}<li><a href="#results" class="tab-link">{% trans 'Results' %}</a></li>{% endif %}
-                        {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
-                      </ul>
+                        <ul class="nav nav-tabs">
+                            <li><a href="#summary" class="tab-link selected">{% trans 'Summary' %}</a></li>
+                            <li><a href="#report" class="tab-link">{% trans 'Full report' %}</a></li>
+                            <li><a href="#partners" class="tab-link">{% trans 'Project partners' %}</a></li>
+                            <li><a href="#finance" class="tab-link">{% trans 'Finances' %}</a></li>
+                            {% if project.results.all %}<li><a href="#results" class="tab-link">{% trans 'Results' %}</a></li>{% endif %}
+                            {% if updates %}<li><a href="#updates" class="tab-link">{% trans 'Updates' %}</a></li>{% endif %}
+                        </ul>
                     </nav>
                 </div>
             </div>
@@ -28,12 +28,8 @@
     {% include "project_main_tabs/report.html" %}
     {% include "project_main_tabs/partners.html" %}
     {% include "project_main_tabs/finance.html" %}
-    {% if project.is_impact_project and project.results.all %}
-        {% include "project_main_tabs/results.html" %}
-    {% endif %}
-    {% if updates %}
-        {% include "project_main_tabs/updates.html" %}
-    {% endif %}
+    {% if project.results.all %}{% include "project_main_tabs/results.html" %}{% endif %}
+    {% if updates %}{% include "project_main_tabs/updates.html" %}{% endif %}
     {% include "partials/project_footer.html" %}
 {% endblock %}
 
@@ -84,32 +80,33 @@
         }
     </script>
 
+    {#  Initial data endpoints #}
+    <script type="application/json" id="data-endpoints">
+        {
+            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "result": "/rest/v1/result/{result}/?format=json",
+            "results_of_project": "/rest/v1/result/?format=json&project={project}",
+            "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={project}",
+            "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
+            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
+            "period_framework": "/rest/v1/indicator_period_framework/{period}/?format=json",
+            "update_and_comments": "/rest/v1/indicator_period_data_framework/{update}/?format=json",
+            "updates_and_comments": "/rest/v1/indicator_period_data_framework/?format=json",
+            "comments": "/rest/v1/indicator_period_data_comment/?format=json",
+            "user": "/rest/v1/user/{{ user.pk }}/?format=json",
+            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
+            "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
+            "partnerships_of_project": "/rest/v1/partnership_more_link/?format=json&project={project}"
+        }
+    </script>
+
     {###### RESULTS FRAMEWORK ######}
-    {% if project.is_impact_project and project.results.all %}
+    {% if project.results.all %}
 
         {# Settings #}
         <script type="application/json" id="settings">
             {
                 "public": true
-            }
-        </script>
-
-        {#  Initial data endpoints #}
-        <script type="application/json" id="data-endpoints">
-            {
-                "base_url": "http://{{ request.META.HTTP_HOST }}",
-                "result": "/rest/v1/result/{result}/?format=json",
-                "results_of_project": "/rest/v1/result/?format=json&project={project}",
-                "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={project}",
-                "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
-                "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
-                "period_framework": "/rest/v1/indicator_period_framework/{period}/?format=json",
-                "update_and_comments": "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-                "updates_and_comments": "/rest/v1/indicator_period_data_framework/?format=json",
-                "comments": "/rest/v1/indicator_period_data_comment/?format=json",
-                "user": "/rest/v1/user/{{ user.pk }}/?format=json",
-                "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
-                "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
             }
         </script>
 
@@ -205,18 +202,23 @@
 
     {% endif %}
 
+    {# More link translations #}
+    <script type="application/json" id="more-link-translations">
+        {
+            "partner": "{% trans 'partner' %}",
+            "partners": "{% trans 'partners' %}"
+        }
+    </script>
+
     {# Slider library #}
     <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
     {% compressed_js 'project_main' %}
+    {% compressed_js 'more_partners' %}
 
-    {% if project.is_impact_project and project.results.all %}
+    {% if project.results.all %}
         {% compressed_js 'my_results' %}
     {% endif %}
-{% endblock js %}
 
-{% block jq %}
-  {{ block.super }}
-  $('.logoImg > img').css('margin','inherit');
-{% endblock jq %}
+{% endblock js %}
