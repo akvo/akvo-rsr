@@ -98,7 +98,10 @@ div.morePartners {
     display: inline-block;
     .tooltip {
         display: inline-block;
-        margin-top: -20px !important;
+        position: absolute;
+        .tooltip-arrow {
+            top: 10px;
+        }
     }
     a.moreLink {
         margin-left: 5px;
