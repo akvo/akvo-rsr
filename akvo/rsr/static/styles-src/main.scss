@@ -96,6 +96,10 @@ em {
 
 div.morePartners {
     display: inline-block;
+    .tooltip {
+        display: inline-block;
+        margin-top: -20px !important;
+    }
     a.moreLink {
         margin-left: 5px;
         padding: 3px 5px;

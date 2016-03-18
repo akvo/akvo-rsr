@@ -30,7 +30,7 @@ function loadMorePartners() {
         render: function() {
             var tooltipStyle = {
                 // TODO: Correct positioning of height
-                display: 'inline-block'
+
             };
 
             var partnershipsArray = [];
