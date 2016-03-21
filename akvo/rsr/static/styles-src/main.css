@@ -103,6 +103,7 @@ em {
   font-style: italic; }
 
 div.morePartners {
+  overflow: visible;
   display: inline-block; }
   div.morePartners .tooltip {
     display: inline-block;
@@ -887,7 +888,8 @@ h4.detailedInfo {
             color: white;*/
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.4s ease-in; }
+    transition: all 0.4s ease-in;
+    white-space: nowrap; }
     .searchContainer #search .showFilters:hover {
       background: rgba(255, 85, 0, 0);
       border: 1px solid rgba(255, 85, 0, 0.5);
@@ -1432,6 +1434,8 @@ div.textBlock {
   padding-top: 10px;
   padding-bottom: 10px;
   overflow: auto; }
+  .accordionContainer p {
+    padding: 15px 30px; }
   .accordionContainer #accordion .panel-group .panel-heading a:before {
     content: '- ';
     position: relative; }

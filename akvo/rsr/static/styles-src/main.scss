@@ -95,6 +95,7 @@ em {
 }
 
 div.morePartners {
+    overflow: visible;
     display: inline-block;
     .tooltip {
         display: inline-block;
@@ -1087,6 +1088,7 @@ h4.detailedInfo {
             color: white;
             border: 1px solid rgba(white, 0.2);
             transition: all 0.4s ease-in;
+            white-space: nowrap;
             &:hover {
                 background: rgba($anchorLinkHover, 0);
                 border: 1px solid rgba($anchorLinkHover, 0.5);
@@ -1805,6 +1807,9 @@ div.textBlock {
     padding-top: 10px;
     padding-bottom: 10px;
     overflow: auto;
+    p {
+        padding: 15px 30px;
+    }
     #accordion {
         .panel-group {
             .panel-heading {
