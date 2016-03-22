@@ -17,7 +17,7 @@ class IndicatorPeriodActualDimensionViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodActualDimension.objects.all()
     serializer_class = IndicatorPeriodActualDimensionSerializer
-    filter_fields = ('period', )
+    filter_fields = ('period', 'period__indicator__result__project', )
     project_relation = 'period__indicator__result__project__'
 
 
@@ -26,5 +26,5 @@ class IndicatorPeriodTargetDimensionViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodTargetDimension.objects.all()
     serializer_class = IndicatorPeriodTargetDimensionSerializer
-    filter_fields = ('period', )
+    filter_fields = ('period', 'period__indicator__result__project', )
     project_relation = 'period__indicator__result__project__'

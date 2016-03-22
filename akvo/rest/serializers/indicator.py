@@ -14,6 +14,7 @@ from rest_framework import serializers
 class IndicatorSerializer(BaseRSRSerializer):
 
     parent_indicator = serializers.Field(source='parent_indicator.pk')
+    measure_label = serializers.Field(source='iati_measure')
 
     class Meta:
         model = Indicator

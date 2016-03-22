@@ -9,8 +9,11 @@ from akvo.rsr.models import ProjectContact
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
 
 class ProjectContactSerializer(BaseRSRSerializer):
+
+    type_label = serializers.Field(source='iati_type')
 
     class Meta:
         model = ProjectContact

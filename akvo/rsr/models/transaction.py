@@ -10,8 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import (Currency, DisbursementChannel, TransactionType, Country, Region,
-                                   RegionVocabulary, Sector, SectorCategory, SectorVocabulary)
+from akvo.codelists.models import (AidType, Currency, DisbursementChannel, TransactionType,
+                                   Country, Region, RegionVocabulary, Sector, SectorCategory,
+                                   SectorVocabulary, FinanceType, FlowType, TiedStatus)
 from akvo.codelists.store.codelists_v202 import (AID_TYPE, CURRENCY, DISBURSEMENT_CHANNEL,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  TRANSACTION_TYPE, COUNTRY, REGION,
@@ -149,6 +150,18 @@ class Transaction(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
+
+    def iati_aid_type(self):
+        return codelist_value(AidType, self, 'aid_type')
+
+    def iati_finance_type(self):
+        return codelist_value(FinanceType, self, 'finance_type')
+
+    def iati_flow_type(self):
+        return codelist_value(FlowType, self, 'flow_type')
+
+    def iati_tied_status(self):
+        return codelist_value(TiedStatus, self, 'tied_status')
 
     def iati_transaction_type(self):
         return codelist_value(TransactionType, self, 'transaction_type')

@@ -211,6 +211,13 @@
         }
     </script>
 
+    {# Report tab translations #}
+    <script type="application/json" id="report-translations">
+        {
+            "recipient_countries": "{% trans 'recipient countries' %}"
+        }
+    </script>
+
     {# Partner tab translations #}
     <script type="application/json" id="partner-translations">
         {
@@ -224,12 +231,10 @@
     <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
+    {% compressed_js 'more_partners' %}
     {% compressed_js 'project_main' %}
     {% compressed_js 'project_main_partners' %}
-    {% compressed_js 'more_partners' %}
-
-    {% if project.results.all %}
-        {% compressed_js 'my_results' %}
-    {% endif %}
+    {% if project.results.all %}{% compressed_js 'my_results' %}{% endif %}
+    {% compressed_js 'project_main_report' %}
 
 {% endblock js %}

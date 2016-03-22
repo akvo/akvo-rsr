@@ -75,7 +75,7 @@ class FssForecast(models.Model):
             return u'%s' % _(u'No currency or interest received specified')
 
     def iati_currency(self):
-        return codelist_value(Currency, self, 'loan_status_currency')
+        return codelist_value(Currency, self, 'currency')
 
     class Meta:
         app_label = 'rsr'

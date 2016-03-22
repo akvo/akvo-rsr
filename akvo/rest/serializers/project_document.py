@@ -9,14 +9,22 @@ from akvo.rsr.models import ProjectDocument, ProjectDocumentCategory
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
+
 
 class ProjectDocumentSerializer(BaseRSRSerializer):
+
+    language_label = serializers.Field(source='iati_language')
+    title_language_label = serializers.Field(source='iati_title_language')
+    format_label = serializers.Field(source='iati_format')
 
     class Meta:
         model = ProjectDocument
 
 
 class ProjectDocumentCategorySerializer(BaseRSRSerializer):
+
+    category_label = serializers.Field(source='iati_category')
 
     class Meta:
         model = ProjectDocumentCategory

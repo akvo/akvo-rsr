@@ -15,6 +15,7 @@ from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 class PartnershipSerializer(BaseRSRSerializer):
 
     partner_type = serializers.Field(source='iati_role_to_partner_type')
+    iati_organisation_role_label = serializers.Field(source='iati_organisation_role_label')
 
     class Meta:
         model = Partnership

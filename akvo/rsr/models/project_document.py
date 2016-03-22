@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import DocumentCategory, Language
+from akvo.codelists.models import DocumentCategory, FileFormat, Language
 from akvo.codelists.store.codelists_v202 import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
 from akvo.utils import codelist_choices, codelist_value
 
@@ -86,8 +86,14 @@ class ProjectDocument(models.Model):
         else:
             return title
 
+    def iati_format(self):
+        return codelist_value(FileFormat, self, 'format')
+
     def iati_language(self):
         return codelist_value(Language, self, 'language')
+
+    def iati_title_language(self):
+        return codelist_value(Language, self, 'title_language')
 
     class Meta:
         app_label = 'rsr'

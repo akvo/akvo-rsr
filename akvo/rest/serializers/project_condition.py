@@ -9,8 +9,12 @@ from akvo.rsr.models import ProjectCondition
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
+
 
 class ProjectConditionSerializer(BaseRSRSerializer):
+
+    type_label = serializers.Field(source='iati_type')
 
     class Meta:
         model = ProjectCondition

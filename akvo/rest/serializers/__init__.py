@@ -13,9 +13,11 @@ from .budget_item import BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
+from .crs_add import CrsAddSerializer, CrsAddOtherFlagSerializer
 from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
+from .fss import FssSerializer, FssForecastSerializer
 from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
@@ -87,8 +89,12 @@ __all__ = [
     'CategorySerializer',
     'CountrySerializer',
     'CountryBudgetItemSerializer',
+    'CrsAddSerializer',
+    'CrsAddOtherFlagSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
+    'FssSerializer',
+    'FssForecastSerializer',
     'GoalSerializer',
     'HumanitarianScopeSerializer',
     'IndicatorSerializer',
