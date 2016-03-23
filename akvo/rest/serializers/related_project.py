@@ -14,6 +14,7 @@ from rest_framework import serializers
 
 class RelatedProjectSerializer(BaseRSRSerializer):
 
+    related_project_show_link = serializers.Field(source='related_project_show_link')
     relation_label = serializers.Field(source='iati_relation')
 
     class Meta:

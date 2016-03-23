@@ -38,6 +38,7 @@ class ProjectSerializer(BaseRSRSerializer):
     sync_owner = serializers.Field(source='reporting_org.id')
     sync_owner_secondary_reporter = serializers.Field(source='reporting_partner.is_secondary_reporter')
     status_label = serializers.Field(source='get_status_display')
+    keyword_labels = serializers.Field(source='keyword_labels')
 
     class Meta:
         model = Project

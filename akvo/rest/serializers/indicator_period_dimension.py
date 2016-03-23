@@ -7,14 +7,20 @@
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension
 
+from rest_framework import serializers
+
 
 class IndicatorPeriodActualDimensionSerializer(BaseRSRSerializer):
+
+    period_unicode = serializers.Field(source='period')
 
     class Meta:
         model = IndicatorPeriodActualDimension
 
 
 class IndicatorPeriodTargetDimensionSerializer(BaseRSRSerializer):
+
+    period_unicode = serializers.Field(source='period')
 
     class Meta:
         model = IndicatorPeriodTargetDimension

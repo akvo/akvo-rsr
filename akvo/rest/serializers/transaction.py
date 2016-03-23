@@ -14,6 +14,8 @@ from rest_framework import serializers
 
 class TransactionSerializer(BaseRSRSerializer):
 
+    provider_organisation_show_link = serializers.Field(source='provider_organisation_show_link')
+    receiver_organisation_show_link = serializers.Field(source='receiver_organisation_show_link')
     currency_label = serializers.Field(source='iati_currency')
     transaction_type_label = serializers.Field(source='iati_transaction_type')
     aid_type_label = serializers.Field(source='iati_aid_type')
@@ -31,6 +33,7 @@ class TransactionSerializer(BaseRSRSerializer):
 
 class TransactionSectorSerializer(BaseRSRSerializer):
 
+    transaction_unicode = serializers.Field(source='transaction')
     code_label = serializers.Field(source='iati_sector')
     vocabulary_label = serializers.Field(source='iati_vocabulary')
 

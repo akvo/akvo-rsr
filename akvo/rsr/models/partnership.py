@@ -160,6 +160,13 @@ class Partnership(models.Model):
         else:
             return None
 
+    def organisation_show_link(self):
+        if self.organisation:
+            return u'<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
+                                                   self.organisation.long_name or
+                                                   self.organisation.name)
+        return ''
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project partner')

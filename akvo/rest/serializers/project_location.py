@@ -12,6 +12,7 @@ from .rsr_serializer import BaseRSRSerializer
 
 class ProjectLocationSerializer(BaseRSRSerializer):
 
+    country_label = serializers.Field(source='country_label')
     vocabulary_label = serializers.Field(source='iati_vocabulary')
     exactness_label = serializers.Field(source='iati_exactness')
     reach_label = serializers.Field(source='iati_reach')
@@ -24,6 +25,7 @@ class ProjectLocationSerializer(BaseRSRSerializer):
 
 class AdministrativeLocationSerializer(BaseRSRSerializer):
 
+    location_unicode = serializers.Field(source='location')
     vocabulary_label = serializers.Field(source='iati_vocabulary')
 
     class Meta:

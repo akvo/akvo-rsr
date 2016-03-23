@@ -13,6 +13,7 @@ from rest_framework import serializers
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
+    indicator_unicode = serializers.Field(source='indicator')
     parent_period = serializers.Field(source='parent_period.pk')
     percent_accomplishment = serializers.Field(source='percent_accomplishment')
 

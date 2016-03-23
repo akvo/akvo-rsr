@@ -11,38 +11,62 @@ var endpointsReport,
     loadedAPIsReport = 0;
 
 var relatedObjectsReport = [
-    'related_project',
-    'project_contact',
-    'partnership',
-    'budget_item',
-    'country_budget_item',
-    'transaction',
-    'transaction_sector',
-    'planned_disbursement',
-    'project_location',
-    'administrative_location',
-    'recipient_country',
-    'recipient_region',
-    'result',
-    'indicator',
-    'indicator_reference',
-    'indicator_period',
-    'indicator_period_actual_dimension',
-    'indicator_period_target_dimension',
-    'indicator_period_actual_location',
-    'indicator_period_target_location',
-    'sector',
-    'policy_marker',
-    'humanitarian_scope',
-    'project_condition',
-    'project_document',
-    'project_document_category',
-    'link',
-    'crs_add',
-    'crs_add_other_flag',
-    'fss',
-    'fss_forecast',
-    'legacy_data'
+    ['related_project', ['relation_label', 'related_iati_id', 'related_project_show_link']],
+    ['project_contact', ['type_label', 'email', 'job_title', 'organisation', 'telephone',
+        'mailing_address', 'state', 'department', 'website']],
+    ['partnership', ['organisation_show_link', 'organisation_role_label', 'is_secondary_reporter',
+        'funding_amount', 'iati_activity_id']],
+    ['budget_item', ['currency_label', 'amount', 'label_label', 'other_extra', 'type_label',
+        'status_label', 'period_start', 'period_end', 'value_date']],
+    ['country_budget_item', ['code_label', 'description', 'percentage']],
+    ['transaction', ['currency_label', 'value', 'value_date', 'reference', 'description',
+        'provider_organisation_show_link', 'provider_organisation_activity',
+        'receiver_organisation_show_link', 'receiver_organisation_activity',
+        'transaction_type_label', 'aid_type_label', 'disbursement_channel_label',
+        'finance_type_label', 'flow_type_label', 'tied_status_label', 'recipient_country_label',
+        'recipient_region_label', 'recipient_region_vocabulary_label', 'humanitarian']],
+    ['transaction_sector', ['transaction_unicode', 'code_label', 'text', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['planned_disbursement', ['currency_label', 'value', 'value_date', 'type_label',
+        'period_start', 'period_end', 'provider_organisation_show_link',
+        'provider_organisation_activity', 'receiver_organisation_show_link',
+        'receiver_organisation_activity']],
+    ['project_location', ['longitude', 'latitude', 'country_label', 'city', 'state', 'address_1',
+        'address_2', 'postcode', 'reference', 'location_code', 'vocabulary_label', 'name',
+        'description', 'activity_description', 'exactness_label', 'reach_label', 'class_label',
+        'feature_designation_label']],
+    ['administrative_location', ['location_unicode', 'code', 'vocabulary_label']],
+    ['recipient_country', ['country_label', 'text', 'percentage']],
+    ['recipient_region', ['region_label', 'text', 'percentage', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['result', ['title', 'type_label', 'description', 'aggregation_status']],
+    ['indicator', ['result_unicode', 'title', 'description', 'measure_label', 'ascending',
+        'baseline_year', 'baseline_value', 'baseline_comment']],
+    ['indicator_reference', ['indicator_unicode', 'reference', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['indicator_period', ['indicator_unicode', 'period_start', 'period_end', 'target_value',
+        'target_comment', 'actual_value', 'actual_comment']],
+    ['indicator_period_actual_dimension', ['period_unicode', 'name', 'value']],
+    ['indicator_period_target_dimension', ['period_unicode', 'name', 'value']],
+    ['indicator_period_actual_location', ['period_unicode', 'location']],
+    ['indicator_period_target_location', ['period_unicode', 'location']],
+    ['sector', ['code_label', 'text', 'vocabulary_label', 'vocabulary_uri', 'percentage']],
+    ['policy_marker', ['policy_marker_label', 'description', 'significance', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['humanitarian_scope', ['code', 'text', 'type_label', 'vocabulary_label', 'vocabulary_uri']],
+    ['project_condition', ['type_label', 'text']],
+    ['project_document', ['title', 'title_language_label', 'url', 'document_show_link',
+        'language_label', 'format_label']],
+    ['project_document_category', ['document_unicode', 'category_label']],
+    ['link', ['url', 'caption']],
+    ['crs_add', ['repayment_type_label', 'repayment_plan_label', 'loan_terms_rate1',
+        'loan_terms_rate2', 'commitment_date', 'repayment_first_date', 'repayment_final_date',
+        'loan_status_year', 'currency_label', 'loan_status_value_date', 'interest_received',
+        'principal_outstanding', 'principal_arrears', 'interest_arrears', 'channel_code_label']],
+    ['crs_add_other_flag', ['code_label', 'significance']],
+    ['fss', ['extraction_date', 'priority', 'phaseout_year']],
+    ['fss_forecast', ['currency_label', 'value', 'year', 'value_date']],
+    ['legacy_data', ['name', 'value', 'iati_equivalent']]
 ];
 
 var differentRelations = [
@@ -61,94 +85,6 @@ var differentRelations = [
     ['fss_forecast', 'fss__project']
 ];
 
-
-var excludeFieldsReport = [
-    'related_project.project',
-    'related_project.relation',
-    'project_contact.project',
-    'project_contact.type',
-    'partnership.project',
-    'partnership.iati_organisation_role',
-    'partnership.partner_type',
-    'partnership.partner_type_extra',
-    'partnership.internal_id',
-    'partnership.iati_url',
-    'partnership.related_activity_id',
-    'budget_item.project',
-    'budget_item.label',
-    'budget_item.type',
-    'budget_item.currency',
-    'budget_item.status',
-    'country_budget_item.project',
-    'country_budget_item.code',
-    'transaction.project',
-    'transaction.transaction_type',
-    'transaction.aid_type',
-    'transaction.disbursement_channel',
-    'transaction.finance_type',
-    'transaction.flow_type',
-    'transaction.tied_status',
-    'transaction.recipient_country',
-    'transaction.recipient_region',
-    'transaction.recipient_region_vocabulary',
-    'transaction.currency',
-    'transaction_sector.code',
-    'transaction_sector.vocabulary',
-    'planned_disbursement.project',
-    'planned_disbursement.type',
-    'planned_disbursement.currency',
-    'project_location.location_target',
-    'project_location.vocabulary',
-    'project_location.exactness',
-    'project_location.location_reach',
-    'project_location.location_class',
-    'project_location.feature_designation',
-    'administrative_location.vocabulary',
-    'recipient_country.project',
-    'recipient_country.country',
-    'recipient_region.project',
-    'recipient_region.region',
-    'recipient_region.region_vocabulary',
-    'result.project',
-    'result.project_title',
-    'result.parent_result',
-    'result.type',
-    'indicator.parent_indicator',
-    'indicator.measure',
-    'indicator_period.percent_accomplishment',
-    'indicator_period.locked',
-    'indicator_period.parent_period',
-    'sector.project',
-    'sector.sector_code',
-    'sector.vocabulary',
-    'policy_marker.project',
-    'policy_marker.policy_marker',
-    'policy_marker.vocabulary',
-    'policy_marker.significance',
-    'humanitarian_scope.project',
-    'humanitarian_scope.type',
-    'humanitarian_scope.vocabulary',
-    'project_condition.project',
-    'project_condition.type',
-    'project_document.project',
-    'project_document.language',
-    'project_document.title_language',
-    'project_document.format',
-    'project_document_category.category',
-    'link.project',
-    'link.kind',
-    'crs_add.project',
-    'crs_add.repayment_type',
-    'crs_add.repayment_plan',
-    'crs_add.currency',
-    'crs_add.channel_code',
-    'crs_add_other_flag.crs',
-    'crs_add_other_flag.code',
-    'fss.project',
-    'fss_forecast.currency',
-    'fss_forecast.fss',
-    'legacy_data.project'
-];
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -169,10 +105,14 @@ csrftoken = getCookie('csrftoken');
 
 function renderReportTab() {
     var LargeTable = React.createClass({
+        lookUpTableName: function() {
+            return i18nReport[this.props.tableName];
+        },
+
         headerName: function(header) {
             var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
             newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
-            return newHeaderName.replace(/_/g, ' ').replace(' label', '');
+            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
         },
 
         renderHeader: function(fieldsList) {
@@ -200,12 +140,17 @@ function renderReportTab() {
 
             for (var i = 0; i < fieldsList.length; i++) {
                 var value = relatedObject[fieldsList[i]];
-                if (value === true) {
-                    value = 'True';
-                } else if (value === false) {
-                    value = 'False';
+
+                if (typeof value === "string" && value.indexOf('<a href') > -1) {
+                    cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                } else {
+                    if (value === true) {
+                        value = 'True';
+                    } else if (value === false) {
+                        value = 'False';
+                    }
+                    cells.push(<td>{value}</td>);
                 }
-                cells.push(<td>{value}</td>);
             }
 
             return (
@@ -221,11 +166,11 @@ function renderReportTab() {
             var thisTable = this;
 
             var tables = this.props.tableInfo.map(function(relatedObject) {
-                var relatedObjectId = relatedObject.id !== undefined ? relatedObject.id : '';
+                var relatedObjectId = relatedObject.id !== undefined ? ' (' + i18nReport.id + ': ' + relatedObject.id + ')' : '';
 
                 return (
                     <div className={thisTable.props.tableName}>
-                        <h4>{thisTable.headerName(thisTable.props.tableName) + ' ' + relatedObjectId}</h4>
+                        <h4>{thisTable.lookUpTableName() + relatedObjectId}</h4>
                         <div className="table-responsive">
                             <table className="table table-bordered table-hover">
                                 {thisTable.renderHeader(thisTable.props.fields[0])}
@@ -247,10 +192,14 @@ function renderReportTab() {
     });
 
     var SmallTable = React.createClass({
+        lookUpTableName: function() {
+            return i18nReport[this.props.tableName];
+        },
+
         headerName: function(header) {
             var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
             newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
-            return newHeaderName.replace(/_/g, ' ').replace(' label', '');
+            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
         },
 
         renderHeader: function() {
@@ -282,12 +231,17 @@ function renderReportTab() {
 
                 for (var i = 0; i < fieldsList.length; i++) {
                     var value = relatedObject[fieldsList[i]];
-                    if (value === true) {
-                        value = 'True';
-                    } else if (value === false) {
-                        value = 'False';
+
+                    if (typeof value === "string" && value.indexOf('<a href') > -1) {
+                        cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                    } else {
+                        if (value === true) {
+                            value = 'True';
+                        } else if (value === false) {
+                            value = 'False';
+                        }
+                        cells.push(<td>{value}</td>);
                     }
-                    cells.push(<td>{value}</td>);
                 }
 
                 return (
@@ -305,7 +259,7 @@ function renderReportTab() {
         render: function() {
             return (
                 <div className={this.props.tableName + "Container"}>
-                    <h4>{this.headerName(this.props.tableName)}</h4>
+                    <h4>{this.lookUpTableName()}</h4>
                     <div className="table-responsive">
                         <table className="table table-bordered table-hover">
                             {this.renderHeader()}
@@ -318,38 +272,13 @@ function renderReportTab() {
     });
 
     var RelatedObjectTable = React.createClass({
-        fields: function() {
-            var fields = [];
-            for (var field in this.props.tableInfo[0]) {
-                if (this.props.tableInfo[0].hasOwnProperty(field)) {
-                    if (this.hasData(field) && excludeFieldsReport.indexOf(this.props.tableName + '.' + field) < 0) {
-                        if (field === 'id') {
-                            fields.splice(0, 0, field);
-                        } else {
-                            fields.push(field);
-                        }
-                    }
+        getFields: function() {
+            for (var i = 0; i < relatedObjectsReport.length; i++) {
+                if (relatedObjectsReport[i][0] === this.props.tableName) {
+                    return relatedObjectsReport[i][1];
                 }
             }
-
-            if (fields.length < 11) {
-                return [fields];
-            } else {
-                var numberOfFields = Math.round(fields.length / 2) + 1,
-                    row1 = [],
-                    row2 = [];
-
-                for (var i = 0; i < numberOfFields - 1; i++) {
-                    row1.push(fields[i]);
-                }
-                for (var j = numberOfFields - 1; j < fields.length - 1; j++) {
-                    row2.push(fields[j]);
-                }
-                if (this.props.tableName !== 'crs-add') {
-                    row2.splice(0, 0, 'id');
-                }
-                return [row1, row2];
-            }
+            return [];
         },
 
         hasData: function(field) {
@@ -362,50 +291,32 @@ function renderReportTab() {
             return false;
         },
 
-        renderHeader: function(fieldList) {
-            var thisTable = this;
+        fields: function() {
+            var fieldsList = this.getFields(),
+                fields = [];
 
-            var headers = fieldList.map(function(field) {
-                return (
-                    <th>
-                        {thisTable.headerName(field)}
-                    </th>
-                );
-            });
 
-            return (
-                <thead>
-                    <tr>
-                        {headers}
-                    </tr>
-                </thead>
-            );
-        },
-
-        renderContent: function(fieldList) {
-            var rows = this.props.tableInfo.map(function(relatedObject) {
-                var cells = [];
-
-                for (var i = 0; i < fieldList.length; i++) {
-                    var value = relatedObject[fieldList[i]];
-                    if (value === true) {
-                        value = 'True';
-                    } else if (value === false) {
-                        value = 'False';
-                    }
-                    cells.push(<td>{value}</td>);
+            for (var i = 0; i < fieldsList.length; i++) {
+                if (this.hasData(fieldsList[i])) {
+                    fields.push(fieldsList[i]);
                 }
+            }
 
-                return (
-                    <tr>{cells}</tr>
-                );
-            });
+            if (fields.length < 11) {
+                return [fields];
+            } else {
+                var numberOfFields = Math.round(fields.length / 2) + 1,
+                    row1 = [],
+                    row2 = [];
 
-            return (
-                <tbody>
-                    {rows}
-                </tbody>
-            );
+                for (var j = 0; j < numberOfFields - 1; j++) {
+                    row1.push(fields[j]);
+                }
+                for (var k = numberOfFields - 1; k < fields.length - 1; k++) {
+                    row2.push(fields[k]);
+                }
+                return [row1, row2];
+            }
         },
 
         render: function() {
@@ -437,45 +348,45 @@ function renderReportTab() {
             return (
                 <div className="row">
                     <div className="col-sm-6">
-                        <h4>Identifiers</h4>
+                        <h4>{i18nReport.identifiers}</h4>
                         <div className="table-responsive">
                             <table className="table table-bordered table-hover">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">IATI Activity ID</th>
-                                        <td>{proj.iati_activity_id}</td>
+                                        <th scope="row">RSR {i18nReport.id}</th>
+                                        <td>{projectIdReport}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">RSR ID</th>
-                                        <td>{projectIdReport}</td>
+                                        <th scope="row">{i18nReport.iati_activity} {i18nReport.id}</th>
+                                        <td>{proj.iati_activity_id}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div className="col-sm-6">
-                        <h4>Activity dates and status</h4>
+                        <h4>{i18nReport.activity_dates_status}</h4>
                         <div className="table-responsive">
                             <table className="table table-bordered table-hover">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Status</th>
+                                        <th scope="row">{i18nReport.status}</th>
                                         <td>{proj.status_label}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Planned Start Date</th>
+                                        <th scope="row">{i18nReport.planned} {i18nReport.start} {i18nReport.date}</th>
                                         <td>{proj.date_start_planned}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Planned End Date</th>
+                                        <th scope="row">{i18nReport.planned} {i18nReport.end} {i18nReport.date}</th>
                                         <td>{proj.date_end_planned}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Actual Start Date</th>
+                                        <th scope="row">{i18nReport.actual} {i18nReport.start} {i18nReport.date}</th>
                                         <td>{proj.date_start_actual}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Actual End Date</th>
+                                        <th scope="row">{i18nReport.actual} {i18nReport.end} {i18nReport.date}</th>
                                         <td>{proj.date_end_actual}</td>
                                     </tr>
                                 </tbody>
@@ -490,37 +401,41 @@ function renderReportTab() {
             return (
                 <div className="row">
                     <div className="col-sm-12">
-                        <h4>Descriptions</h4>
+                        <h4>{i18nReport.descriptions}</h4>
                         <div className="table-responsive">
                             <table className="table table-bordered table-hover">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Project Plan</th>
+                                        <th scope="row">{i18nReport.project_plan}</th>
                                         <td>{proj.project_plan}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Goals Overview</th>
+                                        <th scope="row">{i18nReport.goals_overview}</th>
                                         <td>{proj.goals_overview}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Target Group</th>
+                                        <th scope="row">{i18nReport.target_group}</th>
                                         <td>{proj.target_group}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Summary of Project Plan</th>
+                                        <th scope="row">{i18nReport.project_plan_summary}</th>
                                         <td>{proj.project_plan_summary}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Background</th>
+                                        <th scope="row">{i18nReport.background}</th>
                                         <td>{proj.background}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Situation at start of project</th>
+                                        <th scope="row">{i18nReport.current_status}</th>
                                         <td>{proj.current_status}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Sustainability</th>
+                                        <th scope="row">{i18nReport.sustainability}</th>
                                         <td>{proj.sustainability}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">{i18nReport.keywords}</th>
+                                        <td>{proj.keyword_labels.join(', ')}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -556,7 +471,7 @@ function renderReportTab() {
             var thisApp = this;
             setTimeout(function() {
                 for (var i = 0; i < relatedObjectsReport.length; i++) {
-                    thisApp.getData(relatedObjectsReport[i]);
+                    thisApp.getData(relatedObjectsReport[i][0]);
                 }
             }, 2000);
         },
@@ -608,7 +523,7 @@ function renderReportTab() {
             if (loadedAPIsReport < relatedObjectsReport.length - 1) {
                 return (
                     <div className="text-center">
-                        <i className="fa fa-spin fa-spinner" /> Loading data..
+                        <i className="fa fa-spin fa-spinner" /> {i18n.loading}..
                     </div>
                 );
             } else {
@@ -616,6 +531,15 @@ function renderReportTab() {
                     <span />
                 );
             }
+        },
+
+        indexOfObject: function(relatedObject) {
+            for (var i = 0; i < relatedObjectsReport.length; i++) {
+                if (relatedObjectsReport[i][0] === relatedObject) {
+                    return i;
+                }
+            }
+            return false;
         },
 
         render: function() {
@@ -626,7 +550,7 @@ function renderReportTab() {
                 if (this.state.relatedObjects.hasOwnProperty(relatedObject) && relatedObject !== 'project') {
                     var index = 0;
                     for (var i = 0; i < relatedObjectsOrder.length; i++) {
-                        if (relatedObjectsReport.indexOf(relatedObjectsOrder[i]) < relatedObjectsReport.indexOf(relatedObject)) {
+                        if (this.indexOfObject(relatedObjectsOrder[i]) < this.indexOfObject(relatedObject)) {
                             index++;
                         }
                     }
@@ -653,17 +577,17 @@ function renderReportTab() {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-6">
-                                <h4>Identifiers</h4>
+                                <h4>{i18nReport.identifiers}</h4>
                                 <div className="table-responsive">
                                     <table className="table table-bordered table-hover">
                                         <tbody>
                                             <tr>
-                                                <th scope="row">IATI Activity ID</th>
-                                                <td><i className="fa fa-spin fa-spinner" /> Loading data..</td>
+                                                <th scope="row">RSR {i18nReport.id}</th>
+                                                <td>{projectIdReport}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">RSR ID</th>
-                                                <td>{projectIdReport}</td>
+                                                <th scope="row">{i18nReport.iati_activity} {i18nReport.id}</th>
+                                                <td><i className="fa fa-spin fa-spinner" /> {i18nReport.loading}..</td>
                                             </tr>
                                         </tbody>
                                     </table>

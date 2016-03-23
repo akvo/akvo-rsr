@@ -77,12 +77,17 @@ class ProjectDocument(models.Model):
         if self.document:
             self.document.name = self.document.name.encode('ascii','ignore')
 
+    def document_show_link(self):
+        if self.document:
+            return u'<a href="{0}">{1}</a>'.format(self.document.url, self.document.url)
+        return u''
+
     def show_link(self):
         title = self.title if self.title else u'%s' % _(u'Untitled document')
         if self.url:
-            return u'<a href="%s">%s</a>' % (self.url, title,)
+            return u'<a href="{0}">{1}</a>'.format(self.url, title)
         elif self.document:
-            return u'<a href="%s">%s</a>' % (self.document.url, title,)
+            return u'<a href="{0}">{1}</a>'.format(self.document.url, title)
         else:
             return title
 

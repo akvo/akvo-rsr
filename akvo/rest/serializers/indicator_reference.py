@@ -7,8 +7,12 @@
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import IndicatorReference
 
+from rest_framework import serializers
+
 
 class IndicatorReferenceSerializer(BaseRSRSerializer):
+
+    indicator_unicode = serializers.Field(source='indicator')
 
     class Meta:
         model = IndicatorReference

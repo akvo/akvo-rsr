@@ -148,6 +148,20 @@ class Transaction(models.Model):
         else:
             return u'%s' % _(u'No value specified')
 
+    def provider_organisation_show_link(self):
+        if self.provider_organisation:
+            return u'<a href="{0}">{1}</a>'.format(self.provider_organisation.get_absolute_url(),
+                                                   self.provider_organisation.long_name or
+                                                   self.provider_organisation.name)
+        return ''
+
+    def receiver_organisation_show_link(self):
+        if self.receiver_organisation:
+            return u'<a href="{0}">{1}</a>'.format(self.receiver_organisation.get_absolute_url(),
+                                                   self.receiver_organisation.long_name or
+                                                   self.receiver_organisation.name)
+        return ''
+
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
 

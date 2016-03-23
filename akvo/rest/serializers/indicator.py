@@ -13,6 +13,7 @@ from rest_framework import serializers
 
 class IndicatorSerializer(BaseRSRSerializer):
 
+    result_unicode = serializers.Field(source='result')
     parent_indicator = serializers.Field(source='parent_indicator.pk')
     measure_label = serializers.Field(source='iati_measure')
 
