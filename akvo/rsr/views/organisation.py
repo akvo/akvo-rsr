@@ -13,7 +13,7 @@ from akvo.rsr.models import Organisation, Project
 from akvo.rsr.views.utils import apply_keywords, org_projects, show_filter_class
 from akvo.utils import pagination, filter_query_string
 
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from lxml import etree
@@ -107,8 +107,19 @@ def main(request, organisation_id):
 # Organisation IATI files
 ###############################################################################
 
+def iati(request, organisation_id):
+    """Retrieve the latest public IATI XML file."""
+    organisation = get_object_or_404(Organisation, pk=organisation_id)
+    if organisation.public_iati_file:
+        exports = organisation.iati_exports.filter(is_public=True)
+        if exports:
+            latest_export = exports.order_by('-id')[0]
+            return HttpResponse(latest_export.iati_file, content_type="text/xml")
+    raise Http404
+
+
 def iati_org(request, organisation_id):
-    """Generate the IATI file on-the-fly and return the XML."""
+    """Generate the IATI Organisation file on-the-fly and return the XML."""
     organisation = get_object_or_404(Organisation, pk=organisation_id)
     xml_data = etree.tostring(etree.ElementTree(
         IatiOrgXML(request, [organisation]).iati_organisations))
