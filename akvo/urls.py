@@ -263,18 +263,3 @@ if settings.DEBUG:
 
 if settings.REQUIRED_AUTH_GROUPS:
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-
-# Robots.txt
-if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-        url(r'^robots\.txt$',
-            TemplateView.as_view(template_name='robots/dev-robots.txt', content_type='text/plain'))
-    )
-else:
-    urlpatterns += patterns(
-        '',
-        url(r'^robots\.txt$',
-            TemplateView.as_view(template_name='robots/live-robots.txt', content_type='text/plain'))
-    )
