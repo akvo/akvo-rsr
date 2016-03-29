@@ -9,40 +9,22 @@
                 </h3>
             </div>
             <div class="panel-body hidden">
-                {% if user.is_superuser %}
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label for="impactProject" class="control-label">
-                                        <input id="impact-project" type="checkbox" name="impact-project"{% if project.is_impact_project %} checked{% endif %}>
-                                            {% trans 'Activate results framework' %}
-                                    </label>
-                                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label for="privateProject" class="control-label">
+                                    <input id="private-project" type="checkbox" name="private-project"{% if not project.is_public %} checked{% endif %}>
+                                        {% trans 'Private project' %}
+                                </label>
                             </div>
                         </div>
-                        <div class="col-md-9 help-block">
-                            {% trans 'Indicate whether the results framework should be activated or not. When this option is set, actual values and comments of results can only be filled in the My results section. Only available for superusers.' %}
-                        </div>
                     </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label for="privateProject" class="control-label">
-                                        <input id="private-project" type="checkbox" name="private-project"{% if not project.is_public %} checked{% endif %}>
-                                            {% trans 'Private project' %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-9 help-block">
-                            {% trans 'Indicate whether this is a private project. Private projects do not appear in any public lists, and can only be viewed in MyRSR if a user has permissions to edit the project. Only available for superusers.' %}
-                        </div>
+                    <div class="col-md-9 help-block">
+                        {% trans 'Indicate whether this is a private project. Private projects do not appear in any public lists, and can only be viewed in MyRSR if a user has permissions to edit the project. Only available for superusers.' %}
                     </div>
-                    <hr/>
-                {% endif %}
+                </div>
+                <hr/>
                 <div class="row help-block">
                     <div class="col-sm-12">
                         <strong>{% trans 'Validation sets' %}</strong>

@@ -182,10 +182,11 @@ class Project(TimestampsMixin, models.Model):
                     u'that are being impacted by this project.')
     )
 
-    # RSR Impact
-    is_impact_project = models.BooleanField(_(u'is rsr impact project'), default=False,
-                                            help_text=_(u'Determines whether this project is an '
-                                                        u'RSR Impact project.'))
+    # Results framework (always on)
+    is_impact_project = models.BooleanField(
+        _(u'is rsr impact project'), default=True,
+        help_text=_(u'Determines whether the results framework is active for this project.')
+    )
 
     # Private projects
     is_public = models.BooleanField(
