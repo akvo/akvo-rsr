@@ -22,6 +22,7 @@ def extra_context(request, protocol="http"):
         current_site = None
 
     django_version = django.get_version()
+    debug = getattr(settings, 'DEBUG', False)
     deploy_tag = getattr(settings, 'DEPLOY_TAG', 'Unknown')
     deploy_branch = getattr(settings, 'DEPLOY_BRANCH', 'Unknown')
     deploy_commit_id = getattr(settings, 'DEPLOY_COMMIT_ID', 'Unknown')
@@ -30,6 +31,7 @@ def extra_context(request, protocol="http"):
     return dict(
         current_site=current_site,
         django_version=django_version,
+        debug=debug,
         deploy_tag=deploy_tag,
         deploy_branch=deploy_branch,
         deploy_commit_id=deploy_commit_id,
