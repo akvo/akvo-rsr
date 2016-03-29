@@ -215,7 +215,13 @@ function initReact() {
 
     var UpdateEntry = React.createClass({
         getInitialState: function() {
-            var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+            var updateData;
+
+            if (this.props.update.data === '0' && this.props.update.status === 'N') {
+                updateData = '';
+            } else {
+                updateData = this.props.update.data;
+            }
 
             return {
                 data: updateData,
