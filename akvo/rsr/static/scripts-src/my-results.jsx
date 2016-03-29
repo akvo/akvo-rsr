@@ -1702,6 +1702,8 @@ function initReact() {
             if (hash !== '') {
                 hash = hash.substring(1);
                 var hashArray = hash.split(',');
+                // Remove the 'results' part
+                hashArray.splice(0, 1);
                 for (var i = 0; i < hashArray.length; i++) {
                     switch(i) {
                         case 0:
@@ -2048,7 +2050,7 @@ function initReact() {
             this.setState({selectedIndicatorId: indicatorId});
             if (indicatorId !== null) {
                 var resultId = this.state.selectedResultId;
-                window.location.hash = resultId + ',' + indicatorId;
+                window.location.hash = 'results,' + resultId + ',' + indicatorId;
             }
         },
 
@@ -2057,7 +2059,7 @@ function initReact() {
             if (periodId !== null) {
                 var resultId = this.state.selectedResultId;
                 var indicatorId = this.state.selectedIndicatorId;
-                window.location.hash = resultId + ',' + indicatorId + ',' + periodId;
+                window.location.hash = 'results,' + resultId + ',' + indicatorId + ',' + periodId;
             }
         },
 

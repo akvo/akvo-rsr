@@ -1,4 +1,5 @@
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% trans 'Dear' %} {{ update.user.first_name|safe }} {{ update.user.last_name|safe }},
 
@@ -19,7 +20,7 @@ Comments
 {% endif %}
 
 {% trans 'Click the following link to view the update' %}:
-http://{{ site }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}
+http://{{ site }}/{{ LANGUAGE_CODE }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#results,{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}
 
 {% trans 'Thank you' %},
 Akvo.org
