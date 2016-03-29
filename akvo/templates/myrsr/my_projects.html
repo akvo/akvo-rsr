@@ -65,15 +65,17 @@
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 {% if can_edit_project %}
                   <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
-                  {% if project.is_impact_project %}
+                  {% if project.is_impact_project and project.is_published and project.is_public %}
                     <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
+                  {% else %}
+                    <li><a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}">{% trans 'Results data' %}</a></li>
                   {% endif %}
                 {% endif %}
                 {% if project.is_published and project.is_public %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% else %}
-                 <li> <a class="addUpdate disabled" title="{% trans "Can&#39;t update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
+                 <li> <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
                  </ul>
                 {% endif %}
               </div>

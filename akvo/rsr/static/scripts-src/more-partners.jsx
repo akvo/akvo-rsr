@@ -5,8 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var endpoints,
-    i18n;
+var endpointsMorePartners,
+    i18nMorePartners;
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -89,7 +89,7 @@ function loadMorePartners() {
 
         componentDidMount: function() {
             var xmlHttp = new XMLHttpRequest();
-            var url = endpoints.base_url + endpoints.partnerships_of_project.replace('{project}', this.props.projectId);
+            var url = endpointsMorePartners.base_url + endpointsMorePartners.partnerships_of_project.replace('{project}', this.props.projectId);
             var thisApp = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
@@ -156,8 +156,7 @@ function loadMorePartners() {
                 return React.createElement(
                     MorePartnersToolTip, {
                         partnerships: this.state.partnerships,
-                        primaryOrgId: this.props.primaryOrgId,
-                        i18n: this.props.i18n
+                        primaryOrgId: this.props.primaryOrgId
                     });
             } else {
                 return (
@@ -166,21 +165,33 @@ function loadMorePartners() {
             }
         },
 
+        generateLink: function() {
+            if (this.props.projectPage) {
+                showTab('partners');
+            } else {
+                window.location.assign(window.location.pathname.substring(0, 4) + 'project/' + this.props.projectId + '#partners');
+            }
+        },
+
         render: function() {
             if (this.state.partnerships === null) {
                 return (
-                    <a href="#" className="small moreLink tab-link">
-                        <i className="fa fa-spin fa-spinner" /> {this.props.i18n.partners}
+                    <a href='#partners' onClick={this.generateLink} className="small moreLink tab-link">
+                        <i className="fa fa-spin fa-spinner" /> {i18nMorePartners.partners}
                     </a>
                 );
-            } else {
+            } else if (this.partnersCount() > 0) {
                 return (
                     <div>
-                        <a href="#" className="small moreLink tab-link" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-                            + {this.partnersCount()} {this.props.i18n.partners}
+                        <a href='#partners' onClick={this.generateLink} className="small moreLink tab-link" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
+                            + {this.partnersCount()} {i18nMorePartners.partners}
                         </a>
                         {this.showTooltip()}
                     </div>
+                );
+            } else {
+                return (
+                    <span />
                 );
             }
         }
@@ -192,13 +203,14 @@ function loadMorePartners() {
         var node = morePartnersContainers[i];
         var projectId = node.getAttribute('projectId');
         var primaryOrgId = node.getAttribute('primaryOrgId');
+        var projectPage = node.getAttribute('projectPage');
 
         ReactDOM.render(
             React.createElement(
                 MorePartnersApp, {
                     projectId: parseInt(projectId),
                     primaryOrgId: parseInt(primaryOrgId),
-                    i18n: i18n
+                    projectPage: projectPage === "true"
                 }),
             morePartnersContainers[i]
         );
@@ -233,8 +245,8 @@ function loadAndRenderReact() {
 /* Initialise */
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve translations
-    i18n = JSON.parse(document.getElementById('more-link-translations').innerHTML);
-    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
+    i18nMorePartners = JSON.parse(document.getElementById('more-link-translations').innerHTML);
+    endpointsMorePartners = JSON.parse(document.getElementById('data-endpoints').innerHTML);
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
