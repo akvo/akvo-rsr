@@ -547,7 +547,14 @@ function initReact() {
                 );
             } else {
                 descriptionPart = React.DOM.div( {className:descriptionClass}, 
-                    this.props.update.text
+                    this.props.update.text.split(/\r\n|\r|\n/g).map(function(line) {
+                        return (
+                            React.DOM.span(null, 
+                                line,
+                                React.DOM.br(null )
+                            )
+                        );
+                    })
                 );
             }
 
