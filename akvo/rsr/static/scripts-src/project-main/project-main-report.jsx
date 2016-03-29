@@ -51,8 +51,8 @@ var relatedObjectsReport = [
     ['indicator_period_actual_location', ['period_unicode', 'location']],
     ['indicator_period_target_location', ['period_unicode', 'location']],
     ['sector', ['code_label', 'text', 'vocabulary_label', 'vocabulary_uri', 'percentage']],
-    ['policy_marker', ['policy_marker_label', 'description', 'significance', 'vocabulary_label',
-        'vocabulary_uri']],
+    ['policy_marker', ['policy_marker_label', 'description', 'significance_label',
+        'vocabulary_label', 'vocabulary_uri']],
     ['humanitarian_scope', ['code', 'text', 'type_label', 'vocabulary_label', 'vocabulary_uri']],
     ['project_condition', ['type_label', 'text']],
     ['project_document', ['title', 'title_language_label', 'url', 'document_show_link',
@@ -523,7 +523,7 @@ function renderReportTab() {
             if (loadedAPIsReport < relatedObjectsReport.length - 1) {
                 return (
                     <div className="text-center">
-                        <i className="fa fa-spin fa-spinner" /> {i18n.loading}..
+                        <i className="fa fa-spin fa-spinner" /> {i18nReport.loading}..
                     </div>
                 );
             } else {

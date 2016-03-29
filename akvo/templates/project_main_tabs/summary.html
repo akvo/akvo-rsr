@@ -99,7 +99,7 @@
                                                 </a>
                                                 <div class="media-body">
                                                     <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{ project.primary_organisation }}</a>
-                                                    <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}"></div>
+                                                    <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="true"></div>
                                                     {% if project.primary_organisation.primary_location.country %}
                                                         <div class="projectLocation">
                                                             <i class="fa fa-map-marker"></i> {{ project.primary_organisation.primary_location.country }}, {{ project.primary_organisation.primary_location.country.continent }}
