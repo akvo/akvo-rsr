@@ -13,9 +13,11 @@ from .budget_item import BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
+from .crs_add import CrsAddSerializer, CrsAddOtherFlagSerializer
 from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
+from .fss import FssSerializer, FssForecastSerializer
 from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
@@ -50,7 +52,7 @@ from .organisation_document import (OrganisationDocumentCategorySerializer,
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
-from .partnership import PartnershipSerializer
+from .partnership import PartnershipSerializer, PartnershipBasicSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
 from .project import ProjectSerializer, ProjectExtraSerializer, ProjectUpSerializer
@@ -87,8 +89,12 @@ __all__ = [
     'CategorySerializer',
     'CountrySerializer',
     'CountryBudgetItemSerializer',
+    'CrsAddSerializer',
+    'CrsAddOtherFlagSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
+    'FssSerializer',
+    'FssForecastSerializer',
     'GoalSerializer',
     'HumanitarianScopeSerializer',
     'IndicatorSerializer',
@@ -129,6 +135,7 @@ __all__ = [
     'OrganisationTotalBudgetLineSerializer',
     'OrganisationTotalExpenditureSerializer',
     'PartnershipSerializer',
+    'PartnershipBasicSerializer',
     'PartnerSiteSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',

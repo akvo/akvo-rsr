@@ -114,6 +114,8 @@ class BudgetItem(models.Model):
             # display "other" if other_extra is empty.
             # Translating here without translating the other labels seems corny
             return u"other" if self.other_extra is None else self.other_extra.strip()
+        elif self.label and self.label.label:
+            return self.label.label
         else:
             return self.__unicode__()
 

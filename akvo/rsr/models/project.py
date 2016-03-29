@@ -1071,6 +1071,9 @@ class Project(TimestampsMixin, models.Model):
         """Return the keywords of the project which have a logo."""
         return self.keywords.exclude(logo='')
 
+    def keyword_labels(self):
+        return [keyword.label for keyword in self.keywords.all()]
+
     ###################################
     ####### RSR Impact projects #######
     ###################################

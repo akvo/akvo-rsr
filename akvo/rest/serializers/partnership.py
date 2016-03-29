@@ -8,12 +8,31 @@ from rest_framework import serializers
 
 from akvo.rsr.models import Partnership
 
-from .rsr_serializer import BaseRSRSerializer
+from akvo.rest.serializers.organisation import OrganisationBasicSerializer
+from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 
 
 class PartnershipSerializer(BaseRSRSerializer):
 
+    organisation_show_link = serializers.Field(source='organisation_show_link')
     partner_type = serializers.Field(source='iati_role_to_partner_type')
+    organisation_role_label = serializers.Field(source='iati_organisation_role_label')
 
     class Meta:
         model = Partnership
+
+
+class PartnershipBasicSerializer(BaseRSRSerializer):
+
+    organisation = OrganisationBasicSerializer(source='organisation')
+    iati_organisation_role_label = serializers.Field(source='iati_organisation_role_label')
+
+    class Meta:
+        model = Partnership
+        fields = (
+            'id',
+            'project',
+            'organisation',
+            'iati_organisation_role',
+            'iati_organisation_role_label',
+        )

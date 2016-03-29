@@ -9,8 +9,14 @@ from akvo.rsr.models import PolicyMarker
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
+
 
 class PolicyMarkerSerializer(BaseRSRSerializer):
+
+    policy_marker_label = serializers.Field(source='iati_policy_marker')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')
+    significance_label = serializers.Field(source='iati_significance')
 
     class Meta:
         model = PolicyMarker

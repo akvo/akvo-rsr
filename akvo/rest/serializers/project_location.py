@@ -10,14 +10,23 @@ from ..fields import Base64ImageField
 from .country import CountrySerializer
 from .rsr_serializer import BaseRSRSerializer
 
-
 class ProjectLocationSerializer(BaseRSRSerializer):
+
+    country_label = serializers.Field(source='country_label')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')
+    exactness_label = serializers.Field(source='iati_exactness')
+    reach_label = serializers.Field(source='iati_reach')
+    class_label = serializers.Field(source='iati_class')
+    feature_designation_label = serializers.Field(source='iati_designation')
 
     class Meta:
         model = ProjectLocation
 
 
 class AdministrativeLocationSerializer(BaseRSRSerializer):
+
+    location_unicode = serializers.Field(source='location')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')
 
     class Meta:
         model = AdministrativeLocation

@@ -17,7 +17,7 @@ class IndicatorPeriodActualLocationViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodActualLocation.objects.all()
     serializer_class = IndicatorPeriodActualLocationSerializer
-    filter_fields = ('period', )
+    filter_fields = ('period', 'period__indicator__result__project')
     project_relation = 'period__indicator__result__project__'
 
 
@@ -26,5 +26,5 @@ class IndicatorPeriodTargetLocationViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodTargetLocation.objects.all()
     serializer_class = IndicatorPeriodTargetLocationSerializer
-    filter_fields = ('period', )
+    filter_fields = ('period', 'period__indicator__result__project')
     project_relation = 'period__indicator__result__project__'

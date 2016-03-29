@@ -13,9 +13,11 @@ from .budget_item import BudgetItemViewSet, CountryBudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
+from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
+from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
 from .humanitarian_scope import HumanitarianScopeViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
@@ -45,7 +47,7 @@ from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
-from .partnership import PartnershipViewSet
+from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
@@ -100,8 +102,12 @@ __all__ = [
     'change_password',
     'CountryViewSet',
     'CountryBudgetItemViewSet',
+    'CrsAddViewSet',
+    'CrsAddOtherFlagViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
+    'FssViewSet',
+    'FssForecastViewSet',
     'GoalViewSet',
     'HumanitarianScopeViewSet',
     'IndicatorViewSet',
@@ -140,6 +146,7 @@ __all__ = [
     'OrganisationTotalBudgetLineViewSet',
     'OrganisationTotalExpenditureViewSet',
     'PartnershipViewSet',
+    'PartnershipMoreLinkViewSet',
     'PartnerSiteViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',

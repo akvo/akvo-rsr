@@ -156,6 +156,9 @@ class ProjectLocation(BaseLocation):
 
         return location_unicode
 
+    def country_label(self):
+        return self.country or ''
+
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
 

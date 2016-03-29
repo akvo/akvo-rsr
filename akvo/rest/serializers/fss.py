@@ -5,17 +5,22 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Sector
+from akvo.rsr.models import Fss, FssForecast
 
 from .rsr_serializer import BaseRSRSerializer
 
 from rest_framework import serializers
 
 
-class SectorSerializer(BaseRSRSerializer):
-
-    code_label = serializers.Field(source='iati_sector')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+class FssSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = Sector
+        model = Fss
+
+
+class FssForecastSerializer(BaseRSRSerializer):
+
+    currency_label = serializers.Field(source='iati_currency')
+
+    class Meta:
+        model = FssForecast

@@ -1,0 +1,657 @@
+/** @jsx React.DOM */
+
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
+var endpointsReport,
+    i18nReport,
+    projectIdReport,
+    loadedAPIsReport = 0;
+
+var relatedObjectsReport = [
+    ['related_project', ['relation_label', 'related_iati_id', 'related_project_show_link']],
+    ['project_contact', ['type_label', 'email', 'job_title', 'organisation', 'telephone',
+        'mailing_address', 'state', 'department', 'website']],
+    ['partnership', ['organisation_show_link', 'organisation_role_label', 'is_secondary_reporter',
+        'funding_amount', 'iati_activity_id']],
+    ['budget_item', ['currency_label', 'amount', 'label_label', 'other_extra', 'type_label',
+        'status_label', 'period_start', 'period_end', 'value_date']],
+    ['country_budget_item', ['code_label', 'description', 'percentage']],
+    ['transaction', ['currency_label', 'value', 'value_date', 'reference', 'description',
+        'provider_organisation_show_link', 'provider_organisation_activity',
+        'receiver_organisation_show_link', 'receiver_organisation_activity',
+        'transaction_type_label', 'aid_type_label', 'disbursement_channel_label',
+        'finance_type_label', 'flow_type_label', 'tied_status_label', 'recipient_country_label',
+        'recipient_region_label', 'recipient_region_vocabulary_label', 'humanitarian']],
+    ['transaction_sector', ['transaction_unicode', 'code_label', 'text', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['planned_disbursement', ['currency_label', 'value', 'value_date', 'type_label',
+        'period_start', 'period_end', 'provider_organisation_show_link',
+        'provider_organisation_activity', 'receiver_organisation_show_link',
+        'receiver_organisation_activity']],
+    ['project_location', ['longitude', 'latitude', 'country_label', 'city', 'state', 'address_1',
+        'address_2', 'postcode', 'reference', 'location_code', 'vocabulary_label', 'name',
+        'description', 'activity_description', 'exactness_label', 'reach_label', 'class_label',
+        'feature_designation_label']],
+    ['administrative_location', ['location_unicode', 'code', 'vocabulary_label']],
+    ['recipient_country', ['country_label', 'text', 'percentage']],
+    ['recipient_region', ['region_label', 'text', 'percentage', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['result', ['title', 'type_label', 'description', 'aggregation_status']],
+    ['indicator', ['result_unicode', 'title', 'description', 'measure_label', 'ascending',
+        'baseline_year', 'baseline_value', 'baseline_comment']],
+    ['indicator_reference', ['indicator_unicode', 'reference', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['indicator_period', ['indicator_unicode', 'period_start', 'period_end', 'target_value',
+        'target_comment', 'actual_value', 'actual_comment']],
+    ['indicator_period_actual_dimension', ['period_unicode', 'name', 'value']],
+    ['indicator_period_target_dimension', ['period_unicode', 'name', 'value']],
+    ['indicator_period_actual_location', ['period_unicode', 'location']],
+    ['indicator_period_target_location', ['period_unicode', 'location']],
+    ['sector', ['code_label', 'text', 'vocabulary_label', 'vocabulary_uri', 'percentage']],
+    ['policy_marker', ['policy_marker_label', 'description', 'significance', 'vocabulary_label',
+        'vocabulary_uri']],
+    ['humanitarian_scope', ['code', 'text', 'type_label', 'vocabulary_label', 'vocabulary_uri']],
+    ['project_condition', ['type_label', 'text']],
+    ['project_document', ['title', 'title_language_label', 'url', 'document_show_link',
+        'language_label', 'format_label']],
+    ['project_document_category', ['document_unicode', 'category_label']],
+    ['link', ['url', 'caption']],
+    ['crs_add', ['repayment_type_label', 'repayment_plan_label', 'loan_terms_rate1',
+        'loan_terms_rate2', 'commitment_date', 'repayment_first_date', 'repayment_final_date',
+        'loan_status_year', 'currency_label', 'loan_status_value_date', 'interest_received',
+        'principal_outstanding', 'principal_arrears', 'interest_arrears', 'channel_code_label']],
+    ['crs_add_other_flag', ['code_label', 'significance']],
+    ['fss', ['extraction_date', 'priority', 'phaseout_year']],
+    ['fss_forecast', ['currency_label', 'value', 'year', 'value_date']],
+    ['legacy_data', ['name', 'value', 'iati_equivalent']]
+];
+
+var differentRelations = [
+    ['project_location', 'location_target'],
+    ['indicator', 'result__project'],
+    ['indicator_reference', 'indicator__result__project'],
+    ['indicator_period', 'indicator__result__project'],
+    ['indicator_period_actual_dimension', 'period__indicator__result__project'],
+    ['indicator_period_target_dimension', 'period__indicator__result__project'],
+    ['indicator_period_actual_location', 'period__indicator__result__project'],
+    ['indicator_period_target_location', 'period__indicator__result__project'],
+    ['transaction_sector', 'transaction__project'],
+    ['administrative_location', 'location__location_target'],
+    ['project_document_category', 'document__project'],
+    ['crs_add_other_flag', 'crs__project'],
+    ['fss_forecast', 'fss__project']
+];
+
+
+/* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+csrftoken = getCookie('csrftoken');
+
+function renderReportTab() {
+    var LargeTable = React.createClass({displayName: 'LargeTable',
+        lookUpTableName: function() {
+            return i18nReport[this.props.tableName];
+        },
+
+        headerName: function(header) {
+            var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
+            newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
+            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
+        },
+
+        renderHeader: function(fieldsList) {
+            var thisTable = this;
+
+            var headers = fieldsList.map(function(field) {
+                return (
+                    React.DOM.th(null, 
+                        thisTable.headerName(field)
+                    )
+                );
+            });
+
+            return (
+                React.DOM.thead(null, 
+                    React.DOM.tr(null, 
+                        headers
+                    )
+                )
+            );
+        },
+
+        renderContent: function(fieldsList, relatedObject) {
+            var cells = [];
+
+            for (var i = 0; i < fieldsList.length; i++) {
+                var value = relatedObject[fieldsList[i]];
+
+                if (typeof value === "string" && value.indexOf('<a href') > -1) {
+                    cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                } else {
+                    if (value === true) {
+                        value = 'True';
+                    } else if (value === false) {
+                        value = 'False';
+                    }
+                    cells.push(React.DOM.td(null, value));
+                }
+            }
+
+            return (
+                React.DOM.tbody(null, 
+                    React.DOM.tr(null, 
+                        cells
+                    )
+                )
+            );
+        },
+
+        render: function() {
+            var thisTable = this;
+
+            var tables = this.props.tableInfo.map(function(relatedObject) {
+                var relatedObjectId = relatedObject.id !== undefined ? ' (' + i18nReport.id + ': ' + relatedObject.id + ')' : '';
+
+                return (
+                    React.DOM.div( {className:thisTable.props.tableName}, 
+                        React.DOM.h4(null, thisTable.lookUpTableName() + relatedObjectId),
+                        React.DOM.div( {className:"table-responsive"}, 
+                            React.DOM.table( {className:"table table-bordered table-hover"}, 
+                                thisTable.renderHeader(thisTable.props.fields[0]),
+                                thisTable.renderContent(thisTable.props.fields[0], relatedObject),
+                                thisTable.renderHeader(thisTable.props.fields[1]),
+                                thisTable.renderContent(thisTable.props.fields[1], relatedObject)
+                            )
+                        )
+                    )
+                );
+            });
+
+            return (
+                React.DOM.div( {className:this.props.tableName + "Container"}, 
+                    tables
+                )
+            );
+        }
+    });
+
+    var SmallTable = React.createClass({displayName: 'SmallTable',
+        lookUpTableName: function() {
+            return i18nReport[this.props.tableName];
+        },
+
+        headerName: function(header) {
+            var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
+            newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
+            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
+        },
+
+        renderHeader: function() {
+            var thisTable = this;
+
+            var headers = this.props.fields[0].map(function(field) {
+                return (
+                    React.DOM.th(null, 
+                        thisTable.headerName(field)
+                    )
+                );
+            });
+
+            return (
+                React.DOM.thead(null, 
+                    React.DOM.tr(null, 
+                        headers
+                    )
+                )
+            );
+        },
+
+        renderContent: function() {
+            var thisTable = this;
+            var fieldsList = this.props.fields[0];
+
+            var rows = this.props.tableInfo.map(function(relatedObject) {
+                var cells = [];
+
+                for (var i = 0; i < fieldsList.length; i++) {
+                    var value = relatedObject[fieldsList[i]];
+
+                    if (typeof value === "string" && value.indexOf('<a href') > -1) {
+                        cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                    } else {
+                        if (value === true) {
+                            value = 'True';
+                        } else if (value === false) {
+                            value = 'False';
+                        }
+                        cells.push(React.DOM.td(null, value));
+                    }
+                }
+
+                return (
+                    React.DOM.tr(null, cells)
+                );
+            });
+
+            return (
+                React.DOM.tbody(null, 
+                    rows
+                )
+            );
+        },
+
+        render: function() {
+            return (
+                React.DOM.div( {className:this.props.tableName + "Container"}, 
+                    React.DOM.h4(null, this.lookUpTableName()),
+                    React.DOM.div( {className:"table-responsive"}, 
+                        React.DOM.table( {className:"table table-bordered table-hover"}, 
+                            this.renderHeader(),
+                            this.renderContent()
+                        )
+                    )
+                )
+            );
+        }
+    });
+
+    var RelatedObjectTable = React.createClass({displayName: 'RelatedObjectTable',
+        getFields: function() {
+            for (var i = 0; i < relatedObjectsReport.length; i++) {
+                if (relatedObjectsReport[i][0] === this.props.tableName) {
+                    return relatedObjectsReport[i][1];
+                }
+            }
+            return [];
+        },
+
+        hasData: function(field) {
+            for (var i = 0; i < this.props.tableInfo.length; i++) {
+                var objectEntry = this.props.tableInfo[i];
+                if (!(objectEntry[field] === null || objectEntry[field] === '')) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        fields: function() {
+            var fieldsList = this.getFields(),
+                fields = [];
+
+
+            for (var i = 0; i < fieldsList.length; i++) {
+                if (this.hasData(fieldsList[i])) {
+                    fields.push(fieldsList[i]);
+                }
+            }
+
+            if (fields.length < 11) {
+                return [fields];
+            } else {
+                var numberOfFields = Math.round(fields.length / 2) + 1,
+                    row1 = [],
+                    row2 = [];
+
+                for (var j = 0; j < numberOfFields - 1; j++) {
+                    row1.push(fields[j]);
+                }
+                for (var k = numberOfFields - 1; k < fields.length - 1; k++) {
+                    row2.push(fields[k]);
+                }
+                return [row1, row2];
+            }
+        },
+
+        render: function() {
+            if (this.props.tableInfo.length > 0) {
+                var fields = this.fields();
+                var table = SmallTable;
+
+                if (fields.length > 1) {
+                    table = LargeTable;
+                }
+
+                return (
+                    React.createElement(table, {
+                        fields: fields,
+                        tableInfo: this.props.tableInfo,
+                        tableName: this.props.tableName
+                    })
+                );
+            } else {
+                return (
+                    React.DOM.span(null )
+                );
+            }
+        }
+    });
+
+    var ProjectTables = React.createClass({displayName: 'ProjectTables',
+        identifiersAndDates: function(proj) {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-sm-6"}, 
+                        React.DOM.h4(null, i18nReport.identifiers),
+                        React.DOM.div( {className:"table-responsive"}, 
+                            React.DOM.table( {className:"table table-bordered table-hover"}, 
+                                React.DOM.tbody(null, 
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, "RSR ", i18nReport.id),
+                                        React.DOM.td(null, projectIdReport)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.iati_activity, " ", i18nReport.id),
+                                        React.DOM.td(null, proj.iati_activity_id)
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                    React.DOM.div( {className:"col-sm-6"}, 
+                        React.DOM.h4(null, i18nReport.activity_dates_status),
+                        React.DOM.div( {className:"table-responsive"}, 
+                            React.DOM.table( {className:"table table-bordered table-hover"}, 
+                                React.DOM.tbody(null, 
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.status),
+                                        React.DOM.td(null, proj.status_label)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.planned, " ", i18nReport.start, " ", i18nReport.date),
+                                        React.DOM.td(null, proj.date_start_planned)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.planned, " ", i18nReport.end, " ", i18nReport.date),
+                                        React.DOM.td(null, proj.date_end_planned)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.actual, " ", i18nReport.start, " ", i18nReport.date),
+                                        React.DOM.td(null, proj.date_start_actual)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.actual, " ", i18nReport.end, " ", i18nReport.date),
+                                        React.DOM.td(null, proj.date_end_actual)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        },
+
+        descriptions: function(proj) {
+            return (
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-sm-12"}, 
+                        React.DOM.h4(null, i18nReport.descriptions),
+                        React.DOM.div( {className:"table-responsive"}, 
+                            React.DOM.table( {className:"table table-bordered table-hover"}, 
+                                React.DOM.tbody(null, 
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.project_plan),
+                                        React.DOM.td(null, proj.project_plan)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.goals_overview),
+                                        React.DOM.td(null, proj.goals_overview)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.target_group),
+                                        React.DOM.td(null, proj.target_group)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.project_plan_summary),
+                                        React.DOM.td(null, proj.project_plan_summary)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.background),
+                                        React.DOM.td(null, proj.background)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.current_status),
+                                        React.DOM.td(null, proj.current_status)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.sustainability),
+                                        React.DOM.td(null, proj.sustainability)
+                                    ),
+                                    React.DOM.tr(null, 
+                                        React.DOM.th( {scope:"row"}, i18nReport.keywords),
+                                        React.DOM.td(null, proj.keyword_labels.join(', '))
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        },
+
+        render: function() {
+            var proj = this.props.projectInfo[0];
+
+            return (
+                React.DOM.div(null, 
+                    this.identifiersAndDates(proj),
+                    this.descriptions(proj)
+                )
+            );
+        }
+    });
+
+    var ReportApp = React.createClass({displayName: 'ReportApp',
+        getInitialState: function() {
+            return {
+                relatedObjects: {}
+            };
+        },
+
+        componentDidMount: function() {
+            this.getProjectData();
+
+            // Introduce a slight delay, to show the top (project) information first
+            var thisApp = this;
+            setTimeout(function() {
+                for (var i = 0; i < relatedObjectsReport.length; i++) {
+                    thisApp.getData(relatedObjectsReport[i][0]);
+                }
+            }, 2000);
+        },
+
+        getProjectData: function() {
+            var xmlHttp = new XMLHttpRequest();
+            var url = endpointsReport.base_url + "/rest/v1/project/" + projectIdReport + "/?format=json";
+            var thisApp = this;
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                    var currentRelatedObjects = thisApp.state.relatedObjects;
+                    currentRelatedObjects.project = [JSON.parse(xmlHttp.responseText)];
+                    thisApp.setState({
+                        relatedObjects: currentRelatedObjects
+                    });
+                }
+            };
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send();
+        },
+
+        getData: function(relatedObject) {
+            var xmlHttp = new XMLHttpRequest();
+            var relation = 'project';
+
+            for (var i = 0; i < differentRelations.length; i++) {
+                if (differentRelations[i][0] === relatedObject) {
+                    relation = differentRelations[i][1];
+                }
+            }
+
+            var url = endpointsReport.base_url + "/rest/v1/" + relatedObject + "/?format=json&" + relation + "=" + projectIdReport;
+            var thisApp = this;
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                    var currentRelatedObjects = thisApp.state.relatedObjects;
+                    currentRelatedObjects[relatedObject] = JSON.parse(xmlHttp.responseText).results;
+                    thisApp.setState({
+                        relatedObjects: currentRelatedObjects
+                    });
+                    loadedAPIsReport++;
+                }
+            };
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send();
+        },
+
+        renderLoading: function() {
+            if (loadedAPIsReport < relatedObjectsReport.length - 1) {
+                return (
+                    React.DOM.div( {className:"text-center"}, 
+                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading,".."
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.span(null )
+                );
+            }
+        },
+
+        indexOfObject: function(relatedObject) {
+            for (var i = 0; i < relatedObjectsReport.length; i++) {
+                if (relatedObjectsReport[i][0] === relatedObject) {
+                    return i;
+                }
+            }
+            return false;
+        },
+
+        render: function() {
+            var relatedObjectsArray = [];
+            var relatedObjectsOrder = [];
+
+            for (var relatedObject in this.state.relatedObjects) {
+                if (this.state.relatedObjects.hasOwnProperty(relatedObject) && relatedObject !== 'project') {
+                    var index = 0;
+                    for (var i = 0; i < relatedObjectsOrder.length; i++) {
+                        if (this.indexOfObject(relatedObjectsOrder[i]) < this.indexOfObject(relatedObject)) {
+                            index++;
+                        }
+                    }
+                    relatedObjectsArray.splice(index, 0,
+                        React.createElement(RelatedObjectTable, {
+                            tableName: relatedObject,
+                            tableInfo: this.state.relatedObjects[relatedObject]
+                        })
+                    );
+                    relatedObjectsOrder.splice(index, 0, relatedObject);
+                }
+            }
+
+            if ('project' in this.state.relatedObjects) {
+                relatedObjectsArray.splice(0, 0,
+                    React.createElement(ProjectTables, {
+                        projectInfo: this.state.relatedObjects.project
+                    })
+                );
+            }
+
+            if (relatedObjectsArray.length === 0) {
+                return (
+                    React.DOM.div( {className:"container"}, 
+                        React.DOM.div( {className:"row"}, 
+                            React.DOM.div( {className:"col-sm-6"}, 
+                                React.DOM.h4(null, i18nReport.identifiers),
+                                React.DOM.div( {className:"table-responsive"}, 
+                                    React.DOM.table( {className:"table table-bordered table-hover"}, 
+                                        React.DOM.tbody(null, 
+                                            React.DOM.tr(null, 
+                                                React.DOM.th( {scope:"row"}, "RSR ", i18nReport.id),
+                                                React.DOM.td(null, projectIdReport)
+                                            ),
+                                            React.DOM.tr(null, 
+                                                React.DOM.th( {scope:"row"}, i18nReport.iati_activity, " ", i18nReport.id),
+                                                React.DOM.td(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nReport.loading,"..")
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.div( {className:"container"}, 
+                        relatedObjectsArray,
+                        this.renderLoading()
+                    )
+                );
+            }
+        }
+    });
+
+    // Initialise 'Report' tab
+    var reportContainer = document.querySelector('article.projectReport');
+    ReactDOM.render(
+        React.createElement(ReportApp),
+        reportContainer
+    );
+}
+
+var loadJS = function(url, implementationCode, location){
+    //url is URL of external file, implementationCode is the code
+    //to be called from the file, location is the location to
+    //insert the <script> element
+
+    var scriptTag = document.createElement('script');
+    scriptTag.src = url;
+
+    scriptTag.onload = implementationCode;
+    scriptTag.onreadystatechange = implementationCode;
+
+    location.appendChild(scriptTag);
+};
+
+function loadAndRenderReact() {
+    function loadReactDOM() {
+        var reactDOMSrc = document.getElementById('react-dom').src;
+        loadJS(reactDOMSrc, renderReportTab, document.body);
+    }
+
+    console.log('No React, load again.');
+    var reactSrc = document.getElementById('react').src;
+    loadJS(reactSrc, loadReactDOM, document.body);
+}
+
+/* Initialise page */
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial data
+    endpointsReport = JSON.parse(document.getElementById('data-endpoints').innerHTML);
+    i18nReport = JSON.parse(document.getElementById('report-translations').innerHTML);
+    projectIdReport = JSON.parse(document.getElementById('default-values').innerHTML).project_id;
+
+    // Check if React is loaded
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+        // Render React components
+        renderReportTab();
+    } else {
+        loadAndRenderReact();
+    }
+});

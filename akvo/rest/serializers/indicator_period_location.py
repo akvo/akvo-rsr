@@ -7,14 +7,20 @@
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation
 
+from rest_framework import serializers
+
 
 class IndicatorPeriodActualLocationSerializer(BaseRSRSerializer):
+
+    period_unicode = serializers.Field(source='period')
 
     class Meta:
         model = IndicatorPeriodActualLocation
 
 
 class IndicatorPeriodTargetLocationSerializer(BaseRSRSerializer):
+
+    period_unicode = serializers.Field(source='period')
 
     class Meta:
         model = IndicatorPeriodTargetLocation

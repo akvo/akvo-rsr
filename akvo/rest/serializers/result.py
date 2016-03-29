@@ -14,6 +14,7 @@ from rest_framework import serializers
 class ResultSerializer(BaseRSRSerializer):
 
     project_title = serializers.Field(source='project.title')
+    type_label = serializers.Field(source='iati_type')
 
     class Meta:
         model = Result

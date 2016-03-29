@@ -70,5 +70,6 @@ class OrganisationBasicSerializer(BaseRSRSerializer):
         fields = (
             'id',
             'name',
-            'long_name'
+            'long_name',
+            'logo'
         )

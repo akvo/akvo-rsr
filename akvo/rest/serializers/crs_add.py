@@ -5,26 +5,27 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import BudgetItem, CountryBudgetItem
+from akvo.rsr.models import CrsAdd, CrsAddOtherFlag
 
 from .rsr_serializer import BaseRSRSerializer
 
 from rest_framework import serializers
 
-class BudgetItemSerializer(BaseRSRSerializer):
 
-    label_label = serializers.Field(source='get_label')
-    type_label = serializers.Field(source='iati_type')
+class CrsAddSerializer(BaseRSRSerializer):
+
+    repayment_type_label = serializers.Field(source='iati_repayment_type')
+    repayment_plan_label = serializers.Field(source='iati_repayment_plan')
     currency_label = serializers.Field(source='iati_currency')
-    status_label = serializers.Field(source='iati_status')
+    channel_code_label = serializers.Field(source='iati_channel_code')
 
     class Meta:
-        model = BudgetItem
+        model = CrsAdd
 
 
-class CountryBudgetItemSerializer(BaseRSRSerializer):
+class CrsAddOtherFlagSerializer(BaseRSRSerializer):
 
     code_label = serializers.Field(source='iati_code')
 
     class Meta:
-        model = CountryBudgetItem
+        model = CrsAddOtherFlag

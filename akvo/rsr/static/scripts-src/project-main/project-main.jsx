@@ -115,13 +115,46 @@ function renderReactComponents() {
     });
 
     var AccordionPanel = React.createClass({
+        getInitialState: function() {
+            // KB: Workaround, since i18n seems to change.
+            return {
+                background_text: i18n.background_text,
+                current_situation_text: i18n.current_situation_text,
+                goals_overview_text: i18n.goals_overview_text,
+                project_plan_text: i18n.project_plan_text,
+                sustainability_text: i18n.sustainability_text,
+                target_group_text: i18n.target_group_text,
+                results_text: i18n.results_text
+            };
+        },
+
         handleClick: function() {
             this.props.changeOpened(this.props.panelClass);
-            return false;
         },
 
         opened: function() {
             return this.props.panelClass === this.props.opened;
+        },
+
+        header: function() {
+            switch (this.props.panelClass) {
+                case "background":
+                    return this.state.background_text;
+                case "current_status":
+                    return this.state.current_situation_text;
+                case "goals_overview":
+                    return this.state.goals_overview_text;
+                case "project_plan":
+                    return this.state.project_plan_text;
+                case "sustainability":
+                    return this.state.sustainability_text;
+                case "target_group":
+                    return this.state.target_group_text;
+                case "result":
+                    return this.state.results_text;
+                default:
+                    return '';
+            }
         },
 
         render: function() {
@@ -145,7 +178,7 @@ function renderReactComponents() {
                     <div className="panel-heading">
                         <h4 className="panel-title">
                             <a className={headerCollapse} onClick={this.handleClick}>
-                                {this.props.header}
+                                {this.header()}
                             </a>
                         </h4>
                     </div>
@@ -180,9 +213,9 @@ function renderReactComponents() {
             }
         },
 
-        changeOpened: function(key) {
+        changeOpened: function(panelClass) {
             this.setState({
-                opened: this.state.opened === key ? "" : key
+                opened: this.state.opened === panelClass ? "" : panelClass
             });
         },
 
@@ -209,8 +242,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(background),
-                    panelClass: "background",
-                    header: i18n.background_text
+                    panelClass: "background"
                 });
             }
 
@@ -219,8 +251,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(current_status),
-                    panelClass: "current_status",
-                    header: i18n.current_situation_text
+                    panelClass: "current_status"
                 });
             }
 
@@ -229,8 +260,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(goals_overview),
-                    panelClass: "goals_overview",
-                    header: i18n.goals_overview_text
+                    panelClass: "goals_overview"
                 });
             }
 
@@ -239,8 +269,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(project_plan),
-                    panelClass: "project_plan",
-                    header: i18n.project_plan_text
+                    panelClass: "project_plan"
                 });
             }
 
@@ -249,8 +278,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(sustainability),
-                    panelClass: "sustainability",
-                    header: i18n.sustainability_text
+                    panelClass: "sustainability"
                 });
             }
 
@@ -259,8 +287,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(target_group),
-                    panelClass: "target_group",
-                    header: i18n.target_group_text
+                    panelClass: "target_group"
                 });
             }
 
@@ -270,8 +297,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: resultsContent,
-                    panelClass: "result",
-                    header: i18n.results_text
+                    panelClass: "result"
                 });
             }
 
@@ -401,6 +427,8 @@ function readTabFromFragment() {
         } else if (fragment === 'partners' && defaultValues.show_partners_tab) {
             showTab(fragment);
         } else if (fragment === 'updates' && defaultValues.show_updates_tab) {
+            showTab(fragment);
+        } else if (fragment === 'results' && defaultValues.show_results_tab) {
             showTab(fragment);
         } else {
             showTab('summary');

@@ -8,7 +8,8 @@
 var csrftoken,
     endpoints,
     i18n,
-    isAdmin,
+    isAdmin = false,
+    isPublic,
     months,
     permissions,
     projectIds,
@@ -158,8 +159,6 @@ function setPermissions() {
 
 function userIsAdmin() {
     // Check if the user is an M&E manager, resulting in different actions than other users.
-    isAdmin = false;
-
     var adminOrgIds = [],
         partnerships;
 
@@ -394,7 +393,8 @@ function initReact() {
         },
 
         renderHeader: function() {
-            var headerLeft;
+            var headerLeft,
+                headerRight;
 
             if (this.editing()) {
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -424,12 +424,18 @@ function initReact() {
                 );
             }
 
+            if (isPublic) {
+                headerRight = React.DOM.span(null );
+            } else {
+                headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
+                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
+                );
+            }
+
             return (
                 React.DOM.div( {className:"row update-entry-container-header"}, 
                     headerLeft,
-                    React.DOM.div( {className:"col-xs-3 text-right"}, 
-                        React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
-                    )
+                    headerRight
                 )
             );
         },
@@ -587,6 +593,12 @@ function initReact() {
         renderComments: function() {
             var comments;
 
+            if (isPublic) {
+                return (
+                    React.DOM.span(null )
+                );
+            }
+
             if (this.props.update.comments !== undefined) {
                 comments = this.props.update.comments.map(function(comment) {
                     return (
@@ -629,7 +641,7 @@ function initReact() {
         },
 
         renderFooter: function() {
-            if (this.props.selectedPeriod.locked) {
+            if (this.props.selectedPeriod.locked || isPublic) {
                 return (
                     React.DOM.span(null )
                 );
@@ -766,6 +778,16 @@ function initReact() {
                     return 0;
                 }
             }
+            if (isPublic) {
+                var approvedUpdates = [];
+                for (var i = 0; i < this.props.selectedPeriod.data.length; i++) {
+                    var thisData = this.props.selectedPeriod.data[i];
+                    if (thisData.status === 'A') {
+                        approvedUpdates.push(thisData);
+                    }
+                }
+                return approvedUpdates.sort(compare);
+            }
             return this.props.selectedPeriod.data.sort(compare);
         },
 
@@ -839,6 +861,12 @@ function initReact() {
         },
 
         renderNewUpdate: function() {
+            if (isPublic) {
+                return (
+                    React.DOM.div( {className:"new-update"})
+                );
+            }
+
             if (this.props.addingNewUpdate) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
@@ -1018,19 +1046,39 @@ function initReact() {
             this.props.selectPeriod(periodId);
         },
 
+        getPeriodData: function() {
+            if (this.props.period.data === undefined) {
+                return undefined;
+            } else if (isPublic) {
+                // In the public view, we only show approved updates.
+                var approvedData = [];
+                for (var i = 0; i < this.props.period.data.length; i++) {
+                    var thisData = this.props.period.data[i];
+                    if (thisData.status === 'A') {
+                        approvedData.push(thisData);
+                    }
+                }
+                return approvedData;
+            } else {
+                // In the 'MyRSR' view, we show all updates.
+                return this.props.period.data;
+            }
+
+        },
+
         renderPeriodDisplay: function() {
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
-            var pendingUpdates = nrPendingUpdates > 0 ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
+            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
             var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.number_of_pending_updates)) : React.DOM.span(null );
 
-            if (this.props.period.data === undefined) {
+            if (this.getPeriodData() === undefined) {
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay, " ", React.DOM.i( {className:"fa fa-spin fa-spinner"} )
                     )
                 );
-            } else if (this.props.period.data.length === 0) {
+            } else if (this.getPeriodData().length === 0) {
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay
@@ -1061,7 +1109,22 @@ function initReact() {
         renderActions: function() {
             var projectId;
 
-            if (isAdmin) {
+            if (isPublic) {
+                switch(this.props.period.locked) {
+                    case false:
+                        return (
+                            React.DOM.td( {className:"actions-td"}, 
+                                React.DOM.i( {className:"fa fa-unlock"} ), " ", i18n.period_unlocked
+                            )
+                        );
+                    default:
+                        return (
+                            React.DOM.td( {className:"actions-td"}, 
+                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.period_locked
+                            )
+                        );
+                }
+            } else if (isAdmin) {
                 switch(this.props.period.locked) {
                     case false:
                         if (this.props.parent || this.props.child) {
@@ -2169,13 +2232,16 @@ function loadAndRenderReact() {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
+    isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
-    getUserData();
-    setPermissions();
+    if (!isPublic) {
+        getUserData();
+        setPermissions();
+    }
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
