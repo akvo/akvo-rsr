@@ -1078,31 +1078,20 @@ function initReact() {
                         {periodDisplay} <i className="fa fa-spin fa-spinner" />
                     </td>
                 );
-            } else if (this.getPeriodData().length === 0) {
+            } else if ((isPublic || this.props.period.locked) && this.getPeriodData().length === 0) {
                 return (
                     <td className="period-td">
                         {periodDisplay}
                     </td>
                 );
             } else {
-                if (this.props.parent || this.props.child) {
-                    var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                    return (
-                        <td className="period-td">
-                            <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>
-                                {periodDisplay}
-                            </a> {pendingUpdates} {hover}
-                        </td>
-                    );
-                } else {
-                    return (
-                        <td className="period-td">
-                            <a onClick={this.switchPeriod}>
-                                {periodDisplay}
-                            </a> {pendingUpdates} {hover}
-                        </td>
-                    );
-                }
+                return (
+                    <td className="period-td">
+                        <a onClick={this.switchPeriod}>
+                            {periodDisplay}
+                        </a> {pendingUpdates} {hover}
+                    </td>
+                );
             }
         },
 
@@ -1125,29 +1114,18 @@ function initReact() {
                         );
                 }
             } else if (isAdmin) {
-                switch(this.props.period.locked) {
-                    case false:
-                        if (this.props.parent || this.props.child) {
-                            projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                            return (
-                                <td className="actions-td">
-                                    <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
-                                </td>
-                            );
-                        } else {
-                            return (
-                                <td className="actions-td">
-                                    <a onClick={this.switchPeriod}>{i18n.update}</a> | <a onClick={this.lockPeriod}>{i18n.lock_period}</a>
-                                </td>
-                            );
-                        }
-                        break;
-                    default:
-                        return (
-                            <td className="actions-td">
-                                <a onClick={this.unlockPeriod}>{i18n.unlock_period}</a>
-                            </td>
-                        );
+                if (this.props.period.locked) {
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock" /> {i18n.unlock_period}</a>
+                        </td>
+                    );
+                } else {
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.lockPeriod} className="btn btn-sm btn-default"><i className="fa fa-lock" /> {i18n.lock_period}</a>
+                        </td>
+                    );
                 }
             } else {
                 switch(this.props.period.locked) {

@@ -1078,31 +1078,20 @@ function initReact() {
                         periodDisplay, " ", React.DOM.i( {className:"fa fa-spin fa-spinner"} )
                     )
                 );
-            } else if (this.getPeriodData().length === 0) {
+            } else if ((isPublic || this.props.period.locked) && this.getPeriodData().length === 0) {
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay
                     )
                 );
             } else {
-                if (this.props.parent || this.props.child) {
-                    var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                    return (
-                        React.DOM.td( {className:"period-td"}, 
-                            React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, 
-                                periodDisplay
-                            ), " ", pendingUpdates, " ", hover
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.td( {className:"period-td"}, 
-                            React.DOM.a( {onClick:this.switchPeriod}, 
-                                periodDisplay
-                            ), " ", pendingUpdates, " ", hover
-                        )
-                    );
-                }
+                return (
+                    React.DOM.td( {className:"period-td"}, 
+                        React.DOM.a( {onClick:this.switchPeriod}, 
+                            periodDisplay
+                        ), " ", pendingUpdates, " ", hover
+                    )
+                );
             }
         },
 
@@ -1125,29 +1114,18 @@ function initReact() {
                         );
                 }
             } else if (isAdmin) {
-                switch(this.props.period.locked) {
-                    case false:
-                        if (this.props.parent || this.props.child) {
-                            projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
-                                )
-                            );
-                        } else {
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {onClick:this.switchPeriod}, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
-                                )
-                            );
-                        }
-                        break;
-                    default:
-                        return (
-                            React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
-                            )
-                        );
+                if (this.props.period.locked) {
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock"} ), " ", i18n.unlock_period)
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.lockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.lock_period)
+                        )
+                    );
                 }
             } else {
                 switch(this.props.period.locked) {

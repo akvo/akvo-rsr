@@ -597,6 +597,12 @@ nav.navbar-fixed-top {
     padding-top: 25px;
     padding-bottom: 25px;
     border: none; }
+    .indicator-period-list tbody.indicator-period tr td.actions-td .btn-default {
+      margin-top: -7px;
+      background: #202024;
+      color: white; }
+      .indicator-period-list tbody.indicator-period tr td.actions-td .btn-default:hover {
+        background: #2c2a74; }
 
 .myProjectList thead tr, #updates thead tr, #user_table thead tr {
   background-color: rgba(32, 32, 36, 0.05);

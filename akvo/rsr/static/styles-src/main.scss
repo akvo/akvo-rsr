@@ -695,6 +695,16 @@ nav.navbar-fixed-top {
                     padding-top: 25px;
                     padding-bottom: 25px;
                     border: none;
+                    &.actions-td {
+                        .btn-default {
+                            margin-top: -7px;
+                            background: $akvoBlack;
+                            color: white;
+                            &:hover {
+                                background: $akvoPurple;
+                            }
+                        }
+                    }
                 }
             }
         }
