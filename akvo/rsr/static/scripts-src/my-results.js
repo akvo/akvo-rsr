@@ -1557,8 +1557,12 @@ function initReact() {
         },
 
         switchResult: function() {
-            var resultId = this.expanded() ? null : this.props.result.id;
+            var thisResult = this.props.result;
+            var resultId = this.expanded() ? null : thisResult.id;
             this.props.selectResult(resultId);
+            if (thisResult.indicators !== undefined && thisResult.indicators.length === 1) {
+                this.props.selectIndicator(thisResult.indicators[0].id);
+            }
         },
 
         indicatorText: function() {
