@@ -3707,7 +3707,16 @@ label.fileUpload {
                 color: rgba($akvoBlack, 0.7);
             }
             .update-status {
-                color: $akvoTvRed;
+                color: $primary5;
+                &.pending {
+                    color: $progressNot;
+                }
+                &.revision {
+                    color: $progressWarning;
+                }
+                &.approved {
+                    color: $progressSuccess;
+                }
             }
         }
         .comments {

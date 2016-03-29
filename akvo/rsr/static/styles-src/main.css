@@ -2844,7 +2844,13 @@ label.imageUpload input[type="file"], label.fileUpload input[type="file"] {
         margin-left: 15px;
         color: rgba(32, 32, 36, 0.7); }
       .update-container .update-entry-container .update-entry-container-header .update-status {
-        color: #ee3124; }
+        color: #396680; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.pending {
+          color: #f0ad4e; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.revision {
+          color: #d9534f; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.approved {
+          color: #5cb85c; }
     .update-container .update-entry-container .comments .input-group {
       margin-top: 20px;
       /* button {

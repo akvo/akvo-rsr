@@ -427,8 +427,24 @@ function initReact() {
             if (isPublic) {
                 headerRight = React.DOM.span(null );
             } else {
+                var statusClass = "update-status";
+                
+                switch (this.props.update.status) {
+                    case 'P':
+                        statusClass += " pending";
+                        break;
+                    case 'R':
+                        statusClass += " revision";
+                        break;
+                    case 'A':
+                        statusClass += " approved";
+                        break;
+                    default:
+                        break;
+                }
+                
                 headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
-                    React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
+                    React.DOM.span( {className:statusClass},  " ", this.props.update.status_display)
                 );
             }
 
