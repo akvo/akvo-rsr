@@ -7,7 +7,7 @@
 
 var csrftoken,
     endpoints,
-    i18n,
+    i18nResults,
     isAdmin = false,
     isPublic,
     months,
@@ -70,7 +70,7 @@ function apiCall(method, url, data, successCallback, retries) {
                     return successCallback(response);
                 }
             } else {
-                var message = i18n.general_error + ': ';
+                var message = i18nResults.general_error + ': ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
                          message += response[key] + '. ';
@@ -88,7 +88,7 @@ function apiCall(method, url, data, successCallback, retries) {
         } else if (retries <= maxRetries) {
             return apiCall(method, url, data, successCallback, retries + 1);
         } else {
-            showGeneralError(i18n.connection_error);
+            showGeneralError(i18nResults.connection_error);
             return false;
         }
     };
@@ -139,7 +139,7 @@ function displayDate(dateString) {
         var year = date.getUTCFullYear();
         return day + " " + month + " " + year;
     }
-    return i18n.unknown_date;
+    return i18nResults.unknown_date;
 }
 
 function setPermissions() {
@@ -404,7 +404,7 @@ function initReact() {
 
             if (this.editing()) {
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
-                    React.DOM.span( {className:"edit-update"}, i18n.edit_update)
+                    React.DOM.span( {className:"edit-update"}, i18nResults.edit_update)
                 );
             } else {
                 var approved_organisations = this.props.update.user_details.approved_organisations;
@@ -420,7 +420,7 @@ function initReact() {
                         organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                         break;
                     default:
-                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
+                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18nResults.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18nResults.others;
                         break;
                 }
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -492,20 +492,20 @@ function initReact() {
             //var checkboxId = "relative-checkbox-" + this.props.update.id;
             //var checkbox;
             //if (this.state.isRelative) {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18nResults.relative_data}</label>;
             //} else {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18nResults.relative_data}</label>;
             //}
 
             if (this.editing()) {
                 return (
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-xs-6"}, 
-                            React.DOM.label( {htmlFor:inputId}, i18n.add_to_actual_value),
-                            React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18n.input_placeholder} )
+                            React.DOM.label( {htmlFor:inputId}, i18nResults.add_to_actual_value),
+                            React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18nResults.input_placeholder} )
                         ),
                         React.DOM.div( {className:"col-xs-6"}, 
-                            this.renderActualRelative(i18n.new_total_value)
+                            this.renderActualRelative(i18nResults.new_total_value)
                         )
                     )
                 );
@@ -513,7 +513,7 @@ function initReact() {
                 return (
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-xs-12"}, 
-                            this.renderActualRelative(i18n.total_value_after_update)
+                            this.renderActualRelative(i18nResults.total_value_after_update)
                         )
                     )
                 );
@@ -530,11 +530,18 @@ function initReact() {
             } else {
                 if (this.editing()) {
                     photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url, onClick:this.removePhoto} )
+                        React.DOM.div( {className:"image-container"}, 
+                            React.DOM.a( {onClick:this.removePhoto}, 
+                                React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url} ),
+                                React.DOM.div( {className:"image-overlay text-center"}, i18nResults.remove_image)
+                            )
+                        )
                     );
                 } else {
                     photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url})
+                        React.DOM.a( {href:endpoints.base_url + this.props.update.photo_url, target:"_blank"}, 
+                            React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url})
+                        )
                     );
                 }
                 descriptionClass = "col-xs-7 update-description";
@@ -542,8 +549,8 @@ function initReact() {
 
             if (this.editing()) {
                 descriptionPart = React.DOM.div( {className:descriptionClass}, 
-                    React.DOM.label( {htmlFor:inputId}, i18n.actual_value_comment),
-                    React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18n.comment_placeholder} )
+                    React.DOM.label( {htmlFor:inputId}, i18nResults.actual_value_comment),
+                    React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18nResults.comment_placeholder} )
                 );
             } else {
                 descriptionPart = React.DOM.div( {className:descriptionClass}, 
@@ -577,7 +584,7 @@ function initReact() {
         renderFileUpload: function() {
             if (this.editing()) {
                 var fileUpload;
-                var labelText = this.props.update.photo_url === "" ? i18n.add_image : i18n.change_image;
+                var labelText = this.props.update.photo_url === "" ? i18nResults.add_image : i18nResults.change_image;
 
                 if (this.props.update.file_url !== '') {
                     fileUpload = React.DOM.div( {className:"col-xs-6"}, 
@@ -588,7 +595,7 @@ function initReact() {
                     fileUpload = React.DOM.div( {className:"col-xs-3"}, 
                         React.DOM.label( {className:"fileUpload"}, 
                             React.DOM.input( {type:"file", onChange:this.uploadFile} ),
-                            React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18n.attach_file)
+                            React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18nResults.attach_file)
                         )
                     );
                 }
@@ -640,7 +647,7 @@ function initReact() {
                 });
             } else {
                 comments = React.DOM.div( {className:"comment"}, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.comments
+                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.comments
                 );
             }
 
@@ -651,9 +658,9 @@ function initReact() {
             if (addComments) {
                 addCommentInput = React.DOM.div(null, 
                     React.DOM.div( {className:"input-group"}, 
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
                         React.DOM.span( {className:"input-group-btn"}, 
-                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18n.add_comment)
+                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
                         )
                     )
                 );
@@ -679,13 +686,13 @@ function initReact() {
                     React.DOM.div( {className:"menuAction"}, 
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                             React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                i18n.delete_confirmation
+                                i18nResults.delete_confirmation
                             ),
                             React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
-                                React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18n.yes)
+                                React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18nResults.yes)
                             ),
                             React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
-                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.no)
+                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.no)
                             )
                         )
                     )
@@ -696,17 +703,17 @@ function initReact() {
                         return (
                             React.DOM.div( {className:"menuAction"}, 
                                 React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
+                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
                                 ),
                                 React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                     React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
                                     )
                                 )
                             )
@@ -715,17 +722,17 @@ function initReact() {
                         return (
                             React.DOM.div( {className:"menuAction"}, 
                                 React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
+                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
                                 ),
                                 React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                     React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval)
+                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
                                     )
                                 )
                             )
@@ -739,13 +746,13 @@ function initReact() {
                                 React.DOM.div( {className:"menuAction"}, 
                                     React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                         React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
-                                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18n.return_for_revision)
+                                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18nResults.return_for_revision)
                                         ),
                                         React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
                                         ),
                                         React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
                                         )
                                     )
                                 )
@@ -766,7 +773,7 @@ function initReact() {
                                 React.DOM.div( {className:"menuAction"}, 
                                     React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                         React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
                                         )
                                     )
                                 )
@@ -846,15 +853,15 @@ function initReact() {
                 });
             } else {
                 updates = React.DOM.div(null, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.updates
+                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.updates
                 );
             }
 
             var updatesHeader;
             if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
-                updatesHeader = React.DOM.h5(null, i18n.updates);
+                updatesHeader = React.DOM.h5(null, i18nResults.updates);
             } else {
-                updatesHeader = React.DOM.h5(null, i18n.no_updates_yet);
+                updatesHeader = React.DOM.h5(null, i18nResults.no_updates_yet);
             }
 
             return (
@@ -899,14 +906,14 @@ function initReact() {
             if (this.props.addingNewUpdate) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
-                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.adding_update
+                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.adding_update
                     )
                 );
             } else if (!this.props.selectedPeriod.locked) {
                 if (this.props.selectedPeriod.data !== undefined) {
                     return (
                         React.DOM.div( {className:"new-update"}, 
-                            React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18n.new_update)
+                            React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18nResults.new_update)
                         )
                     );
                 } else {
@@ -917,7 +924,7 @@ function initReact() {
             } else if (isAdmin) {
                 return (
                     React.DOM.div( {className:"new-update"}, 
-                        React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18n.unlock_period)
+                        React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.unlock_period)
                     )
                 );
             } else {
@@ -932,7 +939,7 @@ function initReact() {
             if (this.props.selectedPeriod.target_comment !== '') {
                 return (
                     React.DOM.div( {className:"period-target-comment"}, 
-                        i18n.target_comment,
+                        i18nResults.target_comment,
                         React.DOM.span(null, this.props.selectedPeriod.target_comment)
                     )
                 );
@@ -972,24 +979,24 @@ function initReact() {
         },
 
         render: function() {
-            var hover = this.state.actualValueHover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.actual_value_info)) : React.DOM.span(null );
+            var hover = this.state.actualValueHover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18nResults.actual_value_info)) : React.DOM.span(null );
 
             return (
                 React.DOM.div( {className:"indicator-period opacity-transition"}, 
                     React.DOM.div( {className:"indicTitle"}, 
                             React.DOM.h4( {className:"indicator-title"}, 
-                                i18n.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
+                                i18nResults.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
                             ),
                         this.renderNewUpdate()
                     ),
                     React.DOM.div( {className:"period-target-actual"}, 
                         React.DOM.div( {className:"periodValues"}, 
                             React.DOM.div( {className:"period-target"}, 
-                                i18n.target_value,
+                                i18nResults.target_value,
                                 React.DOM.span(null, this.renderTargetValue())
                             ),
                             React.DOM.div( {className:"period-actual"}, 
-                                i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
+                                i18nResults.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
                                 React.DOM.span( {className:"actualValueSpan"}, 
                                     React.DOM.span(null, this.renderActualValue()),
                                     this.renderPercentageComplete()
@@ -1099,7 +1106,7 @@ function initReact() {
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
             var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
-            var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.number_of_pending_updates)) : React.DOM.span(null );
+            var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18nResults.number_of_pending_updates)) : React.DOM.span(null );
 
             if (this.getPeriodData() === undefined) {
                 return (
@@ -1132,13 +1139,13 @@ function initReact() {
                     case false:
                         return (
                             React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-unlock"} ), " ", i18n.period_unlocked
+                                React.DOM.i( {className:"fa fa-unlock"} ), " ", i18nResults.period_unlocked
                             )
                         );
                     default:
                         return (
                             React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.period_locked
+                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.period_locked
                             )
                         );
                 }
@@ -1146,13 +1153,13 @@ function initReact() {
                 if (this.props.period.locked) {
                     return (
                         React.DOM.td( {className:"actions-td"}, 
-                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock"} ), " ", i18n.unlock_period)
+                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock"} ), " ", i18nResults.unlock_period)
                         )
                     );
                 } else {
                     return (
                         React.DOM.td( {className:"actions-td"}, 
-                            React.DOM.a( {onClick:this.lockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.lock_period)
+                            React.DOM.a( {onClick:this.lockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.lock_period)
                         )
                     );
                 }
@@ -1163,13 +1170,13 @@ function initReact() {
                             projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                             return (
                                 React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18n.update)
+                                    React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18nResults.update)
                                 )
                             );
                         } else {
                             return (
                                 React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {onClick:this.switchPeriod}, i18n.update)
+                                    React.DOM.a( {onClick:this.switchPeriod}, i18nResults.update)
                                 )
                             );
                         }
@@ -1177,7 +1184,7 @@ function initReact() {
                     default:
                         return (
                             React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.period_locked
+                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.period_locked
                             )
                         );
                 }
@@ -1255,11 +1262,11 @@ function initReact() {
                 return (
                     React.DOM.div( {className:"baseline"}, 
                         React.DOM.div( {className:"baseline-year"}, 
-                            i18n.baseline_year,
+                            i18nResults.baseline_year,
                             React.DOM.span(null, baselineYear)
                         ),
                         React.DOM.div( {className:"baseline-value"}, 
-                            i18n.baseline_value,
+                            i18nResults.baseline_value,
                             React.DOM.span(null, baselineValue)
                         )
                     )
@@ -1299,7 +1306,7 @@ function initReact() {
                 periods = React.DOM.tbody( {className:"indicator-period bg-transition"}, 
                     React.DOM.tr(null, 
                         React.DOM.td(null, 
-                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicator_periods
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicator_periods
                         ),
                         React.DOM.td(null ),React.DOM.td(null ),React.DOM.td(null )
                     )
@@ -1317,7 +1324,7 @@ function initReact() {
                 relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
                 relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
                 relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.parent_project + ': ';
+                relatedIndication = i18nResults.parent_project + ': ';
                 relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
                 relatedClass += "parentProject";
                 return (
@@ -1329,7 +1336,7 @@ function initReact() {
                 relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
                 relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
                 relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.child_project + ': ';
+                relatedIndication = i18nResults.child_project + ': ';
                 relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
                 relatedClass += "childProject";
 
@@ -1345,14 +1352,14 @@ function initReact() {
                 return (
                     React.DOM.div( {className:relatedClass}, 
                         React.DOM.span( {className:"relatedInfo"}, relatedIndication),
-                        React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
+                        React.DOM.h4( {className:"indicator-periods-title"}, i18nResults.indicator_periods),
                         this.renderBaseline(),
                         React.DOM.table( {className:"table table-responsive"}, 
                             React.DOM.thead(null, 
                             React.DOM.tr(null, 
-                                React.DOM.td( {className:"th-period"}, i18n.period),
-                                React.DOM.td( {className:"th-target"}, i18n.target_value),
-                                React.DOM.td( {className:"th-actual"}, i18n.actual_value),
+                                React.DOM.td( {className:"th-period"}, i18nResults.period),
+                                React.DOM.td( {className:"th-target"}, i18nResults.target_value),
+                                React.DOM.td( {className:"th-actual"}, i18nResults.actual_value),
                                 React.DOM.td( {className:"th-actions"})
                             )
                             ),
@@ -1411,9 +1418,9 @@ function initReact() {
         showMeasure: function() {
             switch(this.props.selectedIndicator.measure) {
                 case "1":
-                    return ' (' + i18n.unit + ')';
+                    return ' (' + i18nResults.unit + ')';
                 case "2":
-                    return ' (' + i18n.percentage + ')';
+                    return ' (' + i18nResults.percentage + ')';
                 default:
                     return "";
             }
@@ -1574,9 +1581,9 @@ function initReact() {
 
         indicatorText: function() {
             if (this.props.result.indicators !== undefined) {
-                return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+                return this.props.result.indicators.length === 1 ? i18nResults.indicator : i18nResults.indicators;
             } else {
-                return i18n.indicators;
+                return i18nResults.indicators;
             }
         },
 
@@ -1604,7 +1611,7 @@ function initReact() {
                         React.DOM.div( {className:"result-nav-full clickable"}, 
                             React.DOM.div( {className:"indicator-nav bg-border-transition"}, 
                                 React.DOM.a(null, 
-                                    React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicators)
+                                    React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicators)
                                 )
                             )
                         )
@@ -1694,7 +1701,7 @@ function initReact() {
                     React.DOM.div( {className:"results-list"}, 
                         React.DOM.div( {className:"result-nav bg-transition"}, 
                             React.DOM.div( {className:"result-nav-summary"}, 
-                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.results
+                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.results
                             )
                         )
                     )
@@ -2168,7 +2175,7 @@ function initReact() {
                         React.DOM.div( {className:"results-container"}, 
                             React.DOM.div( {className:"sidebar"}, 
                                 React.DOM.div( {className:"result-nav-header"}, 
-                                    React.DOM.h3(null, i18n.results)
+                                    React.DOM.h3(null, i18nResults.results)
                                 ),
                                 React.createElement(
                                     SideBar, {
@@ -2247,7 +2254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
     isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 

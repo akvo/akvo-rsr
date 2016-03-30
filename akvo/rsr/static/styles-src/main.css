@@ -2851,6 +2851,19 @@ label.imageUpload input[type="file"], label.fileUpload input[type="file"] {
           color: #d9534f; }
         .update-container .update-entry-container .update-entry-container-header .update-status.approved {
           color: #5cb85c; }
+    .update-container .update-entry-container .image-container {
+      position: relative; }
+      .update-container .update-entry-container .image-container .image-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%; }
+      .update-container .update-entry-container .image-container:hover .image-overlay {
+        display: block;
+        background: rgba(255, 255, 255, 0.5);
+        color: #d9534f; }
     .update-container .update-entry-container .comments .input-group {
       margin-top: 20px;
       /* button {

@@ -7,7 +7,7 @@
 
 var csrftoken,
     endpoints,
-    i18n,
+    i18nResults,
     isAdmin = false,
     isPublic,
     months,
@@ -70,7 +70,7 @@ function apiCall(method, url, data, successCallback, retries) {
                     return successCallback(response);
                 }
             } else {
-                var message = i18n.general_error + ': ';
+                var message = i18nResults.general_error + ': ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
                          message += response[key] + '. ';
@@ -88,7 +88,7 @@ function apiCall(method, url, data, successCallback, retries) {
         } else if (retries <= maxRetries) {
             return apiCall(method, url, data, successCallback, retries + 1);
         } else {
-            showGeneralError(i18n.connection_error);
+            showGeneralError(i18nResults.connection_error);
             return false;
         }
     };
@@ -139,7 +139,7 @@ function displayDate(dateString) {
         var year = date.getUTCFullYear();
         return day + " " + month + " " + year;
     }
-    return i18n.unknown_date;
+    return i18nResults.unknown_date;
 }
 
 function setPermissions() {
@@ -404,7 +404,7 @@ function initReact() {
 
             if (this.editing()) {
                 headerLeft = <div className="col-xs-9">
-                    <span className="edit-update">{i18n.edit_update}</span>
+                    <span className="edit-update">{i18nResults.edit_update}</span>
                 </div>;
             } else {
                 var approved_organisations = this.props.update.user_details.approved_organisations;
@@ -420,7 +420,7 @@ function initReact() {
                         organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                         break;
                     default:
-                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
+                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18nResults.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18nResults.others;
                         break;
                 }
                 headerLeft = <div className="col-xs-9">
@@ -492,20 +492,20 @@ function initReact() {
             //var checkboxId = "relative-checkbox-" + this.props.update.id;
             //var checkbox;
             //if (this.state.isRelative) {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18nResults.relative_data}</label>;
             //} else {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18nResults.relative_data}</label>;
             //}
 
             if (this.editing()) {
                 return (
                     <div className="row">
                         <div className="col-xs-6">
-                            <label htmlFor={inputId}>{i18n.add_to_actual_value}</label>
-                            <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} placeholder={i18n.input_placeholder} />
+                            <label htmlFor={inputId}>{i18nResults.add_to_actual_value}</label>
+                            <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} placeholder={i18nResults.input_placeholder} />
                         </div>
                         <div className="col-xs-6">
-                            {this.renderActualRelative(i18n.new_total_value)}
+                            {this.renderActualRelative(i18nResults.new_total_value)}
                         </div>
                     </div>
                 );
@@ -513,7 +513,7 @@ function initReact() {
                 return (
                     <div className="row">
                         <div className="col-xs-12">
-                            {this.renderActualRelative(i18n.total_value_after_update)}
+                            {this.renderActualRelative(i18nResults.total_value_after_update)}
                         </div>
                     </div>
                 );
@@ -530,11 +530,18 @@ function initReact() {
             } else {
                 if (this.editing()) {
                     photoPart = <div className="col-xs-3 update-photo">
-                        <img src={endpoints.base_url + this.props.update.photo_url} onClick={this.removePhoto} />
+                        <div className="image-container">
+                            <a onClick={this.removePhoto}>
+                                <img src={endpoints.base_url + this.props.update.photo_url} />
+                                <div className="image-overlay text-center">{i18nResults.remove_image}</div>
+                            </a>
+                        </div>
                     </div>;
                 } else {
                     photoPart = <div className="col-xs-3 update-photo">
-                        <img src={endpoints.base_url + this.props.update.photo_url}/>
+                        <a href={endpoints.base_url + this.props.update.photo_url} target="_blank">
+                            <img src={endpoints.base_url + this.props.update.photo_url}/>
+                        </a>
                     </div>;
                 }
                 descriptionClass = "col-xs-7 update-description";
@@ -542,8 +549,8 @@ function initReact() {
 
             if (this.editing()) {
                 descriptionPart = <div className={descriptionClass}>
-                    <label htmlFor={inputId}>{i18n.actual_value_comment}</label>
-                    <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} placeholder={i18n.comment_placeholder} />
+                    <label htmlFor={inputId}>{i18nResults.actual_value_comment}</label>
+                    <textarea className="form-control" id={inputId} defaultValue={this.props.update.text} onChange={this.handleDescriptionChange} placeholder={i18nResults.comment_placeholder} />
                 </div>;
             } else {
                 descriptionPart = <div className={descriptionClass}>
@@ -577,7 +584,7 @@ function initReact() {
         renderFileUpload: function() {
             if (this.editing()) {
                 var fileUpload;
-                var labelText = this.props.update.photo_url === "" ? i18n.add_image : i18n.change_image;
+                var labelText = this.props.update.photo_url === "" ? i18nResults.add_image : i18nResults.change_image;
 
                 if (this.props.update.file_url !== '') {
                     fileUpload = <div className="col-xs-6">
@@ -588,7 +595,7 @@ function initReact() {
                     fileUpload = <div className="col-xs-3">
                         <label className="fileUpload">
                             <input type="file" onChange={this.uploadFile} />
-                            <a><i className="fa fa-paperclip"/> {i18n.attach_file}</a>
+                            <a><i className="fa fa-paperclip"/> {i18nResults.attach_file}</a>
                         </label>
                     </div>;
                 }
@@ -640,7 +647,7 @@ function initReact() {
                 });
             } else {
                 comments = <div className="comment">
-                    <i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.comments}
+                    <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.comments}
                 </div>;
             }
 
@@ -651,9 +658,9 @@ function initReact() {
             if (addComments) {
                 addCommentInput = <div>
                     <div className="input-group">
-                        <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18n.add_comment_placeholder} onChange={this.handleCommentChange} />
+                        <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18nResults.add_comment_placeholder} onChange={this.handleCommentChange} />
                         <span className="input-group-btn">
-                            <button onClick={this.addComment} type="submit" className="btn btn-default">{i18n.add_comment}</button>
+                            <button onClick={this.addComment} type="submit" className="btn btn-default">{i18nResults.add_comment}</button>
                         </span>
                     </div>
                 </div>;
@@ -679,13 +686,13 @@ function initReact() {
                     <div className="menuAction">
                         <ul className="nav-pills bottomRow navbar-right">
                             <li role="presentation" className="cancelUpdate">
-                                {i18n.delete_confirmation}
+                                {i18nResults.delete_confirmation}
                             </li>
                             <li role="presentation" className="removeUpdateConfirm">
-                                <a onClick={this.removeUpdate} className="btn btn-default btn-xs">{i18n.yes}</a>
+                                <a onClick={this.removeUpdate} className="btn btn-default btn-xs">{i18nResults.yes}</a>
                             </li>
                             <li role="presentation" className="removeUpdateCancel">
-                                <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.no}</a>
+                                <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.no}</a>
                             </li>
                         </ul>
                     </div>
@@ -696,17 +703,17 @@ function initReact() {
                         return (
                             <div className="menuAction">
                                 <div role="presentation" className="removeUpdate">
-                                    <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
+                                    <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
                                 </div>
                                 <ul className="nav-pills bottomRow navbar-right">
                                     <li role="presentation" className="cancelUpdate">
-                                        <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                                        <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
                                     </li>
                                     <li role="presentation" className="saveUpdate">
-                                        <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                                        <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
                                     </li>
                                     <li role="presentation" className="approveUpdate">
-                                        <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                                        <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -715,17 +722,17 @@ function initReact() {
                         return (
                             <div className="menuAction">
                                 <div role="presentation" className="removeUpdate">
-                                    <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18n.delete}</a>
+                                    <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
                                 </div>
                                 <ul className="nav-pills bottomRow navbar-right">
                                     <li role="presentation" className="cancelUpdate">
-                                        <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                                        <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
                                     </li>
                                     <li role="presentation" className="saveUpdate">
-                                        <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                                        <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
                                     </li>
                                     <li role="presentation" className="submitUpdate">
-                                        <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18n.submit_for_approval}</a>
+                                        <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18nResults.submit_for_approval}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -739,13 +746,13 @@ function initReact() {
                                 <div className="menuAction">
                                     <ul className="nav-pills bottomRow navbar-right">
                                         <li role="presentation" className="returnUpdate">
-                                            <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18n.return_for_revision}</a>
+                                            <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18nResults.return_for_revision}</a>
                                         </li>
                                         <li role="presentation" className="editUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
                                         </li>
                                         <li role="presentation" className="approveUpdate">
-                                            <a onClick={this.approve} className="btn btn-default btn-xs">{i18n.approve}</a>
+                                            <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -766,7 +773,7 @@ function initReact() {
                                 <div className="menuAction">
                                     <ul className="nav-pills bottomRow navbar-right">
                                         <li role="presentation" className="editUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18n.edit_update}</a>
+                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -846,15 +853,15 @@ function initReact() {
                 });
             } else {
                 updates = <div>
-                    <i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.updates}
+                    <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.updates}
                 </div>;
             }
 
             var updatesHeader;
             if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
-                updatesHeader = <h5>{i18n.updates}</h5>;
+                updatesHeader = <h5>{i18nResults.updates}</h5>;
             } else {
-                updatesHeader = <h5>{i18n.no_updates_yet}</h5>;
+                updatesHeader = <h5>{i18nResults.no_updates_yet}</h5>;
             }
 
             return (
@@ -899,14 +906,14 @@ function initReact() {
             if (this.props.addingNewUpdate) {
                 return (
                     <div className="new-update">
-                        <i className="fa fa-spin fa-spinner" /> {i18n.adding_update}
+                        <i className="fa fa-spin fa-spinner" /> {i18nResults.adding_update}
                     </div>
                 );
             } else if (!this.props.selectedPeriod.locked) {
                 if (this.props.selectedPeriod.data !== undefined) {
                     return (
                         <div className="new-update">
-                            <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18n.new_update}</a>
+                            <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
                         </div>
                     );
                 } else {
@@ -917,7 +924,7 @@ function initReact() {
             } else if (isAdmin) {
                 return (
                     <div className="new-update">
-                        <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18n.unlock_period}</a>
+                        <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
                     </div>
                 );
             } else {
@@ -932,7 +939,7 @@ function initReact() {
             if (this.props.selectedPeriod.target_comment !== '') {
                 return (
                     <div className="period-target-comment">
-                        {i18n.target_comment}
+                        {i18nResults.target_comment}
                         <span>{this.props.selectedPeriod.target_comment}</span>
                     </div>
                 );
@@ -972,24 +979,24 @@ function initReact() {
         },
 
         render: function() {
-            var hover = this.state.actualValueHover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.actual_value_info}</div></div> : <span />;
+            var hover = this.state.actualValueHover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18nResults.actual_value_info}</div></div> : <span />;
 
             return (
                 <div className="indicator-period opacity-transition">
                     <div className="indicTitle">
                             <h4 className="indicator-title">
-                                {i18n.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
+                                {i18nResults.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
                             </h4>
                         {this.renderNewUpdate()}
                     </div>
                     <div className="period-target-actual">
                         <div className="periodValues">
                             <div className="period-target">
-                                {i18n.target_value}
+                                {i18nResults.target_value}
                                 <span>{this.renderTargetValue()}</span>
                             </div>
                             <div className="period-actual">
-                                {i18n.actual_value}<div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div>
+                                {i18nResults.actual_value}<div className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>i</div>
                                 <span className="actualValueSpan">
                                     <span>{this.renderActualValue()}</span>
                                     {this.renderPercentageComplete()}
@@ -1099,7 +1106,7 @@ function initReact() {
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
             var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? <span className="badge" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>{nrPendingUpdates}</span> : <span />;
-            var hover = this.state.hover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18n.number_of_pending_updates}</div></div> : <span />;
+            var hover = this.state.hover ? <div className="result-tooltip fade top in" role="tooltip"><div className="tooltip-arrow"></div><div className="tooltip-inner">{i18nResults.number_of_pending_updates}</div></div> : <span />;
 
             if (this.getPeriodData() === undefined) {
                 return (
@@ -1132,13 +1139,13 @@ function initReact() {
                     case false:
                         return (
                             <td className="actions-td">
-                                <i className="fa fa-unlock" /> {i18n.period_unlocked}
+                                <i className="fa fa-unlock" /> {i18nResults.period_unlocked}
                             </td>
                         );
                     default:
                         return (
                             <td className="actions-td">
-                                <i className="fa fa-lock" /> {i18n.period_locked}
+                                <i className="fa fa-lock" /> {i18nResults.period_locked}
                             </td>
                         );
                 }
@@ -1146,13 +1153,13 @@ function initReact() {
                 if (this.props.period.locked) {
                     return (
                         <td className="actions-td">
-                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock" /> {i18n.unlock_period}</a>
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock" /> {i18nResults.unlock_period}</a>
                         </td>
                     );
                 } else {
                     return (
                         <td className="actions-td">
-                            <a onClick={this.lockPeriod} className="btn btn-sm btn-default"><i className="fa fa-lock" /> {i18n.lock_period}</a>
+                            <a onClick={this.lockPeriod} className="btn btn-sm btn-default"><i className="fa fa-lock" /> {i18nResults.lock_period}</a>
                         </td>
                     );
                 }
@@ -1163,13 +1170,13 @@ function initReact() {
                             projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
                             return (
                                 <td className="actions-td">
-                                    <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18n.update}</a>
+                                    <a href={"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }>{i18nResults.update}</a>
                                 </td>
                             );
                         } else {
                             return (
                                 <td className="actions-td">
-                                    <a onClick={this.switchPeriod}>{i18n.update}</a>
+                                    <a onClick={this.switchPeriod}>{i18nResults.update}</a>
                                 </td>
                             );
                         }
@@ -1177,7 +1184,7 @@ function initReact() {
                     default:
                         return (
                             <td className="actions-td">
-                                <i className="fa fa-lock" /> {i18n.period_locked}
+                                <i className="fa fa-lock" /> {i18nResults.period_locked}
                             </td>
                         );
                 }
@@ -1255,11 +1262,11 @@ function initReact() {
                 return (
                     <div className="baseline">
                         <div className="baseline-year">
-                            {i18n.baseline_year}
+                            {i18nResults.baseline_year}
                             <span>{baselineYear}</span>
                         </div>
                         <div className="baseline-value">
-                            {i18n.baseline_value}
+                            {i18nResults.baseline_value}
                             <span>{baselineValue}</span>
                         </div>
                     </div>
@@ -1299,7 +1306,7 @@ function initReact() {
                 periods = <tbody className="indicator-period bg-transition">
                     <tr>
                         <td>
-                            <i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.indicator_periods}
+                            <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.indicator_periods}
                         </td>
                         <td /><td /><td />
                     </tr>
@@ -1317,7 +1324,7 @@ function initReact() {
                 relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
                 relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
                 relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.parent_project + ': ';
+                relatedIndication = i18nResults.parent_project + ': ';
                 relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
                 relatedClass += "parentProject";
                 return (
@@ -1329,7 +1336,7 @@ function initReact() {
                 relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
                 relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
                 relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.child_project + ': ';
+                relatedIndication = i18nResults.child_project + ': ';
                 relatedProjectLink = <a href={relatedProjectUrl}>{relatedProjectTitle}</a>;
                 relatedClass += "childProject";
 
@@ -1345,14 +1352,14 @@ function initReact() {
                 return (
                     <div className={relatedClass}>
                         <span className="relatedInfo">{relatedIndication}</span>
-                        <h4 className="indicator-periods-title">{i18n.indicator_periods}</h4>
+                        <h4 className="indicator-periods-title">{i18nResults.indicator_periods}</h4>
                         {this.renderBaseline()}
                         <table className="table table-responsive">
                             <thead>
                             <tr>
-                                <td className="th-period">{i18n.period}</td>
-                                <td className="th-target">{i18n.target_value}</td>
-                                <td className="th-actual">{i18n.actual_value}</td>
+                                <td className="th-period">{i18nResults.period}</td>
+                                <td className="th-target">{i18nResults.target_value}</td>
+                                <td className="th-actual">{i18nResults.actual_value}</td>
                                 <td className="th-actions"/>
                             </tr>
                             </thead>
@@ -1411,9 +1418,9 @@ function initReact() {
         showMeasure: function() {
             switch(this.props.selectedIndicator.measure) {
                 case "1":
-                    return ' (' + i18n.unit + ')';
+                    return ' (' + i18nResults.unit + ')';
                 case "2":
-                    return ' (' + i18n.percentage + ')';
+                    return ' (' + i18nResults.percentage + ')';
                 default:
                     return "";
             }
@@ -1574,9 +1581,9 @@ function initReact() {
 
         indicatorText: function() {
             if (this.props.result.indicators !== undefined) {
-                return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+                return this.props.result.indicators.length === 1 ? i18nResults.indicator : i18nResults.indicators;
             } else {
-                return i18n.indicators;
+                return i18nResults.indicators;
             }
         },
 
@@ -1604,7 +1611,7 @@ function initReact() {
                         <div className="result-nav-full clickable">
                             <div className="indicator-nav bg-border-transition">
                                 <a>
-                                    <h4><i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.indicators}</h4>
+                                    <h4><i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.indicators}</h4>
                                 </a>
                             </div>
                         </div>
@@ -1694,7 +1701,7 @@ function initReact() {
                     <div className="results-list">
                         <div className="result-nav bg-transition">
                             <div className="result-nav-summary">
-                                <i className="fa fa-spin fa-spinner" /> {i18n.loading} {i18n.results}
+                                <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.results}
                             </div>
                         </div>
                     </div>
@@ -2168,7 +2175,7 @@ function initReact() {
                         <div className="results-container">
                             <div className="sidebar">
                                 <div className="result-nav-header">
-                                    <h3>{i18n.results}</h3>
+                                    <h3>{i18nResults.results}</h3>
                                 </div>
                                 {React.createElement(
                                     SideBar, {
@@ -2247,7 +2254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
     isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
