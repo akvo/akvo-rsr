@@ -112,6 +112,23 @@ class Result(models.Model):
     def is_calculated(self):
         return self.project.is_impact_project
 
+    def parent_project(self):
+        """
+        Return a dictionary of this result's parent project.
+        """
+        if self.parent_result:
+            return {self.parent_result.project.id: self.parent_result.project.title}
+        return {}
+
+    def child_projects(self):
+        """
+        Return a dictionary of this result's child projects.
+        """
+        projects = {}
+        for result in Result.objects.filter(parent_result=self):
+            projects[result.project.id] = result.project.title
+        return projects
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'result')
