@@ -724,10 +724,9 @@ function initReact() {
             }
 
             var inputId = "new-comment-" + this.props.update.id;
-            var addComments = this.props.update.status !== 'A';
             var addCommentInput;
 
-            if (addComments) {
+            if (this.props.update.status !== 'A' && this.editing()) {
                 // Adding comments is only possible when the update has not yet been
                 // approved (status 'A').
                 addCommentInput = React.DOM.div(null, 
