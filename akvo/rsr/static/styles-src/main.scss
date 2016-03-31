@@ -2969,10 +2969,11 @@ article {
 
             }
         }
-        span:nth-child(2n) {
+        span:nth-child(2n), .actualValueSpan {
             display: block;
             font-family: $titleFont;
-            font-weight: 700;
+            font-weight: 400;
+            font-size: 90%;
             color: rgba($akvoPurple, 0.9);
             span {
                 display: inline;
@@ -3750,6 +3751,7 @@ label.fileUpload {
             padding: 10px 5px 5px 5px;
             margin-top: 20px;
             background: rgba($primary5, 0.1);
+            @include border-radius(3px);
             .input-group {
                 /* button {
                            background: $akvoBlack;
