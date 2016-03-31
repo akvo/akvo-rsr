@@ -1822,6 +1822,32 @@ function initReact() {
             }
         },
 
+        renderResultType: function() {
+            // Show the result type, if available
+            switch (this.props.result.type) {
+                case '1':
+                    return (
+                        React.DOM.span(null, "(",i18nResults.output,")")
+                    );
+                case '2':
+                    return (
+                        React.DOM.span(null, "(",i18nResults.outcome,")")
+                    );
+                case '3':
+                    return (
+                        React.DOM.span(null, "(",i18nResults.impact,")")
+                    );
+                case '9':
+                    return (
+                        React.DOM.span(null, "(",i18nResults.other,")")
+                    );
+                default:
+                    return (
+                        React.DOM.span(null )
+                    );
+            }
+        },
+
         renderIndicatorCount: function() {
             // Show the number of indicators of a result, or a loading icon.
             var indicatorLength;
@@ -1864,7 +1890,8 @@ function initReact() {
                         React.DOM.h3( {className:"result-title"}, 
                             React.DOM.i( {className:"fa fa-chevron-circle-down"} ),
                             React.DOM.i( {className:"fa fa-chevron-circle-up"} ),
-                            React.DOM.span(null, this.props.result.title)
+                            React.DOM.span(null, this.props.result.title),
+                            this.renderResultType()
                         ),
                         this.renderIndicatorCount()
                     ),
