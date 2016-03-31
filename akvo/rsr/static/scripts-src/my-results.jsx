@@ -230,7 +230,9 @@ function initReact() {
                 description: this.props.update.text,
                 isRelative: this.props.update.relative_data,
                 comment: '',
-                askRemove: false
+                askRemove: false,
+                loading: false,
+                loadingComment: false
             };
         },
 
@@ -247,16 +249,25 @@ function initReact() {
                 var update = response;
                 var periodId = thisApp.props.selectedPeriod.id;
                 thisApp.props.saveUpdateToPeriod(update, periodId, false);
+
                 if (!keepEditing) {
                     // Remove the editing state in case the user wants to stop editing.
                     thisApp.props.removeEditingData(update.id);
                 }
+
                 if (reloadPeriod) {
                     // In some cases it is best to reload the whole period after an indicator
                     // update has been saved.
                     thisApp.props.reloadPeriod(periodId);
                 }
+
+                // Remove loading state
+                thisApp.setState({loading: false});
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
@@ -329,8 +340,15 @@ function initReact() {
                 if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                     var newFile = JSON.parse(xmlHttp.responseText).file;
                     thisApp.props.saveFileInUpdate(newFile, updateId, type);
+
+                    // Set state to not loading anymore
+                    thisApp.setState({loading: false});
                 }
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             xmlHttp.send(formData);
         },
 
@@ -359,12 +377,24 @@ function initReact() {
                 var comment = response;
                 var updateId = thisApp.props.update.id;
                 thisApp.props.saveCommentInUpdate(comment, updateId);
-                thisApp.setState({comment: ''});
+
+                // Remove state of current comment and disable loading of comments
+                thisApp.setState({
+                    comment: '',
+                    loadingComment: false
+                });
             };
+
+            // Set loading of comments
+            this.setState({loadingComment: true});
+
             apiCall('POST', url, data, success);
         },
 
         removeUpdate: function() {
+            // Set state to loading
+            this.setState({loading: true});
+
             // Remove an indicator update.
             this.props.removeUpdate(this.props.update.id);
         },
@@ -729,25 +759,42 @@ function initReact() {
             if (this.props.update.status !== 'A' && this.editing()) {
                 // Adding comments is only possible when the update has not yet been
                 // approved (status 'A').
-                addCommentInput = <div>
-                    <div className="input-group">
-                        <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18nResults.add_comment_placeholder} onChange={this.handleCommentChange} />
-                        <span className="input-group-btn">
-                            <button onClick={this.addComment} type="submit" className="btn btn-default">{i18nResults.add_comment}</button>
-                        </span>
-                    </div>
-                </div>;
+                if (this.state.loadingComment) {
+                    addCommentInput = <div>
+                        <div className="input-group">
+                            <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18nResults.add_comment_placeholder} />
+                            <span className="input-group-btn">
+                                <button className="btn btn-default"><i className="fa fa-spin fa-spinner" />{i18nResults.loading}...</button>
+                            </span>
+                        </div>
+                    </div>;
+                } else {
+                    addCommentInput = <div>
+                        <div className="input-group">
+                            <input className="form-control" value={this.state.comment} id={inputId} placeholder={i18nResults.add_comment_placeholder} onChange={this.handleCommentChange} />
+                            <span className="input-group-btn">
+                                <button onClick={this.addComment} type="submit" className="btn btn-default">{i18nResults.add_comment}</button>
+                            </span>
+                        </div>
+                    </div>;
+                }
             } else {
                 // Otherwise, show nothing for approved updates.
                 addCommentInput = <span />;
             }
 
-            return (
-                <div className="comments">
-                    {comments}
-                    {addCommentInput}
-                </div>
-            );
+            if (this.props.update.comments.length > 0 || this.editing()) {
+                return (
+                    <div className="comments">
+                        {comments}
+                        {addCommentInput}
+                    </div>
+                );
+            } else {
+                return (
+                    <span />
+                );
+            }
         },
 
         renderFooter: function() {
@@ -756,6 +803,16 @@ function initReact() {
                 // Locked periods, or in the public view, do not have actions. Display nothing.
                 return (
                     <span />
+                );
+            } else if (this.state.loading) {
+                return (
+                    <div className="menuAction">
+                        <ul className="nav-pills bottomRow navbar-right">
+                            <li role="presentation">
+                                <i className="fa fa-spin fa-spinner" /> {i18nResults.loading}...
+                            </li>
+                        </ul>
+                    </div>
                 );
             } else if (this.state.askRemove) {
                 // When the user has click on 'Delete', show a confirmation for deletion of the
@@ -977,7 +1034,8 @@ function initReact() {
     var IndicatorPeriodMain = React.createClass({
         getInitialState: function() {
             return {
-                actualValueHover: false
+                actualValueHover: false,
+                unLocking: false
             };
         },
 
@@ -996,9 +1054,14 @@ function initReact() {
             this.props.addNewUpdate(this.props.selectedPeriod.id);
         },
 
+        finishUnlocking: function() {
+            this.setState({unLocking: false});
+        },
+
         unlockPeriod: function() {
             // Unlock this period.
-            this.props.unlockPeriod(this.props.selectedPeriod.id);
+            this.setState({unLocking: true});
+            this.props.unlockPeriod(this.props.selectedPeriod.id, this.finishUnlocking);
         },
 
         renderNewUpdate: function() {
@@ -1036,11 +1099,19 @@ function initReact() {
             } else if (isAdmin) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
-                return (
-                    <div className="new-update">
-                        <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
-                    </div>
-                );
+                if (this.state.unLocking) {
+                    return (
+                        <div className="new-update">
+                            <a className="btn btn-sm btn-default"><i className="fa fa-spin fa-spinner" /> {i18nResults.unlocking_period}...</a>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="new-update">
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
+                        </div>
+                    );
+                }
             } else {
                 // In all other cases, show nothing.
                 return (
@@ -1162,7 +1233,8 @@ function initReact() {
     var IndicatorPeriodEntry = React.createClass({
         getInitialState: function() {
             return {
-                hover: false
+                hover: false,
+                lockingOrUnlocking: false
             };
         },
 
@@ -1199,14 +1271,20 @@ function initReact() {
             this.setState({hover: false});
         },
 
+        finishLocking: function() {
+            this.setState({lockingOrUnlocking: false});
+        },
+
         lockPeriod: function() {
             // Lock this period.
-            this.props.lockPeriod(this.props.period.id);
+            this.setState({lockingOrUnlocking: true});
+            this.props.lockPeriod(this.props.period.id, this.finishLocking);
         },
 
         unlockPeriod: function() {
             // Unlock this period.
-            this.props.unlockPeriod(this.props.period.id);
+            this.setState({lockingOrUnlocking: true});
+            this.props.unlockPeriod(this.props.period.id, this.finishLocking);
         },
 
         switchPeriod: function() {
@@ -1279,7 +1357,7 @@ function initReact() {
                     case false:
                         return (
                             <td className="actions-td">
-                                <i className="fa fa-unlock" /> {i18nResults.period_unlocked}
+                                <i className="fa fa-unlock-alt" /> {i18nResults.period_unlocked}
                             </td>
                         );
                     default:
@@ -1292,10 +1370,16 @@ function initReact() {
             } else {
                 // In the 'MyRSR' view as an admin:
                 // Show the buttons to lock or unlock a period.
-                if (this.props.period.locked) {
+                if (this.state.lockingOrUnlocking) {
                     return (
                         <td className="actions-td">
-                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock" /> {i18nResults.unlock_period}</a>
+                            <a className="btn btn-sm btn-default"><i className="fa fa-spin fa-spinner" /> {i18nResults.loading}</a>
+                        </td>
+                    );
+                } else if (this.props.period.locked) {
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
                         </td>
                     );
                 } else {
@@ -1528,7 +1612,7 @@ function initReact() {
             apiCall('POST', url, data, success);
         },
 
-        basePeriodSave: function(periodId, data) {
+        basePeriodSave: function(periodId, data, callback) {
             // Base function for saving a period with a data Object.
             var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
             var thisApp = this;
@@ -1536,18 +1620,23 @@ function initReact() {
                 var period = response;
                 var indicatorId = period.indicator;
                 thisApp.props.savePeriodToIndicator(period, indicatorId);
+
+                // Call the callback, if not undefined.
+                if (callback !== undefined) {
+                    callback();
+                }
             };
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
-        lockPeriod: function(periodId) {
+        lockPeriod: function(periodId, callback) {
             // Lock a period.
-            this.basePeriodSave(periodId, {locked: true});
+            this.basePeriodSave(periodId, {locked: true}, callback);
         },
 
-        unlockPeriod: function(periodId) {
+        unlockPeriod: function(periodId, callback) {
             // Unlock a period.
-            this.basePeriodSave(periodId, {locked: false});
+            this.basePeriodSave(periodId, {locked: false}, callback);
         },
 
         showMeasure: function() {
