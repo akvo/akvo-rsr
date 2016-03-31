@@ -742,12 +742,18 @@ function initReact() {
                 addCommentInput = <span />;
             }
 
-            return (
-                <div className="comments">
-                    {comments}
-                    {addCommentInput}
-                </div>
-            );
+            if (this.props.update.comments.length > 0 || this.editing()) {
+                return (
+                    <div className="comments">
+                        {comments}
+                        {addCommentInput}
+                    </div>
+                );
+            } else {
+                return (
+                    <span />
+                );
+            }
         },
 
         renderFooter: function() {
