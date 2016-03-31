@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -38,7 +39,7 @@
         {% endif %}
         <p>{% trans 'Please click the following link to view and approve the update' %}:</p>
         <h3>
-            <a href="http://{{ site }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}">
+            <a href="http://{{ site }}/{{ LANGUAGE_CODE }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#results,{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}">
                 {% trans 'View and approve the update' %}
             </a>
         </h3>

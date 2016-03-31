@@ -15,6 +15,8 @@ class ResultSerializer(BaseRSRSerializer):
 
     project_title = serializers.Field(source='project.title')
     type_label = serializers.Field(source='iati_type')
+    parent_project = serializers.Field(source='parent_project')
+    child_projects = serializers.Field(source='child_projects')
 
     class Meta:
         model = Result
@@ -24,6 +26,8 @@ class ResultsFrameworkSerializer(BaseRSRSerializer):
 
     indicators = IndicatorFrameworkSerializer(many=True, required=False, allow_add_remove=True)
     project_title = serializers.Field(source='project.title')
+    parent_project = serializers.Field(source='parent_project')
+    child_projects = serializers.Field(source='child_projects')
 
     class Meta:
         model = Result

@@ -15,14 +15,25 @@ body {
     width: 100%;
     height: 100%;
     color: lighten(rgb(36, 48, 50), 10%);
-    line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
     padding-top: 75px;
+    @include font-size(24px);
+    line-height: 1.5;
+    @media (max-width: 900px) {
+        @include font-size(20px);
+    }
+    @media (max-width: 500px){
+        @include font-size(18px);
+    }
     @include responsive(small-max-screens) {
         padding-top: 65px;
     }
 }
+h1, h2, h3, h4, h5, h6, p, ul, ol {
+  margin-top: 0;
+  margin-bottom: 1rem;
+ }
 
 h1,
 h2,
@@ -33,6 +44,8 @@ h6 {
     font-family: $titleFont;
     font-weight: normal;
     color: $akvoPurple;
+    margin-bottom: .5rem;
+    line-height: 1.1;
 }
 
 a,
@@ -605,7 +618,17 @@ nav.navbar-fixed-top {
     margin: -20px 0 10px 0;
     padding-top: 10px;
 }
-
+.myRsrPg {
+    h3 {
+        display: inline-block;
+        margin-top: 20px;
+    }
+}
+.choose-report-template {
+    label {
+        display: block;
+    }
+}
 .myRsrMenu {
     position: relative;
     margin: 5px auto 0 auto;
@@ -653,7 +676,7 @@ nav.navbar-fixed-top {
 }
 
 #createProject {
-    margin: 20px 0 0 25px;
+    margin: -5px 0 0 25px;
     background: $akvoBlack;
     color: white;
     border: none;
@@ -691,10 +714,21 @@ nav.navbar-fixed-top {
         &.indicator-period {
             border: none;
             tr {
+                border-bottom: 1px solid rgba($akvoBlack,0.05);
                 td {
                     padding-top: 25px;
                     padding-bottom: 25px;
                     border: none;
+                    &.actions-td {
+                        .btn-default {
+                            margin-top: -7px;
+                            background: $akvoBlack;
+                            color: white;
+                            &:hover {
+                                background: $akvoPurple;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -895,6 +929,7 @@ div.paginationWrap {
 
 #organisations {
     background: rgba($akvoBlack, 0.0);
+    padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 25px;
     @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
@@ -1088,7 +1123,7 @@ h4.detailedInfo {
             color: white;
             border: 1px solid rgba(white, 0.2);
             transition: all 0.4s ease-in;
-            white-space: nowrap;
+            @include noWrapTxt;
             &:hover {
                 background: rgba($anchorLinkHover, 0);
                 border: 1px solid rgba($anchorLinkHover, 0.5);
@@ -1746,8 +1781,11 @@ div.projectTopRow {
 }
 
 #invite_button {
+    display: inline-block;
+    margin: -5px 0 0 10px;
+
     button {
-        margin: 20px 0 0 25px;
+        margin: 0px 0 0 0px;
     }
 }
 
@@ -1901,7 +1939,8 @@ div.textBlock {
     }
     #project-footer-right {
         border: 1px solid rgba($akvoBlack, 0.05);
-        padding: 1.5em;
+        padding: 0.25em 1.5em;
+        background: rgba(white, 0.3)
     }
 }
 
@@ -2346,6 +2385,23 @@ dd {
 
 .projectReport {
     @include responsive(small-max-screens) {
+      tr { 
+        display: flex; 
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0.5em 0;
+        border: 1px solid rgba(3,3,3,0.2);
+      }
+      td, th {
+        flex: 1 1 150px;
+        border: 0.5px solid rgba(3,3,3,0.2);
+      }
+      td.edit-buttons, td.empty {
+        /*flex: 1 0 90%;
+        text-align: center;*/
+      }
+    }
+    @include responsive(small-max-screens) {
         max-width: 95%;
         margin-left: auto;
         margin-right: auto;
@@ -2575,12 +2631,13 @@ body {
     }
     .formStep {
         position: relative;
+
         & > div > label {
             @include border-radius(5px);
             display: block;
             width: 100%;
             top: initial;
-            padding: 5px 5px 5px 15px;
+            padding: 20px 5px 15px 15px;
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
             cursor: pointer;
@@ -2921,7 +2978,7 @@ article {
     position: relative;
     width: 100%;
     margin-bottom: 55px;
-    font-size: 110%;
+    font-size: 115%;
     .baseline-value,
     .baseline-year,
     .period-target,
@@ -2934,19 +2991,26 @@ article {
             display: block;
             span {
                 display: inline;
+
             }
         }
-        span:nth-child(2n) {
+        span:nth-child(2n), .actualValueSpan {
             display: block;
             font-family: $titleFont;
-            font-weight: 700;
-            color: rgba($akvoBlack, 0.9);
+            font-weight: 400;
+            font-size: 90%;
+            color: rgba($akvoPurple, 0.9);
             span {
                 display: inline;
             }
             span:nth-child(1) {
                 margin-left: 10px;
             }
+        }
+    }
+    .period-target-comment {
+        span:nth-child(2n) {
+            font-weight: 400;
         }
     }
     .baseline-value,
@@ -3069,6 +3133,7 @@ article {
         &:last-child {}
     }
     .result-nav-header {
+        display: none;
         background: rgba($akvoPurple, 0);
         h3 {
             color: rgba(white, 1);
@@ -3080,7 +3145,7 @@ article {
             margin-top: 0;
             background: rgba($akvoPurple, 1);
             margin-bottom: 0;
-            @include border-radius(8px 8px 0 0);
+            @include border-radius(5px 5px 0 0);
             > a {
                 position: absolute;
                 right: -5px;
@@ -3493,6 +3558,13 @@ article {
 .target-td {
     vertical-align: middle;
 }
+.update-description {
+    color: rgba($akvoBlack, 1);
+    font-size: 90%;
+    label {
+        color: initial;
+    }
+}
 
 .indicator-bar-progress-complete-container {
     .indicator-bar-progress-complete {
@@ -3682,6 +3754,7 @@ label.fileUpload {
             box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
             .update-entry-container-header {
                 background: rgba(white, 0.5);
+                margin-bottom: 10px;
             }
         }
         .update-entry-container-header {
@@ -3697,12 +3770,47 @@ label.fileUpload {
                 color: rgba($akvoBlack, 0.7);
             }
             .update-status {
-                color: $akvoTvRed;
+                color: $primary5;
+                &.pending {
+                    color: $progressNot;
+                }
+                &.revision {
+                    color: $progressWarning;
+                }
+                &.approved {
+                    color: $progressSuccess;
+                }
+            }
+        }
+        .image-container {
+            position: relative;
+            margin-top: 5px;
+            @include transition(all 0.2s ease-in-out);
+            .image-overlay {
+                display: none;
+                position: absolute;
+                padding-top: 35%;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: calc(100%);
+                color: $progressWarning;
+                vertical-align: middle;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+            &:hover .image-overlay {
+                display: block;
+                background: rgba(255, 255, 255, .9);
+
             }
         }
         .comments {
+            padding: 10px 5px 5px 5px;
+            margin-top: 20px;
+            background: rgba($primary5, 0.1);
+            @include border-radius(3px);
             .input-group {
-                margin-top: 20px;
                 /* button {
                            background: $akvoBlack;
                            color:white;
@@ -3712,10 +3820,9 @@ label.fileUpload {
                        }*/
             }
             .comment {
-                margin-top: 20px;
+                margin-top: 0px;
                 margin-bottom: 20px;
                 .comment-header {
-                    margin-bottom: 5px;
                     font-weight: bold;
                     span {
                         color: $akvoPurple;
@@ -3725,7 +3832,11 @@ label.fileUpload {
                         }
                     }
                 }
-                .comment-text {}
+                .comment-text {
+                    font-size: 90%;
+                    padding-left: 20px;
+                    padding-right: 20px;
+                }
             }
         }
         .menuAction {
@@ -3772,10 +3883,9 @@ label.fileUpload {
             }
         }
         .upActualValue {
-            margin-top: 47px;
-            margin-bottom: 15px;
+            margin: 25px 0 0 0px;
             .update-actual-value-text {
-                color: rgba($akvoBlack, 0.7);
+                color: rgba($primary5, 1);
             }
             .update-actual-value-data {
                 font-weight: bold;
@@ -4023,6 +4133,9 @@ label.fileUpload {
             .update-description {
                 padding: 0.5em;
                 margin: 20px auto 30px;
+                .update-container & {
+                    color: red;
+                }
                 &.editable {
                     background: whitesmoke;
                     border: 1px solid #A3C7E3;
