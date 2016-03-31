@@ -1504,11 +1504,20 @@ function initReact() {
             for (var parProjectId in result.parent_project) {
                 if (result.parent_project.hasOwnProperty(parProjectId)) {
                     var parProjectTitle = result.parent_project[parProjectId];
-                    var parNode = <div className="indicator-period-list parentProject">
-                        <span className="relatedInfo">
-                            {i18nResults.parent_project}: <a href={language + "/myrsr/results/" + parProjectId + "/"}>{parProjectTitle}</a>
-                        </span>
-                    </div>;
+                    var parNode;
+                    if (isPublic) {
+                        parNode = <div className="indicator-period-list parentProject">
+                            <span className="relatedInfo">
+                                {i18nResults.parent_project}: <a href={language + "/project/" + parProjectId + "/#results"}>{parProjectTitle}</a>
+                            </span>
+                        </div>;
+                    } else {
+                        parNode = <div className="indicator-period-list parentProject">
+                            <span className="relatedInfo">
+                                {i18nResults.parent_project}: <a href={language + "/myrsr/results/" + parProjectId + "/"}>{parProjectTitle}</a>
+                            </span>
+                        </div>;
+                    }
                     parentsAndChildren.push(parNode);
                 }
             }
@@ -1517,11 +1526,20 @@ function initReact() {
             for (var childProjectId in result.child_projects) {
                 if (result.child_projects.hasOwnProperty(childProjectId)) {
                     var childProjectTitle = result.child_projects[childProjectId];
-                    var childNode = <div className="indicator-period-list childProject">
-                        <span className="relatedInfo">
-                            {i18nResults.child_project}: <a href={language + "/myrsr/results/" + childProjectId + "/"}>{childProjectTitle}</a>
-                        </span>
-                    </div>;
+                    var childNode;
+                    if (isPublic) {
+                        childNode = <div className="indicator-period-list childProject">
+                            <span className="relatedInfo">
+                                {i18nResults.child_project}: <a href={language + "/project/" + childProjectId + "/#results"}>{childProjectTitle}</a>
+                            </span>
+                        </div>;
+                    } else {
+                        childNode = <div className="indicator-period-list childProject">
+                            <span className="relatedInfo">
+                                {i18nResults.child_project}: <a href={language + "/myrsr/results/" + childProjectId + "/"}>{childProjectTitle}</a>
+                            </span>
+                        </div>;
+                    }
                     parentsAndChildren.push(childNode);
                 }
             }

@@ -1504,11 +1504,20 @@ function initReact() {
             for (var parProjectId in result.parent_project) {
                 if (result.parent_project.hasOwnProperty(parProjectId)) {
                     var parProjectTitle = result.parent_project[parProjectId];
-                    var parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
-                        React.DOM.span( {className:"relatedInfo"}, 
-                            i18nResults.parent_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + parProjectId + "/"}, parProjectTitle)
-                        )
-                    );
+                    var parNode;
+                    if (isPublic) {
+                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/project/" + parProjectId + "/#results"}, parProjectTitle)
+                            )
+                        );
+                    } else {
+                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + parProjectId + "/"}, parProjectTitle)
+                            )
+                        );
+                    }
                     parentsAndChildren.push(parNode);
                 }
             }
@@ -1517,11 +1526,20 @@ function initReact() {
             for (var childProjectId in result.child_projects) {
                 if (result.child_projects.hasOwnProperty(childProjectId)) {
                     var childProjectTitle = result.child_projects[childProjectId];
-                    var childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
-                        React.DOM.span( {className:"relatedInfo"}, 
-                            i18nResults.child_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + childProjectId + "/"}, childProjectTitle)
-                        )
-                    );
+                    var childNode;
+                    if (isPublic) {
+                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/project/" + childProjectId + "/#results"}, childProjectTitle)
+                            )
+                        );
+                    } else {
+                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + childProjectId + "/"}, childProjectTitle)
+                            )
+                        );
+                    }
                     parentsAndChildren.push(childNode);
                 }
             }

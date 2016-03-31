@@ -2547,6 +2547,7 @@ body {
     .panel-heading {
         cursor: pointer;
         transition: background 0.1s linear;
+        padding: 0 15px 15px 15px;
         &:hover {
             background: rgba($progressSuccess, 0.1);
         }
@@ -2588,6 +2589,7 @@ body {
     .panel-heading {
         cursor: pointer;
         transition: background 0.1s linear;
+        padding: 0 15px 15px 15px;
         &:hover {
             background: rgba($rsrBlue2, 0.1);
         }
@@ -2656,7 +2658,7 @@ body {
         .section-progress {
             position: absolute;
             width: 30%;
-            top: 15px;
+            top: 20px;
             right: 5px;
         }
         form {
