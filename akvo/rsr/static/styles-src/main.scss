@@ -618,7 +618,17 @@ nav.navbar-fixed-top {
     margin: -20px 0 10px 0;
     padding-top: 10px;
 }
-
+.myRsrPg {
+    h3 {
+        display: inline-block;
+        margin-top: 20px;
+    }
+}
+.choose-report-template {
+    label {
+        display: block;
+    }
+}
 .myRsrMenu {
     position: relative;
     margin: 5px auto 0 auto;
@@ -666,7 +676,7 @@ nav.navbar-fixed-top {
 }
 
 #createProject {
-    margin: 20px 0 0 25px;
+    margin: -5px 0 0 25px;
     background: $akvoBlack;
     color: white;
     border: none;
@@ -919,6 +929,7 @@ div.paginationWrap {
 
 #organisations {
     background: rgba($akvoBlack, 0.0);
+    padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 25px;
     @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
@@ -1770,8 +1781,11 @@ div.projectTopRow {
 }
 
 #invite_button {
+    display: inline-block;
+    margin: -5px 0 0 10px;
+
     button {
-        margin: 20px 0 0 25px;
+        margin: 0px 0 0 0px;
     }
 }
 

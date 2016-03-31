@@ -572,6 +572,13 @@ nav.navbar-fixed-top {
   margin: -20px 0 10px 0;
   padding-top: 10px; }
 
+.myRsrPg h3 {
+  display: inline-block;
+  margin-top: 20px; }
+
+.choose-report-template label {
+  display: block; }
+
 .myRsrMenu {
   position: relative;
   margin: 5px auto 0 auto; }
@@ -610,7 +617,7 @@ nav.navbar-fixed-top {
   margin-bottom: 25px; }
 
 #createProject {
-  margin: 20px 0 0 25px;
+  margin: -5px 0 0 25px;
   background: #202024;
   color: white;
   border: none; }
@@ -812,6 +819,7 @@ div.paginationWrap {
 
 #organisations {
   background: rgba(32, 32, 36, 0);
+  padding-top: 15px;
   padding-bottom: 15px;
   margin-top: 25px;
   -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
@@ -1484,8 +1492,11 @@ div.projectTopRow {
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
 
-#invite_button button {
-  margin: 20px 0 0 25px; }
+#invite_button {
+  display: inline-block;
+  margin: -5px 0 0 10px; }
+  #invite_button button {
+    margin: 0px 0 0 0px; }
 
 div.textBlock {
   margin: 10px auto; }
