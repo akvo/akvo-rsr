@@ -2617,12 +2617,13 @@ body {
     }
     .formStep {
         position: relative;
+
         & > div > label {
             @include border-radius(5px);
             display: block;
             width: 100%;
             top: initial;
-            padding: 5px 5px 5px 15px;
+            padding: 20px 5px 15px 15px;
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
             cursor: pointer;
@@ -3739,6 +3740,7 @@ label.fileUpload {
             box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
             .update-entry-container-header {
                 background: rgba(white, 0.5);
+                margin-bottom: 10px;
             }
         }
         .update-entry-container-header {
