@@ -1039,6 +1039,10 @@ function initReact() {
             };
         },
 
+        goBack: function() {
+            this.props.selectPeriod(null);
+        },
+
         handleMouseOver: function() {
             // Update the state when the actual value info icon is hovered.
             this.setState({actualValueHover: true});
@@ -1190,6 +1194,9 @@ function initReact() {
 
             return (
                 React.DOM.div( {className:"indicator-period opacity-transition"}, 
+                    React.DOM.div( {className:"backButton"}, 
+                        React.DOM.a( {onClick:this.goBack}, "< ", i18nResults.back)
+                    ),
                     React.DOM.div( {className:"indicTitle"}, 
                             React.DOM.h4( {className:"indicator-title"}, 
                                 i18nResults.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
@@ -1586,6 +1593,10 @@ function initReact() {
             };
         },
 
+        goBack: function() {
+            this.props.selectIndicator(null);
+        },
+
         addNewUpdate: function(periodId) {
             // Add a new indicator update.
 
@@ -1672,6 +1683,7 @@ function initReact() {
                             removeUpdate: this.props.removeUpdate,
                             selectedIndicator: this.props.selectedIndicator,
                             selectedPeriod: this.props.selectedPeriod,
+                            selectPeriod: this.props.selectPeriod,
                             reloadPeriod: this.props.reloadPeriod,
                             lockPeriod: this.lockPeriod,
                             unlockPeriod: this.unlockPeriod
@@ -1682,6 +1694,9 @@ function initReact() {
                 // Show a list of periods.
                 return (
                     React.DOM.div( {className:"indicator opacity-transition"}, 
+                        React.DOM.div( {className:"backButton"}, 
+                            React.DOM.a( {onClick:this.goBack}, "< ", i18nResults.back)
+                        ),
                         React.DOM.h4( {className:"indicator-title"}, 
                             this.props.selectedIndicator.title,this.showMeasure()
                         ),
@@ -2303,7 +2318,6 @@ function initReact() {
 
         selectResult: function(resultId) {
             // Keep track in the state which result has been selected
-            var oldSelectedResultId = this.state.selectedResultId;
             this.setState({selectedResultId: resultId});
         },
 
@@ -2313,14 +2327,11 @@ function initReact() {
 
             // Update the window's hash
             if (indicatorId !== null) {
-                var resultId;
-                if (this.state.selectedResultId === null) {
-                    var indicator = this.findIndicator(indicatorId);
-                    resultId = indicator.result;
-                } else {
-                    resultId = this.state.selectedResultId;
-                }
+                var indicator = this.findIndicator(indicatorId);
+                var resultId = indicator.result;
                 window.location.hash = 'results,' + resultId + ',' + indicatorId;
+            } else {
+                window.location.hash = '';
             }
         },
 
@@ -2329,7 +2340,12 @@ function initReact() {
             this.setState({selectedPeriodId: periodId});
 
             // Update the window's hash
-            if (periodId !== null) {
+            var windowHashArray = window.location.hash.split(',');
+            if (periodId === null && windowHashArray.length === 4) {
+                windowHashArray.pop();
+                windowHashArray[0] = windowHashArray[0].substr(1);
+                window.location.hash = windowHashArray.join(',');
+            } else if (periodId !== null) {
                 var resultId = this.state.selectedResultId;
                 var indicatorId = this.state.selectedIndicatorId;
                 window.location.hash = 'results,' + resultId + ',' + indicatorId + ',' + periodId;
@@ -2401,6 +2417,7 @@ function initReact() {
                                         removeUpdate: this.removeUpdate,
                                         reloadPeriod: this.reloadPeriod,
                                         selectedIndicator: this.selectedIndicator(),
+                                        selectIndicator: this.selectIndicator,
                                         selectedPeriod: this.selectedPeriod(),
                                         selectPeriod: this.selectPeriod,
                                         findProjectOfResult: this.findProjectOfResult,
