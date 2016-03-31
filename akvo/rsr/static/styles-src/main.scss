@@ -3768,18 +3768,25 @@ label.fileUpload {
         }
         .image-container {
             position: relative;
+            margin-top: 5px;
+            @include transition(all 0.2s ease-in-out);
             .image-overlay {
                 display: none;
                 position: absolute;
+                padding-top: 35%;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
+                height: calc(100%);
+                color: $progressWarning;
+                vertical-align: middle;
+                text-transform: uppercase;
+                font-weight: bold;
             }
             &:hover .image-overlay {
                 display: block;
-                background: rgba(255, 255, 255, .5);
-                color: $progressWarning;
+                background: rgba(255, 255, 255, .9);
+
             }
         }
         .comments {
