@@ -2054,7 +2054,8 @@ body.translationBarActive div.skiptranslate ~ #map {
 
 .formProgress .panel-heading {
   cursor: pointer;
-  transition: background 0.1s linear; }
+  transition: background 0.1s linear;
+  padding: 0 15px 15px 15px; }
   .formProgress .panel-heading:hover {
     background: rgba(92, 184, 92, 0.1); }
 
@@ -2087,7 +2088,8 @@ body.translationBarActive div.skiptranslate ~ #map {
 
 .formOverviewInfo .panel-heading {
   cursor: pointer;
-  transition: background 0.1s linear; }
+  transition: background 0.1s linear;
+  padding: 0 15px 15px 15px; }
   .formOverviewInfo .panel-heading:hover {
     background: rgba(114, 205, 255, 0.1); }
 
@@ -2151,7 +2153,7 @@ body.translationBarActive div.skiptranslate ~ #map {
   .projectEdit .formStep .section-progress {
     position: absolute;
     width: 30%;
-    top: 15px;
+    top: 20px;
     right: 5px; }
   .projectEdit .formStep form {
     padding-top: 10px; }
