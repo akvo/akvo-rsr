@@ -1822,6 +1822,32 @@ function initReact() {
             }
         },
 
+        renderResultType: function() {
+            // Show the result type, if available
+            switch (this.props.result.type) {
+                case '1':
+                    return (
+                        <span>({i18nResults.output})</span>
+                    );
+                case '2':
+                    return (
+                        <span>({i18nResults.outcome})</span>
+                    );
+                case '3':
+                    return (
+                        <span>({i18nResults.impact})</span>
+                    );
+                case '9':
+                    return (
+                        <span>({i18nResults.other})</span>
+                    );
+                default:
+                    return (
+                        <span />
+                    );
+            }
+        },
+
         renderIndicatorCount: function() {
             // Show the number of indicators of a result, or a loading icon.
             var indicatorLength;
@@ -1865,6 +1891,7 @@ function initReact() {
                             <i className="fa fa-chevron-circle-down" />
                             <i className="fa fa-chevron-circle-up" />
                             <span>{this.props.result.title}</span>
+                            {this.renderResultType()}
                         </h3>
                         {this.renderIndicatorCount()}
                     </div>
