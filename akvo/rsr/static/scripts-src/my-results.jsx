@@ -977,7 +977,8 @@ function initReact() {
     var IndicatorPeriodMain = React.createClass({
         getInitialState: function() {
             return {
-                actualValueHover: false
+                actualValueHover: false,
+                unLocking: false
             };
         },
 
@@ -996,9 +997,14 @@ function initReact() {
             this.props.addNewUpdate(this.props.selectedPeriod.id);
         },
 
+        finishUnlocking: function() {
+            this.setState({unLocking: false});
+        },
+
         unlockPeriod: function() {
             // Unlock this period.
-            this.props.unlockPeriod(this.props.selectedPeriod.id);
+            this.setState({unLocking: true});
+            this.props.unlockPeriod(this.props.selectedPeriod.id, this.finishUnlocking);
         },
 
         renderNewUpdate: function() {
@@ -1036,11 +1042,19 @@ function initReact() {
             } else if (isAdmin) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
-                return (
-                    <div className="new-update">
-                        <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
-                    </div>
-                );
+                if (this.state.unLocking) {
+                    return (
+                        <div className="new-update">
+                            <a className="btn btn-sm btn-default"><i className="fa fa-spin fa-spinner" /> {i18nResults.unlocking_period}...</a>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="new-update">
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
+                        </div>
+                    );
+                }
             } else {
                 // In all other cases, show nothing.
                 return (
@@ -1162,7 +1176,8 @@ function initReact() {
     var IndicatorPeriodEntry = React.createClass({
         getInitialState: function() {
             return {
-                hover: false
+                hover: false,
+                lockingOrUnlocking: false
             };
         },
 
@@ -1199,14 +1214,20 @@ function initReact() {
             this.setState({hover: false});
         },
 
+        finishLocking: function() {
+            this.setState({lockingOrUnlocking: false});
+        },
+
         lockPeriod: function() {
             // Lock this period.
-            this.props.lockPeriod(this.props.period.id);
+            this.setState({lockingOrUnlocking: true});
+            this.props.lockPeriod(this.props.period.id, this.finishLocking);
         },
 
         unlockPeriod: function() {
             // Unlock this period.
-            this.props.unlockPeriod(this.props.period.id);
+            this.setState({lockingOrUnlocking: true});
+            this.props.unlockPeriod(this.props.period.id, this.finishLocking);
         },
 
         switchPeriod: function() {
@@ -1279,7 +1300,7 @@ function initReact() {
                     case false:
                         return (
                             <td className="actions-td">
-                                <i className="fa fa-unlock" /> {i18nResults.period_unlocked}
+                                <i className="fa fa-unlock-alt" /> {i18nResults.period_unlocked}
                             </td>
                         );
                     default:
@@ -1292,10 +1313,16 @@ function initReact() {
             } else {
                 // In the 'MyRSR' view as an admin:
                 // Show the buttons to lock or unlock a period.
-                if (this.props.period.locked) {
+                if (this.state.lockingOrUnlocking) {
                     return (
                         <td className="actions-td">
-                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock" /> {i18nResults.unlock_period}</a>
+                            <a className="btn btn-sm btn-default"><i className="fa fa-spin fa-spinner" /> {i18nResults.loading}</a>
+                        </td>
+                    );
+                } else if (this.props.period.locked) {
+                    return (
+                        <td className="actions-td">
+                            <a onClick={this.unlockPeriod} className="btn btn-sm btn-default"><i className="fa fa-unlock-alt" /> {i18nResults.unlock_period}</a>
                         </td>
                     );
                 } else {
@@ -1528,7 +1555,7 @@ function initReact() {
             apiCall('POST', url, data, success);
         },
 
-        basePeriodSave: function(periodId, data) {
+        basePeriodSave: function(periodId, data, callback) {
             // Base function for saving a period with a data Object.
             var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
             var thisApp = this;
@@ -1536,18 +1563,23 @@ function initReact() {
                 var period = response;
                 var indicatorId = period.indicator;
                 thisApp.props.savePeriodToIndicator(period, indicatorId);
+
+                // Call the callback, if not undefined.
+                if (callback !== undefined) {
+                    callback();
+                }
             };
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
-        lockPeriod: function(periodId) {
+        lockPeriod: function(periodId, callback) {
             // Lock a period.
-            this.basePeriodSave(periodId, {locked: true});
+            this.basePeriodSave(periodId, {locked: true}, callback);
         },
 
-        unlockPeriod: function(periodId) {
+        unlockPeriod: function(periodId, callback) {
             // Unlock a period.
-            this.basePeriodSave(periodId, {locked: false});
+            this.basePeriodSave(periodId, {locked: false}, callback);
         },
 
         showMeasure: function() {
