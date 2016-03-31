@@ -580,7 +580,7 @@ function initReact() {
             if (this.props.update.photo_url === "") {
                 // If no photo has been uploaded, do not show the photo.
                 photoPart = React.DOM.span(null );
-                descriptionClass = "col-xs-12 update-description";
+                descriptionClass = "col-xs-9 update-description";
             } else {
                 // Also display a photo.
                 if (this.editing()) {
@@ -602,7 +602,7 @@ function initReact() {
                         )
                     );
                 }
-                descriptionClass = "col-xs-12 update-description";
+                descriptionClass = "col-xs-9 update-description";
             }
 
             if (this.editing()) {
