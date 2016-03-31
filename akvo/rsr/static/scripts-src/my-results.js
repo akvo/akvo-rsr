@@ -230,7 +230,9 @@ function initReact() {
                 description: this.props.update.text,
                 isRelative: this.props.update.relative_data,
                 comment: '',
-                askRemove: false
+                askRemove: false,
+                loading: false,
+                loadingComment: false
             };
         },
 
@@ -247,16 +249,25 @@ function initReact() {
                 var update = response;
                 var periodId = thisApp.props.selectedPeriod.id;
                 thisApp.props.saveUpdateToPeriod(update, periodId, false);
+
                 if (!keepEditing) {
                     // Remove the editing state in case the user wants to stop editing.
                     thisApp.props.removeEditingData(update.id);
                 }
+
                 if (reloadPeriod) {
                     // In some cases it is best to reload the whole period after an indicator
                     // update has been saved.
                     thisApp.props.reloadPeriod(periodId);
                 }
+
+                // Remove loading state
+                thisApp.setState({loading: false});
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
@@ -329,8 +340,15 @@ function initReact() {
                 if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                     var newFile = JSON.parse(xmlHttp.responseText).file;
                     thisApp.props.saveFileInUpdate(newFile, updateId, type);
+
+                    // Set state to not loading anymore
+                    thisApp.setState({loading: false});
                 }
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             xmlHttp.send(formData);
         },
 
@@ -359,12 +377,24 @@ function initReact() {
                 var comment = response;
                 var updateId = thisApp.props.update.id;
                 thisApp.props.saveCommentInUpdate(comment, updateId);
-                thisApp.setState({comment: ''});
+
+                // Remove state of current comment and disable loading of comments
+                thisApp.setState({
+                    comment: '',
+                    loadingComment: false
+                });
             };
+
+            // Set loading of comments
+            this.setState({loadingComment: true});
+
             apiCall('POST', url, data, success);
         },
 
         removeUpdate: function() {
+            // Set state to loading
+            this.setState({loading: true});
+
             // Remove an indicator update.
             this.props.removeUpdate(this.props.update.id);
         },
@@ -729,14 +759,25 @@ function initReact() {
             if (this.props.update.status !== 'A' && this.editing()) {
                 // Adding comments is only possible when the update has not yet been
                 // approved (status 'A').
-                addCommentInput = React.DOM.div(null, 
-                    React.DOM.div( {className:"input-group"}, 
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
-                        React.DOM.span( {className:"input-group-btn"}, 
-                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                if (this.state.loadingComment) {
+                    addCommentInput = React.DOM.div(null, 
+                        React.DOM.div( {className:"input-group"}, 
+                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
+                            React.DOM.span( {className:"input-group-btn"}, 
+                                React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
+                            )
                         )
-                    )
-                );
+                    );
+                } else {
+                    addCommentInput = React.DOM.div(null, 
+                        React.DOM.div( {className:"input-group"}, 
+                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                            React.DOM.span( {className:"input-group-btn"}, 
+                                React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                            )
+                        )
+                    );
+                }
             } else {
                 // Otherwise, show nothing for approved updates.
                 addCommentInput = React.DOM.span(null );
@@ -762,6 +803,16 @@ function initReact() {
                 // Locked periods, or in the public view, do not have actions. Display nothing.
                 return (
                     React.DOM.span(null )
+                );
+            } else if (this.state.loading) {
+                return (
+                    React.DOM.div( {className:"menuAction"}, 
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                            React.DOM.li( {role:"presentation"}, 
+                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading,"..."
+                            )
+                        )
+                    )
                 );
             } else if (this.state.askRemove) {
                 // When the user has click on 'Delete', show a confirmation for deletion of the
