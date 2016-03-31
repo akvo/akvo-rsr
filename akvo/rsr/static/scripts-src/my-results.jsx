@@ -580,7 +580,7 @@ function initReact() {
             if (this.props.update.photo_url === "") {
                 // If no photo has been uploaded, do not show the photo.
                 photoPart = <span />;
-                descriptionClass = "update-description";
+                descriptionClass = "col-xs-12 update-description";
             } else {
                 // Also display a photo.
                 if (this.editing()) {
@@ -602,7 +602,7 @@ function initReact() {
                         </a>
                     </div>;
                 }
-                descriptionClass = "col-xs-7 update-description";
+                descriptionClass = "col-xs-12 update-description";
             }
 
             if (this.editing()) {
@@ -627,7 +627,7 @@ function initReact() {
             }
 
             return (
-                <div className="">
+                <div className="row">
                     {photoPart}
                     {descriptionPart}
                 </div>
