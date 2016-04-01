@@ -12,7 +12,6 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ...rsr.models import Country, Employment, Organisation
@@ -42,12 +41,19 @@ class UserViewSet(BaseRSRViewSet):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def change_password(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
-    # Users are only allowed to change their own password
-    if not user == request.user:
+    # Get the user, or return an error if the user does not exist
+    try:
+        user = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Users are only allowed to edit their own details
+    request_user = getattr(request, 'user', None)
+    if not user == request_user:
         raise PermissionDenied()
+
+    # Process request
     serializer = UserPasswordSerializer(data=request.DATA, instance=user)
     if serializer.is_valid():
         user.set_password(serializer.data['new_password2'])
@@ -58,12 +64,19 @@ def change_password(request, pk=None):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def update_details(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
+    # Get the user, or return an error if the user does not exist
+    try:
+        user = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
     # Users are only allowed to edit their own details
-    if not user == request.user:
+    request_user = getattr(request, 'user', None)
+    if not user == request_user:
         raise PermissionDenied()
+
+    # Process request
     serializer = UserDetailsSerializer(data=request.DATA, instance=user)
     if serializer.is_valid():
         user.first_name = serializer.data['first_name']
@@ -75,18 +88,28 @@ def update_details(request, pk=None):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def request_organisation(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
+    # Get the user, or return an error if the user does not exist
+    try:
+        user = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
     # Users themselves are only allowed to request to join an organisation
-    if not user == request.user:
+    request_user = getattr(request, 'user', None)
+    if not user == request_user:
         raise PermissionDenied()
     request.DATA['user'] = pk
+
+    # Process request
     serializer = EmploymentSerializer(data=request.DATA)
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])
-            country = Country.objects.get(pk=serializer.data['country']) if serializer.data['country'] else None
+            if serializer.data['country']:
+                country = Country.objects.get(pk=serializer.data['country'])
+            else:
+                country = None
             employment = Employment(
                 user=user,
                 organisation=organisation,
