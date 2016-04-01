@@ -1506,12 +1506,23 @@ function addPartial(partialName, partialContainer) {
 
             // Check if there is a third level
             if (hierarchyList[1].length > 1) {
-                var childChildContainer = childContainer.querySelector('.parent');
+                var childChildContainers = childContainer.querySelectorAll('.parent');
                 var childRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][1] + '-item').length;
-                updatePartialIDs(childChildContainer, [childId, 'new-' + childRelatedObjCount.toString()].join('_'));
+                for (var i = 0; i < childChildContainers.length; i++) {
+                    updatePartialIDs(childChildContainers[i], [childId, 'new-' + childRelatedObjCount.toString()].join('_'));
+
+                    // Check if there is a fourth level
+                    if (hierarchyList[1].length > 2) {
+                        var childChildChildContainers = childChildContainers[i].querySelectorAll('.parent');
+                        var childChildRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][2] + '-item').length;
+                        for (var j = 0; j < childChildChildContainers.length; j++) {
+                            updatePartialIDs(childChildChildContainers[j], [childId, 'new-' + childRelatedObjCount.toString(), 'new-' + childChildRelatedObjCount.toString()].join('_'));
+                        }
+                    }
+                }
             }
-        } else if (hierarchyList[0] === 2 || hierarchyList[0] === 3) {
-            // Second or third level, fetch the ID from the parent item and add the new ID to it
+        } else if (hierarchyList[0] > 1) {
+            // Second, third or fourth level: fetch the ID from the parent item and add the new ID to it
             parentContainer = findAncestorByClass(partialContainer, 'parent');
             parentID = parentContainer.getAttribute('id').split('.')[1];
             newID = 'new-' + document.querySelectorAll('.' + partialName + '-item').length;
@@ -1533,9 +1544,20 @@ function addPartial(partialName, partialContainer) {
 
             // Check if there is a third level (only possible on level 2)
             if (hierarchyList[1].length > 0) {
-                childContainer = partial.querySelector('.parent');
+                var childContainers = partial.querySelectorAll('.parent');
                 relatedObjCount = document.querySelectorAll('.' + hierarchyList[1][0] + '-item').length;
-                updatePartialIDs(childContainer, [newID, 'new-' + relatedObjCount.toString()].join('_'));
+                for (var k = 0; k < childContainers.length; k++) {
+                    updatePartialIDs(childContainers[k], [newID, 'new-' + relatedObjCount.toString()].join('_'));
+
+                    // Check if there is a fourth level
+                    if (hierarchyList[1].length > 1) {
+                        var childOfChildContainers = childContainers[k].querySelectorAll('.parent');
+                        var childOfRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][1] + '-item').length;
+                        for (var l = 0; l < childOfChildContainers.length; l++) {
+                            updatePartialIDs(childOfChildContainers[l], [newID, 'new-' + relatedObjCount.toString(), 'new-' + childOfRelatedObjCount.toString()].join('_'));
+                        }
+                    }
+                }
             }
         }
 
