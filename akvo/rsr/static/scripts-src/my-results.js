@@ -1795,8 +1795,8 @@ function initReact() {
             var resultId = wasExpanded ? null : thisResult.id;
             this.props.selectResult(resultId);
 
-            // When there is only 1 indicator and the result is expanded, select the 1 indicator.
-            if (thisResult.indicators !== undefined && thisResult.indicators.length === 1 && !wasExpanded) {
+            // When there is an indicator and the result is expanded, select the first indicator.
+            if (thisResult.indicators !== undefined && thisResult.indicators.length > 0 && !wasExpanded) {
                 this.props.selectIndicator(thisResult.indicators[0].id);
             }
         },
