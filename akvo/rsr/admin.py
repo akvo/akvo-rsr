@@ -35,8 +35,7 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
-from nested_inlines.admin import (BaseNestedModelForm, NestedModelAdmin, NestedStackedInline,
-                                  NestedTabularInline)
+from nested_inline.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -231,7 +230,7 @@ class InternalOrganisationIDAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
-class OrganisationAdminForm(BaseNestedModelForm):
+class OrganisationAdminForm(forms.ModelForm):
     def clean_iati_org_id(self):
         return self.cleaned_data['iati_org_id'] or None
 
@@ -309,7 +308,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 new_object = self.model()
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
-                FormSet = FormSet[0]
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
@@ -343,7 +341,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             form = ModelForm(initial=initial)
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
-                FormSet = FormSet[0]
                 prefix = FormSet.get_default_prefix()
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
@@ -1017,7 +1014,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 new_object = self.model()
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
-                FormSet = FormSet[0]
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
@@ -1050,7 +1046,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             form = ModelForm(initial=initial)
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
-                FormSet = FormSet[0]
                 prefix = FormSet.get_default_prefix()
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
