@@ -3114,7 +3114,7 @@ article {
                 position: absolute;
                 background: rgba(white, 1);
                 border: 1px solid rgba($primary4, 0.8);
-                left: 68px;
+                left: 50px;
                 top: -2px;
                 &:after,
                 &:before {
@@ -3360,6 +3360,21 @@ article {
     background-color: rgba($secondary8, 0.3);
     border: 1px solid rgba($secondary8, 0.8);
     @include flex(1);
+    .noIndicators {
+        text-align: center;
+        display: block;
+        margin-top: 50%;
+        width: 100%;
+        height: 100%;
+        color: rgba($primary4, 0.5);
+        text-shadow: 1px 1px 0 rgba(white, 1);
+        font-size: 150%;
+        a {
+            font-size: 60%;
+            display: block;
+            width: 100%;
+        }
+    }
     .indicator-title {
         font-size: 1.3em;
         margin-bottom: 25px;
