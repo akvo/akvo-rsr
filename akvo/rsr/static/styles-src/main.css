@@ -2926,15 +2926,17 @@ article {
   flex: 1; }
   .indicator-container .noIndicators {
     text-align: center;
-    display: block;
-    padding-top: 50%;
+    display: inline-block;
     width: 100%;
-    height: 50%;
+    height: 100%;
     color: rgba(153, 153, 153, 0.5);
     text-shadow: 1px 1px 0 white;
-    font-size: 150%; }
+    align-items: center; }
+    .indicator-container .noIndicators span:first-child {
+      margin-top: 45%;
+      display: block;
+      font-size: 150%; }
     .indicator-container .noIndicators a {
-      font-size: 60%;
       display: block;
       width: 100%; }
   .indicator-container .indicator-title {

@@ -3362,15 +3362,18 @@ article {
     @include flex(1);
     .noIndicators {
         text-align: center;
-        display: block;
-        padding-top: 50%;
+        display: inline-block;
         width: 100%;
-        height: 50%;
+        height: 100%;
         color: rgba($primary4, 0.5);
         text-shadow: 1px 1px 0 rgba(white, 1);
-        font-size: 150%;
+        align-items: center;
+        span:first-child { 
+            margin-top: 45%;
+            display: block;
+            font-size: 150%;
+        }
         a {
-            font-size: 60%;
             display: block;
             width: 100%;
         }
