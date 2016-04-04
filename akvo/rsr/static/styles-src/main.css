@@ -590,6 +590,9 @@ nav.navbar-fixed-top {
     background: rgba(32, 32, 36, 0); }
     .myRsrMenu nav[role=navigation] ul li {
       display: inline; }
+      @media only screen and (max-width: 768px) {
+        .myRsrMenu nav[role=navigation] ul li {
+          bottom: -8px; } }
       .myRsrMenu nav[role=navigation] ul li a {
         color: #396680;
         padding: 15px; }
@@ -611,6 +614,10 @@ nav.navbar-fixed-top {
       .myRsrMenu nav[role=navigation] ul li.usrMgt {
         position: absolute;
         right: 0; }
+        @media only screen and (max-width: 768px) {
+          .myRsrMenu nav[role=navigation] ul li.usrMgt {
+            position: relative;
+            right: auto; } }
 
 .navbar-form {
   padding-left: 0;
