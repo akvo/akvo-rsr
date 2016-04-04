@@ -2519,7 +2519,7 @@ article {
     .periodValues .period-target-comment span:nth-child(2n), .periodValues .period-target-comment .actualValueSpan {
       display: block;
       font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-weight: 400;
+      font-weight: 600;
       color: #2c2a74; }
       .baseline .baseline-value span:nth-child(2n) span,
       .baseline .baseline-value .actualValueSpan span,
@@ -2791,7 +2791,7 @@ article {
             color: rgba(32, 32, 36, 0.7); }
           .sidebar .result-nav .result-nav-summary h3.result-title > span {
             display: block;
-            width: 95%;
+            width: 90%;
             color: #202024; }
     .sidebar .result-nav .fa-chevron-up {
       display: none; }
@@ -2993,7 +2993,7 @@ article {
         .indicator-container .indicator-group .table td.actions-td {
           white-space: nowrap; }
         .indicator-container .indicator-group .table td.target-td {
-          font-weight: bold; }
+          font-weight: 600; }
         .indicator-container .indicator-group .table td.actions-td .tooltip {
           top: -170px;
           left: 132.703px;

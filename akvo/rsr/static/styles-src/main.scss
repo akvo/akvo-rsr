@@ -3001,13 +3001,12 @@ article {
             display: block;
             span {
                 display: inline;
-
             }
         }
         span:nth-child(2n), .actualValueSpan {
             display: block;
             font-family: $titleFont;
-            font-weight: 400;
+            font-weight: 600;
             color: rgba($akvoPurple, 1);
             span {
                 display: inline;
@@ -3202,7 +3201,7 @@ article {
                     }
                     > span {
                         display: block;
-                        width: 95%;
+                        width: 90%;
                         color: $akvoBlack;
                     }
                 }
@@ -3472,7 +3471,7 @@ article {
                     white-space: nowrap;
                 }
                 &.target-td {
-                    font-weight: bold;
+                    font-weight: 600;
                 }
                 &.actions-td {
                     .tooltip {

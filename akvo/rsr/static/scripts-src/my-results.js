@@ -1711,7 +1711,6 @@ function initReact() {
                 return (
                     React.DOM.div( {className:"indicator opacity-transition"}, 
                         React.DOM.h4( {className:"indicator-title"}, 
-                            React.DOM.a( {className:"backButton", onClick:this.goBack}, "< ", i18nResults.back),
                             this.props.selectedIndicator.title,this.showMeasure()
                         ),
                         React.DOM.div( {className:"indicator-description"}, 
