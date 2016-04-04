@@ -1729,8 +1729,20 @@ function initReact() {
                         })
                     )
                 );
+            } else if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
+                var addIndicatorsLink;
+                if (isAdmin) {
+                    var language = window.location.pathname.substring(0, 3);
+                    addIndicatorsLink = React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
+                } else {
+                    addIndicatorsLink = React.DOM.span(null );
+                }
+
+                return (
+                    React.DOM.span( {className:"noIndicators"}, i18nResults.no_indicators, " ", addIndicatorsLink)
+                );
             } else {
-                // No indicator selected, leave main content empty.
+                // Nothing selected, leave main content empty.
                 return (
                     React.DOM.span(null )
                 );
@@ -2434,7 +2446,8 @@ function initReact() {
                                         selectedPeriod: this.selectedPeriod(),
                                         selectPeriod: this.selectPeriod,
                                         findProjectOfResult: this.findProjectOfResult,
-                                        findResult: this.findResult
+                                        findResult: this.findResult,
+                                        selectedResult: this.selectedResult()
                                     }
                                 )
                             )
