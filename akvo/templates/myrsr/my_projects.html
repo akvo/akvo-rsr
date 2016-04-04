@@ -55,6 +55,11 @@
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
               </div>
+              {% if not project.is_public %}
+                <span class="privatePjt">{% trans 'Private' %}</span>
+              {% elif not project.is_published %}
+                <span class="unplubishedPjt">{% trans 'Unpublished' %}</span>
+              {% endif %}
             </td>
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
             <td>{{ project.show_status }}</td>

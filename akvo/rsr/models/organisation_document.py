@@ -133,8 +133,8 @@ class OrganisationDocumentCountry(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'document category')
-        verbose_name_plural = _(u'document categories')
+        verbose_name = _(u'document country')
+        verbose_name_plural = _(u'document countries')
         ordering = ['-id', ]
 
     def __unicode__(self):

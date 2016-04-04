@@ -684,10 +684,52 @@ nav.navbar-fixed-top {
   #updates tbody tr.notPublished,
   #user_table tbody tr.notPublished {
     background: rgba(153, 153, 153, 0.15) !important; }
+    .myProjectList tbody tr.notPublished td,
+    #updates tbody tr.notPublished td,
+    #user_table tbody tr.notPublished td {
+      position: relative;
+      padding-top: 40px; }
+      .myProjectList tbody tr.notPublished td .unplubishedPjt,
+      #updates tbody tr.notPublished td .unplubishedPjt,
+      #user_table tbody tr.notPublished td .unplubishedPjt {
+        position: absolute;
+        top: 7px;
+        left: 8px;
+        padding: 3px;
+        display: inline-block;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        color: #ee3124;
+        border: 1px solid #ee3124;
+        font-size: 80%;
+        font-weight: 600; }
   .myProjectList tbody tr.isPrivate,
   #updates tbody tr.isPrivate,
   #user_table tbody tr.isPrivate {
     background: rgba(240, 173, 78, 0.1) !important; }
+    .myProjectList tbody tr.isPrivate td,
+    #updates tbody tr.isPrivate td,
+    #user_table tbody tr.isPrivate td {
+      position: relative;
+      padding-top: 40px; }
+      .myProjectList tbody tr.isPrivate td .privatePjt,
+      #updates tbody tr.isPrivate td .privatePjt,
+      #user_table tbody tr.isPrivate td .privatePjt {
+        position: absolute;
+        top: 7px;
+        left: 8px;
+        padding: 3px;
+        display: inline-block;
+        -moz-border-radius: 2px;
+        -o-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        color: #ee3124;
+        border: 1px solid #ee3124;
+        font-size: 80%;
+        font-weight: 600; }
   .myProjectList tbody tr td,
   #updates tbody tr td,
   #user_table tbody tr td {
