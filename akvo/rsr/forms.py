@@ -487,6 +487,7 @@ class IatiExportForm(forms.ModelForm):
             iati_export = super(IatiExportForm, self).save(commit=False)
             iati_export.reporting_organisation = reporting_organisation
             iati_export.user = user
+            iati_export.version = settings.IATI_VERSION
             iati_export.save()
             self.save_m2m()
             iati_export.save()
