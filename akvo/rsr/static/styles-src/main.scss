@@ -760,9 +760,41 @@ nav.navbar-fixed-top {
             background: white !important;
             &.notPublished {
                 background: rgba($primary4, 0.15) !important;
+                td {
+                    position: relative;
+                    padding-top: 40px;
+                    .unplubishedPjt {
+                        position: absolute;
+                        top: 7px;
+                        left: 8px;
+                        padding: 3px;
+                        display: inline-block;
+                        @include border-radius(2px);
+                        color: $akvoTvRed;
+                        border: 1px solid $akvoTvRed; 
+                        font-size: 80%;
+                        font-weight: 600;
+                    }
+                }
             }
             &.isPrivate {
                 background: rgba($progressNot, 0.1) !important;
+                td {
+                    position: relative;
+                    padding-top: 40px;
+                    .privatePjt {
+                        position: absolute;
+                        top: 7px;
+                        left: 8px;
+                        padding: 3px;
+                        display: inline-block;
+                        @include border-radius(2px);
+                        color: $akvoTvRed;
+                        border: 1px solid $akvoTvRed; 
+                        font-size: 80%;
+                        font-weight: 600;
+                    }
+                }
             }
             td {
                 padding-top: 30px;
