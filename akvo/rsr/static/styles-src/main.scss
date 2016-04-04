@@ -643,6 +643,9 @@ nav.navbar-fixed-top {
         ul {
             li {
                 display: inline;
+                @include responsive(small-max-screens) {
+                    bottom: -8px;
+                }                
                 a {
                     color: $primary5;
                     padding: 15px;
@@ -664,6 +667,10 @@ nav.navbar-fixed-top {
                 &.usrMgt {
                     position: absolute;
                     right: 0;
+                    @include responsive(small-max-screens) {
+                        position: relative;
+                        right: auto;
+                    }
                 }
             }
         }

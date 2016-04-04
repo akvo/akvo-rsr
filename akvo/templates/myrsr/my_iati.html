@@ -21,7 +21,7 @@
 
 {% block myrsr_main %}
     <div class="col-sm-7 col-xs-12">
-    <h3>{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
+    <h3 style="display: block;">{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
 
         {% if export_added %}
             <div class="alert alert-success" role="alert">
