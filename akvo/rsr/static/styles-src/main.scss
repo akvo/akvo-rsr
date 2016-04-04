@@ -752,7 +752,7 @@ nav.navbar-fixed-top {
         tr {
             background: white !important;
             &.notPublished {
-                background: rgba($progressWarning, 0.1) !important;
+                background: rgba($primary4, 0.15) !important;
             }
             &.isPrivate {
                 background: rgba($progressNot, 0.1) !important;
@@ -789,11 +789,12 @@ nav.navbar-fixed-top {
         }
         &.addUpdate {
             &.disabled {
-                background-color: #AB9F9F;
-                color: #E9E9E9;
+                background-color: lighten($primary4, 30%);
+                color: lighten($primary4, 20%);
                 pointer-events: initial;
                 cursor: not-allowed;
                 border: none;
+                @include border-radius(5px);
                 &:hover {
                     text-decoration: none;
                 }
@@ -2976,20 +2977,20 @@ article {
 
 .baseline,
 .periodValues {
-    padding: 2em 0;
+    padding:0.5em 0 2em 0;
     position: relative;
     width: 100%;
+    margin-top: 15px;
     margin-bottom: 55px;
-    font-size: 115%;
     .baseline-value,
     .baseline-year,
     .period-target,
     .period-actual,
     .period-target-comment {
         display: inline-block !important;
-        padding: 0 0 10px 15px;
+        padding: 0 0 10px 0px;
         > span:first-child {
-            color: rgba($akvoBlack, 0.7);
+            color: rgba($akvoPurple, 0.7);
             display: block;
             span {
                 display: inline;
@@ -3000,8 +3001,7 @@ article {
             display: block;
             font-family: $titleFont;
             font-weight: 400;
-            font-size: 90%;
-            color: rgba($akvoPurple, 0.9);
+            color: rgba($akvoPurple, 1);
             span {
                 display: inline;
             }
@@ -3107,7 +3107,7 @@ article {
     .period-target-comment {
         width: 100%;
         float: left;
-        padding: 0 0 40px 15px;
+        padding: 0 0 40px 0px;
     }
 }
 
@@ -3117,22 +3117,8 @@ article {
     overflow-y: auto;
     vertical-align: top;
     .results-list {
-        border: 1px solid rgba($akvoBlack, 0.3);
-    }
-    .result-nav {
-        padding: 0.2em 0em 0 0em;
-        border-bottom: 1px solid rgba($akvoBlack, 0.6);
-        &:before {
-            height: 1px;
-            background-color: rgba(224, 225, 226, 0);
-            width: 100%;
-            display: block;
-            content: '';
-            margin: 0 auto;
-            @include transition(background-color 0.25s ease-in-out);
-        }
-        &.expanded {}
-        &:last-child {}
+        background: white;
+        border: 1px solid rgba($secondary8, 1);
     }
     .result-nav-header {
         display: none;
@@ -3155,67 +3141,74 @@ article {
         }
     }
     .result-nav {
-        opacity: 1;
+        opacity: 0.8;
         cursor: pointer;
         @include transition(all 0.2s linear);
+        padding: 10px 0 0px 0px;
+        border-bottom: 1px solid rgba($secondary8, 1);
+        border-top: 1px solid rgba(white, 1);
+        &:before {
+            height: 1px;
+            background-color: rgba(224, 225, 226, 0);
+            width: 100%;
+            display: block;
+            content: '';
+            margin: 0 auto;
+            @include transition(background-color 0.25s ease-in-out);
+        }
         &:hover {
             opacity: 1;
-            background: rgba($rsrBlue2, 0.1);
+            background: rgba($rsrBlue2, 0);
         }
         .result-nav-summary {
-            padding: 25px 0 10px 10px;
+            padding: 15px 0 10px 10px;
+            position: relative;
+            .indicatorType {
+                margin-top: 0px;
+                font-weight: 400;
+                color: $anchorLinkHover;
+                font-size: 0.8em;
+            }
             h3 {
-                font-size: 1.3em;
-                color: rgba($rsrBlue2, 1);
+                font-size: 1em;
+                color: rgba($rsrBlue, 1);
                 @include transition(all 0.2s linear);
                 &:hover {
-                    color: $rsrBlue;
+                    color: $anchorLinkHover;
                 }
                 &.result-title {
                     position: relative;
                     box-sizing: border-box;
                     font-weight: 400;
+                    max-width: 100%;
+                    margin: 0 auto 0 0;
+                    display: block;
+                    display: -webkit-box;
+                    line-height: 1.4em;
+                    -webkit-box-orient: vertical;
                     .fa {
-                        float: right;
+                        position: absolute;
                         font-size: 1.3em;
-                        margin-right: 6px;
+                        right: 5px;
                         text-shadow: 0 1px 0 rgb(255, 255, 255);
-                        color: rgba($akvoPurple, 0.6);
+                        color: rgba($akvoBlack, 0.7);
                     }
                     > span {
-                        box-sizing: border-box;
-                        max-width: 80%;
-                        margin: 0 auto 0 0;
                         display: block;
-                        display: -webkit-box;
-                        line-height: 1.4em;
-                        -webkit-box-orient: vertical;
+                        width: 95%;
+                        color: $akvoBlack;
                     }
                 }
             }
         }
-        .fa-chevron-circle-up {
+        .fa-chevron-up {
             display: none;
         }
-        &.expanded {
-            opacity: 1;
-            &:before {
-                background-color: transparent;
-            }
-            h3 {
-                color: $rsrBlue;
-            }
-            ~ .result-nav {
-                &:before {
-                    background-color: transparent;
-                }
-            }
-        }
         .result-indicator-count {
-            display: block;
             color: $akvoPurple;
             display: block;
-            margin-top: -5px;
+            margin-top: 5px;
+            font-size: 0.8em;
             span {
                 margin-left: 5px;
             }
@@ -3231,10 +3224,25 @@ article {
             display: none;
         }
         &.expanded {
-            .fa-chevron-circle-down {
+            padding: 20px 0 0px 0px;
+            background: rgba($secondary8, 0.9 );
+            border-top: 1px solid rgba(white, 0);
+            opacity: 1;
+            &:before {
+                background-color: transparent;
+            }
+            h3 {
+                color: $anchorLinkHover;
+            }
+            ~ .result-nav {
+                &:before {
+                    background-color: transparent;
+                }
+            }
+            .fa-chevron-down {
                 display: none;
             }
-            .fa-chevron-circle-up {
+            .fa-chevron-up {
                 display: block;
             }
             .indicator-text {
@@ -3255,22 +3263,27 @@ article {
                         }
                     }
                     .indicator-nav {
-                        padding: 0.75em 10px 1em 0em;
-                        /* Transparent border means text doesn't shift when
-                            ** we add a colored border to active elements.
-                            */
-                        background: rgba($akvoPurple, 0.05);
+                        padding: 0.5em 15px 0.5em 0em;
+                        background: rgba($akvoPurple, 0.2);
                         border-bottom: 2px solid white;
+                        font-weight: 400;
+                        opacity: 0.8;
+                        h4 {
+                            color: $akvoPurple;
+                            font-size: 0.9em;
+                        }
                         &:hover {
-                            background: rgba($akvoPurple, 0.5);
+                            background: rgba($akvoPurple, 0.6);
+                            opacity: 1;
                             h4 {
                                 color: white;
                             }
                         }
                         &.active {
                             background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
-                            border-left: 10px solid rgba(174, 9, 34, 0);
+                            border-left: 0px solid rgba(174, 9, 34, 0);
                             background-size: 5% auto;
+                            opacity: 1;
                             h4 {
                                 color: white;
                             }
@@ -3285,7 +3298,7 @@ article {
                             color: $akvoPurple;
                             margin-bottom: 1px;
                             line-height: 150%;
-                            padding-left: 15px;
+                            padding-left: 10px;
                         }
                         &:hover {
                             color: rgba($akvoPurple, 0.5);
@@ -3306,8 +3319,26 @@ article {
     vertical-align: top;
     overflow-y: scroll;
     padding: 20px 1em 0.25em 1em;
-    background-color: rgba(245, 245, 245, 0.2);
+    background-color: rgba($secondary8, 0.3);
+    border: 1px solid rgba($secondary8, 0.8);
     @include flex(1);
+    .indicator-title {
+        font-size: 1.3em;
+        margin-bottom: 25px;
+        .backButton {
+                display: inline;
+                background: transparent;
+                padding: 3px 5px;
+                @include border-radius(3px);
+                font-size: 0.7em;
+                color: white$rsrBlue2;
+                margin:-5px 10px 0 0;
+                &:hover {
+                    color: $anchorLinkHover;
+                }
+            
+        }
+    }
     .indicator-period {
         .indicTitle {
             position: relative;
@@ -3337,6 +3368,7 @@ article {
         font-size: 1em;
         color: $akvoBlack;
         margin-top: 40px;
+        display: none;
     }
     .result-summary {
         display: none;
@@ -3380,7 +3412,6 @@ article {
         padding: 0;
         display: none;
         .indicator-title {
-            color: rgb(174, 9, 34);
             font-size: 1em;
             .glyphicon {
                 float: left;
@@ -3459,17 +3490,17 @@ article {
                 }
             }
             .expand-indicator-period {
-                .fa-chevron-circle-up {
+                .fa-chevron-up {
                     display: none;
                 }
-                .fa-chevron-circle-down {
+                .fa-chevron-down {
                     display: initial;
                 }
                 &.expanded {
-                    .fa-chevron-circle-up {
+                    .fa-chevron-up {
                         display: initial;
                     }
-                    .fa-chevron-circle-down {
+                    .fa-chevron-down {
                         display: none;
                     }
                 }
@@ -3885,7 +3916,7 @@ label.fileUpload {
             }
         }
         .upActualValue {
-            margin: 25px 0 0 0px;
+            margin: 15px 0 0 0px;
             .update-actual-value-text {
                 color: rgba($primary5, 1);
             }

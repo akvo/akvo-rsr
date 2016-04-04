@@ -1194,11 +1194,9 @@ function initReact() {
 
             return (
                 <div className="indicator-period opacity-transition">
-                    <div className="backButton">
-                        <a onClick={this.goBack}>&lt; {i18nResults.back}</a>
-                    </div>
                     <div className="indicTitle">
                             <h4 className="indicator-title">
+                                <a className="backButton" onClick={this.goBack}>&lt; {i18nResults.back}</a>
                                 {i18nResults.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
                             </h4>
                         {this.renderNewUpdate()}
@@ -1712,10 +1710,8 @@ function initReact() {
                 // Show a list of periods.
                 return (
                     <div className="indicator opacity-transition">
-                        <div className="backButton">
-                            <a onClick={this.goBack}>&lt; {i18nResults.back}</a>
-                        </div>
                         <h4 className="indicator-title">
+                            <a className="backButton" onClick={this.goBack}>&lt; {i18nResults.back}</a>
                             {this.props.selectedIndicator.title}{this.showMeasure()}
                         </h4>
                         <div className="indicator-description">
@@ -1860,23 +1856,23 @@ function initReact() {
             switch (this.props.result.type) {
                 case '1':
                     return (
-                        <span>({i18nResults.output})</span>
+                        <div className="indicatorType">{i18nResults.output}</div>
                     );
                 case '2':
                     return (
-                        <span>({i18nResults.outcome})</span>
+                        <div className="indicatorType">{i18nResults.outcome}</div>
                     );
                 case '3':
                     return (
-                        <span>({i18nResults.impact})</span>
+                        <div className="indicatorType">{i18nResults.impact}</div>
                     );
                 case '9':
                     return (
-                        <span>({i18nResults.other})</span>
+                        <div className="indicatorType">{i18nResults.other}</div>
                     );
                 default:
                     return (
-                        <span />
+                        <div />
                     );
             }
         },
@@ -1921,8 +1917,8 @@ function initReact() {
                 <div className={resultNavClass} key={this.props.result.id}>
                     <div className="result-nav-summary clickable" onClick={this.switchResult}>
                         <h3 className="result-title">
-                            <i className="fa fa-chevron-circle-down" />
-                            <i className="fa fa-chevron-circle-up" />
+                            <i className="fa fa-chevron-down" />
+                            <i className="fa fa-chevron-up" />
                             <span>{this.props.result.title}</span>
                             {this.renderResultType()}
                         </h3>

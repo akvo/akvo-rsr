@@ -1194,11 +1194,9 @@ function initReact() {
 
             return (
                 React.DOM.div( {className:"indicator-period opacity-transition"}, 
-                    React.DOM.div( {className:"backButton"}, 
-                        React.DOM.a( {onClick:this.goBack}, "< ", i18nResults.back)
-                    ),
                     React.DOM.div( {className:"indicTitle"}, 
                             React.DOM.h4( {className:"indicator-title"}, 
+                                React.DOM.a( {className:"backButton", onClick:this.goBack}, "< ", i18nResults.back),
                                 i18nResults.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
                             ),
                         this.renderNewUpdate()
@@ -1712,10 +1710,8 @@ function initReact() {
                 // Show a list of periods.
                 return (
                     React.DOM.div( {className:"indicator opacity-transition"}, 
-                        React.DOM.div( {className:"backButton"}, 
-                            React.DOM.a( {onClick:this.goBack}, "< ", i18nResults.back)
-                        ),
                         React.DOM.h4( {className:"indicator-title"}, 
+                            React.DOM.a( {className:"backButton", onClick:this.goBack}, "< ", i18nResults.back),
                             this.props.selectedIndicator.title,this.showMeasure()
                         ),
                         React.DOM.div( {className:"indicator-description"}, 
@@ -1860,23 +1856,23 @@ function initReact() {
             switch (this.props.result.type) {
                 case '1':
                     return (
-                        React.DOM.span(null, "(",i18nResults.output,")")
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.output)
                     );
                 case '2':
                     return (
-                        React.DOM.span(null, "(",i18nResults.outcome,")")
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.outcome)
                     );
                 case '3':
                     return (
-                        React.DOM.span(null, "(",i18nResults.impact,")")
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.impact)
                     );
                 case '9':
                     return (
-                        React.DOM.span(null, "(",i18nResults.other,")")
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.other)
                     );
                 default:
                     return (
-                        React.DOM.span(null )
+                        React.DOM.div(null )
                     );
             }
         },
@@ -1921,8 +1917,8 @@ function initReact() {
                 React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
                     React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
                         React.DOM.h3( {className:"result-title"}, 
-                            React.DOM.i( {className:"fa fa-chevron-circle-down"} ),
-                            React.DOM.i( {className:"fa fa-chevron-circle-up"} ),
+                            React.DOM.i( {className:"fa fa-chevron-down"} ),
+                            React.DOM.i( {className:"fa fa-chevron-up"} ),
                             React.DOM.span(null, this.props.result.title),
                             this.renderResultType()
                         ),
