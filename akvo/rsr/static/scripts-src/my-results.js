@@ -1694,7 +1694,7 @@ function initReact() {
                 }
 
                 return (
-                    React.DOM.span(
+                    React.DOM.div(
                         {className:"noIndicators"}, i18nResults.no_indicators, " ", addIndicatorsLink)
                 );
             } else if (this.props.selectedPeriod !== null) {

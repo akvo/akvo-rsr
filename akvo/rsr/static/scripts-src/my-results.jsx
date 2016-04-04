@@ -1694,8 +1694,8 @@ function initReact() {
                 }
 
                 return (
-                    <span
-                        className="noIndicators">{i18nResults.no_indicators} {addIndicatorsLink}</span>
+                    <div
+                        className="noIndicators">{i18nResults.no_indicators} {addIndicatorsLink}</div>
                 );
             } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
