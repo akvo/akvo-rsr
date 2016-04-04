@@ -1711,7 +1711,6 @@ function initReact() {
                 return (
                     <div className="indicator opacity-transition">
                         <h4 className="indicator-title">
-                            <a className="backButton" onClick={this.goBack}>&lt; {i18nResults.back}</a>
                             {this.props.selectedIndicator.title}{this.showMeasure()}
                         </h4>
                         <div className="indicator-description">
