@@ -1683,7 +1683,21 @@ function initReact() {
             // This can be either a list of periods (when no period has been selected, but only an
             // indicator), or a list of indicator updates (when a period has been selected).
 
-            if (this.props.selectedPeriod !== null) {
+            if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
+                var addIndicatorsLink;
+                if (isAdmin) {
+                    var language = window.location.pathname.substring(0, 3);
+                    addIndicatorsLink =
+                        React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
+                } else {
+                    addIndicatorsLink = React.DOM.span(null );
+                }
+
+                return (
+                    React.DOM.span(
+                        {className:"noIndicators"}, i18nResults.no_indicators, " ", addIndicatorsLink)
+                );
+            } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
                 return (
                     React.DOM.div( {className:"indicator-period-container"}, 
@@ -1728,18 +1742,6 @@ function initReact() {
                             findResult: this.props.findResult
                         })
                     )
-                );
-            } else if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
-                var addIndicatorsLink;
-                if (isAdmin) {
-                    var language = window.location.pathname.substring(0, 3);
-                    addIndicatorsLink = React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
-                } else {
-                    addIndicatorsLink = React.DOM.span(null );
-                }
-
-                return (
-                    React.DOM.span( {className:"noIndicators"}, i18nResults.no_indicators, " ", addIndicatorsLink)
                 );
             } else {
                 // Nothing selected, leave main content empty.
