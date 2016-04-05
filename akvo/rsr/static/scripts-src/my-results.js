@@ -1355,9 +1355,13 @@ function initReact() {
 
         renderActions: function() {
             // Render the actions for this period.
-            if (isPublic || !isAdmin) {
-                // In the public view or in the 'MyRSR' view as a non-admin:
-                // Only display whether the period is locked or not.
+            if (isPublic) {
+                // In the public view, display nothing.
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (!isAdmin) {
+                // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
                         return (
@@ -1373,8 +1377,7 @@ function initReact() {
                         );
                 }
             } else {
-                // In the 'MyRSR' view as an admin:
-                // Show the buttons to lock or unlock a period.
+                // In the 'MyRSR' view as an admin, show the buttons to lock or unlock a period.
                 if (this.state.lockingOrUnlocking) {
                     return (
                         React.DOM.td( {className:"actions-td"}, 
@@ -1575,11 +1578,12 @@ function initReact() {
                     React.DOM.tr(null, 
                         React.DOM.td(null, 
                             React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicator_periods
-                        ),
-                        React.DOM.td(null ),React.DOM.td(null ),React.DOM.td(null )
+                        )
                     )
                 );
             }
+
+            var actionCell = isPublic ? React.DOM.span(null ) : React.DOM.td( {className:"th-actions"} );
 
             return (
                 React.DOM.div( {className:"indicator-period-list selfProject"}, 
@@ -1591,7 +1595,7 @@ function initReact() {
                                 React.DOM.td( {className:"th-period"}, i18nResults.period),
                                 React.DOM.td( {className:"th-target"}, i18nResults.target_value),
                                 React.DOM.td( {className:"th-actual"}, i18nResults.actual_value),
-                                React.DOM.td( {className:"th-actions"})
+                                actionCell
                             )
                         ),
                         periods
@@ -1694,8 +1698,10 @@ function initReact() {
                 }
 
                 return (
-                    React.DOM.div(
-                        {className:"noIndicators"}, i18nResults.no_indicators, " ", addIndicatorsLink)
+                    React.DOM.div( {className:"noIndicators"}, 
+                        i18nResults.no_indicators, " ", addIndicatorsLink,
+                        React.DOM.a( {href:"https://akvorsr.supporthero.io/article/show/design-a-results-framework", target:"_blank"}, i18nResults.more_info)
+                    )
                 );
             } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
@@ -1901,13 +1907,9 @@ function initReact() {
             }
 
             if (this.expanded()) {
-                // Show a different text when the result is selected (expanded).
+                // Do not show a text when the result is selected (expanded).
                 return (
-                    React.DOM.span( {className:"result-indicator-count"}, 
-                        React.DOM.i( {className:"fa fa-tachometer"} ),
-                        React.DOM.span( {className:"indicator-count inlined"}, indicatorLength),
-                        React.DOM.p(null, this.indicatorText(),":")
-                    )
+                    React.DOM.span(null )
                 );
             } else {
                 // Show the number of indicators

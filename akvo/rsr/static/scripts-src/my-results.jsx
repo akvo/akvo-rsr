@@ -1355,9 +1355,13 @@ function initReact() {
 
         renderActions: function() {
             // Render the actions for this period.
-            if (isPublic || !isAdmin) {
-                // In the public view or in the 'MyRSR' view as a non-admin:
-                // Only display whether the period is locked or not.
+            if (isPublic) {
+                // In the public view, display nothing.
+                return (
+                    <span />
+                );
+            } else if (!isAdmin) {
+                // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
                         return (
@@ -1373,8 +1377,7 @@ function initReact() {
                         );
                 }
             } else {
-                // In the 'MyRSR' view as an admin:
-                // Show the buttons to lock or unlock a period.
+                // In the 'MyRSR' view as an admin, show the buttons to lock or unlock a period.
                 if (this.state.lockingOrUnlocking) {
                     return (
                         <td className="actions-td">
@@ -1576,10 +1579,11 @@ function initReact() {
                         <td>
                             <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.indicator_periods}
                         </td>
-                        <td /><td /><td />
                     </tr>
                 </tbody>;
             }
+
+            var actionCell = isPublic ? <span /> : <td className="th-actions" />;
 
             return (
                 <div className="indicator-period-list selfProject">
@@ -1591,7 +1595,7 @@ function initReact() {
                                 <td className="th-period">{i18nResults.period}</td>
                                 <td className="th-target">{i18nResults.target_value}</td>
                                 <td className="th-actual">{i18nResults.actual_value}</td>
-                                <td className="th-actions"/>
+                                {actionCell}
                             </tr>
                         </thead>
                         {periods}
@@ -1694,8 +1698,10 @@ function initReact() {
                 }
 
                 return (
-                    <div
-                        className="noIndicators">{i18nResults.no_indicators} {addIndicatorsLink}</div>
+                    <div className="noIndicators">
+                        {i18nResults.no_indicators} {addIndicatorsLink}
+                        <a href="https://akvorsr.supporthero.io/article/show/design-a-results-framework" target="_blank">{i18nResults.more_info}</a>
+                    </div>
                 );
             } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
@@ -1901,13 +1907,9 @@ function initReact() {
             }
 
             if (this.expanded()) {
-                // Show a different text when the result is selected (expanded).
+                // Do not show a text when the result is selected (expanded).
                 return (
-                    <span className="result-indicator-count">
-                        <i className="fa fa-tachometer" />
-                        <span className="indicator-count inlined">{indicatorLength}</span>
-                        <p>{this.indicatorText()}:</p>
-                    </span>
+                    <span />
                 );
             } else {
                 // Show the number of indicators
