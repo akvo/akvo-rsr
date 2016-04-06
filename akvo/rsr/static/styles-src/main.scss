@@ -14,7 +14,7 @@ html {
 body {
     width: 100%;
     height: 100%;
-    color: lighten(rgb(36, 48, 50), 10%);
+    color: $akvoBlack;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
     padding-top: 75px;
@@ -1571,7 +1571,6 @@ header {
     &.projectHeader {
         margin-bottom: 0;
         padding: 15px 0;
-        background: $rsrHeader;
         border-bottom: 1px solid rgba($rsrGreen, 0.15);
         margin: -10px 0 15px 0;
         @include box-shadow(inset 0 2px 6px -5px rgba($akvoBlack, 0.5));
@@ -1912,9 +1911,8 @@ div.textBlock {
     position: relative;
     margin: -15px 0 20px 0;
     padding-top: 10px;
-    background: rgba($primary5, 0.1);
     .nav-tabs {
-        border-bottom: none;
+        border-bottom: 1px solid rgba($akvoBlack, 0.1);
     }
     nav{
         ul {
@@ -1934,7 +1932,7 @@ div.textBlock {
                     &.selected {
                         color: $anchorLinkHover;
                         font-weight: normal;
-                        background: rgba(white, 1);
+                        background-color: rgba($akvoBlack, 0.1);
                         @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
                 }
@@ -3029,7 +3027,6 @@ article {
         display: inline-block !important;
         padding: 0 0 10px 0px;
         > span:first-child {
-            color: rgba($akvoPurple, 0.7);
             display: block;
             span {
                 display: inline;
@@ -3038,8 +3035,6 @@ article {
         span:nth-child(2n), .actualValueSpan {
             display: block;
             font-family: $titleFont;
-            font-weight: 600;
-            color: rgba($akvoPurple, 1);
             span {
                 display: inline;
             }
@@ -3062,10 +3057,8 @@ article {
     .period-actual {
         width: 50%;
         float: right;
-        color: rgba($akvoBlack, 0.6);
         position: relative;
         span {
-            font-weight: 700;
             &:nth-child(1) {
                 display: inline-block;
                 margin-right: 10px;
@@ -3535,7 +3528,6 @@ article {
                     }
                 }
                 &.period-td {
-                    color: rgba($akvoBlack, 0.6);
                     position: relative;
                     .result-tooltip {
                         position: absolute;
@@ -4562,7 +4554,6 @@ div#my-reports {
 }
 
 .period-td {
-    color: rgba($akvoBlack, 0.6);
     position: relative;
     .badge {
         background-color: $akvoBlack;
