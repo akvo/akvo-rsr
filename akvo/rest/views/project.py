@@ -5,9 +5,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rest.serializers.project import ProjectUpSerializer
 from akvo.rsr.models import Project
-from ..serializers import ProjectSerializer, ProjectExtraSerializer
+from ..filters import RSRGenericFilterBackend
+from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectUpSerializer
 from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
 
 
@@ -53,7 +53,7 @@ class ProjectViewSet(PublicProjectViewSet):
     ).prefetch_related(
         'publishingstatus',
     )
-
+    filter_backends = (RSRGenericFilterBackend,)
     serializer_class = ProjectSerializer
     filter_fields = {
         'id': ['exact', 'gt', 'gte', 'lt', 'lte', ],
@@ -92,6 +92,7 @@ class ProjectViewSet(PublicProjectViewSet):
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
+
         sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
         if sync_owner:
             self.queryset = self.queryset.filter(
