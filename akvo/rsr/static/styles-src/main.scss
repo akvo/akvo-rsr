@@ -1912,9 +1912,10 @@ div.textBlock {
     margin: -15px 0 20px 0;
     padding-top: 10px;
     .nav-tabs {
-        border-bottom: 1px solid rgba($akvoBlack, 0.1);
+        border-bottom: none;
     }
     nav{
+        border-bottom:  1px solid rgba($akvoBlack, 0.1);
         ul {
             li {
                 display: inline;
@@ -1932,8 +1933,8 @@ div.textBlock {
                     &.selected {
                         color: $anchorLinkHover;
                         font-weight: normal;
-                        background-color: rgba($akvoBlack, 0.1);
-                        @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
+                        border: 1px solid rgba($akvoBlack, 0.1);
+                        border-bottom: none;
                     }
                 }
             }
