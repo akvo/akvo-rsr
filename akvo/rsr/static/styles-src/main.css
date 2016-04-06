@@ -42,7 +42,7 @@ html {
 body {
   width: 100%;
   height: 100%;
-  color: #394c50;
+  color: #202024;
   text-rendering: optimizelegibility;
   font-family: "Poppins", "Questrial", "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 75px;
@@ -1340,7 +1340,6 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #F6FBFB;
   border-bottom: 1px solid rgba(0, 167, 157, 0.15);
   margin: -10px 0 15px 0;
   -moz-box-shadow: inset 0 2px 6px -5px rgba(32, 32, 36, 0.5);
@@ -1606,10 +1605,9 @@ div.textBlock {
 .projectMenu {
   position: relative;
   margin: -15px 0 20px 0;
-  padding-top: 10px;
-  background: rgba(57, 102, 128, 0.1); }
+  padding-top: 10px; }
   .projectMenu .nav-tabs {
-    border-bottom: none; }
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
   .projectMenu nav ul li {
     display: inline; }
     .projectMenu nav ul li a.tab-link {
@@ -1625,7 +1623,7 @@ div.textBlock {
       .projectMenu nav ul li a.tab-link.selected {
         color: #ff5500;
         font-weight: normal;
-        background: white;
+        background-color: rgba(32, 32, 36, 0.1);
         -moz-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
         -o-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
         -webkit-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
@@ -2527,7 +2525,6 @@ article {
     .periodValues .period-target > span:first-child,
     .periodValues .period-actual > span:first-child,
     .periodValues .period-target-comment > span:first-child {
-      color: rgba(44, 42, 116, 0.7);
       display: block; }
       .baseline .baseline-value > span:first-child span,
       .baseline .baseline-year > span:first-child span,
@@ -2560,9 +2557,7 @@ article {
     .periodValues .period-actual .actualValueSpan,
     .periodValues .period-target-comment span:nth-child(2n), .periodValues .period-target-comment .actualValueSpan {
       display: block;
-      font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-weight: 600;
-      color: #2c2a74; }
+      font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
       .baseline .baseline-value span:nth-child(2n) span,
       .baseline .baseline-value .actualValueSpan span,
       .baseline .baseline-year span:nth-child(2n) span,
@@ -2618,40 +2613,34 @@ article {
   .periodValues .period-actual {
     width: 50%;
     float: right;
-    color: rgba(32, 32, 36, 0.6);
     position: relative; }
-    .baseline .baseline-year span,
-    .baseline .period-actual span,
-    .periodValues .baseline-year span,
-    .periodValues .period-actual span {
+    .baseline .baseline-year span:nth-child(1),
+    .baseline .period-actual span:nth-child(1),
+    .periodValues .baseline-year span:nth-child(1),
+    .periodValues .period-actual span:nth-child(1) {
+      display: inline-block;
+      margin-right: 10px; }
+    .baseline .baseline-year span:nth-child(4),
+    .baseline .period-actual span:nth-child(4),
+    .periodValues .baseline-year span:nth-child(4),
+    .periodValues .period-actual span:nth-child(4) {
+      display: block;
       font-weight: 700; }
-      .baseline .baseline-year span:nth-child(1),
-      .baseline .period-actual span:nth-child(1),
-      .periodValues .baseline-year span:nth-child(1),
-      .periodValues .period-actual span:nth-child(1) {
-        display: inline-block;
-        margin-right: 10px; }
-      .baseline .baseline-year span:nth-child(4),
-      .baseline .period-actual span:nth-child(4),
-      .periodValues .baseline-year span:nth-child(4),
-      .periodValues .period-actual span:nth-child(4) {
-        display: block;
-        font-weight: 700; }
-      .baseline .baseline-year span.actualValueSpan,
-      .baseline .period-actual span.actualValueSpan,
-      .periodValues .baseline-year span.actualValueSpan,
-      .periodValues .period-actual span.actualValueSpan {
-        display: block; }
-        .baseline .baseline-year span.actualValueSpan span:nth-child(1),
-        .baseline .period-actual span.actualValueSpan span:nth-child(1),
-        .periodValues .baseline-year span.actualValueSpan span:nth-child(1),
-        .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
-          margin-right: 0; }
-        .baseline .baseline-year span.actualValueSpan span,
-        .baseline .period-actual span.actualValueSpan span,
-        .periodValues .baseline-year span.actualValueSpan span,
-        .periodValues .period-actual span.actualValueSpan span {
-          display: inline; }
+    .baseline .baseline-year span.actualValueSpan,
+    .baseline .period-actual span.actualValueSpan,
+    .periodValues .baseline-year span.actualValueSpan,
+    .periodValues .period-actual span.actualValueSpan {
+      display: block; }
+      .baseline .baseline-year span.actualValueSpan span:nth-child(1),
+      .baseline .period-actual span.actualValueSpan span:nth-child(1),
+      .periodValues .baseline-year span.actualValueSpan span:nth-child(1),
+      .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
+        margin-right: 0; }
+      .baseline .baseline-year span.actualValueSpan span,
+      .baseline .period-actual span.actualValueSpan span,
+      .periodValues .baseline-year span.actualValueSpan span,
+      .periodValues .period-actual span.actualValueSpan span {
+        display: inline; }
     .baseline .baseline-year .badge,
     .baseline .period-actual .badge,
     .periodValues .baseline-year .badge,
@@ -3059,7 +3048,6 @@ article {
           .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
             left: 77.4336%; }
         .indicator-container .indicator-group .table td.period-td {
-          color: rgba(32, 32, 36, 0.6);
           position: relative; }
           .indicator-container .indicator-group .table td.period-td .result-tooltip {
             position: absolute;
@@ -3909,7 +3897,6 @@ div#my-reports {
   border-bottom: none; }
 
 .period-td {
-  color: rgba(32, 32, 36, 0.6);
   position: relative; }
   .period-td .badge {
     background-color: #202024;
