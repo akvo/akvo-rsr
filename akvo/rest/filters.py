@@ -5,6 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import ast
+
+from django.db.models import Q
+
 from rest_framework import filters
 
 
@@ -27,33 +30,52 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
 
         Example:
             http://rsr.akvo.org/rest/v1/project/?filter={'partners__in':[42,43]}&prefetch_related=['partners']
+
+        Finally limited support for filtering on multiple arguments using logical OR between
+        those expressions is available. To use this supply two or more query string keywords on the
+        form q_filter1, q_filter2... where the value is a dict that can be used as a kwarg in a Q
+        object. All those Q objects created are used in a queryset.filter() call concatenated using
+        the | operator.
         """
-        filter = request.QUERY_PARAMS.get('filter', None)
-        try:
-            filter_kwargs = ast.literal_eval(filter)
-            queryset = queryset.filter(**filter_kwargs)
-        except ValueError:
-            pass
+        def eval_query_value(request, key):
+            """
+            Use ast.literal_eval() to evaluate a query string value as a python data type object
+            :param request: the django request object
+            :param param: the query string param key
+            :return: a python data type object, or None if literal_eval() fails
+            """
+            value = request.QUERY_PARAMS.get(key, None)
+            try:
+                return ast.literal_eval(value)
+            except ValueError:
+                return None
 
-        exclude = request.QUERY_PARAMS.get('exclude', None)
-        try:
-            exclude_kwargs = ast.literal_eval(exclude)
-            queryset = queryset.exclude(**exclude_kwargs)
-        except ValueError:
-            pass
+        qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related']
 
-        select_related = request.QUERY_PARAMS.get('select_related', None)
-        try:
-            select_related_args = ast.literal_eval(select_related)
-            queryset = queryset.select_related(*select_related_args)
-        except ValueError:
-            pass
+        # evaluate each query string param, and apply the queryset method with the same name
+        for param in qs_params:
+            args_or_kwargs = eval_query_value(request, param)
+            if args_or_kwargs:
+                # filter and exclude are called with a dict kwarg, the _related methods with a list
+                if param in ['filter', 'exclude',]:
+                    queryset = getattr(queryset, param)(**args_or_kwargs)
+                else:
+                    queryset = getattr(queryset, param)(*args_or_kwargs)
 
-        prefetch_related = request.QUERY_PARAMS.get('prefetch_related', None)
-        try:
-            prefetch_related_args = ast.literal_eval(prefetch_related)
-            queryset = queryset.prefetch_related(*prefetch_related_args)
-        except ValueError:
-            pass
+        # support for Q expressions, limited to OR-concatenated filtering
+        if request.QUERY_PARAMS.get('q_filter1', None):
+            i = 1
+            q_queries = []
+            while request.QUERY_PARAMS.get('q_filter{}'.format(i), None):
+                query_arg = eval_query_value(request, 'q_filter{}'.format(i))
+                if query_arg:
+                    q_queries += [query_arg]
+                i += 1
+
+            q_expr = Q(**q_queries[0])
+            for query in q_queries[1:]:
+                q_expr = q_expr | Q(**query)
+
+            queryset = queryset.filter(q_expr)
 
         return queryset
