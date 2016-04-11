@@ -53,7 +53,6 @@ class ProjectViewSet(PublicProjectViewSet):
     ).prefetch_related(
         'publishingstatus',
     )
-    filter_backends = (RSRGenericFilterBackend,)
     serializer_class = ProjectSerializer
     filter_fields = {
         'id': ['exact', 'gt', 'gte', 'lt', 'lte', ],
