@@ -9,8 +9,13 @@ from akvo.rsr.models import Sector
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
+
 
 class SectorSerializer(BaseRSRSerializer):
+
+    code_label = serializers.Field(source='iati_sector')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')
 
     class Meta:
         model = Sector

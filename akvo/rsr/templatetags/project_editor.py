@@ -26,7 +26,10 @@ def retrieve_id(obj):
     Retrieves the id from 'obj', which can be either a Django Object or a string.
     """
     if not isinstance(obj, basestring):
-        return obj.id
+        try:
+            return obj.id
+        except AttributeError:
+            return obj.project.id
     else:
         return "{0}_{1}".format(obj.split('.')[1], "new-0")
 
@@ -146,8 +149,6 @@ def value(obj, field):
     :returns 1234 (in case of related object)
     """
     if isinstance(obj, basestring):
-        # default = retrieve_model(obj)._meta.get_field(field).default
-        # return default if default != NOT_PROVIDED else ''
         return ''
     else:
         field_value = getattr(obj, field)
@@ -159,6 +160,8 @@ def value(obj, field):
             return '1'
         elif field_value is False:
             return '2'
+        elif field_value in [0, 0.]:
+            return '0'
         else:
             return field_value or ''
 

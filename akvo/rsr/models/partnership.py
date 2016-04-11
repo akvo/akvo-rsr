@@ -126,7 +126,10 @@ class Partnership(models.Model):
         help_text=_(u'RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True
+        _(u'IATI activity ID'), max_length=100, blank=True, null=True, db_index=True,
+        help_text=_(u'A valid activity identifier published by the participating organisation '
+                    u'which points to the activity that it has published to IATI that describes '
+                    u'its role in this activity.')
     )
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
@@ -146,10 +149,23 @@ class Partnership(models.Model):
     )
 
     def iati_organisation_role_label(self):
-        return dict(self.IATI_ROLES).get(self.iati_organisation_role)
+        if self.iati_organisation_role:
+            return dict(self.IATI_ROLES).get(self.iati_organisation_role)
+        else:
+            return ''
 
     def iati_role_to_partner_type(self):
-        return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(int(self.iati_organisation_role))
+        if self.iati_organisation_role:
+            return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(int(self.iati_organisation_role))
+        else:
+            return None
+
+    def organisation_show_link(self):
+        if self.organisation:
+            return u'<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
+                                                   self.organisation.long_name or
+                                                   self.organisation.name)
+        return ''
 
     class Meta:
         app_label = 'rsr'

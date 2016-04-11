@@ -32,12 +32,16 @@ from .employment import Employment
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
+from .humanitarian_scope import HumanitarianScope
 from .iati_activity_import import IatiActivityImport
 from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment
+from .indicator import (Indicator, IndicatorPeriod, IndicatorPeriodData,
+                        IndicatorPeriodDataComment, IndicatorReference,
+                        IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension,
+                        IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation)
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
@@ -47,6 +51,13 @@ from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocat
                        AdministrativeLocation)
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
+from .organisation_budget import (OrganisationCountryBudget, OrganisationRegionBudget,
+                                  OrganisationRecipientOrgBudget, OrganisationTotalBudget,
+                                  OrganisationTotalExpenditure, OrganisationCountryBudgetLine,
+                                  OrganisationExpenseLine, OrganisationRecipientOrgBudgetLine,
+                                  OrganisationRegionBudgetLine, OrganisationTotalBudgetLine)
+from .organisation_document import (OrganisationDocument, OrganisationDocumentCategory,
+                                    OrganisationDocumentCountry)
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
@@ -56,7 +67,7 @@ from .project import Project
 from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
-from .project_document import ProjectDocument
+from .project_document import ProjectDocument, ProjectDocumentCategory
 from .project_editor_validation import ProjectEditorValidation, ProjectEditorValidationSet
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
@@ -68,6 +79,7 @@ from .transaction import Transaction, TransactionSector
 from .user import User
 
 __all__ = [
+    'AdministrativeLocation',
     'Benchmark',
     'Benchmarkname',
     'BudgetItem',
@@ -83,6 +95,7 @@ __all__ = [
     'Fss',
     'FssForecast',
     'Goal',
+    'HumanitarianScope',
     'IatiActivityImport',
     'IatiExport',
     'IatiImport',
@@ -91,20 +104,37 @@ __all__ = [
     'IatiImportLog',
     'Indicator',
     'IndicatorPeriod',
+    'IndicatorPeriodActualDimension',
+    'IndicatorPeriodActualLocation',
     'IndicatorPeriodData',
     'IndicatorPeriodDataComment',
+    'IndicatorPeriodTargetDimension',
+    'IndicatorPeriodTargetLocation',
+    'IndicatorReference',
     'Invoice',
     'InternalOrganisationID',
     'Keyword',
     'LegacyData',
     'Link',
-    'OrganisationLocation',
     'ProjectLocation',
-    'AdministrativeLocation',
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCountryBudget',
+    'OrganisationCountryBudgetLine',
     'OrganisationCustomField',
+    'OrganisationDocument',
+    'OrganisationDocumentCategory',
+    'OrganisationDocumentCountry',
+    'OrganisationExpenseLine',
+    'OrganisationLocation',
+    'OrganisationRecipientOrgBudget',
+    'OrganisationRecipientOrgBudgetLine',
+    'OrganisationRegionBudget',
+    'OrganisationRegionBudgetLine',
+    'OrganisationTotalBudget',
+    'OrganisationTotalBudgetLine',
+    'OrganisationTotalExpenditure',
     'PartnerSite',
     'Partnership',
     'PayPalGateway',
@@ -118,6 +148,7 @@ __all__ = [
     'ProjectContact',
     'ProjectCustomField',
     'ProjectDocument',
+    'ProjectDocumentCategory',
     'ProjectEditorValidation',
     'ProjectEditorValidationSet',
     'ProjectUpdate',

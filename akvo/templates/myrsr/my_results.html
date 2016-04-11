@@ -28,6 +28,13 @@
     <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
     <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
 
+    {# Settings #}
+    <script type="application/json" id="settings">
+        {
+            "public": false
+        }
+    </script>
+
     {# Initial data endpoints #}
     <script type="application/json" id="data-endpoints">
         {
@@ -80,18 +87,28 @@
             "results": "{% trans 'Results' %}",
             "indicator": "{% trans 'Indicator' %}",
             "indicators": "{% trans 'Indicators' %}",
+            "no_indicators": "{% trans 'This result has no indicators yet' %}",
+            "more_info": "{% trans 'Find out more about adding indicators to the results framework' %}",
+            "add_indicators": "{% trans 'Add indicators' %}",
             "indicator_period": "{% trans 'Indicator period' %}",
-            "indicator_periods": "{% trans 'Indicator periods' %}",
+            "indicator_periods": "{% trans 'Indicator period(s)' %}",
+            "output": "{% trans 'Output' %}",
+            "outcome": "{% trans 'Outcome' %}",
+            "impact": "{% trans 'Impact' %}",
+            "other": "{% trans 'Other' %}",
             "unit": "{% trans 'Unit' %}",
             "percentage": "{% trans 'Percentage' %}",
             "baseline_year": "{% trans 'Baseline year' %}",
             "baseline_value": "{% trans 'Baseline value' %}",
             "period": "{% trans 'Period' %}",
+            "back": "{% trans 'Back' %}",
             "loading": "{% trans 'Loading' %}",
             "number_of_pending_updates": "{% trans 'Number of pending updates' %}",
             "lock_period": "{% trans 'Lock period' %}",
             "unlock_period": "{% trans 'Unlock period' %}",
+            "unlocking_period": "{% trans 'Unlocking period' %}",
             "period_locked": "{% trans 'Period locked' %}",
+            "period_unlocked": "{% trans 'Period unlocked' %}",
             "parent_project": "{% trans 'Parent project' %}",
             "child_project": "{% trans 'Child project' %}",
             "request_update": "{% trans 'Request update' %}",
@@ -102,7 +119,7 @@
             "current": "{% trans 'Current' %}",
             "add_to_actual_value": "{% trans 'Add to actual value' %}",
             "input_placeholder": "{% trans 'Fill in a value to add to the actual value' %}",
-            "actual_value_comment": "{% trans 'Comment' %}",
+            "actual_value_comment": "{% trans 'Value description' %}",
             "comment_placeholder": "{% trans 'Add a comment to provide additional background information for this update' %}",
             "new_total_value": "{% trans 'New total for this period' %}",
             "total_value_after_update": "{% trans 'Actual total for this period (after this update)' %}",
@@ -123,6 +140,7 @@
             "no": "{% trans 'No' %}",
             "add_image": "{% trans 'Add image' %}",
             "change_image": "{% trans 'Change image' %}",
+            "remove_image": "{% trans 'Click to remove image' %}",
             "attach_file": "{% trans 'Attach file' %}",
             "unknown_date": "{% trans 'Unknown date' %}",
             "comment": "{% trans 'Comment' %}",

@@ -36,13 +36,21 @@ class IatiImportJob(models.Model):
     """
     The IatiImportJob model records the running of an import once.
     Fields:
-    iati_import: the IAtiImport object the job is for
+    iati_import: the IatiImport object the job is for
     iati_xml_file: The IATI XML file the import is run for
     status: is used to show various stages of the import and if the job was completed or cancelled
     projects: all projects that were created or updated by the job
     sha1_hexdigest: used to determine if the file has changed compared to the previous job
     """
-    SUPPORTED_IATI_VERSIONS = ['1.01', '1.02', '1.03', '1.04', '1.05', '2.01',]
+    SUPPORTED_IATI_VERSIONS = [
+        '1.01',
+        '1.02',
+        '1.03',
+        '1.04',
+        '1.05',
+        '2.01',
+        '2.02',
+    ]
     STATUS_CODES = (
         (LOG_ENTRY_TYPE.STATUS_PENDING, _(u'pending')),
         (LOG_ENTRY_TYPE.STATUS_IN_PROGRESS, _(u'in progress')),

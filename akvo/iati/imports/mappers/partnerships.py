@@ -54,6 +54,8 @@ class Partnerships(ImportMapper):
                     organisation_role = None
                     self.add_log('role', 'iati_organisation_role', str(e))
 
+            iati_activity_id = self.get_attrib(partnership, 'activity-id', 'iati_activity_id')
+
             funding_amount = self.get_attrib(
                     partnership, akvo_ns('funding-amount'), 'funding_amount', None)
             if funding_amount:
@@ -70,6 +72,7 @@ class Partnerships(ImportMapper):
                 project=self.project,
                 organisation=organisation,
                 iati_organisation_role=organisation_role,
+                iati_activity_id=iati_activity_id,
                 funding_amount=funding_amount
             )
             if created:

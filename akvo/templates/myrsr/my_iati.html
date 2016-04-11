@@ -21,7 +21,7 @@
 
 {% block myrsr_main %}
     <div class="col-sm-7 col-xs-12">
-    <h3>{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
+    <h3 style="display: block;">{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
 
         {% if export_added %}
             <div class="alert alert-success" role="alert">
@@ -58,7 +58,7 @@
         </p>
         <div id="react_iati_checks"></div>
         <p>
-            <form method="POST" action="" id="iati_export_form">
+            <form method="POST" action="" id="iati_export_form" class="iatiCheck">
                 {% csrf_token %}
                 {% for field in iati_export_form %}
                     {% bootstrap_field field %}
@@ -79,7 +79,7 @@
         {% endif %}
     </div>
     {% if exports %}
-    <div class="col-sm-5 col-xs-12 udpateComponent">
+    <div class="col-sm-5 col-xs-12 updateComponent">
         <h4 class="detailedInfo">{% trans 'Existing IATI exports' %}</h4>
         <ul class="noStyleUl">
         {% for export in exports %}
@@ -108,7 +108,9 @@
     {# Translation strings #}
     <script type="application/json" id="perform-checks-text">
         {
-            "perform_checks": "{% trans 'Perform checks' %}"
+            "perform_checks": "{% trans 'Perform checks' %}",
+            "performing_checks": "{% trans 'Performing checks' %}",
+            "warning": "{% trans 'Warning' %}"
         }
     </script>
 

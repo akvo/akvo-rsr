@@ -55,6 +55,7 @@
                 {% include "myrsr/project_editor/section_8.html" %}
                 {% include "myrsr/project_editor/section_9.html" %}
                 {% include "myrsr/project_editor/section_10.html" %}
+                {% include "myrsr/project_editor/section_11.html" %}
             </fieldset>
         {% endwith %}
     </section>
@@ -86,6 +87,7 @@
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
         <script type="text/template" id="related-project-input">{% include "myrsr/project_editor/related_objects/related_project_input.html" with rp='RelatedProject.'|add:project_id_string %}</script>
+        <script type="text/template" id="humanitarian-scope-input">{% include "myrsr/project_editor/related_objects/humanitarian_scope_input.html" with scope='HumanitarianScope.'|add:project_id_string %}</script>
 
         {# Section 2 #}
         <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor/related_objects/contact_information_input.html" with contact='ProjectContact.'|add:project_id_string %}</script>
@@ -95,8 +97,13 @@
 
         {# Section 5 #}
         <script type="text/template" id="result-input">{% include "myrsr/project_editor/related_objects/result_input.html" with result='Result.'|add:project_id_string %}</script>
-        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string result_id_string="new-0" %}</script>
+        <script type="text/template" id="indicator-input">{% include "myrsr/project_editor/related_objects/indicator_input.html" with indicator='Indicator.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-reference-input">{% include "myrsr/project_editor/related_objects/indicator_reference_input.html" with reference='IndicatorReference.'|add:project_id_string %}</script>
         <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-period-target-dimension-input">{% include "myrsr/project_editor/related_objects/indicator_period_target_dimension_input.html" with dimension='IndicatorPeriodTargetDimension.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-period-actual-dimension-input">{% include "myrsr/project_editor/related_objects/indicator_period_actual_dimension_input.html" with dimension='IndicatorPeriodActualDimension.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-period-target-location-input">{% include "myrsr/project_editor/related_objects/indicator_period_target_location_input.html" with location='IndicatorPeriodTargetLocation.'|add:project_id_string %}</script>
+        <script type="text/template" id="indicator-period-actual-location-input">{% include "myrsr/project_editor/related_objects/indicator_period_actual_location_input.html" with location='IndicatorPeriodActualLocation.'|add:project_id_string %}</script>
         <script type="text/template" id="condition-input">{% include "myrsr/project_editor/related_objects/condition_input.html" with condition='ProjectCondition.'|add:project_id_string %}</script>
 
         {# Section 6 #}
@@ -119,9 +126,16 @@
         {# Section 9 #}
         <script type="text/template" id="link-input">{% include "myrsr/project_editor/related_objects/link_input.html" with link='Link.'|add:project_id_string %}</script>
         <script type="text/template" id="document-input">{% include "myrsr/project_editor/related_objects/document_input.html" with document='ProjectDocument.'|add:project_id_string %}</script>
+        <script type="text/template" id="document-category-input">{% include "myrsr/project_editor/related_objects/document_category_input.html" with category='ProjectDocumentCategory.'|add:project_id_string %}</script>
 
         {# Section 10 #}
         <script type="text/template" id="keyword-input">{% include "myrsr/project_editor/related_objects/keyword_input.html" with keyword='Keyword.'|add:project_id_string %}</script>
+
+        {# Section 11 #}
+        <script type="text/template" id="crsadd-other-flag-input">{% include "myrsr/project_editor/related_objects/crsadd_other_flags_input.html" with flag='CrsAddOtherFlag.'|add:project_id_string %}</script>
+        <script type="text/template" id="fss-forecast-input">{% include "myrsr/project_editor/related_objects/fss_forecast_input.html" with forecast='FssForecast.'|add:project_id_string %}</script>
+        <script type="text/template" id="legacy-data-input">{% include "myrsr/project_editor/related_objects/legacy_data_input.html" with legacy='LegacyData.'|add:project_id_string %}</script>
+
     {% endwith %}
 
     <script type="application/json" id="default-values">
@@ -153,7 +167,7 @@
             "partner_label": "{% trans 'Project partner' %}",
             "partner_helptext": "{% trans 'Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database.' %}",
             "provider_org_label": "{% trans 'Provider organisation' %}",
-            "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
+            "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.' %}",
             "recipient_org_label": "{% trans 'Recipient organisation' %}",
             "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}",
             "add_new_organisation": "{% trans 'Add new organisation' %}",

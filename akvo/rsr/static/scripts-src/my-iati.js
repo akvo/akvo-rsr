@@ -7,6 +7,10 @@
 
 var i18n;
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function loadAsync(url, retryCount, retryLimit, label) {
     var xmlHttp;
 
@@ -47,6 +51,12 @@ function processResponse(label, response) {
     if (all_checks_passed === "True") {
         span = document.createElement("span");
         span.className = "success";
+
+        for (var i = 0; i < checks_response.length; i++) {
+            if (checks_response[i][0] === "warning") {
+                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[i][1]) + "</span>";
+            }
+        }
         span.innerHTML = label_content;
 
         label.innerHTML = '';
@@ -55,10 +65,11 @@ function processResponse(label, response) {
     } else {
         span = document.createElement("span");
         span.className = "error";
-        label_content += "<br/>";
-        for (var i = 0; i < checks_response.length; i++) {
-            if (checks_response[i][0] === "error") {
-                label_content += "- " + checks_response[i][1] + "<br/>";
+        for (var j = 0; j < checks_response.length; j++) {
+            if (checks_response[j][0] === "error") {
+                label_content += "<br/><span class='error'>- " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
+            } else if (checks_response[j][0] === "warning") {
+                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
             }
         }
         span.innerHTML = label_content;
@@ -86,25 +97,48 @@ function loadComponent(component_id) {
 
     Container = React.createClass({displayName: 'Container',
         getInitialState: function() {
-            return {active_button: true};
+            return {
+                button_state: 'active'
+            };
         },
 
         handleClick: function() {
-            this.setState({active_button: false});
+            this.setState({
+                button_state: 'loading'
+            });
+
             getProjectLabels();
+
+            var thisContainer = this;
+            setTimeout(function() {
+                thisContainer.setState({
+                    button_state: false
+                });
+            }, 10000);
         },
 
         render: function() {
-            if (this.state.active_button) {
-                return (
-                    React.DOM.p(null, 
-                        React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary"}, i18n.perform_checks)
-                    )
-                );
-            } else {
-                return (
-                    React.DOM.p(null )
-                );
+            switch (this.state.button_state) {
+                case 'active':
+                    return (
+                        React.DOM.p(null, 
+                            React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary"}, 
+                                i18n.perform_checks
+                            )
+                        )
+                    );
+                case 'loading':
+                    return (
+                        React.DOM.p(null, 
+                            React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary", disabled:true}, 
+                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.performing_checks
+                            )
+                        )
+                    );
+                default:
+                    return (
+                        React.DOM.span(null )
+                    );
             }
         }
     });

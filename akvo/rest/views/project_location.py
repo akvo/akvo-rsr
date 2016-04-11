@@ -24,7 +24,7 @@ class AdministrativeLocationViewSet(PublicProjectViewSet):
     """
     queryset = AdministrativeLocation.objects.all()
     serializer_class = AdministrativeLocationSerializer
-    filter_fields = ('location', 'code', )
+    filter_fields = ('location__location_target', 'location', 'code', )
     project_relation = 'location__location_target__'
 
 

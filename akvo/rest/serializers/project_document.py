@@ -5,12 +5,28 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectDocument
+from akvo.rsr.models import ProjectDocument, ProjectDocumentCategory
 
 from .rsr_serializer import BaseRSRSerializer
+
+from rest_framework import serializers
 
 
 class ProjectDocumentSerializer(BaseRSRSerializer):
 
+    document_show_link = serializers.Field(source='document_show_link')
+    language_label = serializers.Field(source='iati_language')
+    title_language_label = serializers.Field(source='iati_title_language')
+    format_label = serializers.Field(source='iati_format')
+
     class Meta:
         model = ProjectDocument
+
+
+class ProjectDocumentCategorySerializer(BaseRSRSerializer):
+
+    document_unicode = serializers.Field(source='document')
+    category_label = serializers.Field(source='iati_category')
+
+    class Meta:
+        model = ProjectDocumentCategory

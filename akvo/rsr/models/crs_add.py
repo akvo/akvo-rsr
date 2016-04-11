@@ -11,9 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod, Currency
-from akvo.codelists.store.codelists_v201 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
-                                                 LOAN_REPAYMENT_PERIOD, CURRENCY)
+from akvo.codelists.models import (CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod,
+                                   Currency, CRSChannelCode)
+from akvo.codelists.store.codelists_v202 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
+                                                 LOAN_REPAYMENT_PERIOD, CURRENCY,
+                                                 C_R_S_CHANNEL_CODE)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -23,41 +25,83 @@ class CrsAdd(models.Model):
     """
     project = models.OneToOneField('Project', primary_key=True)
     loan_terms_rate1 = models.DecimalField(
-        _(u'rate 1'), blank=True, null=True, max_digits=5, decimal_places=2,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'loan terms rate 1'), blank=True, null=True, max_digits=5, decimal_places=2,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'Interest Rate. If an ODA loan with variable interest rate, report the '
+                    u'variable rate here and the reference fixed rate as rate 2.')
     )
     loan_terms_rate2 = models.DecimalField(
-        _(u'rate 2'), blank=True, null=True, max_digits=5, decimal_places=2,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'loan terms rate 2'), blank=True, null=True, max_digits=5, decimal_places=2,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'Second Interest Rate. If an ODA loan with variable interest rate, report the '
+                    u'variable rate as rate 1 and the reference fixed rate here.')
     )
     repayment_type = ValidXMLCharField(
-        _(u'repayment type'), max_length=1, choices=codelist_choices(LOAN_REPAYMENT_TYPE)
+        _(u'loan terms repayment type'), max_length=1,
+        choices=codelist_choices(LOAN_REPAYMENT_TYPE), blank=True,
+        help_text=_(u'An IATI codelist tabulating CRS-specified values for the type of Repayment. '
+                    u'See the <a href="http://iatistandard.org/202/codelists/LoanRepaymentType/" '
+                    u'target="_blank">IATI codelist</a>.')
     )
     repayment_plan = ValidXMLCharField(
-        _(u'repayment plan'), max_length=2, choices=codelist_choices(LOAN_REPAYMENT_PERIOD)
+        _(u'loan terms repayment plan'), max_length=2,
+        choices=codelist_choices(LOAN_REPAYMENT_PERIOD), blank=True,
+        help_text=_(u'An IATI codelist tabulating CRS-specified values for the number of '
+                    u'repayments per annum. See the <a href="http://iatistandard.org/202/codelists/'
+                    u'LoanRepaymentPeriod/" target="_blank">IATI codelist</a>.')
     )
-    commitment_date = models.DateField(_(u'commitment date'), null=True, blank=True)
-    repayment_first_date = models.DateField(_(u'first repayment date'), null=True, blank=True)
-    repayment_final_date = models.DateField(_(u'final repayment date'), null=True, blank=True)
+    commitment_date = models.DateField(
+        _(u'loan terms commitment date'), null=True, blank=True,
+        help_text=_(u'The CRS++ reported commitment date.')
+    )
+    repayment_first_date = models.DateField(
+        _(u'loan terms first repayment date'), null=True, blank=True,
+        help_text=_(u'The CRS++ reported first repayment date.')
+    )
+    repayment_final_date = models.DateField(
+        _(u'loan terms final repayment date'), null=True, blank=True,
+        help_text=_(u'The CRS++ reported final repayment date.')
+    )
     loan_status_year = models.PositiveIntegerField(
-        _(u'loan status year'), blank=True, null=True, max_length=4
+        _(u'loan status year'), blank=True, null=True, max_length=4,
+        help_text=_(u'CRS reporting year (CRS++ Column 1).')
     )
     loan_status_currency = ValidXMLCharField(
-        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
+        _(u'loan status currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
-    loan_status_value_date = models.DateField(_(u'loan status value date'), blank=True, null=True)
+    loan_status_value_date = models.DateField(
+        _(u'loan status value date'), blank=True, null=True,
+        help_text=_(u'Enter the specific date (DD/MM/YYYY) for the loan status values.')
+    )
     interest_received = models.DecimalField(
-        _(u'interest received'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status interest received'), max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text=_(u'Interest received during the reporting year.')
     )
     principal_outstanding = models.DecimalField(
-        _(u'principal outstanding'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status principal outstanding'), max_digits=10, decimal_places=2, blank=True,
+        null=True, help_text=_(u'The amount of principal owed on the loan at the end of the '
+                               u'reporting year.')
     )
     principal_arrears = models.DecimalField(
-        _(u'principal arrears'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status principal arrears'), max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text=_(u'Arrears of principal at the end of the year. Included in principal '
+                    u'outstanding.')
     )
     interest_arrears = models.DecimalField(
-        _(u'interest arrears'), max_digits=10, decimal_places=2, blank=True, null=True
+        _(u'loan status interest arrears'), max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text=_(u'Arrears of interest at the end of the year.')
     )
+    channel_code = ValidXMLCharField(
+        _(u'channel code'), blank=True, max_length=5, choices=codelist_choices(C_R_S_CHANNEL_CODE),
+        help_text=_(u'The CRS channel code for this activity. The codelist contains both '
+                    u'organisation types and names of organisations. For non-CRS purposes these '
+                    u'should be reported using participating organisations. See the <a '
+                    u'href="http://iatistandard.org/202/codelists/CRSChannelCode/" '
+                    u'target="_blank">IATI codelist</a>.')
+    )
+
+    def __unicode__(self):
+        return u'CRS++'
 
     def iati_repayment_type(self):
         return codelist_value(LoanRepaymentType, self, 'repayment_type')
@@ -67,6 +111,9 @@ class CrsAdd(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')
+
+    def iati_channel_code(self):
+        return codelist_value(CRSChannelCode, self, 'channel_code')
 
     class Meta:
         app_label = 'rsr'
@@ -80,9 +127,23 @@ class CrsAddOtherFlag(models.Model):
     """
     crs = models.ForeignKey('CrsAdd', verbose_name=u'crs', related_name='other_flags')
     code = ValidXMLCharField(
-        _(u'code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS)
+        _(u'code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS),
+        help_text=_(u'An IATI code describing the equivalent CRS++ columns. See the <a '
+                    u'href="http://iatistandard.org/202/codelists/CRSAddOtherFlags/" '
+                    u'target="_blank">IATI codelist</a>.')
     )
-    significance = models.NullBooleanField(_(u'significance'), blank=True)
+    significance = models.NullBooleanField(
+        _(u'significance'), blank=True, help_text=_(u'Indicate whether the flag applies or not.')
+    )
+
+    def __unicode__(self):
+        if self.code:
+            try:
+                return self.iati_code().name
+            except AttributeError:
+                return self.iati_code()
+        else:
+            return u'%s' % _(u'No other flag code specified')
 
     def iati_code(self):
         return codelist_value(CRSAddOtherFlags, self, 'code')

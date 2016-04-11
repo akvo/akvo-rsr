@@ -7,7 +7,7 @@
 
 from akvo.rsr.models import Partnership
 
-from ..serializers import PartnershipSerializer
+from ..serializers import PartnershipSerializer, PartnershipBasicSerializer
 from ..viewsets import PublicProjectViewSet
 
 
@@ -26,3 +26,13 @@ class PartnershipViewSet(PublicProjectViewSet):
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
             ).distinct()
         return super(PartnershipViewSet, self).get_queryset()
+
+
+class PartnershipMoreLinkViewSet(PublicProjectViewSet):
+    """
+    Specific endpoint for the '+X partners' links in RSR. Contains the name, long name and logo of
+    an organisation and the partnership role.
+    """
+    queryset = Partnership.objects.all()
+    serializer_class = PartnershipBasicSerializer
+    filter_fields = ('project', 'organisation', 'iati_organisation_role', )

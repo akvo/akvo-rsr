@@ -11,8 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import DocumentCategory, Language
-from akvo.codelists.store.codelists_v201 import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
+from akvo.codelists.models import DocumentCategory, FileFormat, Language
+from akvo.codelists.store.codelists_v202 import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -52,14 +52,14 @@ class ProjectDocument(models.Model):
         _(u'title language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
         help_text=_(u'Select the language of the document title.')
     )
-    category = ValidXMLCharField(
-        _(u'document category'), max_length=3, blank=True,
-        choices=codelist_choices(DOCUMENT_CATEGORY),
-        help_text=_(u'The description of the type of content contained within the document.')
-    )
     language = ValidXMLCharField(
         _(u'document language'), max_length=2, blank=True, choices=codelist_choices(LANGUAGE),
         help_text=_(u'Select the language that the document is written in.')
+    )
+    document_date = models.DateField(
+        _(u'document date'), null=True, blank=True,
+        help_text=_(u'Enter the date (DD/MM/YYYY) to be used for the production or publishing date '
+                    u'of the relevant document to identify the specific document version.')
     )
 
     def __unicode__(self):
@@ -77,20 +77,28 @@ class ProjectDocument(models.Model):
         if self.document:
             self.document.name = self.document.name.encode('ascii','ignore')
 
+    def document_show_link(self):
+        if self.document:
+            return u'<a href="{0}">{1}</a>'.format(self.document.url, self.document.url)
+        return u''
+
     def show_link(self):
         title = self.title if self.title else u'%s' % _(u'Untitled document')
         if self.url:
-            return u'<a href="%s">%s</a>' % (self.url, title,)
+            return u'<a href="{0}">{1}</a>'.format(self.url, title)
         elif self.document:
-            return u'<a href="%s">%s</a>' % (self.document.url, title,)
+            return u'<a href="{0}">{1}</a>'.format(self.document.url, title)
         else:
             return title
 
-    def iati_category(self):
-        return codelist_value(DocumentCategory, self, 'category')
+    def iati_format(self):
+        return codelist_value(FileFormat, self, 'format')
 
     def iati_language(self):
         return codelist_value(Language, self, 'language')
+
+    def iati_title_language(self):
+        return codelist_value(Language, self, 'title_language')
 
     class Meta:
         app_label = 'rsr'
@@ -98,3 +106,29 @@ class ProjectDocument(models.Model):
         verbose_name_plural = _(u'project documents')
         ordering = ['-id', ]
 
+
+class ProjectDocumentCategory(models.Model):
+    document = models.ForeignKey(ProjectDocument, related_name='categories',
+                                 verbose_name=_(u'document'))
+    category = ValidXMLCharField(_(u'document category'), max_length=3, blank=True,
+                                 choices=codelist_choices(DOCUMENT_CATEGORY),
+                                 help_text=_(u'The description of the type of content contained '
+                                             u'within the document.'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'project document category')
+        verbose_name_plural = _(u'project document categories')
+        ordering = ['-id', ]
+
+    def __unicode__(self):
+        if self.category:
+            try:
+                return self.iati_category().name
+            except AttributeError:
+                return self.iati_category()
+        else:
+            return '%s' % _(u'No category specified')
+
+    def iati_category(self):
+        return codelist_value(DocumentCategory, self, 'category')

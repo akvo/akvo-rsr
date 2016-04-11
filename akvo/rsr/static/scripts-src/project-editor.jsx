@@ -43,11 +43,16 @@ var localStorageName = 'cachedAPIResponses';
 var localStorageResponses = localStorage.getItem(localStorageName);
 
 // PARTIALS
-var partials = ['related-project', 'budget-item', 'condition', 'contact-information',
-    'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner',
+var partials = [
+    'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
+    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-period',
+    'indicator-reference', 'indicator-period-actual-dimension', 'indicator-period-actual-location',
+    'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
     'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
     'related-project','result', 'sector', 'transaction', 'transaction-sector',
-    'location-administrative', 'project-location', 'keyword'];
+    'location-administrative', 'project-location', 'keyword', 'crs-add', 'crsadd-other-flag', 'fss',
+    'fss-forecast', 'legacy-data'
+];
 
 // Measure the percentage of completion for each panel and display the results to the user
 // Which elements count as inputs?
@@ -1457,9 +1462,16 @@ function addPartial(partialName, partialContainer) {
 
         // Indicate the hierarchy of partials
         var partialHierarchy = [
-            ['result', 'indicator', 'indicator-period'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-actual-dimension'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-actual-location'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-target-dimension'],
+            ['result', 'indicator', 'indicator-period', 'indicator-period-target-location'],
+            ['result', 'indicator', 'indicator-reference'],
             ['transaction', 'transaction-sector'],
-            ['project-location', 'location-administrative']
+            ['project-location', 'location-administrative'],
+            ['document', 'document-category'],
+            ['crs-add', 'crsadd-other-flag'],
+            ['fss', 'fss-forecast']
         ];
 
         // Get partial from partial templates and add it to DOM
@@ -1494,12 +1506,23 @@ function addPartial(partialName, partialContainer) {
 
             // Check if there is a third level
             if (hierarchyList[1].length > 1) {
-                var childChildContainer = childContainer.querySelector('.parent');
+                var childChildContainers = childContainer.querySelectorAll('.parent');
                 var childRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][1] + '-item').length;
-                updatePartialIDs(childChildContainer, [childId, 'new-' + childRelatedObjCount.toString()].join('_'));
+                for (var i = 0; i < childChildContainers.length; i++) {
+                    updatePartialIDs(childChildContainers[i], [childId, 'new-' + childRelatedObjCount.toString()].join('_'));
+
+                    // Check if there is a fourth level
+                    if (hierarchyList[1].length > 2) {
+                        var childChildChildContainers = childChildContainers[i].querySelectorAll('.parent');
+                        var childChildRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][2] + '-item').length;
+                        for (var j = 0; j < childChildChildContainers.length; j++) {
+                            updatePartialIDs(childChildChildContainers[j], [childId, 'new-' + childRelatedObjCount.toString(), 'new-' + childChildRelatedObjCount.toString()].join('_'));
+                        }
+                    }
+                }
             }
-        } else if (hierarchyList[0] === 2 || hierarchyList[0] === 3) {
-            // Second or third level, fetch the ID from the parent item and add the new ID to it
+        } else if (hierarchyList[0] > 1) {
+            // Second, third or fourth level: fetch the ID from the parent item and add the new ID to it
             parentContainer = findAncestorByClass(partialContainer, 'parent');
             parentID = parentContainer.getAttribute('id').split('.')[1];
             newID = 'new-' + document.querySelectorAll('.' + partialName + '-item').length;
@@ -1521,9 +1544,20 @@ function addPartial(partialName, partialContainer) {
 
             // Check if there is a third level (only possible on level 2)
             if (hierarchyList[1].length > 0) {
-                childContainer = partial.querySelector('.parent');
+                var childContainers = partial.querySelectorAll('.parent');
                 relatedObjCount = document.querySelectorAll('.' + hierarchyList[1][0] + '-item').length;
-                updatePartialIDs(childContainer, [newID, 'new-' + relatedObjCount.toString()].join('_'));
+                for (var k = 0; k < childContainers.length; k++) {
+                    updatePartialIDs(childContainers[k], [newID, 'new-' + relatedObjCount.toString()].join('_'));
+
+                    // Check if there is a fourth level
+                    if (hierarchyList[1].length > 1) {
+                        var childOfChildContainers = childContainers[k].querySelectorAll('.parent');
+                        var childOfRelatedObjCount = document.querySelectorAll('.' + hierarchyList[1][1] + '-item').length;
+                        for (var l = 0; l < childOfChildContainers.length; l++) {
+                            updatePartialIDs(childOfChildContainers[l], [newID, 'new-' + relatedObjCount.toString(), 'new-' + childOfRelatedObjCount.toString()].join('_'));
+                        }
+                    }
+                }
             }
         }
 
@@ -1628,6 +1662,22 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
 
     els = document.querySelectorAll('.rsr_transaction-receiver_organisation');
+    labelText = defaultValues.recipient_org_label;
+    helpText = defaultValues.recipient_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.rsr_planneddisbursement-provider_organisation');
+    labelText = defaultValues.provider_org_label;
+    helpText = defaultValues.provider_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
+    inputType = 'org';
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+
+    els = document.querySelectorAll('.rsr_planneddisbursement-receiver_organisation');
     labelText = defaultValues.recipient_org_label;
     helpText = defaultValues.recipient_org_helptext;
     filterOption = 'name';
@@ -1820,6 +1870,17 @@ function setHiddenFields() {
             elRemoveClass(relatedObjectContainer, 'hidden');
         } else {
             elAddClass(relatedObjectContainer, 'hidden');
+        }
+    }
+
+    // Finally, even check the sections if they should be hidden or not
+    var sections = document.querySelectorAll('.myPanel');
+    for (var l = 0; l < sections.length; l++) {
+        var section = sections[l];
+        if (!shouldBeHidden(section)) {
+            elRemoveClass(section, 'hidden');
+        } else {
+            elAddClass(section, 'hidden');
         }
     }
 }
@@ -2709,7 +2770,8 @@ function checkUnsavedChanges() {
         '07 - Project locations',
         '08 - Project focus',
         '09 - Links and documents',
-        '10 - Project comments'
+        '10 - Project comments',
+        '11 - Special reporting'
     ];
 
     forms = document.querySelectorAll('form');

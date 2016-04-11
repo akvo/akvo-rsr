@@ -7,19 +7,21 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.db.models import Prefetch
-from django.db.models import Count
+from akvo.iati.exports.iati_org_export import IatiOrgXML
+from akvo.rsr.filters import location_choices, OrganisationFilter, remove_empty_querydict_items
+from akvo.rsr.models import Organisation, Project
+from akvo.rsr.views.utils import apply_keywords, org_projects, show_filter_class
+from akvo.utils import pagination, filter_query_string
+
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from ..filters import location_choices, OrganisationFilter, remove_empty_querydict_items
-from ..models import Employment, Organisation, Project, ProjectUpdate
-from ...utils import pagination, filter_query_string
-from .utils import apply_keywords, org_projects, show_filter_class
+from lxml import etree
+
 
 ###############################################################################
 # Organisation directory
 ###############################################################################
-
 
 def _public_projects():
     """Return all public projects."""
@@ -95,8 +97,30 @@ def directory(request):
 # Organisation main
 ###############################################################################
 
-
 def main(request, organisation_id):
     """The organisation main view."""
     return render(request, 'organisation_main.html', {
         'organisation': get_object_or_404(Organisation, pk=organisation_id)})
+
+
+###############################################################################
+# Organisation IATI files
+###############################################################################
+
+def iati(request, organisation_id):
+    """Retrieve the latest public IATI XML file."""
+    organisation = get_object_or_404(Organisation, pk=organisation_id)
+    if organisation.public_iati_file:
+        exports = organisation.iati_exports.filter(is_public=True).exclude(iati_file='')
+        if exports:
+            latest_export = exports.order_by('-id')[0]
+            return HttpResponse(latest_export.iati_file, content_type="text/xml")
+    raise Http404
+
+
+def iati_org(request, organisation_id):
+    """Generate the IATI Organisation file on-the-fly and return the XML."""
+    organisation = get_object_or_404(Organisation, pk=organisation_id)
+    xml_data = etree.tostring(etree.ElementTree(
+        IatiOrgXML(request, [organisation]).iati_organisations))
+    return HttpResponse(xml_data, content_type="text/xml")

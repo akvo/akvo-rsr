@@ -9,14 +9,22 @@ from akvo.rsr.models import BudgetItem, CountryBudgetItem
 
 from .rsr_serializer import BaseRSRSerializer
 
+from rest_framework import serializers
 
 class BudgetItemSerializer(BaseRSRSerializer):
+
+    label_label = serializers.Field(source='get_label')
+    type_label = serializers.Field(source='iati_type')
+    currency_label = serializers.Field(source='iati_currency')
+    status_label = serializers.Field(source='iati_status')
 
     class Meta:
         model = BudgetItem
 
 
 class CountryBudgetItemSerializer(BaseRSRSerializer):
+
+    code_label = serializers.Field(source='iati_code')
 
     class Meta:
         model = CountryBudgetItem

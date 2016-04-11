@@ -17,9 +17,11 @@ def recipient_country(project):
     recipient_country_elements = []
 
     for country in project.recipient_countries.all():
-        if country.country:
+        if country.country or country.percentage or country.text:
             element = etree.Element("recipient-country")
-            element.attrib['code'] = country.country
+
+            if country.country:
+                element.attrib['code'] = country.country
 
             if country.percentage:
                 element.attrib['percentage'] = str(country.percentage)

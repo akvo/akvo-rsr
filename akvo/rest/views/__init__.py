@@ -13,23 +13,41 @@ from .budget_item import BudgetItemViewSet, CountryBudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
+from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
+from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
+from .humanitarian_scope import HumanitarianScopeViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
+from .indicator_period_dimension import (IndicatorPeriodActualDimensionViewSet,
+                                         IndicatorPeriodTargetDimensionViewSet)
+from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
+                                        IndicatorPeriodTargetLocationViewSet)
+from .indicator_reference import IndicatorReferenceViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .organisation import OrganisationViewSet
+from .organisation_budget import (OrganisationTotalBudgetViewSet,
+                                  OrganisationTotalBudgetLineViewSet,
+                                  OrganisationRecipientOrgBudgetViewSet,
+                                  OrganisationRecipientOrgBudgetLineViewSet,
+                                  OrganisationRegionBudgetViewSet,
+                                  OrganisationRegionBudgetLineViewSet,
+                                  OrganisationCountryBudgetViewSet,
+                                  OrganisationCountryBudgetLineViewSet,
+                                  OrganisationTotalExpenditureViewSet,
+                                  OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
-from .partnership import PartnershipViewSet
+from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
@@ -42,7 +60,7 @@ from .project_editor import (project_editor,
                              project_editor_remove_keyword,
                              project_editor_organisation_logo)
 from .project_comment import ProjectCommentViewSet
-from .project_document import ProjectDocumentViewSet
+from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
 from .project_iati_checks import ProjectIatiCheckView
@@ -84,16 +102,26 @@ __all__ = [
     'change_password',
     'CountryViewSet',
     'CountryBudgetItemViewSet',
+    'CrsAddViewSet',
+    'CrsAddOtherFlagViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
+    'FssViewSet',
+    'FssForecastViewSet',
     'GoalViewSet',
+    'HumanitarianScopeViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
+    'IndicatorPeriodActualDimensionViewSet',
+    'IndicatorPeriodActualLocationViewSet',
     'IndicatorPeriodViewSet',
     'IndicatorPeriodFrameworkViewSet',
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
     'IndicatorPeriodDataCommentViewSet',
+    'IndicatorPeriodTargetDimensionViewSet',
+    'IndicatorPeriodTargetLocationViewSet',
+    'IndicatorReferenceViewSet',
     'indicator_upload_file',
     'InternalOrganisationIDViewSet',
     'invite_user',
@@ -106,8 +134,19 @@ __all__ = [
     'MapProjectUpdateLocationViewSet',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
+    'OrganisationCountryBudgetViewSet',
+    'OrganisationCountryBudgetLineViewSet',
     'OrganisationCustomFieldViewSet',
+    'OrganisationExpenseLineViewSet',
+    'OrganisationRecipientOrgBudgetViewSet',
+    'OrganisationRecipientOrgBudgetLineViewSet',
+    'OrganisationRegionBudgetViewSet',
+    'OrganisationRegionBudgetLineViewSet',
+    'OrganisationTotalBudgetViewSet',
+    'OrganisationTotalBudgetLineViewSet',
+    'OrganisationTotalExpenditureViewSet',
     'PartnershipViewSet',
+    'PartnershipMoreLinkViewSet',
     'PartnerSiteViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',
@@ -116,6 +155,7 @@ __all__ = [
     'ProjectContactViewSet',
     'ProjectCustomFieldViewSet',
     'ProjectDocumentViewSet',
+    'ProjectDocumentCategoryViewSet',
     'ProjectExtraViewSet',
     'ProjectIatiCheckView',
     'ProjectLocationViewSet',

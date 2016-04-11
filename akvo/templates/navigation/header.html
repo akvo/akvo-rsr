@@ -1,14 +1,6 @@
 {% load i18n bootstrap3 rsr_utils %}
 
-{% url 'project-directory' as project_url %}
-{% url 'update-directory' as update_url %}
-{% url 'update-directory' as update_url %}
-{% url 'organisation-directory' as organisation_url %}
-{% url 'my_details' as myrsr_url %}
 {% url 'index' as index_url %}
-
-{% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
-<style>.navbar .active {color: #2A6297;}</style>
 
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -36,40 +28,40 @@
     <div class="collapse navbar-collapse" id="navbar-collapsed">
       <ul class="nav navbar-nav">
         <li class="navProject">
-          <a class="{% if current_path == project_path %}active{% endif %}"
+          <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
              href="{% url 'project-directory' %}">
-            {% trans "Projects" %}
+            {% trans "All projects" %}
           </a>
         </li>
         <li class="navUpdate">
-          <a class="{% if current_path == update_path %}active{% endif %}"
+          <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
              href="{% url 'update-directory' %}">
-            {% trans "Updates" %}
+            {% trans "All updates" %}
           </a>
         </li>
         <li class="navOrganisation">
-          <a class="{% if current_path  == organisation_path %}active{% endif %}"
+          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
              href="{% url 'organisation-directory' %}">
-            {% trans "Organisations" %}
+            {% trans "All organisations" %}
           </a>
         </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
         {% if not '/myrsr/projects/' in request.get_full_path %}
-        <li>
-            <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
-               class="addUpdateBtn">
-              <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
-            </a>
-        </li>
+          <li class="hidden">
+              <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
+                 class="addUpdateBtn">
+                <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
+              </a>
+          </li>
         {% endif %}
         {% if not user.username %}
-        <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
-        <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
+          <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
+          <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
         {% else %}
         <li>
-          <a class="{% if current_path == myrsr_path %}active{% endif %}"
+          <a class="{% if 'myrsr' in request.path %}active{% endif %}"
              href="{% url 'my_details' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
@@ -133,4 +125,3 @@
     </div>
   </div>
 </nav>
-{% endwith %}

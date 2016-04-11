@@ -112,8 +112,6 @@ def directory(request):
     page.object_list = page.object_list.prefetch_related(
         'publishingstatus',
         'sectors',
-        'partnerships',
-        'partnerships__organisation',
     ).select_related(
         'primary_organisation',
         'primary_location',
@@ -122,9 +120,13 @@ def directory(request):
     )
 
     # Get all sector categories in a dict
-    iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
-    sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
-    sectors = Sector.objects.filter(version=iati_version_obj)
+    try:
+        iati_version_obj = Version.objects.get(code=settings.IATI_VERSION)
+        sector_cats = SectorCategory.objects.filter(version=iati_version_obj)
+        sectors = Sector.objects.filter(version=iati_version_obj)
+    except (Version.MultipleObjectsReturned, Version.DoesNotExist):
+        sector_cats = []
+        sectors = []
 
     sectors_dict = {}
     for sector_cat in sector_cats:
@@ -159,51 +161,12 @@ def _check_project_viewing_permissions(user, project):
     A user can view any public project, but when a project is private or not published the user
     should be logged in and able to make changes to the project (e.g. be an admin of the project).
     """
-    if not ((project.is_public and project.is_published())
-            or user.has_perm('rsr.change_project', project)):
+    if not ((project.is_public and project.is_published()) or
+            user.has_perm('rsr.change_project', project)):
         raise PermissionDenied
 
 
-def _get_accordion_data(project):
-    results_data = []
-    if project.results.all():
-        for result in project.results.all():
-            result_data = dict()
-            result_data['id'] = str(result.pk)
-            result_data['title'] = result.title
-            indicators_data = []
-            for indicator in result.indicators.all():
-                for period in indicator.periods.all().order_by('period_start'):
-                    indicator_data = dict()
-                    indicator_data['id'] = str(period.pk)
-                    indicator_data['title'] = indicator.title
-                    if period.period_start:
-                        indicator_data['period_start'] = period.period_start.strftime("%d-%m-%Y")
-                    if period.period_end:
-                        indicator_data['period_end'] = period.period_end.strftime("%d-%m-%Y")
-                    indicator_data['target_value'] = period.target_value
-                    indicator_data['actual_value'] = period.actual_value
-                    indicators_data.append(indicator_data)
-                if not indicator.periods.all():
-                    indicator_data = dict()
-                    indicator_data['id'] = str(indicator.pk)
-                    indicator_data['title'] = indicator.title
-                    indicators_data.append(indicator_data)
-            result_data['indicators'] = indicators_data
-            results_data.append(result_data)
-
-    return dict(
-        background=project.background,
-        current_status=project.current_status,
-        project_plan=project.project_plan,
-        target_group=project.target_group,
-        sustainability=project.sustainability,
-        goals_overview=project.goals_overview,
-        results=results_data if results_data else ''
-    )
-
-
-def _get_carousel_data(project):
+def _get_carousel_data(project, updates):
     photos = []
     if project.current_image:
         try:
@@ -216,9 +179,7 @@ def _get_carousel_data(project):
             })
         except IOError:
             pass
-    for update in project.updates_desc():
-        if len(photos) > 9:
-            break
+    for update in updates:
         if update.photo:
             direct_to = reverse('update-main', kwargs={
                 'project_id': project.pk,
@@ -287,66 +248,41 @@ def _get_hierarchy_grid(project):
     return grid
 
 
-def _get_partners_with_types(project):
-    partners_dict = {}
-    for partner in project.partners.all():
-        partners_dict[partner] = partner.has_partner_types(project)
-    return collections.OrderedDict(sorted(partners_dict.items()))
-
-
 def main(request, project_id):
-    """The main project page."""
-    try:
-        project = Project.objects.prefetch_related(
-            'publishingstatus',
-            'sectors',
-            'partners',
-            'partnerships',
-            'keywords',
-            'locations',
-            'budget_items',
-            'budget_items__label',
-            'transactions',
-            'transactions__provider_organisation',
-            'transactions__receiver_organisation',
-            'results',
-            'recipient_countries',
-            'recipient_regions',
-            'policy_markers',
-            'country_budget_items',
-            'links',
-            'documents',
-            'contacts',
-            'invoices',
-        ).select_related(
-            'primary_organisation',
-            'primary_location',
-            'last_update'
-        ).get(pk=project_id)
-    except Project.DoesNotExist:
-        raise Http404
+    """
+    The main project page, consisting of 6 tabs:
+
+    - 'Summary'
+    - 'Full report'
+    - 'Project partners'
+    - 'Finances'
+    - 'Results' (optional, only when project has results)
+    - 'Updates' (optional, only when project has updates)
+
+    :param request; Django request.
+    :param project_id; ID of a Project object.
+    :return A rendered project page.
+    """
+    project = get_object_or_404(Project, pk=project_id)
 
     # Permissions
     _check_project_viewing_permissions(request.user, project)
 
-    if not request.user.is_anonymous() and (
-            request.user.is_superuser or request.user.is_admin or
-            True in [request.user.admin_of(partner) for partner in project.partners.all()]):
-        project_admin = True
-    else:
-        project_admin = False
-
     # Updates
     updates = project.project_updates.prefetch_related('user').order_by('-created_at')
-
-    # JSON data
-    carousel_data = json.dumps(_get_carousel_data(project))
-    accordion_data = json.dumps(_get_accordion_data(project))
-    partner_types = _get_partners_with_types(project)
-
-    # Updates pagination
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
+
+    # JSON data
+    carousel_data = json.dumps(_get_carousel_data(project, updates[:9]))
+    accordion_data = json.dumps({
+        'background': project.background,
+        'current_status': project.current_status,
+        'project_plan': project.project_plan,
+        'target_group': project.target_group,
+        'sustainability': project.sustainability,
+        'goals_overview': project.goals_overview
+    })
 
     context = {
         'accordion_data': accordion_data,
@@ -355,12 +291,12 @@ def main(request, project_id):
         'page': page,
         'page_range': page_range,
         'paginator': paginator,
-        'partners': partner_types,
         'pledged': project.get_pledged(),
         'project': project,
-        'project_admin': project_admin,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
+        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
+        'child_projects_ids': [child_project.id for child_project in project.children()],
     }
 
     return render(request, 'project_main.html', context)

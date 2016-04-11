@@ -37,6 +37,7 @@ POLICY_MARKER_TO_CODE = {
     'WB': ''
 }
 
+
 class Sectors(ImportMapper):
 
     def __init__(self, iati_import_job, parent_elem, project, globals,
@@ -70,12 +71,15 @@ class Sectors(ImportMapper):
             if vocabulary in SECTOR_TO_CODE.keys():
                 vocabulary = SECTOR_TO_CODE[vocabulary]
 
+            vocabulary_uri = self.get_attrib(sector, 'vocabulary-uri', 'vocabulary_uri')
+
             sector_obj, created = Sector.objects.get_or_create(
                 project=self.project,
                 sector_code=sector_code,
                 percentage=percentage,
                 text=text,
-                vocabulary=vocabulary
+                vocabulary=vocabulary,
+                vocabulary_uri=vocabulary_uri
             )
             if created:
                 changes.append(u'added sector (id: {}): {}'.format(sector_obj.pk, sector_obj))
@@ -112,12 +116,15 @@ class PolicyMarkers(ImportMapper):
             if vocabulary in POLICY_MARKER_TO_CODE.keys():
                 vocabulary = POLICY_MARKER_TO_CODE[vocabulary]
 
+            vocabulary_uri = self.get_attrib(marker, 'vocabulary-uri', 'vocabulary_uri')
+
             policy_marker, created = PolicyMarker.objects.get_or_create(
                 project=self.project,
                 policy_marker=policy_marker,
                 significance=significance,
                 description=description,
-                vocabulary=vocabulary
+                vocabulary=vocabulary,
+                vocabulary_uri=vocabulary_uri
             )
             if created:
                 changes.append(

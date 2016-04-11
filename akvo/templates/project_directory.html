@@ -101,7 +101,7 @@
             {% endif %}
             {% if project.primary_organisation %}
               <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
-              {% more_link project %}
+              <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="false"></div>
             {% endif %}
             <div class="visible-xs-block hidden-sm">
               <p>
@@ -228,6 +228,23 @@
      }
     </script>
 
+    {#  Initial data endpoints #}
+    <script type="application/json" id="data-endpoints">
+        {
+            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "partnerships_of_project": "/rest/v1/partnership_more_link/?format=json&project={project}"
+        }
+    </script>
+
+    {# More link translations #}
+    <script type="application/json" id="more-link-translations">
+        {
+            "partner": "{% trans 'partner' %}",
+            "partners": "{% trans 'partners' %}"
+        }
+    </script>
+
   {% compressed_js 'project_directory' %}
   {% compressed_js 'project_directory_typeahead' %}
+  {% compressed_js 'more_partners' %}
 {% endblock js %}

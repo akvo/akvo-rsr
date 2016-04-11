@@ -6,6 +6,7 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
   <head>
     <meta charset="UTF-8"/>
+    {% if debug %}<meta name="robots" content="none"/>{% endif %}
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Akvo RSR"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{{request.path}}"/>
@@ -48,7 +49,7 @@
 
     {# Fonts #}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700%7CLato:400,700,300%7CQuestrial%7CPoppins" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700%7CLato:400,700,300%7CQuestrial%7CPoppins:400,600" rel="stylesheet" type="text/css">
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">

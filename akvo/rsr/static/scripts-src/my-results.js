@@ -7,8 +7,9 @@
 
 var csrftoken,
     endpoints,
-    i18n,
-    isAdmin,
+    i18nResults,
+    isAdmin = false,
+    isPublic,
     months,
     permissions,
     projectIds,
@@ -69,7 +70,7 @@ function apiCall(method, url, data, successCallback, retries) {
                     return successCallback(response);
                 }
             } else {
-                var message = i18n.general_error + ': ';
+                var message = i18nResults.general_error + ': ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
                          message += response[key] + '. ';
@@ -87,7 +88,7 @@ function apiCall(method, url, data, successCallback, retries) {
         } else if (retries <= maxRetries) {
             return apiCall(method, url, data, successCallback, retries + 1);
         } else {
-            showGeneralError(i18n.connection_error);
+            showGeneralError(i18nResults.connection_error);
             return false;
         }
     };
@@ -138,7 +139,7 @@ function displayDate(dateString) {
         var year = date.getUTCFullYear();
         return day + " " + month + " " + year;
     }
-    return i18n.unknown_date;
+    return i18nResults.unknown_date;
 }
 
 function setPermissions() {
@@ -158,8 +159,6 @@ function setPermissions() {
 
 function userIsAdmin() {
     // Check if the user is an M&E manager, resulting in different actions than other users.
-    isAdmin = false;
-
     var adminOrgIds = [],
         partnerships;
 
@@ -199,6 +198,7 @@ function getUserData() {
 function initReact() {
     var CommentEntry = React.createClass({displayName: 'CommentEntry',
         render: function() {
+            // Render an internal comment entry.
             var comment = this.props.comment;
             var user = comment.user_details;
             return (
@@ -216,39 +216,63 @@ function initReact() {
 
     var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
         getInitialState: function() {
-            var updateData = this.props.update.data === '0' ? '' : this.props.update.data;
+            var updateData;
+
+            // In case the update is new (status 'N') and the data is '0', do not display the data.
+            if (this.props.update.data === '0' && this.props.update.status === 'N') {
+                updateData = '';
+            } else {
+                updateData = this.props.update.data;
+            }
 
             return {
                 data: updateData,
                 description: this.props.update.text,
                 isRelative: this.props.update.relative_data,
                 comment: '',
-                askRemove: false
+                askRemove: false,
+                loading: false,
+                loadingComment: false
             };
         },
 
         editing: function() {
+            // Check if the user is currently editing this update.
             return this.props.editingData.indexOf(this.props.update.id) > -1;
         },
 
         baseSave: function(data, keepEditing, reloadPeriod) {
+            // Base function for saving an update.
             var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', this.props.update.id);
             var thisApp = this;
             var success = function(response) {
                 var update = response;
                 var periodId = thisApp.props.selectedPeriod.id;
-                thisApp.props.saveUpdateToPeriod(update, periodId);
+                thisApp.props.saveUpdateToPeriod(update, periodId, false);
+
                 if (!keepEditing) {
+                    // Remove the editing state in case the user wants to stop editing.
                     thisApp.props.removeEditingData(update.id);
                 }
+
                 if (reloadPeriod) {
-                    thisApp.props.reloadPeriod('self', periodId);
+                    // In some cases it is best to reload the whole period after an indicator
+                    // update has been saved.
+                    thisApp.props.reloadPeriod(periodId);
                 }
+
+                // Remove loading state
+                thisApp.setState({loading: false});
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
         saveUpdate: function() {
+            // Save an indicator update. Set the status to draft ('D') when the update is new ('N').
             var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
             this.baseSave({
                 'text': this.state.description.trim(),
@@ -259,6 +283,7 @@ function initReact() {
         },
 
         askForApproval: function() {
+            // Save an indicator update and set the status to pending approval ('P').
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
@@ -268,6 +293,8 @@ function initReact() {
         },
 
         approve: function() {
+            // Save and approve ('A') an indicator update and reload the whole period to see the
+            // new updated actual value of the period.
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
@@ -277,6 +304,7 @@ function initReact() {
         },
 
         returnForRevision: function() {
+            // Return the indicator update for revision ('R').
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
@@ -286,14 +314,17 @@ function initReact() {
         },
 
         removePhoto: function() {
+            // Remove the photo, but keep editing the indicator update.
             this.baseSave({'photo': ''}, true, false);
         },
 
         removeFile: function() {
+            // Remove the file, but keep editing the indicator update.
             this.baseSave({'file': ''}, true, false);
         },
 
         baseUpload: function(file, type) {
+            // Base function for uploading a photo or file to the indicator update.
             var thisApp = this;
             var updateId = this.props.update.id;
             var url = endpoints.file_upload.replace('{update}', updateId);
@@ -309,22 +340,32 @@ function initReact() {
                 if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                     var newFile = JSON.parse(xmlHttp.responseText).file;
                     thisApp.props.saveFileInUpdate(newFile, updateId, type);
+
+                    // Set state to not loading anymore
+                    thisApp.setState({loading: false});
                 }
             };
+
+            // Set state to loading
+            this.setState({loading: true});
+
             xmlHttp.send(formData);
         },
 
         uploadImage: function(e) {
+            // Upload an image to the indicator update.
             var file = e.target.files[0];
             this.baseUpload(file, 'photo');
         },
 
         uploadFile: function(e) {
+            // Upload a file to the indicator update.
             var file = e.target.files[0];
             this.baseUpload(file, 'file');
         },
 
         addComment: function() {
+            // Add an internal comment to an indicator update.
             var url = endpoints.base_url + endpoints.comments;
             var data = JSON.stringify({
                 'data': this.props.update.id,
@@ -336,48 +377,75 @@ function initReact() {
                 var comment = response;
                 var updateId = thisApp.props.update.id;
                 thisApp.props.saveCommentInUpdate(comment, updateId);
-                thisApp.setState({comment: ''});
+
+                // Remove state of current comment and disable loading of comments
+                thisApp.setState({
+                    comment: '',
+                    loadingComment: false
+                });
             };
+
+            // Set loading of comments
+            this.setState({loadingComment: true});
+
             apiCall('POST', url, data, success);
         },
 
         removeUpdate: function() {
+            // Set state to loading
+            this.setState({loading: true});
+
+            // Remove an indicator update.
             this.props.removeUpdate(this.props.update.id);
         },
 
         switchAskRemove: function() {
+            // After the 'Delete' button has been clicked, ask the user first if he/she is sure the
+            // update should be deleted.
             this.setState({askRemove: !this.state.askRemove});
         },
 
         switchEdit: function() {
+            // When the 'Edit' or 'Cancel' button of an indicator update is clicked, switch the
+            // editing mode of the indicator update.
             var addEdit = this.props.addEditingData;
             var removeEdit = this.props.removeEditingData;
             var updateId = this.props.update.id;
 
             if (this.editing()) {
                 if (this.props.update.status === 'N') {
+                    // When the update is new (status 'N') and editing the update is canceled,
+                    // remove the update.
                     this.removeUpdate();
                 } else {
+                    // Otherwise, just remove the editing state.
                     removeEdit(updateId);
                 }
             } else {
+                // Add the editing state in case the user was not editing the update yet.
                 addEdit(updateId);
             }
         },
 
         handleDataChange: function(e) {
+            // Keep track of the data in the 'Actual value' field of the update.
             this.setState({data: e.target.value});
         },
 
         handleDescriptionChange: function(e) {
+            // Keep track of the data in the 'Description' field of the update.
             this.setState({description: e.target.value});
         },
 
         handleCommentChange: function(e) {
+            // Keep track of the data in the 'Internal comment' field.
             this.setState({comment: e.target.value});
         },
 
         handleRelativeChange: function(e) {
+            // Keep track of the checkbox that controls the relative or absolute change of the
+            // update. Note: absolute changes (and this checkbox) are disabled for now, updates
+            // are always relative.
             if (this.state.isRelative) {
                 this.setState({isRelative: false});
             } else {
@@ -386,6 +454,7 @@ function initReact() {
         },
 
         renderUpdateClass: function() {
+            // When an update is in editing mode, it should have the 'edit-in-progress' class.
             var updateClass = "row update-entry-container";
             if (this.editing()) {
                 updateClass += " edit-in-progress";
@@ -394,13 +463,17 @@ function initReact() {
         },
 
         renderHeader: function() {
-            var headerLeft;
+            // Render the update's header.
+            var headerLeft,
+                headerRight;
 
             if (this.editing()) {
+                // In editing mode, only show "Edit update" in the left side of the header.
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
-                    React.DOM.span( {className:"edit-update"}, i18n.edit_update)
+                    React.DOM.span( {className:"edit-update"}, i18nResults.edit_update)
                 );
             } else {
+                // When not editing, display the user information on the left side of the header.
                 var approved_organisations = this.props.update.user_details.approved_organisations;
                 var organisations_display;
                 switch (approved_organisations.length) {
@@ -414,7 +487,7 @@ function initReact() {
                         organisations_display = ' | ' + approved_organisations[0].long_name + ', ' + approved_organisations[1].long_name;
                         break;
                     default:
-                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18n.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18n.others;
+                        organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18nResults.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18nResults.others;
                         break;
                 }
                 headerLeft = React.DOM.div( {className:"col-xs-9"}, 
@@ -424,23 +497,53 @@ function initReact() {
                 );
             }
 
+            if (isPublic) {
+                // In the public view, do not display the status, since we only display approved
+                // updates anyway.
+                headerRight = React.DOM.span(null );
+            } else {
+                // In the 'MyRSR' view, show the status and add the status class that belongs to
+                // the status.
+                var statusClass = "update-status";
+                
+                switch (this.props.update.status) {
+                    case 'P':
+                        statusClass += " pending";
+                        break;
+                    case 'R':
+                        statusClass += " revision";
+                        break;
+                    case 'A':
+                        statusClass += " approved";
+                        break;
+                    default:
+                        break;
+                }
+                
+                headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
+                    React.DOM.span( {className:statusClass},  " ", this.props.update.status_display)
+                );
+            }
+
             return (
                 React.DOM.div( {className:"row update-entry-container-header"}, 
                     headerLeft,
-                    React.DOM.div( {className:"col-xs-3 text-right"}, 
-                        React.DOM.span( {className:"update-status"},  " ", this.props.update.status_display)
-                    )
+                    headerRight
                 )
             );
         },
 
         renderActualRelative: function(label) {
+            // Render the new actual value of the period, including a calculation based on the
+            // previous actual value of the period.
             var periodActualValue = parseFloat(this.props.update.period_actual_value);
             var originalData = parseFloat(this.state.data);
             var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
             var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
 
             if (isNaN(updateData) || isNaN(relativeData)) {
+                // If the data cannot be calculated (e.g. non-numeric data), do not display a
+                // calculation.
                 return (
                     React.DOM.div( {className:"upActualValue"}, 
                         React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
@@ -448,6 +551,7 @@ function initReact() {
                     )
                 );
             } else {
+                // Display a calculation.
                 var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
                 return (
                     React.DOM.div( {className:"upActualValue"}, 
@@ -461,31 +565,37 @@ function initReact() {
 
         renderActual: function() {
             var inputId = "actual-input-" + this.props.update.id;
+
+            // The checkbox to make the update relative or absolute has been removed, to make
+            // things more clear for the users.
+
             //var checkboxId = "relative-checkbox-" + this.props.update.id;
             //var checkbox;
             //if (this.state.isRelative) {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18nResults.relative_data}</label>;
             //} else {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18n.relative_data}</label>;
+            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18nResults.relative_data}</label>;
             //}
 
             if (this.editing()) {
+                // Show an input field to fill the new actual value when editing.
                 return (
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-xs-6"}, 
-                            React.DOM.label( {htmlFor:inputId}, i18n.add_to_actual_value),
-                            React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18n.input_placeholder} )
+                            React.DOM.label( {htmlFor:inputId}, i18nResults.add_to_actual_value),
+                            React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18nResults.input_placeholder} )
                         ),
                         React.DOM.div( {className:"col-xs-6"}, 
-                            this.renderActualRelative(i18n.new_total_value)
+                            this.renderActualRelative(i18nResults.new_total_value)
                         )
                     )
                 );
             } else {
+                // Show the value that has been filled in when not in editing mode.
                 return (
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-xs-12"}, 
-                            this.renderActualRelative(i18n.total_value_after_update)
+                            this.renderActualRelative(i18nResults.total_value_after_update)
                         )
                     )
                 );
@@ -493,38 +603,61 @@ function initReact() {
         },
 
         renderDescription: function() {
+            // Render the description part of the update.
             var inputId = "description-input-" + this.props.update.id;
             var photoPart, descriptionPart, descriptionClass;
 
             if (this.props.update.photo_url === "") {
+                // If no photo has been uploaded, do not show the photo.
                 photoPart = React.DOM.span(null );
-                descriptionClass = "update-description";
+                descriptionClass = "col-xs-9 update-description";
             } else {
+                // Also display a photo.
                 if (this.editing()) {
+                    // When in edit mode and hovering over the photo, make it clear that clicking
+                    // on the photo will remove it.
                     photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url, onClick:this.removePhoto} )
+                        React.DOM.div( {className:"image-container"}, 
+                            React.DOM.a( {onClick:this.removePhoto}, 
+                                React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url} ),
+                                React.DOM.div( {className:"image-overlay text-center"}, i18nResults.remove_image)
+                            )
+                        )
                     );
                 } else {
+                    // Display the photo. Clicking on it will open the full size image in a new tab.
                     photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url})
+                        React.DOM.a( {href:endpoints.base_url + this.props.update.photo_url, target:"_blank"}, 
+                            React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url})
+                        )
                     );
                 }
-                descriptionClass = "col-xs-7 update-description";
+                descriptionClass = "col-xs-9 update-description";
             }
 
             if (this.editing()) {
+                // Display a textarea for the description when in editing mode.
                 descriptionPart = React.DOM.div( {className:descriptionClass}, 
-                    React.DOM.label( {htmlFor:inputId}, i18n.actual_value_comment),
-                    React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18n.comment_placeholder} )
+                    React.DOM.label( {htmlFor:inputId}, i18nResults.actual_value_comment),
+                    React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18nResults.comment_placeholder} )
                 );
             } else {
+                // Display the description when not in editing mode. A special function is included
+                // to generate newlines (which are ignored by default).
                 descriptionPart = React.DOM.div( {className:descriptionClass}, 
-                    this.props.update.text
+                    this.props.update.text.split(/\r\n|\r|\n/g).map(function(line) {
+                        return (
+                            React.DOM.span(null, 
+                                line,
+                                React.DOM.br(null )
+                            )
+                        );
+                    })
                 );
             }
 
             return (
-                React.DOM.div( {className:""}, 
+                React.DOM.div( {className:"row"}, 
                     photoPart,
                     descriptionPart
                 )
@@ -532,6 +665,7 @@ function initReact() {
         },
 
         fileNameDisplay: function() {
+            // Display the name of the uploaded file, if a file has been uploaded.
             if (this.props.update.file_url !== '') {
                 return decodeURIComponent(this.props.update.file_url.split('/').pop());
             } else {
@@ -540,20 +674,23 @@ function initReact() {
         },
 
         renderFileUpload: function() {
+            // Render the image and file upload feature.
             if (this.editing()) {
                 var fileUpload;
-                var labelText = this.props.update.photo_url === "" ? i18n.add_image : i18n.change_image;
+                var labelText = this.props.update.photo_url === "" ? i18nResults.add_image : i18nResults.change_image;
 
                 if (this.props.update.file_url !== '') {
+                    // Show the file name and a remove icon when a file has already been uploaded.
                     fileUpload = React.DOM.div( {className:"col-xs-6"}, 
                         React.DOM.i( {className:"fa fa-paperclip"}), " ", React.DOM.a( {href:this.props.update.file_url, target:"_blank"}, this.fileNameDisplay()),
                         React.DOM.a( {onClick:this.removeFile},  " Remove")
                     );
                 } else {
+                    // Show an upload file text when no file has been uploaded yet.
                     fileUpload = React.DOM.div( {className:"col-xs-3"}, 
                         React.DOM.label( {className:"fileUpload"}, 
                             React.DOM.input( {type:"file", onChange:this.uploadFile} ),
-                            React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18n.attach_file)
+                            React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18nResults.attach_file)
                         )
                     );
                 }
@@ -570,6 +707,8 @@ function initReact() {
                     )
                 );
             } else if (this.props.update.file_url !== '') {
+                // Display a link to the file when a file has been uploaded and the update is not
+                // in editing mode.
                 return (
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-xs-6"}, 
@@ -578,6 +717,7 @@ function initReact() {
                     )
                 );
             } else {
+                // Do not display an image or file upload when not editing the indicator update.
                 return (
                     React.DOM.span(null )
                 );
@@ -585,9 +725,18 @@ function initReact() {
         },
 
         renderComments: function() {
+            // Render the internal comments of an indicator update.
             var comments;
 
+            if (isPublic) {
+                // In the public view, internal comments are not displayed.
+                return (
+                    React.DOM.span(null )
+                );
+            }
+
             if (this.props.update.comments !== undefined) {
+                // Render a 'CommentEntry' for each internal comment.
                 comments = this.props.update.comments.map(function(comment) {
                     return (
                         React.DOM.div( {className:"comment", key:comment.id}, 
@@ -598,93 +747,134 @@ function initReact() {
                     );
                 });
             } else {
+                // Show a loading icon when the comments are still loading.
                 comments = React.DOM.div( {className:"comment"}, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.comments
+                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.comments
                 );
             }
 
             var inputId = "new-comment-" + this.props.update.id;
-            var addComments = this.props.update.status !== 'A';
             var addCommentInput;
 
-            if (addComments) {
-                addCommentInput = React.DOM.div(null, 
-                    React.DOM.div( {className:"input-group"}, 
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18n.add_comment_placeholder, onChange:this.handleCommentChange} ),
-                        React.DOM.span( {className:"input-group-btn"}, 
-                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18n.add_comment)
+            if (this.props.update.status !== 'A' && this.editing()) {
+                // Adding comments is only possible when the update has not yet been
+                // approved (status 'A').
+                if (this.state.loadingComment) {
+                    addCommentInput = React.DOM.div(null, 
+                        React.DOM.div( {className:"input-group"}, 
+                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
+                            React.DOM.span( {className:"input-group-btn"}, 
+                                React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
+                            )
                         )
-                    )
-                );
+                    );
+                } else {
+                    addCommentInput = React.DOM.div(null, 
+                        React.DOM.div( {className:"input-group"}, 
+                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                            React.DOM.span( {className:"input-group-btn"}, 
+                                React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                            )
+                        )
+                    );
+                }
             } else {
+                // Otherwise, show nothing for approved updates.
                 addCommentInput = React.DOM.span(null );
             }
 
-            return (
-                React.DOM.div( {className:"comments"}, 
-                    comments,
-                    addCommentInput
-                )
-            );
-        },
-
-        renderFooter: function() {
-            if (this.props.selectedPeriod.locked) {
+            if (this.props.update.comments.length > 0 || this.editing()) {
+                return (
+                    React.DOM.div( {className:"comments"}, 
+                        comments,
+                        addCommentInput
+                    )
+                );
+            } else {
                 return (
                     React.DOM.span(null )
                 );
+            }
+        },
+
+        renderFooter: function() {
+            // Render the footer, containing action buttons, of an indicator update.
+            if (this.props.selectedPeriod.locked || isPublic) {
+                // Locked periods, or in the public view, do not have actions. Display nothing.
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (this.state.loading) {
+                return (
+                    React.DOM.div( {className:"menuAction"}, 
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                            React.DOM.li( {role:"presentation"}, 
+                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading,"..."
+                            )
+                        )
+                    )
+                );
             } else if (this.state.askRemove) {
+                // When the user has click on 'Delete', show a confirmation for deletion of the
+                // update.
                 return (
                     React.DOM.div( {className:"menuAction"}, 
                         React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                             React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                i18n.delete_confirmation
+                                i18nResults.delete_confirmation
                             ),
                             React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
-                                React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18n.yes)
+                                React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18nResults.yes)
                             ),
                             React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
-                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.no)
+                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.no)
                             )
                         )
                     )
                 );
             } else if (this.editing()) {
+                // When editing and in the 'MyRSR' view, the actions are dependant on the status
+                // of the update.
                 switch(this.props.update.status) {
                     case 'P':
+                        // Status 'Pending approval', show: delete, cancel, save and approve
+                        // buttons. This is only available for admins, since they can only edit
+                        // updates with the pending approval status.
                         return (
                             React.DOM.div( {className:"menuAction"}, 
                                 React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
+                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
                                 ),
                                 React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                     React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
                                     )
                                 )
                             )
                         );
                     default:
+                        // All other statuses, show: delete, cancel, save and submit for approval
+                        // buttons.
                         return (
                             React.DOM.div( {className:"menuAction"}, 
                                 React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18n.delete)
+                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
                                 ),
                                 React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                     React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18n.cancel)
+                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18n.save)
+                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
                                     ),
                                     React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18n.submit_for_approval)
+                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
                                     )
                                 )
                             )
@@ -694,38 +884,43 @@ function initReact() {
                 switch(this.props.update.status) {
                     case 'P':
                         if (isAdmin) {
+                            // Status 'Pending approval', show: return for revision, edit update
+                            // and approve buttons. These are only available for admins.
                             return (
                                 React.DOM.div( {className:"menuAction"}, 
                                     React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                         React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
-                                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18n.return_for_revision)
+                                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18nResults.return_for_revision)
                                         ),
                                         React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
                                         ),
                                         React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18n.approve)
+                                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
                                         )
                                     )
                                 )
                             );
                         } else {
+                            // Show no actions.
                             return (
                                 React.DOM.span(null )
                             );
                         }
                         break;
                     case 'A':
+                        // Show no actions for approved indicator updates.
                         return (
                             React.DOM.span(null )
                         );
                     default:
+                        // Only show an edit button in all other cases.
                         if (this.props.update.user === user.id || isAdmin) {
                             return (
                                 React.DOM.div( {className:"menuAction"}, 
                                     React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                         React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18n.edit_update)
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
                                         )
                                     )
                                 )
@@ -740,6 +935,7 @@ function initReact() {
         },
 
         render: function() {
+            // Render an indicator update entry.
             return (
                 React.DOM.div( {className:this.renderUpdateClass()}, 
                     React.DOM.div( {className:"col-xs-12"}, 
@@ -757,6 +953,10 @@ function initReact() {
 
     var UpdatesList = React.createClass({displayName: 'UpdatesList',
         sortedUpdates: function() {
+            // Sort and filter the updates:
+            // Sort the updates by the 'created at' field.
+            // Filter the updates based on the public view or not. In the public view only the
+            // approved are shown.
             function compare(u1, u2) {
                 if (u1.created_at > u2.created_at) {
                     return -1;
@@ -766,14 +966,29 @@ function initReact() {
                     return 0;
                 }
             }
+
+            if (isPublic) {
+                // Only show approved updates in the public view.
+                var approvedUpdates = [];
+                for (var i = 0; i < this.props.selectedPeriod.data.length; i++) {
+                    var thisData = this.props.selectedPeriod.data[i];
+                    if (thisData.status === 'A') {
+                        approvedUpdates.push(thisData);
+                    }
+                }
+                return approvedUpdates.sort(compare);
+            }
+
             return this.props.selectedPeriod.data.sort(compare);
         },
 
         render: function() {
+            // Render the list of indicator updates.
             var thisList = this,
                 updates;
 
             if (this.props.selectedPeriod.data !== undefined) {
+                // When the indicator updates are loaded, render an 'UpdateEntry' for every update.
                 updates = this.sortedUpdates().map(function (update) {
                     return (
                         React.DOM.div( {className:"update-container", key:update.id}, 
@@ -794,16 +1009,17 @@ function initReact() {
                     );
                 });
             } else {
+                // Show a loading icon when the indicator updates are loading.
                 updates = React.DOM.div(null, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.updates
+                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.updates
                 );
             }
 
             var updatesHeader;
             if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
-                updatesHeader = React.DOM.h5(null, i18n.updates);
+                updatesHeader = React.DOM.h5(null, i18nResults.updates);
             } else {
-                updatesHeader = React.DOM.h5(null, i18n.no_updates_yet);
+                updatesHeader = React.DOM.h5(null, i18nResults.no_updates_yet);
             }
 
             return (
@@ -818,52 +1034,90 @@ function initReact() {
     var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
         getInitialState: function() {
             return {
-                actualValueHover: false
+                actualValueHover: false,
+                unLocking: false
             };
         },
 
+        goBack: function() {
+            this.props.selectPeriod(null);
+        },
+
         handleMouseOver: function() {
+            // Update the state when the actual value info icon is hovered.
             this.setState({actualValueHover: true});
         },
 
         handleMouseOut: function() {
+            // Update the state when the actual value info icon is not hovered anymore.
             this.setState({actualValueHover: false});
         },
 
         addNewUpdate: function() {
+            // Add a new update to the period.
             this.props.addNewUpdate(this.props.selectedPeriod.id);
         },
 
+        finishUnlocking: function() {
+            this.setState({unLocking: false});
+        },
+
         unlockPeriod: function() {
-            this.props.unlockPeriod('self', this.props.selectedPeriod.id);
+            // Unlock this period.
+            this.setState({unLocking: true});
+            this.props.unlockPeriod(this.props.selectedPeriod.id, this.finishUnlocking);
         },
 
         renderNewUpdate: function() {
+            // Render the button for adding a new update.
+
+            if (isPublic) {
+                // In the public view, it is not possible to add a new update.
+                return (
+                    React.DOM.div( {className:"new-update"})
+                );
+            }
+
             if (this.props.addingNewUpdate) {
+                // In case the new update is being added, show a loading icon.
                 return (
                     React.DOM.div( {className:"new-update"}, 
-                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.adding_update
+                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.adding_update
                     )
                 );
             } else if (!this.props.selectedPeriod.locked) {
                 if (this.props.selectedPeriod.data !== undefined) {
+                    // If the updates have been loaded and the period is not locked, show a button
+                    // to add a new update.
                     return (
                         React.DOM.div( {className:"new-update"}, 
-                            React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18n.new_update)
+                            React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18nResults.new_update)
                         )
                     );
                 } else {
+                    // Show nothing if the updates are still loading.
                     return (
                         React.DOM.div( {className:"new-update"})
                     );
                 }
             } else if (isAdmin) {
-                return (
-                    React.DOM.div( {className:"new-update"}, 
-                        React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18n.unlock_period)
-                    )
-                );
+                // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
+                // then show a button to unlock the period.
+                if (this.state.unLocking) {
+                    return (
+                        React.DOM.div( {className:"new-update"}, 
+                            React.DOM.a( {className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.unlocking_period,"...")
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.div( {className:"new-update"}, 
+                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.unlock_period)
+                        )
+                    );
+                }
             } else {
+                // In all other cases, show nothing.
                 return (
                     React.DOM.div( {className:"new-update"})
                 );
@@ -872,10 +1126,11 @@ function initReact() {
         },
 
         renderTargetComment: function() {
+            // Render the target comment.
             if (this.props.selectedPeriod.target_comment !== '') {
                 return (
                     React.DOM.div( {className:"period-target-comment"}, 
-                        i18n.target_comment,
+                        i18nResults.target_comment,
                         React.DOM.span(null, this.props.selectedPeriod.target_comment)
                     )
                 );
@@ -887,6 +1142,7 @@ function initReact() {
         },
 
         renderTargetValue: function() {
+            // Render the target value, including a % sign if the measure is set to percentage.
             var targetValue = this.props.selectedPeriod.target_value;
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
@@ -895,6 +1151,7 @@ function initReact() {
         },
 
         renderActualValue: function() {
+            // Render the actual value, including a % sign if the measure is set to percentage.
             var actualValue = this.props.selectedPeriod.actual_value;
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
@@ -903,6 +1160,7 @@ function initReact() {
         },
 
         renderPercentageComplete: function() {
+            // Render the percentage complete.
             if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
                 return (
                     React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
@@ -914,25 +1172,43 @@ function initReact() {
             }
         },
 
+        renderHover: function() {
+            // Render the hover of the info icon next to the actual value
+            if (this.state.actualValueHover) {
+                return (
+                    React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, 
+                        React.DOM.div( {className:"tooltip-arrow"}),
+                        React.DOM.div( {className:"tooltip-inner"}, i18nResults.actual_value_info)
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.span(null )
+                );
+            }
+        },
+
         render: function() {
-            var hover = this.state.actualValueHover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.actual_value_info)) : React.DOM.span(null );
+            // Render the full period view.
+            var hover = this.renderHover();
 
             return (
                 React.DOM.div( {className:"indicator-period opacity-transition"}, 
                     React.DOM.div( {className:"indicTitle"}, 
                             React.DOM.h4( {className:"indicator-title"}, 
-                                i18n.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
+                                React.DOM.a( {className:"backButton", onClick:this.goBack}, "< ", i18nResults.back),
+                                i18nResults.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
                             ),
                         this.renderNewUpdate()
                     ),
                     React.DOM.div( {className:"period-target-actual"}, 
                         React.DOM.div( {className:"periodValues"}, 
                             React.DOM.div( {className:"period-target"}, 
-                                i18n.target_value,
+                                i18nResults.target_value,
                                 React.DOM.span(null, this.renderTargetValue())
                             ),
                             React.DOM.div( {className:"period-actual"}, 
-                                i18n.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
+                                i18nResults.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
                                 React.DOM.span( {className:"actualValueSpan"}, 
                                     React.DOM.span(null, this.renderActualValue()),
                                     this.renderPercentageComplete()
@@ -962,11 +1238,13 @@ function initReact() {
     var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry',
         getInitialState: function() {
             return {
-                hover: false
+                hover: false,
+                lockingOrUnlocking: false
             };
         },
 
         selected: function() {
+            // Check if this period is selected.
             if (this.props.selectedPeriod !== null) {
                 return this.props.selectedPeriod.id === this.props.period.id;
             } else {
@@ -974,17 +1252,8 @@ function initReact() {
             }
         },
 
-        relation: function() {
-            if (this.props.parent) {
-                return 'parent';
-            } else if (this.props.child) {
-                return 'children';
-            } else {
-                return 'self';
-            }
-        },
-
         numberOfPendingUpdates: function() {
+            // Count the number of indicator updates of this period that are 'Pending for approval'.
             var result = 0;
             if (this.props.period.data !== undefined) {
                 for (var i = 0; i < this.props.period.data.length; i++) {
@@ -998,123 +1267,141 @@ function initReact() {
         },
 
         handleMouseOver: function() {
+            // Set hover state to True when hovering.
             this.setState({hover: true});
         },
 
         handleMouseOut: function() {
+            // Set hover state to False when not hovering anymore.
             this.setState({hover: false});
         },
 
+        finishLocking: function() {
+            this.setState({lockingOrUnlocking: false});
+        },
+
         lockPeriod: function() {
-            this.props.lockPeriod(this.relation(), this.props.period.id);
+            // Lock this period.
+            this.setState({lockingOrUnlocking: true});
+            this.props.lockPeriod(this.props.period.id, this.finishLocking);
         },
 
         unlockPeriod: function() {
-            this.props.unlockPeriod(this.relation(), this.props.period.id);
+            // Unlock this period.
+            this.setState({lockingOrUnlocking: true});
+            this.props.unlockPeriod(this.props.period.id, this.finishLocking);
         },
 
         switchPeriod: function() {
+            // Switch to this period.
             var periodId = this.selected() ? null : this.props.period.id;
             this.props.selectPeriod(periodId);
         },
 
+        getPeriodData: function() {
+            // Depending on the view, the indicator updates should be filtered or not.
+            if (this.props.period.data === undefined) {
+                return undefined;
+            } else if (isPublic) {
+                // In the public view, we only show approved updates.
+                var approvedData = [];
+                for (var i = 0; i < this.props.period.data.length; i++) {
+                    var thisData = this.props.period.data[i];
+                    if (thisData.status === 'A') {
+                        approvedData.push(thisData);
+                    }
+                }
+                return approvedData;
+            } else {
+                // In the 'MyRSR' view, we show all updates.
+                return this.props.period.data;
+            }
+
+        },
+
         renderPeriodDisplay: function() {
+            // Render the period itself.
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
-            var pendingUpdates = nrPendingUpdates > 0 ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
-            var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18n.number_of_pending_updates)) : React.DOM.span(null );
+            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
+            var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18nResults.number_of_pending_updates)) : React.DOM.span(null );
 
-            if (this.props.period.data === undefined) {
+            if (this.getPeriodData() === undefined) {
+                // The period is still undefined, meaning that it is loading.
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay, " ", React.DOM.i( {className:"fa fa-spin fa-spinner"} )
                     )
                 );
-            } else if (this.props.period.data.length === 0) {
+            } else if ((isPublic || this.props.period.locked) && this.getPeriodData().length === 0) {
+                // The period is locked or in the public view and no indicator updates yet.
+                // In these cases it is not possible to select the period.
                 return (
                     React.DOM.td( {className:"period-td"}, 
                         periodDisplay
                     )
                 );
             } else {
-                if (this.props.parent || this.props.child) {
-                    var projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                    return (
-                        React.DOM.td( {className:"period-td"}, 
-                            React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, 
-                                periodDisplay
-                            ), " ", pendingUpdates, " ", hover
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.td( {className:"period-td"}, 
-                            React.DOM.a( {onClick:this.switchPeriod}, 
-                                periodDisplay
-                            ), " ", pendingUpdates, " ", hover
-                        )
-                    );
-                }
+                // The period is open or already has data, so make the period selectable.
+                return (
+                    React.DOM.td( {className:"period-td"}, 
+                        React.DOM.a( {onClick:this.switchPeriod}, 
+                            periodDisplay
+                        ), " ", pendingUpdates, " ", hover
+                    )
+                );
             }
         },
 
         renderActions: function() {
-            var projectId;
-
-            if (isAdmin) {
+            // Render the actions for this period.
+            if (isPublic) {
+                // In the public view, display nothing.
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (!isAdmin) {
+                // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
-                        if (this.props.parent || this.props.child) {
-                            projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
-                                )
-                            );
-                        } else {
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {onClick:this.switchPeriod}, i18n.update), " | ", React.DOM.a( {onClick:this.lockPeriod}, i18n.lock_period)
-                                )
-                            );
-                        }
-                        break;
+                        return (
+                            React.DOM.td( {className:"actions-td"}, 
+                                React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.period_unlocked
+                            )
+                        );
                     default:
                         return (
                             React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.a( {onClick:this.unlockPeriod}, i18n.unlock_period)
+                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.period_locked
                             )
                         );
                 }
             } else {
-                switch(this.props.period.locked) {
-                    case false:
-                        if (this.props.parent || this.props.child) {
-                            projectId = this.props.findProjectOfResult(this.relation(), this.props.selectedIndicator.result);
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {href:"/myrsr/results/" + projectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id + "," + this.props.period.id }, i18n.update)
-                                )
-                            );
-                        } else {
-                            return (
-                                React.DOM.td( {className:"actions-td"}, 
-                                    React.DOM.a( {onClick:this.switchPeriod}, i18n.update)
-                                )
-                            );
-                        }
-                        break;
-                    default:
-                        return (
-                            React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18n.period_locked
-                            )
-                        );
+                // In the 'MyRSR' view as an admin, show the buttons to lock or unlock a period.
+                if (this.state.lockingOrUnlocking) {
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading)
+                        )
+                    );
+                } else if (this.props.period.locked) {
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.unlock_period)
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.td( {className:"actions-td"}, 
+                            React.DOM.a( {onClick:this.lockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.lock_period)
+                        )
+                    );
                 }
             }
         },
 
         renderTargetValue: function() {
+            // Render the target value, including a % sign when the measure is set to percentage.
             var targetValue = this.props.period.target_value;
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
@@ -1123,6 +1410,7 @@ function initReact() {
         },
 
         renderActualValue: function() {
+            // Render the actual value, including a % sign when the measure is set to percentage.
             var actualValue = this.props.period.actual_value;
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
@@ -1131,7 +1419,8 @@ function initReact() {
         },
 
         renderPercentageComplete: function() {
-            if (this.props.period.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
+            // Render the percentage completed.
+            if (!(this.props.period.percent_accomplishment === null || this.props.selectedIndicator.measure === '2')) {
                 return (
                     React.DOM.span( {className:"percentage-complete"},  " (",this.props.period.percent_accomplishment,"%)")
                 );
@@ -1143,6 +1432,7 @@ function initReact() {
         },
 
         render: function() {
+            // Render the indicator period entry.
             return (
                 React.DOM.tr(null, 
                     this.renderPeriodDisplay(),
@@ -1161,6 +1451,7 @@ function initReact() {
 
     var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
         sortedPeriods: function() {
+            // Sort the periods by the 'period start' field.
             function compare(u1, u2) {
                 if (u1.period_start < u2.period_start) {
                     return -1;
@@ -1174,10 +1465,12 @@ function initReact() {
         },
 
         renderBaseline: function() {
+            // Render the baseline information.
             var baselineYear = this.props.selectedIndicator.baseline_year,
                 baselineValue = this.props.selectedIndicator.baseline_value;
 
             if (!(baselineYear === null && baselineValue === '')) {
+                // In case the measure type is 'Percentage', add a % sign.
                 if (this.props.selectedIndicator.measure === '2') {
                     baselineValue += '%';
                 }
@@ -1185,27 +1478,83 @@ function initReact() {
                 return (
                     React.DOM.div( {className:"baseline"}, 
                         React.DOM.div( {className:"baseline-year"}, 
-                            i18n.baseline_year,
+                            i18nResults.baseline_year,
                             React.DOM.span(null, baselineYear)
                         ),
                         React.DOM.div( {className:"baseline-value"}, 
-                            i18n.baseline_value,
+                            i18nResults.baseline_value,
                             React.DOM.span(null, baselineValue)
                         )
                     )
                 );
             } else {
+                // Render nothing when no baseline year or value is present.
                 return (
                     React.DOM.span(null )
                 );
             }
         },
 
+        renderParentsChildren: function() {
+            // Render the parent and children projects for this result
+            var result = this.props.findResult(this.props.selectedIndicator.result);
+            var parentsAndChildren = [];
+            var language = window.location.pathname.substring(0, 3);
+
+            // Find and add the parent project.
+            for (var parProjectId in result.parent_project) {
+                if (result.parent_project.hasOwnProperty(parProjectId)) {
+                    var parProjectTitle = result.parent_project[parProjectId];
+                    var parNode;
+                    if (isPublic) {
+                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/project/" + parProjectId + "/#results"}, parProjectTitle)
+                            )
+                        );
+                    } else {
+                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + parProjectId + "/"}, parProjectTitle)
+                            )
+                        );
+                    }
+                    parentsAndChildren.push(parNode);
+                }
+            }
+
+            // Find and add the child project(s).
+            for (var childProjectId in result.child_projects) {
+                if (result.child_projects.hasOwnProperty(childProjectId)) {
+                    var childProjectTitle = result.child_projects[childProjectId];
+                    var childNode;
+                    if (isPublic) {
+                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/project/" + childProjectId + "/#results"}, childProjectTitle)
+                            )
+                        );
+                    } else {
+                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
+                            React.DOM.span( {className:"relatedInfo"}, 
+                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + childProjectId + "/"}, childProjectTitle)
+                            )
+                        );
+                    }
+                    parentsAndChildren.push(childNode);
+                }
+            }
+
+            return parentsAndChildren;
+        },
+
         render: function() {
+            // Render the list of periods.
             var thisList = this,
                 periods;
 
             if (this.props.selectedIndicator.periods !== undefined) {
+                // For every period, render a 'IndicatorPeriodEntry'.
                 periods = this.sortedPeriods().map(function (period) {
                     return (
                         React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
@@ -1218,79 +1567,42 @@ function initReact() {
                                 savePeriodToIndicator: thisList.props.savePeriodToIndicator,
                                 lockPeriod: thisList.props.lockPeriod,
                                 unlockPeriod: thisList.props.unlockPeriod,
-                                parent: thisList.props.parent,
-                                child: thisList.props.child,
                                 findProjectOfResult: thisList.props.findProjectOfResult
                             })
                         )
                     );
                 });
             } else {
+                // Show a loading icon when the periods have not been loaded yet.
                 periods = React.DOM.tbody( {className:"indicator-period bg-transition"}, 
                     React.DOM.tr(null, 
                         React.DOM.td(null, 
-                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicator_periods
-                        ),
-                        React.DOM.td(null ),React.DOM.td(null ),React.DOM.td(null )
-                    )
-                );
-            }
-
-            var relatedClass = "indicator-period-list ",
-                relatedIndication,
-                relatedProjectId,
-                relatedProjectTitle,
-                relatedProjectUrl,
-                relatedProjectLink;
-
-            if (this.props.parent) {
-                relatedProjectId = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result);
-                relatedProjectTitle = this.props.findProjectOfResult('parent', this.props.selectedIndicator.result, 'title');
-                relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.parent_project + ': ';
-                relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
-                relatedClass += "parentProject";
-                return (
-                    React.DOM.div( {className:relatedClass}, 
-                        React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
-                    )
-                );
-            } else if (this.props.child) {
-                relatedProjectId = this.props.findProjectOfResult('children', this.props.selectedIndicator.result);
-                relatedProjectTitle = this.props.findProjectOfResult('children', this.props.selectedIndicator.result, 'title');
-                relatedProjectUrl = "/myrsr/results/" + relatedProjectId + "/#" + this.props.selectedIndicator.result + "," + this.props.selectedIndicator.id;
-                relatedIndication = i18n.child_project + ': ';
-                relatedProjectLink = React.DOM.a( {href:relatedProjectUrl}, relatedProjectTitle);
-                relatedClass += "childProject";
-
-                return (
-                    React.DOM.div( {className:relatedClass}, 
-                        React.DOM.span( {className:"relatedInfo"}, relatedIndication,relatedProjectLink)
-                    )
-                );
-            } else {
-                relatedIndication = '';
-                relatedClass += "selfProject";
-
-                return (
-                    React.DOM.div( {className:relatedClass}, 
-                        React.DOM.span( {className:"relatedInfo"}, relatedIndication),
-                        React.DOM.h4( {className:"indicator-periods-title"}, i18n.indicator_periods),
-                        this.renderBaseline(),
-                        React.DOM.table( {className:"table table-responsive"}, 
-                            React.DOM.thead(null, 
-                            React.DOM.tr(null, 
-                                React.DOM.td( {className:"th-period"}, i18n.period),
-                                React.DOM.td( {className:"th-target"}, i18n.target_value),
-                                React.DOM.td( {className:"th-actual"}, i18n.actual_value),
-                                React.DOM.td( {className:"th-actions"})
-                            )
-                            ),
-                            periods
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicator_periods
                         )
                     )
                 );
             }
+
+            var actionCell = isPublic ? React.DOM.span(null ) : React.DOM.td( {className:"th-actions"} );
+
+            return (
+                React.DOM.div( {className:"indicator-period-list selfProject"}, 
+                    React.DOM.h4( {className:"indicator-periods-title"}, i18nResults.indicator_periods),
+                    this.renderBaseline(),
+                    React.DOM.table( {className:"table table-responsive"}, 
+                        React.DOM.thead(null, 
+                            React.DOM.tr(null, 
+                                React.DOM.td( {className:"th-period"}, i18nResults.period),
+                                React.DOM.td( {className:"th-target"}, i18nResults.target_value),
+                                React.DOM.td( {className:"th-actual"}, i18nResults.actual_value),
+                                actionCell
+                            )
+                        ),
+                        periods
+                    ),
+                    this.renderParentsChildren()
+                )
+            );
         }
     });
 
@@ -1301,106 +1613,98 @@ function initReact() {
             };
         },
 
+        goBack: function() {
+            this.props.selectIndicator(null);
+        },
+
         addNewUpdate: function(periodId) {
+            // Add a new indicator update.
+
+            // Update state, in order to indicate the loading icon of the button
             this.setState({addingNewUpdate: true});
             var thisApp = this;
             var url = endpoints.base_url + endpoints.updates_and_comments;
             var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
+
+            // Default data of a new update. Note that we supply a default '0' data, since that
+            // field is mandatory.
             var data = JSON.stringify({
                 'period': periodId,
                 'user': user.id,
                 'data': '0',
                 'period_actual_value': actualValue
             });
+
             var success = function(response) {
-                thisApp.props.saveUpdateToPeriod(response, periodId);
+                // Update state with new indicator update and remove the loading from the button.
+                thisApp.props.saveUpdateToPeriod(response, periodId, true);
                 thisApp.setState({addingNewUpdate: false});
             };
             apiCall('POST', url, data, success);
         },
 
-        basePeriodSave: function(relation, periodId, data) {
+        basePeriodSave: function(periodId, data, callback) {
+            // Base function for saving a period with a data Object.
             var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
             var thisApp = this;
             var success = function(response) {
                 var period = response;
                 var indicatorId = period.indicator;
-                thisApp.props.savePeriodToIndicator(relation, period, indicatorId);
+                thisApp.props.savePeriodToIndicator(period, indicatorId);
+
+                // Call the callback, if not undefined.
+                if (callback !== undefined) {
+                    callback();
+                }
             };
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
-        lockPeriod: function(relation, periodId) {
-            this.basePeriodSave(relation, periodId, {locked: true});
+        lockPeriod: function(periodId, callback) {
+            // Lock a period.
+            this.basePeriodSave(periodId, {locked: true}, callback);
         },
 
-        unlockPeriod: function(relation, periodId) {
-            this.basePeriodSave(relation, periodId, {locked: false});
+        unlockPeriod: function(periodId, callback) {
+            // Unlock a period.
+            this.basePeriodSave(periodId, {locked: false}, callback);
         },
 
         showMeasure: function() {
+            // Show the measure (next to the result's title) or nothing if not supplied.
             switch(this.props.selectedIndicator.measure) {
                 case "1":
-                    return ' (' + i18n.unit + ')';
+                    return ' (' + i18nResults.unit + ')';
                 case "2":
-                    return ' (' + i18n.percentage + ')';
+                    return ' (' + i18nResults.percentage + ')';
                 default:
                     return "";
             }
         },
 
-        renderParentIndicator: function() {
-            if (this.props.selectedIndicatorParent !== null) {
-                return (
-                    React.DOM.div(null, 
-                        React.createElement(IndicatorPeriodList, {
-                            selectedIndicator: this.props.selectedIndicatorParent,
-                            selectedPeriod: this.props.selectedPeriod,
-                            selectPeriod: this.props.selectPeriod,
-                            addNewUpdate: this.addNewUpdate,
-                            savePeriodToIndicator: this.props.savePeriodToIndicator,
-                            lockPeriod: this.lockPeriod,
-                            unlockPeriod: this.unlockPeriod,
-                            parent: true,
-                            child: false,
-                            findProjectOfResult: this.props.findProjectOfResult
-                        })
-                    )
-                );
-            } else {
-                return (
-                    React.DOM.span(null )
-                );
-            }
-        },
-
-        renderChildIndicators: function() {
-            var thisList = this;
-            var indicatorEntries = this.props.selectedIndicatorChildren.map(function (indicator) {
-                return (
-                    React.DOM.div( {key:indicator.id}, 
-                        React.createElement(IndicatorPeriodList, {
-                            selectedIndicator: indicator,
-                            selectedPeriod: thisList.props.selectedPeriod,
-                            selectPeriod: thisList.props.selectPeriod,
-                            addNewUpdate: thisList.addNewUpdate,
-                            savePeriodToIndicator: thisList.props.savePeriodToIndicator,
-                            lockPeriod: thisList.lockPeriod,
-                            unlockPeriod: thisList.unlockPeriod,
-                            parent: false,
-                            child: true,
-                            findProjectOfResult: thisList.props.findProjectOfResult
-                        })
-                    )
-                );
-            });
-            return (
-                React.DOM.div(null, indicatorEntries)
-            );
-        },
-
         render: function() {
-            if (this.props.selectedPeriod !== null) {
+            // Render the main content of the results framework.
+            // This can be either a list of periods (when no period has been selected, but only an
+            // indicator), or a list of indicator updates (when a period has been selected).
+
+            if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
+                var addIndicatorsLink;
+                if (isAdmin) {
+                    var language = window.location.pathname.substring(0, 3);
+                    addIndicatorsLink =
+                        React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
+                } else {
+                    addIndicatorsLink = React.DOM.span(null );
+                }
+
+                return (
+                    React.DOM.div( {className:"noIndicators"}, 
+                        i18nResults.no_indicators, " ", addIndicatorsLink,
+                        React.DOM.a( {href:"https://akvorsr.supporthero.io/article/show/design-a-results-framework", target:"_blank"}, i18nResults.more_info)
+                    )
+                );
+            } else if (this.props.selectedPeriod !== null) {
+                // Show a list of indicator updates.
                 return (
                     React.DOM.div( {className:"indicator-period-container"}, 
                         React.createElement(IndicatorPeriodMain, {
@@ -1415,6 +1719,7 @@ function initReact() {
                             removeUpdate: this.props.removeUpdate,
                             selectedIndicator: this.props.selectedIndicator,
                             selectedPeriod: this.props.selectedPeriod,
+                            selectPeriod: this.props.selectPeriod,
                             reloadPeriod: this.props.reloadPeriod,
                             lockPeriod: this.lockPeriod,
                             unlockPeriod: this.unlockPeriod
@@ -1422,6 +1727,7 @@ function initReact() {
                     )
                 );
             } else if (this.props.selectedIndicator !== null) {
+                // Show a list of periods.
                 return (
                     React.DOM.div( {className:"indicator opacity-transition"}, 
                         React.DOM.h4( {className:"indicator-title"}, 
@@ -1438,15 +1744,13 @@ function initReact() {
                             savePeriodToIndicator: this.props.savePeriodToIndicator,
                             lockPeriod: this.lockPeriod,
                             unlockPeriod: this.unlockPeriod,
-                            parent: false,
-                            child: false,
-                            findProjectOfResult: this.props.findProjectOfResult
-                        }),
-                        this.renderParentIndicator(),
-                        this.renderChildIndicators()
+                            findProjectOfResult: this.props.findProjectOfResult,
+                            findResult: this.props.findResult
+                        })
                     )
                 );
             } else {
+                // Nothing selected, leave main content empty.
                 return (
                     React.DOM.span(null )
                 );
@@ -1456,6 +1760,7 @@ function initReact() {
 
     var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
         selected: function() {
+            // See if this indicator has been selected.
             if (this.props.selectedIndicator !== null) {
                 return this.props.selectedIndicator.id === this.props.indicator.id;
             } else {
@@ -1464,11 +1769,13 @@ function initReact() {
         },
 
         switchIndicator: function() {
+            // When this indicator is clicked, it should be selected.
             this.props.selectIndicator(this.props.indicator.id);
             this.props.selectPeriod(null);
         },
 
         render: function() {
+            // Render an indicator's entry in the sidebar.
             var indicatorClass = "indicator-nav clickable bg-border-transition";
             if (this.selected()) {
                 indicatorClass += " active";
@@ -1486,6 +1793,7 @@ function initReact() {
 
     var ResultEntry = React.createClass({displayName: 'ResultEntry',
         expanded: function() {
+            // See if this result has been selected. If so, the result should be expanded.
             if (this.props.selectedResult !== null) {
                 return this.props.selectedResult.id === this.props.result.id;
             } else {
@@ -1494,21 +1802,38 @@ function initReact() {
         },
 
         switchResult: function() {
-            var resultId = this.expanded() ? null : this.props.result.id;
+            // If this result is clicked, it should be selected when it is not yet selected.
+            // If it is already selected, then it should be de-selected.
+            var thisResult = this.props.result;
+            var wasExpanded = this.expanded();
+
+            var resultId = wasExpanded ? null : thisResult.id;
             this.props.selectResult(resultId);
+
+            // When there is an indicator and the result is expanded, select the first indicator.
+            if (thisResult.indicators !== undefined && thisResult.indicators.length > 0 && !wasExpanded) {
+                this.props.selectIndicator(thisResult.indicators[0].id);
+            }
         },
 
         indicatorText: function() {
+            // Depending whether the indicators have been loaded or not (undefined), show a
+            // different text in the sidebar.
             if (this.props.result.indicators !== undefined) {
-                return this.props.result.indicators.length === 1 ? i18n.indicator : i18n.indicators;
+                return this.props.result.indicators.length === 1 ? i18nResults.indicator : i18nResults.indicators;
             } else {
-                return i18n.indicators;
+                return i18nResults.indicators;
             }
         },
 
         renderIndicatorEntries: function() {
+            // Every indicator should have separate entry in the sidebar, but they are only visible
+            // when the result has been selected (expanded).
             if (this.expanded()) {
                 var thisResult = this;
+
+                // Check if the indicators have been loaded already and show an 'IndicatorEntry'
+                // for every indicator if so.
                 if (this.props.result.indicators !== undefined) {
                     var indicatorEntries = this.props.result.indicators.map(function (indicator) {
                         return (
@@ -1526,24 +1851,53 @@ function initReact() {
                         React.DOM.div( {className:"result-nav-full clickable"}, indicatorEntries)
                     );
                 } else {
+                    // Show a loading icon if indicators have not been loaded yet.
                     return (
                         React.DOM.div( {className:"result-nav-full clickable"}, 
                             React.DOM.div( {className:"indicator-nav bg-border-transition"}, 
                                 React.DOM.a(null, 
-                                    React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.indicators)
+                                    React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicators)
                                 )
                             )
                         )
                     );
                 }
             } else {
+                // Do not show anything when result is not selected (expanded).
                 return (
                     React.DOM.span(null )
                 );
             }
         },
 
+        renderResultType: function() {
+            // Show the result type, if available
+            switch (this.props.result.type) {
+                case '1':
+                    return (
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.output)
+                    );
+                case '2':
+                    return (
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.outcome)
+                    );
+                case '3':
+                    return (
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.impact)
+                    );
+                case '9':
+                    return (
+                        React.DOM.div( {className:"indicatorType"}, i18nResults.other)
+                    );
+                default:
+                    return (
+                        React.DOM.div(null )
+                    );
+            }
+        },
+
         renderIndicatorCount: function() {
+            // Show the number of indicators of a result, or a loading icon.
             var indicatorLength;
 
             if (this.props.result.indicators === undefined) {
@@ -1553,14 +1907,12 @@ function initReact() {
             }
 
             if (this.expanded()) {
+                // Do not show a text when the result is selected (expanded).
                 return (
-                    React.DOM.span( {className:"result-indicator-count"}, 
-                        React.DOM.i( {className:"fa fa-tachometer"} ),
-                        React.DOM.span( {className:"indicator-count inlined"}, indicatorLength),
-                        React.DOM.p(null, this.indicatorText(),":")
-                    )
+                    React.DOM.span(null )
                 );
             } else {
+                // Show the number of indicators
                 return (
                     React.DOM.span( {className:"result-indicator-count"}, 
                         React.DOM.i( {className:"fa fa-tachometer"} ),
@@ -1572,6 +1924,7 @@ function initReact() {
         },
 
         render: function() {
+            // Render the result entry in the sidebar.
             var resultNavClass = "result-nav bg-transition";
             resultNavClass += this.expanded() ? " expanded" : "";
 
@@ -1579,9 +1932,10 @@ function initReact() {
                 React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
                     React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
                         React.DOM.h3( {className:"result-title"}, 
-                            React.DOM.i( {className:"fa fa-chevron-circle-down"} ),
-                            React.DOM.i( {className:"fa fa-chevron-circle-up"} ),
-                            React.DOM.span(null, this.props.result.title)
+                            React.DOM.i( {className:"fa fa-chevron-down"} ),
+                            React.DOM.i( {className:"fa fa-chevron-up"} ),
+                            React.DOM.span(null, this.props.result.title),
+                            this.renderResultType()
                         ),
                         this.renderIndicatorCount()
                     ),
@@ -1593,7 +1947,10 @@ function initReact() {
 
     var SideBar = React.createClass({displayName: 'SideBar',
         render: function() {
+            // Renders the left sidebar of the results framework
             var thisList = this;
+
+            // For every result, a ResultEntry is created
             var resultEntries = this.props.results.map(function (result) {
                 return (
                     React.DOM.div( {key:result.id}, 
@@ -1610,17 +1967,19 @@ function initReact() {
             });
 
             if (!this.props.loadingResults) {
+                // Show the array of ResultEntry's when results have been loaded
                 return (
                     React.DOM.div( {className:"results-list"}, 
                         resultEntries
                     )
                 );
             } else {
+                // Show a loading icon when results are loading
                 return (
                     React.DOM.div( {className:"results-list"}, 
                         React.DOM.div( {className:"result-nav bg-transition"}, 
                             React.DOM.div( {className:"result-nav-summary"}, 
-                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.loading, " ", i18n.results
+                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.results
                             )
                         )
                     )
@@ -1636,9 +1995,13 @@ function initReact() {
                 defaultIndicator = null,
                 defaultPeriod = null;
 
+            // Retrieve the result / indicator / period that should be opened by default.
+            // Specified like #results,12,345,6789 meaning #results,result_id,indicator_id,period_id
             if (hash !== '') {
                 hash = hash.substring(1);
                 var hashArray = hash.split(',');
+                // Remove the 'results' part
+                hashArray.splice(0, 1);
                 for (var i = 0; i < hashArray.length; i++) {
                     switch(i) {
                         case 0:
@@ -1660,90 +2023,85 @@ function initReact() {
                 selectedIndicatorId: defaultIndicator,
                 selectedPeriodId: defaultPeriod,
                 editingData: [],
-                results: [],
-                parentResults: [],
-                childResults: []
+                results: []
             };
         },
 
         componentDidMount: function() {
-            this.loadResults('self', projectIds.project_id);
-            for (var i = 0; i < projectIds.parent_projects_ids.length; i++) {
-                this.loadResults('parent', projectIds.parent_projects_ids[i]);
-            }
-            for (var j = 0; j < projectIds.child_projects_ids.length; j++) {
-                this.loadResults('children', projectIds.child_projects_ids[j]);
-            }
+            // Once the component is mounted, load the results through the API
+            this.loadResults(projectIds.project_id);
         },
 
-        loadResults: function(relation, projectId) {
+        loadResults: function(projectId) {
+            // Load the results through the API, and update the state
             var thisApp = this;
             var success = function(response) {
-                switch (relation) {
-                    case 'self':
-                        thisApp.setState({
-                            'results': thisApp.state.results.concat(response.results),
-                            'loadingResults': false
-                        });
-                        break;
-                    case 'parent':
-                        thisApp.setState({
-                            'parentResults': thisApp.state.parentResults.concat(response.results)
-                        });
-                        break;
-                    case 'children':
-                        thisApp.setState({
-                            'childResults': thisApp.state.childResults.concat(response.results)
-                        });
-                        break;
-                }
-                thisApp.loadIndicators(relation, projectId);
+                thisApp.setState({
+                    'results': thisApp.state.results.concat(response.results),
+                    'loadingResults': false
+                });
+                // Load the indicators after the results have been loaded
+                thisApp.loadIndicators(projectId);
             };
             apiCall('GET', endpoints.base_url + endpoints.results_of_project.replace('{project}', projectId), '', success);
         },
 
-        loadIndicators: function(relation, projectId) {
+        loadIndicators: function(projectId) {
+            // Load the indicators through the API, and update the state
             var thisApp = this;
             var success = function(response) {
                 var indicators = response.results;
                 for (var i = 0; i < indicators.length; i++) {
                     var indicator = indicators[i];
-                    var result = thisApp.findResult(relation, indicator.result);
+
+                    // For every indicator, find the result it belongs to
+                    var result = thisApp.findResult(indicator.result);
                     if (result.indicators === undefined) {
                         result.indicators = [indicator];
                     } else {
                         result.indicators.push(indicator);
                     }
                 }
-                var results = thisApp.resultsBasedOnRelation(relation);
-                for (var j = 0; j < results.length; j++) {
-                    var stateResult = results[j];
+
+                // In case a result has no indicators, result.indicators will be undefined.
+                // Set these to an empty array, so that it's clear that indicators have been loaded.
+                // E.g. undefined means "not loaded yet", empty array means "loaded, but not existing"
+                for (var j = 0; j < thisApp.state.results.length; j++) {
+                    var stateResult = thisApp.state.results[j];
                     if (stateResult.indicators === undefined) {
                         stateResult.indicators = [];
                     }
                 }
+
+                // Force the state to update and load periods
                 thisApp.forceUpdate();
-                thisApp.loadPeriods(relation, projectId);
+                thisApp.loadPeriods(projectId);
             };
             apiCall('GET', endpoints.base_url + endpoints.indicators_of_project.replace('{project}', projectId), '', success);
         },
 
-        loadPeriods: function(relation, projectId) {
+        loadPeriods: function(projectId) {
+            // Load the periods through the API, and update the state
             var thisApp = this;
             var success = function(response) {
                 var periods = response.results;
                 for (var i = 0; i < periods.length; i++) {
                     var period = periods[i];
-                    var indicator = thisApp.findIndicator(relation, period.indicator);
+
+                    // For every period, find the indicator it belongs to
+                    var indicator = thisApp.findIndicator(period.indicator);
                     if (indicator.periods === undefined) {
                         indicator.periods = [period];
                     } else {
                         indicator.periods.push(period);
                     }
                 }
-                var results = thisApp.resultsBasedOnRelation(relation);
-                for (var j = 0; j < results.length; j++) {
-                    var stateResult = results[j];
+
+                // In case an indicators has no periods, indicator.periods will be undefined.
+                // Set these to an empty array, so that it's clear that periods have been loaded.
+                // E.g. undefined means "not loaded yet", empty array means "loaded, but not existing"
+                for (var j = 0; j < thisApp.state.results.length; j++) {
+                    var stateResult = thisApp.state.results[j];
                     for (var k = 0; k < stateResult.indicators.length; k++) {
                         var stateIndicator = stateResult.indicators[k];
                         if (stateIndicator.periods === undefined) {
@@ -1751,28 +2109,36 @@ function initReact() {
                         }
                     }
                 }
+
+                // Force the state to update and load indicator updates and comments
                 thisApp.forceUpdate();
-                thisApp.loadDataUpdatesAndComments(relation, projectId);
+                thisApp.loadDataUpdatesAndComments(projectId);
             };
             apiCall('GET', endpoints.base_url + endpoints.periods_of_project.replace('{project}', projectId), '', success);
         },
 
-        loadDataUpdatesAndComments: function(relation, projectId) {
+        loadDataUpdatesAndComments: function(projectId) {
+            // Load the indicator updates and comments through the API, and update the state
             var thisApp = this;
             var success = function(response) {
                 var updates = response.results;
                 for (var i = 0; i < updates.length; i++) {
                     var update = updates[i];
-                    var period = thisApp.findPeriod(relation, update.period);
+
+                    // For every indicator update, find the period it belongs to
+                    var period = thisApp.findPeriod(update.period);
                     if (period.data === undefined) {
                         period.data = [update];
                     } else {
                         period.data.push(update);
                     }
                 }
-                var results = thisApp.resultsBasedOnRelation(relation);
-                for (var j = 0; j < results.length; j++) {
-                    var stateResult = results[j];
+
+                // In case a period has no indicator updates, period.data will be undefined.
+                // Set these to an empty array, so that it's clear that indicator updates have been loaded.
+                // E.g. undefined means "not loaded yet", empty array means "loaded, but not existing"
+                for (var j = 0; j < thisApp.state.results.length; j++) {
+                    var stateResult = thisApp.state.results[j];
                     for (var k = 0; k < stateResult.indicators.length; k++) {
                         var stateIndicator = stateResult.indicators[k];
                         for (var l = 0; l < stateIndicator.periods.length; l++) {
@@ -1783,31 +2149,25 @@ function initReact() {
                         }
                     }
                 }
+
+                // Force the state to update, all data has now been loaded
                 thisApp.forceUpdate();
             };
             apiCall('GET', endpoints.base_url + endpoints.updates_and_comments_of_project.replace('{project}', projectId), '', success);
         },
 
-        resultsBasedOnRelation: function(relation) {
-            switch (relation) {
-                case 'self':
-                    return this.state.results;
-                case 'parent':
-                    return this.state.parentResults;
-                case 'children':
-                    return this.state.childResults;
-            }
-        },
-
-        findProjectOfResult: function(relation, resultId, type) {
-            var result = this.findResult(relation, resultId);
+        findProjectOfResult: function(resultId, type) {
+            // Find the project belonging to a result.
+            // Either the ID or the project's title (depending on 'type').
+            var result = this.findResult(resultId);
             return type === 'title' ? result.project_title : result.project;
         },
 
-        findResult: function(relation, resultId) {
-            var results = this.resultsBasedOnRelation(relation);
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
+        findResult: function(resultId) {
+            // Find and return the result in the state.
+            // If not found, returns null.
+            for (var i = 0; i < this.state.results.length; i++) {
+                var result = this.state.results[i];
                 if (result.id == resultId) {
                     return result;
                 }
@@ -1815,10 +2175,11 @@ function initReact() {
             return null;
         },
 
-        findIndicator: function(relation, indicatorId) {
-            var results = this.resultsBasedOnRelation(relation);
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
+        findIndicator: function(indicatorId) {
+            // Find and return the indicator in the state.
+            // If not found, returns null.
+            for (var i = 0; i < this.state.results.length; i++) {
+                var result = this.state.results[i];
                 if (result.indicators !== undefined) {
                     for (var j = 0; j < result.indicators.length; j++) {
                         var indicator = result.indicators[j];
@@ -1831,10 +2192,11 @@ function initReact() {
             return null;
         },
 
-        findPeriod: function(relation, periodId) {
-            var results = this.resultsBasedOnRelation(relation);
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
+        findPeriod: function(periodId) {
+            // Find and return the period in the state.
+            // If not found, returns null.
+            for (var i = 0; i < this.state.results.length; i++) {
+                var result = this.state.results[i];
                 if (result.indicators !== undefined) {
                     for (var j = 0; j < result.indicators.length; j++) {
                         var indicator = result.indicators[j];
@@ -1852,10 +2214,11 @@ function initReact() {
             return null;
         },
 
-        findUpdate: function(relation, updateId) {
-            var results = this.resultsBasedOnRelation(relation);
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
+        findUpdate: function(updateId) {
+            // Find and return the indicator update in the state.
+            // If not found, returns null.
+            for (var i = 0; i < this.state.results.length; i++) {
+                var result = this.state.results[i];
                 if (result.indicators !== undefined) {
                     for (var j = 0; j < result.indicators.length; j++) {
                         var indicator = result.indicators[j];
@@ -1878,61 +2241,63 @@ function initReact() {
             return null;
         },
 
-        savePeriodToIndicator: function(relation, period, indicatorId) {
-            var indicator = this.findIndicator(relation, indicatorId);
+        savePeriodToIndicator: function(period, indicatorId) {
+            // Save a period to an indicator
+            var indicator = this.findIndicator(indicatorId);
 
             if (indicator !== null) {
-                var dataFound = null;
+                var periodsList = indicator.periods;
+
+                // See if indicator already has a period with same ID
                 for (var l = 0; l < indicator.periods.length; l++) {
                     var oldPeriod = indicator.periods[l];
                     if (oldPeriod.id == period.id) {
-                        dataFound = oldPeriod;
+                        // Remove old period in this case
+                        periodsList.splice(l, 1);
                         break;
                     }
                 }
 
-                if (dataFound !== null) {
-                    // Remove old period and insert updated period if update exists
-                    var periodsList = indicator.periods;
-                    periodsList.splice(periodsList.indexOf(dataFound), 1);
-                    periodsList.push(period);
-                    this.forceUpdate();
-                }
+                // Insert new period and force an update to the state
+                periodsList.push(period);
+                this.forceUpdate();
             }
         },
 
-        saveUpdateToPeriod: function(update, periodId) {
-            var period = this.findPeriod('self', periodId);
+        saveUpdateToPeriod: function(update, periodId, newUpdate) {
+            // Save an indicator update to a period
+            var period = this.findPeriod(periodId);
 
             if (period !== null) {
-                var dataFound = null;
+                var periodDataList = period.data;
+
+                // See if period already has an indicator update with same ID
                 for (var l = 0; l < period.data.length; l++) {
                     var dataUpdate = period.data[l];
                     if (dataUpdate.id == update.id) {
-                        dataFound = dataUpdate;
+                        // Remove old indicator update in this case
+                        periodDataList.splice(l, 1);
                         break;
                     }
                 }
 
-                if (dataFound === null) {
-                    // Insert new update if not
-                    period.data.push(update);
-                    this.forceUpdate();
+                // In case of a new update, set it to editing mode
+                if (newUpdate) {
                     this.addEditingData(update.id);
-                } else {
-                    // Remove old update and insert updated update if update exists
-                    var periodDataList = period.data;
-                    periodDataList.splice(periodDataList.indexOf(dataFound), 1);
-                    periodDataList.push(update);
-                    this.forceUpdate();
                 }
+
+                // Insert new indicator update and force an update to the state
+                periodDataList.push(update);
+                this.forceUpdate();
             }
         },
 
         saveFileInUpdate: function(file, updateId, fileType) {
-            var update = this.findUpdate('self', updateId);
+            // Save a file in the update
+            var update = this.findUpdate(updateId);
 
             if (update !== null) {
+                // A file can be either a 'photo' or 'file'
                 if (fileType === 'photo') {
                     update.photo_url = file;
                     this.forceUpdate();
@@ -1944,7 +2309,9 @@ function initReact() {
         },
 
         saveCommentInUpdate: function(comment, updateId) {
-            var update = this.findUpdate('self', updateId);
+            // Add a comment to an indicator update
+            // Since it's not possible to edit or delete comments, only adding comments is enough
+            var update = this.findUpdate(updateId);
 
             if (update !== null) {
                 update.comments.push(comment);
@@ -1953,153 +2320,113 @@ function initReact() {
         },
 
         removeUpdate: function(updateId) {
-            var update = this.findUpdate('self', updateId);
+            // Delete an indicator update and reload the period
+            var update = this.findUpdate(updateId);
             var periodId = update.period;
             var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
+
+            // Reload the period
             var thisApp = this;
             var success = function() {
-                thisApp.reloadPeriod('self', periodId);
+                thisApp.reloadPeriod(periodId);
             };
             apiCall('DELETE', url, '', success);
         },
 
-        reloadPeriod: function(relation, periodId) {
+        reloadPeriod: function(periodId) {
+            // Reload a period
             var url = endpoints.base_url + endpoints.period_framework.replace('{period}', periodId);
             var thisApp = this;
             var success = function(response) {
                 var period = response;
                 var indicatorId = period.indicator;
-                thisApp.savePeriodToIndicator(relation, period, indicatorId);
-                if (relation === 'self' && period.parent_period !== null) {
-                    thisApp.reloadPeriod('parent', period.parent_period);
-                }
+                thisApp.savePeriodToIndicator(period, indicatorId);
             };
             apiCall('GET', url, '', success);
         },
 
         selectResult: function(resultId) {
+            // Keep track in the state which result has been selected
             this.setState({selectedResultId: resultId});
         },
 
         selectIndicator: function(indicatorId) {
+            // Keep track in the state which indicator has been selected
             this.setState({selectedIndicatorId: indicatorId});
+
+            // Update the window's hash
             if (indicatorId !== null) {
-                var resultId = this.state.selectedResultId;
-                window.location.hash = resultId + ',' + indicatorId;
+                var indicator = this.findIndicator(indicatorId);
+                var resultId = indicator.result;
+                window.location.hash = 'results,' + resultId + ',' + indicatorId;
+            } else {
+                window.location.hash = '';
             }
         },
 
         selectPeriod: function(periodId) {
+            // Keep track in the state which period has been selected
             this.setState({selectedPeriodId: periodId});
-            if (periodId !== null) {
+
+            // Update the window's hash
+            var windowHashArray = window.location.hash.split(',');
+            if (periodId === null && windowHashArray.length === 4) {
+                windowHashArray.pop();
+                windowHashArray[0] = windowHashArray[0].substr(1);
+                window.location.hash = windowHashArray.join(',');
+            } else if (periodId !== null) {
                 var resultId = this.state.selectedResultId;
                 var indicatorId = this.state.selectedIndicatorId;
-                window.location.hash = resultId + ',' + indicatorId + ',' + periodId;
+                window.location.hash = 'results,' + resultId + ',' + indicatorId + ',' + periodId;
             }
         },
 
-        selectedResult: function(relation) {
-            var selected;
-            switch (relation) {
-                case 'self':
-                    return this.findResult(relation, this.state.selectedResultId);
-                case 'parent':
-                    selected = this.selectedResult('self');
-                    if (selected !== null && selected.parent_result !== null) {
-                        return this.findResult(relation, selected.parent_result);
-                    }
-                    return null;
-                case 'children':
-                    // Returns a list instead
-                    var childResults = [];
-                    selected = this.selectedResult('self');
-                    if (selected !== null) {
-                        for (var i = 0; i < this.state.childResults.length; i++) {
-                            var childResult = this.state.childResults[i];
-                            if (childResult.parent_result === selected.id) {
-                                childResults.push(childResult);
-                            }
-                        }
-                    }
-                    return childResults;
-            }
+        selectedResult: function() {
+            // Find the selected result
+            return this.findResult(this.state.selectedResultId);
         },
 
-        selectedIndicator: function(relation) {
-            var selected, selectedResult;
-            switch (relation) {
-                case 'self':
-                    return this.findIndicator('self', this.state.selectedIndicatorId);
-                case 'parent':
-                    selected = this.selectedIndicator('self');
-                    if (selected !== null) {
-                        selectedResult = this.findResult('self', selected.result);
-                        if (selectedResult.parent_result !== null) {
-                            var selectedResultParent = this.findResult(relation, selectedResult.parent_result);
-                            if (selectedResultParent !== null && selectedResultParent.indicators !== undefined) {
-                                for (var i = 0; i < selectedResultParent.indicators.length; i++) {
-                                    var selectedIndicatorParent = selectedResultParent.indicators[i];
-                                    if (selectedIndicatorParent.title === selected.title) {
-                                        return selectedIndicatorParent;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return null;
-                case 'children':
-                    // Returns a list instead
-                    var childIndicators = [];
-                    selected = this.selectedIndicator('self');
-                    if (selected !== null) {
-                        selectedResult = this.findResult('self', selected.result);
-                        for (var j = 0; j < this.state.childResults.length; j++) {
-                            var childResult = this.state.childResults[j];
-                            if (childResult.parent_result === selectedResult.id && childResult.indicators !== undefined) {
-                                for (var k = 0; k < childResult.indicators.length; k++){
-                                    var childIndicator = childResult.indicators[k];
-                                    if (childIndicator.title === selected.title) {
-                                        childIndicators.push(childIndicator);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return childIndicators;
-            }
+        selectedIndicator: function() {
+            // Find the selected indicator
+            return this.findIndicator(this.state.selectedIndicatorId);
         },
 
         selectedPeriod: function() {
-            return this.findPeriod('self', this.state.selectedPeriodId);
+            // Find the selected indicator
+            return this.findPeriod(this.state.selectedPeriodId);
         },
 
         addEditingData: function(updateId) {
+            // Update the state to add an indicator update which is in editing mode
             var editingDataList = this.state.editingData;
             editingDataList.push(updateId);
             this.setState({editingData: editingDataList});
         },
 
         removeEditingData: function(updateId) {
+            // Update the state to remove an indicator update which is in editing mode
             var editingDataList = this.state.editingData;
             editingDataList.splice(editingDataList.indexOf(updateId), 1);
             this.setState({editingData: editingDataList});
         },
 
         render: function() {
+            // Render the complete results framework, including a sidebar on the left and a main
+            // panel in the rest of the screen
             return (
                 React.DOM.div( {className:"results"}, 
                     React.DOM.article(null, 
                         React.DOM.div( {className:"results-container"}, 
                             React.DOM.div( {className:"sidebar"}, 
                                 React.DOM.div( {className:"result-nav-header"}, 
-                                    React.DOM.h3(null, i18n.results)
+                                    React.DOM.h3(null, i18nResults.results)
                                 ),
                                 React.createElement(
                                     SideBar, {
                                         results: this.state.results,
                                         loadingResults: this.state.loadingResults,
-                                        selectedResult: this.selectedResult('self'),
-                                        selectedIndicator: this.selectedIndicator('self'),
+                                        selectedResult: this.selectedResult(),
+                                        selectedIndicator: this.selectedIndicator(),
                                         selectResult: this.selectResult,
                                         selectIndicator: this.selectIndicator,
                                         selectPeriod: this.selectPeriod
@@ -2118,12 +2445,13 @@ function initReact() {
                                         saveCommentInUpdate: this.saveCommentInUpdate,
                                         removeUpdate: this.removeUpdate,
                                         reloadPeriod: this.reloadPeriod,
-                                        selectedIndicator: this.selectedIndicator('self'),
-                                        selectedIndicatorParent: this.selectedIndicator('parent'),
-                                        selectedIndicatorChildren: this.selectedIndicator('children'),
+                                        selectedIndicator: this.selectedIndicator(),
+                                        selectIndicator: this.selectIndicator,
                                         selectedPeriod: this.selectedPeriod(),
                                         selectPeriod: this.selectPeriod,
-                                        findProjectOfResult: this.findProjectOfResult
+                                        findProjectOfResult: this.findProjectOfResult,
+                                        findResult: this.findResult,
+                                        selectedResult: this.selectedResult()
                                     }
                                 )
                             )
@@ -2169,13 +2497,16 @@ function loadAndRenderReact() {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
+    isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-    i18n = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
-    getUserData();
-    setPermissions();
+    if (!isPublic) {
+        getUserData();
+        setPermissions();
+    }
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {

@@ -29,12 +29,12 @@ def other_identifier(project):
     other_identifier_elements.append(element)
 
     for partnership in project.partnerships.all():
-        org = partnership.organisation
+        if partnership.internal_id and partnership.organisation:
+            org = partnership.organisation
 
-        if partnership.internal_id:
             element = etree.Element("other-identifier")
             element.attrib['ref'] = str(partnership.internal_id)
-            element.attrib['type'] = 'A1' if org == project.reporting_partner else 'B9'
+            element.attrib['type'] = 'A1' if partnership == project.reporting_partner else 'B9'
 
             owner_org_element = etree.SubElement(element, "owner-org")
 

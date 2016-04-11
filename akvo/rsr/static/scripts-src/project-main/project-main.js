@@ -15,7 +15,7 @@ function renderReactComponents() {
     Carousel = ReactBootstrap.Carousel;
     CarouselItem = ReactBootstrap.CarouselItem;
 
-    var IndicatorPeriodValue = React.createClass({
+    var IndicatorPeriodValue = React.createClass({displayName: 'IndicatorPeriodValue',
         render: function() {
             var target_value = this.props.indicator.target_value;
             var actual_value = this.props.indicator.actual_value;
@@ -29,31 +29,31 @@ function renderReactComponents() {
             }
 
             return (actual_value !== '' && target_value !== '') ? (
-                <span>
-                    : <i>{actual_value} ({i18n.actual_text}) / {target_value} ({i18n.target_text})</i>
-                </span>
+                React.DOM.span(null, 
+                    ": ", React.DOM.i(null, actual_value, " (",i18n.actual_text,") / ", target_value, " (",i18n.target_text,")")
+                )
             ) : actual_value !== '' ? (
-                <span>
-                    : <i>{actual_value} ({i18n.actual_text})</i>
-                </span>
+                React.DOM.span(null, 
+                    ": ", React.DOM.i(null, actual_value, " (",i18n.actual_text,")")
+                )
             ) : target_value !== '' ? (
-                <span>
-                    : <i>{target_value} ({i18n.target_text})</i>
-                </span>
+                React.DOM.span(null, 
+                    ": ", React.DOM.i(null, target_value, " (",i18n.target_text,")")
+                )
             ) : (
-                <span />
+                React.DOM.span(null )
             );
         }
     });
 
-    var IndicatorPeriod = React.createClass({
+    var IndicatorPeriod = React.createClass({displayName: 'IndicatorPeriod',
         render: function () {
             var period_start = this.props.indicator.period_start;
             var period_end = this.props.indicator.period_end;
 
             if (period_start === undefined && period_end === undefined) {
                 return (
-                    <span />
+                    React.DOM.span(null )
                 );
             }
 
@@ -64,28 +64,28 @@ function renderReactComponents() {
             }
 
             return (
-                <span>
-                    &nbsp;({period_start} - {period_end})
-                </span>
+                React.DOM.span(null, 
+                    " (",period_start, " - ", period_end,")"
+                )
             );
         }
     });
 
-    var Indicator = React.createClass({
+    var Indicator = React.createClass({displayName: 'Indicator',
         render: function () {
             return this.props.indicator.title ? (
-                <div>
-                    {this.props.indicator.title}
-                    {React.createElement(IndicatorPeriod, {indicator: this.props.indicator})}
-                    {React.createElement(IndicatorPeriodValue, {indicator: this.props.indicator})}
-                </div>
+                React.DOM.div(null, 
+                    this.props.indicator.title,
+                    React.createElement(IndicatorPeriod, {indicator: this.props.indicator}),
+                    React.createElement(IndicatorPeriodValue, {indicator: this.props.indicator})
+                )
             ) : (
-                <span />
+                React.DOM.span(null )
             );
         }
     });
 
-    var Result = React.createClass({
+    var Result = React.createClass({displayName: 'Result',
         render: function () {
             var indicators = this.props.result.indicators.map(function(indicator) {
                 return (
@@ -93,15 +93,15 @@ function renderReactComponents() {
                 );
             });
             return (
-                <span>
-                    <li><i className="fa fa-check" /> <strong>{this.props.result.title}</strong></li>
-                    <dl className="indicator-descriptions">{indicators}</dl>
-                </span>
+                React.DOM.span(null, 
+                    React.DOM.li(null, React.DOM.i( {className:"fa fa-check"} ), " ", React.DOM.strong(null, this.props.result.title)),
+                    React.DOM.dl( {className:"indicator-descriptions"}, indicators)
+                )
             );
         }
     });
 
-    var ResultList = React.createClass({
+    var ResultList = React.createClass({displayName: 'ResultList',
         render: function () {
             var results = this.props.results.map(function(result) {
                 return (
@@ -109,19 +109,52 @@ function renderReactComponents() {
                 );
             });
             return (
-                <ul className="list-unstyled">{results}</ul>
+                React.DOM.ul( {className:"list-unstyled"}, results)
             );
         }
     });
 
-    var AccordionPanel = React.createClass({
+    var AccordionPanel = React.createClass({displayName: 'AccordionPanel',
+        getInitialState: function() {
+            // KB: Workaround, since i18n seems to change.
+            return {
+                background_text: i18n.background_text,
+                current_situation_text: i18n.current_situation_text,
+                goals_overview_text: i18n.goals_overview_text,
+                project_plan_text: i18n.project_plan_text,
+                sustainability_text: i18n.sustainability_text,
+                target_group_text: i18n.target_group_text,
+                results_text: i18n.results_text
+            };
+        },
+
         handleClick: function() {
             this.props.changeOpened(this.props.panelClass);
-            return false;
         },
 
         opened: function() {
             return this.props.panelClass === this.props.opened;
+        },
+
+        header: function() {
+            switch (this.props.panelClass) {
+                case "background":
+                    return this.state.background_text;
+                case "current_status":
+                    return this.state.current_situation_text;
+                case "goals_overview":
+                    return this.state.goals_overview_text;
+                case "project_plan":
+                    return this.state.project_plan_text;
+                case "sustainability":
+                    return this.state.sustainability_text;
+                case "target_group":
+                    return this.state.target_group_text;
+                case "result":
+                    return this.state.results_text;
+                default:
+                    return '';
+            }
         },
 
         render: function() {
@@ -141,25 +174,25 @@ function renderReactComponents() {
             }
 
             return (
-                <div className={panelClass}>
-                    <div className="panel-heading">
-                        <h4 className="panel-title">
-                            <a className={headerCollapse} onClick={this.handleClick}>
-                                {this.props.header}
-                            </a>
-                        </h4>
-                    </div>
-                    <div className={panelCollapse} style={panelStyle}>
-                        <div className="panel-body">
-                            {this.props.content}
-                        </div>
-                    </div>
-                </div>
+                React.DOM.div( {className:panelClass}, 
+                    React.DOM.div( {className:"panel-heading"}, 
+                        React.DOM.h4( {className:"panel-title"}, 
+                            React.DOM.a( {className:headerCollapse, onClick:this.handleClick}, 
+                                this.header()
+                            )
+                        )
+                    ),
+                    React.DOM.div( {className:panelCollapse, style:panelStyle}, 
+                        React.DOM.div( {className:"panel-body"}, 
+                            this.props.content
+                        )
+                    )
+                )
             );
         }
     });
 
-    var AccordionInstance = React.createClass({
+    var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
         getInitialState: function() {
             if (this.props.source.background !== "") {
                 return {opened: "background"};
@@ -180,9 +213,9 @@ function renderReactComponents() {
             }
         },
 
-        changeOpened: function(key) {
+        changeOpened: function(panelClass) {
             this.setState({
-                opened: this.state.opened === key ? "" : key
+                opened: this.state.opened === panelClass ? "" : panelClass
             });
         },
 
@@ -190,7 +223,7 @@ function renderReactComponents() {
             var i = 0;
             return text.match(/[^\r\n]+/g).map(function(line) {
                 return (
-                    <p key={i++}>{line}</p>
+                    React.DOM.p( {key:i++}, line)
                 );
             });
         },
@@ -209,8 +242,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(background),
-                    panelClass: "background",
-                    header: i18n.background_text
+                    panelClass: "background"
                 });
             }
 
@@ -219,8 +251,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(current_status),
-                    panelClass: "current_status",
-                    header: i18n.current_situation_text
+                    panelClass: "current_status"
                 });
             }
 
@@ -229,8 +260,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(goals_overview),
-                    panelClass: "goals_overview",
-                    header: i18n.goals_overview_text
+                    panelClass: "goals_overview"
                 });
             }
 
@@ -239,8 +269,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(project_plan),
-                    panelClass: "project_plan",
-                    header: i18n.project_plan_text
+                    panelClass: "project_plan"
                 });
             }
 
@@ -249,8 +278,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(sustainability),
-                    panelClass: "sustainability",
-                    header: i18n.sustainability_text
+                    panelClass: "sustainability"
                 });
             }
 
@@ -259,8 +287,7 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: this.splitLines(target_group),
-                    panelClass: "target_group",
-                    header: i18n.target_group_text
+                    panelClass: "target_group"
                 });
             }
 
@@ -270,26 +297,25 @@ function renderReactComponents() {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
                     content: resultsContent,
-                    panelClass: "result",
-                    header: i18n.results_text
+                    panelClass: "result"
                 });
             }
 
             return (
-                <div className="panel-group">
-                    {background}
-                    {current_status}
-                    {project_plan}
-                    {target_group}
-                    {sustainability}
-                    {goals_overview}
-                    {results}
-                </div>
+                React.DOM.div( {className:"panel-group"}, 
+                    background,
+                    current_status,
+                    project_plan,
+                    target_group,
+                    sustainability,
+                    goals_overview,
+                    results
+                )
             );
         }
     });
 
-    var CarouselInstance = React.createClass({
+    var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
         render: function() {
             var photos = this.props.source.photos.map(function (photo) {
                 var photoCaption = React.createElement('h4', null, photo.caption);
@@ -402,6 +428,8 @@ function readTabFromFragment() {
             showTab(fragment);
         } else if (fragment === 'updates' && defaultValues.show_updates_tab) {
             showTab(fragment);
+        } else if (fragment.indexOf('results') > -1 && defaultValues.show_results_tab) {
+            showTab('results');
         } else {
             showTab('summary');
         }
