@@ -137,6 +137,7 @@ class IatiXML(object):
             self.add_project(project)
 
             # Update IATI activity export's status to indicate that export has finished
-            if self.iati_activity_export:
-                self.iati_activity_export.status = 2
-                self.iati_activity_export.save(update_fields=['status'])
+            iati_activity_export = getattr(self, 'iati_activity_export', None)
+            if iati_activity_export:
+                iati_activity_export.status = 2
+                iati_activity_export.save(update_fields=['status'])
