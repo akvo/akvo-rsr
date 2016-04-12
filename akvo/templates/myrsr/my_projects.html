@@ -44,7 +44,7 @@
         </tr>
         </thead>
         {% for project in page %}
-          <tr class="{% if not project.is_published %}notPublished{% elif not project.is_public %}isPrivate{% endif %}">
+          <tr class="{% if not project.is_public %}isPrivate{% elif not project.is_published %}notPublished{% endif %}">
             <td class="media">
               <a class="pull-left" href="{% url 'project-main' project.id %}">
                 {% img project 64 64 project.title %}
@@ -55,10 +55,10 @@
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
               </div>
-              {% if not project.is_published %}
-                <span class="unplubishedPjt">{% trans 'Unpublished' %}</span>
-              {% elif not project.is_public %}
+              {% if not project.is_public %}
                 <span class="privatePjt">{% trans 'Private' %}</span>
+              {% elif not project.is_published %}
+                <span class="unplubishedPjt">{% trans 'Unpublished' %}</span>
               {% endif %}
             </td>
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
@@ -70,13 +70,14 @@
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 {% if can_edit_project %}
                   <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
-                  {% if project.is_impact_project and project.is_published %}
+                  {% if project.is_impact_project and project.is_published and project.is_public %}
                     <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
                   {% else %}
-                    <li><a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}">{% trans 'Results data' %}</a></li>
+                    <li><a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}">{% trans 'Results data' %}</a></li>
                   {% endif %}
                 {% endif %}
                 {% if project.is_published and project.is_public %}
+                  {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% else %}
                  <li> <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a></li>

@@ -78,7 +78,7 @@ def typeahead_user_projects(request):
 def typeahead_impact_projects(request):
     user = request.user
     projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
-    projects = projects.published().filter(is_impact_project=True).order_by('title')
+    projects = projects.published().filter(is_impact_project=True, is_public=True).order_by('title')
 
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
