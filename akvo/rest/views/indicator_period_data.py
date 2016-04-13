@@ -78,7 +78,7 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
         'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
         'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ]
     }
-    project_relation = 'period__indicator__result__project__'
+    project_relation = 'data__period__indicator__result__project__'
 
 
 @api_view(['POST'])
