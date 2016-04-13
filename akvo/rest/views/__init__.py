@@ -20,6 +20,7 @@ from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
 from .humanitarian_scope import HumanitarianScopeViewSet
+from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
@@ -110,6 +111,8 @@ __all__ = [
     'FssForecastViewSet',
     'GoalViewSet',
     'HumanitarianScopeViewSet',
+    'IatiActivityExportViewSet',
+    'IatiExportViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
     'IndicatorPeriodActualDimensionViewSet',

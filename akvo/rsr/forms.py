@@ -448,7 +448,7 @@ class SelectOrgForm(forms.Form):
 
         self.fields['org'] = forms.ModelChoiceField(
             queryset=organisations,
-            label=_(u'Select your organisation'),
+            label='',
         )
 
 

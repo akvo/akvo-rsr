@@ -5,33 +5,109 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n;
+var csrftoken,
+    endpoints,
+    i18n;
 
+/* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+csrftoken = getCookie('csrftoken');
+
+/* Capitalize the first character of a string */
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function loadAsync(url, retryCount, retryLimit, label) {
+/* General API call function, retries 5 times by default and will retrieve all pages */
+function apiCall(method, url, data, successCallback, retries) {
+    var xmlHttp = new XMLHttpRequest();
+    var maxRetries = 5;
+
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
+            if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
+                if (method === 'GET' && response.next !== undefined) {
+                    if (response.next !== null) {
+                        var success = function(newResponse) {
+                            var oldResults = response.results;
+                            response.results = oldResults.concat(newResponse.results);
+                            return successCallback(response);
+                        };
+                        apiCall(method, response.next, data, success);
+                    } else {
+                        return successCallback(response);
+                    }
+                } else {
+                    return successCallback(response);
+                }
+            } else {
+                var message = i18nResults.general_error + ': ';
+                for (var key in response) {
+                    if (response.hasOwnProperty(key)) {
+                         message += response[key] + '. ';
+                    }
+                }
+                // TODO: Proper error logging
+                // showGeneralError(message);
+                console.log(message);
+                return false;
+            }
+        }
+    };
+
+    xmlHttp.onerror = function () {
+        if (retries === undefined) {
+            return apiCall(method, url, data, successCallback, 2);
+        } else if (retries <= maxRetries) {
+            return apiCall(method, url, data, successCallback, retries + 1);
+        } else {
+            // TODO: Proper error logging
+            // showGeneralError(i18nResults.connection_error);
+            console.log('Connection error');
+            return false;
+        }
+    };
+
+    xmlHttp.open(method, url, true);
+    xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
+    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(data);
+}
+
+function loadAsync(url, callback, retryCount, retryLimit) {
     var xmlHttp;
 
     xmlHttp = new XMLHttpRequest();
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-
             if(xmlHttp.status == 200){
-                processResponse(label, xmlHttp.responseText);
-                return true;
+                callback(xmlHttp.responseText);
+                return false;
             } else {
                 if (retryCount >= retryLimit) {
+                    // TODO: Proper error logging
+                    console.log('Could not retrieve data from ' + url);
                     return false;
                 } else {
                     retryCount = retryCount + 1;
                     loadAsync(url, retryCount, retryLimit);
                 }
             }
-        } else {
-            return false;
         }
     };
 
@@ -92,10 +168,8 @@ function getProjectLabels() {
     }
 }
 
-function loadComponent(component_id) {
-    var Container;
-
-    Container = React.createClass({displayName: 'Container',
+function loadComponents() {
+    var IatiChecks = React.createClass({displayName: 'IatiChecks',
         getInitialState: function() {
             return {
                 button_state: 'active'
@@ -143,8 +217,85 @@ function loadComponent(component_id) {
         }
     });
 
+    var ExportsTable = React.createClass({displayName: 'ExportsTable',
+        render: function() {
+            return (
+                React.DOM.table( {className:"table table-striped table-responsive myProjectList"}, 
+                    React.DOM.thead(null, 
+                        React.DOM.tr(null, 
+                            React.DOM.th(null, "Last export"),
+                            React.DOM.th(null, "User"),
+                            React.DOM.th(null, "Created at"),
+                            React.DOM.th(null, "IATI version"),
+                            React.DOM.th(null, "status"),
+                            React.DOM.th(null, "IATI file"),
+                            React.DOM.th(null, "Number of projects")
+                        )
+                    )
+                )
+            );
+        }
+    });
+    
+    var MyIATI = React.createClass({displayName: 'MyIATI',
+        getInitialState: function() {
+            return {
+                exports: null,
+                initializing: true,
+                refreshing: false
+            };
+        },
+
+        componentDidMount: function() {
+            this.loadExports(true);
+        },
+
+        loadExports: function(first_time) {
+            var thisApp = this,
+                url = endpoints.base_url + endpoints.iati_exports;
+
+
+            function firstTimeSuccess(response) {
+                thisApp.setState({
+                    initializing: false,
+                    exports: response
+                });
+            }
+
+            function refreshingSuccess(response) {
+                thisApp.setState({
+                    refreshing: false,
+                    exports: response
+                });
+            }
+
+            if (!first_time) {
+                this.setState({refreshing: true});
+                apiCall('GET', url, {}, refreshingSuccess);
+            } else {
+                apiCall('GET', url, {}, firstTimeSuccess);
+            }
+         },
+
+        render: function() {
+            return (
+                React.DOM.div(null, 
+                    React.DOM.h4( {className:"topMargin"}, capitalizeFirstLetter(i18n.last_ten) + ' ' + i18n.iati_exports),
+                    React.createElement(ExportsTable, {
+                        exports: this.state.exports,
+                        initializing: this.state.initializing,
+                        refreshing: this.state.refreshing
+                    }),
+                    React.DOM.h4( {className:"topMargin"}, capitalizeFirstLetter(i18n.new) + ' ' + i18n.iati_export)
+                )
+            );
+        }
+    });
+    
+    // Render 'My IATI' overview of existing exports and creating a new IATI export
     ReactDOM.render(
-        React.createElement(Container), document.getElementById(component_id)
+        React.createElement(MyIATI),
+        document.getElementById('myIATIContainer')
     );
 }
 
@@ -164,7 +315,7 @@ var loadJS = function(url, implementationCode, location){
 
 function loadAndRenderReact() {
     function initReact() {
-        loadComponent('react_iati_checks');
+        loadComponents();
     }
 
     function loadReactDOM() {
@@ -178,11 +329,12 @@ function loadAndRenderReact() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
+    i18n = JSON.parse(document.getElementById("translations").innerHTML);
+    endpoints = JSON.parse(document.getElementById("endpoints").innerHTML);
 
-    if (document.getElementById('react_iati_checks')) {
+    if (document.getElementById('myIATIContainer')) {
         if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
-            loadComponent('react_iati_checks');
+            loadComponents();
         } else {
             loadAndRenderReact();
         }

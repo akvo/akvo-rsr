@@ -20,6 +20,7 @@ from .focus_area import FocusAreaSerializer
 from .fss import FssSerializer, FssForecastSerializer
 from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
+from .iati_export import IatiActivityExportSerializer, IatiExportSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
@@ -97,6 +98,8 @@ __all__ = [
     'FssForecastSerializer',
     'GoalSerializer',
     'HumanitarianScopeSerializer',
+    'IatiActivityExportSerializer',
+    'IatiExportSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
     'IndicatorPeriodActualDimensionSerializer',
