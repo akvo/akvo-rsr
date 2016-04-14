@@ -272,6 +272,136 @@ function loadComponents() {
         }
     });
 
+    var ProjectRow = React.createClass({
+        render: function() {
+            var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
+
+            return (
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <td>{this.props.project.id}</td>
+                    <td>
+                        {this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>'}<br/>
+                        <span className="small">{cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus}</span>
+                    </td>
+                    <td>{this.props.project.status_label || i18n.no_status}</td>
+                    <td>No</td>
+                </tr>
+            );
+        }
+    });
+
+    var ProjectsTable = React.createClass({
+        render: function() {
+            var thisTable = this,
+                projects;
+
+            if (this.props.projects.length > 0) {
+                // In case there are projets, show a table overview of the projects.
+                projects = this.props.projects.map(function(project) {
+                    return React.createElement(ProjectRow, {
+                        key: project.id,
+                        project: project,
+                        setPublic: thisTable.props.selectProject
+                    });
+                });
+            } else {
+                // In case there are no projects, show a message.
+                var language = window.location.pathname.substring(0, 3);
+                projects = <tr>
+                    <td colSpan="5" className="text-center">
+                        <p className="noItem">
+                            {i18n.no_projects_1 + ' ' + i18n.no_projects_2 + ' ' + i18n.no_projects_3}
+                            <a href={language + "/myrsr/projects/"}>{i18n.here}</a>.
+                        </p>
+                    </td>
+                </tr>;
+            }
+
+            return (
+                <table className="table table-striped table-responsive myProjectList topMargin">
+                    <thead>
+                        <tr>
+                            <th />
+                            <th>{i18n.id}</th>
+                            <th>{cap(i18n.title)}</th>
+                            <th>{cap(i18n.status)}</th>
+                            <th>{cap(i18n.included_export)}</th>
+                            <th>{i18n.iati_checks}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {projects}
+                    </tbody>
+                </table>
+            );
+        }
+    });
+
+    var NewExportOverview = React.createClass({
+        getInitialState: function() {
+            return {
+                initializing: true,
+                allProjects: null,
+                selectedProjects: []
+            };
+        },
+
+        componentDidMount: function() {
+            var url = endpoints.reporting_projects,
+                thisApp = this;
+
+            function projectsLoaded(results) {
+                thisApp.setState({
+                    initializing: false,
+                    allProjects: results
+                });
+            }
+
+            apiCall('GET', url, {}, projectsLoaded);
+        },
+
+        selectProject: function(projectId, select) {
+            // Select (select = true) or deselect (select = false) a project in
+            // the selectedProjects state
+            var newSelection = this.state.selectedProjects;
+
+            if (select && newSelection.indexOf(projectId) < 0) {
+                newSelection.push(projectId);
+                this.setState({selectedProjects: newSelection});
+            } else if (!select && newSelection.indexOf(projectId) > -1) {
+                var projectIndex = newSelection.indexOf(projectId);
+                newSelection.splice(projectIndex, 1);
+                this.setState({selectedProjects: newSelection});
+            }
+        },
+
+        render: function() {
+            var initOrTable;
+
+            if (this.state.initializing) {
+                // Only show a message that data is being loading when initializing
+                initOrTable = <span className="small"><i className="fa fa-spin fa-spinner"/>{' ' + cap(i18n.loading) + ' ' + i18n.projects + '...'}</span>;
+            } else {
+                // Show a table of projects when the data has been loaded
+                initOrTable = React.createElement(ProjectsTable, {
+                    projects: this.state.allProjects.results,
+                    selectProject: this.selectProject
+                });
+            }
+
+            return (
+                <div>
+                    <h4 className="topMargin">{cap(i18n.new) + ' ' + i18n.iati_export}</h4>
+                    <div className="performChecksDescription">
+                        <span>{i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2}</span>
+                    </div>
+                    {initOrTable}
+                </div>
+            );
+        }
+    });
+
     var ExportRow = React.createClass({
         openPublicFile: function() {
             window.open(i18n.last_exports_url, '_blank');
@@ -340,19 +470,31 @@ function loadComponents() {
 
     var ExportsTable = React.createClass({
         render: function() {
-            var thisTable = this;
+            var thisTable = this,
+                exports;
 
-            var exports = this.props.exports.results.map(function(exp) {
-                var publicFile = thisTable.props.publicFile === exp.id;
+            if (this.props.exports.results.length > 0) {
+                // In case there are existing IATI exports, show a table overview of the exports.
+                exports = this.props.exports.results.map(function(exp) {
+                    var publicFile = thisTable.props.publicFile === exp.id;
 
-                return React.createElement(ExportRow, {
-                    key: exp.id,
-                    exp: exp,
-                    publicFile: publicFile,
-                    setPublic: thisTable.props.setPublic
+                    return React.createElement(ExportRow, {
+                        key: exp.id,
+                        exp: exp,
+                        publicFile: publicFile,
+                        setPublic: thisTable.props.setPublic
+                    });
                 });
-            });
-
+            } else {
+                // In case there are no existing IATI exports yet, show a message.
+                exports = <tr>
+                    <td colSpan="6" className="text-center">
+                        <p className="noItem">
+                            {cap(i18n.no_exports)}
+                        </p>
+                    </td>
+                </tr>;
+            }
 
             return (
                 <table className="table table-striped table-responsive myProjectList topMargin">
@@ -374,7 +516,7 @@ function loadComponents() {
         }
     });
     
-    var MyIATI = React.createClass({
+    var ExportsOverview = React.createClass({
         getInitialState: function() {
             return {
                 exports: null,
@@ -499,21 +641,14 @@ function loadComponents() {
             if (this.state.initializing) {
                 // Only show a message that data is being loading when initializing
                 initOrTable = <span className="small"><i className="fa fa-spin fa-spinner"/>{' ' + cap(i18n.loading) + ' ' + i18n.last + ' ' + i18n.iati_exports + '...'}</span>;
-            } else if (exportCount > 0) {
-                // Show a table of exiting imports (max 10) when the data has been loaded and exports exist
+            } else {
+                // Show a table of existing imports (max 10) when the data has been loaded
                 initOrTable = React.createElement(ExportsTable, {
                     exports: this.state.exports,
                     refreshing: this.state.refreshing,
                     publicFile: this.publicFile(),
                     setPublic: this.setPublic
                 });
-            } else {
-                // Do not show the 'Last exports' part when no exports exist yet
-                return (
-                    <div>
-                        <h4 className="topMargin">{cap(i18n.new) + ' ' + i18n.iati_export}</h4>
-                    </div>
-                );
             }
 
             lastExportDescription = <div className="lastExportDescription">
@@ -530,17 +665,24 @@ function loadComponents() {
                     {lastExportDescription}
                     {refreshing}
                     {initOrTable}
-                    <h4 className="topMargin">{cap(i18n.new) + ' ' + i18n.iati_export}</h4>
                 </div>
             );
         }
     });
-    
-    // Render 'My IATI' overview of existing exports and creating a new IATI export
-    ReactDOM.render(
-        React.createElement(MyIATI),
-        document.getElementById('myIATIContainer')
-    );
+
+    if (document.getElementById('exportsOverview')) {
+        // Render 'My IATI' overview of existing exports
+        ReactDOM.render(
+            React.createElement(ExportsOverview),
+            document.getElementById('exportsOverview')
+        );
+    } else if (document.getElementById('newIATIExport')) {
+        // Render 'My IATI' overview of existing exports
+        ReactDOM.render(
+            React.createElement(NewExportOverview),
+            document.getElementById('newIATIExport')
+        );
+    }
 }
 
 var loadJS = function(url, implementationCode, location){
@@ -572,12 +714,23 @@ function loadAndRenderReact() {
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
+function setCreateFileOnClick() {
+    var button = document.getElementById('createIATIExport');
+    if (button) {
+        button.onclick = function() {
+            window.location = window.location.href + '&new=true';
+        };
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     endpoints = JSON.parse(document.getElementById("endpoints").innerHTML);
     months = JSON.parse(document.getElementById("months").innerHTML);
     i18n = JSON.parse(document.getElementById("translations").innerHTML);
 
-    if (document.getElementById('myIATIContainer')) {
+    setCreateFileOnClick();
+
+    if (document.getElementById('exportsOverview') || document.getElementById('newIATIExport')) {
         if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
             loadComponents();
         } else {

@@ -4614,7 +4614,17 @@ div#my-reports {
 }
 
 // My IATI
-div#myIATIContainer {
+button#createIATIExport {
+    margin: -5px 0 0 25px;
+    background: $akvoBlack;
+    color: white;
+    border: none;
+    &:hover {
+        background: $rsrBlue;
+    }
+}
+
+div#exportsOverview {
     tr {
         &.publicFile {
             background: rgba($progressSuccess, 0.1) !important;

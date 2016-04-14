@@ -8,7 +8,12 @@
     <h3>
         {% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{ selected_org.long_name }}{% endif %}
     </h3>
-    <div class="IatiDescription">
+    {% if selected_org and not new_export %}
+        <button class="btn btn-default btn-sm" id="createIATIExport">
+            <i class="fa fa-plus"></i> {% trans 'Add a new IATI export' %}
+        </button>
+    {% endif %}
+    <div class="IatiDescription topMargin">
         {% blocktrans %}
             IATI stands for <a href="http://www.aidtransparency.net/" target="_blank">International Aid Transparency Initiative</a>,
             which is a global reporting standard that makes it possible to compare and compile data sets from different projects and
@@ -31,70 +36,22 @@
                 {% endbuttons %}
             </form>
         </p>
-    {% elif project_count > 0 %}
-        {# TODO: Move to React #}
-        {#        {% if export_added %}#}
-        {#            <div class="alert alert-success" role="alert">#}
-        {#                <strong>{% trans 'Successfully added an IATI file export! ' %}</strong><br/>#}
-        {#                {% trans 'When the IATI file is generated, it will be shown in the overview on the right.' %}#}
-        {#            </div>#}
-        {#        {% endif %}#}
-
-        {# Container for showing a table with existing IATI exports and creating a new IATI export (React) #}
-        <div id="myIATIContainer"></div>
-
-        <div class="IatiExportOverview"></div>
-
-        {# React implementation for creating a new IATI export #}
-        <h4 class="topMargin"></h4>
-        <p>
-            {% blocktrans %}
-                In order to see which of your projects is fully IATI compliant, you can perform checks by clicking the
-                "Perform checks" button. Projects with all mandatory IATI information filled in will be marked
-                <span class="success">green</span> and projects with missing information will be marked <span class="error">red</span>.
-            {% endblocktrans %}
-        </p>
-        <div id="IatiChecks"></div>
-        <p>
-            <form method="POST" action="" id="iati_export_form" class="iatiCheck">
-                {% csrf_token %}
-                {% for field in iati_export_form %}
-                    {% bootstrap_field field %}
-                {% endfor %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-success">
-                        {% trans 'Create new IATI file' %}
-                    </button>
-                {% endbuttons %}
-            </form>
-        </p>
+    {% elif not new_export %}
+        {# Selected an organisation, show the IATI exports overview #}
+        {# Container for showing a table with existing IATI exports (React) #}
+        <div id="exportsOverview"></div>
     {% else %}
-        <p class="noItem">
-            {% trans "Your organisation does not report any projects yet. " %}
-            {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>
-            {% blocktrans with admin_link="/myrsr/projects/" %}Go to the projects admin <a href={{ admin_link }}>here</a>.{% endblocktrans %}
-        </p>
+        {# Selected an organisation and creating a new export #}
+        {# Container for showing a table with projects (React) #}
+        <div id="newIATIExport"></div>
     {% endif %}
 
-{#    {% if exports %}#}
-{#    <div class="col-sm-5 col-xs-12 updateComponent">#}
-{#        <h4 class="detailedInfo">{% trans 'Existing IATI exports' %}</h4>#}
-{#        <ul class="noStyleUl">#}
-{#        {% for export in exports %}#}
-{#            <li>#}
-{#                {{export.last_modified_at|date:"d-M-Y"}}:#}
-{#                {% if export.iati_file %}#}
-{#                    <a href="{{MEDIA_URL}}{{export.iati_file}}">{% trans 'View IATI file' %}</a>#}
-{#                    ({{export.projects.count}} {% trans 'projects' %})#}
-{#                {% else %}#}
-{#                    {% trans 'No IATI file' %} ({{export.show_status}})#}
-{#                {% endif %}#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#        </ul>#}
-{#    </div>#}
+{#        <p class="noItem">#}
+{#            {% trans "Your organisation does not report any projects yet. " %}#}
+{#            {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>#}
+{#            {% blocktrans with admin_link="/myrsr/projects/" %}Go to the projects admin <a href={{ admin_link }}>here</a>.{% endblocktrans %}#}
+{#        </p>#}
 {#    {% endif %}#}
-
 {% endblock myrsr_main %}
 
 {% block js %}
@@ -109,12 +66,16 @@
         {
             "iati_export": "{% trans 'IATI export' %}",
             "iati_exports": "{% trans 'IATI exports' %}",
+            "project": "{% trans 'project' %}",
+            "projects": "{% trans 'projects' %}",
             "last_exports_1": "{% trans 'the public IATI file for your organisation is always available at this link: ' %}",
             "last_exports_2": "{% trans 'if you already have existing IATI exports, you can select which of the IATI exports should be available at this link.' %}",
             "last_exports_3": "{% trans 'this makes it possible to register only this link in the ' %}",
             "last_exports_4": "{% trans ' and automatically update your IATI file in the IATI registry by updating your IATI file in RSR.' %}",
             "last_exports_url": "http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.id }}/iati/",
             "iati_registry": "{% trans 'IATI registry' %}",
+            "perform_checks_description_1": "{% trans 'In order to see which of your projects is fully IATI compliant, you can perform checks by clicking the Perform checks button.' %}",
+            "perform_checks_description_2": "{% trans 'Projects with all mandatory IATI information filled in will be marked green and projects with missing information will be marked red.' %}",
             "loading": "{% trans 'loading' %}",
             "refreshing": "{% trans 'refreshing' %}",
             "last": "{% trans 'last' %}",
@@ -128,12 +89,26 @@
             "number_of_projects": "{% trans '# of projects' %}",
             "actions": "{% trans 'actions' %}",
             "no_iati_file": "{% trans 'no IATI file' %}",
+            "no_projects_1": "{% trans 'Your organisation does not report any projects yet.' %}",
+            "no_projects_2": "{% trans 'Set your organisation to reporting organisation of a project to create an IATI file for the project.' %}",
+            "no_projects_3": "{% trans 'Go to the projects admin ' %}",
+            "here": "{% trans 'here' %}",
+            "create_new": "{% trans 'create a new' %}",
             "new": "{% trans 'new' %}",
-            "no_exports": "{% trans 'your organisation has no IATI exports yet, create a new IATI export below' %}",
+            "no_exports": "{% trans 'your organisation has no IATI exports yet' %}",
+            "id": "{% trans 'ID' %}",
+            "title": "{% trans 'title' %}",
+            "included_export": "{% trans 'included in last export' %}",
+            "iati_checks": "{% trans 'IATI checks' %}",
+            "public": "{% trans 'public' %}",
+            "private": "{% trans 'private' %}",
+            "untitled": "{% trans 'untitled' %}",
+            "no_status": "{% trans 'no status' %}",
             "perform_checks": "{% trans 'Perform checks' %}",
             "performing_checks": "{% trans 'Performing checks' %}",
             "warning": "{% trans 'Warning' %}",
-            "unknown_date": "{% trans 'Unknown date' %}"
+            "unknown_date": "{% trans 'Unknown date' %}",
+            "and": "{% trans 'and' %}"
         }
     </script>
 
@@ -142,7 +117,8 @@
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
             "iati_exports": "/rest/v1/iati_export/?format=json&limit=10&ordering=-created_at&reporting_organisation={{ selected_org.id }}",
-            "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json"
+            "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json",
+            "reporting_projects": "/rest/v1/project/?format=json&ordering=id&reporting_org={{ selected_org.id }}"
         }
     </script>
 

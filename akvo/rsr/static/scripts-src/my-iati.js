@@ -272,6 +272,136 @@ function loadComponents() {
         }
     });
 
+    var ProjectRow = React.createClass({displayName: 'ProjectRow',
+        render: function() {
+            var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
+
+            return (
+                React.DOM.tr(null, 
+                    React.DOM.td(null, React.DOM.input( {type:"checkbox"} )),
+                    React.DOM.td(null, this.props.project.id),
+                    React.DOM.td(null, 
+                        this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>',React.DOM.br(null),
+                        React.DOM.span( {className:"small"}, cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus)
+                    ),
+                    React.DOM.td(null, this.props.project.status_label || i18n.no_status),
+                    React.DOM.td(null, "No")
+                )
+            );
+        }
+    });
+
+    var ProjectsTable = React.createClass({displayName: 'ProjectsTable',
+        render: function() {
+            var thisTable = this,
+                projects;
+
+            if (this.props.projects.length > 0) {
+                // In case there are projets, show a table overview of the projects.
+                projects = this.props.projects.map(function(project) {
+                    return React.createElement(ProjectRow, {
+                        key: project.id,
+                        project: project,
+                        setPublic: thisTable.props.selectProject
+                    });
+                });
+            } else {
+                // In case there are no projects, show a message.
+                var language = window.location.pathname.substring(0, 3);
+                projects = React.DOM.tr(null, 
+                    React.DOM.td( {colSpan:"5", className:"text-center"}, 
+                        React.DOM.p( {className:"noItem"}, 
+                            i18n.no_projects_1 + ' ' + i18n.no_projects_2 + ' ' + i18n.no_projects_3,
+                            React.DOM.a( {href:language + "/myrsr/projects/"}, i18n.here),"."
+                        )
+                    )
+                );
+            }
+
+            return (
+                React.DOM.table( {className:"table table-striped table-responsive myProjectList topMargin"}, 
+                    React.DOM.thead(null, 
+                        React.DOM.tr(null, 
+                            React.DOM.th(null ),
+                            React.DOM.th(null, i18n.id),
+                            React.DOM.th(null, cap(i18n.title)),
+                            React.DOM.th(null, cap(i18n.status)),
+                            React.DOM.th(null, cap(i18n.included_export)),
+                            React.DOM.th(null, i18n.iati_checks)
+                        )
+                    ),
+                    React.DOM.tbody(null, 
+                        projects
+                    )
+                )
+            );
+        }
+    });
+
+    var NewExportOverview = React.createClass({displayName: 'NewExportOverview',
+        getInitialState: function() {
+            return {
+                initializing: true,
+                allProjects: null,
+                selectedProjects: []
+            };
+        },
+
+        componentDidMount: function() {
+            var url = endpoints.reporting_projects,
+                thisApp = this;
+
+            function projectsLoaded(results) {
+                thisApp.setState({
+                    initializing: false,
+                    allProjects: results
+                });
+            }
+
+            apiCall('GET', url, {}, projectsLoaded);
+        },
+
+        selectProject: function(projectId, select) {
+            // Select (select = true) or deselect (select = false) a project in
+            // the selectedProjects state
+            var newSelection = this.state.selectedProjects;
+
+            if (select && newSelection.indexOf(projectId) < 0) {
+                newSelection.push(projectId);
+                this.setState({selectedProjects: newSelection});
+            } else if (!select && newSelection.indexOf(projectId) > -1) {
+                var projectIndex = newSelection.indexOf(projectId);
+                newSelection.splice(projectIndex, 1);
+                this.setState({selectedProjects: newSelection});
+            }
+        },
+
+        render: function() {
+            var initOrTable;
+
+            if (this.state.initializing) {
+                // Only show a message that data is being loading when initializing
+                initOrTable = React.DOM.span( {className:"small"}, React.DOM.i( {className:"fa fa-spin fa-spinner"}),' ' + cap(i18n.loading) + ' ' + i18n.projects + '...');
+            } else {
+                // Show a table of projects when the data has been loaded
+                initOrTable = React.createElement(ProjectsTable, {
+                    projects: this.state.allProjects.results,
+                    selectProject: this.selectProject
+                });
+            }
+
+            return (
+                React.DOM.div(null, 
+                    React.DOM.h4( {className:"topMargin"}, cap(i18n.new) + ' ' + i18n.iati_export),
+                    React.DOM.div( {className:"performChecksDescription"}, 
+                        React.DOM.span(null, i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2)
+                    ),
+                    initOrTable
+                )
+            );
+        }
+    });
+
     var ExportRow = React.createClass({displayName: 'ExportRow',
         openPublicFile: function() {
             window.open(i18n.last_exports_url, '_blank');
@@ -340,19 +470,31 @@ function loadComponents() {
 
     var ExportsTable = React.createClass({displayName: 'ExportsTable',
         render: function() {
-            var thisTable = this;
+            var thisTable = this,
+                exports;
 
-            var exports = this.props.exports.results.map(function(exp) {
-                var publicFile = thisTable.props.publicFile === exp.id;
+            if (this.props.exports.results.length > 0) {
+                // In case there are existing IATI exports, show a table overview of the exports.
+                exports = this.props.exports.results.map(function(exp) {
+                    var publicFile = thisTable.props.publicFile === exp.id;
 
-                return React.createElement(ExportRow, {
-                    key: exp.id,
-                    exp: exp,
-                    publicFile: publicFile,
-                    setPublic: thisTable.props.setPublic
+                    return React.createElement(ExportRow, {
+                        key: exp.id,
+                        exp: exp,
+                        publicFile: publicFile,
+                        setPublic: thisTable.props.setPublic
+                    });
                 });
-            });
-
+            } else {
+                // In case there are no existing IATI exports yet, show a message.
+                exports = React.DOM.tr(null, 
+                    React.DOM.td( {colSpan:"6", className:"text-center"}, 
+                        React.DOM.p( {className:"noItem"}, 
+                            cap(i18n.no_exports)
+                        )
+                    )
+                );
+            }
 
             return (
                 React.DOM.table( {className:"table table-striped table-responsive myProjectList topMargin"}, 
@@ -374,7 +516,7 @@ function loadComponents() {
         }
     });
     
-    var MyIATI = React.createClass({displayName: 'MyIATI',
+    var ExportsOverview = React.createClass({displayName: 'ExportsOverview',
         getInitialState: function() {
             return {
                 exports: null,
@@ -499,21 +641,14 @@ function loadComponents() {
             if (this.state.initializing) {
                 // Only show a message that data is being loading when initializing
                 initOrTable = React.DOM.span( {className:"small"}, React.DOM.i( {className:"fa fa-spin fa-spinner"}),' ' + cap(i18n.loading) + ' ' + i18n.last + ' ' + i18n.iati_exports + '...');
-            } else if (exportCount > 0) {
-                // Show a table of exiting imports (max 10) when the data has been loaded and exports exist
+            } else {
+                // Show a table of existing imports (max 10) when the data has been loaded
                 initOrTable = React.createElement(ExportsTable, {
                     exports: this.state.exports,
                     refreshing: this.state.refreshing,
                     publicFile: this.publicFile(),
                     setPublic: this.setPublic
                 });
-            } else {
-                // Do not show the 'Last exports' part when no exports exist yet
-                return (
-                    React.DOM.div(null, 
-                        React.DOM.h4( {className:"topMargin"}, cap(i18n.new) + ' ' + i18n.iati_export)
-                    )
-                );
             }
 
             lastExportDescription = React.DOM.div( {className:"lastExportDescription"}, 
@@ -529,18 +664,25 @@ function loadComponents() {
                     React.DOM.h4( {className:"topMargin"}, cap(i18n.last) + exportCountString + i18n.iati_exports),
                     lastExportDescription,
                     refreshing,
-                    initOrTable,
-                    React.DOM.h4( {className:"topMargin"}, cap(i18n.new) + ' ' + i18n.iati_export)
+                    initOrTable
                 )
             );
         }
     });
-    
-    // Render 'My IATI' overview of existing exports and creating a new IATI export
-    ReactDOM.render(
-        React.createElement(MyIATI),
-        document.getElementById('myIATIContainer')
-    );
+
+    if (document.getElementById('exportsOverview')) {
+        // Render 'My IATI' overview of existing exports
+        ReactDOM.render(
+            React.createElement(ExportsOverview),
+            document.getElementById('exportsOverview')
+        );
+    } else if (document.getElementById('newIATIExport')) {
+        // Render 'My IATI' overview of existing exports
+        ReactDOM.render(
+            React.createElement(NewExportOverview),
+            document.getElementById('newIATIExport')
+        );
+    }
 }
 
 var loadJS = function(url, implementationCode, location){
@@ -572,12 +714,23 @@ function loadAndRenderReact() {
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
+function setCreateFileOnClick() {
+    var button = document.getElementById('createIATIExport');
+    if (button) {
+        button.onclick = function() {
+            window.location = window.location.href + '&new=true';
+        };
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     endpoints = JSON.parse(document.getElementById("endpoints").innerHTML);
     months = JSON.parse(document.getElementById("months").innerHTML);
     i18n = JSON.parse(document.getElementById("translations").innerHTML);
 
-    if (document.getElementById('myIATIContainer')) {
+    setCreateFileOnClick();
+
+    if (document.getElementById('exportsOverview') || document.getElementById('newIATIExport')) {
         if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
             loadComponents();
         } else {

@@ -3936,24 +3936,32 @@ div#my-reports {
         border-width: 8px;
         margin-left: -8px; }
 
-div#myIATIContainer tr.publicFile {
-  background: rgba(92, 184, 92, 0.1) !important;
-  color: #5cb85c !important; }
-
-div#myIATIContainer tr.inProgress {
-  background: rgba(222, 137, 41, 0.1) !important;
-  color: #de8929 !important; }
-
-div#myIATIContainer tr.cancelled {
-  background: rgba(238, 49, 36, 0.1) !important;
-  color: #ee3124 !important; }
-
-div#myIATIContainer button.btn-default {
+button#createIATIExport {
   margin: -5px 0 0 25px;
   background: #202024;
   color: white;
   border: none; }
-  div#myIATIContainer button.btn-default:hover {
+  button#createIATIExport:hover {
+    background: #2c2a74; }
+
+div#exportsOverview tr.publicFile {
+  background: rgba(92, 184, 92, 0.1) !important;
+  color: #5cb85c !important; }
+
+div#exportsOverview tr.inProgress {
+  background: rgba(222, 137, 41, 0.1) !important;
+  color: #de8929 !important; }
+
+div#exportsOverview tr.cancelled {
+  background: rgba(238, 49, 36, 0.1) !important;
+  color: #ee3124 !important; }
+
+div#exportsOverview button.btn-default {
+  margin: -5px 0 0 25px;
+  background: #202024;
+  color: white;
+  border: none; }
+  div#exportsOverview button.btn-default:hover {
     background: #2c2a74; }
 
 .iatiCheck span.noCheck {
