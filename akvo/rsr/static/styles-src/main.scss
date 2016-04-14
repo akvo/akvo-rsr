@@ -4613,6 +4613,33 @@ div#my-reports {
     }
 }
 
+// My IATI
+div#myIATIContainer {
+    tr {
+        &.publicFile {
+            background: rgba($progressSuccess, 0.1) !important;
+            color: $progressSuccess !important;
+        }
+        &.inProgress {
+            background: rgba($flowOrange, 0.1) !important;
+            color: $flowOrange !important;
+        }
+        &.cancelled {
+            background: rgba($akvoTvRed, 0.1) !important;
+            color: $akvoTvRed !important;
+        }
+    }
+    button.btn-default {
+        margin: -5px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
+}
+
 .iatiCheck {
     span.noCheck {
         color: $akvoBlack;

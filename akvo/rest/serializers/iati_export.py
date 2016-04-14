@@ -4,13 +4,16 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
+from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import IatiActivityExport, IatiExport
 
-from .rsr_serializer import BaseRSRSerializer
+from rest_framework import serializers
 
 
 class IatiExportSerializer(BaseRSRSerializer):
+
+    user_name = serializers.Field(source='user.get_full_name')
+    status_label = serializers.Field(source='show_status')
 
     class Meta:
         model = IatiExport

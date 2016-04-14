@@ -43,16 +43,6 @@
         {# Container for showing a table with existing IATI exports and creating a new IATI export (React) #}
         <div id="myIATIContainer"></div>
 
-        <div class="LatestIatiFile">
-            {% blocktrans with org_id=selected_org.id host=request.META.HTTP_HOST %}
-                The latest IATI file for your organisation is always available at this link:
-                <a href="/organisation/{{ org_id }}/iati/" target="_blank">http://{{ host }}/organisation/{{ org_id }}/iati/</a>.
-                If you already have existing IATI exports, you can select which of the IATI exports should be available at this link.
-                This makes it possible to register only this link in the
-                <a href="http://iatiregistry.org/" target="_blank">IATI registry</a> and automatically update your IATI file in the IATI
-                registry by updating your IATI file in RSR.
-            {% endblocktrans %}
-        </div>
         <div class="IatiExportOverview"></div>
 
         {# React implementation for creating a new IATI export #}
@@ -119,11 +109,31 @@
         {
             "iati_export": "{% trans 'IATI export' %}",
             "iati_exports": "{% trans 'IATI exports' %}",
+            "last_exports_1": "{% trans 'the public IATI file for your organisation is always available at this link: ' %}",
+            "last_exports_2": "{% trans 'if you already have existing IATI exports, you can select which of the IATI exports should be available at this link.' %}",
+            "last_exports_3": "{% trans 'this makes it possible to register only this link in the ' %}",
+            "last_exports_4": "{% trans ' and automatically update your IATI file in the IATI registry by updating your IATI file in RSR.' %}",
+            "last_exports_url": "http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.id }}/iati/",
+            "iati_registry": "{% trans 'IATI registry' %}",
+            "loading": "{% trans 'loading' %}",
+            "refreshing": "{% trans 'refreshing' %}",
+            "last": "{% trans 'last' %}",
+            "view_public_file": "{% trans 'view public file' %}",
+            "view_file": "{% trans 'view file' %}",
+            "set_public": "{% trans 'set as public file' %}",
+            "created_by": "{% trans 'created by' %}",
+            "created_at": "{% trans 'created at' %}",
+            "iati_version": "{% trans 'IATI version' %}",
+            "status": "{% trans 'status' %}",
+            "number_of_projects": "{% trans '# of projects' %}",
+            "actions": "{% trans 'actions' %}",
+            "no_iati_file": "{% trans 'no IATI file' %}",
             "new": "{% trans 'new' %}",
-            "last_ten": "{% trans 'last 10' %}",
+            "no_exports": "{% trans 'your organisation has no IATI exports yet, create a new IATI export below' %}",
             "perform_checks": "{% trans 'Perform checks' %}",
             "performing_checks": "{% trans 'Performing checks' %}",
-            "warning": "{% trans 'Warning' %}"
+            "warning": "{% trans 'Warning' %}",
+            "unknown_date": "{% trans 'Unknown date' %}"
         }
     </script>
 
@@ -131,7 +141,26 @@
     <script type="application/json" id="endpoints">
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
-            "iati_exports": "/rest/v1/iati_export/?format=json&limit=10&ordering=-created_at&reporting_organisation={{ selected_org.id }}"
+            "iati_exports": "/rest/v1/iati_export/?format=json&limit=10&ordering=-created_at&reporting_organisation={{ selected_org.id }}",
+            "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json"
+        }
+    </script>
+
+    {# Months #}
+    <script type="application/json" id="months">
+        {
+            "january": "{% trans 'Jan' %}",
+            "february": "{% trans 'Feb' %}",
+            "march": "{% trans 'Mar' %}",
+            "april": "{% trans 'Apr' %}",
+            "may": "{% trans 'May' %}",
+            "june": "{% trans 'Jun' %}",
+            "july": "{% trans 'Jul' %}",
+            "august": "{% trans 'Aug' %}",
+            "september": "{% trans 'Sep' %}",
+            "october": "{% trans 'Oct' %}",
+            "november": "{% trans 'Nov' %}",
+            "december": "{% trans 'Dec' %}"
         }
     </script>
 
