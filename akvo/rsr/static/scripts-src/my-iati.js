@@ -34,7 +34,7 @@ function cap(string) {
 }
 
 /* General API call function, retries 5 times by default and will retrieve all pages */
-function apiCall(method, url, data, successCallback, retries) {
+function apiCall(method, url, data, followPages, successCallback, retries) {
     var xmlHttp = new XMLHttpRequest();
     var maxRetries = 5;
 
@@ -43,7 +43,7 @@ function apiCall(method, url, data, successCallback, retries) {
             var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {
-                    if (response.next !== null) {
+                    if (response.next !== null && followPages) {
                         var success = function(newResponse) {
                             var oldResults = response.results;
                             response.results = oldResults.concat(newResponse.results);
@@ -53,7 +53,7 @@ function apiCall(method, url, data, successCallback, retries) {
                                 return false;
                             }
                         };
-                        apiCall(method, response.next, data, success);
+                        apiCall(method, response.next, data, followPages, success);
                     } else {
                         if (successCallback !== undefined) {
                             return successCallback(response);
@@ -86,9 +86,9 @@ function apiCall(method, url, data, successCallback, retries) {
 
     xmlHttp.onerror = function () {
         if (retries === undefined) {
-            return apiCall(method, url, data, successCallback, 2);
+            return apiCall(method, url, data, followPages, successCallback, 2);
         } else if (retries <= maxRetries) {
-            return apiCall(method, url, data, successCallback, retries + 1);
+            return apiCall(method, url, data, followPages, successCallback, retries + 1);
         } else {
             // TODO: Proper error logging
             // showGeneralError(i18nResults.connection_error);
@@ -277,6 +277,16 @@ function loadComponents() {
         switchAction: function() {
             this.props.switchProject(this.props.project.id);
         },
+        
+        inLastExport: function() {
+            if (this.props.lastExport.length > 0) {
+                var lastExportProjects = this.props.lastExport[0].projects;
+                if (lastExportProjects.indexOf(this.props.project.id) > -1) {
+                    return true;
+                }
+            }
+            return false;
+        },
 
         render: function() {
             var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
@@ -290,7 +300,7 @@ function loadComponents() {
                         React.DOM.span( {className:"small"}, cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus)
                     ),
                     React.DOM.td(null, this.props.project.status_label || i18n.no_status),
-                    React.DOM.td(null, "No")
+                    React.DOM.td(null, this.inLastExport() ? cap(i18n.yes) : cap(i18n.no))
                 )
             );
         }
@@ -309,7 +319,8 @@ function loadComponents() {
                         key: project.id,
                         project: project,
                         selected: selected,
-                        switchProject: thisTable.props.switchProject
+                        switchProject: thisTable.props.switchProject,
+                        lastExport: thisTable.props.lastExport
                     });
                 });
             } else {
@@ -350,22 +361,40 @@ function loadComponents() {
             return {
                 initializing: true,
                 allProjects: null,
-                selectedProjects: []
+                selectedProjects: [],
+                lastExport: null
             };
         },
 
         componentDidMount: function() {
-            var url = endpoints.reporting_projects,
+            var reportingUrl = endpoints.reporting_projects,
+                lastExportUrl = endpoints.iati_exports + '&limit=1',
                 thisApp = this;
 
             function projectsLoaded(results) {
-                thisApp.setState({
-                    initializing: false,
-                    allProjects: results
-                });
+                if (thisApp.state.lastExport !== null) {
+                    thisApp.setState({
+                        initializing: false,
+                        allProjects: results
+                    });
+                } else {
+                    thisApp.setState({allProjects: results});
+                }
             }
 
-            apiCall('GET', url, {}, projectsLoaded);
+            function lastExportLoaded(response) {
+                if (thisApp.state.allProjects !== null) {
+                    thisApp.setState({
+                        initializing: false,
+                        lastExport: response.results
+                    });
+                } else {
+                    thisApp.setState({lastExport: response.results});
+                }
+            }
+
+            apiCall('GET', reportingUrl, {}, true, projectsLoaded);
+            apiCall('GET', lastExportUrl, {}, false, lastExportLoaded);
         },
 
         switchProject: function(projectId) {
@@ -396,7 +425,7 @@ function loadComponents() {
                 window.location = window.location.href.replace('&new=true', '');
             }
 
-            apiCall('POST', url, data, exportAdded);
+            apiCall('POST', url, data, true, exportAdded);
         },
 
         selectAll: function() {
@@ -425,7 +454,8 @@ function loadComponents() {
                 initOrTable = React.createElement(ProjectsTable, {
                     projects: this.state.allProjects.results,
                     selectedProjects: this.state.selectedProjects,
-                    switchProject: this.switchProject
+                    switchProject: this.switchProject,
+                    lastExport: this.state.lastExport
                 });
             }
 
@@ -613,9 +643,9 @@ function loadComponents() {
 
             if (!first_time) {
                 this.setState({refreshing: true});
-                apiCall('GET', url, {}, refreshingSuccess);
+                apiCall('GET', url, {}, true, refreshingSuccess);
             } else {
-                apiCall('GET', url, {}, firstTimeSuccess);
+                apiCall('GET', url, {}, true, firstTimeSuccess);
             }
         },
 
@@ -713,7 +743,7 @@ function loadComponents() {
                 if (newerExports.length > 0) {
                     for (var j = 0; j < newerExports.length; j++) {
                         var exp = newerExports[j];
-                        apiCall('PATCH', exportUrl.replace('{iati_export}', exp.id), privateData, newerExportUpdated);
+                        apiCall('PATCH', exportUrl.replace('{iati_export}', exp.id), privateData, true, newerExportUpdated);
                     }
                 } else {
                     allExportsUpdated();
@@ -722,7 +752,7 @@ function loadComponents() {
 
             // Set current IATI export to public
             this.setState({actionInProgress: true});
-            apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData, exportUpdated);
+            apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData, true, exportUpdated);
         },
         
         renderRefreshing: function() {
