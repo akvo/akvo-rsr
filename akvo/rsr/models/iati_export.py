@@ -101,3 +101,10 @@ class IatiExport(TimestampsMixin, models.Model):
         else:
             # No projects, so update the status to 'Cancelled'
             self.update_status(4)
+
+    def processed_projects(self):
+        """
+        Find the number of processed projects of this IATI export. Generally, for completed
+        exports, this number will be the same as the number of total projects.
+        """
+        return self.iati_activity_exports.filter(status=2).count()

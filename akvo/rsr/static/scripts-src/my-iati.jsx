@@ -283,7 +283,7 @@ function loadComponents() {
 
             return (
                 <tr>
-                    <td><input type="checkbox" onClick={this.switchAction} /></td>
+                    <td><input type="checkbox" onClick={this.switchAction} checked={this.props.selected} /></td>
                     <td>{this.props.project.id}</td>
                     <td>
                         {this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>'}<br/>
@@ -304,9 +304,11 @@ function loadComponents() {
             if (this.props.projects.length > 0) {
                 // In case there are projets, show a table overview of the projects.
                 projects = this.props.projects.map(function(project) {
+                    var selected = thisTable.props.selectedProjects.indexOf(project.id) > -1;
                     return React.createElement(ProjectRow, {
                         key: project.id,
                         project: project,
+                        selected: selected,
                         switchProject: thisTable.props.switchProject
                     });
                 });
@@ -422,6 +424,7 @@ function loadComponents() {
                 // Show a table of projects when the data has been loaded
                 initOrTable = React.createElement(ProjectsTable, {
                     projects: this.state.allProjects.results,
+                    selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject
                 });
             }
@@ -498,11 +501,19 @@ function loadComponents() {
             }
         },
 
+        renderNumberOfProjects: function() {
+            if (this.props.exp.status !== 2) {
+                return this.props.exp.projects.length;
+            } else {
+                return this.props.exp.projects.length + ' (' +  this.props.exp.processed_projects + ' ' + i18n.processed + ')';
+            }
+        },
+
         render: function() {
             return (
                 <tr className={this.renderRowClass()}>
                     <td>{this.props.exp.status_label}</td>
-                    <td>{this.props.exp.projects.length}</td>
+                    <td>{this.renderNumberOfProjects()}</td>
                     <td>{this.props.exp.user_name}</td>
                     <td>{displayDate(this.props.exp.created_at)}</td>
                     <td>{'v' + this.props.exp.version}</td>
@@ -566,6 +577,7 @@ function loadComponents() {
                 exports: null,
                 initializing: true,
                 refreshing: false,
+                refreshingIn: 0,
                 actionInProgress: false
             };
         },
@@ -584,6 +596,9 @@ function loadComponents() {
                     initializing: false,
                     exports: response
                 });
+                if (thisApp.pendingOrInProgress()) {
+                    thisApp.startCountDown();
+                }
             }
 
             function refreshingSuccess(response) {
@@ -591,6 +606,9 @@ function loadComponents() {
                     refreshing: false,
                     exports: response
                 });
+                if (thisApp.pendingOrInProgress()) {
+                    thisApp.startCountDown();
+                }
             }
 
             if (!first_time) {
@@ -599,7 +617,26 @@ function loadComponents() {
             } else {
                 apiCall('GET', url, {}, firstTimeSuccess);
             }
-         },
+        },
+
+        startCountDown: function() {
+            // Set the countdown for refreshing the table to start at 10 seconds
+            this.setState({refreshingIn: 10});
+
+            // Start ticking down
+            var thisApp = this,
+                intervalId = setInterval(tick, 1000);
+
+            function tick() {
+                var newRefreshing = thisApp.state.refreshingIn - 1;
+                thisApp.setState({refreshingIn: newRefreshing});
+                if (newRefreshing === 0) {
+                    // Once done, reload the exports
+                    clearInterval(intervalId);
+                    thisApp.loadExports(false);
+                }
+            }
+        },
 
         publicFile: function() {
             if (this.state.exports === null) {
@@ -623,6 +660,21 @@ function loadComponents() {
                 }
             }
             return null;
+        },
+        
+        pendingOrInProgress: function() {
+            // Check to see whether there is at least one export pending or in progress.
+            if (!this.state.initializing) {
+                for (var i = 0; i < this.state.exports.results.length; i++) {
+                    var exp = this.state.exports.results[i];
+                    if (exp.status < 3) {
+                        return true;
+                    } 
+                }
+                return false;
+            } else {
+                return false;
+            }
         },
 
         setPublic: function(exportId) {
@@ -672,15 +724,33 @@ function loadComponents() {
             this.setState({actionInProgress: true});
             apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData, exportUpdated);
         },
+        
+        renderRefreshing: function() {
+            if (this.state.refreshing) {
+                return (
+                    <span className="small">
+                        <i className="fa fa-spin fa-spinner" /> {cap(i18n.refreshing) + ' ' + i18n.iati_exports + '...'}
+                    </span>
+                );
+            } else if (this.pendingOrInProgress()) {
+                return (
+                    <span className="small">
+                        <i className="fa fa-spin fa-spinner" /> {cap(i18n.pending_or_progress) + '. ' + cap(i18n.refreshing) + ' ' + i18n.in + ' ' + this.state.refreshingIn + ' ' + i18n.seconds + '...'}
+                    </span>
+                );
+            } else {
+                return (
+                    <span />
+                );
+            }
+        },
 
         render: function() {
             var initOrTable,
-                refreshing,
                 exportCount,
                 exportCountString,
                 lastExportDescription;
 
-            refreshing = this.state.refreshing ? <span className="small"><i className="fa fa-spin fa-spinner" />{' ' + cap(i18n.refreshing) + ' ' + i18n.iati_exports + '...'}</span> : <span />;
             exportCount = !this.state.initializing ? this.state.exports.count : null;
             exportCountString = (exportCount !== null && exportCount > 0) ? ' ' + this.state.exports.count + ' ' : ' ';
 
@@ -688,7 +758,7 @@ function loadComponents() {
                 // Only show a message that data is being loading when initializing
                 initOrTable = <span className="small"><i className="fa fa-spin fa-spinner"/>{' ' + cap(i18n.loading) + ' ' + i18n.last + ' ' + i18n.iati_exports + '...'}</span>;
             } else {
-                // Show a table of existing imports (max 10) when the data has been loaded
+                // Show a table of existing imports when the data has been loaded
                 initOrTable = React.createElement(ExportsTable, {
                     exports: this.state.exports,
                     refreshing: this.state.refreshing,
@@ -709,7 +779,7 @@ function loadComponents() {
                 <div>
                     <h4 className="topMargin">{cap(i18n.last) + exportCountString + i18n.iati_exports}</h4>
                     {lastExportDescription}
-                    {refreshing}
+                    {this.renderRefreshing()}
                     {initOrTable}
                 </div>
             );

@@ -14,6 +14,7 @@ class IatiExportSerializer(BaseRSRSerializer):
 
     user_name = serializers.Field(source='user.get_full_name')
     status_label = serializers.Field(source='show_status')
+    processed_projects = serializers.Field(source='processed_projects')
 
     class Meta:
         model = IatiExport
