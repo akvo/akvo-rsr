@@ -47,9 +47,9 @@ class IatiExport(TimestampsMixin, models.Model):
 
     def __unicode__(self):
         if self.reporting_organisation and self.reporting_organisation.name:
-            return unicode(_('IATI export for {0}'.format(self.reporting_organisation.name)))
+            return u'%s %s' % (_(u'IATI export for'), self.reporting_organisation.name)
         else:
-            return unicode(_('IATI export for unknown organisation'))
+            return u'%s' % _(u'IATI export for unknown organisation')
 
     def show_status(self):
         if self.status not in STATUS_CODE.keys():

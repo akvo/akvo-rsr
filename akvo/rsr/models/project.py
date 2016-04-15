@@ -783,7 +783,6 @@ class Project(TimestampsMixin, models.Model):
         def publishingstatuses(self):
             return PublishingStatus.objects.filter(project__in=self)
 
-
     def __unicode__(self):
         return u'%s' % self.title
 

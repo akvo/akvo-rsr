@@ -6,6 +6,7 @@
 // < http://www.gnu.org/licenses/agpl.html >.
 
 var csrftoken,
+    initialData,
     endpoints,
     months,
     i18n;
@@ -273,12 +274,16 @@ function loadComponents() {
     });
 
     var ProjectRow = React.createClass({displayName: 'ProjectRow',
+        switchAction: function() {
+            this.props.switchProject(this.props.project.id);
+        },
+
         render: function() {
             var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
 
             return (
                 React.DOM.tr(null, 
-                    React.DOM.td(null, React.DOM.input( {type:"checkbox"} )),
+                    React.DOM.td(null, React.DOM.input( {type:"checkbox", onClick:this.switchAction} )),
                     React.DOM.td(null, this.props.project.id),
                     React.DOM.td(null, 
                         this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>',React.DOM.br(null),
@@ -302,7 +307,7 @@ function loadComponents() {
                     return React.createElement(ProjectRow, {
                         key: project.id,
                         project: project,
-                        setPublic: thisTable.props.selectProject
+                        switchProject: thisTable.props.switchProject
                     });
                 });
             } else {
@@ -361,19 +366,50 @@ function loadComponents() {
             apiCall('GET', url, {}, projectsLoaded);
         },
 
-        selectProject: function(projectId, select) {
-            // Select (select = true) or deselect (select = false) a project in
-            // the selectedProjects state
-            var newSelection = this.state.selectedProjects;
+        switchProject: function(projectId) {
+            // Add projectId to the selectedProjects state, if it is not present.
+            // Else remove it from the state.
+            var newSelection = this.state.selectedProjects,
+                projectIndex = newSelection.indexOf(projectId);
 
-            if (select && newSelection.indexOf(projectId) < 0) {
-                newSelection.push(projectId);
-                this.setState({selectedProjects: newSelection});
-            } else if (!select && newSelection.indexOf(projectId) > -1) {
-                var projectIndex = newSelection.indexOf(projectId);
+            if (projectIndex > -1) {
                 newSelection.splice(projectIndex, 1);
-                this.setState({selectedProjects: newSelection});
+            } else {
+                newSelection.push(projectId);
             }
+
+            this.setState({selectedProjects: newSelection});
+        },
+        
+        createExport: function() {
+            var url = endpoints.new_iati_export,
+                data = JSON.stringify({
+                    'reporting_organisation': initialData.selected_org_id,
+                    'user': initialData.user_id,
+                    'projects': this.state.selectedProjects
+                });
+
+            function exportAdded(response) {
+                // Redirect user back to overview
+                window.location = window.location.href.replace('&new=true', '');
+            }
+
+            apiCall('POST', url, data, exportAdded);
+        },
+
+        selectAll: function() {
+            // Remove existing selection
+            var newSelection = [];
+            this.setState({selectedProjects: newSelection});
+
+            // Select all projects from allProjects state
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+                newSelection.push(project.id);
+            }
+
+            // Select all projects in state
+            this.setState({selectedProjects: newSelection});
         },
 
         render: function() {
@@ -386,7 +422,7 @@ function loadComponents() {
                 // Show a table of projects when the data has been loaded
                 initOrTable = React.createElement(ProjectsTable, {
                     projects: this.state.allProjects.results,
-                    selectProject: this.selectProject
+                    switchProject: this.switchProject
                 });
             }
 
@@ -395,6 +431,14 @@ function loadComponents() {
                     React.DOM.h4( {className:"topMargin"}, cap(i18n.new) + ' ' + i18n.iati_export),
                     React.DOM.div( {className:"performChecksDescription"}, 
                         React.DOM.span(null, i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2)
+                    ),
+                    React.DOM.div( {className:"row"}, 
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, "Create IATI file")
+                        ),
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            React.DOM.button( {className:"btn btn-primary", onClick:this.selectAll}, "Select all projects")
+                        )
                     ),
                     initOrTable
                 )
@@ -597,34 +641,36 @@ function loadComponents() {
                 thisApp.setState({actionInProgress: false});
             }
 
-            function exportUpdated(response) {
+            function newerExportUpdated(response) {
                 newerExportsUpdated++;
                 if (newerExportsUpdated === newerExports.length) {
                     allExportsUpdated();
                 }
             }
 
+            function exportUpdated(response) {
+                // Find the newer IATI exports
+                for (var i = 0; i < thisApp.state.exports.results.length; i++) {
+                    var newerExp = thisApp.state.exports.results[i];
+                    if (newerExp.id !== exportId && newerExp.created_at > thisExport.created_at) {
+                        newerExports.push(newerExp);
+                    }
+                }
+
+                // Update the newer IATI exports
+                if (newerExports.length > 0) {
+                    for (var j = 0; j < newerExports.length; j++) {
+                        var exp = newerExports[j];
+                        apiCall('PATCH', exportUrl.replace('{iati_export}', exp.id), privateData, newerExportUpdated);
+                    }
+                } else {
+                    allExportsUpdated();
+                }
+            }
+
             // Set current IATI export to public
             this.setState({actionInProgress: true});
-            apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData);
-
-            // Find the newer IATI exports
-            for (var i = 0; i < this.state.exports.results.length; i++) {
-                var newerExp = this.state.exports.results[i];
-                if (newerExp.id !== exportId && newerExp.created_at > thisExport.created_at) {
-                    newerExports.push(newerExp);
-                }
-            }
-
-            // Update the newer IATI exports
-            if (newerExports.length > 0) {
-                for (var j = 0; j < newerExports.length; j++) {
-                    var exp = newerExports[j];
-                    apiCall('PATCH', exportUrl.replace('{iati_export}', exp.id), privateData, exportUpdated);
-                }
-            } else {
-                allExportsUpdated();
-            }
+            apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData, exportUpdated);
         },
 
         render: function() {
@@ -727,6 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
     endpoints = JSON.parse(document.getElementById("endpoints").innerHTML);
     months = JSON.parse(document.getElementById("months").innerHTML);
     i18n = JSON.parse(document.getElementById("translations").innerHTML);
+    initialData = JSON.parse(document.getElementById("data").innerHTML);
 
     setCreateFileOnClick();
 

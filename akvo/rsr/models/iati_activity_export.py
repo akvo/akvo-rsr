@@ -34,9 +34,9 @@ class IatiActivityExport(TimestampsMixin):
 
     def __unicode__(self):
         if self.project and self.project.title:
-            return unicode(_('IATI export for {0}'.format(self.project.title)))
+            return u'%s %s' % (_(u'IATI export for'), self.project.title)
         else:
-            return unicode(_('IATI export for project with no title'))
+            return u'%s' % _(u'IATI export for project with no title')
 
     def show_status(self):
         if self.status not in STATUS_CODE.keys():
