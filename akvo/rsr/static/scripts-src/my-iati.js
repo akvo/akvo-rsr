@@ -428,19 +428,52 @@ function loadComponents() {
             apiCall('POST', url, data, true, exportAdded);
         },
 
-        selectAll: function() {
+        selectAll: function(select) {
+            // Select or deselect all projects. The 'select' parameter determines whether all
+            // projects should be selected (true) or deselected (false).
+
             // Remove existing selection
             var newSelection = [];
             this.setState({selectedProjects: newSelection});
 
-            // Select all projects from allProjects state
-            for (var i = 0; i < this.state.allProjects.results.length; i++) {
-                var project = this.state.allProjects.results[i];
-                newSelection.push(project.id);
-            }
+            if (select) {
+                // Select all projects from allProjects state
+                for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                    var project = this.state.allProjects.results[i];
+                    newSelection.push(project.id);
+                }
 
-            // Select all projects in state
-            this.setState({selectedProjects: newSelection});
+                // Select all projects in state
+                this.setState({selectedProjects: newSelection});
+            }
+        },
+
+        selectAllProjects: function() {
+            this.selectAll(true);
+        },
+
+        deselectAllProjects: function() {
+            this.selectAll(false);
+        },
+
+        renderSelectAllButton: function() {
+            if (this.state.allProjects === null) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, "Deselect all projects")
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, "Select all projects")
+                    )
+                );
+            }
         },
 
         render: function() {
@@ -469,9 +502,7 @@ function loadComponents() {
                         React.DOM.div( {className:"col-sm-3"}, 
                             React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, "Create IATI file")
                         ),
-                        React.DOM.div( {className:"col-sm-3"}, 
-                            React.DOM.button( {className:"btn btn-primary", onClick:this.selectAll}, "Select all projects")
-                        )
+                        this.renderSelectAllButton()
                     ),
                     initOrTable
                 )
