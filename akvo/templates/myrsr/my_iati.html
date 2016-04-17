@@ -13,6 +13,11 @@
             <i class="fa fa-plus"></i> {% trans 'Add a new IATI export' %}
         </button>
     {% endif %}
+    {% if selected_org and new_export %}
+        <div class="small">
+            <a href="{{ request.build_absolute_uri|slice:":-9" }}">< {% trans 'Back to exports overview' %}</a>
+        </div>
+    {% endif %}
     <div class="IatiDescription topMargin">
         {% blocktrans %}
             IATI stands for <a href="http://www.aidtransparency.net/" target="_blank">International Aid Transparency Initiative</a>,

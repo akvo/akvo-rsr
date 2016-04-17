@@ -648,6 +648,7 @@ function loadComponents() {
             function refreshingSuccess(response) {
                 thisApp.setState({
                     refreshing: false,
+                    actionInProgress: false,
                     exports: response
                 });
                 if (thisApp.pendingOrInProgress()) {
@@ -734,7 +735,6 @@ function loadComponents() {
 
             function allExportsUpdated() {
                 thisApp.loadExports(false);
-                thisApp.setState({actionInProgress: false});
             }
 
             function newerExportUpdated(response) {
