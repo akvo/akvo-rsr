@@ -500,16 +500,29 @@ function loadComponents() {
                     )
                 );
             } else if (this.props.exp.iati_file) {
-                return (
-                    React.DOM.div(null, 
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.openFile}, 
-                            React.DOM.i( {className:"fa fa-code"} ), " ", cap(i18n.view_file)
-                        ),
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.setPublic}, 
-                            React.DOM.i( {className:"fa fa-globe"} ), " ", cap(i18n.set_public)
+                if (!this.props.actionInProgress) {
+                    return (
+                        React.DOM.div(null, 
+                            React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.openFile}, 
+                                React.DOM.i( {className:"fa fa-code"} ), " ", cap(i18n.view_file)
+                            ),
+                            React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.setPublic}, 
+                                React.DOM.i( {className:"fa fa-globe"} ), " ", cap(i18n.set_public)
+                            )
                         )
-                    )
-                );
+                    );
+                } else {
+                    return (
+                        React.DOM.div(null, 
+                            React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.openFile}, 
+                                React.DOM.i( {className:"fa fa-code"} ), " ", cap(i18n.view_file)
+                            ),
+                            React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                                React.DOM.i( {className:"fa fa-globe"} ), " ", cap(i18n.set_public)
+                            )
+                        )
+                    );
+                }
             } else {
                 return (
                     React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
@@ -567,7 +580,8 @@ function loadComponents() {
                         key: exp.id,
                         exp: exp,
                         publicFile: publicFile,
-                        setPublic: thisTable.props.setPublic
+                        setPublic: thisTable.props.setPublic,
+                        actionInProgress: thisTable.props.actionInProgress
                     });
                 });
             } else {
@@ -793,7 +807,8 @@ function loadComponents() {
                     exports: this.state.exports,
                     refreshing: this.state.refreshing,
                     publicFile: this.publicFile(),
-                    setPublic: this.setPublic
+                    setPublic: this.setPublic,
+                    actionInProgress: this.state.actionInProgress
                 });
             }
 
