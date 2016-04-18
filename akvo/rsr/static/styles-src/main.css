@@ -3944,15 +3944,15 @@ button#createIATIExport {
   button#createIATIExport:hover {
     background: #2c2a74; }
 
-div#exportsOverview tr.publicFile, div#newIATIExport tr.publicFile {
+div#exportsOverview tr.success, div#newIATIExport tr.success {
   background: rgba(92, 184, 92, 0.1) !important;
   color: #5cb85c !important; }
 
-div#exportsOverview tr.inProgress, div#newIATIExport tr.inProgress {
+div#exportsOverview tr.warning, div#newIATIExport tr.warning {
   background: rgba(222, 137, 41, 0.1) !important;
   color: #de8929 !important; }
 
-div#exportsOverview tr.cancelled, div#newIATIExport tr.cancelled {
+div#exportsOverview tr.error, div#newIATIExport tr.error {
   background: rgba(238, 49, 36, 0.1) !important;
   color: #ee3124 !important; }
 

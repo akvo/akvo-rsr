@@ -323,9 +323,69 @@ function loadComponents() {
             }
         },
 
+        findChecks: function() {
+            for (var i = 0; i < this.props.iatiChecks.length; i++) {
+                if (this.props.iatiChecks[i].project === this.props.project.id) {
+                    return this.props.iatiChecks[i].checks;
+                }
+            }
+            return null;
+        },
+
+        renderChecks: function() {
+            var checks = this.findChecks();
+            if (!this.props.performingChecks && checks === null) {
+                return (
+                    React.DOM.span(null, i18n.checks_not_performed)
+                );
+            } else if (checks !== null) {
+                var renderedChecks = checks.map(function(check) {
+                    if (check[0] === 'warning') {
+                        return (
+                            React.DOM.span(null, "- ", cap(i18n.warning),": ", cap(check[1]),React.DOM.br(null))
+                        );
+                    } else if (check[0] === 'error') {
+                        return (
+                            React.DOM.span(null, "- ", cap(i18n.error),": ", cap(check[1]),React.DOM.br(null))
+                        )
+                    }
+                });
+                return (
+                    React.DOM.span(null, renderedChecks)
+                );
+            } else if (this.props.performingChecks) {
+                return (
+                    React.DOM.span(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.performing_checks)
+                );
+            } else {
+                return (
+                    React.DOM.span(null )
+                );
+            }
+        },
+
+        renderRowClass: function() {
+            var checks = this.findChecks(),
+                foundWarning = false;
+
+            if (checks === null) {
+                return '';
+            } else {
+                for (var i = 0; i < checks.length; i++) {
+                    var check = checks[i];
+                    if (check[0] === 'error') {
+                        return 'error';
+                    } else if (check[0] === 'warning') {
+                        foundWarning = true;
+                    }
+                }
+                return foundWarning ? 'warning' : 'success';
+            }
+        },
+
         render: function() {
             return (
-                React.DOM.tr(null, 
+                React.DOM.tr( {className:this.renderRowClass()}, 
                     React.DOM.td(null, this.renderInput()),
                     React.DOM.td(null, this.props.project.id),
                     React.DOM.td(null, 
@@ -333,7 +393,8 @@ function loadComponents() {
                         React.DOM.span( {className:"small"}, this.publishedAndPublicLabel())
                     ),
                     React.DOM.td(null, this.statusLabel()),
-                    React.DOM.td(null, this.inLastExport() ? cap(i18n.yes) : cap(i18n.no))
+                    React.DOM.td(null, this.inLastExport() ? cap(i18n.yes) : cap(i18n.no)),
+                    React.DOM.td(null, this.renderChecks())
                 )
             );
         }
@@ -368,7 +429,9 @@ function loadComponents() {
                         selected: selected,
                         switchProject: thisTable.props.switchProject,
                         lastExport: thisTable.props.lastExport,
-                        exporting: thisTable.props.exporting
+                        exporting: thisTable.props.exporting,
+                        performingChecks: thisTable.props.performingChecks,
+                        iatiChecks: thisTable.props.iatiChecks
                     });
                 });
             } else {
@@ -411,8 +474,11 @@ function loadComponents() {
                 allProjects: null,
                 selectedProjects: [],
                 lastExport: null,
+                iatiChecks: [],
                 publishedFilter: false,
-                exporting: false
+                exporting: false,
+                performingChecks: false,
+                performedChecks: false
             };
         },
 
@@ -745,6 +811,59 @@ function loadComponents() {
                 );
             }
         },
+        
+        addChecktoState: function(response) {
+            var newChecks = this.state.iatiChecks;
+            newChecks.push(response);
+            this.setState({iatiChecks: newChecks});
+            if (newChecks.length === this.state.allProjects.results.length) {
+                this.setState({
+                    performingChecks: false,
+                    performedChecks: true
+                });
+            }
+        },
+
+        performChecks: function() {
+            this.setState({performingChecks: true});
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var projectId = this.state.allProjects.results[i].id;
+                apiCall('GET', endpoints.iati_checks.replace('{project}', projectId), {}, false, this.addChecktoState);
+            }
+        },
+
+        renderPerformChecksButton: function() {
+            if (this.state.initializing) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (!(this.state.performingChecks || this.state.performedChecks)) {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.performChecks}, 
+                            React.DOM.i( {className:"fa fa-check"} ), " ", cap(i18n.perform_checks)
+                        )
+                    )
+                );
+            } else if (this.state.performingChecks) {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", cap(i18n.performing_checks)
+                        )
+                    )
+                );
+            } else {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            React.DOM.i( {className:"fa fa-check"} ), " ", cap(i18n.perform_checks)
+                        )
+                    )
+                );
+            }
+        },
 
         renderCreateButton: function() {
             if (this.state.initializing) {
@@ -793,7 +912,9 @@ function loadComponents() {
                     selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject,
                     lastExport: this.state.lastExport,
-                    exporting: this.state.exporting
+                    exporting: this.state.exporting,
+                    performingChecks: this.state.performingChecks,
+                    iatiChecks: this.state.iatiChecks
                 });
             }
 
@@ -805,7 +926,8 @@ function loadComponents() {
                     ),
                     React.DOM.div( {className:"row topMargin IATIActions"}, 
                         React.DOM.h5(null, cap(i18n.actions)),
-                        this.renderCreateButton()
+                        this.renderCreateButton(),
+                        this.renderPerformChecksButton()
                     ),
                     this.renderFilters(),
                     initOrTable
@@ -869,11 +991,11 @@ function loadComponents() {
 
         renderRowClass: function() {
             if (this.props.publicFile) {
-                return 'publicFile';
+                return 'success';
             } else if (this.props.exp.status === 2) {
-                return 'inProgress';
+                return 'warning';
             } else if (this.props.exp.status === 4 || this.props.exp.iati_file === '') {
-                return 'cancelled';
+                return 'error';
             } else {
                 return '';
             }

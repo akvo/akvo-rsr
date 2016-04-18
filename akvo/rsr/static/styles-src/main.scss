@@ -4626,15 +4626,15 @@ button#createIATIExport {
 
 div#exportsOverview, div#newIATIExport {
     tr {
-        &.publicFile {
+        &.success {
             background: rgba($progressSuccess, 0.1) !important;
             color: $progressSuccess !important;
         }
-        &.inProgress {
+        &.warning {
             background: rgba($flowOrange, 0.1) !important;
             color: $flowOrange !important;
         }
-        &.cancelled {
+        &.error {
             background: rgba($akvoTvRed, 0.1) !important;
             color: $akvoTvRed !important;
         }

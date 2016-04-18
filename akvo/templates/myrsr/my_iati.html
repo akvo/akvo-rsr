@@ -109,7 +109,9 @@
             "untitled": "{% trans 'untitled' %}",
             "perform_checks": "{% trans 'Perform checks' %}",
             "performing_checks": "{% trans 'Performing checks' %}",
-            "warning": "{% trans 'Warning' %}",
+            "checks_not_performed": "{% trans 'Checks not performed yet' %}",
+            "warning": "{% trans 'warning' %}",
+            "error": "{% trans 'error' %}",
             "unknown_date": "{% trans 'Unknown date' %}",
             "and": "{% trans 'and' %}",
             "yes": "{% trans 'yes' %}",
@@ -135,7 +137,8 @@
             "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json",
             "new_iati_export": "/rest/v1/iati_export/?format=json",
             "iati_activity_exports": "/rest/v1/iati_activity_export/?format=json&iati_export={iati_export}",
-            "reporting_projects": "/rest/v1/project_lean/?format=json&limit=500&reporting_org={{ selected_org.id }}"
+            "reporting_projects": "/rest/v1/project_lean/?format=json&limit=500&reporting_org={{ selected_org.id }}",
+            "iati_checks": "/rest/v1/project_iati_check/{project}/?format=json"
         }
     </script>
 
