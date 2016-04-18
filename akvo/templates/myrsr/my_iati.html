@@ -120,11 +120,11 @@
     <script type="application/json" id="endpoints">
         {
             "base_url": "http://{{ request.META.HTTP_HOST }}",
-            "iati_exports": "/rest/v1/iati_export/?format=json&ordering=-created_at&reporting_organisation={{ selected_org.id }}",
+            "iati_exports": "/rest/v1/iati_export/?format=json&reporting_organisation={{ selected_org.id }}",
             "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json",
             "new_iati_export": "/rest/v1/iati_export/?format=json",
             "iati_activity_exports": "/rest/v1/iati_activity_export/?format=json&iati_export={iati_export}",
-            "reporting_projects": "/rest/v1/project/?format=json&ordering=id&reporting_org={{ selected_org.id }}"
+            "reporting_projects": "/rest/v1/project_lean/?format=json&limit=500&reporting_org={{ selected_org.id }}"
         }
     </script>
 

@@ -56,7 +56,8 @@ from .partner_site import PartnerSiteSerializer
 from .partnership import PartnershipSerializer, PartnershipBasicSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
-from .project import ProjectSerializer, ProjectExtraSerializer, ProjectUpSerializer
+from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectLeanSerializer,
+                      ProjectUpSerializer)
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
@@ -149,6 +150,7 @@ __all__ = [
     'ProjectDocumentSerializer',
     'ProjectDocumentCategorySerializer',
     'ProjectExtraSerializer',
+    'ProjectLeanSerializer',
     'ProjectLocationSerializer',
     'ProjectSerializer',
     'ProjectUpdateExtraSerializer',

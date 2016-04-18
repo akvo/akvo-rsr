@@ -66,6 +66,8 @@ router.register(r'partnership_more_link', views.PartnershipMoreLinkViewSet)
 router.register(r'planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'policy_marker', views.PolicyMarkerViewSet)
 router.register(r'project', views.ProjectViewSet)
+router.register(r'project_lean', views.ProjectLeanViewSet,
+                base_name='project_lean')
 router.register(r'project_extra', views.ProjectExtraViewSet,
                 base_name='project_extra')
 router.register(r'project_up', views.ProjectUpViewSet,

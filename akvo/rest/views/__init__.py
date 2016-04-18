@@ -51,7 +51,7 @@ from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
+from .project import ProjectViewSet, ProjectExtraViewSet, ProjectLeanViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_upload_file,
@@ -161,6 +161,7 @@ __all__ = [
     'ProjectDocumentCategoryViewSet',
     'ProjectExtraViewSet',
     'ProjectIatiCheckView',
+    'ProjectLeanViewSet',
     'ProjectLocationViewSet',
     'ProjectUpdateExtraViewSet',
     'ProjectUpdateLocationViewSet',

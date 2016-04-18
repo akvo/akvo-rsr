@@ -307,13 +307,27 @@ function loadComponents() {
     });
 
     var ProjectsTable = React.createClass({
+        sortedProjects: function() {
+            // Sort the projects by ID
+            function compare(u1, u2) {
+                if (u1.id < u2.id) {
+                    return -1;
+                } else if (u1.id > u2.id) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return this.props.projects.sort(compare);
+        },
+
         render: function() {
             var thisTable = this,
                 projects;
 
             if (this.props.projects.length > 0) {
                 // In case there are projets, show a table overview of the projects.
-                projects = this.props.projects.map(function(project) {
+                projects = this.sortedProjects().map(function(project) {
                     var selected = thisTable.props.selectedProjects.indexOf(project.id) > -1;
                     return React.createElement(ProjectRow, {
                         key: project.id,
@@ -598,13 +612,27 @@ function loadComponents() {
     });
 
     var ExportsTable = React.createClass({
+        sortedExports: function() {
+            // Sort the IATI exports by created at
+            function compare(u1, u2) {
+                if (u1.created_at > u2.created_at) {
+                    return -1;
+                } else if (u1.created_at < u2.created_at) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return this.props.exports.results.sort(compare);
+        },
+
         render: function() {
             var thisTable = this,
                 exports;
 
             if (this.props.exports.results.length > 0) {
                 // In case there are existing IATI exports, show a table overview of the exports.
-                exports = this.props.exports.results.map(function(exp) {
+                exports = this.sortedExports().map(function(exp) {
                     var publicFile = thisTable.props.publicFile === exp.id;
 
                     return React.createElement(ExportRow, {

@@ -7,8 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rest.serializers.project import ProjectUpSerializer
 from akvo.rsr.models import Project
-from ..serializers import ProjectSerializer, ProjectExtraSerializer
-from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
+from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectLeanSerializer
+from ..viewsets import PublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -102,6 +102,38 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectViewSet, self).get_queryset()
+
+
+class ProjectLeanViewSet(PublicProjectViewSet):
+    """Lean viewset for project data, as used in the My IATI section of RSR."""
+    queryset = Project.objects.only(
+        'id',
+        'title',
+        'is_public',
+        'status',
+    ).select_related(
+        'partners',
+    ).prefetch_related(
+        'publishingstatus',
+        'partnerships',
+    )
+    serializer_class = ProjectLeanSerializer
+    project_relation = ''
+    paginate_by_param = 'limit'
+    max_paginate_by = 500
+
+    def get_queryset(self):
+        """
+        Allow custom filter for sync_owner, since this field has been replaced by the
+        reporting org partnership.
+        """
+        reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
+        if reporting_org:
+            self.queryset = self.queryset.filter(
+                partnerships__iati_organisation_role=101,
+                partnerships__organisation__pk=reporting_org
+            ).distinct()
+        return super(ProjectLeanViewSet, self).get_queryset()
 
 
 class ProjectExtraViewSet(ProjectViewSet):
