@@ -376,7 +376,8 @@ function loadComponents() {
                 initializing: true,
                 allProjects: null,
                 selectedProjects: [],
-                lastExport: null
+                lastExport: null,
+                publishedFilter: false
             };
         },
 
@@ -477,16 +478,72 @@ function loadComponents() {
                 );
             } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
                 return (
-                    React.DOM.div( {className:"col-sm-3"}, 
-                        React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, "Deselect all projects")
-                    )
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, "Deselect all projects")
                 );
             } else {
                 return (
-                    React.DOM.div( {className:"col-sm-3"}, 
-                        React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, "Select all projects")
-                    )
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, "Select all projects")
                 );
+            }
+        },
+
+        selectPublished: function(select) {
+            var newSelection = this.state.selectedProjects;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+                if (select && project.publishing_status === 'published' && newSelection.indexOf(project.id) < 0) {
+                    newSelection.push(project.id);
+                } else if (!select && project.publishing_status === 'published' && newSelection.indexOf(project.id) > -1) {
+                    var newSelectionIndex = newSelection.indexOf(project.id);
+                    newSelection.splice(newSelectionIndex, 1);
+                }
+            }
+            this.setState({selectedProjects: newSelection});
+        },
+
+        selectPublishedProjects: function() {
+            this.selectPublished(true);
+        },
+
+        deselectPublishedProjects: function() {
+            this.selectPublished(false);
+        },
+
+        checkAllPublished: function() {
+            var countPublished = 0,
+                countSelectedPublished = 0;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+                if (project.publishing_status === 'published') {
+                    countPublished++;
+                    if (this.state.selectedProjects.indexOf(project.id) > -1) {
+                        countSelectedPublished++;
+                    }
+                }
+            }
+
+            return countPublished === countSelectedPublished;
+        },
+
+        renderPublishedFilter: function() {
+            if (this.state.allProjects === null) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else {
+                var allPublished = this.checkAllPublished();
+
+                if (allPublished) {
+                    return (
+                        React.DOM.button( {className:"btn btn-primary", onClick:this.deselectPublishedProjects}, "Deselect published projects")
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-primary", onClick:this.selectPublishedProjects}, "Select published projects")
+                    );
+                }
             }
         },
 
@@ -516,7 +573,12 @@ function loadComponents() {
                         React.DOM.div( {className:"col-sm-3"}, 
                             React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, "Create IATI file")
                         ),
-                        this.renderSelectAllButton()
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            this.renderSelectAllButton()
+                        ),
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            this.renderPublishedFilter()
+                        )
                     ),
                     initOrTable
                 )
