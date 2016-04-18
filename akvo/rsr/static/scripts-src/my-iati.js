@@ -383,7 +383,7 @@ function loadComponents() {
 
         componentDidMount: function() {
             var reportingUrl = endpoints.reporting_projects,
-                lastExportUrl = endpoints.iati_exports + '&limit=1',
+                lastExportUrl = endpoints.iati_exports + '&ordering=-id&limit=1',
                 thisApp = this;
 
             function projectsLoaded(results) {
@@ -443,6 +443,65 @@ function loadComponents() {
             apiCall('POST', url, data, true, exportAdded);
         },
 
+        selectPrevious: function(select) {
+            var lastProjects = this.state.lastExport[0].projects,
+                newSelection = this.state.selectedProjects;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var projectId = this.state.allProjects.results[i].id,
+                    newSelectionIndex = newSelection.indexOf(projectId);
+                if (select && lastProjects.indexOf(projectId) > -1 && newSelectionIndex < 0) {
+                    newSelection.push(projectId);
+                } else if (!select && lastProjects.indexOf(projectId) > -1 && newSelectionIndex > -1) {
+                    newSelection.splice(newSelectionIndex, 1);
+                }
+            }
+
+            this.setState({selectedProjects: newSelection});
+        },
+
+        selectPreviousProjects: function() {
+            this.selectPrevious(true);
+        },
+
+        deselectPreviousProjects: function() {
+            this.selectPrevious(false);
+        },
+
+        checkPrevious: function() {
+            var lastProjects = this.state.lastExport[0].projects,
+                countLastProjects = 0;
+
+            for (var i = 0; i < lastProjects.length; i++) {
+                var lastProject = lastProjects[i];
+                if (this.state.selectedProjects.indexOf(lastProject) > -1) {
+                    countLastProjects++;
+                }
+            }
+
+            return countLastProjects === lastProjects.length;
+        },
+
+        renderSelectPreviousButton: function() {
+            if (this.state.allProjects === null || this.state.lastExport === null) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (this.state.allProjects.results.length === 0 || this.state.lastExport.length === 0) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (this.checkPrevious()) {
+                return (
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectPreviousProjects}, cap(i18n.deselect), " ", i18n.projects, " ", i18n.included_export)
+                );
+            } else {
+                return (
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectPreviousProjects}, cap(i18n.select), " ", i18n.projects, " ", i18n.included_export)
+                );
+            }
+        },
+
         selectAll: function(select) {
             // Select or deselect all projects. The 'select' parameter determines whether all
             // projects should be selected (true) or deselected (false).
@@ -476,74 +535,124 @@ function loadComponents() {
                 return (
                     React.DOM.span(null )
                 );
+            } else if (this.state.allProjects.results.length === 0) {
+                return (
+                    React.DOM.span(null )
+                );
             } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
                 return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, "Deselect all projects")
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, cap(i18n.deselect), " ", i18n.all, " ", i18n.projects)
                 );
             } else {
                 return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, "Select all projects")
+                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, cap(i18n.select), " ", i18n.all, " ", i18n.projects)
                 );
             }
         },
 
-        selectPublished: function(select) {
+        selectProjects: function(select, key, value) {
             var newSelection = this.state.selectedProjects;
 
             for (var i = 0; i < this.state.allProjects.results.length; i++) {
-                var project = this.state.allProjects.results[i];
-                if (select && project.publishing_status === 'published' && newSelection.indexOf(project.id) < 0) {
+                var project = this.state.allProjects.results[i],
+                    newSelectionIndex = newSelection.indexOf(project.id);
+                if (select && project[key] === value && newSelectionIndex < 0) {
                     newSelection.push(project.id);
-                } else if (!select && project.publishing_status === 'published' && newSelection.indexOf(project.id) > -1) {
-                    var newSelectionIndex = newSelection.indexOf(project.id);
+                } else if (!select && project[key] === value && newSelectionIndex > -1) {
                     newSelection.splice(newSelectionIndex, 1);
                 }
             }
             this.setState({selectedProjects: newSelection});
         },
 
-        selectPublishedProjects: function() {
-            this.selectPublished(true);
-        },
-
-        deselectPublishedProjects: function() {
-            this.selectPublished(false);
-        },
-
-        checkAllPublished: function() {
-            var countPublished = 0,
-                countSelectedPublished = 0;
+        checkProjects: function(key, value, any) {
+            var count = 0,
+                countSelected = 0;
 
             for (var i = 0; i < this.state.allProjects.results.length; i++) {
                 var project = this.state.allProjects.results[i];
-                if (project.publishing_status === 'published') {
-                    countPublished++;
-                    if (this.state.selectedProjects.indexOf(project.id) > -1) {
-                        countSelectedPublished++;
+                if (project[key] === value) {
+                    if (any) {
+                        return true;
+                    } else {
+                        count++;
+                        if (this.state.selectedProjects.indexOf(project.id) > -1) {
+                            countSelected++;
+                        }
                     }
                 }
             }
 
-            return countPublished === countSelectedPublished;
+            return any ? false : count === countSelected;
         },
 
-        renderPublishedFilter: function() {
+        renderFilter: function(projectKey, projectValue, name) {
+            var allProjects = this.checkProjects(projectKey, projectValue, false),
+                thisFilter = this;
+
+            var selectProjects = function() {
+                thisFilter.selectProjects(true, projectKey, projectValue);
+            };
+
+            var deselectProjects = function() {
+                thisFilter.selectProjects(false, projectKey, projectValue);
+            };
+
+            if (allProjects) {
+                return (
+                    React.DOM.button( {className:"btn btn-primary", onClick:deselectProjects}, cap(i18n.deselect), " ", name, " ", i18n.projects)
+                );
+            } else {
+                return (
+                    React.DOM.button( {className:"btn btn-primary", onClick:selectProjects}, cap(i18n.select), " ", name, " ", i18n.projects)
+                );
+            }
+        },
+
+        renderFilters: function() {
             if (this.state.allProjects === null) {
                 return (
                     React.DOM.span(null )
                 );
             } else {
-                var allPublished = this.checkAllPublished();
+                var thisApp = this,
+                    filters = [
+                        ['publishing_status', 'published', i18n.published],
+                        ['is_public', true, i18n.public],
+                        ['status', 'H', i18n.needs_funding],
+                        ['status', 'A', i18n.active],
+                        ['status', 'C', i18n.complete],
+                        ['status', 'L', i18n.cancelled],
+                        ['status', 'R', i18n.archived]
+                    ];
 
-                if (allPublished) {
-                    return (
-                        React.DOM.button( {className:"btn btn-primary", onClick:this.deselectPublishedProjects}, "Deselect published projects")
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-primary", onClick:this.selectPublishedProjects}, "Select published projects")
-                    );
-                }
+                var renderedFilters = filters.map(function(filter) {
+                    var anyProjects = thisApp.checkProjects(filter[0], filter[1], true);
+
+                    if (anyProjects) {
+                        return (
+                            React.DOM.div( {className:"col-sm-3"}, 
+                                thisApp.renderFilter(filter[0], filter[1], filter[2])
+                            )
+                        );
+                    } else {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    }
+                });
+
+                return (
+                    React.DOM.div( {className:"row filters"}, 
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            this.renderSelectAllButton()
+                        ),
+                        renderedFilters,
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            this.renderSelectPreviousButton()
+                        )
+                    )
+                );
             }
         },
 
@@ -571,15 +680,10 @@ function loadComponents() {
                     ),
                     React.DOM.div( {className:"row"}, 
                         React.DOM.div( {className:"col-sm-3"}, 
-                            React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, "Create IATI file")
-                        ),
-                        React.DOM.div( {className:"col-sm-3"}, 
-                            this.renderSelectAllButton()
-                        ),
-                        React.DOM.div( {className:"col-sm-3"}, 
-                            this.renderPublishedFilter()
+                            React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, cap(i18n.create_new), " ", i18n.iati_export)
                         )
                     ),
+                    this.renderFilters(),
                     initOrTable
                 )
             );
