@@ -287,9 +287,32 @@ function loadComponents() {
             }
             return false;
         },
+        
+        statusLabel: function() {
+            switch (this.props.project.status) {
+                case 'N':
+                    return cap(i18n.needs_funding);
+                case 'A':
+                    return cap(i18n.active);
+                case 'C':
+                    return cap(i18n.completed);
+                case 'L':
+                    return cap(i18n.cancelled);
+                case 'R':
+                    return cap(i18n.archived);
+                default:
+                    return cap(i18n.no_status);
+            }
+        },
+
+        publishedAndPublicLabel: function() {
+            var published = this.props.project.publishing_status === 'published' ? cap(i18n.published) : cap(i18n.unpublished);
+            var publicProject = this.props.project.is_public ? i18n.public : i18n.private;
+            return published + ' ' + i18n.and + ' ' + publicProject;
+        },
 
         render: function() {
-            var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
+            var publicStatus =
 
             return (
                 <tr>
@@ -297,9 +320,9 @@ function loadComponents() {
                     <td>{this.props.project.id}</td>
                     <td>
                         {this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>'}<br/>
-                        <span className="small">{cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus}</span>
+                        <span className="small">{this.publishedAndPublicLabel()}</span>
                     </td>
-                    <td>{this.props.project.status_label || i18n.no_status}</td>
+                    <td>{this.statusLabel()}</td>
                     <td>{this.inLastExport() ? cap(i18n.yes) : cap(i18n.no)}</td>
                 </tr>
             );
@@ -621,7 +644,7 @@ function loadComponents() {
                         ['is_public', true, i18n.public],
                         ['status', 'H', i18n.needs_funding],
                         ['status', 'A', i18n.active],
-                        ['status', 'C', i18n.complete],
+                        ['status', 'C', i18n.completed],
                         ['status', 'L', i18n.cancelled],
                         ['status', 'R', i18n.archived]
                     ];

@@ -47,7 +47,6 @@ class ProjectSerializer(BaseRSRSerializer):
 class ProjectLeanSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.Field(source='publishingstatus.status')
-    status_label = serializers.Field(source='get_status_display')
 
     class Meta:
         model = Project
@@ -57,7 +56,6 @@ class ProjectLeanSerializer(BaseRSRSerializer):
             'is_public',
             'publishing_status',
             'status',
-            'status_label',
         )
 
 

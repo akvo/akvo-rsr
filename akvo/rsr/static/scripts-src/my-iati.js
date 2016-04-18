@@ -287,6 +287,27 @@ function loadComponents() {
             }
             return false;
         },
+        
+        statusLabel: function() {
+            switch (this.props.project.status) {
+                case 'N':
+                    return cap(i18n.needs_funding);
+                case 'A':
+                    return cap(i18n.active);
+                case 'C':
+                    return cap(i18n.completed);
+                case 'L':
+                    return cap(i18n.cancelled);
+                case 'R':
+                    return cap(i18n.archived);
+                default:
+                    return cap(i18n.no_status);
+            }
+        },
+
+        publishedAndPublic: function() {
+            var published = this.props.project.publishing_status === 'published' ? cap(i18n.published) : cap(i18n.unpublished);
+        },
 
         render: function() {
             var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
@@ -299,7 +320,7 @@ function loadComponents() {
                         this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>',React.DOM.br(null),
                         React.DOM.span( {className:"small"}, cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus)
                     ),
-                    React.DOM.td(null, this.props.project.status_label || i18n.no_status),
+                    React.DOM.td(null, this.statusLabel()),
                     React.DOM.td(null, this.inLastExport() ? cap(i18n.yes) : cap(i18n.no))
                 )
             );
@@ -621,7 +642,7 @@ function loadComponents() {
                         ['is_public', true, i18n.public],
                         ['status', 'H', i18n.needs_funding],
                         ['status', 'A', i18n.active],
-                        ['status', 'C', i18n.complete],
+                        ['status', 'C', i18n.completed],
                         ['status', 'L', i18n.cancelled],
                         ['status', 'R', i18n.archived]
                     ];
