@@ -290,7 +290,7 @@ function loadComponents() {
         
         statusLabel: function() {
             switch (this.props.project.status) {
-                case 'N':
+                case 'H':
                     return cap(i18n.needs_funding);
                 case 'A':
                     return cap(i18n.active);
@@ -311,12 +311,22 @@ function loadComponents() {
             return published + ' ' + i18n.and + ' ' + publicProject;
         },
 
-        render: function() {
-            var publicStatus =
+        renderInput: function() {
+            if (!this.props.exporting) {
+                return (
+                    <input type="checkbox" onClick={this.switchAction} checked={this.props.selected} />
+                );
+            } else {
+                return (
+                    <input type="checkbox" checked={this.props.selected} disabled />
+                );
+            }
+        },
 
+        render: function() {
             return (
                 <tr>
-                    <td><input type="checkbox" onClick={this.switchAction} checked={this.props.selected} /></td>
+                    <td>{this.renderInput()}</td>
                     <td>{this.props.project.id}</td>
                     <td>
                         {this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>'}<br/>
@@ -357,7 +367,8 @@ function loadComponents() {
                         project: project,
                         selected: selected,
                         switchProject: thisTable.props.switchProject,
-                        lastExport: thisTable.props.lastExport
+                        lastExport: thisTable.props.lastExport,
+                        exporting: thisTable.props.exporting
                     });
                 });
             } else {
@@ -400,7 +411,8 @@ function loadComponents() {
                 allProjects: null,
                 selectedProjects: [],
                 lastExport: null,
-                publishedFilter: false
+                publishedFilter: false,
+                exporting: false
             };
         },
 
@@ -463,6 +475,7 @@ function loadComponents() {
                 window.location = window.location.href.replace('&new=true', '');
             }
 
+            this.setState({exporting: true});
             apiCall('POST', url, data, true, exportAdded);
         },
 
@@ -506,22 +519,39 @@ function loadComponents() {
         },
 
         renderSelectPreviousButton: function() {
-            if (this.state.allProjects === null || this.state.lastExport === null) {
-                return (
-                    <span />
-                );
-            } else if (this.state.allProjects.results.length === 0 || this.state.lastExport.length === 0) {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0 ||
+                    this.state.lastExport === null || this.state.lastExport[0].projects.length === 0) {
                 return (
                     <span />
                 );
             } else if (this.checkPrevious()) {
-                return (
-                    <button className="btn btn-primary" onClick={this.deselectPreviousProjects}>{cap(i18n.deselect)} {i18n.projects} {i18n.included_export}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={this.deselectPreviousProjects}>
+                            {cap(i18n.deselect)} {i18n.projects} {i18n.included_export}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.deselect)} {i18n.projects} {i18n.included_export}
+                        </button>
+                    );
+                }
             } else {
-                return (
-                    <button className="btn btn-primary" onClick={this.selectPreviousProjects}>{cap(i18n.select)} {i18n.projects} {i18n.included_export}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={this.selectPreviousProjects}>
+                            {cap(i18n.select)} {i18n.projects} {i18n.included_export}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.select)} {i18n.projects} {i18n.included_export}
+                        </button>
+                    );
+                }
             }
         },
 
@@ -554,22 +584,38 @@ function loadComponents() {
         },
 
         renderSelectAllButton: function() {
-            if (this.state.allProjects === null) {
-                return (
-                    <span />
-                );
-            } else if (this.state.allProjects.results.length === 0) {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0) {
                 return (
                     <span />
                 );
             } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
-                return (
-                    <button className="btn btn-primary" onClick={this.deselectAllProjects}>{cap(i18n.deselect)} {i18n.all} {i18n.projects}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={this.deselectAllProjects}>
+                            {cap(i18n.deselect)} {i18n.all} {i18n.projects}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.deselect)} {i18n.all} {i18n.projects}
+                        </button>
+                    );
+                }
             } else {
-                return (
-                    <button className="btn btn-primary" onClick={this.selectAllProjects}>{cap(i18n.select)} {i18n.all} {i18n.projects}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={this.selectAllProjects}>
+                            {cap(i18n.select)} {i18n.all} {i18n.projects}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.select)} {i18n.all} {i18n.projects}
+                        </button>
+                    );
+                }
             }
         },
 
@@ -622,13 +668,33 @@ function loadComponents() {
             };
 
             if (allProjects) {
-                return (
-                    <button className="btn btn-primary" onClick={deselectProjects}>{cap(i18n.deselect)} {name} {i18n.projects}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={deselectProjects}>
+                            {cap(i18n.deselect)} {name} {i18n.projects}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.deselect)} {name} {i18n.projects}
+                        </button>
+                    );
+                }
             } else {
-                return (
-                    <button className="btn btn-primary" onClick={selectProjects}>{cap(i18n.select)} {name} {i18n.projects}</button>
-                );
+                if (!this.state.exporting) {
+                    return (
+                        <button className="btn btn-default btn-sm" onClick={selectProjects}>
+                            {cap(i18n.select)} {name} {i18n.projects}
+                        </button>
+                    );
+                } else {
+                    return (
+                        <button className="btn btn-default btn-sm disabled">
+                            {cap(i18n.select)} {name} {i18n.projects}
+                        </button>
+                    );
+                }
             }
         },
 
@@ -666,7 +732,8 @@ function loadComponents() {
                 });
 
                 return (
-                    <div className="row filters">
+                    <div className="row IATIfilters topMargin">
+                        <h5>{cap(i18n.filters)}</h5>
                         <div className="col-sm-3">
                             {this.renderSelectAllButton()}
                         </div>
@@ -674,6 +741,40 @@ function loadComponents() {
                         <div className="col-sm-3">
                             {this.renderSelectPreviousButton()}
                         </div>
+                    </div>
+                );
+            }
+        },
+
+        renderCreateButton: function() {
+            if (this.state.initializing) {
+                return (
+                    <span />
+                );
+            } else if (!this.state.exporting) {
+                if (this.state.selectedProjects.length > 0) {
+                    return (
+                        <div className="col-sm-3">
+                            <button className="btn btn-default btn-sm" onClick={this.createExport}>
+                                <i className="fa fa-plus" /> {cap(i18n.create_new)} {i18n.iati_export}
+                            </button>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="col-sm-3">
+                            <button className="btn btn-default btn-sm disabled">
+                                <i className="fa fa-plus" /> {cap(i18n.create_new)} {i18n.iati_export}
+                            </button>
+                        </div>
+                    );
+                }
+            } else {
+                return (
+                    <div className="col-sm-3">
+                        <button className="btn btn-default btn-sm disabled">
+                            <i className="fa fa-spin fa-spinner" /> {cap(i18n.create_new)} {i18n.iati_export}
+                        </button>
                     </div>
                 );
             }
@@ -691,7 +792,8 @@ function loadComponents() {
                     projects: this.state.allProjects.results,
                     selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject,
-                    lastExport: this.state.lastExport
+                    lastExport: this.state.lastExport,
+                    exporting: this.state.exporting
                 });
             }
 
@@ -701,10 +803,9 @@ function loadComponents() {
                     <div className="performChecksDescription">
                         <span>{i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2}</span>
                     </div>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <button className="btn btn-success" onClick={this.createExport}>{cap(i18n.create_new)} {i18n.iati_export}</button>
-                        </div>
+                    <div className="row topMargin IATIActions">
+                        <h5>{cap(i18n.actions)}</h5>
+                        {this.renderCreateButton()}
                     </div>
                     {this.renderFilters()}
                     {initOrTable}

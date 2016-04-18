@@ -4624,7 +4624,7 @@ button#createIATIExport {
     }
 }
 
-div#exportsOverview {
+div#exportsOverview, div#newIATIExport {
     tr {
         &.publicFile {
             background: rgba($progressSuccess, 0.1) !important;
@@ -4637,6 +4637,11 @@ div#exportsOverview {
         &.cancelled {
             background: rgba($akvoTvRed, 0.1) !important;
             color: $akvoTvRed !important;
+        }
+    }
+    .IATIfilters {
+        button.btn-default {
+            margin-top: 10px;
         }
     }
     button.btn-default {

@@ -290,7 +290,7 @@ function loadComponents() {
         
         statusLabel: function() {
             switch (this.props.project.status) {
-                case 'N':
+                case 'H':
                     return cap(i18n.needs_funding);
                 case 'A':
                     return cap(i18n.active);
@@ -305,20 +305,32 @@ function loadComponents() {
             }
         },
 
-        publishedAndPublic: function() {
+        publishedAndPublicLabel: function() {
             var published = this.props.project.publishing_status === 'published' ? cap(i18n.published) : cap(i18n.unpublished);
+            var publicProject = this.props.project.is_public ? i18n.public : i18n.private;
+            return published + ' ' + i18n.and + ' ' + publicProject;
+        },
+
+        renderInput: function() {
+            if (!this.props.exporting) {
+                return (
+                    React.DOM.input( {type:"checkbox", onClick:this.switchAction, checked:this.props.selected} )
+                );
+            } else {
+                return (
+                    React.DOM.input( {type:"checkbox", checked:this.props.selected, disabled:true} )
+                );
+            }
         },
 
         render: function() {
-            var publicStatus = this.props.project.is_public ? i18n.public : i18n.private;
-
             return (
                 React.DOM.tr(null, 
-                    React.DOM.td(null, React.DOM.input( {type:"checkbox", onClick:this.switchAction, checked:this.props.selected} )),
+                    React.DOM.td(null, this.renderInput()),
                     React.DOM.td(null, this.props.project.id),
                     React.DOM.td(null, 
                         this.props.project.title || '\<' + cap(i18n.untitled) + ' ' + i18n.project + '\>',React.DOM.br(null),
-                        React.DOM.span( {className:"small"}, cap(this.props.project.publishing_status) + ' ' + i18n.and + ' ' + publicStatus)
+                        React.DOM.span( {className:"small"}, this.publishedAndPublicLabel())
                     ),
                     React.DOM.td(null, this.statusLabel()),
                     React.DOM.td(null, this.inLastExport() ? cap(i18n.yes) : cap(i18n.no))
@@ -355,7 +367,8 @@ function loadComponents() {
                         project: project,
                         selected: selected,
                         switchProject: thisTable.props.switchProject,
-                        lastExport: thisTable.props.lastExport
+                        lastExport: thisTable.props.lastExport,
+                        exporting: thisTable.props.exporting
                     });
                 });
             } else {
@@ -398,7 +411,8 @@ function loadComponents() {
                 allProjects: null,
                 selectedProjects: [],
                 lastExport: null,
-                publishedFilter: false
+                publishedFilter: false,
+                exporting: false
             };
         },
 
@@ -461,6 +475,7 @@ function loadComponents() {
                 window.location = window.location.href.replace('&new=true', '');
             }
 
+            this.setState({exporting: true});
             apiCall('POST', url, data, true, exportAdded);
         },
 
@@ -504,22 +519,39 @@ function loadComponents() {
         },
 
         renderSelectPreviousButton: function() {
-            if (this.state.allProjects === null || this.state.lastExport === null) {
-                return (
-                    React.DOM.span(null )
-                );
-            } else if (this.state.allProjects.results.length === 0 || this.state.lastExport.length === 0) {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0 ||
+                    this.state.lastExport === null || this.state.lastExport[0].projects.length === 0) {
                 return (
                     React.DOM.span(null )
                 );
             } else if (this.checkPrevious()) {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectPreviousProjects}, cap(i18n.deselect), " ", i18n.projects, " ", i18n.included_export)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.deselectPreviousProjects}, 
+                            cap(i18n.deselect), " ", i18n.projects, " ", i18n.included_export
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.deselect), " ", i18n.projects, " ", i18n.included_export
+                        )
+                    );
+                }
             } else {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectPreviousProjects}, cap(i18n.select), " ", i18n.projects, " ", i18n.included_export)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.selectPreviousProjects}, 
+                            cap(i18n.select), " ", i18n.projects, " ", i18n.included_export
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.select), " ", i18n.projects, " ", i18n.included_export
+                        )
+                    );
+                }
             }
         },
 
@@ -552,22 +584,38 @@ function loadComponents() {
         },
 
         renderSelectAllButton: function() {
-            if (this.state.allProjects === null) {
-                return (
-                    React.DOM.span(null )
-                );
-            } else if (this.state.allProjects.results.length === 0) {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0) {
                 return (
                     React.DOM.span(null )
                 );
             } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.deselectAllProjects}, cap(i18n.deselect), " ", i18n.all, " ", i18n.projects)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.deselectAllProjects}, 
+                            cap(i18n.deselect), " ", i18n.all, " ", i18n.projects
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.deselect), " ", i18n.all, " ", i18n.projects
+                        )
+                    );
+                }
             } else {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:this.selectAllProjects}, cap(i18n.select), " ", i18n.all, " ", i18n.projects)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.selectAllProjects}, 
+                            cap(i18n.select), " ", i18n.all, " ", i18n.projects
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.select), " ", i18n.all, " ", i18n.projects
+                        )
+                    );
+                }
             }
         },
 
@@ -620,13 +668,33 @@ function loadComponents() {
             };
 
             if (allProjects) {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:deselectProjects}, cap(i18n.deselect), " ", name, " ", i18n.projects)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:deselectProjects}, 
+                            cap(i18n.deselect), " ", name, " ", i18n.projects
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.deselect), " ", name, " ", i18n.projects
+                        )
+                    );
+                }
             } else {
-                return (
-                    React.DOM.button( {className:"btn btn-primary", onClick:selectProjects}, cap(i18n.select), " ", name, " ", i18n.projects)
-                );
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:selectProjects}, 
+                            cap(i18n.select), " ", name, " ", i18n.projects
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.select), " ", name, " ", i18n.projects
+                        )
+                    );
+                }
             }
         },
 
@@ -664,13 +732,48 @@ function loadComponents() {
                 });
 
                 return (
-                    React.DOM.div( {className:"row filters"}, 
+                    React.DOM.div( {className:"row IATIfilters topMargin"}, 
+                        React.DOM.h5(null, cap(i18n.filters)),
                         React.DOM.div( {className:"col-sm-3"}, 
                             this.renderSelectAllButton()
                         ),
                         renderedFilters,
                         React.DOM.div( {className:"col-sm-3"}, 
                             this.renderSelectPreviousButton()
+                        )
+                    )
+                );
+            }
+        },
+
+        renderCreateButton: function() {
+            if (this.state.initializing) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (!this.state.exporting) {
+                if (this.state.selectedProjects.length > 0) {
+                    return (
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.createExport}, 
+                                React.DOM.i( {className:"fa fa-plus"} ), " ", cap(i18n.create_new), " ", i18n.iati_export
+                            )
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                                React.DOM.i( {className:"fa fa-plus"} ), " ", cap(i18n.create_new), " ", i18n.iati_export
+                            )
+                        )
+                    );
+                }
+            } else {
+                return (
+                    React.DOM.div( {className:"col-sm-3"}, 
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", cap(i18n.create_new), " ", i18n.iati_export
                         )
                     )
                 );
@@ -689,7 +792,8 @@ function loadComponents() {
                     projects: this.state.allProjects.results,
                     selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject,
-                    lastExport: this.state.lastExport
+                    lastExport: this.state.lastExport,
+                    exporting: this.state.exporting
                 });
             }
 
@@ -699,10 +803,9 @@ function loadComponents() {
                     React.DOM.div( {className:"performChecksDescription"}, 
                         React.DOM.span(null, i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2)
                     ),
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-sm-3"}, 
-                            React.DOM.button( {className:"btn btn-success", onClick:this.createExport}, cap(i18n.create_new), " ", i18n.iati_export)
-                        )
+                    React.DOM.div( {className:"row topMargin IATIActions"}, 
+                        React.DOM.h5(null, cap(i18n.actions)),
+                        this.renderCreateButton()
                     ),
                     this.renderFilters(),
                     initOrTable

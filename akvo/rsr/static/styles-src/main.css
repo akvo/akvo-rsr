@@ -3944,24 +3944,27 @@ button#createIATIExport {
   button#createIATIExport:hover {
     background: #2c2a74; }
 
-div#exportsOverview tr.publicFile {
+div#exportsOverview tr.publicFile, div#newIATIExport tr.publicFile {
   background: rgba(92, 184, 92, 0.1) !important;
   color: #5cb85c !important; }
 
-div#exportsOverview tr.inProgress {
+div#exportsOverview tr.inProgress, div#newIATIExport tr.inProgress {
   background: rgba(222, 137, 41, 0.1) !important;
   color: #de8929 !important; }
 
-div#exportsOverview tr.cancelled {
+div#exportsOverview tr.cancelled, div#newIATIExport tr.cancelled {
   background: rgba(238, 49, 36, 0.1) !important;
   color: #ee3124 !important; }
 
-div#exportsOverview button.btn-default {
+div#exportsOverview .IATIfilters button.btn-default, div#newIATIExport .IATIfilters button.btn-default {
+  margin-top: 10px; }
+
+div#exportsOverview button.btn-default, div#newIATIExport button.btn-default {
   margin: -5px 0 0 25px;
   background: #202024;
   color: white;
   border: none; }
-  div#exportsOverview button.btn-default:hover {
+  div#exportsOverview button.btn-default:hover, div#newIATIExport button.btn-default:hover {
     background: #2c2a74; }
 
 .iatiCheck span.noCheck {
