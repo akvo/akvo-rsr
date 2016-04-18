@@ -612,27 +612,13 @@ function loadComponents() {
     });
 
     var ExportsTable = React.createClass({
-        sortedExports: function() {
-            // Sort the IATI exports by created at
-            function compare(u1, u2) {
-                if (u1.created_at > u2.created_at) {
-                    return -1;
-                } else if (u1.created_at < u2.created_at) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-            return this.props.exports.results.sort(compare);
-        },
-
         render: function() {
             var thisTable = this,
                 exports;
 
-            if (this.props.exports.results.length > 0) {
+            if (this.props.exports.length > 0) {
                 // In case there are existing IATI exports, show a table overview of the exports.
-                exports = this.sortedExports().map(function(exp) {
+                exports = this.props.exports.map(function(exp) {
                     var publicFile = thisTable.props.publicFile === exp.id;
 
                     return React.createElement(ExportRow, {
@@ -723,6 +709,20 @@ function loadComponents() {
             }
         },
 
+        sortedExports: function() {
+            // Sort the IATI exports by created at
+            function compare(u1, u2) {
+                if (u1.id > u2.id) {
+                    return -1;
+                } else if (u1.id < u2.id) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return this.state.exports.results.sort(compare);
+        },
+
         startCountDown: function() {
             // Set the countdown for refreshing the table to start at 10 seconds
             this.setState({refreshingIn: 10});
@@ -746,8 +746,9 @@ function loadComponents() {
             if (this.state.exports === null) {
                 return null;
             } else {
-                for (var i = 0; i < this.state.exports.results.length; i++) {
-                    var exp = this.state.exports.results[i];
+                var sortedExports = this.sortedExports();
+                for (var i = 0; i < sortedExports.length; i++) {
+                    var exp = sortedExports[i];
                     if (exp.iati_file !== '' && exp.is_public) {
                         return exp.id;
                     }
@@ -807,7 +808,7 @@ function loadComponents() {
                 // Find the newer IATI exports
                 for (var i = 0; i < thisApp.state.exports.results.length; i++) {
                     var newerExp = thisApp.state.exports.results[i];
-                    if (newerExp.id !== exportId && newerExp.created_at > thisExport.created_at) {
+                    if (newerExp.id !== exportId && newerExp.id > thisExport.id) {
                         newerExports.push(newerExp);
                     }
                 }
@@ -863,7 +864,7 @@ function loadComponents() {
             } else {
                 // Show a table of existing imports when the data has been loaded
                 initOrTable = React.createElement(ExportsTable, {
-                    exports: this.state.exports,
+                    exports: this.sortedExports(),
                     refreshing: this.state.refreshing,
                     publicFile: this.publicFile(),
                     setPublic: this.setPublic,
