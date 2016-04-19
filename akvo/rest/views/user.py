@@ -87,17 +87,25 @@ def update_details(request, pk=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['POST'])
 def request_organisation(request, pk=None):
     # Get the user, or return an error if the user does not exist
+
     try:
         user = get_user_model().objects.get(pk=pk)
     except get_user_model().DoesNotExist:
         return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
 
+    user_token = request.META.get('HTTP_AUTH_TOKEN', None)
+
+    if not user_token:
+        raise PermissionDenied()
+
+    auth_user = get_user_model().objects.get(api_key__key=user_token)
+
     # Users themselves are only allowed to request to join an organisation
-    request_user = getattr(request, 'user', None)
-    if not user == request_user:
+    if not user == auth_user:
         raise PermissionDenied()
     request.DATA['user'] = pk
 
