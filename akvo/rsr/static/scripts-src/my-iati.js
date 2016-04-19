@@ -347,7 +347,7 @@ function loadComponents() {
                     } else if (check[0] === 'error') {
                         return (
                             React.DOM.span(null, "- ", cap(i18n.error),": ", cap(check[1]),React.DOM.br(null))
-                        )
+                        );
                     }
                 });
                 return (
@@ -585,8 +585,8 @@ function loadComponents() {
         },
 
         renderSelectPreviousButton: function() {
-            if (this.state.allProjects === null || this.state.allProjects.results.length === 0 ||
-                    this.state.lastExport === null || this.state.lastExport[0].projects.length === 0) {
+            if (this.state.initializing || this.state.allProjects.results.length === 0 ||
+                    this.state.lastExport.length === 0 || this.state.lastExport[0].projects.length === 0) {
                 return (
                     React.DOM.span(null )
                 );
