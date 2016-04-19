@@ -171,109 +171,14 @@ function displayDate(dateString) {
     return i18n.unknown_date;
 }
 
-function processResponse(label, response) {
-    var label_content, checks, all_checks_passed, span, checks_response;
-
-    label_content = label.innerHTML.replace("noCheck", "");
-    checks = JSON.parse(response);
-
-    all_checks_passed = checks.all_checks_passed;
-    checks_response = checks.checks;
-
-    if (all_checks_passed === "True") {
-        span = document.createElement("span");
-        span.className = "success";
-
-        for (var i = 0; i < checks_response.length; i++) {
-            if (checks_response[i][0] === "warning") {
-                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[i][1]) + "</span>";
-            }
-        }
-        span.innerHTML = label_content;
-
-        label.innerHTML = '';
-        label.appendChild(span);
-
-    } else {
-        span = document.createElement("span");
-        span.className = "error";
-        for (var j = 0; j < checks_response.length; j++) {
-            if (checks_response[j][0] === "error") {
-                label_content += "<br/><span class='error'>- " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
-            } else if (checks_response[j][0] === "warning") {
-                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
-            }
-        }
-        span.innerHTML = label_content;
-
-        label.innerHTML = '';
-        label.appendChild(span);
-    }
-}
-
-function getProjectLabels() {
-    var labels;
-
-    labels = document.getElementById('id_projects').getElementsByTagName('label');
-
-    for (var i = 0; i < labels.length; i++) {
-        var project_id;
-
-        project_id = labels[i].getElementsByTagName('input')[0].value;
-        loadAsync('/rest/v1/project_iati_check/' + project_id + '/?format=json', 0, 3, labels[i]);
-    }
-}
-
 function loadComponents() {
-    var IatiChecks = React.createClass({
+    var ProjectRow = React.createClass({
         getInitialState: function() {
             return {
-                button_state: 'active'
+                openChecks: false
             };
         },
 
-        handleClick: function() {
-            this.setState({
-                button_state: 'loading'
-            });
-
-            getProjectLabels();
-
-            var thisContainer = this;
-            setTimeout(function() {
-                thisContainer.setState({
-                    button_state: false
-                });
-            }, 10000);
-        },
-
-        render: function() {
-            switch (this.state.button_state) {
-                case 'active':
-                    return (
-                        <p>
-                            <button onClick={this.handleClick} className='btn btn-primary'>
-                                {i18n.perform_checks}
-                            </button>
-                        </p>
-                    );
-                case 'loading':
-                    return (
-                        <p>
-                            <button onClick={this.handleClick} className='btn btn-primary' disabled>
-                                <i className="fa fa-spin fa-spinner" /> {i18n.performing_checks}
-                            </button>
-                        </p>
-                    );
-                default:
-                    return (
-                        <span />
-                    );
-            }
-        }
-    });
-
-    var ProjectRow = React.createClass({
         switchAction: function() {
             this.props.switchProject(this.props.project.id);
         },
@@ -323,6 +228,14 @@ function loadComponents() {
             }
         },
 
+        openChecks: function () {
+            this.setState({openChecks: true});
+        },
+
+        hideChecks: function () {
+            this.setState({openChecks: false});
+        },
+
         findChecks: function() {
             for (var i = 0; i < this.props.iatiChecks.length; i++) {
                 if (this.props.iatiChecks[i].project === this.props.project.id) {
@@ -339,6 +252,18 @@ function loadComponents() {
                     <span>{i18n.checks_not_performed}</span>
                 );
             } else if (checks !== null) {
+                var warnings = 0,
+                    errors = 0,
+                    warningsErrorsText = '';
+
+                for (var i = 0; i < checks.length; i++ ) {
+                    if (checks[i][0] === 'warning') {
+                        warnings++;
+                    } else if (checks[i][0] === 'error') {
+                        errors++;
+                    }
+                }
+
                 var renderedChecks = checks.map(function(check) {
                     if (check[0] === 'warning') {
                         return (
@@ -350,9 +275,29 @@ function loadComponents() {
                         );
                     }
                 });
-                return (
-                    <span>{renderedChecks}</span>
-                );
+
+                if (warnings > 0) {
+                    var warningText = warnings === 1 ? i18n.warning : i18n.warnings;
+                    warningsErrorsText = warnings + ' ' + warningText;
+                }
+                if (errors > 0) {
+                    var errorText = errors === 1 ? i18n.error : i18n.errors;
+                    warningsErrorsText += warnings > 0 ? ' ' + i18n.and + ' ' + errors + ' ' + errorText : errors + ' ' + errorText;
+                }
+
+                if (this.state.openChecks) {
+                    return (
+                        <span>{warningsErrorsText} <a onClick={this.hideChecks}>- {cap(i18n.hide_all)}</a><br/>{renderedChecks}</span>
+                    );
+                } else if (!(warnings === 0 && errors === 0)) {
+                    return (
+                        <span>{warningsErrorsText} <a onClick={this.openChecks}>+ {cap(i18n.show_all)}</a></span>
+                    );
+                } else {
+                    return (
+                        <span>{cap(i18n.checks_success)}</span>
+                    );
+                }
             } else if (this.props.performingChecks) {
                 return (
                     <span><i className="fa fa-spin fa-spinner" /> {i18n.performing_checks}</span>
@@ -385,7 +330,7 @@ function loadComponents() {
 
         render: function() {
             return (
-                <tr className={this.renderRowClass()}>
+                <tr>
                     <td>{this.renderInput()}</td>
                     <td>{this.props.project.id}</td>
                     <td>
@@ -493,6 +438,7 @@ function loadComponents() {
                         initializing: false,
                         allProjects: results
                     });
+                    thisApp.performChecks();
                 } else {
                     thisApp.setState({allProjects: results});
                 }
@@ -504,6 +450,7 @@ function loadComponents() {
                         initializing: false,
                         lastExport: response.results
                     });
+                    thisApp.performChecks();
                 } else {
                     thisApp.setState({lastExport: response.results});
                 }
@@ -833,38 +780,6 @@ function loadComponents() {
             }
         },
 
-        renderPerformChecksButton: function() {
-            if (this.state.initializing) {
-                return (
-                    <span />
-                );
-            } else if (!(this.state.performingChecks || this.state.performedChecks)) {
-                return (
-                    <div className="col-sm-3">
-                        <button className="btn btn-default btn-sm" onClick={this.performChecks}>
-                            <i className="fa fa-check" /> {cap(i18n.perform_checks)}
-                        </button>
-                    </div>
-                );
-            } else if (this.state.performingChecks) {
-                return (
-                    <div className="col-sm-3">
-                        <button className="btn btn-default btn-sm disabled">
-                            <i className="fa fa-spin fa-spinner" /> {cap(i18n.performing_checks)}
-                        </button>
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="col-sm-3">
-                        <button className="btn btn-default btn-sm disabled">
-                            <i className="fa fa-check" /> {cap(i18n.perform_checks)}
-                        </button>
-                    </div>
-                );
-            }
-        },
-
         renderCreateButton: function() {
             if (this.state.initializing) {
                 return (
@@ -927,7 +842,6 @@ function loadComponents() {
                     <div className="row topMargin IATIActions">
                         <h5>{cap(i18n.actions)}</h5>
                         {this.renderCreateButton()}
-                        {this.renderPerformChecksButton()}
                     </div>
                     {this.renderFilters()}
                     {initOrTable}

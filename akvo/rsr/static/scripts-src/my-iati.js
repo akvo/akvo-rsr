@@ -171,109 +171,14 @@ function displayDate(dateString) {
     return i18n.unknown_date;
 }
 
-function processResponse(label, response) {
-    var label_content, checks, all_checks_passed, span, checks_response;
-
-    label_content = label.innerHTML.replace("noCheck", "");
-    checks = JSON.parse(response);
-
-    all_checks_passed = checks.all_checks_passed;
-    checks_response = checks.checks;
-
-    if (all_checks_passed === "True") {
-        span = document.createElement("span");
-        span.className = "success";
-
-        for (var i = 0; i < checks_response.length; i++) {
-            if (checks_response[i][0] === "warning") {
-                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[i][1]) + "</span>";
-            }
-        }
-        span.innerHTML = label_content;
-
-        label.innerHTML = '';
-        label.appendChild(span);
-
-    } else {
-        span = document.createElement("span");
-        span.className = "error";
-        for (var j = 0; j < checks_response.length; j++) {
-            if (checks_response[j][0] === "error") {
-                label_content += "<br/><span class='error'>- " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
-            } else if (checks_response[j][0] === "warning") {
-                label_content += "<br/><span class='warning'>- " + i18n.warning + ": " + capitalizeFirstLetter(checks_response[j][1]) + "</span>";
-            }
-        }
-        span.innerHTML = label_content;
-
-        label.innerHTML = '';
-        label.appendChild(span);
-    }
-}
-
-function getProjectLabels() {
-    var labels;
-
-    labels = document.getElementById('id_projects').getElementsByTagName('label');
-
-    for (var i = 0; i < labels.length; i++) {
-        var project_id;
-
-        project_id = labels[i].getElementsByTagName('input')[0].value;
-        loadAsync('/rest/v1/project_iati_check/' + project_id + '/?format=json', 0, 3, labels[i]);
-    }
-}
-
 function loadComponents() {
-    var IatiChecks = React.createClass({displayName: 'IatiChecks',
+    var ProjectRow = React.createClass({displayName: 'ProjectRow',
         getInitialState: function() {
             return {
-                button_state: 'active'
+                openChecks: false
             };
         },
 
-        handleClick: function() {
-            this.setState({
-                button_state: 'loading'
-            });
-
-            getProjectLabels();
-
-            var thisContainer = this;
-            setTimeout(function() {
-                thisContainer.setState({
-                    button_state: false
-                });
-            }, 10000);
-        },
-
-        render: function() {
-            switch (this.state.button_state) {
-                case 'active':
-                    return (
-                        React.DOM.p(null, 
-                            React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary"}, 
-                                i18n.perform_checks
-                            )
-                        )
-                    );
-                case 'loading':
-                    return (
-                        React.DOM.p(null, 
-                            React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary", disabled:true}, 
-                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.performing_checks
-                            )
-                        )
-                    );
-                default:
-                    return (
-                        React.DOM.span(null )
-                    );
-            }
-        }
-    });
-
-    var ProjectRow = React.createClass({displayName: 'ProjectRow',
         switchAction: function() {
             this.props.switchProject(this.props.project.id);
         },
@@ -323,6 +228,14 @@ function loadComponents() {
             }
         },
 
+        openChecks: function () {
+            this.setState({openChecks: true});
+        },
+
+        hideChecks: function () {
+            this.setState({openChecks: false});
+        },
+
         findChecks: function() {
             for (var i = 0; i < this.props.iatiChecks.length; i++) {
                 if (this.props.iatiChecks[i].project === this.props.project.id) {
@@ -339,6 +252,18 @@ function loadComponents() {
                     React.DOM.span(null, i18n.checks_not_performed)
                 );
             } else if (checks !== null) {
+                var warnings = 0,
+                    errors = 0,
+                    warningsErrorsText = '';
+
+                for (var i = 0; i < checks.length; i++ ) {
+                    if (checks[i][0] === 'warning') {
+                        warnings++;
+                    } else if (checks[i][0] === 'error') {
+                        errors++;
+                    }
+                }
+
                 var renderedChecks = checks.map(function(check) {
                     if (check[0] === 'warning') {
                         return (
@@ -350,9 +275,29 @@ function loadComponents() {
                         );
                     }
                 });
-                return (
-                    React.DOM.span(null, renderedChecks)
-                );
+
+                if (warnings > 0) {
+                    var warningText = warnings === 1 ? i18n.warning : i18n.warnings;
+                    warningsErrorsText = warnings + ' ' + warningText;
+                }
+                if (errors > 0) {
+                    var errorText = errors === 1 ? i18n.error : i18n.errors;
+                    warningsErrorsText += warnings > 0 ? ' ' + i18n.and + ' ' + errors + ' ' + errorText : errors + ' ' + errorText;
+                }
+
+                if (this.state.openChecks) {
+                    return (
+                        React.DOM.span(null, warningsErrorsText, " ", React.DOM.a( {onClick:this.hideChecks}, "- ", cap(i18n.hide_all)),React.DOM.br(null),renderedChecks)
+                    );
+                } else if (!(warnings === 0 && errors === 0)) {
+                    return (
+                        React.DOM.span(null, warningsErrorsText, " ", React.DOM.a( {onClick:this.openChecks}, "+ ", cap(i18n.show_all)))
+                    );
+                } else {
+                    return (
+                        React.DOM.span(null, cap(i18n.checks_success))
+                    );
+                }
             } else if (this.props.performingChecks) {
                 return (
                     React.DOM.span(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18n.performing_checks)
@@ -385,7 +330,7 @@ function loadComponents() {
 
         render: function() {
             return (
-                React.DOM.tr( {className:this.renderRowClass()}, 
+                React.DOM.tr(null, 
                     React.DOM.td(null, this.renderInput()),
                     React.DOM.td(null, this.props.project.id),
                     React.DOM.td(null, 
@@ -493,6 +438,7 @@ function loadComponents() {
                         initializing: false,
                         allProjects: results
                     });
+                    thisApp.performChecks();
                 } else {
                     thisApp.setState({allProjects: results});
                 }
@@ -504,6 +450,7 @@ function loadComponents() {
                         initializing: false,
                         lastExport: response.results
                     });
+                    thisApp.performChecks();
                 } else {
                     thisApp.setState({lastExport: response.results});
                 }
@@ -833,38 +780,6 @@ function loadComponents() {
             }
         },
 
-        renderPerformChecksButton: function() {
-            if (this.state.initializing) {
-                return (
-                    React.DOM.span(null )
-                );
-            } else if (!(this.state.performingChecks || this.state.performedChecks)) {
-                return (
-                    React.DOM.div( {className:"col-sm-3"}, 
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.performChecks}, 
-                            React.DOM.i( {className:"fa fa-check"} ), " ", cap(i18n.perform_checks)
-                        )
-                    )
-                );
-            } else if (this.state.performingChecks) {
-                return (
-                    React.DOM.div( {className:"col-sm-3"}, 
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", cap(i18n.performing_checks)
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.DOM.div( {className:"col-sm-3"}, 
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.i( {className:"fa fa-check"} ), " ", cap(i18n.perform_checks)
-                        )
-                    )
-                );
-            }
-        },
-
         renderCreateButton: function() {
             if (this.state.initializing) {
                 return (
@@ -926,8 +841,7 @@ function loadComponents() {
                     ),
                     React.DOM.div( {className:"row topMargin IATIActions"}, 
                         React.DOM.h5(null, cap(i18n.actions)),
-                        this.renderCreateButton(),
-                        this.renderPerformChecksButton()
+                        this.renderCreateButton()
                     ),
                     this.renderFilters(),
                     initOrTable
