@@ -206,34 +206,6 @@ $width-large:  1200px;
   }
 }
 
-@mixin bw(){
-  //Internet Explorer 6 - 9
-  filter: gray;
-  
-  //Chrome 19+
-  -webkit-filter: grayscale(100%);
-  
-  //Firefox 10+
-  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
-  
-  //Standard
-  filter: grayscale(100%);
-}
-
-@mixin colour(){
-  //Internet Explorer 6 - 9
-  filter: 0;
-  
-  //Chrome 19+
-  -webkit-filter: grayscale(0%);
-  
-  //Firefox 10+
-  filter: url();
-  
-  //Standard
-  filter: grayscale(0%);
-}
-
 
 @mixin keyframes($animation-name) {
   @-webkit-keyframes $animation-name {
