@@ -1551,13 +1551,7 @@ h4.detailedInfo {
                     border: thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
-                    @include bw;
                     transition: all 0.2s ease-in;
-                }
-                &:hover {
-                    img {
-                        @include colour;
-                    }
                 }
             }
         }
@@ -1783,12 +1777,8 @@ div.projectTopRow {
                         max-width: 50px;
                         img {
                             width: 80%;
-                            @include bw;
                             transition: all 0.2s ease-in;
                             margin: inherit;
-                            &:hover {
-                                @include colour;
-                            }
                         }
                     }
                     .partType {
