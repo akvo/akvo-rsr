@@ -4,18 +4,19 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.rsr.models.iati_export import IatiExport
+
 from django.core.management.base import BaseCommand
-from ...models.iati_import import IatiImport
 
 
 class Command(BaseCommand):
-    help = u"Check all enabled iati_imports to see if they should execute"
+    help = u"Execute all pending IATI exports"
 
     def handle(self, *args, **options):
+        """
+        Checks whether there are pending IATI exports (status 1) and executes all pending exports.
 
-        iati_imports = (
-            IatiImport.objects.filter(enabled=True)
-        )
-
-        for iati_import in iati_imports:
-            iati_import.check_execution()
+        Having multiple exports run at once can do no harm.
+        """
+        for iati_export in IatiExport.objects.filter(status=1):
+            iati_export.create_iati_file()

@@ -1464,6 +1464,24 @@ class IatiActivityImportAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'IatiActivityImport'), IatiActivityImportAdmin)
 
 
+class IatiActivityExportInline(admin.TabularInline):
+    model = get_model('rsr', 'IatiActivityExport')
+    fk_name = 'iati_export'
+    fields = ('project', 'status', 'created_at')
+    readonly_fields = ('project', 'status', 'created_at')
+    extra = 0
+
+
+class IatiExportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiExport')
+    list_display = ('__unicode__', 'reporting_organisation', 'user', 'version', 'iati_file',
+                    'show_status', 'is_public')
+    exclude = ('projects', )
+    inlines = (IatiActivityExportInline, )
+
+admin.site.register(get_model('rsr', 'IatiExport'), IatiExportAdmin)
+
+
 class ValidationInline(admin.TabularInline):
     model = get_model('rsr', 'ProjectEditorValidation')
     fields = ('validation', 'action', )

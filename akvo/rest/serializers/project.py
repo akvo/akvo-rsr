@@ -44,6 +44,25 @@ class ProjectSerializer(BaseRSRSerializer):
         model = Project
 
 
+class ProjectIatiExportSerializer(BaseRSRSerializer):
+
+    publishing_status = serializers.Field(source='publishingstatus.status')
+    checks_errors = serializers.Field(source='iati_errors')
+    checks_warnings = serializers.Field(source='iati_warnings')
+
+    class Meta:
+        model = Project
+        fields = (
+            'id',
+            'title',
+            'is_public',
+            'publishing_status',
+            'status',
+            'checks_errors',
+            'checks_warnings',
+        )
+
+
 class ProjectExtraSerializer(ProjectSerializer):
 
     publishing_status = serializers.Field(source='publishingstatus.status')
