@@ -29,6 +29,7 @@ router.register(r'fss_forecast', views.FssForecastViewSet)
 router.register(r'goal', views.GoalViewSet)
 router.register(r'humanitarian_scope', views.HumanitarianScopeViewSet)
 router.register(r'iati_activity_export', views.IatiActivityExportViewSet)
+router.register(r'iati_check', views.IatiCheckViewSet)
 router.register(r'iati_export', views.IatiExportViewSet)
 router.register(r'indicator', views.IndicatorViewSet)
 router.register(r'indicator_framework', views.IndicatorFrameworkViewSet)
@@ -66,8 +67,8 @@ router.register(r'partnership_more_link', views.PartnershipMoreLinkViewSet)
 router.register(r'planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'policy_marker', views.PolicyMarkerViewSet)
 router.register(r'project', views.ProjectViewSet)
-router.register(r'project_lean', views.ProjectLeanViewSet,
-                base_name='project_lean')
+router.register(r'project_iati_export', views.ProjectIatiExportViewSet,
+                base_name='project_iati_export')
 router.register(r'project_extra', views.ProjectExtraViewSet,
                 base_name='project_extra')
 router.register(r'project_up', views.ProjectUpViewSet,

@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rest.serializers.project import ProjectUpSerializer
 from akvo.rsr.models import Project
-from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectLeanSerializer
+from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer
 from ..viewsets import PublicProjectViewSet
 
 
@@ -104,7 +104,7 @@ class ProjectViewSet(PublicProjectViewSet):
         return super(ProjectViewSet, self).get_queryset()
 
 
-class ProjectLeanViewSet(PublicProjectViewSet):
+class ProjectIatiExportViewSet(PublicProjectViewSet):
     """Lean viewset for project data, as used in the My IATI section of RSR."""
     queryset = Project.objects.only(
         'id',
@@ -114,13 +114,14 @@ class ProjectLeanViewSet(PublicProjectViewSet):
     ).select_related(
         'partners',
     ).prefetch_related(
+        'iati_checks',
         'publishingstatus',
         'partnerships',
     )
-    serializer_class = ProjectLeanSerializer
+    serializer_class = ProjectIatiExportSerializer
     project_relation = ''
     paginate_by_param = 'limit'
-    max_paginate_by = 500
+    max_paginate_by = 50
 
     def get_queryset(self):
         """
@@ -133,7 +134,7 @@ class ProjectLeanViewSet(PublicProjectViewSet):
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=reporting_org
             ).distinct()
-        return super(ProjectLeanViewSet, self).get_queryset()
+        return super(ProjectIatiExportViewSet, self).get_queryset()
 
 
 class ProjectExtraViewSet(ProjectViewSet):

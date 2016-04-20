@@ -20,6 +20,7 @@ from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
 from .goal import GoalViewSet
 from .humanitarian_scope import HumanitarianScopeViewSet
+from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
@@ -51,7 +52,7 @@ from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import ProjectViewSet, ProjectExtraViewSet, ProjectLeanViewSet, ProjectUpViewSet
+from .project import ProjectViewSet, ProjectExtraViewSet, ProjectIatiExportViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_upload_file,
@@ -112,6 +113,7 @@ __all__ = [
     'GoalViewSet',
     'HumanitarianScopeViewSet',
     'IatiActivityExportViewSet',
+    'IatiCheckViewSet',
     'IatiExportViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
@@ -161,7 +163,7 @@ __all__ = [
     'ProjectDocumentCategoryViewSet',
     'ProjectExtraViewSet',
     'ProjectIatiCheckView',
-    'ProjectLeanViewSet',
+    'ProjectIatiExportViewSet',
     'ProjectLocationViewSet',
     'ProjectUpdateExtraViewSet',
     'ProjectUpdateLocationViewSet',

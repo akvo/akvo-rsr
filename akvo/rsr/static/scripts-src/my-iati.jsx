@@ -236,76 +236,55 @@ function loadComponents() {
             this.setState({openChecks: false});
         },
 
-        findChecks: function() {
-            for (var i = 0; i < this.props.iatiChecks.length; i++) {
-                if (this.props.iatiChecks[i].project === this.props.project.id) {
-                    return this.props.iatiChecks[i].checks;
-                }
-            }
-            return null;
-        },
-
         renderChecks: function() {
-            var checks = this.findChecks();
-            if (!this.props.performingChecks && checks === null) {
+            if (this.props.project.checks_errors.length === 0 && this.props.project.checks_warnings.length === 0) {
                 return (
-                    <span>{i18n.checks_not_performed}</span>
+                    <span>{cap(i18n.checks_success)}</span>
                 );
-            } else if (checks !== null) {
-                var warnings = 0,
-                    errors = 0,
-                    warningsErrorsText = '';
+            } else {
+                var errorLength = this.props.project.checks_errors.length,
+                    warningLength = this.props.project.checks_warnings.length,
+                    checksText = '',
+                    allErrors = '',
+                    allWarnings = '';
 
-                for (var i = 0; i < checks.length; i++ ) {
-                    if (checks[i][0] === 'warning') {
-                        warnings++;
-                    } else if (checks[i][0] === 'error') {
-                        errors++;
-                    }
-                }
-
-                var renderedChecks = checks.map(function(check) {
-                    if (check[0] === 'warning') {
+                if (errorLength > 0) {
+                    var errorText = errorLength === 1 ? i18n.error : i18n.errors;
+                    checksText += errorLength + ' ' + errorText;
+                    allErrors = this.props.project.checks_errors.map(function(check) {
                         return (
-                            <span>- {cap(i18n.warning)}: {cap(check[1])}<br/></span>
+                            <span>- {cap(i18n.error)}: {cap(check)}<br/></span>
                         );
-                    } else if (check[0] === 'error') {
-                        return (
-                            <span>- {cap(i18n.error)}: {cap(check[1])}<br/></span>
-                        );
-                    }
-                });
-
-                if (warnings > 0) {
-                    var warningText = warnings === 1 ? i18n.warning : i18n.warnings;
-                    warningsErrorsText = warnings + ' ' + warningText;
+                    });
                 }
-                if (errors > 0) {
-                    var errorText = errors === 1 ? i18n.error : i18n.errors;
-                    warningsErrorsText += warnings > 0 ? ' ' + i18n.and + ' ' + errors + ' ' + errorText : errors + ' ' + errorText;
+                if (warningLength > 0) {
+                    var warningText = warningLength === 1 ? i18n.warning : i18n.warnings;
+                    if (errorLength > 0) {
+                        checksText += ' ' + i18n.and + ' ';
+                    }
+                    checksText += warningLength + ' ' + warningText;
+                    allWarnings = this.props.project.checks_warnings.map(function(check) {
+                        return (
+                            <span>- {cap(i18n.warning)}: {cap(check)}<br/></span>
+                        );
+                    });
                 }
 
                 if (this.state.openChecks) {
                     return (
-                        <span>{warningsErrorsText} <a onClick={this.hideChecks}>- {cap(i18n.hide_all)}</a><br/>{renderedChecks}</span>
-                    );
-                } else if (!(warnings === 0 && errors === 0)) {
-                    return (
-                        <span>{warningsErrorsText} <a onClick={this.openChecks}>+ {cap(i18n.show_all)}</a></span>
+                        <span>
+                            {checksText} <a onClick={this.hideChecks}>- {cap(i18n.hide_all)}</a><br/>
+                            {allErrors}
+                            {allWarnings}
+                        </span>
                     );
                 } else {
                     return (
-                        <span>{cap(i18n.checks_success)}</span>
+                        <span>
+                            {checksText} <a onClick={this.openChecks}>+ {cap(i18n.show_all)}</a>
+                        </span>
                     );
                 }
-            } else if (this.props.performingChecks) {
-                return (
-                    <span><i className="fa fa-spin fa-spinner" /> {i18n.performing_checks}</span>
-                );
-            } else {
-                return (
-                    <span />
-                );
             }
         },
 
@@ -374,9 +353,7 @@ function loadComponents() {
                         selected: selected,
                         switchProject: thisTable.props.switchProject,
                         lastExport: thisTable.props.lastExport,
-                        exporting: thisTable.props.exporting,
-                        performingChecks: thisTable.props.performingChecks,
-                        iatiChecks: thisTable.props.iatiChecks
+                        exporting: thisTable.props.exporting
                     });
                 });
             } else {
@@ -419,11 +396,8 @@ function loadComponents() {
                 allProjects: null,
                 selectedProjects: [],
                 lastExport: null,
-                iatiChecks: [],
                 publishedFilter: false,
-                exporting: false,
-                performingChecks: false,
-                performedChecks: false
+                exporting: false
             };
         },
 
@@ -438,7 +412,6 @@ function loadComponents() {
                         initializing: false,
                         allProjects: results
                     });
-                    thisApp.performChecks();
                 } else {
                     thisApp.setState({allProjects: results});
                 }
@@ -450,7 +423,6 @@ function loadComponents() {
                         initializing: false,
                         lastExport: response.results
                     });
-                    thisApp.performChecks();
                 } else {
                     thisApp.setState({lastExport: response.results});
                 }
@@ -758,27 +730,6 @@ function loadComponents() {
                 );
             }
         },
-        
-        addChecktoState: function(response) {
-            var newChecks = this.state.iatiChecks;
-            newChecks.push(response);
-            this.setState({iatiChecks: newChecks});
-            if (newChecks.length === this.state.allProjects.results.length) {
-                this.setState({
-                    performingChecks: false,
-                    performedChecks: true
-                });
-            }
-        },
-
-        performChecks: function() {
-            this.setState({performingChecks: true});
-
-            for (var i = 0; i < this.state.allProjects.results.length; i++) {
-                var projectId = this.state.allProjects.results[i].id;
-                apiCall('GET', endpoints.iati_checks.replace('{project}', projectId), {}, false, this.addChecktoState);
-            }
-        },
 
         renderCreateButton: function() {
             if (this.state.initializing) {
@@ -827,9 +778,7 @@ function loadComponents() {
                     selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject,
                     lastExport: this.state.lastExport,
-                    exporting: this.state.exporting,
-                    performingChecks: this.state.performingChecks,
-                    iatiChecks: this.state.iatiChecks
+                    exporting: this.state.exporting
                 });
             }
 

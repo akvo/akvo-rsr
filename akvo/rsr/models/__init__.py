@@ -35,6 +35,7 @@ from .goal import Goal
 from .humanitarian_scope import HumanitarianScope
 from .iati_activity_export import IatiActivityExport
 from .iati_activity_import import IatiActivityImport
+from .iati_check import IatiCheck
 from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
@@ -99,6 +100,7 @@ __all__ = [
     'HumanitarianScope',
     'IatiActivityExport',
     'IatiActivityImport',
+    'IatiCheck',
     'IatiExport',
     'IatiImport',
     'IatiImportJob',
