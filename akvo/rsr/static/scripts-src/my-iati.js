@@ -464,6 +464,79 @@ function loadComponents() {
             apiCall('POST', url, data, true, exportAdded);
         },
 
+        selectNoErrors: function(select) {
+            var newSelection = this.state.selectedProjects;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i],
+                    newSelectionIndex = newSelection.indexOf(project.id);
+                if (select && newSelectionIndex < 0 && project.checks_errors.length === 0) {
+                    newSelection.push(project.id);
+                } else if (!select && newSelectionIndex > -1 && project.checks_errors.length === 0) {
+                    newSelection.splice(newSelectionIndex, 1);
+                }
+            }
+
+            this.setState({selectedProjects: newSelection});
+        },
+
+        selectNoErrorsProjects: function() {
+            this.selectNoErrors(true);
+        },
+
+        deselectNoErrorsProjects: function() {
+            this.selectNoErrors(false);
+        },
+
+        checkNoErrors: function() {
+            var noErrorsCount = 0;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+                if (project.checks_errors.length === 0) {
+                    noErrorsCount++;
+                }
+            }
+
+            return noErrorsCount;
+        },
+
+        renderNoErrorsButton: function() {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else if (this.checkNoErrors() === this.state.selectedProjects.length) {
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.deselectNoErrorsProjects}, 
+                            cap(i18n.deselect), " ", i18n.projects, " without errors"
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.deselect), " ", i18n.projects, " without errors"
+                        )
+                    );
+                }
+            } else {
+                if (!this.state.exporting) {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.selectNoErrorsProjects}, 
+                            cap(i18n.select), " ", i18n.projects, " without errors"
+                        )
+                    );
+                } else {
+                    return (
+                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
+                            cap(i18n.select), " ", i18n.projects, " without errors"
+                        )
+                    );
+                }
+            }
+        },
+
         selectPrevious: function(select) {
             var lastProjects = this.state.lastExport[0].projects,
                 newSelection = this.state.selectedProjects;
@@ -721,6 +794,9 @@ function loadComponents() {
                         React.DOM.h5(null, cap(i18n.filters)),
                         React.DOM.div( {className:"col-sm-3"}, 
                             this.renderSelectAllButton()
+                        ),
+                        React.DOM.div( {className:"col-sm-3"}, 
+                            this.renderNoErrorsButton()
                         ),
                         renderedFilters,
                         React.DOM.div( {className:"col-sm-3"}, 
