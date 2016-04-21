@@ -40,18 +40,17 @@ def budget(project):
                 value_element = etree.SubElement(element, "value")
                 value_element.text = str(budget_item.amount)
 
-            if budget_item.value_date:
-                value_element.attrib['value-date'] = str(budget_item.value_date)
+                if budget_item.value_date:
+                    value_element.attrib['value-date'] = str(budget_item.value_date)
 
-            if budget_item.currency:
-                value_element.attrib['currency'] = budget_item.currency
+                if budget_item.currency:
+                    value_element.attrib['currency'] = budget_item.currency
 
-            if budget_item.other_extra:
-                value_element.attrib['{http://akvo.org/iati-activities}label'] = budget_item.\
-                    other_extra
-            elif budget_item.label and budget_item.label.label:
-                value_element.attrib['{http://akvo.org/iati-activities}label'] = budget_item.label.\
-                    label
+                akvo_label = '{http://akvo.org/iati-activities}label'
+                if budget_item.other_extra:
+                    value_element.attrib[akvo_label] = budget_item.other_extra
+                elif budget_item.label and budget_item.label.label:
+                    value_element.attrib[akvo_label] = budget_item.label.label
 
             budget_elements.append(element)
 

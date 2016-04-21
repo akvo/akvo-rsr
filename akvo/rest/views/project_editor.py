@@ -556,6 +556,12 @@ def project_editor(request, pk=None):
             # are needed.
             break
 
+    # Update the IATI checks for every save in the editor.
+    try:
+        project.update_iati_checks()
+    except:
+        pass
+
     return Response(
         {
             'changes': log_changes(changes, user, project),

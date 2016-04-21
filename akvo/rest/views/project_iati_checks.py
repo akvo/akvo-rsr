@@ -18,6 +18,7 @@ class ProjectIatiCheckView(APIView):
         project = self.get_object(pk)
         check_results = project.check_mandatory_fields()
         response = {
+            'project': project.id,
             'all_checks_passed': str(check_results[0]),
             'checks': check_results[1],
         }

@@ -6,9 +6,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import Project
-from ..filters import RSRGenericFilterBackend
-from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectUpSerializer
-from ..viewsets import BaseRSRViewSet, PublicProjectViewSet
+
+from ..serializers import (ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer,
+                           ProjectUpSerializer)
+from ..viewsets import PublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -93,12 +94,48 @@ class ProjectViewSet(PublicProjectViewSet):
         """
 
         sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
-        if sync_owner:
+        reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
+
+        reporting_org = reporting_org or sync_owner
+        if reporting_org:
             self.queryset = self.queryset.filter(
                 partnerships__iati_organisation_role=101,
-                partnerships__organisation__pk=sync_owner
+                partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectViewSet, self).get_queryset()
+
+
+class ProjectIatiExportViewSet(PublicProjectViewSet):
+    """Lean viewset for project data, as used in the My IATI section of RSR."""
+    queryset = Project.objects.only(
+        'id',
+        'title',
+        'is_public',
+        'status',
+    ).select_related(
+        'partners',
+    ).prefetch_related(
+        'iati_checks',
+        'publishingstatus',
+        'partnerships',
+    )
+    serializer_class = ProjectIatiExportSerializer
+    project_relation = ''
+    paginate_by_param = 'limit'
+    max_paginate_by = 50
+
+    def get_queryset(self):
+        """
+        Allow custom filter for sync_owner, since this field has been replaced by the
+        reporting org partnership.
+        """
+        reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
+        if reporting_org:
+            self.queryset = self.queryset.filter(
+                partnerships__iati_organisation_role=101,
+                partnerships__organisation__pk=reporting_org
+            ).distinct()
+        return super(ProjectIatiExportViewSet, self).get_queryset()
 
 
 class ProjectExtraViewSet(ProjectViewSet):
