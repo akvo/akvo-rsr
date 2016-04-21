@@ -10,6 +10,7 @@ from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -89,7 +90,7 @@ def update_details(request, pk=None):
 
 
 @api_view(['POST'])
-@authentication_classes([TastyTokenAuthentication])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
 
     # Get the user, or return an error if the user does not exist
