@@ -10,10 +10,12 @@ from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
+from akvo.rest.models import TastyTokenAuthentication
 from ...rsr.models import Country, Employment, Organisation
 from ..viewsets import BaseRSRViewSet
 from ..serializers import EmploymentSerializer, OrganisationSerializer, CountrySerializer
@@ -88,16 +90,19 @@ def update_details(request, pk=None):
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
+
     # Get the user, or return an error if the user does not exist
     try:
-        user = get_user_model().objects.get(pk=pk)
+        user_by_pk = get_user_model().objects.get(pk=pk)
     except get_user_model().DoesNotExist:
         return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
 
+    # request.user is the user identified by the auth token
+    user = request.user
     # Users themselves are only allowed to request to join an organisation
-    request_user = getattr(request, 'user', None)
-    if not user == request_user:
+    if not user_by_pk == request.user:
         raise PermissionDenied()
     request.DATA['user'] = pk
 
