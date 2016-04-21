@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
-                     SelectOrgForm, IatiExportForm)
+                     SelectOrgForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
 from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project,
@@ -303,47 +303,27 @@ def my_iati(request):
         raise PermissionDenied
 
     org = request.GET.get('org')
-    selected_org, iati_exports, export_added, project_count = None, None, False, 0
+    new_export = request.GET.get('new')
 
+    selected_org = None
     select_org_form = SelectOrgForm(user)
-    iati_export_form = None
 
-    if not org and not (user.is_superuser or user.is_admin) \
-            and user.approved_organisations().count() == 1:
+    superuser = user.is_superuser or user.is_admin
+    if not (org or superuser) and user.approved_organisations().count() == 1:
         selected_org = user.approved_organisations()[0]
 
     elif org:
         try:
             selected_org = Organisation.objects.get(pk=int(org))
-        except Organisation.DoesNotExist:
+        except (Organisation.DoesNotExist, ValueError):
             raise PermissionDenied
-        if not (user.is_superuser or user.is_admin) \
-                and not user.has_perm('rsr.change_organisation', selected_org):
+        if not (superuser or user.has_perm('rsr.change_organisation', selected_org)):
             raise PermissionDenied
-
-    if selected_org:
-        iati_exports = selected_org.iati_exports.all().order_by('-last_modified_at')
-        projects = selected_org.reporting_on_projects().public()
-        project_count = projects.count()
-        initial = {
-            'is_public': True,
-            'projects': [p.pk for p in projects]
-        }
-        iati_export_form = IatiExportForm(initial=initial, org=selected_org)
-
-    if request.method == 'POST':
-        iati_export_form = IatiExportForm(selected_org, request.POST)
-        if iati_export_form.is_valid():
-            iati_export_form.save(reporting_organisation=selected_org, user=user)
-            export_added = True
 
     context = {
         'select_org_form': select_org_form,
-        'iati_export_form': iati_export_form,
         'selected_org': selected_org,
-        'exports': iati_exports,
-        'export_added': export_added,
-        'project_count': project_count
+        'new_export': new_export
     }
 
     return render(request, 'myrsr/my_iati.html', context)

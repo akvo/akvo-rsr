@@ -407,6 +407,12 @@ function setTabsOnClicks() {
     for (var i = 0; i < allTabs.length; i++) {
         setTabOnClicks(allTabs[i]);
     }
+
+    // Also set the 'Show all updates' link
+    var showUpdates = document.querySelector('div.allUpdates > a');
+    if (showUpdates !== null) {
+        setTabOnClicks(showUpdates);
+    }
 }
 
 function readTabFromFragment() {

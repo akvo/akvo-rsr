@@ -6,7 +6,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import math
-from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -37,6 +36,7 @@ from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextFie
 from ..mixins import TimestampsMixin
 
 from .country import Country
+from .iati_check import IatiCheck
 from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
@@ -783,7 +783,6 @@ class Project(TimestampsMixin, models.Model):
         def publishingstatuses(self):
             return PublishingStatus.objects.filter(project__in=self)
 
-
     def __unicode__(self):
         return u'%s' % self.title
 
@@ -1067,6 +1066,45 @@ class Project(TimestampsMixin, models.Model):
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
+
+    def update_iati_checks(self):
+        """
+        First, removes the current IATI checks, then adds new IATI checks.
+        """
+        # Remove old IATI checks
+        for old_iati_check in self.iati_checks.all():
+            old_iati_check.delete()
+
+        # Perform new checks and save to database
+        status_codes = {
+            'success': 1,
+            'warning': 2,
+            'error': 3
+        }
+
+        iati_checks = self.check_mandatory_fields()
+        for iati_check in iati_checks[1]:
+            try:
+                status_code = status_codes[iati_check[0]]
+                IatiCheck.objects.create(
+                    project=self,
+                    status=status_code,
+                    description=iati_check[1]
+                )
+            except KeyError:
+                pass
+
+    def iati_checks_status(self, status):
+        return self.iati_checks.filter(status=status)
+
+    def iati_successes(self):
+        return [check.description for check in self.iati_checks_status(1)]
+
+    def iati_warnings(self):
+        return [check.description for check in self.iati_checks_status(2)]
+
+    def iati_errors(self):
+        return [check.description for check in self.iati_checks_status(3)]
 
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""
