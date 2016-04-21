@@ -3,12 +3,15 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
 from django.db.models.fields.related import ForeignKey, ForeignObject
 
 from akvo.rest.models import TastyTokenAuthentication
+
 from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
+
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
     """
@@ -28,8 +31,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     """
     authentication_classes = (authentication.SessionAuthentication, TastyTokenAuthentication, )
     permission_classes = (SafeMethodsPermissions, )
-    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,
-                       RSRGenericFilterBackend,)
+    filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
     ordering_fields = '__all__'
 
     def get_queryset(self):

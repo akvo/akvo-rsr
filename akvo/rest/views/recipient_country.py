@@ -16,4 +16,3 @@ class RecipientCountryViewSet(PublicProjectViewSet):
     """
     queryset = RecipientCountry.objects.all()
     serializer_class = RecipientCountrySerializer
-    filter_fields = ('project', 'country', )

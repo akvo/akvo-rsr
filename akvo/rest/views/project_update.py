@@ -21,11 +21,6 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
     queryset = ProjectUpdate.objects.select_related('project',
                                                     'user').prefetch_related('locations')
     serializer_class = ProjectUpdateSerializer
-    filter_fields = {
-        'project': ['exact', ],
-        'user': ['exact', ],
-        'uuid': ['exact', 'icontains', ],
-    }
 
     paginate_by_param = 'limit'
     max_paginate_by = 1000
@@ -86,14 +81,6 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         'user__organisations__primary_location__country',
         'user__organisations__primary_location__location_target')
     serializer_class = ProjectUpdateExtraSerializer
-    filter_fields = {
-        'project': ['exact', ],
-        'user': ['exact', ],
-        'uuid': ['exact', 'icontains', ],
-        # These filters only accept a date, not a datetime
-        # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-    }
 
     def get_queryset(self):
         """

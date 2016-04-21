@@ -27,7 +27,6 @@ class MapOrganisationLocationViewSet(BaseRSRViewSet):
     __country__ (filter on country ID)
     """
 
-    filter_fields = ('location_target', 'country')
     max_paginate_by = 500
     paginate_by = 100
     queryset = OrganisationLocation.objects.select_related(

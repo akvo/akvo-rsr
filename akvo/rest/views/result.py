@@ -15,7 +15,6 @@ class ResultsViewSet(PublicProjectViewSet):
 
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
-    filter_fields = ('project', 'type', 'aggregation_status', 'parent_result')
 
 
 class ResultsFrameworkViewSet(PublicProjectViewSet):
@@ -23,4 +22,3 @@ class ResultsFrameworkViewSet(PublicProjectViewSet):
 
     queryset = Result.objects.prefetch_related('indicators')
     serializer_class = ResultsFrameworkSerializer
-    filter_fields = ('project', 'type', 'aggregation_status', 'parent_result')

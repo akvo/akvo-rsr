@@ -16,4 +16,3 @@ class GoalViewSet(PublicProjectViewSet):
     """
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
-    filter_fields = ('project', )

@@ -16,4 +16,3 @@ class PlannedDisbursementViewSet(PublicProjectViewSet):
     """
     queryset = PlannedDisbursement.objects.all()
     serializer_class = PlannedDisbursementSerializer
-    filter_fields = ('project', 'currency', 'type', )

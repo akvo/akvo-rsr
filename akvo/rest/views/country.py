@@ -17,5 +17,3 @@ class CountryViewSet(BaseRSRViewSet):
     """
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
-    filter_backends = (filters.DjangoFilterBackend, )
-    filter_fields = ('name', )
