@@ -4635,7 +4635,37 @@ div#exportsOverview, div#newIATIExport {
         }
     }
     button.btn-default {
-        margin: -5px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+        &:hover {
+            background: $rsrBlue;
+        }
+    }
+}
+
+div.iatiFilters {
+    background: rgba($akvoBlack, 0.0);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 25px;
+    @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
+    @include responsive(small-max-screens) {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .btn {
+            margin: 10px auto;
+        }
+    }
+    h3 {
+        display: block;
+    }
+    .newIatiExport {
+        .btn {
+            display: block;
+        }
+    }
+    .btn {
         background: $akvoBlack;
         color: white;
         border: none;

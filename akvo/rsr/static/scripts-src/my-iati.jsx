@@ -507,36 +507,47 @@ function loadComponents() {
             return noErrorsCount;
         },
 
+        allNoErrorsSelected: function() {
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+
+                if (project.checks_errors.length === 0 && this.state.selectedProjects.indexOf(project.id) < 0) {
+                    return false;
+                }
+            }
+            return true;
+        },
+
         renderNoErrorsButton: function() {
-            if (this.state.allProjects === null || this.state.allProjects.results.length === 0) {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0 || this.checkNoErrors() === 0) {
                 return (
                     <span />
                 );
-            } else if (this.checkNoErrors() === this.state.selectedProjects.length) {
+            } else if (this.allNoErrorsSelected()) {
                 if (!this.state.exporting) {
                     return (
-                        <button className="btn btn-default btn-sm" onClick={this.deselectNoErrorsProjects}>
-                            {cap(i18n.deselect)} {i18n.projects} without errors
+                        <button className="btn btn-default btn-sm">
+                            <input type="checkbox" checked={true} onClick={this.deselectNoErrorsProjects} /> {cap(i18n.without_errors)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.deselect)} {i18n.projects} without errors
+                            <input type="checkbox" checked={true} /> {cap(i18n.without_errors)}
                         </button>
                     );
                 }
             } else {
                 if (!this.state.exporting) {
                     return (
-                        <button className="btn btn-default btn-sm" onClick={this.selectNoErrorsProjects}>
-                            {cap(i18n.select)} {i18n.projects} without errors
+                        <button className="btn btn-default btn-sm">
+                            <input type="checkbox" checked={false} onClick={this.selectNoErrorsProjects} /> {cap(i18n.without_errors)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.select)} {i18n.projects} without errors
+                            <input type="checkbox" checked={false} /> {cap(i18n.without_errors)}
                         </button>
                     );
                 }
@@ -592,13 +603,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={this.deselectPreviousProjects}>
-                            {cap(i18n.deselect)} {i18n.projects} {i18n.included_export}
+                            <input type="checkbox" checked={true} onClick={this.deselectPreviousProjects} /> {cap(i18n.included_export)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.deselect)} {i18n.projects} {i18n.included_export}
+                            <input type="checkbox" checked={true} /> {cap(i18n.included_export)}
                         </button>
                     );
                 }
@@ -606,13 +617,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={this.selectPreviousProjects}>
-                            {cap(i18n.select)} {i18n.projects} {i18n.included_export}
+                            <input type="checkbox" checked={false} onClick={this.selectPreviousProjects} /> {cap(i18n.included_export)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.select)} {i18n.projects} {i18n.included_export}
+                            <input type="checkbox" checked={false} /> {cap(i18n.included_export)}
                         </button>
                     );
                 }
@@ -656,13 +667,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={this.deselectAllProjects}>
-                            {cap(i18n.deselect)} {i18n.all} {i18n.projects}
+                            <input type="checkbox" checked={true} onClick={this.deselectAllProjects} /> {cap(i18n.all)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.deselect)} {i18n.all} {i18n.projects}
+                            <input type="checkbox" checked={true} /> {cap(i18n.all)}
                         </button>
                     );
                 }
@@ -670,13 +681,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={this.selectAllProjects}>
-                            {cap(i18n.select)} {i18n.all} {i18n.projects}
+                            <input type="checkbox" checked={false} onClick={this.selectAllProjects} /> {cap(i18n.all)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.select)} {i18n.all} {i18n.projects}
+                            <input type="checkbox" checked={false} /> {cap(i18n.all)}
                         </button>
                     );
                 }
@@ -735,13 +746,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={deselectProjects}>
-                            {cap(i18n.deselect)} {name} {i18n.projects}
+                            <input type="checkbox" checked={true} onClick={deselectProjects} /> {cap(name)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.deselect)} {name} {i18n.projects}
+                            <input type="checkbox" checked={true} /> {cap(name)}
                         </button>
                     );
                 }
@@ -749,13 +760,13 @@ function loadComponents() {
                 if (!this.state.exporting) {
                     return (
                         <button className="btn btn-default btn-sm" onClick={selectProjects}>
-                            {cap(i18n.select)} {name} {i18n.projects}
+                            <input type="checkbox" checked={false} onClick={selectProjects} /> {cap(name)}
                         </button>
                     );
                 } else {
                     return (
                         <button className="btn btn-default btn-sm disabled">
-                            {cap(i18n.select)} {name} {i18n.projects}
+                            <input type="checkbox" checked={false} /> {cap(name)}
                         </button>
                     );
                 }
@@ -763,123 +774,105 @@ function loadComponents() {
         },
 
         renderFilters: function() {
-            if (this.state.allProjects === null) {
-                return (
-                    <span />
-                );
-            } else {
-                var thisApp = this,
-                    filters = [
-                        ['publishing_status', 'published', i18n.published],
-                        ['is_public', true, i18n.public],
-                        ['status', 'H', i18n.needs_funding],
-                        ['status', 'A', i18n.active],
-                        ['status', 'C', i18n.completed],
-                        ['status', 'L', i18n.cancelled],
-                        ['status', 'R', i18n.archived]
-                    ];
+            var renderFilter = function(filter) {
+                var anyProjects = thisApp.checkProjects(filter[0], filter[1], true);
 
-                var renderedFilters = filters.map(function(filter) {
-                    var anyProjects = thisApp.checkProjects(filter[0], filter[1], true);
+                if (anyProjects) {
+                    return thisApp.renderFilter(filter[0], filter[1], filter[2]);
+                } else {
+                    return (
+                        <span />
+                    );
+                }
+            };
 
-                    if (anyProjects) {
-                        return (
-                            <div className="col-sm-3">
-                                {thisApp.renderFilter(filter[0], filter[1], filter[2])}
-                            </div>
-                        );
-                    } else {
-                        return (
-                            <span />
-                        );
-                    }
-                });
+            var thisApp = this,
+                statusFilters = [
+                    ['status', 'H', i18n.needs_funding],
+                    ['status', 'A', i18n.active],
+                    ['status', 'C', i18n.completed],
+                    ['status', 'L', i18n.cancelled],
+                    ['status', 'R', i18n.archived]
+                ],
+                globalFilters = [
+                    ['publishing_status', 'published', i18n.published],
+                    ['is_public', true, i18n.public]
+                ];
 
-                return (
-                    <div className="row IATIfilters topMargin">
-                        <h5>{cap(i18n.filters)}</h5>
-                        <div className="col-sm-3">
-                            {this.renderSelectAllButton()}
-                        </div>
-                        <div className="col-sm-3">
-                            {this.renderNoErrorsButton()}
-                        </div>
-                        {renderedFilters}
-                        <div className="col-sm-3">
-                            {this.renderSelectPreviousButton()}
-                        </div>
+            var renderedStatusFilters = statusFilters.map(renderFilter);
+            var renderedGlobalFilters = globalFilters.map(renderFilter);
+
+            return (
+                <div className="row iatiFilters topMargin">
+                    <h3>{cap(i18n.project_selection)}</h3>
+                    <div className="col-sm-8">
+                        <h4>{cap(i18n.global_selection)}</h4>
+                        {this.renderSelectAllButton()}
+                        {this.renderNoErrorsButton()}
+                        {this.renderSelectPreviousButton()}
+                        {renderedGlobalFilters}
+                        <h4>{cap(i18n.project_status)}</h4>
+                        {renderedStatusFilters}
                     </div>
-                );
-            }
+                    <div className="col-sm-4 newIatiExport">
+                        {this.state.selectedProjects.length} {i18n.projects_selected}
+                        {this.renderCreateButton()}
+                    </div>
+                </div>
+            );
         },
 
         renderCreateButton: function() {
-            if (this.state.initializing) {
-                return (
-                    <span />
-                );
-            } else if (!this.state.exporting) {
+            if (!this.state.exporting) {
                 if (this.state.selectedProjects.length > 0) {
                     return (
-                        <div className="col-sm-3">
-                            <button className="btn btn-default btn-sm" onClick={this.createExport}>
-                                <i className="fa fa-plus" /> {cap(i18n.create_new)} {i18n.iati_export}
-                            </button>
-                        </div>
+                        <button className="btn btn-default btn-sm" onClick={this.createExport}>
+                            <i className="fa fa-file-text-o" /> {cap(i18n.create_new)} {i18n.iati_export}
+                        </button>
                     );
                 } else {
                     return (
-                        <div className="col-sm-3">
-                            <button className="btn btn-default btn-sm disabled">
-                                <i className="fa fa-plus" /> {cap(i18n.create_new)} {i18n.iati_export}
-                            </button>
-                        </div>
+                        <button className="btn btn-default btn-sm disabled">
+                            <i className="fa fa-file-text-o" /> {cap(i18n.create_new)} {i18n.iati_export}
+                        </button>
                     );
                 }
             } else {
                 return (
-                    <div className="col-sm-3">
-                        <button className="btn btn-default btn-sm disabled">
-                            <i className="fa fa-spin fa-spinner" /> {cap(i18n.create_new)} {i18n.iati_export}
-                        </button>
-                    </div>
+                    <button className="btn btn-default btn-sm disabled">
+                        <i className="fa fa-spin fa-spinner" /> {cap(i18n.create_new)} {i18n.iati_export}
+                    </button>
                 );
             }
         },
 
         render: function() {
-            var initOrTable;
-
             if (this.state.initializing) {
                 // Only show a message that data is being loading when initializing
-                initOrTable = <span className="small"><i className="fa fa-spin fa-spinner"/>{' ' + cap(i18n.loading) + ' ' + i18n.projects + '...'}</span>;
+                return (
+                    <span className="small">
+                        <i className="fa fa-spin fa-spinner"/> {cap(i18n.loading)} {i18n.projects}...
+                    </span>
+                );
             } else {
                 // Show a table of projects when the data has been loaded
-                initOrTable = React.createElement(ProjectsTable, {
-                    projects: this.state.allProjects.results,
-                    selectedProjects: this.state.selectedProjects,
-                    switchProject: this.switchProject,
-                    lastExport: this.state.lastExport,
-                    exporting: this.state.exporting,
-                    selectAll: this.selectAllProjects,
-                    deselectAll: this.deselectAllProjects
-                });
+                return (
+                    <div>
+                        {this.renderFilters()}
+                        {React.createElement(ProjectsTable, {
+                            projects: this.state.allProjects.results,
+                            selectedProjects: this.state.selectedProjects,
+                            switchProject: this.switchProject,
+                            lastExport: this.state.lastExport,
+                            exporting: this.state.exporting,
+                            selectAll: this.selectAllProjects,
+                            deselectAll: this.deselectAllProjects
+                        })}
+                    </div>
+                );
             }
 
-            return (
-                <div>
-                    <h4 className="topMargin">{cap(i18n.new) + ' ' + i18n.iati_export}</h4>
-                    <div className="performChecksDescription">
-                        <span>{i18n.perform_checks_description_1 + ' ' + i18n.perform_checks_description_2}</span>
-                    </div>
-                    <div className="row topMargin IATIActions">
-                        <h5>{cap(i18n.actions)}</h5>
-                        {this.renderCreateButton()}
-                    </div>
-                    {this.renderFilters()}
-                    {initOrTable}
-                </div>
-            );
+
         }
     });
 
