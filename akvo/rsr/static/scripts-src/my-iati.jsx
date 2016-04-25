@@ -341,10 +341,14 @@ function loadComponents() {
 
         render: function() {
             var thisTable = this,
-                projects;
+                projects,
+                checked,
+                onclickAll;
 
             if (this.props.projects.length > 0) {
                 // In case there are projets, show a table overview of the projects.
+                checked = this.props.projects.length === this.props.selectedProjects.length;
+                onclickAll = checked ? this.props.deselectAll : this.props.selectAll;
                 projects = this.sortedProjects().map(function(project) {
                     var selected = thisTable.props.selectedProjects.indexOf(project.id) > -1;
                     return React.createElement(ProjectRow, {
@@ -359,6 +363,8 @@ function loadComponents() {
             } else {
                 // In case there are no projects, show a message.
                 var language = window.location.pathname.substring(0, 3);
+                checked = false;
+                onclickAll = function() {return false;};
                 projects = <tr>
                     <td colSpan="5" className="text-center">
                         <p className="noItem">
@@ -373,7 +379,7 @@ function loadComponents() {
                 <table className="table table-striped table-responsive myProjectList topMargin">
                     <thead>
                         <tr>
-                            <th />
+                            <th><input type="checkbox" onClick={onclickAll} checked={checked} /></th>
                             <th>{i18n.id}</th>
                             <th>{cap(i18n.title)}</th>
                             <th>{cap(i18n.status)}</th>
@@ -854,7 +860,9 @@ function loadComponents() {
                     selectedProjects: this.state.selectedProjects,
                     switchProject: this.switchProject,
                     lastExport: this.state.lastExport,
-                    exporting: this.state.exporting
+                    exporting: this.state.exporting,
+                    selectAll: this.selectAllProjects,
+                    deselectAll: this.deselectAllProjects
                 });
             }
 
