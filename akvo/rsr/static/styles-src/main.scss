@@ -4636,6 +4636,7 @@ div#exportsOverview, div#newIATIExport {
     }
     button.btn-default {
         border: none;
+        margin-left: 3px;
         &:hover {
             background: $rsrBlue;
             color:white;
@@ -4666,7 +4667,7 @@ div.iatiFilters {
         display: block;
     }
     .newIatiExport {
-        p{
+        p {
             margin-top: 10%;
         }
         .btn {
@@ -4679,6 +4680,7 @@ div.iatiFilters {
     }
     .btn {
         border: none;
+        margin-left: 3px;
         &:hover {
             background: $rsrBlue;
         }

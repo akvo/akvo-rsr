@@ -288,25 +288,6 @@ function loadComponents() {
             }
         },
 
-        renderRowClass: function() {
-            var checks = this.findChecks(),
-                foundWarning = false;
-
-            if (checks === null) {
-                return '';
-            } else {
-                for (var i = 0; i < checks.length; i++) {
-                    var check = checks[i];
-                    if (check[0] === 'error') {
-                        return 'error';
-                    } else if (check[0] === 'warning') {
-                        foundWarning = true;
-                    }
-                }
-                return foundWarning ? 'warning' : 'success';
-            }
-        },
-
         render: function() {
             return (
                 <tr>
@@ -893,7 +874,7 @@ function loadComponents() {
             if (this.props.publicFile) {
                 return (
                     <button className="btn btn-success btn-sm" onClick={this.openPublicFile}>
-                        <i className="fa fa-globe" /> {cap(i18n.view_public_file)}
+                        <i className="fa fa-globe" /> {cap(i18n.view_latest_file)}
                     </button>
                 );
             } else if (this.props.exp.iati_file) {
@@ -904,7 +885,7 @@ function loadComponents() {
                                 <i className="fa fa-code" /> {cap(i18n.view_file)}
                             </button>
                             <button className="btn btn-default btn-sm" onClick={this.setPublic}>
-                                <i className="fa fa-globe" /> {cap(i18n.set_public)}
+                                <i className="fa fa-globe" /> {cap(i18n.set_latest)}
                             </button>
                         </div>
                     );
@@ -915,7 +896,7 @@ function loadComponents() {
                                 <i className="fa fa-code" /> {cap(i18n.view_file)}
                             </button>
                             <button className="btn btn-default btn-sm disabled">
-                                <i className="fa fa-globe" /> {cap(i18n.set_public)}
+                                <i className="fa fa-globe" /> {cap(i18n.set_latest)}
                             </button>
                         </div>
                     );
@@ -932,7 +913,7 @@ function loadComponents() {
         renderRowClass: function() {
             if (this.props.publicFile) {
                 return 'success';
-            } else if (this.props.exp.status === 2) {
+            } else if (this.props.exp.status === 1 || this.props.exp.status === 2) {
                 return 'warning';
             } else if (this.props.exp.status === 4 || this.props.exp.iati_file === '') {
                 return 'error';
@@ -1204,8 +1185,7 @@ function loadComponents() {
         render: function() {
             var initOrTable,
                 exportCount,
-                exportCountString,
-                lastExportDescription;
+                exportCountString;
 
             exportCount = !this.state.initializing ? this.state.exports.count : null;
             exportCountString = (exportCount !== null && exportCount > 0) ? ' ' + this.state.exports.count + ' ' : ' ';
@@ -1224,18 +1204,9 @@ function loadComponents() {
                 });
             }
 
-            lastExportDescription = <div className="lastExportDescription">
-                <span>{cap(i18n.last_exports_1)}</span>
-                <a href={i18n.last_exports_url} target="_blank">{i18n.last_exports_url}</a>
-                <span>{'. ' + cap(i18n.last_exports_2) + ' ' + cap(i18n.last_exports_3)}</span>
-                <a href="http://iatiregistry.org" target="_blank">{i18n.iati_registry}</a>
-                <span>{i18n.last_exports_4}</span>
-            </div>;
-
             return (
                 <div>
                     <h4 className="topMargin">{cap(i18n.last) + exportCountString + i18n.iati_exports}</h4>
-                    {lastExportDescription}
                     {this.renderRefreshing()}
                     {initOrTable}
                 </div>
@@ -1287,6 +1258,16 @@ function loadAndRenderReact() {
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
+function setFileOnOrganisationPage() {
+    var checkbox = document.getElementById('fileOnOrganisationPage');
+    if (checkbox) {
+        checkbox.onchange = function() {
+            var data = JSON.stringify({'public_iati_file': checkbox.checked ? true : false});
+            apiCall('PATCH', endpoints.organisation, data, true, function(){});
+        }
+    }
+}
+
 function setCreateFileOnClick() {
     var button = document.getElementById('createIATIExport');
     if (button) {
@@ -1303,6 +1284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initialData = JSON.parse(document.getElementById("data").innerHTML);
 
     setCreateFileOnClick();
+    setFileOnOrganisationPage();
 
     if (document.getElementById('exportsOverview') || document.getElementById('newIATIExport')) {
         if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
