@@ -16,10 +16,4 @@ class IndicatorReferenceViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorReference.objects.all()
     serializer_class = IndicatorReferenceSerializer
-    filter_fields = {
-        'indicator': ['exact'],
-        'indicator__result': ['exact'],
-        'indicator__result__project': ['exact'],
-        'vocabulary': ['exact'],
-    }
     project_relation = 'indicator__result__project__'

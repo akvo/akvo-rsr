@@ -16,4 +16,3 @@ class BenchmarkViewSet(PublicProjectViewSet):
     """
     queryset = Benchmark.objects.all()
     serializer_class = BenchmarkSerializer
-    filter_fields = ('project', )

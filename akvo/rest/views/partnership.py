@@ -16,7 +16,6 @@ class PartnershipViewSet(PublicProjectViewSet):
     """
     queryset = Partnership.objects.all()
     serializer_class = PartnershipSerializer
-    filter_fields = ('project', 'organisation', 'iati_organisation_role', )
 
     def get_queryset(self):
         """Allow filtering on partner_type."""
@@ -35,4 +34,3 @@ class PartnershipMoreLinkViewSet(PublicProjectViewSet):
     """
     queryset = Partnership.objects.all()
     serializer_class = PartnershipBasicSerializer
-    filter_fields = ('project', 'organisation', 'iati_organisation_role', )

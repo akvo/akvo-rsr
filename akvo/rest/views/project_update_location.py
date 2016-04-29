@@ -31,11 +31,6 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     __location_target\__user\__employers__ (filter on organisation ID of the users' organisations)
     """
 
-    filter_fields = (
-        'location_target__project',
-        'location_target__project__partners',
-        'location_target__user__employers'
-    )
     max_paginate_by = 500
     paginate_by = 100
     # TODO: shouldn't this be subject to private project filtering?

@@ -21,7 +21,6 @@ class EmploymentViewSet(BaseRSRViewSet):
 
     queryset = Employment.objects.select_related('organisation')
     serializer_class = EmploymentSerializer
-    filter_fields = ('user', 'organisation', 'group', 'is_approved', )
 
 
 @api_view(['POST'])
