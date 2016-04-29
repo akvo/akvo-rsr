@@ -803,19 +803,19 @@ function loadComponents() {
             var renderedGlobalFilters = globalFilters.map(renderFilter);
 
             return (
-                <div className="row iatiFilters topMargin">
-                    <h3>{cap(i18n.project_selection)}</h3>
-                    <div className="col-sm-8">
-                        <h4>{cap(i18n.global_selection)}</h4>
+                <div className="row iatiFilters">
+                    <div className="col-sm-8 filterGroup">
+                        <h3>{cap(i18n.project_selection)}</h3>
+                        <p>{cap(i18n.global_selection)}</p>
                         {this.renderSelectAllButton()}
                         {this.renderNoErrorsButton()}
                         {this.renderSelectPreviousButton()}
                         {renderedGlobalFilters}
-                        <h4>{cap(i18n.project_status)}</h4>
+                        <p>{cap(i18n.project_status)}</p>
                         {renderedStatusFilters}
                     </div>
-                    <div className="col-sm-4 newIatiExport">
-                        {this.state.selectedProjects.length} {i18n.projects_selected}
+                    <div className="col-sm-4 newIatiExport text-center">
+                        <p>{this.state.selectedProjects.length} {i18n.projects_selected}</p>
                         {this.renderCreateButton()}
                     </div>
                 </div>

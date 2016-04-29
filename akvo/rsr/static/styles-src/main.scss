@@ -4635,11 +4635,10 @@ div#exportsOverview, div#newIATIExport {
         }
     }
     button.btn-default {
-        background: $akvoBlack;
-        color: white;
         border: none;
         &:hover {
             background: $rsrBlue;
+            color:white;
         }
     }
 }
@@ -4649,6 +4648,11 @@ div.iatiFilters {
     padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 25px;
+    .filterGroup {
+        p {
+            margin-top: 10px;
+        }
+    }
     @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
     @include responsive(small-max-screens) {
         margin-top: 20px;
@@ -4658,16 +4662,22 @@ div.iatiFilters {
         }
     }
     h3 {
+        margin-top: 0;
         display: block;
     }
     .newIatiExport {
+        p{
+            margin-top: 10%;
+        }
         .btn {
-            display: block;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: $akvoBlack;
+            color: white;
         }
     }
     .btn {
-        background: $akvoBlack;
-        color: white;
         border: none;
         &:hover {
             background: $rsrBlue;

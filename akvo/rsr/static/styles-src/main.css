@@ -631,13 +631,16 @@ nav.navbar-fixed-top {
   #createProject:hover {
     background: #2c2a74; }
 
-.indicator-period-list.parentProject .relatedInfo, .indicator-period-list.childProject .relatedInfo {
+.indicator-period-list.parentProject .relatedInfo,
+.indicator-period-list.childProject .relatedInfo {
   color: #2c2a74; }
 
-.indicator-period-list.parentProject .relatedInfoProjectTitle, .indicator-period-list.childProject .relatedInfoProjectTitle {
+.indicator-period-list.parentProject .relatedInfoProjectTitle,
+.indicator-period-list.childProject .relatedInfoProjectTitle {
   display: none;
   margin-top: 15px; }
-  .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title, .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
+  .indicator-period-list.parentProject .relatedInfoProjectTitle + .indicator-periods-title,
+  .indicator-period-list.childProject .relatedInfoProjectTitle + .indicator-periods-title {
     margin-top: 15px; }
 
 .indicator-period-list thead tr {
@@ -1613,7 +1616,7 @@ div.textBlock {
 .updateComponent {
   padding-top: 10px;
   padding-bottom: 15px;
-  background: #fff6f2; }
+  background: #fff6f1; }
   .updateComponent h4 {
     margin-bottom: 10px; }
   .updateComponent .updateLinkTitle {
@@ -1658,7 +1661,8 @@ div.textBlock {
 .projectFinancial .budgetItem {
   margin-top: 12px;
   width: 60%; }
-  .projectFinancial .budgetItem:nth-child(1), .projectFinancial .budgetItem:nth-child(2) {
+  .projectFinancial .budgetItem:nth-child(1),
+  .projectFinancial .budgetItem:nth-child(2) {
     margin-top: 0; }
 
 /* Project hierarchy */
@@ -1740,7 +1744,8 @@ ul.typeahead-selector {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
+    ul.typeahead-selector li:hover,
+    ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
     ul.typeahead-selector li a {
@@ -2139,7 +2144,7 @@ body.translationBarActive div.skiptranslate ~ #map {
     display: block;
     overflow: hidden;
     box-sizing: border-box;
-    transition: all .5s linear;
+    transition: all 0.5s linear;
     padding: 5px 15px;
     margin: 0 auto;
     -moz-border-radius: 5px;
@@ -2401,7 +2406,8 @@ body.translationBarActive div.skiptranslate ~ #map {
     padding: 0.5em;
     margin: 0 1em;
     color: #00aaff; }
-    .tab-menu a:hover, .tab-menu a.selected {
+    .tab-menu a:hover,
+    .tab-menu a.selected {
       border-bottom: 3px solid #646363;
       color: #646363; }
     .tab-menu a:active {
@@ -2512,7 +2518,8 @@ article {
       .periodValues .period-actual > span:first-child span,
       .periodValues .period-target-comment > span:first-child span {
         display: inline; }
-    .baseline .baseline-value span:nth-child(2n), .baseline .baseline-value .actualValueSpan,
+    .baseline .baseline-value span:nth-child(2n),
+    .baseline .baseline-value .actualValueSpan,
     .baseline .baseline-year span:nth-child(2n),
     .baseline .baseline-year .actualValueSpan,
     .baseline .period-target span:nth-child(2n),
@@ -2529,11 +2536,11 @@ article {
     .periodValues .period-target .actualValueSpan,
     .periodValues .period-actual span:nth-child(2n),
     .periodValues .period-actual .actualValueSpan,
-    .periodValues .period-target-comment span:nth-child(2n),
-    .periodValues .period-target-comment .actualValueSpan {
+    .periodValues .period-target-comment span:nth-child(2n), .periodValues .period-target-comment .actualValueSpan {
       display: block;
       font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
-      .baseline .baseline-value span:nth-child(2n) span, .baseline .baseline-value .actualValueSpan span,
+      .baseline .baseline-value span:nth-child(2n) span,
+      .baseline .baseline-value .actualValueSpan span,
       .baseline .baseline-year span:nth-child(2n) span,
       .baseline .baseline-year .actualValueSpan span,
       .baseline .period-target span:nth-child(2n) span,
@@ -2550,10 +2557,10 @@ article {
       .periodValues .period-target .actualValueSpan span,
       .periodValues .period-actual span:nth-child(2n) span,
       .periodValues .period-actual .actualValueSpan span,
-      .periodValues .period-target-comment span:nth-child(2n) span,
-      .periodValues .period-target-comment .actualValueSpan span {
+      .periodValues .period-target-comment span:nth-child(2n) span, .periodValues .period-target-comment .actualValueSpan span {
         display: inline; }
-      .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .baseline .baseline-value .actualValueSpan span:nth-child(1),
+      .baseline .baseline-value span:nth-child(2n) span:nth-child(1),
+      .baseline .baseline-value .actualValueSpan span:nth-child(1),
       .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
       .baseline .baseline-year .actualValueSpan span:nth-child(1),
       .baseline .period-target span:nth-child(2n) span:nth-child(1),
@@ -2570,8 +2577,7 @@ article {
       .periodValues .period-target .actualValueSpan span:nth-child(1),
       .periodValues .period-actual span:nth-child(2n) span:nth-child(1),
       .periodValues .period-actual .actualValueSpan span:nth-child(1),
-      .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-target-comment .actualValueSpan span:nth-child(1) {
+      .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1), .periodValues .period-target-comment .actualValueSpan span:nth-child(1) {
         margin-left: 10px; }
   .baseline .period-target-comment span:nth-child(2n),
   .periodValues .period-target-comment span:nth-child(2n) {
@@ -2672,7 +2678,8 @@ article {
         border: 1px solid rgba(153, 153, 153, 0.8);
         left: 50px;
         top: -2px; }
-        .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:after,
+        .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
         .baseline .period-actual .result-tooltip .tooltip-arrow:after,
         .baseline .period-actual .result-tooltip .tooltip-arrow:before,
         .periodValues .baseline-year .result-tooltip .tooltip-arrow:after,
@@ -3007,7 +3014,10 @@ article {
             margin-right: 1.4em; }
       .indicator-container .indicator-group .table td {
         vertical-align: middle; }
-        .indicator-container .indicator-group .table td.period-td, .indicator-container .indicator-group .table td.actual-td, .indicator-container .indicator-group .table td.target-td, .indicator-container .indicator-group .table td.actions-td {
+        .indicator-container .indicator-group .table td.period-td,
+        .indicator-container .indicator-group .table td.actual-td,
+        .indicator-container .indicator-group .table td.target-td,
+        .indicator-container .indicator-group .table td.actions-td {
           white-space: nowrap; }
         .indicator-container .indicator-group .table td.target-td {
           font-weight: 600; }
@@ -3633,7 +3643,8 @@ label.fileUpload input[type="file"] {
         opacity: 0.5; }
         .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
           background-color: red; }
-      .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
+      .update-dialog-container td .update-entry-container .edit-slider .noUi-base,
+      .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
         height: 5px;
         border: 0;
         background-color: rgba(255, 255, 255, 0);
@@ -3644,13 +3655,15 @@ label.fileUpload input[type="file"] {
         -webkit-border-radius: 4px;
         border-radius: 4px;
         box-shadow: none; }
-        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
+        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin,
+        .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
           background-color: rgba(255, 255, 255, 0);
           -moz-border-radius: 4px;
           -o-border-radius: 4px;
           -webkit-border-radius: 4px;
           border-radius: 4px; }
-        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
+        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle,
+        .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
           position: relative;
           width: 28px;
           height: 28px;
@@ -3661,7 +3674,8 @@ label.fileUpload input[type="file"] {
           box-shadow: none;
           top: -7px;
           color: white; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
             display: block;
             content: '|||';
             color: white;
@@ -3674,13 +3688,17 @@ label.fileUpload input[type="file"] {
             background-color: transparent;
             top: 0;
             left: -1px; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
             display: none; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
             background-color: #009ceb; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
             background-color: #de8929; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
             position: absolute;
             top: -32px;
             background-color: #007ab8;
@@ -3688,7 +3706,8 @@ label.fileUpload input[type="file"] {
             width: 44px;
             left: -8px;
             text-align: center; }
-            .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
+            .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after,
+            .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
               content: '';
               height: 0px;
               width: 0px;
@@ -3698,7 +3717,8 @@ label.fileUpload input[type="file"] {
               border-left: 5px solid transparent;
               border-right: 5px solid transparent;
               border-top: 5px solid #007ab8; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
+          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label,
+          .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
             position: absolute;
             width: 42px;
             text-align: center;
@@ -3898,7 +3918,8 @@ div#my-reports {
       border: 1px solid rgba(153, 153, 153, 0.8);
       right: 8px;
       top: -2px; }
-      .period-td .result-tooltip .tooltip-arrow:after, .period-td .result-tooltip .tooltip-arrow:before {
+      .period-td .result-tooltip .tooltip-arrow:after,
+      .period-td .result-tooltip .tooltip-arrow:before {
         bottom: 100%;
         left: 50%;
         border: solid transparent;
@@ -3942,11 +3963,10 @@ div#exportsOverview .IATIfilters button.btn-default, div#newIATIExport .IATIfilt
   margin-top: 10px; }
 
 div#exportsOverview button.btn-default, div#newIATIExport button.btn-default {
-  background: #202024;
-  color: white;
   border: none; }
   div#exportsOverview button.btn-default:hover, div#newIATIExport button.btn-default:hover {
-    background: #2c2a74; }
+    background: #2c2a74;
+    color: white; }
 
 div.iatiFilters {
   background: rgba(32, 32, 36, 0);
@@ -3957,6 +3977,8 @@ div.iatiFilters {
   -o-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
   -webkit-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
   box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
+  div.iatiFilters .filterGroup p {
+    margin-top: 10px; }
   @media only screen and (max-width: 768px) {
     div.iatiFilters {
       margin-top: 20px;
@@ -3964,12 +3986,17 @@ div.iatiFilters {
       div.iatiFilters .btn {
         margin: 10px auto; } }
   div.iatiFilters h3 {
+    margin-top: 0;
     display: block; }
+  div.iatiFilters .newIatiExport p {
+    margin-top: 10%; }
   div.iatiFilters .newIatiExport .btn {
-    display: block; }
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #202024;
+    color: white; }
   div.iatiFilters .btn {
-    background: #202024;
-    color: white;
     border: none; }
     div.iatiFilters .btn:hover {
       background: #2c2a74; }

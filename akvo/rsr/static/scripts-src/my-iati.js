@@ -803,19 +803,19 @@ function loadComponents() {
             var renderedGlobalFilters = globalFilters.map(renderFilter);
 
             return (
-                React.DOM.div( {className:"row iatiFilters topMargin"}, 
-                    React.DOM.h3(null, cap(i18n.project_selection)),
-                    React.DOM.div( {className:"col-sm-8"}, 
-                        React.DOM.h4(null, cap(i18n.global_selection)),
+                React.DOM.div( {className:"row iatiFilters"}, 
+                    React.DOM.div( {className:"col-sm-8 filterGroup"}, 
+                        React.DOM.h3(null, cap(i18n.project_selection)),
+                        React.DOM.p(null, cap(i18n.global_selection)),
                         this.renderSelectAllButton(),
                         this.renderNoErrorsButton(),
                         this.renderSelectPreviousButton(),
                         renderedGlobalFilters,
-                        React.DOM.h4(null, cap(i18n.project_status)),
+                        React.DOM.p(null, cap(i18n.project_status)),
                         renderedStatusFilters
                     ),
-                    React.DOM.div( {className:"col-sm-4 newIatiExport"}, 
-                        this.state.selectedProjects.length, " ", i18n.projects_selected,
+                    React.DOM.div( {className:"col-sm-4 newIatiExport text-center"}, 
+                        React.DOM.p(null, this.state.selectedProjects.length, " ", i18n.projects_selected),
                         this.renderCreateButton()
                     )
                 )
