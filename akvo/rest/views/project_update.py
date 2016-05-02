@@ -13,6 +13,8 @@ from ..viewsets import PublicProjectViewSet
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError
+from re import match
 
 
 class ProjectUpdateViewSet(PublicProjectViewSet):
@@ -36,16 +38,16 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        created_at__gt = validate_date(self.request.QUERY_PARAMS.get('created_at__gt', None))
         if created_at__gt is not None:
             self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
-        created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
+        created_at__lt = validate_date(self.request.QUERY_PARAMS.get('created_at__lt', None))
         if created_at__lt is not None:
             self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
-        last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        last_modified_at__gt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__gt', None))
         if last_modified_at__gt is not None:
             self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
-        last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
+        last_modified_at__lt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__lt', None))
         if last_modified_at__lt is not None:
             self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
@@ -101,16 +103,16 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        created_at__gt = validate_date(self.request.QUERY_PARAMS.get('created_at__gt', None))
         if created_at__gt is not None:
             self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
-        created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
+        created_at__lt = validate_date(self.request.QUERY_PARAMS.get('created_at__lt', None))
         if created_at__lt is not None:
             self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
-        last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        last_modified_at__gt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__gt', None))
         if last_modified_at__gt is not None:
             self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
-        last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
+        last_modified_at__lt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__lt', None))
         if last_modified_at__lt is not None:
             self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
@@ -121,6 +123,21 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         if user__organisations:
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
         return super(ProjectUpdateExtraViewSet, self).get_queryset()
+
+
+# validate date strings from URL
+def validate_date(date):
+
+    if date is None:
+        return None
+    # if yyyy-mm-dd
+    elif match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
+        return date
+    # if yyyy-mm
+    elif match('^\d{4}\-(0?[1-9]|1[012])$', date) is not None:
+        return date + '-01'
+    else:
+        raise ParseError('created_at and last_modified_at dates must be in format: yyyy-mm-dd')
 
 
 @api_view(['POST'])
