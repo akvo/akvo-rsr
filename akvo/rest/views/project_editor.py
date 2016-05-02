@@ -27,6 +27,7 @@ from django.db.models import (get_model, BooleanField, DateField, DecimalField, 
 from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -771,4 +772,5 @@ def log_project_addition(request, project_pk=None):
         change_message=message
     )
 
-    return Response({})
+    content = {'log_entry': 'added successfully'}
+    return Response(content, status=status.HTTP_201_CREATED)

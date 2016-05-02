@@ -5,7 +5,8 @@
       <div class="col-sm-6"><h3>{% trans "My projects" %}</h3>
           {% has_perm 'rsr.add_project' user as can_add_project %}
           {% if can_add_project and user.can_create_project %}
-            <button class="btn btn-default btn-sm" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
+              <button class="btn btn-default btn-sm" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
+              <p class="text-danger" id="projectCreationError"></p>
           {% endif %}
       </div>   
       <div class="col-sm-6 btnHeader text-right">
@@ -127,7 +128,14 @@
     <script type="application/json" id="default-values">
         {
             "employments": {{ reportable_organisations }},
-            "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "type": "{{ field.type }}", "section": {{ field.section }}, "order": {{ field.order }}, "max_characters": {% if field.max_characters %}{{ field.max_characters }}{% else %}0{% endif %}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "type": "{{ field.type }}", "section": {{ field.section }}, "order": {{ field.order }}, "max_characters": {% if field.max_characters %}{{ field.max_characters }}{% else %}0{% endif %}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            "connection_error": "{% trans 'General connection error, please check your internet connection' %}",
+            "could_not_add": "{% trans 'Could not add' %}",
+            "project": "{% trans 'project' %}",
+            "reporting_organisation": "{% trans 'reporting organisation' %}",
+            "project_log": "{% trans 'project log' %}",
+            "custom_fields": "{% trans 'custom fields' %}",
+            "contact_us": "{% trans 'Please contact Akvo staff by using the Help button on the right.' %}"
         }
     </script>
 
