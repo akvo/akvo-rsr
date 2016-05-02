@@ -43,7 +43,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             # query string keys reserved by the RSRGenericFilterBackend
             qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related', ]
             # query string keys used by core DRF and OrderingFilter
-            exclude_params = ['limit', 'format', 'page', 'order_by', ]
+            exclude_params = ['limit', 'format', 'page', 'ordering', ]
             filters = {}
             for key in request.QUERY_PARAMS.keys():
                 if key not in qs_params + exclude_params:
