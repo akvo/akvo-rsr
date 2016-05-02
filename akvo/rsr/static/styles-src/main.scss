@@ -3014,7 +3014,8 @@ article {
     .baseline-year,
     .period-target,
     .period-actual,
-    .period-target-comment {
+    .period-target-comment,
+    .period-actual-comment {
         display: inline-block !important;
         padding: 0 0 10px 0px;
         > span:first-child {
@@ -3034,11 +3035,20 @@ article {
             }
         }
     }
-    .period-target-comment {
-        span:nth-child(2n) {
-            font-weight: 400;
-        }
-    }
+    //.period-target-comment {
+    //    width: 50%;
+    //    float: left;
+    //    span:nth-child(2n) {
+    //        font-weight: 400;
+    //    }
+    //}
+    //.period-actual-comment {
+    //    width: 50%;
+    //    float: right;
+    //    span:nth-child(2n) {
+    //        font-weight: 400;
+    //    }
+    //}
     .baseline-value,
     .period-target {
         width: 50%;
@@ -3127,8 +3137,13 @@ article {
         }
     }
     .period-target-comment {
-        width: 100%;
+        width: 50%;
         float: left;
+        padding: 0 0 40px 0px;
+    }
+    .period-actual-comment {
+        width: 50%;
+        float: right;
         padding: 0 0 40px 0px;
     }
 }
