@@ -444,7 +444,7 @@ function loadComponents() {
 
             function exportAdded(response) {
                 // Redirect user back to overview
-                window.location = window.location.href.replace('&new=true', '');
+                window.location = window.location.href.replace('new=true', '');
             }
 
             this.setState({exporting: true});
