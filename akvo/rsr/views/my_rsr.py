@@ -15,6 +15,8 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 
+from tastypie.models import ApiKey
+
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
@@ -67,6 +69,10 @@ def my_details(request):
 
     change_password_form = PasswordForm(request.user)
 
+    api_key = ApiKey.objects.get_or_create(user=request.user)[0].key
+
+    print type(api_key)
+
     context = {
         'organisation_count': organisation_count,
         'country_count': country_count,
@@ -75,6 +81,7 @@ def my_details(request):
         'organisationform': organisation_form,
         'avatarform': avatar_form,
         'change_password_form': change_password_form,
+        'api_key': api_key,
     }
 
     return render(request, 'myrsr/my_details.html', context)
