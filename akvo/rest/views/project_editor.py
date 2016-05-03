@@ -558,7 +558,8 @@ def project_editor(request, pk=None):
             break
 
     # Update the IATI checks for every save in the editor.
-    project.update_iati_checks()
+    updated_project = Project.objects.get(pk=pk)
+    updated_project.update_iati_checks()
 
     return Response(
         {
