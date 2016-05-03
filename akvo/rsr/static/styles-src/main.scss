@@ -1390,6 +1390,9 @@ h4.detailedInfo {
         .orgType {
             color: rgba($akvoBlack, 0.5);
         }
+        .orgIatiId {
+            color: rgba($akvoBlack, 0.5);
+        }
         .additionalInfo {
             div {
                 span {
@@ -1532,6 +1535,11 @@ h4.detailedInfo {
                         span {
                             margin-left: 5px;
                         }
+                    }
+                }
+                .socialInfo {
+                    p {
+                        color: rgba($akvoBlack, 0.5);
                     }
                 }
                 h1 {

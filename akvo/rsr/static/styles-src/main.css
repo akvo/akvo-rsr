@@ -1213,6 +1213,8 @@ h4.detailedInfo {
     margin-top: 10px; }
   .main-list li .orgType {
     color: rgba(32, 32, 36, 0.5); }
+  .main-list li .orgIatiId {
+    color: rgba(32, 32, 36, 0.5); }
   .main-list li .additionalInfo div span {
     margin-left: 5px; }
   @media only screen and (max-width: 768px) {
@@ -1311,6 +1313,8 @@ h4.detailedInfo {
     color: rgba(32, 32, 36, 0.5); }
     .main-list.organisations ul li .additionalInfo div span {
       margin-left: 5px; }
+  .main-list.organisations ul li .socialInfo p {
+    color: rgba(32, 32, 36, 0.5); }
   .main-list.organisations ul li h1 a {
     color: #ee3124; }
     .main-list.organisations ul li h1 a:hover {
