@@ -71,8 +71,6 @@ def my_details(request):
 
     api_key = ApiKey.objects.get_or_create(user=request.user)[0].key
 
-    print type(api_key)
-
     context = {
         'organisation_count': organisation_count,
         'country_count': country_count,
