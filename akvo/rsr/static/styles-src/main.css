@@ -2483,11 +2483,13 @@ article {
   .baseline .period-target,
   .baseline .period-actual,
   .baseline .period-target-comment,
+  .baseline .period-actual-comment,
   .periodValues .baseline-value,
   .periodValues .baseline-year,
   .periodValues .period-target,
   .periodValues .period-actual,
-  .periodValues .period-target-comment {
+  .periodValues .period-target-comment,
+  .periodValues .period-actual-comment {
     display: inline-block !important;
     padding: 0 0 10px 0px; }
     .baseline .baseline-value > span:first-child,
@@ -2495,22 +2497,26 @@ article {
     .baseline .period-target > span:first-child,
     .baseline .period-actual > span:first-child,
     .baseline .period-target-comment > span:first-child,
+    .baseline .period-actual-comment > span:first-child,
     .periodValues .baseline-value > span:first-child,
     .periodValues .baseline-year > span:first-child,
     .periodValues .period-target > span:first-child,
     .periodValues .period-actual > span:first-child,
-    .periodValues .period-target-comment > span:first-child {
+    .periodValues .period-target-comment > span:first-child,
+    .periodValues .period-actual-comment > span:first-child {
       display: block; }
       .baseline .baseline-value > span:first-child span,
       .baseline .baseline-year > span:first-child span,
       .baseline .period-target > span:first-child span,
       .baseline .period-actual > span:first-child span,
       .baseline .period-target-comment > span:first-child span,
+      .baseline .period-actual-comment > span:first-child span,
       .periodValues .baseline-value > span:first-child span,
       .periodValues .baseline-year > span:first-child span,
       .periodValues .period-target > span:first-child span,
       .periodValues .period-actual > span:first-child span,
-      .periodValues .period-target-comment > span:first-child span {
+      .periodValues .period-target-comment > span:first-child span,
+      .periodValues .period-actual-comment > span:first-child span {
         display: inline; }
     .baseline .baseline-value span:nth-child(2n), .baseline .baseline-value .actualValueSpan,
     .baseline .baseline-year span:nth-child(2n),
@@ -2521,6 +2527,8 @@ article {
     .baseline .period-actual .actualValueSpan,
     .baseline .period-target-comment span:nth-child(2n),
     .baseline .period-target-comment .actualValueSpan,
+    .baseline .period-actual-comment span:nth-child(2n),
+    .baseline .period-actual-comment .actualValueSpan,
     .periodValues .baseline-value span:nth-child(2n),
     .periodValues .baseline-value .actualValueSpan,
     .periodValues .baseline-year span:nth-child(2n),
@@ -2530,7 +2538,9 @@ article {
     .periodValues .period-actual span:nth-child(2n),
     .periodValues .period-actual .actualValueSpan,
     .periodValues .period-target-comment span:nth-child(2n),
-    .periodValues .period-target-comment .actualValueSpan {
+    .periodValues .period-target-comment .actualValueSpan,
+    .periodValues .period-actual-comment span:nth-child(2n),
+    .periodValues .period-actual-comment .actualValueSpan {
       display: block;
       font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
       .baseline .baseline-value span:nth-child(2n) span, .baseline .baseline-value .actualValueSpan span,
@@ -2542,6 +2552,8 @@ article {
       .baseline .period-actual .actualValueSpan span,
       .baseline .period-target-comment span:nth-child(2n) span,
       .baseline .period-target-comment .actualValueSpan span,
+      .baseline .period-actual-comment span:nth-child(2n) span,
+      .baseline .period-actual-comment .actualValueSpan span,
       .periodValues .baseline-value span:nth-child(2n) span,
       .periodValues .baseline-value .actualValueSpan span,
       .periodValues .baseline-year span:nth-child(2n) span,
@@ -2551,7 +2563,9 @@ article {
       .periodValues .period-actual span:nth-child(2n) span,
       .periodValues .period-actual .actualValueSpan span,
       .periodValues .period-target-comment span:nth-child(2n) span,
-      .periodValues .period-target-comment .actualValueSpan span {
+      .periodValues .period-target-comment .actualValueSpan span,
+      .periodValues .period-actual-comment span:nth-child(2n) span,
+      .periodValues .period-actual-comment .actualValueSpan span {
         display: inline; }
       .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .baseline .baseline-value .actualValueSpan span:nth-child(1),
       .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
@@ -2562,6 +2576,8 @@ article {
       .baseline .period-actual .actualValueSpan span:nth-child(1),
       .baseline .period-target-comment span:nth-child(2n) span:nth-child(1),
       .baseline .period-target-comment .actualValueSpan span:nth-child(1),
+      .baseline .period-actual-comment span:nth-child(2n) span:nth-child(1),
+      .baseline .period-actual-comment .actualValueSpan span:nth-child(1),
       .periodValues .baseline-value span:nth-child(2n) span:nth-child(1),
       .periodValues .baseline-value .actualValueSpan span:nth-child(1),
       .periodValues .baseline-year span:nth-child(2n) span:nth-child(1),
@@ -2571,11 +2587,10 @@ article {
       .periodValues .period-actual span:nth-child(2n) span:nth-child(1),
       .periodValues .period-actual .actualValueSpan span:nth-child(1),
       .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-target-comment .actualValueSpan span:nth-child(1) {
+      .periodValues .period-target-comment .actualValueSpan span:nth-child(1),
+      .periodValues .period-actual-comment span:nth-child(2n) span:nth-child(1),
+      .periodValues .period-actual-comment .actualValueSpan span:nth-child(1) {
         margin-left: 10px; }
-  .baseline .period-target-comment span:nth-child(2n),
-  .periodValues .period-target-comment span:nth-child(2n) {
-    font-weight: 400; }
   .baseline .baseline-value,
   .baseline .period-target,
   .periodValues .baseline-value,
@@ -2705,8 +2720,13 @@ article {
           margin-left: -8px; }
   .baseline .period-target-comment,
   .periodValues .period-target-comment {
-    width: 100%;
+    width: 50%;
     float: left;
+    padding: 0 0 40px 0px; }
+  .baseline .period-actual-comment,
+  .periodValues .period-actual-comment {
+    width: 50%;
+    float: right;
     padding: 0 0 40px 0px; }
 
 .sidebar {
