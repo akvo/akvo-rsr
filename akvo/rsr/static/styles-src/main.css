@@ -3962,12 +3962,45 @@ div#exportsOverview .IATIfilters button.btn-default, div#newIATIExport .IATIfilt
   margin-top: 10px; }
 
 div#exportsOverview button.btn-default, div#newIATIExport button.btn-default {
-  margin: -5px 0 0 25px;
-  background: #202024;
-  color: white;
-  border: none; }
+  border: none;
+  margin-left: 3px; }
   div#exportsOverview button.btn-default:hover, div#newIATIExport button.btn-default:hover {
-    background: #2c2a74; }
+    background: #2c2a74;
+    color: white; }
+
+div.iatiFilters {
+  background: rgba(32, 32, 36, 0);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 25px;
+  -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  -o-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  -webkit-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+  box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
+  div.iatiFilters .filterGroup p {
+    margin-top: 10px; }
+  @media only screen and (max-width: 768px) {
+    div.iatiFilters {
+      margin-top: 20px;
+      margin-bottom: 20px; }
+      div.iatiFilters .btn {
+        margin: 10px auto; } }
+  div.iatiFilters h3 {
+    margin-top: 0;
+    display: block; }
+  div.iatiFilters .newIatiExport p {
+    margin-top: 10%; }
+  div.iatiFilters .newIatiExport .btn {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #202024;
+    color: white; }
+  div.iatiFilters .btn {
+    border: none;
+    margin-left: 3px; }
+    div.iatiFilters .btn:hover {
+      background: #2c2a74; }
 
 .iatiCheck span.noCheck {
   color: #202024; }
