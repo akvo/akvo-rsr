@@ -16,4 +16,3 @@ class InvoiceViewSet(PublicProjectViewSet):
 
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-    filter_fields = ('project', )

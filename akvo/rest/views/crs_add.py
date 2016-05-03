@@ -16,7 +16,6 @@ class CrsAddViewSet(PublicProjectViewSet):
     """
     queryset = CrsAdd.objects.all()
     serializer_class = CrsAddSerializer
-    filter_fields = ('project', )
 
 
 class CrsAddOtherFlagViewSet(PublicProjectViewSet):
@@ -24,5 +23,4 @@ class CrsAddOtherFlagViewSet(PublicProjectViewSet):
     """
     queryset = CrsAddOtherFlag.objects.all()
     serializer_class = CrsAddOtherFlagSerializer
-    filter_fields = ('crs__project', 'crs', 'code', )
     project_relation = 'crs__project__'

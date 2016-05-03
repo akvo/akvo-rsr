@@ -15,7 +15,6 @@ class IatiExportViewSet(BaseRSRViewSet):
     """
     queryset = IatiExport.objects.all()
     serializer_class = IatiExportSerializer
-    filter_fields = ('reporting_organisation', 'user', 'version', 'status', 'is_public')
 
 
 class IatiActivityExportViewSet(BaseRSRViewSet):
@@ -23,4 +22,3 @@ class IatiActivityExportViewSet(BaseRSRViewSet):
     """
     queryset = IatiActivityExport.objects.all()
     serializer_class = IatiActivityExportSerializer
-    filter_fields = ('iati_export', 'project', 'status')

@@ -16,4 +16,3 @@ class RelatedProjectViewSet(PublicProjectViewSet):
     """
     queryset = RelatedProject.objects.all()
     serializer_class = RelatedProjectSerializer
-    filter_fields = ('project', 'related_project', 'relation', )

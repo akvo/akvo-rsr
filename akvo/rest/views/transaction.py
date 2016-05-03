@@ -15,9 +15,6 @@ class TransactionViewSet(PublicProjectViewSet):
 
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    filter_fields = (
-        'project', 'reference', 'transaction_type', 'currency', 'provider_organisation',
-        'receiver_organisation')
 
 
 class TransactionSectorViewSet(PublicProjectViewSet):
@@ -25,5 +22,4 @@ class TransactionSectorViewSet(PublicProjectViewSet):
 
     queryset = TransactionSector.objects.all()
     serializer_class = TransactionSectorSerializer
-    filter_fields = ('transaction__project', 'transaction', 'code')
     project_relation = 'transaction__project__'

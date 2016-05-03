@@ -15,4 +15,3 @@ class IatiCheckViewSet(BaseRSRViewSet):
     """
     queryset = IatiCheck.objects.all()
     serializer_class = IatiCheckSerializer
-    filter_fields = ('project', 'status')

@@ -1127,16 +1127,32 @@ function initReact() {
 
         renderTargetComment: function() {
             // Render the target comment.
-            if (this.props.selectedPeriod.target_comment !== '') {
+            if (this.props.selectedPeriod.target_comment === '') {
+                return (
+                    React.DOM.div( {className:"period-target-comment"})
+                );
+            } else {
                 return (
                     React.DOM.div( {className:"period-target-comment"}, 
                         i18nResults.target_comment,
                         React.DOM.span(null, this.props.selectedPeriod.target_comment)
                     )
                 );
+            }
+        },
+
+        renderActualComment: function() {
+            // Render the actual comment.
+            if (this.props.selectedPeriod.actual_comment === '') {
+                return (
+                    React.DOM.div( {className:"period-actual-comment"})
+                );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.DOM.div( {className:"period-actual-comment"}, 
+                        i18nResults.actual_comment,
+                        React.DOM.span(null, this.props.selectedPeriod.actual_comment)
+                    )
                 );
             }
         },
@@ -1215,7 +1231,8 @@ function initReact() {
                                 ),
                                  hover
                             ),
-                            this.renderTargetComment()
+                            this.renderTargetComment(),
+                            this.renderActualComment()
                         ),
                         React.createElement(UpdatesList, {
                             addEditingData: this.props.addEditingData,

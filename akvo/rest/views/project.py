@@ -5,9 +5,10 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rest.serializers.project import ProjectUpSerializer
 from akvo.rsr.models import Project
-from ..serializers import ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer
+
+from ..serializers import (ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer,
+                           ProjectUpSerializer)
 from ..viewsets import PublicProjectViewSet
 
 
@@ -15,36 +16,6 @@ class ProjectViewSet(PublicProjectViewSet):
 
     """
     Viewset providing Project data.
-
-    Allowed parameters are:
-    __limit__ (default 30, max 100),
-    __title__ (exact or icontains),
-    __subtitle__ (exact or icontains),
-    __status__,
-    __language__,
-    __currency__,
-    __date_start_planned__ (exact, gt, gte, lt or lte),
-    __date_start_actual__ (exact, gt, gte, lt or lte),
-    __date_end_planned__ (exact, gt, gte, lt or lte),
-    __date_end_actual__ (exact, gt, gte, lt or lte),
-    __created_at__ (exact, gt, gte, lt or lte),
-    __last_modified_at__ (exact, gt, gte, lt or lte),
-    __sync_owner__,
-    __iati_activity_id__ (exact or icontains),
-    __hierarchy__,
-    __project_scope__,
-    __collaboration_type__,
-    __default_aid_type__,
-    __default_finance_type__,
-    __default_flow_type__,
-    __default_tied_status__,
-    __budget__ (exact, gt, gte, lt or lte),
-    __funds__ (exact, gt, gte, lt or lte),
-    __funds_needed__ (exact, gt, gte, lt or lte),
-    __categories__ (exact, in),
-    __partners__ (exact, in),
-    __keywords__ (exact, in), and
-    __publishingstatus\__status__.
     """
     queryset = Project.objects.select_related(
         'categories',
@@ -53,38 +24,7 @@ class ProjectViewSet(PublicProjectViewSet):
     ).prefetch_related(
         'publishingstatus',
     )
-
     serializer_class = ProjectSerializer
-    filter_fields = {
-        'id': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'title': ['exact', 'icontains'],
-        'subtitle': ['exact', 'icontains'],
-        'status': ['exact', ],
-        'language': ['exact', ],
-        'currency': ['exact', ],
-        'date_start_planned': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'date_start_actual': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'date_end_planned': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'date_end_actual': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'iati_activity_id': ['exact', 'icontains', ],
-        'hierarchy': ['exact', ],
-        'project_scope': ['exact', ],
-        'collaboration_type': ['exact', ],
-        'default_aid_type': ['exact', ],
-        'default_finance_type': ['exact', ],
-        'default_flow_type': ['exact', ],
-        'default_tied_status': ['exact', ],
-        'budget': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'funds': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'funds_needed': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'categories': ['exact', 'in', ],
-        'partners': ['exact', 'in', ],
-        'keywords': ['exact', 'in', ],
-        'publishingstatus__status': ['exact', ],
-    }
-
     project_relation = ''
 
     def get_queryset(self):
@@ -92,6 +32,7 @@ class ProjectViewSet(PublicProjectViewSet):
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
+
         sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
         reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
 
@@ -155,7 +96,6 @@ class ProjectExtraViewSet(ProjectViewSet):
     )
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
-    filter_fields = ('partnerships__organisation', 'publishingstatus__status')
 
 
 class ProjectUpViewSet(ProjectViewSet):
@@ -181,4 +121,3 @@ class ProjectUpViewSet(ProjectViewSet):
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 100
-    filter_fields = ('partnerships__organisation', 'publishingstatus__status')
