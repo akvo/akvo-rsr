@@ -557,10 +557,7 @@ def project_editor(request, pk=None):
             break
 
     # Update the IATI checks for every save in the editor.
-    try:
-        project.update_iati_checks()
-    except:
-        pass
+    project.update_iati_checks()
 
     return Response(
         {
@@ -770,5 +767,8 @@ def log_project_addition(request, project_pk=None):
         action_flag=ADDITION,
         change_message=message
     )
+
+    # Perform IATI checks after a project has been created.
+    project.update_iati_checks()
 
     return Response({})
