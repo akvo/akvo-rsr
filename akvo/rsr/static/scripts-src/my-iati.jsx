@@ -1264,7 +1264,7 @@ function setFileOnOrganisationPage() {
         checkbox.onchange = function() {
             var data = JSON.stringify({'public_iati_file': checkbox.checked ? true : false});
             apiCall('PATCH', endpoints.organisation, data, true, function(){});
-        }
+        };
     }
 }
 
@@ -1272,7 +1272,9 @@ function setCreateFileOnClick() {
     var button = document.getElementById('createIATIExport');
     if (button) {
         button.onclick = function() {
-            window.location = window.location.href + '&new=true';
+            // Add new=true parameter to URL and redirect to new URL
+            var linkSign = window.location.href.indexOf('&org=') < 0 ? '?' : '&';
+            window.location = window.location.href + linkSign + 'new=true';
         };
     }
 }
