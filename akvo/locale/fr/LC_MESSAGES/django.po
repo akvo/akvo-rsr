@@ -7546,7 +7546,7 @@ msgid "Grab a widget"
 msgstr "Prenez un widget"
 
 #: templates/partials/project_footer.html:32
-msgid "Export data"
+msgid "Download data"
 msgstr "Exporter les données"
 
 #: templates/partials/project_footer.html:35
