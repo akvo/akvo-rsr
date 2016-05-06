@@ -1268,7 +1268,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
                                'piwik_id',))),
         (u'Style and content',
-            dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
+            dict(fields=('all_maps', 'custom_css', 'custom_logo',
                          'custom_favicon', 'show_keyword_logos',))),
         (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
@@ -1295,6 +1295,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
     )
+
+    # exclude deprecated fields
+    exclude = ('about_box', 'about_image')
     filter_horizontal = ('keywords',)
     list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
     list_filter = ('enabled', 'keywords')
