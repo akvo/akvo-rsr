@@ -20,7 +20,7 @@ class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
         _(u'sector code'), blank=True, max_length=25,
-        help_text=_(u'Please select DAC-5 or DAC-3 as the sector vocabulary first, then this field'
+        help_text=_(u'Please select DAC-5 or DAC-3 as the sector vocabulary first, then this field '
                     u'will be populated with the corresponding codes. For other vocabularies, it '
                     u'is possible to fill in any code. '
                     u'See these lists for the DAC-5 and DAC-3 sector codes: '
