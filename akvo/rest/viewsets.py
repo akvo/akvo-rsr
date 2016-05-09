@@ -44,10 +44,10 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related', ]
             # query string keys used by core DRF, OrderingFilter and Akvo custom views
             exclude_params = ['limit', 'format', 'page', 'ordering', 'partner_type', 'sync_owner',
-                              'reporting_org']
+                              'reporting_org', ]
             filters = {}
             for key in request.QUERY_PARAMS.keys():
-                if key not in qs_params + exclude_params:
+                if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):
                     filters.update({key: request.QUERY_PARAMS.get(key)})
             return filters
 
