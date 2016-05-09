@@ -1273,7 +1273,7 @@ function setCreateFileOnClick() {
     if (button) {
         button.onclick = function() {
             // Add new=true parameter to URL and redirect to new URL
-            var linkSign = window.location.href.indexOf('&org=') < 0 ? '?' : '&';
+            var linkSign = window.location.href.indexOf('org=') < 0 ? '?' : '&';
             window.location = window.location.href + linkSign + 'new=true';
         };
     }
