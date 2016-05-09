@@ -70,7 +70,7 @@
                 <li><a href="{% url 'project-main' project.pk %}">{% trans 'View' %}</a></li>
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 {% if can_edit_project %}
-                  {% if project.status != "C" %}
+                  {% if project.status != "C" or request.user.is_superuser %}
                     <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
                   {% else %}
                     <li> <a class="addUpdate disabled" title="{% trans "Can't edit a completed project" %}"> {% trans 'Edit' %} </a></li>
@@ -82,7 +82,9 @@
                   {% endif %}
                 {% endif %}
                 {% if project.is_published and project.is_public and project.status != "C" %}
-                  <li><a href="{% url 'add-update' project.pk %}">'{{ project.get_status_display }}'{% trans 'Update' %}</a></li>
+                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
+                 {% elif request.user.is_superuser %}
+                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% elif project.status == "C" %}
                   <li> <a class="addUpdate disabled" title="{% trans "Can't update a completed project" %}"> {% trans "Update" %} </a></li>
                 {% else %}
