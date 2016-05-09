@@ -5,10 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db.models.fields.related import ForeignKey, ForeignObject
+from django.core.exceptions import FieldError
 
 from akvo.rest.models import TastyTokenAuthentication
 
 from rest_framework import authentication, filters, permissions, viewsets
+from rest_framework.exceptions import ParseError
 
 from .filters import RSRGenericFilterBackend
 
@@ -87,7 +89,12 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
         # create lookup dicts from the filters found
         lookups = get_lookups_from_filters(legacy_filters)
         for lookup in lookups:
-            queryset = queryset.filter(**lookup)
+            try:
+                queryset = queryset.filter(**lookup)
+            except FieldError:
+                # In order to mimick 'old' behaviour of the API, we should ignore non-valid
+                # parameters. Returning a warning would be more preferable.
+                pass
 
         return queryset
 

@@ -84,7 +84,7 @@ class ProjectExtraViewSet(ProjectViewSet):
     Viewset providing extra Project data.
 
     Allowed parameters are:
-    __limit__ (default 30, max 100),
+    __limit__ (default 10, max 30),
     __partnerships\__organisation__ (filter on organisation ID), and
     __publishingstatus\__status__ (filter on publishing status)
     """
@@ -93,9 +93,29 @@ class ProjectExtraViewSet(ProjectViewSet):
         'publishingstatus',
         'sectors',
         'partnerships',
+        'budget_items',
+        'legacy_data',
+        'links',
+        'locations',
+        'locations__country',
+        'planned_disbursements',
+        'policy_markers',
+        'documents',
+        'comments',
+        'conditions',
+        'contacts',
+        'project_updates',
+        'recipient_countries',
+        'recipient_regions',
+        'related_projects',
+        'results',
+        'sectors',
+        'transactions',
     )
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
+    paginate_by = 10
+    max_paginate_by = 30
 
 
 class ProjectUpViewSet(ProjectViewSet):
