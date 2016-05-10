@@ -227,7 +227,7 @@ class OrganisationUpdates(UpdateFeed):
 
     def items(self, obj):
         # Limited to 25 items to prevent gateway timeouts.
-        return obj.published_projects().all_updates()[:25]
+        return obj.all_updates()[:25]
 
     def item_title(self, item):
         return _(
