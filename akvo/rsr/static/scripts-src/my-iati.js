@@ -327,7 +327,7 @@ function loadComponents() {
                 onclickAll;
 
             if (this.props.projects.length > 0) {
-                // In case there are projets, show a table overview of the projects.
+                // In case there are projects, show a table overview of the projects.
                 checked = this.props.projects.length === this.props.selectedProjects.length;
                 onclickAll = checked ? this.props.deselectAll : this.props.selectAll;
                 projects = this.sortedProjects().map(function(project) {
@@ -384,7 +384,10 @@ function loadComponents() {
                 selectedProjects: [],
                 lastExport: null,
                 publishedFilter: false,
-                exporting: false
+                exporting: false,
+                noErrorsChecked: false,
+                previousChecked: false,
+                publishedChecked: false
             };
         },
 
@@ -427,6 +430,7 @@ function loadComponents() {
 
             if (projectIndex > -1) {
                 newSelection.splice(projectIndex, 1);
+                this.checkUnchecked();
             } else {
                 newSelection.push(projectId);
             }
@@ -451,6 +455,27 @@ function loadComponents() {
             apiCall('POST', url, data, true, exportAdded);
         },
 
+        checkUnchecked: function() {
+            // A check whether the filters should be unchecked (after deselecting a project,
+            // for instance).
+            var selection = this.state.selectedProjects,
+                allProjects = this.state.allProjects.results,
+                lastProjects = this.state.lastExport[0].projects;
+
+            for (var i = 0; i < allProjects.length; i++) {
+                var project = allProjects[i];
+                if (project.checks_errors.length === 0 && selection.indexOf(project.id) < 0) {
+                    this.setState({noErrorsChecked: false});
+                }
+                if (lastProjects.indexOf(project.id) > -1 && selection.indexOf(project.id) < 0) {
+                    this.setState({previousChecked: false});
+                }
+                if (project.publishing_status === 'published' && selection.indexOf(project.id) < 0) {
+                    this.setState({publishedChecked: false});
+                }
+            }
+        },
+
         selectNoErrors: function(select) {
             var newSelection = this.state.selectedProjects;
 
@@ -467,14 +492,6 @@ function loadComponents() {
             this.setState({selectedProjects: newSelection});
         },
 
-        selectNoErrorsProjects: function() {
-            this.selectNoErrors(true);
-        },
-
-        deselectNoErrorsProjects: function() {
-            this.selectNoErrors(false);
-        },
-
         checkNoErrors: function() {
             var noErrorsCount = 0;
 
@@ -488,15 +505,14 @@ function loadComponents() {
             return noErrorsCount;
         },
 
-        allNoErrorsSelected: function() {
-            for (var i = 0; i < this.state.allProjects.results.length; i++) {
-                var project = this.state.allProjects.results[i];
-
-                if (project.checks_errors.length === 0 && this.state.selectedProjects.indexOf(project.id) < 0) {
-                    return false;
-                }
+        clickNoErrorsProjects: function() {
+            var previousState = this.state.noErrorsChecked;
+            this.setState({noErrorsChecked: !previousState});
+            if (previousState) {
+                this.selectNoErrors(false);
+            } else {
+                this.selectNoErrors(true);
             }
-            return true;
         },
 
         renderNoErrorsButton: function() {
@@ -504,34 +520,77 @@ function loadComponents() {
                 return (
                     React.DOM.span(null )
                 );
-            } else if (this.allNoErrorsSelected()) {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm"}, 
-                            React.DOM.input( {type:"checkbox", checked:true, onClick:this.deselectNoErrorsProjects} ), " ", cap(i18n.without_errors)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:true} ), " ", cap(i18n.without_errors)
-                        )
-                    );
-                }
             } else {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm"}, 
-                            React.DOM.input( {type:"checkbox", checked:false, onClick:this.selectNoErrorsProjects} ), " ", cap(i18n.without_errors)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:false} ), " ", cap(i18n.without_errors)
-                        )
-                    );
+                var buttonClass = "btn btn-default btn-sm";
+
+                if (this.state.exporting) {
+                    buttonClass += " disabled";
                 }
+
+                return (
+                    React.DOM.button( {className:buttonClass}, 
+                        React.DOM.input( {type:"checkbox", checked:this.state.noErrorsChecked, onClick:this.clickNoErrorsProjects} ), " ", cap(i18n.without_errors)
+                    )
+                );
+            }
+        },
+
+        selectPublished: function(select) {
+            var newSelection = this.state.selectedProjects;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i],
+                    newSelectionIndex = newSelection.indexOf(project.id);
+                if (select && newSelectionIndex < 0 && project.publishing_status === 'published') {
+                    newSelection.push(project.id);
+                } else if (!select && newSelectionIndex > -1 && project.publishing_status === 'published') {
+                    newSelection.splice(newSelectionIndex, 1);
+                }
+            }
+
+            this.setState({selectedProjects: newSelection});
+        },
+
+        checkPublished: function() {
+            var noErrorsCount = 0;
+
+            for (var i = 0; i < this.state.allProjects.results.length; i++) {
+                var project = this.state.allProjects.results[i];
+                if (project.publishing_status === 'published') {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
+        clickPublishedProjects: function() {
+            var previousState = this.state.publishedChecked;
+            this.setState({publishedChecked: !previousState});
+            if (previousState) {
+                this.selectPublished(false);
+            } else {
+                this.selectPublished(true);
+            }
+        },
+
+        renderPublishedButton: function() {
+            if (this.state.allProjects === null || this.state.allProjects.results.length === 0 || !this.checkPublished()) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else {
+                var buttonClass = "btn btn-default btn-sm";
+
+                if (this.state.exporting) {
+                    buttonClass += " disabled";
+                }
+
+                return (
+                    React.DOM.button( {className:buttonClass}, 
+                        React.DOM.input( {type:"checkbox", checked:this.state.publishedChecked, onClick:this.clickPublishedProjects} ), " ", cap(i18n.published)
+                    )
+                );
             }
         },
 
@@ -552,14 +611,6 @@ function loadComponents() {
             this.setState({selectedProjects: newSelection});
         },
 
-        selectPreviousProjects: function() {
-            this.selectPrevious(true);
-        },
-
-        deselectPreviousProjects: function() {
-            this.selectPrevious(false);
-        },
-
         checkPrevious: function() {
             var lastProjects = this.state.lastExport[0].projects,
                 countLastProjects = 0;
@@ -574,40 +625,34 @@ function loadComponents() {
             return countLastProjects === lastProjects.length;
         },
 
+        clickPreviousProjects: function() {
+            var previousState = this.state.previousChecked;
+            this.setState({previousChecked: !previousState});
+            if (previousState) {
+                this.selectPrevious(false);
+            } else {
+                this.selectPrevious(true);
+            }
+        },
+
         renderSelectPreviousButton: function() {
             if (this.state.initializing || this.state.allProjects.results.length === 0 ||
                     this.state.lastExport.length === 0 || this.state.lastExport[0].projects.length === 0) {
                 return (
                     React.DOM.span(null )
                 );
-            } else if (this.checkPrevious()) {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.deselectPreviousProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:true, onClick:this.deselectPreviousProjects} ), " ", cap(i18n.included_export)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:true} ), " ", cap(i18n.included_export)
-                        )
-                    );
-                }
             } else {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.selectPreviousProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:false, onClick:this.selectPreviousProjects} ), " ", cap(i18n.included_export)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:false} ), " ", cap(i18n.included_export)
-                        )
-                    );
+                var buttonClass = "btn btn-default btn-sm";
+
+                if (this.state.exporting) {
+                    buttonClass += " disabled";
                 }
+
+                return (
+                    React.DOM.button( {className:buttonClass}, 
+                        React.DOM.input( {type:"checkbox", checked:this.state.previousChecked, onClick:this.clickPreviousProjects} ), " ", cap(i18n.included_export)
+                    )
+                );
             }
         },
 
@@ -637,42 +682,6 @@ function loadComponents() {
 
         deselectAllProjects: function() {
             this.selectAll(false);
-        },
-
-        renderSelectAllButton: function() {
-            if (this.state.allProjects === null || this.state.allProjects.results.length === 0) {
-                return (
-                    React.DOM.span(null )
-                );
-            } else if (this.state.allProjects.results.length === this.state.selectedProjects.length) {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.deselectAllProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:true, onClick:this.deselectAllProjects} ), " ", cap(i18n.all)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:true} ), " ", cap(i18n.all)
-                        )
-                    );
-                }
-            } else {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:this.selectAllProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:false, onClick:this.selectAllProjects} ), " ", cap(i18n.all)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:false} ), " ", cap(i18n.all)
-                        )
-                    );
-                }
-            }
         },
 
         selectProjects: function(select, key, value) {
@@ -711,89 +720,14 @@ function loadComponents() {
             return any ? false : count === countSelected;
         },
 
-        renderFilter: function(projectKey, projectValue, name) {
-            var allProjects = this.checkProjects(projectKey, projectValue, false),
-                thisFilter = this;
-
-            var selectProjects = function() {
-                thisFilter.selectProjects(true, projectKey, projectValue);
-            };
-
-            var deselectProjects = function() {
-                thisFilter.selectProjects(false, projectKey, projectValue);
-            };
-
-            if (allProjects) {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:deselectProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:true, onClick:deselectProjects} ), " ", cap(name)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:true} ), " ", cap(name)
-                        )
-                    );
-                }
-            } else {
-                if (!this.state.exporting) {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm", onClick:selectProjects}, 
-                            React.DOM.input( {type:"checkbox", checked:false, onClick:selectProjects} ), " ", cap(name)
-                        )
-                    );
-                } else {
-                    return (
-                        React.DOM.button( {className:"btn btn-default btn-sm disabled"}, 
-                            React.DOM.input( {type:"checkbox", checked:false} ), " ", cap(name)
-                        )
-                    );
-                }
-            }
-        },
-
         renderFilters: function() {
-            var renderFilter = function(filter) {
-                var anyProjects = thisApp.checkProjects(filter[0], filter[1], true);
-
-                if (anyProjects) {
-                    return thisApp.renderFilter(filter[0], filter[1], filter[2]);
-                } else {
-                    return (
-                        React.DOM.span(null )
-                    );
-                }
-            };
-
-            var thisApp = this,
-                statusFilters = [
-                    ['status', 'H', i18n.needs_funding],
-                    ['status', 'A', i18n.active],
-                    ['status', 'C', i18n.completed],
-                    ['status', 'L', i18n.cancelled],
-                    ['status', 'R', i18n.archived]
-                ],
-                globalFilters = [
-                    ['publishing_status', 'published', i18n.published],
-                    ['is_public', true, i18n.public]
-                ];
-
-            var renderedStatusFilters = statusFilters.map(renderFilter);
-            var renderedGlobalFilters = globalFilters.map(renderFilter);
-
             return (
                 React.DOM.div( {className:"row iatiFilters"}, 
                     React.DOM.div( {className:"col-sm-8 filterGroup"}, 
-                        React.DOM.h3(null, cap(i18n.project_selection)),
-                        React.DOM.p(null, cap(i18n.global_selection)),
-                        this.renderSelectAllButton(),
+                        React.DOM.h5(null, cap(i18n.project_selection)),
                         this.renderNoErrorsButton(),
                         this.renderSelectPreviousButton(),
-                        renderedGlobalFilters,
-                        React.DOM.p(null, cap(i18n.project_status)),
-                        renderedStatusFilters
+                        this.renderPublishedButton()
                     ),
                     React.DOM.div( {className:"col-sm-4 newIatiExport text-center"}, 
                         React.DOM.p(null, this.state.selectedProjects.length, " ", i18n.projects_selected),
