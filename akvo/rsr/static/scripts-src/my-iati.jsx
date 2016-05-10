@@ -528,8 +528,8 @@ function loadComponents() {
                 }
 
                 return (
-                    <button className={buttonClass}>
-                        <input type="checkbox" checked={this.state.noErrorsChecked} onClick={this.clickNoErrorsProjects} /> {cap(i18n.without_errors)}
+                    <button className={buttonClass} onClick={this.clickNoErrorsProjects}>
+                        <input type="checkbox" checked={this.state.noErrorsChecked} /> {cap(i18n.without_errors)}
                     </button>
                 );
             }
@@ -587,8 +587,8 @@ function loadComponents() {
                 }
 
                 return (
-                    <button className={buttonClass}>
-                        <input type="checkbox" checked={this.state.publishedChecked} onClick={this.clickPublishedProjects} /> {cap(i18n.published)}
+                    <button className={buttonClass} onClick={this.clickPublishedProjects}>
+                        <input type="checkbox" checked={this.state.publishedChecked} /> {cap(i18n.published)}
                     </button>
                 );
             }
@@ -649,8 +649,8 @@ function loadComponents() {
                 }
 
                 return (
-                    <button className={buttonClass}>
-                        <input type="checkbox" checked={this.state.previousChecked} onClick={this.clickPreviousProjects} /> {cap(i18n.included_export)}
+                    <button className={buttonClass} onClick={this.clickPreviousProjects}>
+                        <input type="checkbox" checked={this.state.previousChecked} /> {cap(i18n.included_export)}
                     </button>
                 );
             }
