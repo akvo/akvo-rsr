@@ -11,9 +11,12 @@ from .rsr_serializer import BaseRSRSerializer
 from rest_framework import serializers
 
 
-class RecipientCountrySerializer(BaseRSRSerializer):
-
-    country_label = serializers.Field(source='iati_country')
+class RecipientCountryRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = RecipientCountry
+
+
+class RecipientCountrySerializer(RecipientCountryRawSerializer):
+
+    country_label = serializers.Field(source='iati_country')

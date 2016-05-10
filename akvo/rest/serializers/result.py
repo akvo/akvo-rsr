@@ -11,15 +11,18 @@ from akvo.rsr.models import Result
 from rest_framework import serializers
 
 
-class ResultSerializer(BaseRSRSerializer):
+class ResultRawSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Result
+
+
+class ResultSerializer(ResultRawSerializer):
 
     project_title = serializers.Field(source='project.title')
     type_label = serializers.Field(source='iati_type')
     parent_project = serializers.Field(source='parent_project')
     child_projects = serializers.Field(source='child_projects')
-
-    class Meta:
-        model = Result
 
 
 class ResultsFrameworkSerializer(BaseRSRSerializer):

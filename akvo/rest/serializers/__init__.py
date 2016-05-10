@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from .benchmark import BenchmarkSerializer
 from .benchmark_name import BenchmarknameSerializer
-from .budget_item import BudgetItemSerializer, CountryBudgetItemSerializer
+from .budget_item import BudgetItemRawSerializer, BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
@@ -54,29 +54,31 @@ from .organisation_document import (OrganisationDocumentCategorySerializer,
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
-from .partnership import PartnershipSerializer, PartnershipBasicSerializer
-from .planned_disbursement import PlannedDisbursementSerializer
-from .policy_marker import PolicyMarkerSerializer
+from .partnership import PartnershipSerializer, PartnershipBasicSerializer, PartnershipRawSerializer
+from .planned_disbursement import PlannedDisbursementSerializer, PlannedDisbursementRawSerializer
+from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
 from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer,
                       ProjectUpSerializer)
 from .project_comment import ProjectCommentSerializer
-from .project_condition import ProjectConditionSerializer
-from .project_contact import ProjectContactSerializer
-from .project_document import ProjectDocumentSerializer, ProjectDocumentCategorySerializer
+from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
+from .project_contact import ProjectContactSerializer, ProjectContactRawSerializer
+from .project_document import (ProjectDocumentSerializer, ProjectDocumentCategorySerializer,
+                               ProjectDocumentRawSerializer)
 from .project_location import (ProjectLocationSerializer, AdministrativeLocationSerializer,
-                               MapProjectLocationSerializer)
+                               MapProjectLocationSerializer, ProjectLocationRawSerializer)
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateExtraSerializer)
 from .project_update_location import (ProjectUpdateLocationSerializer,
                                       ProjectUpdateLocationNestedSerializer,
                                       MapProjectUpdateLocationSerializer)
 from .publishing_status import PublishingStatusSerializer
-from .recipient_country import RecipientCountrySerializer
-from .region import RecipientRegionSerializer
-from .related_project import RelatedProjectSerializer
-from .result import ResultSerializer, ResultsFrameworkSerializer
-from .sector import SectorSerializer
-from .transaction import TransactionSerializer, TransactionSectorSerializer
+from .recipient_country import RecipientCountrySerializer, RecipientCountryRawSerializer
+from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
+from .related_project import RelatedProjectSerializer, RelatedProjectRawSerializer
+from .result import ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer
+from .sector import SectorSerializer, SectorRawSerializer
+from .transaction import (TransactionSerializer, TransactionSectorSerializer,
+                          TransactionRawSerializer)
 from .typeahead import (TypeaheadCountrySerializer,
                         TypeaheadOrganisationSerializer,
                         TypeaheadProjectSerializer,
@@ -88,6 +90,7 @@ __all__ = [
     'BenchmarknameSerializer',
     'BenchmarkSerializer',
     'BudgetItemLabelSerializer',
+    'BudgetItemRawSerializer',
     'BudgetItemSerializer',
     'CategorySerializer',
     'CountrySerializer',
@@ -141,19 +144,26 @@ __all__ = [
     'OrganisationTotalBudgetLineSerializer',
     'OrganisationTotalExpenditureSerializer',
     'PartnershipSerializer',
+    'PartnershipRawSerializer',
     'PartnershipBasicSerializer',
     'PartnerSiteSerializer',
     'PlannedDisbursementSerializer',
+    'PlannedDisbursementRawSerializer',
     'PolicyMarkerSerializer',
+    'PolicyMarkerRawSerializer',
     'ProjectCommentSerializer',
     'ProjectConditionSerializer',
+    'ProjectConditionRawSerializer',
     'ProjectContactSerializer',
+    'ProjectContactRawSerializer',
     'ProjectCustomFieldSerializer',
     'ProjectDocumentSerializer',
+    'ProjectDocumentRawSerializer',
     'ProjectDocumentCategorySerializer',
     'ProjectExtraSerializer',
     'ProjectIatiExportSerializer',
     'ProjectLocationSerializer',
+    'ProjectLocationRawSerializer',
     'ProjectSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
@@ -162,12 +172,18 @@ __all__ = [
     'ProjectUpSerializer',
     'PublishingStatusSerializer',
     'RecipientCountrySerializer',
+    'RecipientCountryRawSerializer',
     'RecipientRegionSerializer',
+    'RecipientRegionRawSerializer',
     'RelatedProjectSerializer',
+    'RelatedProjectRawSerializer',
     'ResultSerializer',
+    'ResultRawSerializer',
     'ResultsFrameworkSerializer',
     'SectorSerializer',
+    'SectorRawSerializer',
     'TransactionSerializer',
+    'TransactionRawSerializer',
     'TransactionSectorSerializer',
     'TypeaheadCountrySerializer',
     'TypeaheadOrganisationSerializer',
