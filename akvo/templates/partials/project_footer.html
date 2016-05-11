@@ -36,11 +36,7 @@
                         <a href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "RSS" %}</a><br/>
                     </div>
                     <div class="col-sm-6">
-                        {% if not user.username %}
-                        <a href="/sign_in/?next={% url 'project_extra-detail' project.id 'json' %}"><i class="fa fa-share-alt"></i> {% trans "JSON" %}</a><br/>
-                        {% else %}
                         <a href="{% url 'project_extra-detail' project.id 'json' %}"><i class="fa fa-share-alt"></i> {% trans "JSON" %}</a><br/>
-                        {% endif %}
                     </div>
                 </p>
 
