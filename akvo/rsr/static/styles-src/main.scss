@@ -1390,6 +1390,9 @@ h4.detailedInfo {
         .orgType {
             color: rgba($akvoBlack, 0.5);
         }
+        .orgIatiId {
+            color: rgba($akvoBlack, 0.5);
+        }
         .additionalInfo {
             div {
                 span {
@@ -1534,6 +1537,11 @@ h4.detailedInfo {
                         }
                     }
                 }
+                .socialInfo {
+                    p {
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
                 h1 {
                     a {
                         color: $akvoTvRed;
@@ -1551,13 +1559,7 @@ h4.detailedInfo {
                     border: thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
-                    @include bw;
                     transition: all 0.2s ease-in;
-                }
-                &:hover {
-                    img {
-                        @include colour;
-                    }
                 }
             }
         }
@@ -1783,12 +1785,8 @@ div.projectTopRow {
                         max-width: 50px;
                         img {
                             width: 80%;
-                            @include bw;
                             transition: all 0.2s ease-in;
                             margin: inherit;
-                            &:hover {
-                                @include colour;
-                            }
                         }
                     }
                     .partType {
@@ -3024,7 +3022,8 @@ article {
     .baseline-year,
     .period-target,
     .period-actual,
-    .period-target-comment {
+    .period-target-comment,
+    .period-actual-comment {
         display: inline-block !important;
         padding: 0 0 10px 0px;
         > span:first-child {
@@ -3044,11 +3043,20 @@ article {
             }
         }
     }
-    .period-target-comment {
-        span:nth-child(2n) {
-            font-weight: 400;
-        }
-    }
+    //.period-target-comment {
+    //    width: 50%;
+    //    float: left;
+    //    span:nth-child(2n) {
+    //        font-weight: 400;
+    //    }
+    //}
+    //.period-actual-comment {
+    //    width: 50%;
+    //    float: right;
+    //    span:nth-child(2n) {
+    //        font-weight: 400;
+    //    }
+    //}
     .baseline-value,
     .period-target {
         width: 50%;
@@ -3137,8 +3145,13 @@ article {
         }
     }
     .period-target-comment {
-        width: 100%;
+        width: 50%;
         float: left;
+        padding: 0 0 40px 0px;
+    }
+    .period-actual-comment {
+        width: 50%;
+        float: right;
         padding: 0 0 40px 0px;
     }
 }
@@ -4609,6 +4622,87 @@ div#my-reports {
                 border-width: 8px;
                 margin-left: -8px;
             }
+        }
+    }
+}
+
+// My IATI
+button#createIATIExport {
+    margin: -5px 0 0 25px;
+    background: $akvoBlack;
+    color: white;
+    border: none;
+    &:hover {
+        background: $rsrBlue;
+    }
+}
+
+div#exportsOverview, div#newIATIExport {
+    tr {
+        &.success {
+            background: rgba($progressSuccess, 0.1) !important;
+            color: $progressSuccess !important;
+        }
+        &.warning {
+            background: rgba($flowOrange, 0.1) !important;
+            color: $flowOrange !important;
+        }
+        &.error {
+            background: rgba($akvoTvRed, 0.1) !important;
+            color: $akvoTvRed !important;
+        }
+    }
+    .IATIfilters {
+        button.btn-default {
+            margin-top: 10px;
+        }
+    }
+    button.btn-default {
+        border: none;
+        margin-left: 3px;
+        &:hover {
+            background: $rsrBlue;
+            color:white;
+        }
+    }
+}
+
+div.iatiFilters {
+    background: rgba($akvoBlack, 0.0);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 25px;
+    .filterGroup {
+        p {
+            margin-top: 10px;
+        }
+    }
+    @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
+    @include responsive(small-max-screens) {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .btn {
+            margin: 10px auto;
+        }
+    }
+    h3 {
+        margin-top: 0;
+        display: block;
+    }
+    .newIatiExport {
+        .btn {
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: $akvoBlack;
+            color: white;
+        }
+    }
+    .btn {
+        border: none;
+        margin-left: 3px;
+        &:hover {
+            background: $rsrBlue;
         }
     }
 }

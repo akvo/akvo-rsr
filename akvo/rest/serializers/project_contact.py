@@ -11,9 +11,13 @@ from .rsr_serializer import BaseRSRSerializer
 
 from rest_framework import serializers
 
-class ProjectContactSerializer(BaseRSRSerializer):
 
-    type_label = serializers.Field(source='iati_type')
+class ProjectContactRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectContact
+
+
+class ProjectContactSerializer(ProjectContactRawSerializer):
+
+    type_label = serializers.Field(source='iati_type')

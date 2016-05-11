@@ -27,6 +27,7 @@ from django.db.models import (get_model, BooleanField, DateField, DecimalField, 
 from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -556,6 +557,10 @@ def project_editor(request, pk=None):
             # are needed.
             break
 
+    # Update the IATI checks for every save in the editor.
+    updated_project = Project.objects.get(pk=pk)
+    updated_project.update_iati_checks()
+
     return Response(
         {
             'changes': log_changes(changes, user, project),
@@ -765,4 +770,8 @@ def log_project_addition(request, project_pk=None):
         change_message=message
     )
 
-    return Response({})
+    # Perform IATI checks after a project has been created.
+    project.update_iati_checks()
+
+    content = {'log_entry': 'added successfully'}
+    return Response(content, status=status.HTTP_201_CREATED)

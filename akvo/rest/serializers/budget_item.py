@@ -11,15 +11,19 @@ from .rsr_serializer import BaseRSRSerializer
 
 from rest_framework import serializers
 
-class BudgetItemSerializer(BaseRSRSerializer):
+
+class BudgetItemRawSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = BudgetItem
+
+
+class BudgetItemSerializer(BudgetItemRawSerializer):
 
     label_label = serializers.Field(source='get_label')
     type_label = serializers.Field(source='iati_type')
     currency_label = serializers.Field(source='iati_currency')
     status_label = serializers.Field(source='iati_status')
-
-    class Meta:
-        model = BudgetItem
 
 
 class CountryBudgetItemSerializer(BaseRSRSerializer):

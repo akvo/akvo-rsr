@@ -25,67 +25,87 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
+function setError(message) {
+    var errorNode = document.getElementById('projectCreationError');
+    errorNode.innerHTML = message;
+}
+
 function setReportingOrg(projectId, partnerId) {
-    var api_url, request;
+    var api_url = '/rest/v1/partnership/?format=json',
+        request = new XMLHttpRequest();
 
-    // Create request
-    api_url = '/rest/v1/partnership/?format=json';
-
-    request = new XMLHttpRequest();
     request.open('POST', api_url, true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/json");
 
     request.onload = function() {
+        if (request.status == 201) {
+            // Successfully created reporting organisation! Now log the project addition.
+            logAddProject(projectId);
+        } else {
+            // We reached our target server, but it returned an error
+            setError(defaultValues.could_not_add + ' ' + defaultValues.reporting_organisation + '. ' + defaultValues.contact_us);
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        setError(defaultValues.connection_error);
         return false;
     };
 
     request.send('{"project": ' + projectId + ', "organisation": ' + partnerId + ', "iati_organisation_role": 101}');
 }
 
-function addCustomFieldToProject(customField, projectId) {
-    var api_url, request;
+function addCustomFieldToProject(data, callback) {
+    var api_url = '/rest/v1/project_custom_field/?format=json',
+        request = new XMLHttpRequest();
 
-    // Create request
-    api_url = '/rest/v1/project_custom_field/?format=json';
-
-    request = new XMLHttpRequest();
     request.open('POST', api_url, true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/json");
 
     request.onload = function() {
-        if (projectId === undefined) {
-            return false;
+        if (request.status == 201) {
+            // Successfully added the custom field!
+            callback();
         } else {
-            window.location = '/myrsr/project_editor/' + projectId + '/';
+            // We reached our target server, but it returned an error
+            setError(defaultValues.could_not_add + ' ' + defaultValues.custom_fields + '. ' + defaultValues.contact_us);
+            return false;
         }
     };
 
     request.onerror = function() {
+        // There was a connection error of some sort
+        setError(defaultValues.connection_error);
         return false;
     };
 
-    request.send(customField);
+    request.send(data);
 }
 
 function addCustomFieldsToProject(projectId) {
-    var customFields;
+    var customFields = defaultValues.new_project_custom_fields,
+        processedFieldsCount = 0;
 
-    customFields = defaultValues.new_project_custom_fields;
+    function countFields() {
+        processedFieldsCount++;
 
-    if (customFields.length === 0) {
-        window.location = '/myrsr/project_editor/' + projectId + '/';
-    } else {
-        for (var i = 0; i < customFields.length; i++) {
-            customFields[i].project = projectId;
-
-            if (i !== customFields.length - 1) {
-                addCustomFieldToProject(JSON.stringify(customFields[i]));
-            } else {
-                addCustomFieldToProject(JSON.stringify(customFields[i]), projectId);
-            }
+        if (customFields.length === processedFieldsCount) {
+            window.location = '/myrsr/project_editor/' + projectId + '/';
         }
+    }
+
+    if (customFields && customFields.length > 0) {
+        for (var i = 0; i < customFields.length; i++) {
+            var customField = customFields[i];
+            customField.project = projectId;
+            addCustomFieldToProject(JSON.stringify(customField), countFields);
+        }
+    } else {
+        window.location = '/myrsr/project_editor/' + projectId + '/';
     }
 }
 
@@ -98,15 +118,30 @@ function setCreateProjectOnClick() {
 }
 
 function logAddProject(projectId) {
-    var api_url, request;
+    var api_url = '/rest/v1/project/' + projectId + '/log_project_addition/?format=json',
+        request = new XMLHttpRequest();
 
-    // Create request
-    api_url = '/rest/v1/project/' + projectId + '/log_project_addition/?format=json';
-
-    request = new XMLHttpRequest();
     request.open('POST', api_url, true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/json");
+
+    request.onload = function() {
+        if (request.status == 201) {
+            // Successfully logged project addition! Add custom fields.
+            addCustomFieldsToProject(projectId);
+        } else {
+            // We reached our target server, but it returned an error
+            setError(defaultValues.could_not_add + ' ' + defaultValues.project_log + '. ' + defaultValues.contact_us);
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        setError(defaultValues.connection_error);
+        return false;
+    };
+
     request.send();
 }
 
@@ -116,12 +151,9 @@ function getCreateProject(createProjectNode) {
 
         createProjectNode.setAttribute('disabled', '');
 
-        var api_url, request, partners;
+        var api_url = '/rest/v1/project/?format=json',
+            request = new XMLHttpRequest();
 
-        // Create request
-        api_url = '/rest/v1/project/?format=json';
-
-        request = new XMLHttpRequest();
         request.open('POST', api_url, true);
         request.setRequestHeader("X-CSRFToken", csrftoken);
         request.setRequestHeader("Content-type", "application/json");
@@ -129,36 +161,24 @@ function getCreateProject(createProjectNode) {
         request.onload = function() {
             if (request.status == 201) {
                 // Successfully created project!
-                var response, projectId;
-
-                try {
-                    response = JSON.parse(request.response);
+                var response = JSON.parse(request.response),
                     projectId = response.id;
 
-                    // Set reporting partner by default
-                    partners = defaultValues.employments;
-                    if (partners.length > 0) {
-                        setReportingOrg(projectId, partners[0]);
-                    }
-
-                    addCustomFieldsToProject(projectId);
-                    logAddProject(projectId);
-                } catch (error) {
-                    // Something went wrong while parsing the response
-                    createProjectNode.removeAttribute('disabled');
+                // Set reporting partner by default
+                var partners = defaultValues.employments;
+                if (partners && partners.length > 0) {
+                    setReportingOrg(projectId, partners[0]);
                 }
-
-                return false;
             } else {
                 // We reached our target server, but it returned an error
-                createProjectNode.removeAttribute('disabled');
+                setError(defaultValues.could_not_add + ' ' + defaultValues.project + '. ' + defaultValues.contact_us);
                 return false;
             }
         };
 
         request.onerror = function() {
             // There was a connection error of some sort
-            createProjectNode.removeAttribute('disabled');
+            setError(defaultValues.connection_error);
             return false;
         };
 

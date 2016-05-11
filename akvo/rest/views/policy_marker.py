@@ -16,4 +16,3 @@ class PolicyMarkerViewSet(PublicProjectViewSet):
     """
     queryset = PolicyMarker.objects.all()
     serializer_class = PolicyMarkerSerializer
-    filter_fields = ('project', 'policy_marker', )

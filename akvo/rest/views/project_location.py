@@ -15,7 +15,6 @@ class ProjectLocationViewSet(PublicProjectViewSet):
     """
     queryset = ProjectLocation.objects.all()
     serializer_class = ProjectLocationSerializer
-    filter_fields = ('location_target', 'country', )
     project_relation = 'location_target__'
 
 
@@ -24,7 +23,6 @@ class AdministrativeLocationViewSet(PublicProjectViewSet):
     """
     queryset = AdministrativeLocation.objects.all()
     serializer_class = AdministrativeLocationSerializer
-    filter_fields = ('location__location_target', 'location', 'code', )
     project_relation = 'location__location_target__'
 
 
@@ -39,11 +37,6 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
     __country__ (filter on country ID)
     """
 
-    filter_fields = (
-        'location_target',
-        'location_target__partners',
-        'country'
-    )
     serializer_class = MapProjectLocationSerializer
     max_paginate_by = 500
     paginate_by = 100

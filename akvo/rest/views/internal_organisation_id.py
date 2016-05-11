@@ -17,4 +17,3 @@ class InternalOrganisationIDViewSet(BaseRSRViewSet):
     """
     serializer_class = InternalOrganisationIDSerializer
     queryset = InternalOrganisationID.objects.all()
-    filter_fields = ('recording_org', 'referenced_org', 'identifier', )

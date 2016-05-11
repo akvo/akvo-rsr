@@ -12,10 +12,13 @@ from .rsr_serializer import BaseRSRSerializer
 from rest_framework import serializers
 
 
-class SectorSerializer(BaseRSRSerializer):
-
-    code_label = serializers.Field(source='iati_sector')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+class SectorRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Sector
+
+
+class SectorSerializer(SectorRawSerializer):
+
+    code_label = serializers.Field(source='iati_sector')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')

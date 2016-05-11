@@ -16,7 +16,6 @@ class FssViewSet(PublicProjectViewSet):
     """
     queryset = Fss.objects.all()
     serializer_class = FssSerializer
-    filter_fields = ('project', )
 
 
 class FssForecastViewSet(PublicProjectViewSet):
@@ -24,5 +23,4 @@ class FssForecastViewSet(PublicProjectViewSet):
     """
     queryset = FssForecast.objects.all()
     serializer_class = FssForecastSerializer
-    filter_fields = ('fss__project', 'fss', )
     project_relation = 'fss__project__'

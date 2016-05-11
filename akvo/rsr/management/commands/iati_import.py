@@ -19,4 +19,3 @@ class Command(BaseCommand):
 
         for iati_import in iati_imports:
             iati_import.check_execution()
-
