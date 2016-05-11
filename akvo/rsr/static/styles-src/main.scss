@@ -295,6 +295,12 @@ dl {
             text-align: left;
             color: rgba($akvoBlack, 0.4);
             font-weight: normal;
+            img {
+                &.unknownFunderLogo {
+                    width: 80px;
+                    height: 60px;
+                }
+            }
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
@@ -304,6 +310,11 @@ dl {
             }
         }
         dd {
+            span {
+                &.unknownFunder {
+                    color: rgba($akvoBlack, 0.4)
+                }
+            }
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
