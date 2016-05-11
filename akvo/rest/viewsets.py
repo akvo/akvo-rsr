@@ -4,13 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.db.models.fields.related import ForeignKey, ForeignObject
+from django.db.models.fields import FieldDoesNotExist
+from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
 
 from akvo.rest.models import TastyTokenAuthentication
 
 from rest_framework import authentication, filters, permissions, viewsets
-from rest_framework.exceptions import ParseError
 
 from .filters import RSRGenericFilterBackend
 
@@ -68,16 +68,20 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
                     parts = parts[:-1]
                     model = queryset.model
                     for part in parts:
-                        field_object, related_model, direct, m2m = model._meta.get_field_by_name(
-                            part)
-                        if direct:
-                            if issubclass(field_object.__class__, ForeignObject):
-                                model = field_object.related.parent_model
+                        try:
+                            field_object, related_model, direct, m2m = model._meta.\
+                                get_field_by_name(part)
+
+                            if direct:
+                                if issubclass(field_object.__class__, ForeignObject):
+                                    model = field_object.related.parent_model
+                                else:
+                                    value = field_object.to_python(value)
+                                    break
                             else:
-                                value = field_object.to_python(value)
-                                break
-                        else:
-                            model = related_model
+                                model = related_model
+                        except FieldDoesNotExist:
+                            pass
                 query_set_lookups += [{key: value}]
             return query_set_lookups
 
