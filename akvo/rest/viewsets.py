@@ -95,9 +95,9 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
         for lookup in lookups:
             try:
                 queryset = queryset.filter(**lookup)
-            except FieldError:
+            except (FieldError, ValueError):
                 # In order to mimick 'old' behaviour of the API, we should ignore non-valid
-                # parameters. Returning a warning would be more preferable.
+                # parameters or values. Returning a warning would be more preferable.
                 pass
 
         return queryset
