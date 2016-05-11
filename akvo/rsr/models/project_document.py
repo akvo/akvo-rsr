@@ -45,7 +45,7 @@ class ProjectDocument(models.Model):
                     u'mime-types-summary-list/</a>.')
     )
     title = ValidXMLCharField(
-        _(u'document title'), max_length=100, blank=True,
+        _(u'document title'), max_length=100, blank=True, default=_(u'Untitled document'),
         help_text=_(u'Enter the title of your document.')
     )
     title_language = ValidXMLCharField(

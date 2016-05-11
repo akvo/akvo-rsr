@@ -294,11 +294,17 @@ dl.dl-horizontal dt {
   text-align: left;
   color: rgba(32, 32, 36, 0.4);
   font-weight: normal; }
+  dl.dl-horizontal dt img.unknownFunderLogo {
+    width: 80px;
+    height: 60px; }
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
+
+dl.dl-horizontal dd span.unknownFunder {
+  color: rgba(32, 32, 36, 0.4); }
 
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;

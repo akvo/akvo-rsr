@@ -24,9 +24,17 @@
                   <h4 class="">{% trans "Current funders" %}:</h4>
                   <dl class="dl-horizontal">
                       {% for partnership in project.funding_partnerships %}
+                          {% if partnership.organisation %}
                           <dt class="funders"><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
+                          {% else %}
+                          <dt class="funders"><img src="/static/images/default-org-logo.jpg" class="unknownFunderLogo"></dt>
+                          {% endif %}
                           <dd class="funders">
+                              {% if partnership.organisation %}
                               <a href="{% url 'organisation-main' partnership.organisation.pk %}">{{partnership.organisation}}</a>
+                              {% else %}
+                              <span class="unknownFunder">{% trans "Unknown organisation" %}</span>
+                              {% endif %}
                               {% if partnership.funding_amount %}
                                   <br/>
                                   <span class="currency">{{project.get_currency_display}}</span>{{partnership.funding_amount|floatformat:0|intcomma}}
