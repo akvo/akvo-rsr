@@ -31,22 +31,22 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         """
 
         # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            name="Test Organisation",
+        reporting_org = Organisation.objects.create(
+            name="Test Organisation Export",
             long_name="Test Organisation for IATI export",
             iati_org_id="NL-KVK-1234567890",
             can_create_projects=True
         )
 
         # Create (super)user
-        self.user = User.objects.create_superuser(
-            username="Super user",
-            email="superuser@test.akvo.org",
+        user = User.objects.create_superuser(
+            username="Super user export",
+            email="superuser.export@test.akvo.org",
             password="password"
         )
 
         # Create project
-        self.project = Project.objects.create(
+        project = Project.objects.create(
             title="Test project for IATI export",
             subtitle="Test project for IATI export (subtitle)",
             iati_activity_id="NL-KVK-1234567890-1234",
@@ -54,28 +54,33 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
 
         # Create partnership
         Partnership.objects.create(
-            organisation=self.reporting_org,
-            project=self.project,
+            organisation=reporting_org,
+            project=project,
             iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
         )
 
         # Create IATI export
-        self.iati_export = IatiExport.objects.create(
-            reporting_organisation=self.reporting_org,
-            user=self.user
+        iati_export = IatiExport.objects.create(
+            reporting_organisation=reporting_org,
+            user=user
         )
 
         # Add a project to the IATI export
-        self.iati_export.projects.add(self.project)
+        iati_export.projects.add(project)
 
         # Run IATI export
-        self.iati_export.create_iati_file()
+        iati_export.create_iati_file()
 
     def test_status(self):
         """
-        Test if the status of the export is set to complete.
+        Test if the status of the export is set to completed.
         """
-        self.assertEqual(self.iati_export.status, 3)
+
+        # Retrieve the latest IATI export
+        iati_export = IatiExport.objects.order_by('-id').first()
+
+        # Test if status is set to completed.
+        self.assertEqual(iati_export.status, 3)
 
     def test_valid_xml(self):
         """
@@ -83,27 +88,30 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         - Test if the XML is valid.
         """
 
+        # Retrieve the latest IATI export
+        iati_export = IatiExport.objects.order_by('-id').first()
+
         # Test if export has an XML file
-        self.assertNotEqual(self.iati_export.iati_file, '')
+        self.assertNotEqual(iati_export.iati_file, '')
 
         # Get XML string of file
-        self.tree = ElementTree.parse(self.iati_export.iati_file)
-        self.root = self.tree.getroot()
-        self.root_tostring = ElementTree.tostring(self.root, encoding='utf8', method='xml')
+        tree = ElementTree.parse(iati_export.iati_file)
+        root = tree.getroot()
+        root_tostring = ElementTree.tostring(root, encoding='utf8', method='xml')
 
         # Test if XML is valid
-        self.root_test = self.assertXmlDocument(self.root_tostring)
+        root_test = self.assertXmlDocument(root_tostring)
 
         # Test if the root's tag name is 'iati-activities'
-        self.assertXmlNode(self.root_test, tag='iati-activities')
+        self.assertXmlNode(root_test, tag='iati-activities')
 
         # Test if the root has attributes 'generated-datetime' and 'version'
-        self.assertXmlHasAttribute(self.root_test, 'generated-datetime')
-        self.assertXmlHasAttribute(self.root_test, 'version')
+        self.assertXmlHasAttribute(root_test, 'generated-datetime')
+        self.assertXmlHasAttribute(root_test, 'version')
 
         # Test if the root has correct child nodes: 'iati-activity' with an 'iati-identifier',
         # 'reporting-org' and 'title'
-        self.assertXpathsExist(self.root_test, ('./iati-activity',
-                                                './iati-activity/iati-identifier',
-                                                './iati-activity/reporting-org',
-                                                './iati-activity/title'))
+        self.assertXpathsExist(root_test, ('./iati-activity',
+                                           './iati-activity/iati-identifier',
+                                           './iati-activity/reporting-org',
+                                           './iati-activity/title'))
