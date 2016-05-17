@@ -47,11 +47,11 @@
         {% for project in page %}
           <tr class="{% if not project.is_published %}notPublished{% elif not project.is_public %}isPrivate{% endif %}">
             <td class="media">
-              <a class="pull-left" href="{% url 'project-main' project.id %}">
+              <a class="pull-left" href="{% if can_edit_project %}{% url 'project_editor' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
                 {% img project 64 64 project.title %}
               </a>
               <div class="media-body">
-                <a href="{% url 'project-main' project.id %}">
+                <a href="{% if can_edit_project %}{% url 'project_editor' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
                   <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
