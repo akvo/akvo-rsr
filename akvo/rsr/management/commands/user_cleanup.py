@@ -8,6 +8,7 @@ from django.core.management.base import BaseCommand
 from optparse import make_option
 from django.utils import timezone
 from datetime import timedelta
+from itertools import chain
 from ...models import User
 
 
@@ -89,8 +90,8 @@ class Command(BaseCommand):
 
         if delete:
             if verbosity > 0: self.stdout.write('%s user(s) matched filter and were successfully removed.'
-                              % (len(non_active)+len(no_employment)))
+                              % (len(set(list(chain(non_active, no_employment))))))
 
         else:
             if verbosity > 0: self.stdout.write('%s user(s) matched filter, use \'-d\' flag to remove them.'
-                              % (len(non_active) + len(no_employment)))
+                              % (len(set(list(chain(non_active, no_employment))))))
