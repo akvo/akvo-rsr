@@ -77,5 +77,5 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
                 q_expr = q_expr | Q(**query)
 
             queryset = queryset.filter(q_expr)
-
+        print queryset
         return queryset
