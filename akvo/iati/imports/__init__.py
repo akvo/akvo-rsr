@@ -79,9 +79,9 @@ class ImportMapper(object):
     def get_or_create_organisation(self, ref='', name='', org_id=None, internal_id=None):
         """
         Looks for an organisation in the RSR database.
-        First the ref will be looked up in the Organisation.iati_org_id field. If this does not exist,
-        the name will be looked up in the Organisation.name and Organisation.long_name fields.
-        If none of these return a match, a new organisation will be created.
+        First the ref will be looked up in the Organisation.iati_org_id field. If this does not
+        exist, the name will be looked up in the Organisation.name and Organisation.long_name
+        fields. If none of these return a match, a new organisation will be created.
 
         :param ref: String; the reference of the organisation that is specified in the IATI file.
         :param name: String; the name of the organisation that is specified in the IATI file.
@@ -117,7 +117,8 @@ class ImportMapper(object):
             name=name[:25],
             long_name=name[:75],
             iati_org_id=ref if ref else None,
-            organisation_type=ORG_TYPE_NGO
+            organisation_type=ORG_TYPE_NGO,
+            content_owner=self.project.reporting_org
         )
 
     def do_import(self):
@@ -143,14 +144,14 @@ class ImportMapper(object):
         """
 
         self._log_objects += [IatiImportLog(
-                iati_import_job=self.iati_import_job,
-                tag=tag,
-                model=self.model,
-                field=field,
-                text=error,
-                project=self.project,
-                message_type=message_type,
-                created_at=datetime.now(),
+            iati_import_job=self.iati_import_job,
+            tag=tag,
+            model=self.model,
+            field=field,
+            text=error,
+            project=self.project,
+            message_type=message_type,
+            created_at=datetime.now(),
         )]
 
     def get_text(self, element):
