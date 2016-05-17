@@ -87,18 +87,19 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
 
         queryset = super(BaseRSRViewSet, self).get_queryset()
 
-        # support for old DjangoFilterBackend-based filtering
-        # find all "old styled" filters
-        legacy_filters = django_filter_filters(self.request)
-        # create lookup dicts from the filters found
-        lookups = get_lookups_from_filters(legacy_filters)
-        for lookup in lookups:
-            try:
-                queryset = queryset.filter(**lookup)
-            except (FieldError, ValueError):
-                # In order to mimick 'old' behaviour of the API, we should ignore non-valid
-                # parameters or values. Returning a warning would be more preferable.
-                pass
+        # support for old DjangoFilterBackend-based filtering if not pk is given
+        if not self.kwargs.get(u'pk'):
+            # find all "old styled" filters
+            legacy_filters = django_filter_filters(self.request)
+            # create lookup dicts from the filters found
+            lookups = get_lookups_from_filters(legacy_filters)
+            for lookup in lookups:
+                try:
+                    queryset = queryset.filter(**lookup)
+                except (FieldError, ValueError):
+                    # In order to mimick 'old' behaviour of the API, we should ignore non-valid
+                    # parameters or values. Returning a warning would be more preferable.
+                    pass
 
         return queryset
 
