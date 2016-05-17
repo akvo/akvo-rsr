@@ -16,4 +16,3 @@ class HumanitarianScopeViewSet(PublicProjectViewSet):
     """
     queryset = HumanitarianScope.objects.all()
     serializer_class = HumanitarianScopeSerializer
-    filter_fields = ('project', 'code', 'type', 'vocabulary', )

@@ -16,7 +16,6 @@ class BudgetItemViewSet(PublicProjectViewSet):
     """
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
-    filter_fields = ('project', 'label', 'type', )
 
 
 class CountryBudgetItemViewSet(PublicProjectViewSet):
@@ -24,4 +23,4 @@ class CountryBudgetItemViewSet(PublicProjectViewSet):
     """
     queryset = CountryBudgetItem.objects.all()
     serializer_class = CountryBudgetItemSerializer
-    filter_fields = ('project', 'code', )
+

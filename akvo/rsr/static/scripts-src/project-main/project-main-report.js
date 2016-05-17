@@ -398,6 +398,13 @@ function renderReportTab() {
         },
 
         descriptions: function(proj) {
+            var projectPlanText = {__html: micromarkdown.parse(proj.project_plan)};
+            var goalsOverviewText = {__html: micromarkdown.parse(proj.goals_overview)};
+            var targetGroupText = {__html: micromarkdown.parse(proj.target_group)};
+            var backgroundText = {__html: micromarkdown.parse(proj.background)};
+            var currentStatusText = {__html: micromarkdown.parse(proj.current_status)};
+            var sustainabilityText = {__html: micromarkdown.parse(proj.sustainability)};
+
             return (
                 React.DOM.div( {className:"row"}, 
                     React.DOM.div( {className:"col-sm-12"}, 
@@ -407,15 +414,15 @@ function renderReportTab() {
                                 React.DOM.tbody(null, 
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.project_plan),
-                                        React.DOM.td(null, proj.project_plan)
+                                        React.DOM.td( {dangerouslySetInnerHTML:projectPlanText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.goals_overview),
-                                        React.DOM.td(null, proj.goals_overview)
+                                        React.DOM.td( {dangerouslySetInnerHTML:goalsOverviewText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.target_group),
-                                        React.DOM.td(null, proj.target_group)
+                                        React.DOM.td( {dangerouslySetInnerHTML:targetGroupText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.project_plan_summary),
@@ -423,15 +430,15 @@ function renderReportTab() {
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.background),
-                                        React.DOM.td(null, proj.background)
+                                        React.DOM.td( {dangerouslySetInnerHTML:backgroundText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.current_status),
-                                        React.DOM.td(null, proj.current_status)
+                                        React.DOM.td( {dangerouslySetInnerHTML:currentStatusText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.sustainability),
-                                        React.DOM.td(null, proj.sustainability)
+                                        React.DOM.td( {dangerouslySetInnerHTML:sustainabilityText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.keywords),
@@ -630,9 +637,14 @@ var loadJS = function(url, implementationCode, location){
 };
 
 function loadAndRenderReact() {
+    function loadMarkdown() {
+        var markdownSrc = document.getElementById('markdown').src;
+        loadJS(markdownSrc, renderReportTab, document.body);
+    }
+
     function loadReactDOM() {
         var reactDOMSrc = document.getElementById('react-dom').src;
-        loadJS(reactDOMSrc, renderReportTab, document.body);
+        loadJS(reactDOMSrc, loadMarkdown, document.body);
     }
 
     console.log('No React, load again.');
@@ -648,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
     projectIdReport = JSON.parse(document.getElementById('default-values').innerHTML).project_id;
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && micromarkdown !== 'undefined') {
         // Render React components
         renderReportTab();
     } else {

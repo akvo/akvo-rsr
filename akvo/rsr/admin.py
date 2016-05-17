@@ -35,8 +35,7 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
-from nested_inlines.admin import (BaseNestedModelForm, NestedModelAdmin, NestedStackedInline,
-                                  NestedTabularInline)
+from nested_inline.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -59,6 +58,7 @@ class OrganisationLocationInline(NestedStackedInline):
     model = get_model('rsr', 'organisationlocation')
     fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
               'country')
+    fk_name = 'location_target'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -69,8 +69,8 @@ class OrganisationLocationInline(NestedStackedInline):
 
 class OrganisationTotalBudgetLineInline(NestedTabularInline):
     model = get_model('rsr', 'organisationtotalbudgetline')
-    inlines = ()
     fields = ('currency', 'value', 'value_date', 'reference', 'text')
+    fk_name = 'budget'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -80,6 +80,7 @@ class OrganisationTotalBudgetInline(NestedTabularInline):
     model = get_model('rsr', 'organisationtotalbudget')
     inlines = (OrganisationTotalBudgetLineInline,)
     fields = ('currency', 'value', 'value_date', 'period_start', 'period_end', 'status')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -90,8 +91,8 @@ class OrganisationTotalBudgetInline(NestedTabularInline):
 
 class OrganisationRecipientOrgBudgetLineInline(NestedTabularInline):
     model = get_model('rsr', 'organisationrecipientorgbudgetline')
-    inlines = ()
     fields = ('currency', 'value', 'value_date', 'reference', 'text')
+    fk_name = 'budget'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -113,8 +114,8 @@ class OrganisationRecipientOrgBudgetInline(NestedTabularInline):
 
 class OrganisationRegionBudgetLineInline(NestedTabularInline):
     model = get_model('rsr', 'organisationregionbudgetline')
-    inlines = ()
     fields = ('currency', 'value', 'value_date', 'reference', 'text')
+    fk_name = 'budget'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -125,6 +126,7 @@ class OrganisationRegionBudgetInline(NestedTabularInline):
     inlines = (OrganisationRegionBudgetLineInline, )
     fields = ('region', 'region_vocabulary', 'region_vocabulary_uri', 'text', 'currency', 'value',
               'value_date', 'period_start', 'period_end', 'status')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -135,8 +137,8 @@ class OrganisationRegionBudgetInline(NestedTabularInline):
 
 class OrganisationCountryBudgetLineInline(NestedTabularInline):
     model = get_model('rsr', 'organisationcountrybudgetline')
-    inlines = ()
     fields = ('currency', 'value', 'value_date', 'reference', 'text')
+    fk_name = 'budget'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -147,6 +149,7 @@ class OrganisationCountryBudgetInline(NestedTabularInline):
     inlines = (OrganisationCountryBudgetLineInline, )
     fields = ('country', 'text', 'currency', 'value', 'value_date', 'period_start', 'period_end',
               'status')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -157,8 +160,8 @@ class OrganisationCountryBudgetInline(NestedTabularInline):
 
 class OrganisationTotalExpenditureLineInline(NestedTabularInline):
     model = get_model('rsr', 'organisationexpenseline')
-    inlines = ()
     fields = ('currency', 'value', 'value_date', 'reference', 'text')
+    fk_name = 'expenditure'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -168,6 +171,7 @@ class OrganisationTotalExpenditureInline(NestedTabularInline):
     model = get_model('rsr', 'organisationtotalexpenditure')
     inlines = (OrganisationTotalExpenditureLineInline, )
     fields = ('currency', 'value', 'value_date', 'period_start', 'period_end')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -178,8 +182,8 @@ class OrganisationTotalExpenditureInline(NestedTabularInline):
 
 class OrganisationDocumentCategoryInline(NestedTabularInline):
     model = get_model('rsr', 'organisationdocumentcategory')
-    inlines = ()
     fields = ('category', )
+    fk_name = 'document'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -187,8 +191,8 @@ class OrganisationDocumentCategoryInline(NestedTabularInline):
 
 class OrganisationDocumentCountryInline(NestedTabularInline):
     model = get_model('rsr', 'organisationdocumentcountry')
-    inlines = ()
     fields = ('country', 'text')
+    fk_name = 'document'
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0
@@ -198,6 +202,7 @@ class OrganisationDocumentInline(NestedStackedInline):
     model = get_model('rsr', 'organisationdocument')
     inlines = (OrganisationDocumentCategoryInline, OrganisationDocumentCountryInline)
     fields = ('url', 'document', 'format', 'title', 'title_language', 'language', 'document_date')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -208,8 +213,8 @@ class OrganisationDocumentInline(NestedStackedInline):
 
 class OrganisationCustomFieldInline(NestedTabularInline):
     model = get_model('rsr', 'organisationcustomfield')
-    inlines = ()
     fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text')
+    fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -225,7 +230,7 @@ class InternalOrganisationIDAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
-class OrganisationAdminForm(BaseNestedModelForm):
+class OrganisationAdminForm(forms.ModelForm):
     def clean_iati_org_id(self):
         return self.cleaned_data['iati_org_id'] or None
 
@@ -282,6 +287,99 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 for co_org in employment.organisation.content_owned_organisations():
                     org_set.add(co_org.pk)
         return Organisation.objects.filter(pk__in=org_set).distinct()
+
+    @csrf_protect_m
+    @transaction.atomic
+    def add_view(self, request, form_url='', extra_context=None):
+        "The 'add' admin view for this model."
+        model = self.model
+        opts = model._meta
+
+        ModelForm = self.get_form(request)
+        formsets = []
+        inline_instances = self.get_inline_instances(request, None)
+        if request.method == 'POST':
+            form = ModelForm(request.POST, request.FILES)
+            if form.is_valid():
+                new_object = self.save_form(request, form, change=False)
+                form_validated = True
+            else:
+                form_validated = False
+                new_object = self.model()
+            prefixes = {}
+            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+                prefix = FormSet.get_default_prefix()
+                # check if we're trying to create a new project by copying an existing one. If so
+                # we ignore location and benchmark inlines
+                if "_saveasnew" not in request.POST or not prefix in ['benchmarks',
+                                                                      'rsr-location-content_type-object_id']:
+                    # end of add although the following block is indented as a result
+                    prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                    if prefixes[prefix] != 1 or not prefix:
+                        prefix = "%s-%s" % (prefix, prefixes[prefix])
+                    formset = FormSet(data=request.POST, files=request.FILES,
+                                      instance=new_object,
+                                      save_as_new="_saveasnew" in request.POST,
+                                      prefix=prefix, queryset=inline.get_queryset(request))
+                    formsets.append(formset)
+            if all_valid(formsets) and form_validated:
+                self.save_model(request, new_object, form, False)
+                self.save_related(request, form, formsets, False)
+                self.log_addition(request, new_object)
+                return self.response_add(request, new_object)
+        else:
+            # Prepare the dict of initial data from the request.
+            # We have to special-case M2Ms as a list of comma-separated PKs.
+            initial = dict(request.GET.items())
+            for k in initial:
+                try:
+                    f = opts.get_field(k)
+                except models.FieldDoesNotExist:
+                    continue
+                if isinstance(f, models.ManyToManyField):
+                    initial[k] = initial[k].split(",")
+            form = ModelForm(initial=initial)
+            prefixes = {}
+            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+                prefix = FormSet.get_default_prefix()
+                prefixes[prefix] = prefixes.get(prefix, 0) + 1
+                if prefixes[prefix] != 1 or not prefix:
+                    prefix = "%s-%s" % (prefix, prefixes[prefix])
+
+                formset = FormSet(instance=self.model(), prefix=prefix,
+                                  queryset=inline.get_queryset(request))
+                formsets.append(formset)
+
+        adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
+                                      self.get_prepopulated_fields(request),
+                                      self.get_readonly_fields(request),
+                                      model_admin=self)
+        media = self.media + adminForm.media
+
+        inline_admin_formsets = []
+        for inline, formset in zip(inline_instances, formsets):
+            fieldsets = list(inline.get_fieldsets(request))
+            readonly = list(inline.get_readonly_fields(request))
+            prepopulated = dict(inline.get_prepopulated_fields(request))
+            inline_admin_formset = helpers.InlineAdminFormSet(
+                inline, formset, fieldsets, prepopulated, readonly, model_admin=self
+            )
+            inline_admin_formsets.append(inline_admin_formset)
+            media = media + inline_admin_formset.media
+
+        context = {
+            'title': _('Add %s') % force_text(opts.verbose_name),
+            'adminform': adminForm,
+            'is_popup': IS_POPUP_VAR in request.REQUEST,
+            'show_delete': False,
+            'media': media,
+            'inline_admin_formsets': inline_admin_formsets,
+            'errors': helpers.AdminErrorList(form, formsets),
+            'app_label': opts.app_label,
+            'preserved_filters': self.get_preserved_filters(request),
+        }
+        context.update(extra_context or {})
+        return self.render_change_form(request, context, form_url=form_url, add=True)
 
 admin.site.register(get_model('rsr', 'organisation'), OrganisationAdmin)
 
@@ -1167,13 +1265,6 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     fieldsets = (
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
-                               'piwik_id',))),
-        (u'Style and content',
-            dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
-                         'custom_favicon', 'show_keyword_logos',))),
-        (u'Languages and translation', dict(fields=('google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
@@ -1196,7 +1287,17 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             ),
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
+                               'piwik_id',))),
+        (u'Style and content',
+            dict(fields=('all_maps', 'custom_css', 'custom_logo',
+                         'custom_favicon', 'show_keyword_logos',))),
+        (u'Languages and translation', dict(fields=('google_translation',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
+
+    # exclude deprecated fields
+    exclude = ('about_box', 'about_image')
     filter_horizontal = ('keywords',)
     list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
     list_filter = ('enabled', 'keywords')
@@ -1229,11 +1330,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
-            print "is admin or superuser"
             return super(PartnerSiteAdmin, self).get_queryset(
                 request).select_related('organisation')
 
-        print "was not admin or superuser"
         from .models import PartnerSite
         qs = PartnerSite.objects.none()
         for employment in request.user.employers.approved():
@@ -1364,6 +1463,24 @@ class IatiActivityImportAdmin(admin.ModelAdmin):
     inlines = (IatiImportLogActivityInline,)
 
 admin.site.register(get_model('rsr', 'IatiActivityImport'), IatiActivityImportAdmin)
+
+
+class IatiActivityExportInline(admin.TabularInline):
+    model = get_model('rsr', 'IatiActivityExport')
+    fk_name = 'iati_export'
+    fields = ('project', 'status', 'created_at')
+    readonly_fields = ('project', 'status', 'created_at')
+    extra = 0
+
+
+class IatiExportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'IatiExport')
+    list_display = ('__unicode__', 'reporting_organisation', 'user', 'version', 'iati_file',
+                    'show_status', 'is_public')
+    exclude = ('projects', )
+    inlines = (IatiActivityExportInline, )
+
+admin.site.register(get_model('rsr', 'IatiExport'), IatiExportAdmin)
 
 
 class ValidationInline(admin.TabularInline):

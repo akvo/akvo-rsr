@@ -5798,7 +5798,7 @@ msgid "Hierarchy of"
 msgstr "Jerarquía de"
 
 #: templates/project_hierarchy.html:43
-msgid "Screen to small to show project hierarchy"
+msgid "Screen too small to show project hierarchy"
 msgstr "Pantalla a formato pequeño para mostrar la jerarquía del proyecto"
 
 #: templates/project_main.html:15

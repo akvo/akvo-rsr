@@ -16,4 +16,3 @@ class PublishingStatusViewSet(PublicProjectViewSet):
     """
     queryset = PublishingStatus.objects.all()
     serializer_class = PublishingStatusSerializer
-    filter_fields = ('project', 'status', )

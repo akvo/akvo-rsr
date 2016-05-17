@@ -173,6 +173,8 @@ function renderReactComponents() {
                 panelStyle = {height: '0px'};
             }
 
+            var htmlContent = {__html: micromarkdown.parse(this.props.content)};
+
             return (
                 React.DOM.div( {className:panelClass}, 
                     React.DOM.div( {className:"panel-heading"}, 
@@ -183,9 +185,8 @@ function renderReactComponents() {
                         )
                     ),
                     React.DOM.div( {className:panelCollapse, style:panelStyle}, 
-                        React.DOM.div( {className:"panel-body"}, 
-                            this.props.content
-                        )
+                        React.DOM.div( {className:"panel-body",
+                             dangerouslySetInnerHTML:htmlContent})
                     )
                 )
             );
@@ -219,15 +220,6 @@ function renderReactComponents() {
             });
         },
 
-        splitLines: function(text) {
-            var i = 0;
-            return text.match(/[^\r\n]+/g).map(function(line) {
-                return (
-                    React.DOM.p( {key:i++}, line)
-                );
-            });
-        },
-
         render: function() {
             var background = this.props.source.background || null,
                 current_status = this.props.source.current_status || null,
@@ -241,7 +233,7 @@ function renderReactComponents() {
                 background = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(background),
+                    content: background,
                     panelClass: "background"
                 });
             }
@@ -250,7 +242,7 @@ function renderReactComponents() {
                 current_status = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(current_status),
+                    content: current_status,
                     panelClass: "current_status"
                 });
             }
@@ -259,7 +251,7 @@ function renderReactComponents() {
                 goals_overview = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(goals_overview),
+                    content: goals_overview,
                     panelClass: "goals_overview"
                 });
             }
@@ -268,7 +260,7 @@ function renderReactComponents() {
                 project_plan = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(project_plan),
+                    content: project_plan,
                     panelClass: "project_plan"
                 });
             }
@@ -277,7 +269,7 @@ function renderReactComponents() {
                 sustainability = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(sustainability),
+                    content: sustainability,
                     panelClass: "sustainability"
                 });
             }
@@ -286,7 +278,7 @@ function renderReactComponents() {
                 target_group = React.createElement(AccordionPanel, {
                     opened: this.state.opened,
                     changeOpened: this.changeOpened,
-                    content: this.splitLines(target_group),
+                    content: target_group,
                     panelClass: "target_group"
                 });
             }
@@ -407,6 +399,12 @@ function setTabsOnClicks() {
     for (var i = 0; i < allTabs.length; i++) {
         setTabOnClicks(allTabs[i]);
     }
+
+    // Also set the 'Show all updates' link
+    var showUpdates = document.querySelector('div.allUpdates > a');
+    if (showUpdates !== null) {
+        setTabOnClicks(showUpdates);
+    }
 }
 
 function readTabFromFragment() {
@@ -453,9 +451,14 @@ var loadJS = function(url, implementationCode, location){
 };
 
 function loadAndRenderReact() {
+    function loadMarkdown() {
+        var markdownSrc = document.getElementById('markdown').src;
+        loadJS(markdownSrc, renderReactComponents, document.body);
+    }
+
     function loadReactBootstrap() {
         var reactBootstrapSrc = document.getElementById('react-bootstrap').src;
-        loadJS(reactBootstrapSrc, renderReactComponents, document.body);
+        loadJS(reactBootstrapSrc, loadMarkdown, document.body);
     }
 
     function loadReactDOM() {
@@ -480,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
     readMoreOnClicks();
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactBootstrap !== 'undefined') {
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactBootstrap !== 'undefined' && micromarkdown !== 'undefined') {
         // Render React components
         renderReactComponents();
     } else {

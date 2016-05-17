@@ -11,10 +11,13 @@ from .rsr_serializer import BaseRSRSerializer
 from rest_framework import serializers
 
 
-class RecipientRegionSerializer(BaseRSRSerializer):
-
-    region_label = serializers.Field(source='iati_region')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+class RecipientRegionRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = RecipientRegion
+
+
+class RecipientRegionSerializer(RecipientRegionRawSerializer):
+
+    region_label = serializers.Field(source='iati_region')
+    vocabulary_label = serializers.Field(source='iati_vocabulary')

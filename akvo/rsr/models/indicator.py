@@ -359,10 +359,11 @@ class IndicatorPeriod(models.Model):
 
     def is_calculated(self):
         """
-        When a project is set as an RSR Impact project, the actual values of the indicator
-        periods are calculated through updates.
+        When a period has got indicator updates, we consider the actual value to be a
+        'calculated' value, meaning that it's not possible to update the actual value directly.
+        Only through indicator updates.
         """
-        return self.indicator.result.project.is_impact_project
+        return self.data.exists()
 
     def is_child_period(self):
         """

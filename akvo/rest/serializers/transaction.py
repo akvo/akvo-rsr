@@ -12,7 +12,13 @@ from .rsr_serializer import BaseRSRSerializer
 from rest_framework import serializers
 
 
-class TransactionSerializer(BaseRSRSerializer):
+class TransactionRawSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Transaction
+
+
+class TransactionSerializer(TransactionRawSerializer):
 
     provider_organisation_show_link = serializers.Field(source='provider_organisation_show_link')
     receiver_organisation_show_link = serializers.Field(source='receiver_organisation_show_link')
@@ -26,9 +32,6 @@ class TransactionSerializer(BaseRSRSerializer):
     recipient_country_label = serializers.Field(source='iati_recipient_country')
     recipient_region_label = serializers.Field(source='iati_recipient_region')
     recipient_region_vocabulary_label = serializers.Field(source='iati_recipient_region_vocabulary')
-
-    class Meta:
-        model = Transaction
 
 
 class TransactionSectorSerializer(BaseRSRSerializer):

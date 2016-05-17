@@ -19,7 +19,7 @@ from ..signals import (
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding, create_iati_file
+    update_project_funding
 )
 
 from .benchmark import Benchmark, Benchmarkname
@@ -33,7 +33,9 @@ from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
 from .humanitarian_scope import HumanitarianScope
+from .iati_activity_export import IatiActivityExport
 from .iati_activity_import import IatiActivityImport
+from .iati_check import IatiCheck
 from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
@@ -96,7 +98,9 @@ __all__ = [
     'FssForecast',
     'Goal',
     'HumanitarianScope',
+    'IatiActivityExport',
     'IatiActivityImport',
+    'IatiCheck',
     'IatiExport',
     'IatiImport',
     'IatiImportJob',
@@ -315,6 +319,10 @@ rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_iatiexport', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_iatiexport', is_rsr_admin | is_org_admin)
+
 rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_organisation', is_rsr_admin)
@@ -374,5 +382,3 @@ post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=User)
-
-post_save.connect(create_iati_file, sender=IatiExport)

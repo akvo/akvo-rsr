@@ -6,7 +6,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import math
-from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -37,6 +36,7 @@ from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextFie
 from ..mixins import TimestampsMixin
 
 from .country import Country
+from .iati_check import IatiCheck
 from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
@@ -151,16 +151,22 @@ class Project(TimestampsMixin, models.Model):
 
     goals_overview = ValidXMLTextField(
         _(u'goals overview'), blank=True,
-        help_text=_(u'Provide a brief description of the overall project goals.')
+        help_text=_(u'Provide a brief description of the overall project goals. For links and '
+                    u'styling of the text, <a href="https://github.com/adam-p/markdown-here/wiki/'
+                    u'Markdown-Cheatsheet" target="_blank">Markdown</a> is supported.')
     )
     current_status = ValidXMLTextField(
         _(u'baseline situation'), blank=True,
-        help_text=_(u'Describe the situation at the start of the project.')
+        help_text=_(u'Describe the situation at the start of the project. For links and styling of '
+                    u'the text, <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-'
+                    u'Cheatsheet" target="_blank">Markdown</a> is supported.')
     )
     project_plan = ValidXMLTextField(
         _(u'project plan'), blank=True,
         help_text=_(u'Detailed information about the implementation of the project: the what, how, '
-                    u'who and when.')
+                    u'who and when. For links and styling of the text, <a href="https://github.com/'
+                    u'adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown</a> '
+                    u'is supported.')
     )
     sustainability = ValidXMLTextField(
         _(u'sustainability'), blank=True,
@@ -168,18 +174,24 @@ class Project(TimestampsMixin, models.Model):
                     u'years after project implementation. Think about the institutional setting, '
                     u'capacity-building, a cost recovery plan, products used, feasible '
                     u'arrangements for operation and maintenance, anticipation of environmental '
-                    u'impact and social integration.')
+                    u'impact and social integration. For links and styling of the text, '
+                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    u'target="_blank">Markdown</a> is supported.')
     )
     background = ValidXMLTextField(
         _(u'background'), blank=True,
         help_text=_(u'This should describe the geographical, political, environmental, social '
                     u'and/or cultural context of the project, and any related activities that '
-                    u'have already taken place or are underway.')
+                    u'have already taken place or are underway. For links and styling of the text, '
+                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    u'target="_blank">Markdown</a> is supported.')
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True,
         help_text=_(u'This should include information about the people, organisations or resources '
-                    u'that are being impacted by this project.')
+                    u'that are being impacted by this project. For links and styling of the text, '
+                    u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
+                    u'target="_blank">Markdown</a> is supported.')
     )
 
     # Results framework (always on)
@@ -783,7 +795,6 @@ class Project(TimestampsMixin, models.Model):
         def publishingstatuses(self):
             return PublishingStatus.objects.filter(project__in=self)
 
-
     def __unicode__(self):
         return u'%s' % self.title
 
@@ -1067,6 +1078,45 @@ class Project(TimestampsMixin, models.Model):
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
+
+    def update_iati_checks(self):
+        """
+        First, removes the current IATI checks, then adds new IATI checks.
+        """
+        # Remove old IATI checks
+        for old_iati_check in self.iati_checks.all():
+            old_iati_check.delete()
+
+        # Perform new checks and save to database
+        status_codes = {
+            'success': 1,
+            'warning': 2,
+            'error': 3
+        }
+
+        iati_checks = self.check_mandatory_fields()
+        for iati_check in iati_checks[1]:
+            try:
+                status_code = status_codes[iati_check[0]]
+                IatiCheck.objects.create(
+                    project=self,
+                    status=status_code,
+                    description=iati_check[1]
+                )
+            except KeyError:
+                pass
+
+    def iati_checks_status(self, status):
+        return self.iati_checks.filter(status=status)
+
+    def iati_successes(self):
+        return [check.description for check in self.iati_checks_status(1)]
+
+    def iati_warnings(self):
+        return [check.description for check in self.iati_checks_status(2)]
+
+    def iati_errors(self):
+        return [check.description for check in self.iati_checks_status(3)]
 
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""

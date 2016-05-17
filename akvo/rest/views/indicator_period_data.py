@@ -23,20 +23,6 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodData.objects.all()
     serializer_class = IndicatorPeriodDataSerializer
-    filter_fields = {
-        'period': ['exact'],
-        'period__indicator': ['exact'],
-        'period__indicator__result': ['exact'],
-        'period__indicator__result__project': ['exact'],
-        'user': ['exact'],
-        'status': ['exact'],
-        'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'relative_data': ['exact'],
-        'data': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'period_actual_value': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'update_method': ['exact']
-    }
 
     project_relation = 'period__indicator__result__project__'
 
@@ -46,20 +32,6 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodData.objects.all()
     serializer_class = IndicatorPeriodDataFrameworkSerializer
-    filter_fields = {
-        'period': ['exact'],
-        'period__indicator': ['exact'],
-        'period__indicator__result': ['exact'],
-        'period__indicator__result__project': ['exact'],
-        'user': ['exact'],
-        'status': ['exact'],
-        'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'relative_data': ['exact'],
-        'data': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'period_actual_value': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'update_method': ['exact']
-    }
     project_relation = 'period__indicator__result__project__'
 
 
@@ -68,17 +40,7 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodDataComment.objects.all()
     serializer_class = IndicatorPeriodDataCommentSerializer
-    filter_fields = {
-        'data': ['exact'],
-        'data__period': ['exact'],
-        'data__period__indicator': ['exact'],
-        'data__period__indicator__result': ['exact'],
-        'data__period__indicator__result__project': ['exact'],
-        'user': ['exact'],
-        'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
-        'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ]
-    }
-    project_relation = 'period__indicator__result__project__'
+    project_relation = 'data__period__indicator__result__project__'
 
 
 @api_view(['POST'])

@@ -73,7 +73,8 @@ raven==4.2.3
 rules==0.3
 
 # Nested inlines in admin
--e git+git://github.com/silverfix/django-nested-inlines.git#egg=django-nested-inlines
+django-nested-inline==0.3.6
+#-e git+git://github.com/silverfix/django-nested-inlines.git#egg=django-nested-inlines
 
 # Task scheduling
 django-crontab==0.6.0

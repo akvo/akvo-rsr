@@ -12,14 +12,17 @@ from akvo.rest.serializers.organisation import OrganisationBasicSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 
 
-class PartnershipSerializer(BaseRSRSerializer):
+class PartnershipRawSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Partnership
+
+
+class PartnershipSerializer(PartnershipRawSerializer):
 
     organisation_show_link = serializers.Field(source='organisation_show_link')
     partner_type = serializers.Field(source='iati_role_to_partner_type')
     organisation_role_label = serializers.Field(source='iati_organisation_role_label')
-
-    class Meta:
-        model = Partnership
 
 
 class PartnershipBasicSerializer(BaseRSRSerializer):

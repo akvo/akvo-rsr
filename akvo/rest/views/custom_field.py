@@ -16,7 +16,6 @@ class OrganisationCustomFieldViewSet(BaseRSRViewSet):
     """
     queryset = OrganisationCustomField.objects.all()
     serializer_class = OrganisationCustomFieldSerializer
-    filter_fields = ('organisation', 'name', 'max_characters', 'section', )
 
 
 class ProjectCustomFieldViewSet(PublicProjectViewSet):
@@ -24,4 +23,3 @@ class ProjectCustomFieldViewSet(PublicProjectViewSet):
     """
     queryset = ProjectCustomField.objects.all()
     serializer_class = ProjectCustomFieldSerializer
-    filter_fields = ('project', 'name', 'max_characters', 'section', )

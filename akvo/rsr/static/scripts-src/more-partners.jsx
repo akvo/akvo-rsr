@@ -166,6 +166,28 @@ function loadMorePartners() {
         },
 
         generateLink: function() {
+            function showTab(tabClass) {
+                // Copied from project-main.jsx
+                var allTabs = document.querySelectorAll('.project-tab');
+                var allTabLinks = document.querySelectorAll('.tab-link.selected');
+                var activeTab = document.querySelector('.' + tabClass);
+                var activeTabLink = document.querySelector('.tab-link[href="#' + tabClass + '"]');
+
+                for (var i = 0; i < allTabs.length; i++) {
+                    var tab = allTabs[i];
+
+                    tab.style.display = 'none';
+                }
+                for (var j = 0; j < allTabLinks.length; j++) {
+                    var tabLink = allTabLinks[j];
+
+                    tabLink.classList.remove('selected');
+                }
+
+                activeTab.style.display = 'block';
+                activeTabLink.classList.add('selected');
+            }
+
             if (this.props.projectPage) {
                 showTab('partners');
             } else {
@@ -181,10 +203,15 @@ function loadMorePartners() {
                     </a>
                 );
             } else if (this.partnersCount() > 0) {
+                var partnersText = i18nMorePartners.partners;
+                if (this.partnersCount() === 1) {
+                    partnersText = i18nMorePartners.partner;
+                }
+
                 return (
                     <div>
                         <a href='#partners' onClick={this.generateLink} className="small moreLink tab-link" onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-                            + {this.partnersCount()} {i18nMorePartners.partners}
+                            + {this.partnersCount()} {partnersText}
                         </a>
                         {this.showTooltip()}
                     </div>

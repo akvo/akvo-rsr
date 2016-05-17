@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.rsr.models.iati_activity_export import IatiActivityExport
+
 import elements
 import os
 
@@ -103,15 +105,19 @@ class IatiXML(object):
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-    def __init__(self, projects, version='2.02', excluded_elements=None):
+    def __init__(self, projects, version='2.02', iati_export=None, excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-activities' etree Element as root.
 
         :param projects: QuerySet of Projects
         :param version: String of IATI version
+        :param iati_export: IatiExport Django object
         :param excluded_elements: List of fieldnames that should be ignored when exporting
         """
-        self.projects, self.version, self.excluded_elements = projects, version, excluded_elements
+        self.projects = projects
+        self.version = version
+        self.iati_export = iati_export
+        self.excluded_elements = excluded_elements
 
         self.iati_activities = etree.Element("iati-activities",
                                              nsmap={'akvo': 'http://akvo.org/iati-activities'})
@@ -120,4 +126,18 @@ class IatiXML(object):
             strftime("%Y-%m-%dT%H:%M:%SZ")
 
         for project in projects:
+            # Add IATI activity export to indicate that export has started
+            if self.iati_export:
+                self.iati_activity_export = IatiActivityExport.objects.create(
+                    iati_export=self.iati_export,
+                    project=project
+                )
+
+            # Add project to IATI XML file
             self.add_project(project)
+
+            # Update IATI activity export's status to indicate that export has finished
+            iati_activity_export = getattr(self, 'iati_activity_export', None)
+            if iati_activity_export:
+                iati_activity_export.status = 2
+                iati_activity_export.save(update_fields=['status'])

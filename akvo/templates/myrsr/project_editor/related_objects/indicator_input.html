@@ -30,7 +30,7 @@
                 {% for reference in indicator.references.all %}
                     {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" %}
                 {% empty %}
-                    {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+                    {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
                         {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" with reference='IndicatorReference.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
                     {% endwith %}
                 {% endfor %}
@@ -55,7 +55,7 @@
         <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorperiod" }}">
             <h5>{% trans 'Indicator periods' %}</h5>
             <div class="indicator-period-container" id="indicator-period-container">
-                {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+                {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
                     {% for period in indicator.periods.all %}
                         {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
                     {% empty %}

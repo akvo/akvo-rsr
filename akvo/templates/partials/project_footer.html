@@ -34,19 +34,9 @@
                 <p>
                     <div class="col-sm-6">
                         <a href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "RSS" %}</a><br/>
-                        {% if not user.username %}
-                        <a href="/sign_in/?next={% url 'project_extra-detail' project.id 'xml' %}"><i class="fa fa-code"></i> {% trans "XML" %}</a><br/>
-                        {% else %}
-                        <a href="{% url 'project_extra-detail' project.id 'xml' %}"><i class="fa fa-code"></i> {% trans "XML" %}</a><br/>
-                        {% endif %}
                     </div>
                     <div class="col-sm-6">
-                        {% if not user.username %}
-                        <a href="/sign_in/?next={% url 'project_extra-detail' project.id 'json' %}"><i class="fa fa-share-alt"></i> {% trans "JSON" %}</a><br/>
-                        {% else %}
                         <a href="{% url 'project_extra-detail' project.id 'json' %}"><i class="fa fa-share-alt"></i> {% trans "JSON" %}</a><br/>
-                        {% endif %}
-                        <a href="{% url 'project-iati' project.id %}"><i class="fa fa-file-code-o"></i> {% trans "IATI" %}</a>
                     </div>
                 </p>
 

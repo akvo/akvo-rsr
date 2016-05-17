@@ -16,7 +16,6 @@ class ProjectDocumentViewSet(PublicProjectViewSet):
     """
     queryset = ProjectDocument.objects.all()
     serializer_class = ProjectDocumentSerializer
-    filter_fields = ('project', 'language', 'title_language', 'document_date', )
 
 
 class ProjectDocumentCategoryViewSet(PublicProjectViewSet):

@@ -10,11 +10,12 @@ from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from akvo.rest.models import TastyTokenAuthentication
 from ...rsr.models import Country, Employment, Organisation
 from ..viewsets import BaseRSRViewSet
 from ..serializers import EmploymentSerializer, OrganisationSerializer, CountrySerializer
@@ -37,17 +38,22 @@ class UserViewSet(BaseRSRViewSet):
         'organisations__primary_location__country',
         'organisations__primary_location__location_target',)
     serializer_class = UserSerializer
-    filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff',
-                     'is_admin')
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def change_password(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
-    # Users are only allowed to change their own password
-    if not user == request.user:
+    # Get the user, or return an error if the user does not exist
+    try:
+        user = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Users are only allowed to edit their own details
+    request_user = getattr(request, 'user', None)
+    if not user == request_user:
         raise PermissionDenied()
+
+    # Process request
     serializer = UserPasswordSerializer(data=request.DATA, instance=user)
     if serializer.is_valid():
         user.set_password(serializer.data['new_password2'])
@@ -58,12 +64,19 @@ def change_password(request, pk=None):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
 def update_details(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
+    # Get the user, or return an error if the user does not exist
+    try:
+        user = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
     # Users are only allowed to edit their own details
-    if not user == request.user:
+    request_user = getattr(request, 'user', None)
+    if not user == request_user:
         raise PermissionDenied()
+
+    # Process request
     serializer = UserDetailsSerializer(data=request.DATA, instance=user)
     if serializer.is_valid():
         user.first_name = serializer.data['first_name']
@@ -75,18 +88,31 @@ def update_details(request, pk=None):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
-    user = get_user_model().objects.get(pk=pk)
+
+    # Get the user, or return an error if the user does not exist
+    try:
+        user_by_pk = get_user_model().objects.get(pk=pk)
+    except get_user_model().DoesNotExist:
+        return Response({'user': _('User does not exist')}, status=status.HTTP_400_BAD_REQUEST)
+
+    # request.user is the user identified by the auth token
+    user = request.user
     # Users themselves are only allowed to request to join an organisation
-    if not user == request.user:
+    if not user_by_pk == request.user:
         raise PermissionDenied()
     request.DATA['user'] = pk
+
+    # Process request
     serializer = EmploymentSerializer(data=request.DATA)
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])
-            country = Country.objects.get(pk=serializer.data['country']) if serializer.data['country'] else None
+            if serializer.data['country']:
+                country = Country.objects.get(pk=serializer.data['country'])
+            else:
+                country = None
             employment = Employment(
                 user=user,
                 organisation=organisation,

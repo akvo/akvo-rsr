@@ -1127,16 +1127,32 @@ function initReact() {
 
         renderTargetComment: function() {
             // Render the target comment.
-            if (this.props.selectedPeriod.target_comment !== '') {
+            if (this.props.selectedPeriod.target_comment === '') {
+                return (
+                    <div className="period-target-comment"></div>
+                );
+            } else {
                 return (
                     <div className="period-target-comment">
                         {i18nResults.target_comment}
                         <span>{this.props.selectedPeriod.target_comment}</span>
                     </div>
                 );
+            }
+        },
+
+        renderActualComment: function() {
+            // Render the actual comment.
+            if (this.props.selectedPeriod.actual_comment === '') {
+                return (
+                    <div className="period-actual-comment"></div>
+                );
             } else {
                 return (
-                    <span />
+                    <div className="period-actual-comment">
+                        {i18nResults.actual_comment}
+                        <span>{this.props.selectedPeriod.actual_comment}</span>
+                    </div>
                 );
             }
         },
@@ -1194,11 +1210,9 @@ function initReact() {
 
             return (
                 <div className="indicator-period opacity-transition">
-                    <div className="backButton">
-                        <a onClick={this.goBack}>&lt; {i18nResults.back}</a>
-                    </div>
                     <div className="indicTitle">
                             <h4 className="indicator-title">
+                                <a className="backButton" onClick={this.goBack}>&lt; {i18nResults.back}</a>
                                 {i18nResults.indicator_period}: {displayDate(this.props.selectedPeriod.period_start)} - {displayDate(this.props.selectedPeriod.period_end)}
                             </h4>
                         {this.renderNewUpdate()}
@@ -1218,6 +1232,7 @@ function initReact() {
                                  {hover}
                             </div>
                             {this.renderTargetComment()}
+                            {this.renderActualComment()}
                         </div>
                         {React.createElement(UpdatesList, {
                             addEditingData: this.props.addEditingData,
@@ -1357,9 +1372,13 @@ function initReact() {
 
         renderActions: function() {
             // Render the actions for this period.
-            if (isPublic || !isAdmin) {
-                // In the public view or in the 'MyRSR' view as a non-admin:
-                // Only display whether the period is locked or not.
+            if (isPublic) {
+                // In the public view, display nothing.
+                return (
+                    <span />
+                );
+            } else if (!isAdmin) {
+                // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
                         return (
@@ -1375,8 +1394,7 @@ function initReact() {
                         );
                 }
             } else {
-                // In the 'MyRSR' view as an admin:
-                // Show the buttons to lock or unlock a period.
+                // In the 'MyRSR' view as an admin, show the buttons to lock or unlock a period.
                 if (this.state.lockingOrUnlocking) {
                     return (
                         <td className="actions-td">
@@ -1578,10 +1596,11 @@ function initReact() {
                         <td>
                             <i className="fa fa-spin fa-spinner" /> {i18nResults.loading} {i18nResults.indicator_periods}
                         </td>
-                        <td /><td /><td />
                     </tr>
                 </tbody>;
             }
+
+            var actionCell = isPublic ? <span /> : <td className="th-actions" />;
 
             return (
                 <div className="indicator-period-list selfProject">
@@ -1593,7 +1612,7 @@ function initReact() {
                                 <td className="th-period">{i18nResults.period}</td>
                                 <td className="th-target">{i18nResults.target_value}</td>
                                 <td className="th-actual">{i18nResults.actual_value}</td>
-                                <td className="th-actions"/>
+                                {actionCell}
                             </tr>
                         </thead>
                         {periods}
@@ -1685,7 +1704,23 @@ function initReact() {
             // This can be either a list of periods (when no period has been selected, but only an
             // indicator), or a list of indicator updates (when a period has been selected).
 
-            if (this.props.selectedPeriod !== null) {
+            if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
+                var addIndicatorsLink;
+                if (isAdmin) {
+                    var language = window.location.pathname.substring(0, 3);
+                    addIndicatorsLink =
+                        <a href={language + "/myrsr/project_editor/" + projectIds.project_id + "/"}>{i18nResults.add_indicators}</a>;
+                } else {
+                    addIndicatorsLink = <span />;
+                }
+
+                return (
+                    <div className="noIndicators">
+                        {i18nResults.no_indicators} {addIndicatorsLink}
+                        <a href="https://akvorsr.supporthero.io/article/show/design-a-results-framework" target="_blank">{i18nResults.more_info}</a>
+                    </div>
+                );
+            } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
                 return (
                     <div className="indicator-period-container">
@@ -1712,9 +1747,6 @@ function initReact() {
                 // Show a list of periods.
                 return (
                     <div className="indicator opacity-transition">
-                        <div className="backButton">
-                            <a onClick={this.goBack}>&lt; {i18nResults.back}</a>
-                        </div>
                         <h4 className="indicator-title">
                             {this.props.selectedIndicator.title}{this.showMeasure()}
                         </h4>
@@ -1735,7 +1767,7 @@ function initReact() {
                     </div>
                 );
             } else {
-                // No indicator selected, leave main content empty.
+                // Nothing selected, leave main content empty.
                 return (
                     <span />
                 );
@@ -1795,8 +1827,8 @@ function initReact() {
             var resultId = wasExpanded ? null : thisResult.id;
             this.props.selectResult(resultId);
 
-            // When there is only 1 indicator and the result is expanded, select the 1 indicator.
-            if (thisResult.indicators !== undefined && thisResult.indicators.length === 1 && !wasExpanded) {
+            // When there is an indicator and the result is expanded, select the first indicator.
+            if (thisResult.indicators !== undefined && thisResult.indicators.length > 0 && !wasExpanded) {
                 this.props.selectIndicator(thisResult.indicators[0].id);
             }
         },
@@ -1860,23 +1892,23 @@ function initReact() {
             switch (this.props.result.type) {
                 case '1':
                     return (
-                        <span>({i18nResults.output})</span>
+                        <div className="indicatorType">{i18nResults.output}</div>
                     );
                 case '2':
                     return (
-                        <span>({i18nResults.outcome})</span>
+                        <div className="indicatorType">{i18nResults.outcome}</div>
                     );
                 case '3':
                     return (
-                        <span>({i18nResults.impact})</span>
+                        <div className="indicatorType">{i18nResults.impact}</div>
                     );
                 case '9':
                     return (
-                        <span>({i18nResults.other})</span>
+                        <div className="indicatorType">{i18nResults.other}</div>
                     );
                 default:
                     return (
-                        <span />
+                        <div />
                     );
             }
         },
@@ -1892,13 +1924,9 @@ function initReact() {
             }
 
             if (this.expanded()) {
-                // Show a different text when the result is selected (expanded).
+                // Do not show a text when the result is selected (expanded).
                 return (
-                    <span className="result-indicator-count">
-                        <i className="fa fa-tachometer" />
-                        <span className="indicator-count inlined">{indicatorLength}</span>
-                        <p>{this.indicatorText()}:</p>
-                    </span>
+                    <span />
                 );
             } else {
                 // Show the number of indicators
@@ -1921,8 +1949,8 @@ function initReact() {
                 <div className={resultNavClass} key={this.props.result.id}>
                     <div className="result-nav-summary clickable" onClick={this.switchResult}>
                         <h3 className="result-title">
-                            <i className="fa fa-chevron-circle-down" />
-                            <i className="fa fa-chevron-circle-up" />
+                            <i className="fa fa-chevron-down" />
+                            <i className="fa fa-chevron-up" />
                             <span>{this.props.result.title}</span>
                             {this.renderResultType()}
                         </h3>
@@ -2439,7 +2467,8 @@ function initReact() {
                                         selectedPeriod: this.selectedPeriod(),
                                         selectPeriod: this.selectPeriod,
                                         findProjectOfResult: this.findProjectOfResult,
-                                        findResult: this.findResult
+                                        findResult: this.findResult,
+                                        selectedResult: this.selectedResult()
                                     }
                                 )}
                             </div>

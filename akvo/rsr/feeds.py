@@ -185,7 +185,7 @@ class UpdateFeed(Feed):
 
 
 class ProjectUpdates(UpdateFeed):
-    """RSS feed for last 50 RSR updates of a project."""
+    """RSS feed for last 25 RSR updates of a project."""
     def get_object(self, request, project_id):
         return Project.objects.get(pk__exact=project_id)
 
@@ -201,12 +201,12 @@ class ProjectUpdates(UpdateFeed):
         }
 
     def items(self, obj):
-        # Limited to 50 items to prevent gateway timeouts.
-        return ProjectUpdate.objects.filter(project__id=obj.id).order_by('-id')[:50]
+        # Limited to 25 items to prevent gateway timeouts.
+        return ProjectUpdate.objects.filter(project__id=obj.id).order_by('-id')[:25]
 
 
 class OrganisationUpdates(UpdateFeed):
-    """RSS feed for last 50 RSR updates of an organisation."""
+    """RSS feed for last 25 RSR updates of an organisation."""
     feed_type = RSRMediaRssFeed
 
     def get_object(self, request, org_id):
@@ -226,8 +226,8 @@ class OrganisationUpdates(UpdateFeed):
             ) % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
-        # Limited to 50 items to prevent gateway timeouts.
-        return obj.published_projects().all_updates()[:50]
+        # Limited to 25 items to prevent gateway timeouts.
+        return obj.all_updates()[:25]
 
     def item_title(self, item):
         return _(
@@ -240,8 +240,8 @@ class OrganisationUpdates(UpdateFeed):
 
 
 class AllProjectUpdates(UpdateFeed):
-    """RSS feed for last 50 RSR updates."""
-    title = _(u'Last 50 RSR project updates')
+    """RSS feed for last 25 RSR updates."""
+    title = _(u'Last 25 RSR project updates')
     
     def link(self):
         return reverse('update-directory')
@@ -249,8 +249,8 @@ class AllProjectUpdates(UpdateFeed):
     description = _(u'Project updates for all Akvo RSR projects')
 
     def items(self):
-        # Limited to 50 items to prevent gateway timeouts.
-        return ProjectUpdate.objects.select_related().order_by('-id')[:50]
+        # Limited to 25 items to prevent gateway timeouts.
+        return ProjectUpdate.objects.select_related().order_by('-id')[:25]
 
     def item_title(self, item):
         return _(

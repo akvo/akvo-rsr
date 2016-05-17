@@ -448,7 +448,7 @@ class SelectOrgForm(forms.Form):
 
         self.fields['org'] = forms.ModelChoiceField(
             queryset=organisations,
-            label=_(u'Select your organisation'),
+            label='',
         )
 
 
@@ -462,35 +462,3 @@ class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
         else:
             return mark_safe(u'<span class="noCheck">%s <i>(not published)</i></span>' %
                              obj.__unicode__())
-
-
-class IatiExportForm(forms.ModelForm):
-    """Form for adding an entry to the IATI export model."""
-    is_public = forms.BooleanField(required=False, label=_(u"Show IATI file on organisation page"))
-    projects = CustomLabelModelChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        queryset=Project.objects.all(),
-        label=_(u"Select the projects included in the export:")
-    )
-
-    class Meta:
-        model = get_model('rsr', 'IatiExport')
-        fields = ('projects', 'is_public', )
-
-    def __init__(self, org=None, *args, **kwargs):
-        super(IatiExportForm, self).__init__(*args, **kwargs)
-        if org:
-            self.fields['projects'].queryset = org.reporting_on_projects()
-
-    def save(self, reporting_organisation=None, user=None):
-        if reporting_organisation and user:
-            iati_export = super(IatiExportForm, self).save(commit=False)
-            iati_export.reporting_organisation = reporting_organisation
-            iati_export.user = user
-            iati_export.save()
-            self.save_m2m()
-            iati_export.save()
-
-            return iati_export
-        else:
-            raise forms.ValidationError(_(u'Reporting organisation or user not found.'))
