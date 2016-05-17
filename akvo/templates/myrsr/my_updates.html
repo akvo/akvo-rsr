@@ -43,7 +43,7 @@
                         </td>
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
-                        <td><div class="twoColumns"><a href="{% url 'update-main' update.project.id update.id %}">{% trans 'View' %}</a></div></td>
+                        <td><div class="twoColumns"><a href="{% url 'edit-update' update.project.id update.id %}">Edit</a></div></td>
                     </tr>
                 {% endfor %}
                 </tbody>
