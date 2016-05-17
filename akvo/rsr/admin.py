@@ -1330,11 +1330,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
-            print "is admin or superuser"
             return super(PartnerSiteAdmin, self).get_queryset(
                 request).select_related('organisation')
 
-        print "was not admin or superuser"
         from .models import PartnerSite
         qs = PartnerSite.objects.none()
         for employment in request.user.employers.approved():
