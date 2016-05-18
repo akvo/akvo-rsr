@@ -71,7 +71,7 @@ class RecipientCountry(models.Model):
         if self.country:
             try:
                 country_unicode = self.iati_country().name
-            except codelist_models.Country.DoesNotExist:
+            except (AttributeError, codelist_models.Country.DoesNotExist):
                 country_unicode = self.country
         else:
             country_unicode = u'%s' % _(u'No country specified')
