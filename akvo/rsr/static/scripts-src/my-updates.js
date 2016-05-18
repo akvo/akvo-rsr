@@ -3,6 +3,9 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
+// DEFAULT VALUES
+var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
+
 // CSRF TOKEN
 function getCookie(name) {
     var cookieValue = null;
@@ -27,47 +30,121 @@ function setError(message) {
     errorNode.innerHTML = message;
 }
 
-function deleteUpdate(updateId) {
+function confirmDeleteUpdate(node) {
     return function(e) {
         e.preventDefault();
 
-        var api_url = '/rest/v1/project_update/' + updateId + '/?format=json',
-            request = new XMLHttpRequest();
+        var updateId = node.id.split('-')[1]
 
-        request.open('DELETE', api_url, true);
-        request.setRequestHeader("X-CSRFToken", csrftoken);
-        request.setRequestHeader("Content-type", "application/json");
+        // Show warning first
+        var parentNode = node.parentNode;
+        parentNode.removeChild(node);
 
-        request.onload = function() {
-            if (request.status == 204) {
-                // Successfully created reporting organisation! Now log the project addition.
-                console.log(request.status)
-            } else {
-                // We reached our target server, but it returned an error
-                setError(request.status);
-                return false;
-            }
-        };
+        var sureNode = document.createElement('div');
+        sureNode.setAttribute('class', 'sure-message');
+        sureNode.innerHTML = defaultValues.sure_message;
 
-        request.onerror = function() {
-            // There was a connection error of some sort
-            setError('Connection error');
-            return false;
-        };
+        var yesNode = document.createElement('a');
+        yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
+        yesNode.onclick = confirmDelete(yesNode, updateId);
+        yesNode.innerHTML = defaultValues.yes;
 
-        request.send();
+        var noNode = document.createElement('a');
+        noNode.setAttribute('style', 'color: red; margin-left: 5px;');
+        noNode.onclick = dismissDelete(noNode);
+        noNode.innerHTML = defaultValues.no;
+
+        sureNode.appendChild(yesNode);
+        sureNode.appendChild(noNode);
+        parentNode.appendChild(sureNode);
+
+    }
+}
+
+function dismissDelete(noNode) {
+    return function(e) {
+        e.preventDefault();
+        var sureNode = noNode.parentNode;
+        var parentNode = sureNode.parentNode;
+        parentNode.removeChild(sureNode);
+
+        returnDeleteButton(parentNode, false);
     };
 }
 
+function confirmDelete(yesNode, updateId) {
+    return function(e) {
+        e.preventDefault();
+        var sureNode = yesNode.parentNode;
+        var parentNode = sureNode.parentNode;
+        parentNode.removeChild(sureNode);
+
+        console.log(updateId)
+
+        deleteUpdate(updateId);
+    };
+}
+
+function returnDeleteButton(parentNode, error) {
+
+    if (error) {
+        var errorNode = document.createElement('div');
+        errorNode.setAttribute('style', 'color: red; margin-left: 5px;');
+        errorNode.innerHTML = defaultValues.delete_error;
+        container.appendChild(errorNode);
+    }
+
+    var node = document.createElement('a');
+    node.setAttribute('class', 'delete-related-object');
+    node.innerHTML = defaultValues.delete_text;
+    node.onclick = confirmDeleteUpdate(node);
+
+    parentNode.appendChild(node);
+}
+
+function deleteUpdate(updateId) {
+
+    var api_url = '/rest/v1/project_update/' + updateId + '/?format=json',
+        request = new XMLHttpRequest();
+
+    request.open('DELETE', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/json");
+
+    request.onload = function() {
+        if (request.status >= 204 && request.status < 300) {
+            // Successfully created reporting organisation! Now log the project addition.
+            console.log(request.status)
+            removeUpdateContainer(updateId);
+        } else {
+            // We reached our target server, but it returned an error
+            setError(request.status);
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        setError('Connection error');
+        return false;
+    };
+
+    request.send();
+}
+
+function removeUpdateContainer(updateId) {
+    var nodeId = 'update-'.concat(updateId).concat('-container');
+    var removeNode = document.getElementById(nodeId)
+    var parentNode = removeNode.parentNode;
+    parentNode.removeChild(removeNode);
+}
+
 function setDeleteUpdateOnClick() {
-    var deleteUpdateNodes = document.querySelectorAll('.deleteUpdate');
-    console.log(deleteUpdateNodes)
+    var deleteUpdateNodes = document.querySelectorAll('.delete-update');
 
     if (deleteUpdateNodes !== null) {
         for (var i = 0; i < deleteUpdateNodes.length; i++) {
-            var updateId = deleteUpdateNodes[i].id.split('-')[1]
-            console.log(updateId)
-            deleteUpdateNodes[i].onclick = deleteUpdate(updateId);
+            deleteUpdateNodes[i].onclick = confirmDeleteUpdate(deleteUpdateNodes[i]);
         }
     }
 }

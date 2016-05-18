@@ -27,7 +27,7 @@
                 <thead><tr><th>{% trans 'Media' %}</th><th>{% trans 'Title' %}</th><th>{% trans 'Date' %}</th><th>{% trans 'Project' %}</th><th>{% trans 'Actions' %}</th></tr></thead>
                 <tbody>
                 {% for update in page %}
-                    <tr>
+                    <tr id="update-{{ update.id }}-container">
                         <td>
                             <a href="{% url 'update-main' update.project.id update.id %}">
                                 {% if update.video %}
@@ -47,7 +47,7 @@
                         <td>
                             <div class="twoColumns">
                                 <a href="{% url 'edit-update' update.project.id update.id %}">Edit</a><br>
-                                <a href="" class="deleteUpdate" id="update-{{ update.id }}">Delete</a>
+                                <div class="delete-update-container"><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></div>
                             </div>
                         </td>
                     </tr>
@@ -77,5 +77,16 @@
 
 {% block js %}
     {{ block.super }}
+
+    <script type="application/json" id="default-values">
+        {
+            "sure_message": "{% trans 'Are you sure?' %}",
+            "yes": "{% trans 'Yes' %}",
+            "no": "{% trans 'No' %}",
+            "delete_text": "{% trans 'Delete' %}",
+            "delete_error": "{% trans 'Could not delete item' %}"
+        }
+    </script>
+
     {% compressed_js 'my_updates' %}
 {% endblock %}
