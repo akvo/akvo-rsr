@@ -14,6 +14,8 @@ from .....rsr.models.organisation import Organisation
 from ... import ImportMapper
 from . import same_data
 
+class NotOwnedOrganisationException(Exception):
+    pass
 
 class InternalOrganisationIDs(ImportMapper):
 
@@ -64,17 +66,17 @@ class Organisations(ImportMapper):
                 return 'logo'
         return None
 
-    def update_organisation(self, organisation, fields_data):
+    def update_organisation(self, organisation, fields):
         """
         Update the organisation
         :param organisation: the organisation to update
-        :param fields_data: dict with new fields data
+        :param fields: dict with new fields data
         :return: list; the fields that were updated
         """
         changes = []
-        for field in fields_data:
-            if getattr(organisation, field) != fields_data[field]:
-                setattr(organisation, field, fields_data[field])
+        for field in fields:
+            if getattr(organisation, field) != fields[field]:
+                setattr(organisation, field, fields[field])
                 changes.append(field)
         if changes:
             organisation.save(update_fields=changes)
@@ -87,6 +89,7 @@ class Organisations(ImportMapper):
         that way we need to create it before we can create the InternalOrganisationID object.
         """
 
+        CORDAID_ORG_ID = 273
         ioids = InternalOrganisationIDs(
                 self.iati_import_job, self.parent_elem, self.project, self.globals)
         identifier = ioids.get_child_element_text(ioids.parent_elem, 'org_id', 'identifier')
@@ -99,6 +102,16 @@ class Organisations(ImportMapper):
                 referenced_org = None
         else:
             referenced_org = None
+        if referenced_org:
+            owner = referenced_org.content_owner
+            if owner and owner != self.globals['cordaid']:
+                raise NotOwnedOrganisationException(
+                        "Organisation {}, ID {}, is content owned by {}, ID {}. "
+                        "Can't edit the data.".format(
+                                referenced_org.name, referenced_org.pk,
+                                owner.name, owner.pk
+                        ))
+
         org_fields = {}
         org_fields['long_name'] = self.get_child_element_text(
                 self.parent_elem, 'name', 'long_name').strip()
@@ -106,12 +119,15 @@ class Organisations(ImportMapper):
         org_fields['new_organisation_type'] = int(self.get_child_element_text(
                 self.parent_elem, 'iati_organisation_type', 'new_organisation_type', 22))
         org_fields['iati_org_id'] = self.get_child_element_text(
-                self.parent_elem, 'iati_org_id', 'iati_org_id')
+            self.parent_elem, 'iati_org_id', 'iati_org_id')
+        org_fields['description'] = self.get_child_element_text(
+            self.parent_elem, 'description', 'description')
         # TODO: validate URL
         org_fields['url'] = self.get_child_element_text(self.parent_elem, 'url', 'url')
+        org_fields['content_owner'] = self.globals['cordaid']
 
         if referenced_org:
-            organisation = Organisation.objects.get(pk=referenced_org.pk)
+            organisation = referenced_org
             changes = self.update_organisation(organisation, org_fields)
             created = False
         else:

@@ -99,13 +99,13 @@ class ProjectLocation(BaseLocation):
         help_text=_(u'The human-readable name for the location.')
     )
     description = ValidXMLCharField(
-        _(u'location description'), blank=True, max_length=255,
+        _(u'location description'), blank=True, max_length=2000,
         help_text=_(u'This provides free text space for providing an additional description, if '
                     u'needed, of the actual target of the activity. A description that qualifies '
                     u'the location, not the activity.')
     )
     activity_description = ValidXMLCharField(
-        _(u'activity description'), blank=True, max_length=255,
+        _(u'activity description'), blank=True, max_length=2000,
         help_text=_(u'A description that qualifies the activity taking place at the location. '
                     u'This should not duplicate information provided in the main activity '
                     u'description, and should typically be used to distinguish between activities '
