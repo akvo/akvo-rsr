@@ -1,12 +1,13 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils compressed %}
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
     <div class="col-sm-6">
         <h3>{% trans 'My updates' %}</h3>
+        <p class="text-danger" id="projectUpdateError"></p>
     </div>
     <div class="col-sm-6 btnHeader text-right">
           <form class="navbar-form" role="search">
@@ -43,7 +44,12 @@
                         </td>
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
-                        <td><div class="twoColumns"><a href="{% url 'edit-update' update.project.id update.id %}">Edit</a></div></td>
+                        <td>
+                            <div class="twoColumns">
+                                <a href="{% url 'edit-update' update.project.id update.id %}">Edit</a><br>
+                                <a href="" class="deleteUpdate" id="update-{{ update.id }}">Delete</a>
+                            </div>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -66,4 +72,10 @@
             {% trans "You have not placed any updates yet." %}
         </p>
     {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% compressed_js 'my_updates' %}
 {% endblock %}
