@@ -83,8 +83,9 @@ function confirmDelete(yesNode, updateId) {
     return function(e) {
         e.preventDefault();
         var sureNode = yesNode.parentNode;
-        var parentNode = sureNode.parentNode;
-        parentNode.removeChild(sureNode);
+        sureNode.innerHTML = defaultValues.delete_progress;
+        // var parentNode = sureNode.parentNode;
+        // parentNode.removeChild(sureNode);
 
         deleteUpdate(updateId);
     };
