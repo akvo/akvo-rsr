@@ -34,28 +34,34 @@ function confirmDeleteUpdate(node) {
     return function(e) {
         e.preventDefault();
 
-        var updateId = node.id.split('-')[1];
+        // check if delete button is enabled
+        if ((' ' + node.className + ' ').indexOf(' disabled ') == -1) {
 
-        // Show warning first
-        var parentNode = node.parentNode;
-        parentNode.removeChild(node);
+            var updateId = node.id.split('-')[1];
+            var confirmId = 'confirm-delete-' + updateId;
 
-        var sureNode = document.createElement('span');
-        sureNode.innerHTML = defaultValues.sure_message;
+            // Show warning first
+            var confirmNode = document.getElementById(confirmId);
+            node.setAttribute('class', 'delete-update disabled');
 
-        var yesNode = document.createElement('a');
-        yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
-        yesNode.onclick = confirmDelete(yesNode, updateId);
-        yesNode.innerHTML = defaultValues.yes;
+            var sureNode = document.createElement('span');
+            sureNode.innerHTML = defaultValues.sure_message;
 
-        var noNode = document.createElement('a');
-        noNode.setAttribute('style', 'color: red; margin-left: 5px;');
-        noNode.onclick = dismissDelete(noNode, updateId);
-        noNode.innerHTML = defaultValues.no;
+            var yesNode = document.createElement('a');
+            yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
+            yesNode.onclick = confirmDelete(yesNode, updateId);
+            yesNode.innerHTML = defaultValues.yes;
 
-        sureNode.appendChild(yesNode);
-        sureNode.appendChild(noNode);
-        parentNode.appendChild(sureNode);
+            var noNode = document.createElement('a');
+            noNode.setAttribute('style', 'color: red; margin-left: 5px;');
+            noNode.onclick = dismissDelete(noNode, updateId);
+            noNode.innerHTML = defaultValues.no;
+
+            sureNode.appendChild(yesNode);
+            sureNode.appendChild(noNode);
+            confirmNode.appendChild(sureNode);
+
+        }
 
     };
 }
@@ -67,7 +73,9 @@ function dismissDelete(noNode, updateId) {
         var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
-        returnDeleteButton(parentNode, updateId);
+        var updateNodeId = 'update-' + updateId;
+        deleteButtonNode =  document.getElementById(updateNodeId);
+        deleteButtonNode.setAttribute('class', 'delete-update');
     };
 }
 
@@ -80,18 +88,6 @@ function confirmDelete(yesNode, updateId) {
 
         deleteUpdate(updateId);
     };
-}
-
-function returnDeleteButton(parentNode, updateId) {
-    var node = document.createElement('a');
-    var updateClass = 'update-'.concat(updateId);
-
-    node.setAttribute('class', 'delete-update');
-    node.setAttribute('id', updateClass);
-    node.innerHTML = defaultValues.delete_text;
-    node.onclick = confirmDeleteUpdate(node);
-
-    parentNode.appendChild(node);
 }
 
 function deleteUpdate(updateId) {
@@ -127,7 +123,7 @@ function deleteUpdate(updateId) {
 }
 
 function removeUpdateContainer(updateId) {
-    var nodeId = 'update-'.concat(updateId).concat('-container');
+    var nodeId = 'update-' + updateId + '-container';
     var removeNode = document.getElementById(nodeId);
     var parentNode = removeNode.parentNode;
     parentNode.removeChild(removeNode);

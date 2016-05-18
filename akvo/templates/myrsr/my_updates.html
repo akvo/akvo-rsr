@@ -24,7 +24,7 @@
     {% if page %}
         <div id="updates" class=" col-sm-12">
             <table class="table table-striped table-responsive">
-                <thead><tr><th>{% trans 'Media' %}</th><th>{% trans 'Title' %}</th><th>{% trans 'Date' %}</th><th>{% trans 'Project' %}</th><th>{% trans 'Actions' %}</th></tr></thead>
+                <thead><tr><th>{% trans 'Media' %}</th><th>{% trans 'Title' %}</th><th>{% trans 'Date' %}</th><th>{% trans 'Project' %}</th><th class="text-right">{% trans 'Actions' %}</th></tr></thead>
                 <tbody>
                 {% for update in page %}
                     <tr id="update-{{ update.id }}-container">
@@ -45,10 +45,13 @@
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
                         <td>
-                            <div class="twoColumns">
-                                <a href="{% url 'edit-update' update.project.id update.id %}">Edit</a>
-                                <span class="delete-update-container"><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></div>
+                            <div class="updateListMenu text-right">
+                                <ul class="nav">
+                                    <li><a href="{% url 'edit-update' update.project.id update.id %}">Edit</a></li>
+                                    <li><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></li>
+                                </ul>
                             </div>
+                            <div id="confirm-delete-{{ update.id }}" class="update-confirm-container text-right"></div>
                         </td>
                     </tr>
                 {% endfor %}
