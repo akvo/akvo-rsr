@@ -25,11 +25,13 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
+// display error message in empty div below title
 function setError(message) {
     var errorNode = document.getElementById('projectUpdateError');
     errorNode.innerHTML = message;
 }
 
+// display confirmation message before deleting update
 function confirmDeleteUpdate(node) {
     return function(e) {
         e.preventDefault();
@@ -40,7 +42,6 @@ function confirmDeleteUpdate(node) {
             var updateId = node.id.split('-')[1];
             var confirmId = 'confirm-delete-' + updateId;
 
-            // Show warning first
             var confirmNode = document.getElementById(confirmId);
             node.setAttribute('class', 'delete-update disabled');
 
@@ -54,7 +55,7 @@ function confirmDeleteUpdate(node) {
 
             var noNode = document.createElement('a');
             noNode.setAttribute('style', 'color: red; margin-left: 5px;');
-            noNode.onclick = dismissDelete(noNode, updateId);
+            noNode.onclick = dismissConfirmationNo(sureNode, updateId);
             noNode.innerHTML = defaultValues.no;
 
             sureNode.appendChild(yesNode);
@@ -66,17 +67,21 @@ function confirmDeleteUpdate(node) {
     };
 }
 
-function dismissDelete(noNode, updateId) {
+function dismissConfirmationNo(sureNode, updateId) {
     return function(e) {
         e.preventDefault();
-        var sureNode = noNode.parentNode;
+
+        dismissConfirmation(sureNode, updateId);
+    };
+}
+
+function dismissConfirmation(sureNode, updateId) {
         var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
         var updateNodeId = 'update-' + updateId;
         deleteButtonNode =  document.getElementById(updateNodeId);
         deleteButtonNode.setAttribute('class', 'delete-update');
-    };
 }
 
 function confirmDelete(yesNode, updateId) {
@@ -87,11 +92,12 @@ function confirmDelete(yesNode, updateId) {
         // var parentNode = sureNode.parentNode;
         // parentNode.removeChild(sureNode);
 
-        deleteUpdate(updateId);
+        deleteUpdate(sureNode, updateId);
     };
 }
 
-function deleteUpdate(updateId) {
+// make api call to delete specified update
+function deleteUpdate(sureNode, updateId) {
 
     var api_url = '/rest/v1/project_update/' + updateId + '/?format=json',
         request = new XMLHttpRequest();
@@ -102,27 +108,29 @@ function deleteUpdate(updateId) {
 
     request.onload = function() {
         if (request.status >= 204 && request.status < 300) {
-            // Successfully created reporting organisation! Now log the project addition.
-            console.log(request.status);
+            // Successfully deleted update, remove container.
             removeUpdateContainer(updateId);
         } else if (request.status == 404) {
-            setError('Update not deleted because it was not found.');
+            // Update not found, most likely already deleted
+            dismissConfirmation(sureNode, updateId);
+            setError(defaultValues.error_delete);
         } else {
             // We reached our target server, but it returned an error
-            setError(request.status);
-            return false;
+            dismissConfirmation(sureNode, updateId);
+            setError(request.status + defaultValues.error_misc);
         }
     };
 
     request.onerror = function() {
         // There was a connection error of some sort
-        setError('Connection error');
+        setError(defaultValues.error_connection);
         return false;
     };
 
     request.send();
 }
 
+// remove update from screen once it has been delete
 function removeUpdateContainer(updateId) {
     var nodeId = 'update-' + updateId + '-container';
     var removeNode = document.getElementById(nodeId);
@@ -130,6 +138,7 @@ function removeUpdateContainer(updateId) {
     parentNode.removeChild(removeNode);
 }
 
+// add onlick to all delete buttons
 function setDeleteUpdateOnClick() {
     var deleteUpdateNodes = document.querySelectorAll('.delete-update');
 
