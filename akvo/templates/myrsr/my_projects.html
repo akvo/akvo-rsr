@@ -70,15 +70,23 @@
               <ul class="nav">
                 <li><a href="{% url 'project-main' project.pk %}">{% trans 'View' %}</a></li>
                 {% if can_edit_project %}
-                  <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
+                  {% if project.status != "C" or request.user.is_superuser %}
+                    <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
+                  {% else %}
+                    <li> <a class="addUpdate disabled" title="{% trans "Can't edit a completed project" %}"> {% trans 'Edit' %} </a></li>
+                  {% endif %}
                   {% if project.is_impact_project and project.is_published %}
                     <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
                   {% else %}
                     <li><a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}">{% trans 'Results data' %}</a></li>
                   {% endif %}
                 {% endif %}
-                {% if project.is_published and project.is_public %}
+                {% if project.is_published and project.is_public and project.status != "C" %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
+                 {% elif request.user.is_superuser %}
+                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
+                {% elif project.status == "C" %}
+                  <li> <a class="addUpdate disabled" title="{% trans "Can't update a completed project" %}"> {% trans "Update" %} </a></li>
                 {% else %}
                  <li> <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
                  </ul>
