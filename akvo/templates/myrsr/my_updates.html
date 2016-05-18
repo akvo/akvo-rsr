@@ -46,8 +46,8 @@
                         <td>{{ update.project }}</td>
                         <td>
                             <div class="twoColumns">
-                                <a href="{% url 'edit-update' update.project.id update.id %}">Edit</a><br>
-                                <div class="delete-update-container"><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></div>
+                                <a href="{% url 'edit-update' update.project.id update.id %}">Edit</a>
+                                <span class="delete-update-container"><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></div>
                             </div>
                         </td>
                     </tr>

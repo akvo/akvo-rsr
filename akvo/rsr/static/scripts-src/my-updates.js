@@ -34,14 +34,13 @@ function confirmDeleteUpdate(node) {
     return function(e) {
         e.preventDefault();
 
-        var updateId = node.id.split('-')[1]
+        var updateId = node.id.split('-')[1];
 
         // Show warning first
         var parentNode = node.parentNode;
         parentNode.removeChild(node);
 
-        var sureNode = document.createElement('div');
-        sureNode.setAttribute('class', 'sure-message');
+        var sureNode = document.createElement('span');
         sureNode.innerHTML = defaultValues.sure_message;
 
         var yesNode = document.createElement('a');
@@ -51,24 +50,24 @@ function confirmDeleteUpdate(node) {
 
         var noNode = document.createElement('a');
         noNode.setAttribute('style', 'color: red; margin-left: 5px;');
-        noNode.onclick = dismissDelete(noNode);
+        noNode.onclick = dismissDelete(noNode, updateId);
         noNode.innerHTML = defaultValues.no;
 
         sureNode.appendChild(yesNode);
         sureNode.appendChild(noNode);
         parentNode.appendChild(sureNode);
 
-    }
+    };
 }
 
-function dismissDelete(noNode) {
+function dismissDelete(noNode, updateId) {
     return function(e) {
         e.preventDefault();
         var sureNode = noNode.parentNode;
         var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
-        returnDeleteButton(parentNode, false);
+        returnDeleteButton(parentNode, updateId);
     };
 }
 
@@ -79,23 +78,16 @@ function confirmDelete(yesNode, updateId) {
         var parentNode = sureNode.parentNode;
         parentNode.removeChild(sureNode);
 
-        console.log(updateId)
-
         deleteUpdate(updateId);
     };
 }
 
-function returnDeleteButton(parentNode, error) {
-
-    if (error) {
-        var errorNode = document.createElement('div');
-        errorNode.setAttribute('style', 'color: red; margin-left: 5px;');
-        errorNode.innerHTML = defaultValues.delete_error;
-        container.appendChild(errorNode);
-    }
-
+function returnDeleteButton(parentNode, updateId) {
     var node = document.createElement('a');
-    node.setAttribute('class', 'delete-related-object');
+    var updateClass = 'update-'.concat(updateId);
+
+    node.setAttribute('class', 'delete-update');
+    node.setAttribute('id', updateClass);
     node.innerHTML = defaultValues.delete_text;
     node.onclick = confirmDeleteUpdate(node);
 
@@ -114,8 +106,10 @@ function deleteUpdate(updateId) {
     request.onload = function() {
         if (request.status >= 204 && request.status < 300) {
             // Successfully created reporting organisation! Now log the project addition.
-            console.log(request.status)
+            console.log(request.status);
             removeUpdateContainer(updateId);
+        } else if (request.status == 404) {
+            setError('Update not deleted because it was not found.');
         } else {
             // We reached our target server, but it returned an error
             setError(request.status);
@@ -134,7 +128,7 @@ function deleteUpdate(updateId) {
 
 function removeUpdateContainer(updateId) {
     var nodeId = 'update-'.concat(updateId).concat('-container');
-    var removeNode = document.getElementById(nodeId)
+    var removeNode = document.getElementById(nodeId);
     var parentNode = removeNode.parentNode;
     parentNode.removeChild(removeNode);
 }
