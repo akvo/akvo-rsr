@@ -52,18 +52,26 @@ class Sector(models.Model):
 
     def __unicode__(self):
         if self.sector_code:
+            # Check if the code is specified
             try:
-                sector_unicode = self.iati_sector().name.capitalize()
-            except Exception as e:
-                sector_unicode = u'%s' % _(u'Sector code not found')
+                sector_text = u'%s' % self.iati_sector().name.capitalize()
+            except AttributeError:
+                sector_text = self.text
+
+            try:
+                vocabulary = self.iati_vocabulary().name
+            except AttributeError:
+                vocabulary = ''
+
+            return u'{0}{1}{2}{3}'.format(
+                u'{0}: '.format(vocabulary) if vocabulary else u'',
+                u'{0}'.format(self.sector_code),
+                u' - {0}'.format(sector_text) if sector_text else u'',
+                u' ({0}%)'.format(str(self.percentage)) if self.percentage else u'',
+            )
         else:
-            sector_unicode = u'%s' % _(u'No sector code specified')
-
-        if self.percentage:
-            sector_unicode += u' (%s%%)' % str(self.percentage)
-
-        return sector_unicode
-
+            # In case no code is specified, return this
+            return u'{0}'.format(_(u'No sector code specified'))
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
