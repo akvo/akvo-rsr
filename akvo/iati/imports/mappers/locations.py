@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.country import Country, RecipientCountry
+from ....rsr.models.iati_import_log import LOG_ENTRY_TYPE
 from ....rsr.models.location import AdministrativeLocation, ProjectLocation
 from ....rsr.models.region import RecipientRegion
 
@@ -87,7 +88,8 @@ class Locations(ImportMapper):
                 try:
                     country = Country.objects.get(iso_code=country_code)
                 except ObjectDoesNotExist as e:
-                    self.add_log('administrative', 'country', str(e))
+                    self.add_log('administrative', 'country', str(e),
+                                 LOG_ENTRY_TYPE.VALUE_NOT_SAVED)
 
             loc, created = ProjectLocation.objects.get_or_create(
                 location_target=self.project,

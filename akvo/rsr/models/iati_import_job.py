@@ -421,7 +421,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
     the use of the ZIP archive to extract all information needed, both for the importing of
     organisations and activities.
     Note that self.iati_xml_file is used to hold the whole Cordaid ZIP archive, not just the
-    activities XML. The XML is instead put in self._iati_xml_file in check_file()
+    activities XML. The XML is instead injected directly into self.parse_xml()
     """
     IATI_XML_ACTIVITIES = 'iati-activities'
 
@@ -437,6 +437,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         ORGANISATIONS_ROOT = 'Relations'
         ORGANISATIONS_CHILDREN = 'object'
         CORDAID_ORG_ID = 273
+
         self.add_log(u'CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
         organisations_xml = self.get_xml_file(ORGANISATIONS_FILENAME)
         if self.parse_xml(organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN):
@@ -445,21 +446,29 @@ class CordaidZipIatiImportJob(IatiImportJob):
             organisations = None
         cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
         if organisations:
-            for object in organisations.findall(ORGANISATIONS_CHILDREN):
+            created_count = 0
+            updated_count = 0
+            for element in organisations.findall(ORGANISATIONS_CHILDREN):
                 try:
-                    org_mapper = Organisations(self, object, None, {'cordaid': cordaid})
+                    org_mapper = Organisations(self, element, None, {'cordaid': cordaid})
                     organisation, changes, created = org_mapper.do_import()
                     if created:
                         self.log_creation(organisation)
+                        created_count += 1
                     else:
                         self.log_changes(organisation, changes)
+                        if changes:
+                            updated_count += 1
                 except Exception as e:
                     self.add_log(
                             u'CordaidZip: Critical error when importing '
                             u'organisations: {}'.format(e.message),
                             LOG_ENTRY_TYPE.CRITICAL_ERROR)
 
-        self.add_log(u'CordaidZip: Organisations import done.', LOG_ENTRY_TYPE.INFORMATIONAL)
+        self.add_log(u'CordaidZip: Organisations import done. '
+                     u'{} organisations created, {} organisations updated'.format(
+                            created_count, updated_count),
+                     LOG_ENTRY_TYPE.INFORMATIONAL)
 
     def create_log_entry(self, organisation, action_flag=LOG_ENTRY_TYPE.ACTION_UPDATE,
                          change_message=u''):
@@ -507,13 +516,17 @@ class CordaidZipIatiImportJob(IatiImportJob):
         :return: True if all's well, False if not
         """
         try:
-            parsed_xml = etree.parse(xml_file)
+            parser = etree.XMLParser()
+            for line in xml_file:
+                parser.feed(line)
+                if line.strip() == "</{}>".format(root_tag):
+                    break
+            objects_root = parser.close()
         except Exception as e:
             self.add_log('Error parsing XML file. Error message:\n{}'.format(e.message),
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             return False
 
-        objects_root = parsed_xml.getroot()
         if objects_root.tag == root_tag:
             self._objects_root = objects_root
             self.add_log(
@@ -552,7 +565,8 @@ class CordaidZipIatiImportJob(IatiImportJob):
         :return: True or False indicating success or failure
         """
         IATI_XML_ACTIVITY = 'iati-activity'
-        if self.parse_xml(self._iati_xml_file, self.IATI_XML_ACTIVITIES, IATI_XML_ACTIVITY):
+
+        if self.parse_xml(self.get_activities_file(), self.IATI_XML_ACTIVITIES, IATI_XML_ACTIVITY):
             self.activities = self._objects_root
             return True
         else:
@@ -569,7 +583,10 @@ class CordaidZipIatiImportJob(IatiImportJob):
         if file:
             # Since we're using self.iati_xml_file for the Cordaid ZIP archive, we assign the IATI
             # XML to self._iati_xml_file
-            self._iati_xml_file = file
+            # self._iati_xml_file = file
+            # The above line doesn't work for some reason. For reasons not understood, when assiging
+            # the file to self._iat_xml_file the file isn't readable any more when we access is in
+            # parse_xml(). Instead we inject the file directly in the call to parse_xml()
             self.add_log('Using iati-activities.xml from the Cordaid ZIP: {}'.format(self.iati_xml_file),
                          LOG_ENTRY_TYPE.INFORMATIONAL)
             return True
