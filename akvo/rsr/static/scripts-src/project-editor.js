@@ -3086,7 +3086,7 @@ function addOrgModal() {
                                         )
                                     ),
                                     React.DOM.div( {className:"row"}, 
-                                        React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://mygeoposition.com/", target:"_blank"}, "http://mygeoposition.com/"), " ", defaultValues.coordinates)
+                                        React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://www.latlong.net/", target:"_blank"}, "http://www.latlong.net/"), " ", defaultValues.coordinates)
                                     ),
                                     React.DOM.div( {className:"row"}, 
                                         React.DOM.div( {className:"inputContainer col-md-6 form-group"}, 

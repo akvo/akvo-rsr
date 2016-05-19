@@ -3086,7 +3086,7 @@ function addOrgModal() {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                        <p className="help-block">{defaultValues.use_link} <a href='http://www.latlong.net/' target='_blank'>http://www.latlong.net/</a> {defaultValues.coordinates}</p>
                                     </div>
                                     <div className="row">
                                         <div className="inputContainer col-md-6 form-group">
