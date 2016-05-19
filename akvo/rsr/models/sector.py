@@ -20,13 +20,12 @@ class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
         _(u'sector code'), blank=True, max_length=25,
-        help_text=_(u'Please select DAC-5 or DAC-3 as the sector vocabulary first, then this field '
-                    u'will be populated with the corresponding codes. For other vocabularies, it '
-                    u'is possible to fill in any code. '
-                    u'See these lists for the DAC-5 and DAC-3 sector codes: '
-                    u'<a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">'
-                    u'DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/'
-                    u'SectorCategory/" target="_blank">DAC-3 sector codes</a>.')
+        help_text=_(u'It is possible to specify a variety of sector codes, based on the selected '
+                    u'vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be '
+                    u'found here: <a href="http://iatistandard.org/202/codelists/Sector/" '
+                    u'target="_blank">DAC-5 sector codes</a> and '
+                    u'<a href="http://iatistandard.org/202/codelists/SectorCategory/" '
+                    u'target="_blank">DAC-3 sector codes</a>.')
     )
     text = ValidXMLCharField(
         _(u'sector description'), blank=True, max_length=100,
