@@ -35,7 +35,7 @@
     </tr>
     <tr>
       <td>{% trans 'Contribution' %}:</td>
-      <td>{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</td>
+      <td>{{ invoice.amount }} {{ invoice.project.currency|safe }}</td>
     </tr>
     <tr>
       <td>{% trans 'Akvo reference' %}: </td>

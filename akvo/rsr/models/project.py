@@ -25,7 +25,7 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
                                    TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE, CURRENCY,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
@@ -56,10 +56,7 @@ class MultipleReportingOrgs(Exception):
 
 
 class Project(TimestampsMixin, models.Model):
-    CURRENCY_CHOICES = (
-        ('USD', '$'),
-        ('EUR', '€'),
-    )
+    CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
         (1, _(u'Core Activity')),

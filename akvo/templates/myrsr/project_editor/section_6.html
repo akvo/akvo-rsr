@@ -21,7 +21,7 @@
 
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_budgetitem" }}">
                     <h5>{% trans 'Budget items' %}</h5>
-                    <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
+                    <p class="help-block">{% trans 'The total value of all budget items is:' %} <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span><span class="currency-display"> {{ project.currency }}</span></p>
                     <div class="row">
                         <div class="col-md-12">
                             {% include percentage_input with obj=project field='capital_spend_percentage' %}

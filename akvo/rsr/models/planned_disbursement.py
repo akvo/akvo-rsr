@@ -60,7 +60,7 @@ class PlannedDisbursement(models.Model):
                 return u'%s %s' % (self.iati_currency().name,
                                    '{:,}'.format(int(self.value)))
             else:
-                return u'%s %s' % (self.project.get_currency_display(),
+                return u'%s %s' % (self.project.currency,
                                    '{:,}'.format(int(self.value)))
         else:
             return u'%s' % _(u'No value specified')
