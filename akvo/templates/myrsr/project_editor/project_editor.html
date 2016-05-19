@@ -82,7 +82,7 @@
     <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
     <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
     <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-    <script id="react-datepicker-compat" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+    <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
 
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
@@ -207,7 +207,8 @@
             "image_file_format": "{% trans 'File is not an image file. Supported formats are' %}",
             "file_size": "{% trans 'File size is too large' %}",
             "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
-            "connection_error": "{% trans 'Connection error, please check your internet connection' %}"
+            "connection_error": "{% trans 'Connection error, please check your internet connection' %}",
+            "today": "{% trans 'Today' %}"
         }
     </script>
 
