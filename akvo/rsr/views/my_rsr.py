@@ -244,7 +244,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         return Http404
 
-    if not request.user.has_perm('rsr.change_project', project) or project.status == 'C':
+    if (not request.user.has_perm('rsr.change_project', project) or project.status == 'C') and not \
+            (request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 
     # Custom fields
