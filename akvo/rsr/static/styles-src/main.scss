@@ -688,6 +688,42 @@ nav.navbar-fixed-top {
     }
 }
 
+div.updateListMenu {
+    ul {
+        margin-top: -10px;
+        li {
+            display: inline-block;
+            @include responsive (mediums-max-screens) {
+                display: block;
+            }
+            @include responsive (small-max-screens) {}
+            a {
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.disabled {
+                    background-color: lighten($primary4, 30%);
+                    color: lighten($primary4, 20%);
+                    pointer-events: initial;
+                    cursor: not-allowed;
+                    border: none;
+                    @include border-radius(5px);
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+            @include responsive (wide-screens) {}
+            > a {}
+        }
+    }
+}
+
+div.update-confirm-container {
+    margin-top: 5px;
+    font-size: 85%;
+}
+
 .navbar-form {
     padding-left: 0;
     margin-bottom: 25px;
