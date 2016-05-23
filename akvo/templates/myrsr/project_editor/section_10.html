@@ -12,7 +12,10 @@
             </div>
         </div>
         <div class="formBlock hidden">
-            <p class="help-block hidden" id="step-10-helptext">{% trans 'Fill in comments regarding the project. These are only for internal use and will not be displayed anywhere on the project page.' %}</p>
+            <p class="help-block hidden" id="step-10-helptext">
+                {% trans 'Fill in comments regarding the project. These are only for internal use and will not be displayed anywhere on the project page.' %}
+                {% trans 'Select keywords in case you are using an Akvo Page. Keywords linked to a project will determine if a project appears on the Akvo Page or not.' %}
+            </p>
             <form role="form">
                 {% include textarea_input with obj=project field='notes' %}
 

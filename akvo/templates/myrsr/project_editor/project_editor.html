@@ -32,10 +32,6 @@
         {% trans 'Your RSR project page shows project information about what’s happening, where and who’s involved, as well as who the funders are. Tell your project’s story by entering complete information. After a project is published you can keep it up to date by adding project updates with text, photos and videos.' %}<br/><br/>
         {% trans 'Before you start, please review all the project fields so you know which information belongs where in the RSR project form.' %}<br/><br/>
         {% trans 'RSR editors can edit the project information, and RSR administrators can edit and publish the project once all mandatory fields are filled out and the progress bar on top of the page is green. Changes that are made to a published project, will be visible online immediately after saving.' %}<br/><br/>
-        {% trans 'If you have questions, please get in touch with us via' %}
-        {# Javascript will generate the support feedback email, as to reduce spam #}
-        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
-        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>.
     </div>
 
     {% include "myrsr/project_editor/project_editor_options.html" %}
@@ -59,14 +55,6 @@
             </fieldset>
         {% endwith %}
     </section>
-    <div id="editor-feedback" class="hidden-xs">
-        {# Javascript will generate the support feedback email, as to reduce spam #}
-        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback"> #}
-        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62));</script>
-        <i class="fa fa-comment-o"></i> {% trans 'Provide feedback' %}
-        {# </a> #}
-        <script type="text/javascript">document.write(String.fromCharCode(60,47,97,62));</script>
-    </div>
 {% endblock %}
 
 {% block js %}
@@ -82,7 +70,7 @@
     <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
     <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
     <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-    <script id="react-datepicker-compat" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+    <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
 
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
@@ -207,7 +195,8 @@
             "image_file_format": "{% trans 'File is not an image file. Supported formats are' %}",
             "file_size": "{% trans 'File size is too large' %}",
             "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
-            "connection_error": "{% trans 'Connection error, please check your internet connection' %}"
+            "connection_error": "{% trans 'Connection error, please check your internet connection' %}",
+            "today": "{% trans 'Today' %}"
         }
     </script>
 
