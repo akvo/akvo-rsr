@@ -37,7 +37,7 @@ function confirmDeleteUpdate(node) {
         e.preventDefault();
 
         // check if delete button is enabled
-        if ((' ' + node.className + ' ').indexOf(' disabled ') == -1) {
+        if ((' ' + node.className + ' ').indexOf(' disabled ') < 0) {
 
             var updateId = node.id.split('-')[1];
             var confirmId = 'confirm-delete-' + updateId;
@@ -89,8 +89,6 @@ function confirmDelete(yesNode, updateId) {
         e.preventDefault();
         var sureNode = yesNode.parentNode;
         sureNode.innerHTML = defaultValues.delete_progress;
-        // var parentNode = sureNode.parentNode;
-        // parentNode.removeChild(sureNode);
 
         deleteUpdate(sureNode, updateId);
     };
