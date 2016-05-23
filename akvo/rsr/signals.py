@@ -272,6 +272,11 @@ def employment_post_save(sender, **kwargs):
                     employers__organisation=organisation,
                     employers__group__in=[user_managers_group, admins_group],
                     is_support=True
+                ) |
+                active_users.filter(
+                    employers__organisation=organisation.content_owner,
+                    employers__group__in=[user_managers_group, admins_group],
+                    is_support=True
                 )
             ).distinct()
             rsr_send_mail_to_users(
