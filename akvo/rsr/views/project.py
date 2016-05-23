@@ -413,6 +413,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     updates = project.updates_desc()[:5]
     update = None
 
+    # Prevent editing if project is completed or unpublished
+    if project.status == 'C' or not project.is_published():
+        raise PermissionDenied
+
     if update_id is not None:
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
