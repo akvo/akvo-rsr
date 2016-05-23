@@ -19,8 +19,8 @@
                 {% else %}
                 {% if edit_mode %}
                     <p class="small">
-                    {% blocktrans with update_time=update.time_gmt|date:"H:i T" expires_time=update.expires_at|date:"H:i T" %}
-                        You posted this update at {{update_time}}. You have until {{expires_time}} to save your edits.
+                    {% blocktrans with update_time=update.time_gmt|date:"H:i T" %}
+                        You posted this update at {{update_time}}.
                     {% endblocktrans %}
                     </p>
                 {% endif %}
