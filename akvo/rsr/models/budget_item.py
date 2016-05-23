@@ -88,7 +88,7 @@ class BudgetItem(models.Model):
             budget_unicode = u'%s' % _(u'No budget item specified')
 
         if self.amount:
-            budget_unicode += u' - %s %s' % (self.project.currency,
+            budget_unicode += u' - %s %s' % (self.currency,
                                              unicode('{:,}'.format(int(self.amount))))
         else:
             budget_unicode += u' - %s' % _(u'No amount specified')
