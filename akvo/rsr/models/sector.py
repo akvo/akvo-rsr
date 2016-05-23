@@ -20,13 +20,12 @@ class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
         _(u'sector code'), blank=True, max_length=25,
-        help_text=_(u'Please select DAC-5 or DAC-3 as the sector vocabulary first, then this field '
-                    u'will be populated with the corresponding codes. For other vocabularies, it '
-                    u'is possible to fill in any code. '
-                    u'See these lists for the DAC-5 and DAC-3 sector codes: '
-                    u'<a href="http://iatistandard.org/202/codelists/Sector/" target="_blank">'
-                    u'DAC-5 sector codes</a> and <a href="http://iatistandard.org/202/codelists/'
-                    u'SectorCategory/" target="_blank">DAC-3 sector codes</a>.')
+        help_text=_(u'It is possible to specify a variety of sector codes, based on the selected '
+                    u'vocabulary. The sector codes for the DAC-5 and DAC-3 vocabularies can be '
+                    u'found here: <a href="http://iatistandard.org/202/codelists/Sector/" '
+                    u'target="_blank">DAC-5 sector codes</a> and '
+                    u'<a href="http://iatistandard.org/202/codelists/SectorCategory/" '
+                    u'target="_blank">DAC-3 sector codes</a>.')
     )
     text = ValidXMLCharField(
         _(u'sector description'), blank=True, max_length=100,
@@ -53,18 +52,26 @@ class Sector(models.Model):
 
     def __unicode__(self):
         if self.sector_code:
+            # Check if the code is specified
             try:
-                sector_unicode = self.iati_sector().name.capitalize()
-            except Exception as e:
-                sector_unicode = u'%s' % _(u'Sector code not found')
+                sector_text = u'%s' % self.iati_sector().name.capitalize()
+            except AttributeError:
+                sector_text = self.text
+
+            try:
+                vocabulary = self.iati_vocabulary().name
+            except AttributeError:
+                vocabulary = ''
+
+            return u'{0}{1}{2}{3}'.format(
+                u'{0}: '.format(vocabulary) if vocabulary else u'',
+                u'{0}'.format(self.sector_code),
+                u' - {0}'.format(sector_text) if sector_text else u'',
+                u' ({0}%)'.format(str(self.percentage)) if self.percentage else u'',
+            )
         else:
-            sector_unicode = u'%s' % _(u'No sector code specified')
-
-        if self.percentage:
-            sector_unicode += u' (%s%%)' % str(self.percentage)
-
-        return sector_unicode
-
+            # In case no code is specified, return this
+            return u'{0}'.format(_(u'No sector code specified'))
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):

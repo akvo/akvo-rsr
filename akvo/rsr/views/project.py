@@ -273,6 +273,13 @@ def main(request, project_id):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
+    # Related documents
+    related_documents = []
+    for d in project.documents.all():
+        if d.url or d.document:
+            related_documents += [d]
+    related_documents = related_documents[:5]
+
     # JSON data
     carousel_data = json.dumps(_get_carousel_data(project, updates[:9]))
     accordion_data = json.dumps({
@@ -293,6 +300,7 @@ def main(request, project_id):
         'paginator': paginator,
         'pledged': project.get_pledged(),
         'project': project,
+        'related_documents': related_documents,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'parent_projects_ids': [parent_project.id for parent_project in project.parents()],

@@ -877,8 +877,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'The scope of the project refers to the geographical area that the project is active within.<br><br>'
                 u'Also add the physical locations where the project is being carried out. These will appear on '
-                u'the map on your project page. Use the link to <a href="http://mygeoposition.com/" target="_blank">'
-                u'http://mygeoposition.com/</a> to obtain the coordinates for your locations, as these are the items '
+                u'the map on your project page. Use the link to <a href="http://www.latlong.net/" target="_blank">'
+                u'http://www.latlong.net/</a> to obtain the coordinates for your locations, as these are the items '
                 u'that ensure the pin is in the correct place.'
             ),
             'fields': ('project_scope', ),

@@ -2649,9 +2649,12 @@ function setDatepickers() {
                         React.createElement(DatePicker, {
                             locale: 'en',
                             placeholderText: '',
+                            showYearDropdown: true,
                             dateFormat: 'DD/MM/YYYY',
                             selected: this.state.initialDate,
-                            onChange: this.handleDateChange
+                            onChange: this.handleDateChange,
+                            todayButton: defaultValues.today,
+                            className: 'form-control'
                         })
                     );
                 } else {
@@ -2660,7 +2663,8 @@ function setDatepickers() {
                             locale: 'en',
                             placeholderText: '',
                             dateFormat: 'DD/MM/YYYY',
-                            selected: this.state.initialDate
+                            selected: this.state.initialDate,
+                            className: 'form-control'
                         })
                     );
                 }
@@ -2697,13 +2701,16 @@ function setDatepickers() {
             );
 
             // Set id, name and saved value of datepicker input
-            inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
+            inputNode = datepickerContainer.querySelector('input');
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
             inputNode.setAttribute("saved-value", inputValue);
             if (disableInput === 'true') {
                 inputNode.setAttribute("disabled", '');
             }
+
+            // Remove 'react-datepicker__input-container' class
+            inputNode.parentNode.className = '';
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -3079,7 +3086,7 @@ function addOrgModal() {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <p className="help-block">{defaultValues.use_link} <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> {defaultValues.coordinates}</p>
+                                        <p className="help-block">{defaultValues.use_link} <a href='http://www.latlong.net/' target='_blank'>http://www.latlong.net/</a> {defaultValues.coordinates}</p>
                                     </div>
                                     <div className="row">
                                         <div className="inputContainer col-md-6 form-group">

@@ -528,7 +528,7 @@ function loadComponents() {
                 }
 
                 return (
-                    React.DOM.button( {className:buttonClass, onClick:this.clickNoErrorsProjects} , 
+                    React.DOM.button( {className:buttonClass, onClick:this.clickNoErrorsProjects}, 
                         React.DOM.input( {type:"checkbox", checked:this.state.noErrorsChecked} ), " ", cap(i18n.without_errors)
                     )
                 );
