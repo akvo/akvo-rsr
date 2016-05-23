@@ -242,5 +242,6 @@ class Humanitarian(ImportMapper):
         """
 
         humanitarian = self.get_attrib(self.parent_elem, 'humanitarian', 'humanitarian', None)
-        humanitarian = self.to_boolean(humanitarian)
+        if humanitarian:
+            humanitarian = self.to_boolean(humanitarian)
         return self.update_project_field('humanitarian', humanitarian)
