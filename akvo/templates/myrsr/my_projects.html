@@ -83,8 +83,6 @@
                 {% endif %}
                 {% if project.is_published and project.is_public and project.status != "C" %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
-                 {% elif request.user.is_superuser %}
-                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% elif project.status == "C" %}
                   <li> <a class="addUpdate disabled" title="{% trans "Can't update a completed project" %}"> {% trans "Update" %} </a></li>
                 {% else %}
