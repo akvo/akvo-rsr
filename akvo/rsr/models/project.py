@@ -757,7 +757,7 @@ class Project(TimestampsMixin, models.Model):
             return ProjectUpdate.objects.filter(project__in=self).order_by('-id')
             # return self.project_updates.all()
 
-        #the following 6 methods return organisation querysets!
+        # The following 8 methods return organisation querysets
         def _partners(self, role=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
             if role:
@@ -781,6 +781,12 @@ class Project(TimestampsMixin, models.Model):
 
         def all_partners(self):
             return self._partners()
+
+        def paying_partners(self):
+            return Organisation.objects.filter(
+                partnerships__project__in=self,
+                can_create_projects=True
+            ).distinct()
 
         def countries(self):
             """Returns a Country queryset of the countries of these projects"""

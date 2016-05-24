@@ -18,7 +18,7 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import get_model
+from django.db.models import get_model, Q
 
 from sorl.thumbnail import ImageField
 
@@ -266,14 +266,23 @@ def employment_post_save(sender, **kwargs):
         if kwargs['created'] and user.is_active and not employment.is_approved:
             organisation = employment.organisation
             active_users = get_user_model().objects.filter(is_active=True)
-            notify = (
-                active_users.filter(is_admin=True, is_support=True) |
-                active_users.filter(
-                    employers__organisation__in=[organisation, organisation.content_owner],
-                    employers__group__in=[user_managers_group, admins_group],
-                    is_support=True
-                )
-            ).distinct()
+
+            # General admins with the 'is_support' setting will always be informed
+            active_admin_users = active_users.filter(is_admin=True, is_support=True)
+
+            # As well as organisation (+ content owners) User managers and Admins, with the
+            # 'is_support' setting
+            active_employer_users = active_users.filter(
+                employers__organisation__in=organisation.content_owned_by(),
+                employers__group__in=[user_managers_group, admins_group],
+                is_support=True
+            )
+
+            notify = active_users.filter(
+                Q(pk__in=active_admin_users.values_list('pk', flat=True)) |
+                Q(pk__in=active_employer_users.values_list('pk', flat=True))
+            ).exclude(pk=user.pk).distinct()
+
             rsr_send_mail_to_users(
                 notify,
                 subject='registration/user_organisation_request_subject.txt',
