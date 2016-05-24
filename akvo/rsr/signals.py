@@ -265,22 +265,22 @@ def employment_post_save(sender, **kwargs):
         # user is active and the employment has not been approved yet.
         if kwargs['created'] and user.is_active and not employment.is_approved:
             organisation = employment.organisation
-            active_users = get_user_model().objects.filter(is_active=True)
 
-            # General admins with the 'is_support' setting will always be informed
-            active_admin_users = active_users.filter(is_admin=True, is_support=True)
+            # Retrieve all active support users
+            active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
 
-            # As well as organisation (+ content owners) User managers and Admins, with the
-            # 'is_support' setting
-            active_employer_users = active_users.filter(
+            # General (support) admins will always be informed
+            admin_users = active_support_users.filter(is_admin=True)
+
+            # As well as organisation (+ content owners) User managers and Admins
+            employer_users = active_support_users.filter(
                 employers__organisation__in=organisation.content_owned_by(),
-                employers__group__in=[user_managers_group, admins_group],
-                is_support=True
+                employers__group__in=[user_managers_group, admins_group]
             )
 
-            notify = active_users.filter(
-                Q(pk__in=active_admin_users.values_list('pk', flat=True)) |
-                Q(pk__in=active_employer_users.values_list('pk', flat=True))
+            notify = active_support_users.filter(
+                Q(pk__in=admin_users.values_list('pk', flat=True)) |
+                Q(pk__in=employer_users.values_list('pk', flat=True))
             ).exclude(pk=user.pk).distinct()
 
             rsr_send_mail_to_users(
