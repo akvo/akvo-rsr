@@ -7,12 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 col-xs-12">
-                    <h2><i class="fa fa-camera-retro"></i> {{update.title}}
-                    {% if user == update.user and not update.edit_window_has_expired %}
-                        <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
-                        {% bootstrap_icon "pencil" %} Edit</a>
-                    {% endif %}
-                    </h2>
+                    <h2><i class="fa fa-camera-retro"></i> {{update.title}}</h2>
                     <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.created_at|date:"d-M-Y"}}</div>
                     <div class="post-info media">
                         <div class="media-body">

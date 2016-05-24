@@ -428,9 +428,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
-        if update.edit_window_has_expired():
-            request.error_message = u'You cannot edit this update anymore, the 30 minutes time limit has passed.'
-            raise PermissionDenied
+    # Prevent adding update if project is completed or unpublished
+    elif project.status == 'C' or not project.is_published():
+        request.error_message = u'Cannot add updates to completed or unpublished projects.'
+        raise PermissionDenied
 
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)

@@ -244,7 +244,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         return Http404
 
-    if not request.user.has_perm('rsr.change_project', project):
+    if (not request.user.has_perm('rsr.change_project', project) or project.status == 'C') and not \
+            (request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 
     # Custom fields
@@ -480,7 +481,7 @@ def my_results(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
 
-    if not user.has_perm('rsr.change_project', project):
+    if not user.has_perm('rsr.change_project', project) or project.status == 'C' or not project.is_published():
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')

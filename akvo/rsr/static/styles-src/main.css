@@ -625,6 +625,32 @@ nav.navbar-fixed-top {
             position: relative;
             right: auto; } }
 
+div.updateListMenu ul {
+  margin-top: -10px; }
+  div.updateListMenu ul li {
+    display: inline-block; }
+    @media only screen and (max-width: 992px) {
+      div.updateListMenu ul li {
+        display: block; } }
+    div.updateListMenu ul li a:last-child {
+      margin-right: 0; }
+    div.updateListMenu ul li a.disabled {
+      background-color: #e6e6e6;
+      color: #cccccc;
+      pointer-events: initial;
+      cursor: not-allowed;
+      border: none;
+      -moz-border-radius: 5px;
+      -o-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px; }
+      div.updateListMenu ul li a.disabled:hover {
+        text-decoration: none; }
+
+div.update-confirm-container {
+  margin-top: 5px;
+  font-size: 85%; }
+
 .navbar-form {
   padding-left: 0;
   margin-bottom: 25px; }
