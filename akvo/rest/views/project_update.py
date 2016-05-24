@@ -118,7 +118,9 @@ def validate_date(date):
     if date is None:
         return None
     # if yyyy-mm-ddThh:mm:ss
-    elif match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$', date) is not None:
+    elif match(
+            '^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}$',
+            date) is not None:
         return date
     # if yyyy-mm-dd
     elif match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', date) is not None:
