@@ -373,9 +373,9 @@ def user_management(request):
         connected_orgs_list = [
             org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
         ]
-        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).content_owned_organisations()
-        employments = organisations.content_owned_organisations().employments().\
-            exclude(user=user).order_by('-id')
+        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
+            content_owned_organisations()
+        employments = organisations.employments().exclude(user=user).order_by('-id')
         roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
