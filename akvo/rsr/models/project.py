@@ -109,7 +109,9 @@ class Project(TimestampsMixin, models.Model):
         '6': 'R'
     }
 
+    # Disable functionality for certain statuses
     EDIT_DISABLED = ['3', '5']
+    DONATE_DISABLED = ['3', '4', '5', '6']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
@@ -871,6 +873,10 @@ class Project(TimestampsMixin, models.Model):
             "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
                                                     codelist_name(ActivityStatus, self, 'iati_status'))
         )
+
+    def show_plain_status(self):
+        "Show the current project status value without styling"
+        return codelist_name(ActivityStatus, self, 'iati_status')
 
     def show_current_image(self):
         try:

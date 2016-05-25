@@ -26,7 +26,7 @@
         {% trans "Location" %}
       </li>
       <li class="projectStatusTd">
-        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "status" %}" target="_self">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "iati_status" %}" target="_self">
           {% trans "Status" %}</a>
         /
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "last_update" %}" target="_self">
