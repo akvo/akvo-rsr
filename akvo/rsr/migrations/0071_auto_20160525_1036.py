@@ -39,7 +39,7 @@ def do_not_hide_recipient_countries_and_regions(apps, schema_editor):
         rsr_validation_set = ProjectEditorValidationSet.objects.get(id=1)
         for validation in rsr_validation_set.validations.all():
             if validation.validation in ["rsr_recipientcountry", "rsr_recipientregion"] and \
-                    validation.validation == 2:
+                    validation.action == 2:
                 validations_to_be_deleted.append(validation)
 
         for delete_validation in validations_to_be_deleted:
