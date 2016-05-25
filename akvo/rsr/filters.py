@@ -43,10 +43,10 @@ def remove_empty_querydict_items(request_get):
 
 
 def walk(node):
-    """Walks the m49 tree and return countires"""
+    """Walks the m49 tree and return countries"""
 
     if isinstance(node, basestring):
-        return [node.lower()]
+        return [node, ]
     elif isinstance(node, int):
         return walk(deepcopy(M49_HIERARCHY)[node])
     else:
@@ -61,7 +61,7 @@ def filter_m49(queryset, value):
     if not value:
         return queryset
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
-    return queryset.filter(primary_location__country__iso_code__in=countries)
+    return queryset.filter(recipient_countries__country__in=countries)
 
 
 def get_id_for_iso(i):
