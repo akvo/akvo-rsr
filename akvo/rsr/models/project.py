@@ -25,7 +25,7 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
                                    TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
@@ -113,6 +113,18 @@ class Project(TimestampsMixin, models.Model):
                     u'fully implemented.<br/>'
                     u'5) Archived: projects are archived when the reporting partner no longer uses '
                     u'RSR.')
+    )
+    iati_status = ValidXMLCharField(
+        _(u'iati status'), max_length=1, choices=codelist_choices(ACTIVITY_STATUS), db_index=True, default='6',
+        help_text=_(u'There are five different project statuses:<br/>'
+                    u'1) Pipeline/identification: the project is being scoped or planned<br/>'
+                    u'2) Implementation: the project is currently being implemented<br/>'
+                    u'3) Completion: the project is complete or the final disbursement has been made<br/>'
+                    u'4) Post-completion: the project is complete or the final disbursement has been made, '
+                    u'but the activity remains open pending financial sign off or M&E<br/>'
+                    u'5) Cancelled: the project has been cancelled<br/>'
+                    u'6) Suspended: the project has been temporarily suspended '
+                    u'or the reporting partner no longer uses RSR.')
     )
     categories = models.ManyToManyField(
         'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
