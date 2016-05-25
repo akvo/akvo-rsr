@@ -9,11 +9,12 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
-from akvo.codelists.models import (GeographicExactness, GeographicLocationClass,
+from akvo.codelists.models import (Country, GeographicExactness, GeographicLocationClass,
                                    GeographicLocationReach, GeographicVocabulary, LocationType)
-from akvo.codelists.store.codelists_v202 import (GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS,
-                                                 GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_VOCABULARY,
-                                                 LOCATION_TYPE)
+from akvo.codelists.store.codelists_v202 import (
+    COUNTRY, GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS, GEOGRAPHIC_LOCATION_REACH,
+    GEOGRAPHIC_VOCABULARY, LOCATION_TYPE
+)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -62,20 +63,23 @@ class BaseLocation(models.Model):
 
 
 class OrganisationLocation(BaseLocation):
-    # the organisation that's related to this location
     location_target = models.ForeignKey('Organisation', related_name='locations')
+    iati_country = ValidXMLCharField(
+        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY),
+        help_text=_(u'The country in which the organisation is located.')
+    )
+
+    # Country is a legacy field, replaced by the iati_country field
     country = models.ForeignKey('Country', null=True, verbose_name=_(u'country'))
+
+    def iati_country_value(self):
+        return codelist_value(Country, self, 'iati_country')
 
 
 class ProjectLocation(BaseLocation):
-    # the project that's related to this location
     location_target = models.ForeignKey('Project', related_name='locations')
-    country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), null=True, blank=True,
-        help_text=_(u'The country or countries that benefit(s) from the activity.')
-    )
 
-    # Extra IATI fields
+    # Additional IATI fields
     reference = ValidXMLCharField(
         _(u'reference'), blank=True, max_length=50,
         help_text=_(u'An internal reference that describes the location in the reporting '
@@ -139,6 +143,12 @@ class ProjectLocation(BaseLocation):
                     u'this location. For reference: <a href="http://iatistandard.org/202/codelists/'
                     u'LocationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'LocationType/</a>.')
+    )
+
+    # Country is a legacy field, replaced by the RecipientCountry model
+    country = models.ForeignKey(
+        'Country', verbose_name=_(u'country'), null=True, blank=True,
+        help_text=_(u'The country or countries that benefit(s) from the activity.')
     )
 
     def __unicode__(self):
@@ -208,6 +218,4 @@ class AdministrativeLocation(models.Model):
 
 
 class ProjectUpdateLocation(BaseLocation):
-    # the project update that's related to this location
     location_target = models.ForeignKey('ProjectUpdate', related_name='locations')
-    country = models.ForeignKey('Country', verbose_name=_(u'country'), null=True, blank=True,)

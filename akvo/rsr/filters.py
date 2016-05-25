@@ -160,11 +160,6 @@ class ProjectFilter(django_filters.FilterSet):
 
 class ProjectUpdateFilter(django_filters.FilterSet):
 
-    location = django_filters.ChoiceFilter(
-        choices=M49_CODES,
-        label=_(u'location'),
-        action=filter_m49)
-
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
         label=_(u'organisation'),
@@ -183,7 +178,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['location', 'partner', 'sector', 'title', ]
+        fields = ['partner', 'sector', 'title', ]
 
 
 class OrganisationFilter(django_filters.FilterSet):
