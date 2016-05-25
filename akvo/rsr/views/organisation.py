@@ -77,9 +77,7 @@ def directory(request):
     map_orgs = map_orgs
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related(
-        'primary_location__country',
-    )
+    page.object_list = page.object_list.prefetch_related('locations')
 
     return render(request, 'organisation_directory.html', {
         'orgs_count': f.qs.distinct().count(),

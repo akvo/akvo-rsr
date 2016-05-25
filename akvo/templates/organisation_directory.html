@@ -80,7 +80,7 @@
           <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.name}}</a></h1>
           {% if o.iati_org_id %}<div class="orgIatiId"><i class="fa fa-key"></i> {{o.iati_org_id}}</div>{% endif %}
           <div class="orgType"><i class="fa fa-tag"></i> {{o.iati_org_type}}</div>
-          <div class="projectLocation">{% if o.primary_location.country %}<i class="fa fa-map-marker"></i> {{o.primary_location.country}}, {{o.primary_location.country.continent}}{% endif %}</div>
+          <div class="projectLocation">{% if o.locations.all and o.locations.all.0.iati_country %}<i class="fa fa-map-marker"></i> {{ o.locations.all.0.iati_country_value.name }}{% endif %}</div>
         </div>
         <div class="col-sm-3 hidden-xs hidden-sm additionalInfo">
           <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
