@@ -114,7 +114,7 @@ class Project(TimestampsMixin, models.Model):
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
     iati_status = ValidXMLCharField(
         _(u'iati status'), max_length=1, choices=codelist_choices(ACTIVITY_STATUS), db_index=True, default='6',
-        help_text=_(u'There are five different project statuses:<br/>'
+        help_text=_(u'There are six different project statuses:<br/>'
                     u'1) Pipeline/identification: the project is being scoped or planned<br/>'
                     u'2) Implementation: the project is currently being implemented<br/>'
                     u'3) Completion: the project is complete or the final disbursement has been made<br/>'

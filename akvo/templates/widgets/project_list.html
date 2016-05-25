@@ -67,12 +67,13 @@
             </td>
 
             <td class="">
-              {% if project.status == 'H' %}<span class="projectStatus notComplete">{% trans "Needs funding" %}</span>
-              {% elif project.status == 'A' %}<span class="projectStatus notComplete">{% trans "Active" %}</span>
-              {% elif project.status == 'C' %}<span class="projectStatus complete">{% trans "Complete" %}</span>
-              {% elif project.status == 'L' %}<span class="projectStatus complete">{% trans "Cancelled" %}</span>
-              {% elif project.status == 'R' %}<span class="projectStatus complete">{% trans "Archived" %}</span>
-              {% else %} {# None (N) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
+              {% if project.iati_status == '1' %}<span class="projectStatus notComplete">{% trans "Pipeline/identification" %}</span>
+              {% elif project.iati_status == '2' %}<span class="projectStatus notComplete">{% trans "Implementation" %}</span>
+              {% elif project.iati_status == '3' %}<span class="projectStatus complete">{% trans "Completion" %}</span>
+              {% elif project.iati_status == '4' %}<span class="projectStatus complete">{% trans "Post-Completion" %}</span>
+              {% elif project.iati_status == '5' %}<span class="projectStatus complete">{% trans "Cancelled" %}</span>
+              {% elif project.iati_status == '6' %}<span class="projectStatus complete">{% trans "Suspended" %}</span>
+              {% else %} {# None (6) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
               {% endif %}
 
               <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
