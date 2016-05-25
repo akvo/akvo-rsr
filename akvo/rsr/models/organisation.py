@@ -430,7 +430,7 @@ class Organisation(TimestampsMixin, models.Model):
                 Q(pk__in=paying_partners.values_list('pk', flat=True))
             )
 
-        return queryset
+        return queryset.distinct()
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
