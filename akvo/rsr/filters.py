@@ -57,11 +57,19 @@ def walk(node):
 
 
 def filter_m49(queryset, value):
-    """Filters countries from the m49 list"""
+    """Filters countries from the m49 list, for projects."""
     if not value:
         return queryset
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
     return queryset.filter(recipient_countries__country__in=countries)
+
+
+def filter_m49_orgs(queryset, value):
+    """Filters countries from the m49 list, for projects."""
+    if not value:
+        return queryset
+    countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
+    return queryset.filter(locations__iati_country__in=countries)
 
 
 def get_id_for_iso(i):
@@ -186,7 +194,7 @@ class OrganisationFilter(django_filters.FilterSet):
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label=_(u'location'),
-        action=filter_m49)
+        action=filter_m49_orgs)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',
