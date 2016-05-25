@@ -57,7 +57,7 @@ class CountryAdmin(admin.ModelAdmin):
 class OrganisationLocationInline(NestedStackedInline):
     model = get_model('rsr', 'organisationlocation')
     fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
-              'country')
+              'iati_country')
     fk_name = 'location_target'
 
     def get_extra(self, request, obj=None, **kwargs):
