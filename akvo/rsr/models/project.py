@@ -111,18 +111,7 @@ class Project(TimestampsMixin, models.Model):
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
-    status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
-        help_text=_(u'There are five different project statuses:<br/>'
-                    u'1) Needs funding: this project still needs funding and implementation has '
-                    u'not yet started.<br/>'
-                    u'2) Active: the implementation phase has begun.<br/>'
-                    u'3) Completed: the project has been completed.<br/>'
-                    u'4) Cancelled: the project never took place or work stopped before it was '
-                    u'fully implemented.<br/>'
-                    u'5) Archived: projects are archived when the reporting partner no longer uses '
-                    u'RSR.')
-    )
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
     iati_status = ValidXMLCharField(
         _(u'iati status'), max_length=1, choices=codelist_choices(ACTIVITY_STATUS), db_index=True, default='6',
         help_text=_(u'There are five different project statuses:<br/>'
@@ -411,6 +400,7 @@ class Project(TimestampsMixin, models.Model):
         # Update legacy status field
         if self.iati_status:
             self.status = self.CODE_TO_STATUS[self.iati_status]
+            super(Project, self).save(update_fields=['status'])
 
         super(Project, self).save(*args, **kwargs)
 
