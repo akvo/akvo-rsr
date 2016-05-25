@@ -109,9 +109,10 @@ class Project(TimestampsMixin, models.Model):
         '6': 'R'
     }
 
-    # Disable functionality for certain statuses
+    # Status combinations used in conditionals
     EDIT_DISABLED = ['3', '5']
     DONATE_DISABLED = ['3', '4', '5', '6']
+    NOT_SUSPENDED = ['1', '2', '3', '4', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
@@ -440,8 +441,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate button settings is True, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_button and self.is_published() and self.funds_needed > 0 and \
-                self.status in [Project.STATUS_NEEDS_FUNDING, Project.STATUS_ACTIVE, Project.STATUS_COMPLETE]:
+        if self.donate_button and self.is_published() and self.funds_needed > 0 and not \
+                self.iati_status in Project.DONATE_DISABLED:
             return True
         return False
 

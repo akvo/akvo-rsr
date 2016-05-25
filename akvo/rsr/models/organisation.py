@@ -258,12 +258,7 @@ class Organisation(TimestampsMixin, models.Model):
             return self.filter(
                 partnerships__iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
                 partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
-                partnerships__project__status__in=[
-                    Project.STATUS_ACTIVE,
-                    Project.STATUS_COMPLETE,
-                    Project.STATUS_NEEDS_FUNDING,
-                    Project.STATUS_CANCELLED,
-                ]
+                partnerships__project__iati_status__in=Project.NOT_SUSPENDED
             ).distinct()
 
         def ngos(self):

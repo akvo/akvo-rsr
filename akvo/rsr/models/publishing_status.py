@@ -47,9 +47,9 @@ class PublishingStatus(models.Model):
                                     code='subtitle')
                 )
 
-            if self.project.status == 'N':
+            if self.project.iati_status == '6':
                 validation_errors.append(
-                    ValidationError(_('Project needs to have a status.'),
+                    ValidationError(_('Project needs to have non-suspended status.'),
                                     code='status')
                 )
 
