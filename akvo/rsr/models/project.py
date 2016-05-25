@@ -23,12 +23,12 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
+from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType, FinanceType, FlowType,
                                    TiedStatus)
 from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
+from akvo.utils import codelist_choices, codelist_value, codelist_name, rsr_image_path, rsr_show_keywords
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -92,12 +92,12 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
-        STATUS_NONE: 'black',
-        STATUS_NEEDS_FUNDING: 'orange',
-        STATUS_ACTIVE: '#AFF167',
-        STATUS_COMPLETE: 'grey',
-        STATUS_CANCELLED: 'red',
-        STATUS_ARCHIVED: 'grey',
+        '1': 'orange',
+        '2': '#AFF167',
+        '3': 'grey',
+        '4': 'grey',
+        '5': 'red',
+        '6': 'grey',
     }
 
     CODE_TO_STATUS = {
@@ -108,6 +108,8 @@ class Project(TimestampsMixin, models.Model):
         '5': 'L',
         '6': 'R'
     }
+
+    EDIT_DISABLED = ['3', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
@@ -866,8 +868,8 @@ class Project(TimestampsMixin, models.Model):
     def show_status(self):
         "Show the current project status"
         return mark_safe(
-            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status],
-                                                    self.get_status_display())
+            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
+                                                    codelist_name(ActivityStatus, self, 'iati_status'))
         )
 
     def show_current_image(self):
@@ -1020,7 +1022,7 @@ class Project(TimestampsMixin, models.Model):
         return mark_safe(
             "<span class='status_large' style='background-color:%s; color:inherit; "
             "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.status], self.get_status_display()
+                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
             )
         )
 
