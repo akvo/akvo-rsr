@@ -100,6 +100,15 @@ class Project(TimestampsMixin, models.Model):
         STATUS_ARCHIVED: 'grey',
     }
 
+    CODE_TO_STATUS = {
+        '1': 'H',
+        '2': 'A',
+        '3': 'C',
+        '4': 'C',
+        '5': 'L',
+        '6': 'R'
+    }
+
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(
@@ -398,6 +407,10 @@ class Project(TimestampsMixin, models.Model):
         # Strip IATI ID of any trailing or leading spaces
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
+
+        # Update legacy status field
+        if self.iati_status:
+            self.status = self.CODE_TO_STATUS[self.iati_status]
 
         super(Project, self).save(*args, **kwargs)
 
