@@ -428,8 +428,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
-    # Prevent adding update if project is completed or unpublished
-    elif project.status == 'C' or not project.is_published():
+    # Prevent adding update if project is completed, cancelled or unpublished
+    elif project.iati_status in Project.EDIT_DISABLED or not project.is_published():
         request.error_message = u'Cannot add updates to completed or unpublished projects.'
         raise PermissionDenied
 
