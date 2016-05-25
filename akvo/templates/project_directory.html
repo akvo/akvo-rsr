@@ -96,9 +96,13 @@
           <div class="col-lg-4 col-sm-3 col-xs-7">
             <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
             <p class="projectSubT">{{project.subtitle}}</p>
-            {% if project.primary_location.country %}
-              <p class="projectLocation"><i class="fa fa-map-marker"></i> {{project.primary_location.country}}, {{project.primary_location.country.continent}}</p>
-            {% endif %}
+            <p class="projectLocation"><i class="fa fa-map-marker"></i>
+                {% for recipient_country in project.recipient_countries.all %}
+                    {{ recipient_country }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    {% trans 'No recipient countries specified' %}
+                {% endfor %}
+            </p>
             {% if project.primary_organisation %}
               <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
               <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="false"></div>
