@@ -645,31 +645,37 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(is_public=True)
 
         def status_none(self):
-            return self.filter(status__exact=Project.STATUS_NONE)
+            return self.filter(iati_status__exact='6')
 
         def status_active(self):
-            return self.filter(status__exact=Project.STATUS_ACTIVE)
+            return self.filter(iati_status__exact='2')
 
         def status_onhold(self):
-            return self.filter(status__exact=Project.STATUS_NEEDS_FUNDING)
+            return self.filter(iati_status__exact='1')
 
         def status_complete(self):
-            return self.filter(status__exact=Project.STATUS_COMPLETE)
+            return self.filter(iati_status__exact='3')
 
         def status_not_complete(self):
-            return self.exclude(status__exact=Project.STATUS_COMPLETE)
+            return self.exclude(iati_status__exact='3')
+
+        def status_post_complete(self):
+            return self.filter(iati_status__exact='4')
+
+        def status_not_post_complete(self):
+            return self.exclude(iati_status__exact='4')
 
         def status_cancelled(self):
-            return self.filter(status__exact=Project.STATUS_CANCELLED)
+            return self.filter(iati_status__exact='5')
 
         def status_not_cancelled(self):
-            return self.exclude(status__exact=Project.STATUS_CANCELLED)
+            return self.exclude(iati_status__exact='5')
 
         def status_archived(self):
-            return self.filter(status__exact=Project.STATUS_ARCHIVED)
+            return self.filter(iati_status__exact='6')
 
         def status_not_archived(self):
-            return self.exclude(status__exact=Project.STATUS_ARCHIVED)
+            return self.exclude(iati_status__exact='6')
 
         def active(self):
             """Return projects that are published and not cancelled or archived"""

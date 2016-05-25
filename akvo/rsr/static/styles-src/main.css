@@ -302,6 +302,8 @@ dl.dl-horizontal dt {
     font-weight: bold; }
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
+  dl.dl-horizontal dt.iatiStatuses {
+    width: 190px; }
 
 dl.dl-horizontal dd span.unknownFunder {
   color: rgba(32, 32, 36, 0.4); }
