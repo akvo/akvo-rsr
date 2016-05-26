@@ -1353,7 +1353,8 @@ admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 
 class EmploymentAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Employment')
-    list_display = ('__unicode__', 'user', 'organisation', 'is_approved', 'country', 'job_title')
+    list_display = ('__unicode__', 'user', 'organisation', 'is_approved', 'iati_country',
+                    'job_title')
     list_filter = ('is_approved', 'organisation')
     search_fields = ('organisation__name', 'organisation__long_name', 'user__username')
 

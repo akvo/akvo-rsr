@@ -17,6 +17,20 @@ def convert_org_locations_to_iati_countries(apps, schema_editor):
             location.save()
 
 
+def convert_employments_to_iati_countries(apps, schema_editor):
+    """
+    Convert the employment countries to the 'new_country_field' field. This field is renamed in
+    the following migration.
+    """
+    Employment = apps.get_model("rsr", "Employment")
+
+    for employment in Employment.objects.all():
+        country = employment.country
+        if country:
+            employment.new_country_field = country.iso_code.upper()
+            employment.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -25,4 +39,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(convert_org_locations_to_iati_countries),
+        migrations.RunPython(convert_employments_to_iati_countries),
     ]
