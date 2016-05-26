@@ -20,6 +20,24 @@ def remove_country_from_validation_sets(apps, schema_editor):
         delete_validation.delete()
 
 
+def add_country_to_rsr_validation_set(apps, schema_editor):
+    """
+    Adds the rsr_projectlocation.country field to the RSR validation set, as mandatory field.
+    """
+    ProjectEditorValidationSet = apps.get_model("rsr", "ProjectEditorValidationSet")
+    ProjectEditorValidation = apps.get_model("rsr", "ProjectEditorValidation")
+    try:
+        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
+        ProjectEditorValidation.objects.get_or_create(
+            validation_set=rsr_validation_set,
+            validation='rsr_projectlocation.country',
+            action=1
+        )
+    except ProjectEditorValidationSet.DoesNotExist:
+        # The RSR validation set (id = 1) can not be deleted and should always exist
+        pass
+
+
 def do_not_hide_recipient_countries_and_regions(apps, schema_editor):
     """
     In the RSR validations set (id is always 1), remove the settings to hide the
@@ -59,6 +77,31 @@ def do_not_hide_recipient_countries_and_regions(apps, schema_editor):
         pass
 
 
+def hide_recipient_countries_and_regions(apps, schema_editor):
+    """
+    In the RSR validations set (id is always 1), re-add the settings to hide the
+    rsr_recipientcountry and rsr_recipientregion models.
+    """
+    ProjectEditorValidationSet = apps.get_model("rsr", "ProjectEditorValidationSet")
+    ProjectEditorValidation = apps.get_model("rsr", "ProjectEditorValidation")
+
+    try:
+        rsr_validation_set = ProjectEditorValidationSet.objects.get(pk=1)
+        ProjectEditorValidation.objects.get_or_create(
+            validation_set=rsr_validation_set,
+            validation='rsr_recipientcountry',
+            action=2
+        )
+        ProjectEditorValidation.objects.get_or_create(
+            validation_set=rsr_validation_set,
+            validation='rsr_recipientregion',
+            action=2
+        )
+    except ProjectEditorValidationSet.DoesNotExist:
+        # The RSR validation set (id = 1) can not be deleted and should always exist
+        pass
+
+
 def convert_locations_to_recipient_countries(apps, schema_editor):
     """
     For each project retrieve the country code from the location and add a new recipient country
@@ -78,6 +121,14 @@ def convert_locations_to_recipient_countries(apps, schema_editor):
             RecipientCountry.objects.get_or_create(project=project, country=country_code)
 
 
+def revert_locations_to_recipient_countries(apps, schema_editor):
+    """
+    Unfortunately we can't be sure which recipient country stems from a location, or whether it
+    already existed originally. Therefore we can only ignore it.
+    """
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -85,7 +136,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(remove_country_from_validation_sets),
-        migrations.RunPython(do_not_hide_recipient_countries_and_regions),
-        migrations.RunPython(convert_locations_to_recipient_countries),
+        migrations.RunPython(remove_country_from_validation_sets,
+                             add_country_to_rsr_validation_set),
+        migrations.RunPython(do_not_hide_recipient_countries_and_regions,
+                             hide_recipient_countries_and_regions),
+        migrations.RunPython(convert_locations_to_recipient_countries,
+                             revert_locations_to_recipient_countries),
     ]
