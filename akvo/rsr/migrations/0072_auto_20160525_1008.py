@@ -7,7 +7,7 @@ from django.db import models, migrations
 # convert old rsr statuses to equivalent iati status codes
 # # see http://iatistandard.org/202/codelists/ActivityStatus/
 STATUS_TO_CODE = {
-    'N': '6',
+    'N': '0',
     'H': '1',
     'A': '2',
     'C': '3',
@@ -31,4 +31,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(populate_iati_status),
+        migrations.RunSQL(
+            ["UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.iati_status' WHERE validation = 'rsr_project.status';"],
+            ["UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.iati_status' WHERE validation = 'rsr_project.status';"],
+        )
     ]

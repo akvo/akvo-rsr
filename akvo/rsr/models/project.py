@@ -92,6 +92,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
+        '0': 'grey',
         '1': 'orange',
         '2': '#AFF167',
         '3': 'grey',
@@ -101,6 +102,7 @@ class Project(TimestampsMixin, models.Model):
     }
 
     CODE_TO_STATUS = {
+        '0': 'N',
         '1': 'H',
         '2': 'A',
         '3': 'C',
@@ -109,16 +111,26 @@ class Project(TimestampsMixin, models.Model):
         '6': 'R'
     }
 
+    STATUS_TO_CODE = {
+        'N': '0',
+        'H': '1',
+        'A': '2',
+        'C': '3',
+        'L': '5',
+        'R': '6'
+    }
+
     # Status combinations used in conditionals
     EDIT_DISABLED = ['3', '5']
-    DONATE_DISABLED = ['3', '4', '5', '6']
+    DONATE_DISABLED = ['0', '3', '4', '5', '6']
     NOT_SUSPENDED = ['1', '2', '3', '4', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
     iati_status = ValidXMLCharField(
-        _(u'iati status'), max_length=1, choices=codelist_choices(ACTIVITY_STATUS), db_index=True, default='6',
+        _(u'iati status'), max_length=1, choices=([('0', '')] + codelist_choices(ACTIVITY_STATUS)),
+        db_index=True, default='0',
         help_text=_(u'There are six different project statuses:<br/>'
                     u'1) Pipeline/identification: the project is being scoped or planned<br/>'
                     u'2) Implementation: the project is currently being implemented<br/>'
@@ -403,9 +415,16 @@ class Project(TimestampsMixin, models.Model):
             self.iati_activity_id = self.iati_activity_id.strip()
 
         # Update legacy status field
-        if self.iati_status:
-            self.status = self.CODE_TO_STATUS[self.iati_status]
-            super(Project, self).save(update_fields=['status'])
+        if self.pk is not None:
+            orig = Project.objects.get(pk=self.pk)
+
+            if self.iati_status != orig.iati_status:
+                self.status = self.CODE_TO_STATUS[self.iati_status]
+                super(Project, self).save(update_fields=['status'])
+
+            if self.status != orig.status:
+                self.iati_status = self.STATUS_TO_CODE[self.status]
+                super(Project, self).save(update_fields=['iati_status'])
 
         super(Project, self).save(*args, **kwargs)
 
@@ -876,14 +895,20 @@ class Project(TimestampsMixin, models.Model):
 
     def show_status(self):
         "Show the current project status"
-        return mark_safe(
-            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
-                                                    codelist_name(ActivityStatus, self, 'iati_status'))
-        )
+        if not self.iati_status == '0':
+            return mark_safe(
+                "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
+                                                        codelist_name(ActivityStatus, self, 'iati_status'))
+            )
+        else:
+            return ''
 
     def show_plain_status(self):
         "Show the current project status value without styling"
-        return codelist_name(ActivityStatus, self, 'iati_status')
+        if not self.iati_status == '0':
+            return codelist_name(ActivityStatus, self, 'iati_status')
+        else:
+            return ''
 
     def show_current_image(self):
         try:

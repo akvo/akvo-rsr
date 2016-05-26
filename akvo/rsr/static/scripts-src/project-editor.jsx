@@ -1789,7 +1789,7 @@ function getValidationSets() {
 }
 
 function inputCompleted(field) {
-    if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
+    if (field.getAttribute('name') === 'rsr_project.iati_status.' + defaultValues.project_id && field.value === '0') {
         // Do not count project status 'None'
         return false;
     } else if (field.type === 'checkbox') {
