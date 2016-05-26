@@ -123,16 +123,6 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             </a>
           </h2>
           <dl class="dl-horizontal">
-            <dt class="iatiStatuses">{% trans 'Implementation' %}</dt>
-            <dd>
-              {% if organisation.published_projects.status_active.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=2">
-                  {{ organisation.published_projects.status_active.count }}
-                </a>
-              {% else %}
-                {{ organisation.published_projects.status_active.count }}
-              {% endif %}
-            </dd>
             <dt class="iatiStatuses">{% trans 'Pipeline/identification' %}</dt>
             <dd>
               {% if organisation.published_projects.status_onhold.count %}
@@ -141,6 +131,16 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
                 </a>
               {% else %}
                 {{ organisation.published_projects.status_onhold.count }}
+              {% endif %}
+            </dd>
+            <dt class="iatiStatuses">{% trans 'Implementation' %}</dt>
+            <dd>
+              {% if organisation.published_projects.status_active.count %}
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=2">
+                  {{ organisation.published_projects.status_active.count }}
+                </a>
+              {% else %}
+                {{ organisation.published_projects.status_active.count }}
               {% endif %}
             </dd>
             <dt class="iatiStatuses">{% trans 'Completion' %}</dt>
