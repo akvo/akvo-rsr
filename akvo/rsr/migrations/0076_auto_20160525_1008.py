@@ -26,13 +26,14 @@ def populate_iati_status(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0071_auto_20160525_1006'),
+        ('rsr', '0075_auto_20160525_1006'),
     ]
 
     operations = [
-        migrations.RunPython(populate_iati_status),
-        migrations.RunSQL(
-            ["UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.iati_status' WHERE validation = 'rsr_project.status';"],
-            ["UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.iati_status' WHERE validation = 'rsr_project.status';"],
-        )
+        migrations.RunPython(populate_iati_status, populate_iati_status),
+        migrations.RunSQL("UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.iati_status' "
+                          "WHERE validation = 'rsr_project.status';",
+                          "UPDATE rsr_projecteditorvalidation SET validation = 'rsr_project.status' "
+                          "WHERE validation = 'rsr_project.iati_status';"
+                          )
     ]

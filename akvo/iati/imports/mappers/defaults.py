@@ -178,14 +178,14 @@ class Status(ImportMapper):
         :return: List; contains fields that have changed
         """
 
-        status = self.get_child_elem_attrib(
+        iati_status = self.get_child_elem_attrib(
                 self.parent_elem, 'activity-status', 'code', 'status')
 
-        if not status:
-            self.add_log('activity-status@code', 'status', 'invalid status code')
-            status = 0
+        if not iati_status:
+            self.add_log('activity-status@code', 'iati_status', 'invalid status code')
+            iati_status = '0'
 
-        return self.update_project_field('status', status)
+        return self.update_project_field('iati_status', iati_status)
 
 
 class Conditions(ImportMapper):
