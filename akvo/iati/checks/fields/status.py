@@ -12,7 +12,7 @@ def status(project):
     :param project: Project object
     :return: All checks passed boolean, [Check results]
     """
-    if project.status:
+    if project.iati_status:
         return True, [(u'success', u'has status')]
 
     else:

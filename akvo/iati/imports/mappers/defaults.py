@@ -181,11 +181,9 @@ class Status(ImportMapper):
         status = self.get_child_elem_attrib(
                 self.parent_elem, 'activity-status', 'code', 'status')
 
-        if status in CODE_TO_STATUS.keys():
-            status = CODE_TO_STATUS[status]
-        else:
+        if not status:
             self.add_log('activity-status@code', 'status', 'invalid status code')
-            status = Project.STATUS_NONE
+            status = 0
 
         return self.update_project_field('status', status)
 
