@@ -152,19 +152,15 @@ class ProjectLocation(BaseLocation):
     )
 
     def __unicode__(self):
-        location_unicode = self.country.name if self.country else u'%s' % _(u'No country specified')
-
-        if self.latitude:
-            location_unicode += u' (latitude: %s' % str(self.latitude)
-        else:
-            location_unicode += u' (%s' % _(u'No latitude specified')
-
-        if self.longitude:
-            location_unicode += u', longitude: %s)' % str(self.longitude)
-        else:
-            location_unicode += u', %s)' % _(u'No longitude specified')
-
-        return location_unicode
+        return u'{0}, {1}{2}'.format(
+            u'{0}: {1}'.format(
+                _(u'Latitude'),
+                str(self.latitude) if self.latitude else _(u'No latitude specified')),
+            u'{0}: {1}'.format(
+                _(u'Longitude'),
+                str(self.longitude) if self.longitude else _(u'No longitude specified')),
+            u' ({0})'.format(self.name) if self.name else u''
+        )
 
     def country_label(self):
         return self.country or ''
