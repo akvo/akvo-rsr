@@ -43,7 +43,7 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
-from .project_editor_validation import ProjectEditorValidationSet
+from .project_editor_validation import ProjectEditorValidationSet, ProjectEditorValidation
 from .publishing_status import PublishingStatus
 
 
@@ -892,6 +892,15 @@ class Project(TimestampsMixin, models.Model):
             return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
         return False
     is_published.boolean = True
+
+    def is_empty(self):
+        for v in ProjectEditorValidation.objects.filter(validation_set_id=1).\
+                filter(validation__contains='rsr_project.').exclude(validation='rsr_project.status'):
+
+            if getattr(self, str(v.validation.split('||')[0].split('.')[1])):
+                return False
+
+        return True
 
     def akvopedia_links(self):
         return self.links.filter(kind=Link.LINK_AKVOPEDIA)
