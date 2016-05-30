@@ -287,80 +287,87 @@ function replaceTotalBudget(total_budget) {
     totalBudgetNode.innerHTML = total_budget;
 }
 
-function submitStep(saveButton) {
-    return function(e) {
-        /* Main function for submitting a form */
-        e.preventDefault();
+function doSubmitStep(saveButton) {
+    /* Main function for submitting a form */
+    var api_url, form, form_data, request, file_request, message;
 
-        var api_url, form, form_data, request, file_request, message;
+    // Collect form data
+    form = findAncestorByTag(saveButton, 'form');
+    form_data = serialize(form);
 
-        // Collect form data
-        form = findAncestorByTag(saveButton, 'form');
-        form_data = serialize(form);
+    // Remove existing errors and indicate that saving has started
+    removeErrors(form);
+    startSave(saveButton);
 
-        // Remove existing errors and indicate that saving has started
-        removeErrors(form);
-        startSave(saveButton);
+    // Create request
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        // Create request
-        api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
-        request = new XMLHttpRequest();
-        request.open('POST', api_url, true);
-        request.setRequestHeader("X-CSRFToken", csrftoken);
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            var response;
+            response = JSON.parse(request.responseText);
 
-        request.onload = function () {
-            if (request.status >= 200 && request.status < 400) {
-                var response;
-                response = JSON.parse(request.responseText);
-
-                // Check for errors
-                if (response.errors.length > 0) {
-                    message = defaultValues.save_error;
-                    addErrors(response.errors);
-                    finishSave(saveButton, false, message);
-                } else {
-                    message = defaultValues.save_success;
-                    finishSave(saveButton, true, message);
-                }
-
-                // Replace saved values and show that it updated
-                for (var i=0; i < response.changes.length; i++) {
-                    var formElement = document.getElementById(response.changes[i][0]);
-                    formElement.setAttribute('saved-value', response.changes[i][1]);
-                    successSave(formElement);
-                }
-
-                // Replace field IDs, names and unicode
-                replaceNames(response.rel_objects);
-
-                // Update progress bars
-                var section = findAncestorByClass(form, 'formStep');
-                setSectionCompletionPercentage(section);
-                setPageCompletionPercentage();
-
-                return false;
-            } else if (request.status === 403) {
-                // Not allowed to save
-                message = defaultValues.save_forbidden;
+            // Check for errors
+            if (response.errors.length > 0) {
+                message = defaultValues.save_error;
+                addErrors(response.errors);
                 finishSave(saveButton, false, message);
-                return false;
             } else {
-                // We reached our target server, but it returned an error
-                message = defaultValues.save_general_error;
-                finishSave(saveButton, false, message);
-                return false;
+                message = defaultValues.save_success;
+                finishSave(saveButton, true, message);
             }
-        };
 
-        request.onerror = function () {
-            // There was a connection error of some sort
-            message = defaultValues.connection_error;
+            // Replace saved values and show that it updated
+            for (var i=0; i < response.changes.length; i++) {
+                var formElement = document.getElementById(response.changes[i][0]);
+                formElement.setAttribute('saved-value', response.changes[i][1]);
+                if (formElement.parentNode !== null && elHasClass(formElement.parentNode, 'typeahead')) {
+                    var typeaheadContainer = findAncestorByClass(formElement.parentNode, 'typeahead-container');
+                    typeaheadContainer.setAttribute('data-value', response.changes[i][1]);
+                }
+                successSave(formElement);
+            }
+
+            // Replace field IDs, names and unicode
+            replaceNames(response.rel_objects);
+
+            // Update progress bars
+            var section = findAncestorByClass(form, 'formStep');
+            setSectionCompletionPercentage(section);
+            setPageCompletionPercentage();
+
+            return false;
+        } else if (request.status === 403) {
+            // Not allowed to save
+            message = defaultValues.save_forbidden;
             finishSave(saveButton, false, message);
             return false;
-        };
+        } else {
+            // We reached our target server, but it returned an error
+            message = defaultValues.save_general_error;
+            finishSave(saveButton, false, message);
+            return false;
+        }
+    };
 
-        request.send(form_data);
+    request.onerror = function () {
+        // There was a connection error of some sort
+        message = defaultValues.connection_error;
+        finishSave(saveButton, false, message);
+        return false;
+    };
+
+    request.send(form_data);
+}
+
+function submitStep(saveButton) {
+    return function(e) {
+        e.preventDefault();
+        doSubmitStep(saveButton);
     };
 }
 
@@ -940,6 +947,9 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         }
     });
 
+    var footer = document.querySelector('footer');
+    footer.setAttribute('selector', selector);
+
     ReactDOM.render(
         React.createElement(TypeaheadContainer), selectorClass
     );
@@ -959,7 +969,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 typeaheadInput.value = savedResult[displayOption];
                 typeaheadInput.setAttribute('value', savedResult.id);
-                typeaheadInput.setAttribute('saved-value', savedResult.id);
+                if (selectorClass.hasAttribute('not-saved')) {
+                    selectorClass.removeAttribute('not-saved');
+                    typeaheadInput.setAttribute('saved-value', '');
+                } else {
+                    typeaheadInput.setAttribute('saved-value', savedResult.id);
+                }
             }
         }
     } else {
@@ -2143,7 +2158,7 @@ function markMandatoryFields() {
     /* Mark mandatory fields with an asterisk */
 
     // Clear any existing markers
-    var existingMarkers = document.querySelectorAll('.mandatory');
+    var existingMarkers = document.querySelectorAll('.mandatory:not(.in-org-modal)');
     for (var i = 0; i < existingMarkers.length; i++) {
         existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
     }
@@ -2818,6 +2833,21 @@ function setUnsavedChangesMessage() {
 /* Show the "add organisation" modal dialog */
 function addOrgModal() {
 
+    /* Save section 3 */
+    function saveSectionThree() {
+        var saveButton = document.getElementById('panel3').querySelector('.save-button');
+        doSubmitStep(saveButton);
+    }
+
+    /* Set the new organisation on the typeahead by default */
+    function updateThisOrganisationTypeahead(orgId) {
+        var footer = document.querySelector('footer');
+        var child = document.getElementById(footer.getAttribute('selector'));
+        var parent = findAncestorByClass(child, 'typeahead-container');
+        parent.setAttribute('data-value', orgId);
+        parent.setAttribute('not-saved', '');
+    }
+
     /* Remove the modal */
     function cancelModal() {
         var modal = document.querySelector('.modalParent');
@@ -2875,10 +2905,8 @@ function addOrgModal() {
                         logo_request.send(logo_data);
                     }
 
-                    // This flag forces the fetching of a fresh API response
-                    var forceReloadOrg = true;
-
-                    updateOrganisationTypeaheads(forceReloadOrg);
+                    updateThisOrganisationTypeahead(organisation_id);
+                    updateOrganisationTypeaheads(true);
                     cancelModal();
                 } else if (request.status === 400) {
                     var response;
@@ -3020,14 +3048,14 @@ function addOrgModal() {
                                     </div>
                                     <div className="row">
                                         <div className="inputContainer newOrgName col-md-4 form-group">
-                                            <input name="name" id="name" type="text" className="form-control" maxLength="25"/>
-                                            <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory">*</span></label>
-                                            <p className="help-block">{defaultValues.max} 25 {defaultValues.characters}</p>
+                                            <input name="name" id="name" type="text" className="form-control" maxLength="40"/>
+                                            <label htmlFor="newOrgName" className="control-label">{defaultValues.name}<span className="mandatory in-org-modal">*</span></label>
+                                            <p className="help-block">{defaultValues.max} 40 {defaultValues.characters}</p>
                                         </div>
                                         <div className="inputContainer newOrgLongName col-md-4 form-group">
-                                            <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="75"/>
-                                            <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory">*</span></label>
-                                            <p className="help-block">{defaultValues.max} 75 {defaultValues.characters}</p>
+                                            <input name="long_name" id="long_name" type="text"  className="form-control" maxLength="100"/>
+                                            <label htmlFor="newOrgLongName" className="control-label">{defaultValues.long_name}<span className="mandatory in-org-modal">*</span></label>
+                                            <p className="help-block">{defaultValues.max} 100 {defaultValues.characters}</p>
                                         </div>
                                         <div className="inputContainer newOrgIatiId col-md-4 form-group">
                                             <input name="iati_org_id" id="iati_org_id" type="text"  className="form-control" maxLength="75"/>
@@ -3043,7 +3071,7 @@ function addOrgModal() {
                                     </div>
                                     <div className="row">
                                         <div className="IATIOrgTypeContainer inputContainer col-md-6 form-group">
-                                            <select name="new_organisation_type" id="newOrgIATIType"  className="form-control">
+                                            <select name="new_organisation_type" id="new_organisation_type"  className="form-control">
                                                 <option value=""></option>
                                                 <option value="10">10 - {defaultValues.government}</option>
                                                 <option value="15">15 - {defaultValues.other_public_sector}</option>
@@ -3056,7 +3084,7 @@ function addOrgModal() {
                                                 <option value="70">70 - {defaultValues.private_sector}</option>
                                                 <option value="80">80 - {defaultValues.academic_training_research}</option>
                                             </select>
-                                            <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory">*</span></label>
+                                            <label htmlFor="newOrgIATIType" className="control-label">{defaultValues.org_type}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
                                         <div className="inputContainer col-md-6 form-group">
@@ -3068,12 +3096,12 @@ function addOrgModal() {
                                     <div className="row">
                                         <div className="inputContainer col-md-4 form-group">
                                             <input name="latitude" id="latitude" type="text" className="form-control"/>
-                                            <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory">*</span></label>
+                                            <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
                                         <div className="inputContainer col-md-4 form-group">
                                             <input name="longitude" id="longitude" type="text"  className="form-control"/>
-                                            <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory">*</span></label>
+                                            <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
                                         <div className="inputContainer col-md-4 form-group">
@@ -3081,7 +3109,7 @@ function addOrgModal() {
                                                 <option value=""></option>
                                                 {country_option_list}
                                             </select>
-                                            <label htmlFor="country" className="control-label">{defaultValues.country}<span className="mandatory">*</span></label>
+                                            <label htmlFor="country" className="control-label">{defaultValues.country}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
                                     </div>
@@ -3123,6 +3151,8 @@ function addOrgModal() {
             );
         }
     });
+
+    saveSectionThree();
 
     ReactDOM.render(
         React.createElement(Modal), document.querySelector('footer')
