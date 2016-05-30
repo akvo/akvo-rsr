@@ -43,7 +43,7 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
-from .project_editor_validation import ProjectEditorValidationSet, ProjectEditorValidation
+from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
 
 
