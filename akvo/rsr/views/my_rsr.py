@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -17,11 +18,13 @@ from django.shortcuts import get_object_or_404, render
 
 from tastypie.models import ApiKey
 
+from akvo.codelists.models import Country, Version
+
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project,
+from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet)
 
 import json
@@ -267,7 +270,7 @@ def project_editor(request, project_id):
     project_validation_sets = project.validations.all()
 
     # Countries
-    countries = Country.objects.all()
+    countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
 
     context = {
         'id': project_id,

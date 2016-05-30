@@ -201,7 +201,7 @@
     </script>
 
     <script type="application/json" id="country-values">
-        [{% for country in countries %}{"pk": "{{ country.pk }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+        [{% for country in countries %}{"pk": "{{ country.code }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
     {% compressed_js 'project_editor' %}
