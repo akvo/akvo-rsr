@@ -2985,8 +2985,8 @@ function addOrgModal() {
         latitudeHelp = document.querySelector('#latitude + label + .help-block');
         longitudeNode = document.querySelector('#longitude');
         longitudeHelp = document.querySelector('#longitude + label + .help-block');
-        countryNode = document.querySelector('#country');
-        countryHelp = document.querySelector('#country + label + .help-block');
+        countryNode = document.querySelector('#iati_country');
+        countryHelp = document.querySelector('#iati_country + label + .help-block');
 
         result = true;
 
@@ -3105,7 +3105,7 @@ function addOrgModal() {
                                             <p className="help-block"></p>
                                         </div>
                                         <div className="inputContainer col-md-4 form-group">
-                                            <select name="country" id="country" className="form-control">
+                                            <select name="iati_country" id="iati_country" className="form-control">
                                                 <option value=""></option>
                                                 {country_option_list}
                                             </select>

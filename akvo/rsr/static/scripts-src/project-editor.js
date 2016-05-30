@@ -2985,8 +2985,8 @@ function addOrgModal() {
         latitudeHelp = document.querySelector('#latitude + label + .help-block');
         longitudeNode = document.querySelector('#longitude');
         longitudeHelp = document.querySelector('#longitude + label + .help-block');
-        countryNode = document.querySelector('#country');
-        countryHelp = document.querySelector('#country + label + .help-block');
+        countryNode = document.querySelector('#iati_country');
+        countryHelp = document.querySelector('#iati_country + label + .help-block');
 
         result = true;
 
@@ -3105,7 +3105,7 @@ function addOrgModal() {
                                             React.DOM.p( {className:"help-block"})
                                         ),
                                         React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
-                                            React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
+                                            React.DOM.select( {name:"iati_country", id:"iati_country", className:"form-control"}, 
                                                 React.DOM.option( {value:""}),
                                                 country_option_list
                                             ),
