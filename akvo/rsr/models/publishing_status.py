@@ -117,11 +117,10 @@ class PublishingStatus(models.Model):
                 )
             else:
                 for location in self.project.locations.all():
-                    if not (location.latitude and location.longitude and location.country):
+                    if not (location.latitude and location.longitude):
                         validation_errors.append(
                             ValidationError(
-                                _('All locations need to have a latitude, longitude and country '
-                                  'specified.'),
+                                _('All locations need to have a latitude and longitude specified.'),
                                 code='location')
                         )
                         break

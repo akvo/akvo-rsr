@@ -67,8 +67,8 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             {% endif %}
           </li>
           <li>
-            {% if organisation.primary_location.country %}
-              {{ organisation.primary_location.country }}
+            {% if organisation.primary_location.iati_country %}
+              {{ organisation.primary_location.iati_country_value.name }}
             {% endif %}
           </li>
         </ul>

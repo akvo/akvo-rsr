@@ -417,6 +417,14 @@ class Organisation(TimestampsMixin, models.Model):
             projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
         ).distinct()
 
+    def organisation_countries(self):
+        """Returns a list of the organisations countries."""
+        countries = []
+        for location in self.locations.all():
+            if location.iati_country:
+                countries.append(location.iati_country_value().name)
+        return countries
+
     def iati_file(self):
         """
         Looks up the latest public IATI file of this organisation.

@@ -79,9 +79,6 @@ class Locations(ImportMapper):
 
             country_code = self.get_child_elem_attrib(
                 location, 'administrative', 'country', 'country_code').lower()
-            if not country_code and len(self.parent_elem.findall('recipient-country')) == 1:
-                country_code = self.get_child_elem_attrib(
-                        self.parent_elem, 'recipient-country', 'code', 'country_code').lower()
 
             country = None
             if country_code:
