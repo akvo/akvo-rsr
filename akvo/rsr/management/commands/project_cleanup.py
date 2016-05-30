@@ -22,9 +22,9 @@ class Command(BaseCommand):
                     default=7,
                     help='Filter projects older than \'n\' days'),
         make_option('-d', '--delete',
-            action='store_true', dest='delete',
-            default=False,
-            help='Delete filtered projects in addition to listing them'),
+                    action='store_true', dest='delete',
+                    default=False,
+                    help='Delete filtered projects in addition to listing them'),
         )
 
     def handle(self, *args, **options):
