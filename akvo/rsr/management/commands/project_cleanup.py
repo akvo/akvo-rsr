@@ -34,37 +34,41 @@ class Command(BaseCommand):
         delete = bool(options['delete'])
         num_days = int(options['num_days'])
 
-
-        # initialize arrays
-        empty_projects = []
-
         # set filter date
         filter_date = timezone.now() - timedelta(days=num_days)
-        if verbosity > 1: self.stdout.write('Pruning date: %s' % (filter_date))
+        if verbosity > 1: self.stdout.write('Pruning date: {0}'.format(str(filter_date)))
 
         # filter empty projects
-        if verbosity > 0: self.stdout.write('Filtering all empty projects older than %s days.'
-                                            % (num_days))
+        if verbosity > 0:
+            self.stdout.write('Filtering all empty projects older than {0} days.'.format(
+                str(num_days)))
 
-        filter_projects = Project.objects.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)\
-            .exclude(created_at__gt=filter_date)
+        filter_projects = Project.objects.filter(
+            publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED
+        ).exclude(created_at__gt=filter_date)
 
-        for n, p in enumerate(filter_projects):
-            if p.is_empty():
-                empty_projects += [p]
+        empty_projects = [p for p in filter_projects if p.is_empty()]
 
         for n, p in enumerate(empty_projects):
-            if verbosity > 1: self.stdout.write('- [%s/%s] Empty project by %s (created %s) '
-                                                % (n + 1, len(empty_projects), p.find_primary_organisation(), p.created_at))
+            if verbosity > 1:
+                self.stdout.write('- [{0}/{1}] Empty project by {2} (created {3}) '.format(
+                    str(n + 1),
+                    str(len(empty_projects)),
+                    p.primary_organisation.name.encode('ascii', 'ignore'),
+                    str(p.created_at)
+                ))
 
             if delete:
                 p.delete()
 
         # delete filtered projects
         if delete:
-            if verbosity > 0: self.stdout.write('%s projects(s) matched filter and were successfully removed.'
-                              % (len(empty_projects)))
+            if verbosity > 0:
+                self.stdout.write(
+                    '{0} projects(s) matched filter and were successfully removed.'.format(
+                        str(len(empty_projects))))
 
-        else:
-            if verbosity > 0: self.stdout.write('%s projects(s) matched filter, use \'-d\' flag to remove them.'
-                              % (len(empty_projects)))
+        elif verbosity > 0:
+            self.stdout.write(
+                '{0} projects(s) matched filter, use \'-d\' flag to remove them.'.format(
+                    str(len(empty_projects))))
