@@ -114,11 +114,11 @@ def create_primary_project_locations():
             latitude, longitude = p.latitude, p.longitude
         else:
             latitude, longitude = 0, 0
-        location.create(latitude=latitude, longitude=longitude,
-            city=p.city, state=p.state, country=p.country,
-            content_type=content_type, object_id=p.id,
-            address_1=p.location_1, address_2=p.location_2,
-            postcode=p.postcode, primary=True)
+        location.create(
+            latitude=latitude, longitude=longitude, city=p.city, state=p.state,
+            content_type=content_type, object_id=p.id, address_1=p.location_1,
+            address_2=p.location_2, postcode=p.postcode, primary=True
+        )
         print 'Successfully created location object for project id: %d' % p.id
 
 def create_primary_pvw_project_locations():
@@ -127,10 +127,10 @@ def create_primary_pvw_project_locations():
     location = get_model('rsr', 'location').objects
     for p in projects:
         if p.has_valid_legacy_coordinates():
-            location.create(latitude=p.latitude, longitude=p.longitude,
-                city=p.city, state=p.state, country=p.country,
-                content_type=content_type, object_id=p.id,
-                primary=True)
+            location.create(
+                latitude=p.latitude, longitude=p.longitude, city=p.city, state=p.state,
+                content_type=content_type, object_id=p.id, primary=True
+            )
             print 'Successfully created location object for project id: %d' % p.id
 
 def create_primary_pvw_organisation_locations():

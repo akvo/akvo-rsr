@@ -3,5 +3,7 @@
     {{project.primary_location.city}},
   {% endif %}
   <br/>
-  {{project.primary_location.country}}
+  {% for country in project.recipient_countries.all %}
+      {{ country }}{% if not forloop.last %}, {% endif %}
+  {% endfor %}
 </span>
