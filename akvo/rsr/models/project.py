@@ -894,11 +894,12 @@ class Project(TimestampsMixin, models.Model):
     is_published.boolean = True
 
     def is_empty(self):
-        exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency', 'custom_fields', 'fss',
-                          'iati_checks', 'iati_project_exports', 'iatiexport', 'iatiimportjob',
-                          'id', 'is_impact_project', 'is_public', 'last_modified_at', 'partners',
-                          'partnerships', 'paymentgatewayselector', 'primary_organisation',
-                          'primary_organisation_id', 'publishingstatus', 'status', 'validations']
+        exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
+                          'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
+                          'iatiexport', 'iatiimportjob', 'id', 'is_impact_project', 'is_public',
+                          'last_modified_at', 'partners', 'partnerships', 'paymentgatewayselector',
+                          'primary_organisation', 'primary_organisation_id', 'publishingstatus',
+                          'status', 'validations']
 
         for field in Project._meta.get_all_field_names():
             if field not in exclude_fields:
