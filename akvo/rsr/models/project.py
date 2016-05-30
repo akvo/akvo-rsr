@@ -45,6 +45,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
+from .budget_item import BudgetItem
 
 
 def image_path(instance, file_name):
@@ -898,6 +899,40 @@ class Project(TimestampsMixin, models.Model):
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
+
+    def has_multiple_budget_currencies(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        num_currencies = len(set([c.currency if c.currency else self.currency for c in budget_items]))
+
+        if num_currencies > 1:
+            return True
+        else:
+            return False
+
+    def budget_currency_totals(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        unique_currencies = set([c.currency if c.currency else self.currency for c in budget_items])
+
+        totals = {}
+        for c in unique_currencies:
+            if c == self.currency:
+                totals[c] = budget_items.filter(currency__exact='').aggregate(Sum('amount')).values()[0]
+            else:
+                totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
+
+        return totals
+
+    def budget_currency_totals_string(self):
+
+        totals = self.budget_currency_totals()
+
+        total_string = ''
+
+        for t in totals:
+            total_string += '%s %s, ' % (totals[t], t)
+
+        return total_string[:-2]
+
 
     def focus_areas(self):
         from .focus_area import FocusArea
