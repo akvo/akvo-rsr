@@ -893,6 +893,23 @@ class Project(TimestampsMixin, models.Model):
         return False
     is_published.boolean = True
 
+    def is_empty(self):
+        exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
+                          'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
+                          'iatiexport', 'iatiimportjob', 'id', 'is_impact_project', 'is_public',
+                          'last_modified_at', 'partners', 'partnerships', 'paymentgatewayselector',
+                          'primary_organisation', 'primary_organisation_id', 'publishingstatus',
+                          'status', 'validations']
+
+        for field in Project._meta.get_all_field_names():
+            if field not in exclude_fields:
+                field_value = getattr(self, field)
+                m2m_field = getattr(field_value, 'all', None)
+                if (m2m_field and m2m_field()) or (not m2m_field and getattr(self, field)):
+                    return False
+
+        return True
+
     def akvopedia_links(self):
         return self.links.filter(kind=Link.LINK_AKVOPEDIA)
 
