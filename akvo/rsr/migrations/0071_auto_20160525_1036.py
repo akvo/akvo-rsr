@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import models, migrations
 
 
@@ -33,7 +34,7 @@ def add_country_to_rsr_validation_set(apps, schema_editor):
             validation='rsr_projectlocation.country',
             action=1
         )
-    except ProjectEditorValidationSet.DoesNotExist:
+    except (ProjectEditorValidationSet.DoesNotExist, MultipleObjectsReturned):
         # The RSR validation set (id = 1) can not be deleted and should always exist
         pass
 
@@ -72,7 +73,7 @@ def do_not_hide_recipient_countries_and_regions(apps, schema_editor):
                     validation="{0}.{1}".format(model_name, field_name),
                     action=2
                 )
-    except ProjectEditorValidationSet.DoesNotExist:
+    except (ProjectEditorValidationSet.DoesNotExist, MultipleObjectsReturned):
         # The RSR validation set (id = 1) can not be deleted and should always exist
         pass
 
@@ -97,7 +98,7 @@ def hide_recipient_countries_and_regions(apps, schema_editor):
             validation='rsr_recipientregion',
             action=2
         )
-    except ProjectEditorValidationSet.DoesNotExist:
+    except (ProjectEditorValidationSet.DoesNotExist, MultipleObjectsReturned):
         # The RSR validation set (id = 1) can not be deleted and should always exist
         pass
 
@@ -118,7 +119,12 @@ def convert_locations_to_recipient_countries(apps, schema_editor):
                 country_codes.append(country.iso_code.upper())
 
         for country_code in list(set(country_codes)):
-            RecipientCountry.objects.get_or_create(project=project, country=country_code)
+            try:
+                RecipientCountry.objects.get_or_create(project=project, country=country_code)
+            except MultipleObjectsReturned:
+                # This could happen when a project has the same country specified as a recipient
+                # country multiple times
+                pass
 
 
 def revert_locations_to_recipient_countries(apps, schema_editor):

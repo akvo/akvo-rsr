@@ -58,8 +58,11 @@ def convert_employments_to_iati_countries_reverse(apps, schema_editor):
     for employment in Employment.objects.all():
         new_country_field = employment.new_country_field
         if new_country_field:
-            employment.country = Country.objects.get(iso_code=new_country_field.lower())
-            employment.save(update_fields=['country', ])
+            try:
+                employment.country = Country.objects.get(iso_code=new_country_field.lower())
+                employment.save(update_fields=['country', ])
+            except Country.DoesNotExist:
+                pass
 
 
 class Migration(migrations.Migration):
