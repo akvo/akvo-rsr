@@ -132,7 +132,10 @@ class BudgetItem(models.Model):
         return codelist_value(BudgetType, self, 'type')
 
     def iati_currency(self):
-        return codelist_value(Currency, self, 'currency')
+        if self.currency:
+            return codelist_value(Currency, self, 'currency')
+        else:
+            return codelist_value(Currency, self.project, 'currency')
 
     def iati_status(self):
         return codelist_value(BudgetStatus, self, 'status')

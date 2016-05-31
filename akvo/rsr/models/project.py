@@ -495,6 +495,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return 0
 
+    def get_budget_project_currency(self):
+        budget_project_currency = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='')\
+            .aggregate(Sum('amount')).values()[0]
+        return budget_project_currency
+
     def update_budget(self):
         "Update de-normalized field"
         self.budget = self.get_budget()
@@ -533,6 +538,11 @@ class Project(TimestampsMixin, models.Model):
         or a value less than 1, the value is set to 0.
         """
         funds_needed = self.get_budget() - self.get_funds()
+        return funds_needed if funds_needed >= 1 else 0.0
+
+    def get_funds_needed_project_currency(self):
+        "Funds need in project currency, only used if budget items have multiple currencies"
+        funds_needed = self.get_budget_project_currency() - self.get_funds()
         return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):
@@ -929,7 +939,8 @@ class Project(TimestampsMixin, models.Model):
         total_string = ''
 
         for t in totals:
-            total_string += '%s %s, ' % (totals[t], t)
+            print type(totals[t])
+            total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
 
         return total_string[:-2]
 

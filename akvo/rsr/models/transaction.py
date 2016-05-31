@@ -163,7 +163,10 @@ class Transaction(models.Model):
         return ''
 
     def iati_currency(self):
-        return codelist_value(Currency, self, 'currency')
+        if self.currency:
+            return codelist_value(Currency, self, 'currency')
+        else:
+            return codelist_value(Currency, self.project, 'currency')
 
     def iati_aid_type(self):
         return codelist_value(AidType, self, 'aid_type')

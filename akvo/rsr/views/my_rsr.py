@@ -247,8 +247,6 @@ def project_editor(request, project_id):
     if not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
-    print project.budget_currency_totals_string()
-
     # Custom fields
     custom_fields_section_1 = project.custom_fields.filter(section=1).order_by('order', 'id')
     custom_fields_section_2 = project.custom_fields.filter(section=2).order_by('order', 'id')

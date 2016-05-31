@@ -9,15 +9,19 @@
                   <dl class="dl-horizontal">
                       {% for budget_item in project.budget_items.all %}
                           {% if budget_item.label.label == 'Other' and budget_item.other_extra %}
-                              <dt class="budgetItem">{{budget_item.other_extra}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="currencyAmount budgetItem">{{budget_item.amount|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                              <dt class="budgetItem">{{budget_item.other_extra}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="currencyAmount budgetItem">{{budget_item.amount|floatformat:0|intcomma}}<span class="currency"> {% if budget_item.currency %}{{budget_item.currency}}{% else %}{{project.currency}}{% endif %}</span></dd>
                           {% else %}
-                              <dt class="budgetItem">{{budget_item.label.label}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="budgetItem currencyAmount">{{budget_item.amount|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                              <dt class="budgetItem">{{budget_item.label.label}}{% if budget_item.type %} ({% if budget_item.type == '1' %}{% trans 'Original' %}{% else %}{% trans 'Revised' %}{% endif %}){% endif %}:</dt><dd class="budgetItem currencyAmount">{{budget_item.amount|floatformat:0|intcomma}}<span class="currency"> {% if budget_item.currency %}{{budget_item.currency}}{% else %}{{project.currency}}{% endif %}</span></dd>
                           {% endif %}
                           {% if budget_item.period_start or budget_item.period_end %}
                               <dt class="budgetPeriod">{% trans "Budget period" %}:</dt><dd class="budgetPeriod currencyAmount">{% if budget_item.period_start %}{{budget_item.period_start|date:"d-M-Y"}}{% if budget_item.period_end %} - {% endif %}{% endif %}{% if budget_item.period_end %}{{budget_item.period_end|date:"d-M-Y"}}{% endif %}</dd>
                           {% endif %}
                       {% endfor %}
-                      <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount">{{project.budget|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                      <dt class="totalFinance">{% trans "Total" %}:</dt>
+                      {% if not project.has_multiple_budget_currencies %}
+                      <dd class="totalFinance currencyAmount">{{project.budget|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                      {% else %}<dd class="totalFinance currencyAmount">{% for c, a in project.budget_currency_totals.items %}{{a|floatformat:0|intcomma}}<span class="currency"> {{c}}</span><br>{% endfor %}</dd>
+                      {% endif %}
                   </dl>
               </div>
               <div class="col-sm-4 currentFunders">
@@ -70,10 +74,21 @@
                       <dt>{% trans "Donations" %}:</dt><dd class="currencyAmount">{% if project.all_donations_amount_received %}{{project.all_donations_amount_received|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span></dd>
                       <hr>
                       <dt>{% trans "Total funded" %}:</dt><dd class="currencyAmount">{{project.funds|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
-                      <dt>{% trans "Project budget" %}:</dt><dd class="currencyAmount">{{project.budget|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                      <dt>{% trans "Project budget" %}:</dt>
+                      {% if project.has_multiple_budget_currencies %}
+                      {% for c, a in project.budget_currency_totals.items %}
+                      <dd class="currencyAmount">{{a|floatformat:0|intcomma}}<span class="currency"> {{c}}</span></dd>
+                      {% endfor %}
+                      {% else %}
+                      <dd class="currencyAmount">{{project.budget|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                      {% endif %}
                       <dt class="totalFinance">{% trans "Funds needed" %}:</dt>
                       <dd class="totalFinance currencyAmount">
+                          {% if project.has_multiple_budget_currencies %}
+                          {% if project.get_funds_needed_project_currency >= 0 %}{{project.get_funds_needed_project_currency|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span>
+                          {% else %}
                           {% if project.funds_needed >= 0 %}{{project.funds_needed|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span>
+                          {% endif %}
                       </dd>
                   </dl>
               </div>
