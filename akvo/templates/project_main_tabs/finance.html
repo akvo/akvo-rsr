@@ -98,7 +98,7 @@
               {% if project.transactions.all %}
               <dl class="dl-horizontal">
                   {% for transaction in project.transactions.all %}
-                  <dt>{% if transaction.description %}{{transaction.description}}{% else %}{{transaction.iati_transaction_type}}{% endif %}:</dt><dd class="currencyAmount">{{transaction.value|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                  <dt>{% if transaction.description %}{{transaction.description}}{% else %}{{transaction.iati_transaction_type}}{% endif %}:</dt><dd class="currencyAmount">{{transaction.value|floatformat:0|intcomma}}<span class="currency"> {{transaction.get_currency}}</span></dd>
                   {% endfor %}
               </dl>
               {% else %}

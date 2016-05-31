@@ -162,6 +162,12 @@ class Transaction(models.Model):
                                                    self.receiver_organisation.name)
         return ''
 
+    def get_currency(self):
+        if self.currency:
+            return self.currency
+        else:
+            return self.project.currency
+
     def iati_currency(self):
         if self.currency:
             return codelist_value(Currency, self, 'currency')
