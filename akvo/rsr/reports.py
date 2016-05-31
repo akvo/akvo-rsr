@@ -56,7 +56,7 @@ REPORTS = [
     {
         'key': 'plan-finland',
         'title': unicode(_('Plan Finland report')),
-        'description': unicode(_('This custom Plan Finland report gives an overview of the '
+        'description': unicode(_('This custom MFA report for Plan Finland gives an overview of the '
                                  'hierarchy of Plan Finland\'s projects and their results.')),
         'formats': ['pdf', ],
         'parameters': ['project', ],
