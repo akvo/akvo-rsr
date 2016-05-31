@@ -86,6 +86,7 @@
                       <dd class="totalFinance currencyAmount">
                           {% if project.has_multiple_budget_currencies %}
                           {% if project.get_funds_needed_project_currency >= 0 %}{{project.get_funds_needed_project_currency|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span>
+                          <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
                           {% else %}
                           {% if project.funds_needed >= 0 %}{{project.funds_needed|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span>
                           {% endif %}

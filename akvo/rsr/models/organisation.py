@@ -430,6 +430,14 @@ class Organisation(TimestampsMixin, models.Model):
         return None
 
     # New API
+
+    def has_multiple_project_currencies(self):
+        "Check if organisation has projects with different currencies"
+        if self.published_projects().distinct().count() == self.org_currency_projects_count():
+            return False
+        else:
+            return True
+
     def currency_label(self):
         return codelist_name(Currency, self, 'currency')
 

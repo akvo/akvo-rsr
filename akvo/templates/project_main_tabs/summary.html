@@ -121,7 +121,11 @@
                                             {% for c, a in project.budget_currency_totals.items %}
                                             <dd class="currencyAmount">{{ a|floatformat|intcomma }} {{ c }}</dd>
                                             {% endfor %}
-                                            <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt><dd class="currencyAmount">{{ project.get_funds_needed_project_currency|floatformat|intcomma }} {{project.currency}}</dd>
+                                            <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt>
+                                            <dd class="currencyAmount">
+                                                {{ project.get_funds_needed_project_currency|floatformat|intcomma }} {{project.currency}}
+                                                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+                                            </dd>
                                             {% endif %}
                                         </dl>
                                         <a href="{% url 'project-donate' project.id %}" class="btn btn-default donateButton">{% trans "Donate" %}</a>

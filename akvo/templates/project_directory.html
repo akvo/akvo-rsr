@@ -112,6 +112,7 @@
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% if project.has_multiple_budget_currencies %}
               {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}  {{project.currency}}
+                  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
               {% else %}
               {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}  {{project.currency}}
               {% endif %}
@@ -142,6 +143,7 @@
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% if project.has_multiple_budget_currencies %}
               {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}} {{project.currency}}
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
               {% else %}
               {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}} {{project.currency}}
               {% endif %}

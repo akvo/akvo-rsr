@@ -26,7 +26,15 @@
 	<dd class="currencyAmount">{{project.budget|floatformat:0|intcomma}} {{project.currency}}</dd>
 	{% endif %}
     {% if project.accepts_donations %}
-    <dt class="totalBudgetLabel">{% trans 'Funds needed' %}:</dt><dd class="currencyAmount">{% if project.has_multiple_budget_currencies %}{{project.get_funds_needed_project_currency|floatformat:0|intcomma}}{% else %}{{project.funds_needed|floatformat:0|intcomma}}{% endif %} {{project.currency}}</dd>
+    <dt class="totalBudgetLabel">{% trans 'Funds needed' %}:</dt>
+	<dd class="currencyAmount">
+		{% if project.has_multiple_budget_currencies %}
+		{{project.get_funds_needed_project_currency|floatformat:0|intcomma}} {{project.currency}}
+		<span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+		{% else %}
+		{{project.funds_needed|floatformat:0|intcomma}} {{project.currency}}
+		{% endif %}
+	</dd>
     {% endif %}
 </dl>
 {% if project.accepts_donations %}
