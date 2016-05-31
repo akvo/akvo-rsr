@@ -198,8 +198,8 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
           <h2>{% trans 'Funding' %}</h2>
           <dl class="org_statistics_table dl-horizontal">
             {% if organisation.org_currency_projects_count %}
-              <dt>{% trans 'Projects' %}{% if organisation.has_multiple_project_currencies %} <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only projects with organisation currency' %}"></span>{% endif %}</dt>
-              <dd>{{ organisation.org_currency_projects_count }}</dd>
+              <dt>{% trans 'Projects' %}</dt>
+              <dd>{{ organisation.org_currency_projects_count }}{% if organisation.has_multiple_project_currencies %} <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes projects with organisation currency' %}"></span>{% endif %}</dd>
               <dt>{% trans 'Currency used' %}</dt>
               <dd>{{organisation.currency_label}}</dd>
               <dt>{% trans 'Pledged' %}</dt>
