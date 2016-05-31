@@ -52,6 +52,15 @@ REPORTS = [
         'formats': ['pdf', 'excel'],
         'parameters': ['organisation', ],
         'url': '/en/reports/data_quality/{organisation}?format={format}&download=true'
+    },
+    {
+        'key': 'plan-finland',
+        'title': unicode(_('Plan Finland report')),
+        'description': unicode(_('This custom Plan Finland report gives an overview of the '
+                                 'hierarchy of Plan Finland\'s projects and their results.')),
+        'formats': ['pdf', ],
+        'parameters': ['project', ],
+        'url': '/en/reports/plan_finland/{project}?format={format}&download=true'
     }
 ]
 
