@@ -870,6 +870,9 @@ div.update-confirm-container {
                 @include responsive (wide-screens) {}
                 > a {}
             }
+            @media (min-width: 992px) {
+                min-width: 340px;
+            }
         }
     }
     a {

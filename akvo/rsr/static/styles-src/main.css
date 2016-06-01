@@ -785,6 +785,11 @@ div.update-confirm-container {
     #updates div.projectListMenu ul li a:last-child,
     #user_table div.projectListMenu ul li a:last-child {
       margin-right: 0; }
+  @media (min-width: 992px) {
+    .myProjectList div.projectListMenu ul,
+    #updates div.projectListMenu ul,
+    #user_table div.projectListMenu ul {
+      min-width: 340px; } }
 
 .myProjectList a:last-child,
 #updates a:last-child,
