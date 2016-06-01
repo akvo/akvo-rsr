@@ -479,7 +479,7 @@ function initReact() {
         render: function() {
             var country = this.props.country;
             var job_title = this.props.job_title;
-            if (country === null && job_title === "") {
+            if (country === "" && job_title === "") {
                 return (
                     <span>&nbsp;</span>
                 );
@@ -488,11 +488,11 @@ function initReact() {
                 if (job_title !== "") {
                     text += job_title;
                 }
-                if (country !== null) {
+                if (country !== "") {
                     if (job_title !== "") {
                         text += " ";
                     }
-                    text += i18n.in_text + ' ' + country.name;
+                    text += i18n.in_text + ' ' + country;
                 }
                 text += ")";
                 return (
