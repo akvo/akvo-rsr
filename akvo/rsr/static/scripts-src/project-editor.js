@@ -2284,15 +2284,35 @@ function setCurrencyOnChange() {
     }
 }
 
+function hasObjectCurrency(currencyDisplay) {
+    if (currencyDisplay !== null) {
+        var parent = findAncestorByClass(currencyDisplay, 'parent');
+        console.log(parent);
+        if (parent !== null) {
+            var parentId = parent.getAttribute('id');
+            var parentIdList = parentId.split('.');
+            var currencyId = ['rsr_' + parentIdList[0].replace('_', ''), 'currency', parentIdList[1]].join('.');
+            var currencyNode = document.getElementById(currencyId);
+            if (currencyNode !== null) {
+                return currencyNode.value !== '';
+            }
+        }
+    }
+    return false;
+}
+
 function updateCurrency(currencyDropdown) {
     return function(e) {
         e.preventDefault();
 
-        var currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
+        var newCurrency = currencyDropdown.value;
         var currencyDisplays = document.querySelectorAll('.currency-display');
 
-        for (var i=0; i < currencyDisplays.length; i++) {
-            currencyDisplays[i].innerHTML = currency;
+        for (var i = 0; i < currencyDisplays.length; i++) {
+            var currencyDisplay = currencyDisplays[i];
+            if (!hasObjectCurrency(currencyDisplay)) {
+                currencyDisplay.innerHTML = newCurrency;
+            }
         }
     };
 }
