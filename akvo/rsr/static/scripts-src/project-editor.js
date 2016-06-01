@@ -2282,17 +2282,21 @@ function setCurrencyOnChange() {
     if (currencyDropdown !== null) {
         currencyDropdown.onchange = updateCurrency(currencyDropdown);
     }
+
+    var currencyDropdowns = document.querySelectorAll('.currency-select');
+    for (var i = 0; i < currencyDropdowns.length; i++) {
+        var otherCurrencyDropdown = currencyDropdowns[i];
+        if (otherCurrencyDropdown !== currencyDropdown) {
+            otherCurrencyDropdown.onchange = updateObjectCurrency(otherCurrencyDropdown);
+        }
+    }
 }
 
 function hasObjectCurrency(currencyDisplay) {
     if (currencyDisplay !== null) {
         var parent = findAncestorByClass(currencyDisplay, 'parent');
-        console.log(parent);
         if (parent !== null) {
-            var parentId = parent.getAttribute('id');
-            var parentIdList = parentId.split('.');
-            var currencyId = ['rsr_' + parentIdList[0].replace('_', ''), 'currency', parentIdList[1]].join('.');
-            var currencyNode = document.getElementById(currencyId);
+            var currencyNode = parent.querySelector('.currency-select');
             if (currencyNode !== null) {
                 return currencyNode.value !== '';
             }
@@ -2312,6 +2316,27 @@ function updateCurrency(currencyDropdown) {
             var currencyDisplay = currencyDisplays[i];
             if (!hasObjectCurrency(currencyDisplay)) {
                 currencyDisplay.innerHTML = newCurrency;
+            }
+        }
+    };
+}
+
+function updateObjectCurrency(currencyDropdown) {
+    return function(e) {
+        e.preventDefault();
+
+        if (currencyDropdown !== null) {
+            var parent = findAncestorByClass(currencyDropdown, 'parent'),
+                newCurrency = currencyDropdown.value;
+
+            if (parent !== null) {
+                var currencyDisplays = parent.querySelectorAll('.currency-display');
+                for (var i = 0; i < currencyDisplays.length; i++) {
+                    var currencyDisplay = currencyDisplays[i];
+                    if (currencyDisplay !== null) {
+                        currencyDisplay.innerHTML = newCurrency;
+                    }
+                }
             }
         }
     };
