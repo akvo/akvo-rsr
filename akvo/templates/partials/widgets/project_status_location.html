@@ -4,7 +4,7 @@
   <li>
     {% rsr_widget_project_status project %}
   </li>
-  {% if project.primary_location.country %}
+  {% if project.recipient_countries.all %}
     <li>
       {% rsr_widget_project_location project %}
     </li>

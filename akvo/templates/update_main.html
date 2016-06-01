@@ -74,11 +74,6 @@
                                     {% endwith %}
                                 {% endif %}
                             </div>
-                            <div  class="projectLocation">
-                                {% if u.primary_location.country %}
-                                    <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}}
-                                {% endif %}
-                            </div>
                             <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.created_at|date:"d-M-Y"}}</div>
                         </div>
                     </div>
