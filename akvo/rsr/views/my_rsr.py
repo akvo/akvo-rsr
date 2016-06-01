@@ -364,8 +364,7 @@ def user_management(request):
 
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
-        employments = Employment.objects.select_related().\
-            prefetch_related('country', 'group').order_by('-id')
+        employments = Employment.objects.select_related().prefetch_related('group').order_by('-id')
         organisations = Organisation.objects.all()
         roles = Group.objects.filter(
             name__in=['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
@@ -411,8 +410,7 @@ def user_management(request):
             model_to_dict(group, fields=['id', 'name']) for group in all_groups
         ]
         if employment.country:
-            country_dict = model_to_dict(employment.country, fields=['id', 'iso_code', 'name'])
-            employment_dict["country"] = country_dict
+            employment_dict["country"] = employment.country
         if employment.group:
             group_dict = model_to_dict(employment.group, fields=['id', 'name'])
             employment_dict["group"] = group_dict
