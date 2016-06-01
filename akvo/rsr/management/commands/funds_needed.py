@@ -91,7 +91,7 @@ class Command(BaseCommand):
         # Set projects to 'Complete' for the retrieved projects
         if self.projects.count() > 0 and options['complete']:
             for p in self.projects:
-                p.status = Project.STATUS_COMPLETE
+                p.iati_status = '3'
                 p.save()
 
             self.stdout.write('')

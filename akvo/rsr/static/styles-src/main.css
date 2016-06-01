@@ -302,6 +302,8 @@ dl.dl-horizontal dt {
     font-weight: bold; }
   dl.dl-horizontal dt.funders {
     margin-top: 5px; }
+  dl.dl-horizontal dt.iatiStatuses {
+    width: 190px; }
 
 dl.dl-horizontal dd span.unknownFunder {
   color: rgba(32, 32, 36, 0.4); }
@@ -625,6 +627,32 @@ nav.navbar-fixed-top {
             position: relative;
             right: auto; } }
 
+div.updateListMenu ul {
+  margin-top: -10px; }
+  div.updateListMenu ul li {
+    display: inline-block; }
+    @media only screen and (max-width: 992px) {
+      div.updateListMenu ul li {
+        display: block; } }
+    div.updateListMenu ul li a:last-child {
+      margin-right: 0; }
+    div.updateListMenu ul li a.disabled {
+      background-color: #e6e6e6;
+      color: #cccccc;
+      pointer-events: initial;
+      cursor: not-allowed;
+      border: none;
+      -moz-border-radius: 5px;
+      -o-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px; }
+      div.updateListMenu ul li a.disabled:hover {
+        text-decoration: none; }
+
+div.update-confirm-container {
+  margin-top: 5px;
+  font-size: 85%; }
+
 .navbar-form {
   padding-left: 0;
   margin-bottom: 25px; }
@@ -757,6 +785,11 @@ nav.navbar-fixed-top {
     #updates div.projectListMenu ul li a:last-child,
     #user_table div.projectListMenu ul li a:last-child {
       margin-right: 0; }
+  @media (min-width: 992px) {
+    .myProjectList div.projectListMenu ul,
+    #updates div.projectListMenu ul,
+    #user_table div.projectListMenu ul {
+      min-width: 340px; } }
 
 .myProjectList a:last-child,
 #updates a:last-child,
@@ -3812,7 +3845,7 @@ div.active .addOrg {
         .modalContainer .orgModal .modalContents .inputContainer select + label,
         .modalContainer .orgModal .modalContents .inputContainer textarea + label {
           position: absolute;
-          top: -25px;
+          top: -35px;
           transition: top 0.7s ease, opacity 0.7s ease;
           opacity: 0;
           font-size: 13px;

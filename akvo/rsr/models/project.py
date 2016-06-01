@@ -7,6 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import math
 
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
@@ -23,12 +25,14 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
-                                   TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
-                                                 FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
+from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
+                                   FinanceType, FlowType, TiedStatus)
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
+                                                 COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+                                                 FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
+from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
+                        rsr_show_keywords)
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -45,6 +49,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
+from .budget_item import BudgetItem
 
 
 def image_path(instance, file_name):
@@ -56,10 +61,7 @@ class MultipleReportingOrgs(Exception):
 
 
 class Project(TimestampsMixin, models.Model):
-    CURRENCY_CHOICES = (
-        ('USD', '$'),
-        ('EUR', '€'),
-    )
+    CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
         (1, _(u'Core Activity')),
@@ -92,27 +94,54 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
-        STATUS_NONE: 'black',
-        STATUS_NEEDS_FUNDING: 'orange',
-        STATUS_ACTIVE: '#AFF167',
-        STATUS_COMPLETE: 'grey',
-        STATUS_CANCELLED: 'red',
-        STATUS_ARCHIVED: 'grey',
+        '0': 'grey',
+        '1': 'orange',
+        '2': '#AFF167',
+        '3': 'grey',
+        '4': 'grey',
+        '5': 'red',
+        '6': 'grey',
     }
+
+    CODE_TO_STATUS = {
+        '0': 'N',
+        '1': 'H',
+        '2': 'A',
+        '3': 'C',
+        '4': 'C',
+        '5': 'L',
+        '6': 'R'
+    }
+
+    STATUS_TO_CODE = {
+        'N': '0',
+        'H': '1',
+        'A': '2',
+        'C': '3',
+        'L': '5',
+        'R': '6'
+    }
+
+    # Status combinations used in conditionals
+    EDIT_DISABLED = ['3', '5']
+    DONATE_DISABLED = ['0', '3', '4', '5', '6']
+    NOT_SUSPENDED = ['1', '2', '3', '4', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
-    status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
-        help_text=_(u'There are five different project statuses:<br/>'
-                    u'1) Needs funding: this project still needs funding and implementation has '
-                    u'not yet started.<br/>'
-                    u'2) Active: the implementation phase has begun.<br/>'
-                    u'3) Completed: the project has been completed.<br/>'
-                    u'4) Cancelled: the project never took place or work stopped before it was '
-                    u'fully implemented.<br/>'
-                    u'5) Archived: projects are archived when the reporting partner no longer uses '
-                    u'RSR.')
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
+    iati_status = ValidXMLCharField(
+        _(u'status'), max_length=1, choices=([('0', '')] + codelist_choices(ACTIVITY_STATUS)),
+        db_index=True, default='0',
+        help_text=_(u'There are six different project statuses:<br/>'
+                    u'1) Pipeline/identification: the project is being scoped or planned<br/>'
+                    u'2) Implementation: the project is currently being implemented<br/>'
+                    u'3) Completion: the project is complete or the final disbursement has been made<br/>'
+                    u'4) Post-completion: the project is complete or the final disbursement has been made, '
+                    u'but the project remains open pending financial sign off or M&E<br/>'
+                    u'5) Cancelled: the project has been cancelled<br/>'
+                    u'6) Suspended: the project has been temporarily suspended '
+                    u'or the reporting partner no longer uses RSR.')
     )
     categories = models.ManyToManyField(
         'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
@@ -387,6 +416,18 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
+        # Update legacy status field
+        if self.pk is not None:
+            orig = Project.objects.get(pk=self.pk)
+
+            if self.iati_status != orig.iati_status:
+                self.status = self.CODE_TO_STATUS[self.iati_status]
+                super(Project, self).save(update_fields=['status'])
+
+            if self.status != orig.status:
+                self.iati_status = self.STATUS_TO_CODE[self.status]
+                super(Project, self).save(update_fields=['iati_status'])
+
         super(Project, self).save(*args, **kwargs)
 
     def clean(self):
@@ -421,8 +462,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate button settings is True, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_button and self.is_published() and self.funds_needed > 0 and \
-                self.status in [Project.STATUS_NEEDS_FUNDING, Project.STATUS_ACTIVE, Project.STATUS_COMPLETE]:
+        if self.donate_button and self.is_published() and self.funds_needed > 0 and not \
+                self.iati_status in Project.DONATE_DISABLED:
             return True
         return False
 
@@ -497,6 +538,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return 0
 
+    def get_budget_project_currency(self):
+        budget_project_currency = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='')\
+            .aggregate(Sum('amount')).values()[0]
+        return budget_project_currency if budget_project_currency >= 1 else 0.0
+
     def update_budget(self):
         "Update de-normalized field"
         self.budget = self.get_budget()
@@ -535,6 +581,11 @@ class Project(TimestampsMixin, models.Model):
         or a value less than 1, the value is set to 0.
         """
         funds_needed = self.get_budget() - self.get_funds()
+        return funds_needed if funds_needed >= 1 else 0.0
+
+    def get_funds_needed_project_currency(self):
+        "Funds need in project currency, only used if budget items have multiple currencies"
+        funds_needed = Decimal(self.get_budget_project_currency()) - self.get_funds()
         return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):
@@ -626,31 +677,37 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(is_public=True)
 
         def status_none(self):
-            return self.filter(status__exact=Project.STATUS_NONE)
+            return self.filter(iati_status__exact='6')
 
         def status_active(self):
-            return self.filter(status__exact=Project.STATUS_ACTIVE)
+            return self.filter(iati_status__exact='2')
 
         def status_onhold(self):
-            return self.filter(status__exact=Project.STATUS_NEEDS_FUNDING)
+            return self.filter(iati_status__exact='1')
 
         def status_complete(self):
-            return self.filter(status__exact=Project.STATUS_COMPLETE)
+            return self.filter(iati_status__exact='3')
 
         def status_not_complete(self):
-            return self.exclude(status__exact=Project.STATUS_COMPLETE)
+            return self.exclude(iati_status__exact='3')
+
+        def status_post_complete(self):
+            return self.filter(iati_status__exact='4')
+
+        def status_not_post_complete(self):
+            return self.exclude(iati_status__exact='4')
 
         def status_cancelled(self):
-            return self.filter(status__exact=Project.STATUS_CANCELLED)
+            return self.filter(iati_status__exact='5')
 
         def status_not_cancelled(self):
-            return self.exclude(status__exact=Project.STATUS_CANCELLED)
+            return self.exclude(iati_status__exact='5')
 
         def status_archived(self):
-            return self.filter(status__exact=Project.STATUS_ARCHIVED)
+            return self.filter(iati_status__exact='6')
 
         def status_not_archived(self):
-            return self.exclude(status__exact=Project.STATUS_ARCHIVED)
+            return self.exclude(iati_status__exact='6')
 
         def active(self):
             """Return projects that are published and not cancelled or archived"""
@@ -757,7 +814,7 @@ class Project(TimestampsMixin, models.Model):
             return ProjectUpdate.objects.filter(project__in=self).order_by('-id')
             # return self.project_updates.all()
 
-        #the following 6 methods return organisation querysets!
+        # The following 8 methods return organisation querysets
         def _partners(self, role=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
             if role:
@@ -781,6 +838,12 @@ class Project(TimestampsMixin, models.Model):
 
         def all_partners(self):
             return self._partners()
+
+        def paying_partners(self):
+            return Organisation.objects.filter(
+                partnerships__project__in=self,
+                can_create_projects=True
+            ).distinct()
 
         def countries(self):
             """Returns a Country queryset of the countries of these projects"""
@@ -850,10 +913,20 @@ class Project(TimestampsMixin, models.Model):
 
     def show_status(self):
         "Show the current project status"
-        return mark_safe(
-            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status],
-                                                    self.get_status_display())
-        )
+        if not self.iati_status == '0':
+            return mark_safe(
+                "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
+                                                        codelist_name(ActivityStatus, self, 'iati_status'))
+            )
+        else:
+            return ''
+
+    def show_plain_status(self):
+        "Show the current project status value without styling"
+        if not self.iati_status == '0':
+            return codelist_name(ActivityStatus, self, 'iati_status')
+        else:
+            return ''
 
     def show_current_image(self):
         try:
@@ -893,6 +966,23 @@ class Project(TimestampsMixin, models.Model):
         return False
     is_published.boolean = True
 
+    def is_empty(self):
+        exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
+                          'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
+                          'iatiexport', 'iatiimportjob', 'id', 'is_impact_project', 'is_public',
+                          'last_modified_at', 'partners', 'partnerships', 'paymentgatewayselector',
+                          'primary_organisation', 'primary_organisation_id', 'publishingstatus',
+                          'status', 'validations']
+
+        for field in Project._meta.get_all_field_names():
+            if field not in exclude_fields:
+                field_value = getattr(self, field)
+                m2m_field = getattr(field_value, 'all', None)
+                if (m2m_field and m2m_field()) or (not m2m_field and getattr(self, field)):
+                    return False
+
+        return True
+
     def akvopedia_links(self):
         return self.links.filter(kind=Link.LINK_AKVOPEDIA)
 
@@ -901,6 +991,41 @@ class Project(TimestampsMixin, models.Model):
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
+
+    def has_multiple_budget_currencies(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        num_currencies = len(set([self.currency] + [c.currency if c.currency else self.currency for c in budget_items]))
+
+        if num_currencies > 1:
+            return True
+        else:
+            return False
+
+    def budget_currency_totals(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        unique_currencies = set([c.currency if c.currency else self.currency for c in budget_items])
+
+        totals = {}
+        for c in unique_currencies:
+            if c == self.currency:
+                totals[c] = budget_items.filter(currency__exact='').aggregate(Sum('amount')).values()[0]
+            else:
+                totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
+
+        return totals
+
+    def budget_currency_totals_string(self):
+
+        totals = self.budget_currency_totals()
+
+        total_string = ''
+
+        for t in totals:
+            print type(totals[t])
+            total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
+
+        return total_string[:-2]
+
 
     def focus_areas(self):
         from .focus_area import FocusArea
@@ -1005,7 +1130,7 @@ class Project(TimestampsMixin, models.Model):
         return mark_safe(
             "<span class='status_large' style='background-color:%s; color:inherit; "
             "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.status], self.get_status_display()
+                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
             )
         )
 

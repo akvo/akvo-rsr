@@ -1,26 +1,30 @@
 {% load i18n %}
 
-{% if project.status == 'H' %}
+{% if project.iati_status == '1' %}
   <span class="projectStatus notComplete">
-    {% trans "Needs funding" %}
+    {% trans "Pipeline/identification" %}
   </span>
-{% elif project.status == 'A' %}
+{% elif project.iati_status == '2' %}
   <span class="projectStatus notComplete">
-    {% trans "Active" %}
+    {% trans "Implementation" %}
   </span>
-{% elif project.status == 'C' %}
+{% elif project.iati_status == '3' %}
   <span class="projectStatus complete">
-    {% trans "Complete" %}
+    {% trans "Completion" %}
   </span>
-{% elif project.status == 'L' %}
+{% elif project.iati_status == '4' %}
   <span class="projectStatus complete">
-    {% trans "Canelled" %}
+    {% trans "Post-Completion" %}
   </span>
-{% elif project.status == 'R' %}
+{% elif project.iati_status == '5' %}
   <span class="projectStatus complete">
-    {% trans "Archived" %}
+    {% trans "Cancelled" %}
   </span>
-{% else %} {# None (N) #}
+{% elif project.iati_status == '6' %}
+  <span class="projectStatus complete">
+    {% trans "Suspended" %}
+  </span>
+{% else %} {# None (6) #}
   <span class="projectStatus notComplete">
     {% trans "None" %}
   </span>

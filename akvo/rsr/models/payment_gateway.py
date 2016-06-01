@@ -24,7 +24,7 @@ class PaymentGateway(models.Model):
     )
 
     def __unicode__(self):
-        return u'%s - %s' % (self.name, self.get_currency_display())
+        return u'%s - %s' % (self.name, self.currency)
 
     class Meta:
         app_label = 'rsr'

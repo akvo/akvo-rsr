@@ -47,9 +47,9 @@ class PublishingStatus(models.Model):
                                     code='subtitle')
                 )
 
-            if self.project.status == 'N':
+            if self.project.iati_status == '6':
                 validation_errors.append(
-                    ValidationError(_('Project needs to have a status.'),
+                    ValidationError(_('Project needs to have non-suspended status.'),
                                     code='status')
                 )
 
@@ -117,11 +117,10 @@ class PublishingStatus(models.Model):
                 )
             else:
                 for location in self.project.locations.all():
-                    if not (location.latitude and location.longitude and location.country):
+                    if not (location.latitude and location.longitude):
                         validation_errors.append(
                             ValidationError(
-                                _('All locations need to have a latitude, longitude and country '
-                                  'specified.'),
+                                _('All locations need to have a latitude and longitude specified.'),
                                 code='location')
                         )
                         break

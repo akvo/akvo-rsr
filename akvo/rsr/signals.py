@@ -18,7 +18,7 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import get_model
+from django.db.models import get_model, Q
 
 from sorl.thumbnail import ImageField
 
@@ -265,15 +265,24 @@ def employment_post_save(sender, **kwargs):
         # user is active and the employment has not been approved yet.
         if kwargs['created'] and user.is_active and not employment.is_approved:
             organisation = employment.organisation
-            active_users = get_user_model().objects.filter(is_active=True)
-            notify = (
-                active_users.filter(is_admin=True, is_support=True) |
-                active_users.filter(
-                    employers__organisation=organisation,
-                    employers__group__in=[user_managers_group, admins_group],
-                    is_support=True
-                )
-            ).distinct()
+
+            # Retrieve all active support users
+            active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
+
+            # General (support) admins will always be informed
+            admin_users = active_support_users.filter(is_admin=True)
+
+            # As well as organisation (+ content owners) User managers and Admins
+            employer_users = active_support_users.filter(
+                employers__organisation__in=organisation.content_owned_by(),
+                employers__group__in=[user_managers_group, admins_group]
+            )
+
+            notify = active_support_users.filter(
+                Q(pk__in=admin_users.values_list('pk', flat=True)) |
+                Q(pk__in=employer_users.values_list('pk', flat=True))
+            ).exclude(pk=user.pk).distinct()
+
             rsr_send_mail_to_users(
                 notify,
                 subject='registration/user_organisation_request_subject.txt',

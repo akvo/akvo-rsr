@@ -4,6 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from akvo.codelists import models as codelist_models
+from akvo.codelists.store.codelists_v202 import COUNTRY
+from akvo.utils import codelist_choices, codelist_value
+
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -14,7 +18,6 @@ from django.db.models.query import QuerySet as DjangoQuerySet
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
-
 
 from .models_utils import QuerySetManager
 
@@ -32,7 +35,9 @@ class Employment(models.Model):
     is_approved = models.BooleanField(_('approved'), default=False,
                                       help_text=_('Designates whether this employment is approved '
                                                   'by an administrator.'))
-    country = models.ForeignKey('Country', verbose_name=_(u'country'), null=True, blank=True)
+    country = ValidXMLCharField(
+        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY)
+    )
     job_title = ValidXMLCharField(_(u'job title'), max_length=50, blank=True)
 
     objects = QuerySetManager()
@@ -64,7 +69,11 @@ class Employment(models.Model):
         unique_together = ('organisation', 'user', 'group')
 
     def __unicode__(self):
-        return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
+        return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name,
+                                      self.organisation.name)
+
+    def iati_country(self):
+        return codelist_value(codelist_models.Country, self, 'country')
 
     def approve(self, approved_by):
         """
@@ -87,8 +96,6 @@ class Employment(models.Model):
             )
 
     def to_dict(self, org_list):
-        country = '' if not self.country else model_to_dict(self.country)
-
         # Set groups in right order
         all_groups = []
         auth_group_names = ['Users', 'User Managers', 'Project Editors', 'Admins']
@@ -107,7 +114,7 @@ class Employment(models.Model):
             user_full=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
             is_approved=self.is_approved,
             job_title=self.job_title,
-            country_full=country,
+            country_full=self.iati_country().name if self.country else '',
             group=user_group,
             other_groups=other_groups,
             actions=True if self.organisation in org_list else False,

@@ -31,13 +31,8 @@ def import_countries(xml_file):
             org = internal_org_id.referenced_org
             for location in element.find("location"):
                 iso_code = location.findtext("iso_code").capitalize()
-                try:
-                    org.country = Country.objects.get(iso_code=iso_code)
-                    org.save()
-                    print("Updated Organisation {org_id} with country data.".format(org_id=org.id))
-                except:
-                    print("Failed to update Organisation {org_id}. Non-existant country code: {iso_code}.".format(
-                            org_id=org.id, iso_code=iso_code))
+                org.iati_country = iso_code.upper()
+                org.save()
 
 
 if __name__ == "__main__":

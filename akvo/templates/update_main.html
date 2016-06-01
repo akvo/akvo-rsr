@@ -7,12 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 col-xs-12">
-                    <h2><i class="fa fa-camera-retro"></i> {{update.title}}
-                    {% if user == update.user and not update.edit_window_has_expired %}
-                        <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
-                        {% bootstrap_icon "pencil" %} Edit</a>
-                    {% endif %}
-                    </h2>
+                    <h2><i class="fa fa-camera-retro"></i> {{update.title}}</h2>
                     <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.created_at|date:"d-M-Y"}}</div>
                     <div class="post-info media">
                         <div class="media-body">
@@ -77,11 +72,6 @@
                                         {% with org=u.user.approved_organisations.0 %}
                                         <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
                                     {% endwith %}
-                                {% endif %}
-                            </div>
-                            <div  class="projectLocation">
-                                {% if u.primary_location.country %}
-                                    <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}}
                                 {% endif %}
                             </div>
                             <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.created_at|date:"d-M-Y"}}</div>

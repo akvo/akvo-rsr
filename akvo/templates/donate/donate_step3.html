@@ -4,7 +4,7 @@
 {% block donatecontent %}
     <div class="col-sm-7 step3">
       <h3>{% trans 'Confirm your donation' %}</h3>
-      <p>{% trans 'Amount' %}: {{project.get_currency_display|safe}}{{invoice.amount}}</p>
+      <p>{% trans 'Amount' %}: {{invoice.amount}} {{ invoice.project.currency|safe }}</p>
       <p>{% trans 'Your name' %}: {{invoice.get_name}}</p>
       <p>{% trans 'Your email' %}: {{invoice.get_email}}</p>
       {% if invoice.campaign_code %}

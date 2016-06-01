@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -17,11 +18,13 @@ from django.shortcuts import get_object_or_404, render
 
 from tastypie.models import ApiKey
 
+from akvo.codelists.models import Country, Version
+
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import pagination, filter_query_string
-from ..models import (Country, Employment, Organisation, OrganisationCustomField, Project,
+from ...utils import codelist_name, pagination, filter_query_string
+from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet)
 
 import json
@@ -244,7 +247,8 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         return Http404
 
-    if not request.user.has_perm('rsr.change_project', project):
+    if (not request.user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED) and not \
+            (request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 
     # Custom fields
@@ -266,7 +270,7 @@ def project_editor(request, project_id):
     project_validation_sets = project.validations.all()
 
     # Countries
-    countries = Country.objects.all()
+    countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
 
     context = {
         'id': project_id,
@@ -360,8 +364,7 @@ def user_management(request):
 
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
-        employments = Employment.objects.select_related().\
-            prefetch_related('country', 'group').order_by('-id')
+        employments = Employment.objects.select_related().prefetch_related('group').order_by('-id')
         organisations = Organisation.objects.all()
         roles = Group.objects.filter(
             name__in=['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
@@ -373,9 +376,9 @@ def user_management(request):
         connected_orgs_list = [
             org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
         ]
-        organisations = Organisation.objects.filter(pk__in=connected_orgs_list)
-        employments = organisations.content_owned_organisations().employments().\
-            exclude(user=user).order_by('-id')
+        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
+            content_owned_organisations()
+        employments = organisations.employments().exclude(user=user).order_by('-id')
         roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
 
     q = request.GET.get('q')
@@ -407,8 +410,7 @@ def user_management(request):
             model_to_dict(group, fields=['id', 'name']) for group in all_groups
         ]
         if employment.country:
-            country_dict = model_to_dict(employment.country, fields=['id', 'iso_code', 'name'])
-            employment_dict["country"] = country_dict
+            employment_dict["country"] = codelist_name(Country, employment, 'country')
         if employment.group:
             group_dict = model_to_dict(employment.group, fields=['id', 'name'])
             employment_dict["group"] = group_dict
@@ -480,7 +482,8 @@ def my_results(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
 
-    if not user.has_perm('rsr.change_project', project):
+    if not user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED \
+            or not project.is_published():
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')
