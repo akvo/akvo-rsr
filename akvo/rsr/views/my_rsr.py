@@ -23,7 +23,7 @@ from akvo.codelists.models import Country, Version
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import pagination, filter_query_string
+from ...utils import codelist_name, pagination, filter_query_string
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet)
 
@@ -410,7 +410,7 @@ def user_management(request):
             model_to_dict(group, fields=['id', 'name']) for group in all_groups
         ]
         if employment.country:
-            employment_dict["country"] = employment.country
+            employment_dict["country"] = codelist_name(Country, employment, 'country')
         if employment.group:
             group_dict = model_to_dict(employment.group, fields=['id', 'name'])
             employment_dict["group"] = group_dict
