@@ -60,7 +60,7 @@ class PlannedDisbursement(models.Model):
                 return u'%s %s' % (self.iati_currency().name,
                                    '{:,}'.format(int(self.value)))
             else:
-                return u'%s %s' % (self.project.get_currency_display(),
+                return u'%s %s' % (self.project.currency,
                                    '{:,}'.format(int(self.value)))
         else:
             return u'%s' % _(u'No value specified')
@@ -80,7 +80,10 @@ class PlannedDisbursement(models.Model):
         return ''
 
     def iati_currency(self):
-        return codelist_value(Currency, self, 'currency')
+        if self.currency:
+            return codelist_value(Currency, self, 'currency')
+        else:
+            return codelist_value(Currency, self.project, 'currency')
 
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')

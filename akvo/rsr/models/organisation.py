@@ -13,11 +13,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import codelist_choices, rsr_image_path
+from akvo.utils import codelist_choices, codelist_name, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
 from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
+from akvo.codelists.models import Currency
 
 from .country import Country
 from .partner_site import PartnerSite
@@ -456,6 +457,25 @@ class Organisation(TimestampsMixin, models.Model):
 
     # New API
 
+    def has_multiple_project_currencies(self):
+        "Check if organisation has projects with different currencies"
+        if self.published_projects().distinct().count() == self.org_currency_projects_count():
+            return False
+        else:
+            return True
+
+    def currency_label(self):
+        return codelist_name(Currency, self, 'currency')
+
+    def amount_pledged(self):
+        "How much the organisation has pledged to projects in default currency"
+        return self.active_projects().filter(currency=self.currency).filter(
+            partnerships__organisation__exact=self,
+            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
+        ).aggregate(
+            amount_pledged=Sum('partnerships__funding_amount')
+        )['amount_pledged'] or 0
+
     def euros_pledged(self):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
@@ -474,6 +494,10 @@ class Organisation(TimestampsMixin, models.Model):
             dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0
 
+    def org_currency_projects_count(self):
+        "How many projects with budget in default currency the organisation is a partner to"
+        return self.published_projects().filter(currency=self.currency).distinct().count()
+
     def euro_projects_count(self):
         "How many projects with budget in € the organisation is a partner to"
         return self.published_projects().euros().distinct().count()
@@ -484,6 +508,14 @@ class Organisation(TimestampsMixin, models.Model):
 
     def _aggregate_funds_needed(self, projects):
         return sum(projects.values_list('funds_needed', flat=True))
+
+    def org_currency_funds_needed(self):
+        """How much is still needed to fully fund all projects with default currency budget that the
+        organisation is a partner to.
+
+        The ORM aggregate() doesn't work here since we may have multiple partnership relations
+        to the same project."""
+        return self._aggregate_funds_needed(self.published_projects().filter(currency=self.currency).distinct())
 
     def euro_funds_needed(self):
         """How much is still needed to fully fund all projects with € budget that the

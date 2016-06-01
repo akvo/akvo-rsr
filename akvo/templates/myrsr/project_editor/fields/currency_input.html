@@ -3,7 +3,11 @@
 {% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
     <div class="form-group{% if always_hidden %} always-hidden hidden{% endif %}">
         <div class="input-group control">
-            <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
+            {% if obj.currency %}
+            <span class="input-group-addon currency-display">{{ obj.currency }}</span>
+            {% else %}
+            <span class="input-group-addon currency-display">{{ project.currency }}</span>
+            {% endif %}
             <input type="text"
                    name="{{ obj_field_id }}"
                    id="{{ obj_field_id }}"

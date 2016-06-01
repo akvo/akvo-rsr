@@ -114,7 +114,12 @@
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.has_multiple_budget_currencies %}
+              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}  {{project.currency}}
+                  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+              {% else %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}  {{project.currency}}
+              {% endif %}
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
@@ -140,7 +145,12 @@
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.has_multiple_budget_currencies %}
+              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}} {{project.currency}}
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+              {% else %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}} {{project.currency}}
+              {% endif %}
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">

@@ -87,9 +87,12 @@ class BudgetItem(models.Model):
         else:
             budget_unicode = u'%s' % _(u'No budget item specified')
 
-        if self.amount:
-            budget_unicode += u' - %s %s' % (self.project.get_currency_display(),
-                                             unicode('{:,}'.format(int(self.amount))))
+        if self.amount and self.currency:
+            budget_unicode += u' - %s %s' % (unicode('{:,}'.format(int(self.amount))), self.currency)
+
+        elif self.amount and not self.currency:
+            budget_unicode += u' - %s %s' % (unicode('{:,}'.format(int(self.amount))), self.project.currency)
+
         else:
             budget_unicode += u' - %s' % _(u'No amount specified')
 
@@ -119,11 +122,20 @@ class BudgetItem(models.Model):
         else:
             return self.__unicode__()
 
+    def get_currency(self):
+        if self.currency:
+            return self.currency
+        else:
+            return self.project.currency
+
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
 
     def iati_currency(self):
-        return codelist_value(Currency, self, 'currency')
+        if self.currency:
+            return codelist_value(Currency, self, 'currency')
+        else:
+            return codelist_value(Currency, self.project, 'currency')
 
     def iati_status(self):
         return codelist_value(BudgetStatus, self, 'status')

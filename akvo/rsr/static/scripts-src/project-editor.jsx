@@ -1576,11 +1576,23 @@ function addPartial(partialName, partialContainer) {
             }
         }
 
+        // Update the currency
+        var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id),
+            currencyDisplays = partial.querySelectorAll('.currency-display'),
+            projectCurrency = 'EUR';
+        if (projectCurrencyDropdown !== null) {
+            projectCurrency = projectCurrencyDropdown.value;
+        }
+        for (var m = 0; m < currencyDisplays.length; m++) {
+            currencyDisplays[m].innerHTML = projectCurrency;
+        }
+
         var parentContainer, parentID;
 
-        // Update the typeaheads and datepickers
+        // Update the typeaheads, datepickers and currency fields
         updateTypeaheads();
         setDatepickers();
+        setCurrencyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
@@ -2282,17 +2294,69 @@ function setCurrencyOnChange() {
     if (currencyDropdown !== null) {
         currencyDropdown.onchange = updateCurrency(currencyDropdown);
     }
+
+    var currencyDropdowns = document.querySelectorAll('.currency-select');
+    for (var i = 0; i < currencyDropdowns.length; i++) {
+        var otherCurrencyDropdown = currencyDropdowns[i];
+        if (otherCurrencyDropdown !== currencyDropdown) {
+            otherCurrencyDropdown.onchange = updateObjectCurrency(otherCurrencyDropdown);
+        }
+    }
+}
+
+function hasObjectCurrency(currencyDisplay) {
+    if (currencyDisplay !== null) {
+        var parent = findAncestorByClass(currencyDisplay, 'parent');
+        if (parent !== null) {
+            var currencyNode = parent.querySelector('.currency-select');
+            if (currencyNode !== null) {
+                return currencyNode.value !== '';
+            }
+        }
+    }
+    return false;
 }
 
 function updateCurrency(currencyDropdown) {
     return function(e) {
         e.preventDefault();
 
-        var currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
+        var newCurrency = currencyDropdown.value;
         var currencyDisplays = document.querySelectorAll('.currency-display');
 
-        for (var i=0; i < currencyDisplays.length; i++) {
-            currencyDisplays[i].innerHTML = currency;
+        for (var i = 0; i < currencyDisplays.length; i++) {
+            var currencyDisplay = currencyDisplays[i];
+            if (!hasObjectCurrency(currencyDisplay)) {
+                currencyDisplay.innerHTML = newCurrency;
+            }
+        }
+    };
+}
+
+function updateObjectCurrency(currencyDropdown) {
+    return function(e) {
+        e.preventDefault();
+
+        if (currencyDropdown !== null) {
+            var parent = findAncestorByClass(currencyDropdown, 'parent'),
+                newCurrency = currencyDropdown.value;
+
+            if (newCurrency === '') {
+                var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id);
+                if (projectCurrencyDropdown !== null) {
+                    newCurrency = projectCurrencyDropdown.value;
+                }
+            }
+            
+            if (parent !== null) {
+                var currencyDisplays = parent.querySelectorAll('.currency-display');
+                for (var i = 0; i < currencyDisplays.length; i++) {
+                    var currencyDisplay = currencyDisplays[i];
+                    if (currencyDisplay !== null) {
+                        currencyDisplay.innerHTML = newCurrency;
+                    }
+                }
+            }
         }
     };
 }

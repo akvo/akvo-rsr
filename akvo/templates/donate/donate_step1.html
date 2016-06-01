@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block donatecontent %}
+{% if project.currency = 'EUR' or project.currency = 'USD' %}
 <div class="col-sm-4 paymentOption step1">
   <h3>{% trans 'For all users' %}</h3>
   <div class="img-wrapper">
@@ -19,6 +20,7 @@
     </p>
   </div>
 </div>
+{% endif %}
 {% if project.currency = 'EUR' %}
 <div class="col-sm-4 paymentOption step1">
   <h3>{% trans 'For Dutch users only' %}</h3>

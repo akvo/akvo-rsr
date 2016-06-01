@@ -12,7 +12,7 @@
     <h4>{% trans "Donation details" %}</h4>
     <p>{% trans 'Akvo transaction number' %}: {{ invoice.id }}</p>
     <p>{% trans 'Date and time' %}: {{ invoice.time|date:"l, j F Y" }}</p>
-    <p>{% trans 'Amount' %}: {{ invoice.project.get_currency_display|safe }}{{ invoice.amount }}</p>
+    <p>{% trans 'Amount' %}: {{ invoice.amount }} {{ invoice.project.currency|safe }}</p>
 </div>
 
 <div class="col-sm-4">

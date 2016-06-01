@@ -7,6 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import math
 
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
@@ -23,12 +25,14 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType, FinanceType, FlowType,
-                                   TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE,
-                                                 FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
+from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
+                                   FinanceType, FlowType, TiedStatus)
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
+                                                 COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+                                                 FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value, codelist_name, rsr_image_path, rsr_show_keywords
+from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
+                        rsr_show_keywords)
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -45,6 +49,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
+from .budget_item import BudgetItem
 
 
 def image_path(instance, file_name):
@@ -56,10 +61,7 @@ class MultipleReportingOrgs(Exception):
 
 
 class Project(TimestampsMixin, models.Model):
-    CURRENCY_CHOICES = (
-        ('USD', '$'),
-        ('EUR', '€'),
-    )
+    CURRENCY_CHOICES = codelist_choices(CURRENCY)
 
     HIERARCHY_OPTIONS = (
         (1, _(u'Core Activity')),
@@ -536,6 +538,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return 0
 
+    def get_budget_project_currency(self):
+        budget_project_currency = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='')\
+            .aggregate(Sum('amount')).values()[0]
+        return budget_project_currency if budget_project_currency >= 1 else 0.0
+
     def update_budget(self):
         "Update de-normalized field"
         self.budget = self.get_budget()
@@ -574,6 +581,11 @@ class Project(TimestampsMixin, models.Model):
         or a value less than 1, the value is set to 0.
         """
         funds_needed = self.get_budget() - self.get_funds()
+        return funds_needed if funds_needed >= 1 else 0.0
+
+    def get_funds_needed_project_currency(self):
+        "Funds need in project currency, only used if budget items have multiple currencies"
+        funds_needed = Decimal(self.get_budget_project_currency()) - self.get_funds()
         return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):
@@ -979,6 +991,41 @@ class Project(TimestampsMixin, models.Model):
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
+
+    def has_multiple_budget_currencies(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        num_currencies = len(set([self.currency] + [c.currency if c.currency else self.currency for c in budget_items]))
+
+        if num_currencies > 1:
+            return True
+        else:
+            return False
+
+    def budget_currency_totals(self):
+        budget_items = BudgetItem.objects.filter(project__id=self.pk)
+        unique_currencies = set([c.currency if c.currency else self.currency for c in budget_items])
+
+        totals = {}
+        for c in unique_currencies:
+            if c == self.currency:
+                totals[c] = budget_items.filter(currency__exact='').aggregate(Sum('amount')).values()[0]
+            else:
+                totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
+
+        return totals
+
+    def budget_currency_totals_string(self):
+
+        totals = self.budget_currency_totals()
+
+        total_string = ''
+
+        for t in totals:
+            print type(totals[t])
+            total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
+
+        return total_string[:-2]
+
 
     def focus_areas(self):
         from .focus_area import FocusArea
