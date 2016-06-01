@@ -7,6 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import math
 
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
@@ -583,7 +585,7 @@ class Project(TimestampsMixin, models.Model):
 
     def get_funds_needed_project_currency(self):
         "Funds need in project currency, only used if budget items have multiple currencies"
-        funds_needed = self.get_budget_project_currency() - self.get_funds()
+        funds_needed = Decimal(self.get_budget_project_currency()) - self.get_funds()
         return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):

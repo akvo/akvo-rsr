@@ -2341,6 +2341,13 @@ function updateObjectCurrency(currencyDropdown) {
             var parent = findAncestorByClass(currencyDropdown, 'parent'),
                 newCurrency = currencyDropdown.value;
 
+            if (newCurrency === '') {
+                var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id);
+                if (projectCurrencyDropdown !== null) {
+                    newCurrency = projectCurrencyDropdown.value;
+                }
+            }
+            
             if (parent !== null) {
                 var currencyDisplays = parent.querySelectorAll('.currency-display');
                 for (var i = 0; i < currencyDisplays.length; i++) {
