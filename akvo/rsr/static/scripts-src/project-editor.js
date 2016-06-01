@@ -1576,11 +1576,23 @@ function addPartial(partialName, partialContainer) {
             }
         }
 
+        // Update the currency
+        var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id),
+            currencyDisplays = partial.querySelectorAll('.currency-display'),
+            projectCurrency = 'EUR';
+        if (projectCurrencyDropdown !== null) {
+            projectCurrency = projectCurrencyDropdown.value;
+        }
+        for (var m = 0; m < currencyDisplays.length; m++) {
+            currencyDisplays[m].innerHTML = projectCurrency;
+        }
+
         var parentContainer, parentID;
 
-        // Update the typeaheads and datepickers
+        // Update the typeaheads, datepickers and currency fields
         updateTypeaheads();
         setDatepickers();
+        setCurrencyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
