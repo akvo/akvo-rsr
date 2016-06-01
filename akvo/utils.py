@@ -525,6 +525,25 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     return ''
 
 
+def codelist_name(model, instance, field, version=settings.IATI_VERSION):
+    """
+    Looks up the name of a codelist
+    :param model: Model from codelists app
+    :param instance: Instance from model
+    :param field: String of the lookup field (e.g. 'type')
+    :param version: String of version (optional)
+    :return: String of the codelist instance
+    """
+    value = getattr(instance, field, None)
+    if value:
+        try:
+            objects = getattr(model, 'objects')
+            return objects.get(code=value, version__code=version).name
+        except model.DoesNotExist:
+            return value
+    return ''
+
+
 def check_auth_groups(group_names):
     for group_name in group_names:
         Group.objects.get_or_create(name=group_name)

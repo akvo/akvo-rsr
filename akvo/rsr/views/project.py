@@ -67,7 +67,7 @@ def directory(request):
 
     # Set show_filters to "in" if any filter is selected
     show_filters = "in"  # To simplify template use bootstrap class
-    available_filters = ['location', 'status', 'organisation', 'sector', 'sort_by']
+    available_filters = ['location', 'status', 'iati_status', 'organisation', 'sector', 'sort_by']
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 
@@ -427,8 +427,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
-    # Prevent adding update if project is completed or unpublished
-    elif project.status == 'C' or not project.is_published():
+    # Prevent adding update if project is completed, cancelled or unpublished
+    elif project.iati_status in Project.EDIT_DISABLED or not project.is_published():
         request.error_message = u'Cannot add updates to completed or unpublished projects.'
         raise PermissionDenied
 

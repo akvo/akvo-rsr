@@ -123,47 +123,67 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             </a>
           </h2>
           <dl class="dl-horizontal">
-            <dt>{% trans 'Active' %}</dt>
-            <dd>
-              {% if organisation.published_projects.status_active.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=A">
-                  {{ organisation.published_projects.status_active.count }}
-                </a>
-              {% else %}
-                {{ organisation.published_projects.status_active.count }}
-              {% endif %}
-            </dd>
-            <dt>{% trans 'Need funding' %}</dt>
+            <dt class="iatiStatuses">{% trans 'Pipeline/identification' %}</dt>
             <dd>
               {% if organisation.published_projects.status_onhold.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=H">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=1">
                   {{ organisation.published_projects.status_onhold.count }}
                 </a>
               {% else %}
                 {{ organisation.published_projects.status_onhold.count }}
               {% endif %}
             </dd>
-            <dt>{% trans 'Complete' %}</dt>
+            <dt class="iatiStatuses">{% trans 'Implementation' %}</dt>
+            <dd>
+              {% if organisation.published_projects.status_active.count %}
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=2">
+                  {{ organisation.published_projects.status_active.count }}
+                </a>
+              {% else %}
+                {{ organisation.published_projects.status_active.count }}
+              {% endif %}
+            </dd>
+            <dt class="iatiStatuses">{% trans 'Completion' %}</dt>
             <dd>
               {% if organisation.published_projects.status_complete.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=C">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=3">
                   {{ organisation.published_projects.status_complete.count }}
                 </a>
               {% else %}
                 {{ organisation.published_projects.status_complete.count }}
               {% endif %}
             </dd>
-            <dt>{% trans 'Cancelled' %}</dt>
+            <dt class="iatiStatuses">{% trans 'Post-completion' %}</dt>
+            <dd>
+              {% if organisation.published_projects.status_post_complete.count %}
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=4">
+                  {{ organisation.published_projects.status_post_complete.count }}
+                </a>
+              {% else %}
+                {{ organisation.published_projects.status_post_complete.count }}
+              {% endif %}
+            </dd>
+            <dt class="iatiStatuses">{% trans 'Cancelled' %}</dt>
             <dd>
               {% if organisation.published_projects.status_cancelled.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=L">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=5">
                   {{ organisation.published_projects.status_cancelled.count }}
                 </a>
               {% else %}
                 {{ organisation.published_projects.status_cancelled.count }}
               {% endif %}
             </dd>
-            <dt>{% trans 'Total projects' %}</dt>
+            <dt class="iatiStatuses">{% trans 'Suspended' %}</dt>
+            <dd>
+              {% if organisation.published_projects.status_none.count %}
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=6">
+                  {{ organisation.published_projects.status_none.count }}
+                </a>
+              {% else %}
+                {{ organisation.published_projects.status_none.count }}
+              {% endif %}
+            </dd>
+            <dt class="iatiStatuses">{% trans 'Total projects' %}</dt>
             <dd>
               {% if organisation.published_projects %}
                 <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}">

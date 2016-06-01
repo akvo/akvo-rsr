@@ -23,12 +23,12 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType,
+from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType, FinanceType, FlowType,
                                    TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE,
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
+from akvo.utils import codelist_choices, codelist_value, codelist_name, rsr_image_path, rsr_show_keywords
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -92,27 +92,54 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
-        STATUS_NONE: 'black',
-        STATUS_NEEDS_FUNDING: 'orange',
-        STATUS_ACTIVE: '#AFF167',
-        STATUS_COMPLETE: 'grey',
-        STATUS_CANCELLED: 'red',
-        STATUS_ARCHIVED: 'grey',
+        '0': 'grey',
+        '1': 'orange',
+        '2': '#AFF167',
+        '3': 'grey',
+        '4': 'grey',
+        '5': 'red',
+        '6': 'grey',
     }
+
+    CODE_TO_STATUS = {
+        '0': 'N',
+        '1': 'H',
+        '2': 'A',
+        '3': 'C',
+        '4': 'C',
+        '5': 'L',
+        '6': 'R'
+    }
+
+    STATUS_TO_CODE = {
+        'N': '0',
+        'H': '1',
+        'A': '2',
+        'C': '3',
+        'L': '5',
+        'R': '6'
+    }
+
+    # Status combinations used in conditionals
+    EDIT_DISABLED = ['3', '5']
+    DONATE_DISABLED = ['0', '3', '4', '5', '6']
+    NOT_SUSPENDED = ['1', '2', '3', '4', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
-    status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
-        help_text=_(u'There are five different project statuses:<br/>'
-                    u'1) Needs funding: this project still needs funding and implementation has '
-                    u'not yet started.<br/>'
-                    u'2) Active: the implementation phase has begun.<br/>'
-                    u'3) Completed: the project has been completed.<br/>'
-                    u'4) Cancelled: the project never took place or work stopped before it was '
-                    u'fully implemented.<br/>'
-                    u'5) Archived: projects are archived when the reporting partner no longer uses '
-                    u'RSR.')
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
+    iati_status = ValidXMLCharField(
+        _(u'status'), max_length=1, choices=([('0', '')] + codelist_choices(ACTIVITY_STATUS)),
+        db_index=True, default='0',
+        help_text=_(u'There are six different project statuses:<br/>'
+                    u'1) Pipeline/identification: the project is being scoped or planned<br/>'
+                    u'2) Implementation: the project is currently being implemented<br/>'
+                    u'3) Completion: the project is complete or the final disbursement has been made<br/>'
+                    u'4) Post-completion: the project is complete or the final disbursement has been made, '
+                    u'but the project remains open pending financial sign off or M&E<br/>'
+                    u'5) Cancelled: the project has been cancelled<br/>'
+                    u'6) Suspended: the project has been temporarily suspended '
+                    u'or the reporting partner no longer uses RSR.')
     )
     categories = models.ManyToManyField(
         'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
@@ -387,6 +414,18 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
+        # Update legacy status field
+        if self.pk is not None:
+            orig = Project.objects.get(pk=self.pk)
+
+            if self.iati_status != orig.iati_status:
+                self.status = self.CODE_TO_STATUS[self.iati_status]
+                super(Project, self).save(update_fields=['status'])
+
+            if self.status != orig.status:
+                self.iati_status = self.STATUS_TO_CODE[self.status]
+                super(Project, self).save(update_fields=['iati_status'])
+
         super(Project, self).save(*args, **kwargs)
 
     def clean(self):
@@ -421,8 +460,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate button settings is True, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_button and self.is_published() and self.funds_needed > 0 and \
-                self.status in [Project.STATUS_NEEDS_FUNDING, Project.STATUS_ACTIVE, Project.STATUS_COMPLETE]:
+        if self.donate_button and self.is_published() and self.funds_needed > 0 and not \
+                self.iati_status in Project.DONATE_DISABLED:
             return True
         return False
 
@@ -626,31 +665,37 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(is_public=True)
 
         def status_none(self):
-            return self.filter(status__exact=Project.STATUS_NONE)
+            return self.filter(iati_status__exact='6')
 
         def status_active(self):
-            return self.filter(status__exact=Project.STATUS_ACTIVE)
+            return self.filter(iati_status__exact='2')
 
         def status_onhold(self):
-            return self.filter(status__exact=Project.STATUS_NEEDS_FUNDING)
+            return self.filter(iati_status__exact='1')
 
         def status_complete(self):
-            return self.filter(status__exact=Project.STATUS_COMPLETE)
+            return self.filter(iati_status__exact='3')
 
         def status_not_complete(self):
-            return self.exclude(status__exact=Project.STATUS_COMPLETE)
+            return self.exclude(iati_status__exact='3')
+
+        def status_post_complete(self):
+            return self.filter(iati_status__exact='4')
+
+        def status_not_post_complete(self):
+            return self.exclude(iati_status__exact='4')
 
         def status_cancelled(self):
-            return self.filter(status__exact=Project.STATUS_CANCELLED)
+            return self.filter(iati_status__exact='5')
 
         def status_not_cancelled(self):
-            return self.exclude(status__exact=Project.STATUS_CANCELLED)
+            return self.exclude(iati_status__exact='5')
 
         def status_archived(self):
-            return self.filter(status__exact=Project.STATUS_ARCHIVED)
+            return self.filter(iati_status__exact='6')
 
         def status_not_archived(self):
-            return self.exclude(status__exact=Project.STATUS_ARCHIVED)
+            return self.exclude(iati_status__exact='6')
 
         def active(self):
             """Return projects that are published and not cancelled or archived"""
@@ -856,10 +901,20 @@ class Project(TimestampsMixin, models.Model):
 
     def show_status(self):
         "Show the current project status"
-        return mark_safe(
-            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status],
-                                                    self.get_status_display())
-        )
+        if not self.iati_status == '0':
+            return mark_safe(
+                "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.iati_status],
+                                                        codelist_name(ActivityStatus, self, 'iati_status'))
+            )
+        else:
+            return ''
+
+    def show_plain_status(self):
+        "Show the current project status value without styling"
+        if not self.iati_status == '0':
+            return codelist_name(ActivityStatus, self, 'iati_status')
+        else:
+            return ''
 
     def show_current_image(self):
         try:
@@ -1028,7 +1083,7 @@ class Project(TimestampsMixin, models.Model):
         return mark_safe(
             "<span class='status_large' style='background-color:%s; color:inherit; "
             "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.status], self.get_status_display()
+                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
             )
         )
 

@@ -821,7 +821,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'iati_status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
                        'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),

@@ -11,7 +11,7 @@ import django_filters
 
 from copy import deepcopy
 from django.utils.translation import ugettext_lazy as _
-from akvo.codelists.store.codelists_v201 import SECTOR_CATEGORY
+from akvo.codelists.store.codelists_v201 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 from .models import (Category, Organisation, OrganisationLocation, Project,
                      ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
@@ -149,6 +149,11 @@ class ProjectFilter(django_filters.FilterSet):
         initial=_('All'),
         label=_(u'status'),
         choices=ANY_CHOICE + Project.STATUSES)
+
+    iati_status = django_filters.ChoiceFilter(
+        initial=_('All'),
+        label=_(u'iati status'),
+        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS)))
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
