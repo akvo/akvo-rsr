@@ -194,16 +194,18 @@ function loadComponents() {
         },
         
         statusLabel: function() {
-            switch (this.props.project.status) {
-                case 'H':
+            switch (this.props.project.iati_status) {
+                case '1':
                     return cap(i18n.needs_funding);
-                case 'A':
+                case '2':
                     return cap(i18n.active);
-                case 'C':
+                case '3':
                     return cap(i18n.completed);
-                case 'L':
+                case '4':
+                    return cap(i18n.post_completion);
+                case '5':
                     return cap(i18n.cancelled);
-                case 'R':
+                case '6':
                     return cap(i18n.archived);
                 default:
                     return cap(i18n.no_status);
@@ -528,7 +530,7 @@ function loadComponents() {
                 }
 
                 return (
-                    React.DOM.button( {className:buttonClass, onClick:this.clickNoErrorsProjects} , 
+                    React.DOM.button( {className:buttonClass, onClick:this.clickNoErrorsProjects}, 
                         React.DOM.input( {type:"checkbox", checked:this.state.noErrorsChecked} ), " ", cap(i18n.without_errors)
                     )
                 );

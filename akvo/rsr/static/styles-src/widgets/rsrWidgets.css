@@ -251,7 +251,7 @@ ul.basicInfo {
 ul.basicInfo li .projectStatus {
 	display: inline-block;
 	padding: 0.15em 0.5em;
-	font-size: 0.7em;
+	font-size: 0.65em;
 	text-transform: uppercase;
 	border-radius: 0.15em;
 	color: rgb(255,255,255);

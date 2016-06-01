@@ -393,19 +393,40 @@ function initReact() {
             });
         },
 
+        canSeePlanFinlandReport: function() {
+            if (this.props.userOptions.is_admin || this.props.userOptions.is_superuser) {
+                return true;
+            } else {
+                var approved_employments = this.props.userOptions.approved_employments;
+                for (var i = 0; i < approved_employments.length; i++) {
+                    var orgLongName = approved_employments[i].organisation_name.toLowerCase();
+                    if (orgLongName.indexOf('plan') > -1 && orgLongName.indexOf('finland') > -1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        },
+
         render: function() {
-            var reportsData;
-            var thisReportsDropdown = this;
-            if (this.props.reportOptions.length > 0) {
+            var reportsData,
+                thisReportsDropdown = this;
+            if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
                 reportsData = this.props.reportOptions.map(function (report) {
-                    return (
-                        React.DOM.li( {key:report.key}, 
-                            React.createElement(ReportOption, {
-                                report: report,
-                                selectReport: thisReportsDropdown.selectReport
-                            })
-                        )
-                    );
+                    if (report.key === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
+                        return (
+                            React.DOM.span(null )
+                        );
+                    } else {
+                        return (
+                            React.DOM.li( {key:report.key}, 
+                                React.createElement(ReportOption, {
+                                    report: report,
+                                    selectReport: thisReportsDropdown.selectReport
+                                })
+                            )
+                        );
+                    }
                 });
             } else {
                 reportsData = React.DOM.li(null, React.DOM.a( {href:"#"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " Loading..."));
@@ -445,6 +466,7 @@ function initReact() {
                 React.DOM.div( {id:"choose-report-template"}, 
                     React.DOM.label(null, i18n.report_type),
                     React.createElement(ReportsDropdown, {
+                        userOptions: this.props.userOptions,
                         reportOptions: this.props.reportOptions,
                         setReport: this.props.setReport,
                         downloading: this.props.downloading
@@ -465,14 +487,16 @@ function initReact() {
                 projectOptions: [],
                 format: null,
                 formatOptions: [],
-                downloading: false
+                downloading: false,
+                userOptions: null
             };
         },
 
         componentDidMount: function() {
-            this.getOptions(endpoints.reports, 'reportOptions');
+            this.getUserOptions(endpoints.user, 'userOptions');
             this.getOptions(endpoints.user_organisations, 'organisationOptions', this.processOrgs);
             this.getOptions(endpoints.user_projects, 'projectOptions', this.processProjects);
+            this.getOptions(endpoints.reports, 'reportOptions');
             this.getOptions(endpoints.formats, 'formatOptions');
         },
 
@@ -488,6 +512,21 @@ function initReact() {
                     } else {
                         newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
                     }
+                    thisApp.setState(newState);
+                }
+            };
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send();
+        },
+
+        getUserOptions: function(endpoint, stateKey) {
+            var xmlHttp = new XMLHttpRequest();
+            var url = endpoints.base_url + endpoint + '?format=json';
+            var thisApp = this;
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
+                    var newState = {};
+                    newState[stateKey] = JSON.parse(xmlHttp.responseText);
                     thisApp.setState(newState);
                 }
             };
@@ -560,6 +599,7 @@ function initReact() {
                     React.DOM.h3(null, i18n.my_reports),
                     React.createElement(SelectReport, {
                         reportOptions: this.state.reportOptions,
+                        userOptions: this.state.userOptions,
                         setReport: this.setReport,
                         downloading: this.state.downloading
                     }),

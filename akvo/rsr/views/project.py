@@ -67,7 +67,7 @@ def directory(request):
 
     # Set show_filters to "in" if any filter is selected
     show_filters = "in"  # To simplify template use bootstrap class
-    available_filters = ['location', 'status', 'organisation', 'sector', 'sort_by']
+    available_filters = ['location', 'status', 'iati_status', 'organisation', 'sector', 'sort_by']
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 
@@ -111,11 +111,10 @@ def directory(request):
     # Get related objects of page at once
     page.object_list = page.object_list.prefetch_related(
         'publishingstatus',
-        'sectors',
+        'recipient_countries',
+        'sectors'
     ).select_related(
         'primary_organisation',
-        'primary_location',
-        'primary_location__country',
         'last_update'
     )
 
@@ -273,6 +272,13 @@ def main(request, project_id):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
+    # Related documents
+    related_documents = []
+    for d in project.documents.all():
+        if d.url or d.document:
+            related_documents += [d]
+    related_documents = related_documents[:5]
+
     # JSON data
     carousel_data = json.dumps(_get_carousel_data(project, updates[:9]))
     accordion_data = json.dumps({
@@ -293,6 +299,7 @@ def main(request, project_id):
         'paginator': paginator,
         'pledged': project.get_pledged(),
         'project': project,
+        'related_documents': related_documents,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
@@ -420,9 +427,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
-        if update.edit_window_has_expired():
-            request.error_message = u'You cannot edit this update anymore, the 30 minutes time limit has passed.'
-            raise PermissionDenied
+    # Prevent adding update if project is completed, cancelled or unpublished
+    elif project.iati_status in Project.EDIT_DISABLED or not project.is_published():
+        request.error_message = u'Cannot add updates to completed or unpublished projects.'
+        raise PermissionDenied
 
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)

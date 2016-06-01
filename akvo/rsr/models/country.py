@@ -88,3 +88,4 @@ class RecipientCountry(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'recipient country')
         verbose_name_plural = _(u'recipient countries')
+        ordering = ('-percentage', 'country')

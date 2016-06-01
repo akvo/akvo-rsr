@@ -259,12 +259,7 @@ class Organisation(TimestampsMixin, models.Model):
             return self.filter(
                 partnerships__iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
                 partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
-                partnerships__project__status__in=[
-                    Project.STATUS_ACTIVE,
-                    Project.STATUS_COMPLETE,
-                    Project.STATUS_NEEDS_FUNDING,
-                    Project.STATUS_CANCELLED,
-                ]
+                partnerships__project__iati_status__in=Project.NOT_SUSPENDED
             ).distinct()
 
         def ngos(self):
@@ -410,6 +405,29 @@ class Organisation(TimestampsMixin, models.Model):
         """
         return Organisation.objects.filter(pk=self.pk).content_owned_organisations()
 
+    def content_owned_by(self):
+        """
+        Returns a list of Organisations of which this organisation is content owned by. Basically
+        the reverse of content_owned_organisations(). Includes self.
+        """
+        # Always select the organisation itself and the organisation that is specifically set as
+        # content owner of the organisation.
+        if self.content_owner:
+            queryset = Organisation.objects.filter(pk__in=[self.pk, self.content_owner.pk])
+        else:
+            queryset = Organisation.objects.filter(pk=self.pk)
+
+        # In case this partner is not a paying partner, find all projects where this partner is
+        # implementing partner and add the paying partners of those projects to the queryset.
+        if not self.can_create_projects:
+            paying_partners = self.all_projects().paying_partners()
+            queryset = Organisation.objects.filter(
+                Q(pk__in=queryset.values_list('pk', flat=True)) |
+                Q(pk__in=paying_partners.values_list('pk', flat=True))
+            )
+
+        return queryset.distinct()
+
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
         published projects."""
@@ -417,6 +435,14 @@ class Organisation(TimestampsMixin, models.Model):
             projectlocation__project__partnerships__organisation=self,
             projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
         ).distinct()
+
+    def organisation_countries(self):
+        """Returns a list of the organisations countries."""
+        countries = []
+        for location in self.locations.all():
+            if location.iati_country:
+                countries.append(location.iati_country_value().name)
+        return countries
 
     def iati_file(self):
         """

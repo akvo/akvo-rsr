@@ -19,7 +19,11 @@ def logo_path(instance, file_name):
 
 
 class Keyword(models.Model):
-    label = ValidXMLCharField(_(u'label'), max_length=30, unique=True, db_index=True)
+    label = ValidXMLCharField(
+        _(u'label'), max_length=30, unique=True, db_index=True,
+        help_text=_(u'Select keywords in case you are using an Akvo Page. Keywords linked to a '
+                    u'project will determine if a project appears on the Akvo Page or not.')
+    )
     logo = ImageField(
         _('logo'), blank=True, upload_to=logo_path,
         help_text=_(u'Add your keyword logo here. You can only add one logo. '

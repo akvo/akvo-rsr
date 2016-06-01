@@ -109,14 +109,10 @@ def request_organisation(request, pk=None):
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])
-            if serializer.data['country']:
-                country = Country.objects.get(pk=serializer.data['country'])
-            else:
-                country = None
             employment = Employment(
                 user=user,
                 organisation=organisation,
-                country=country,
+                country=serializer.data['country'],
                 job_title=serializer.data['job_title'],
                 is_approved=False,
             )
@@ -125,7 +121,10 @@ def request_organisation(request, pk=None):
             return Response({'detail': _(u'User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)
 
-        serializer.data['country_full'] = CountrySerializer(country).data
+        if serializer.data['country']:
+            serializer.data['country_full'] = employment.iati_country().name
+        else:
+            serializer.data['country_full'] = ''
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data
         serializer.data['id'] = employment.pk
 

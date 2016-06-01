@@ -148,7 +148,7 @@ function buildEmploymentsApp() {
 
     var CountryInput = React.createClass({
         typeaheadCallback: function(option) {
-            document.getElementById('countryInput').setAttribute('value', option.id);
+            document.getElementById('countryInput').setAttribute('value', option.code);
         },
 
         render: function() {
@@ -196,7 +196,7 @@ function buildEmploymentsApp() {
                 return button(
                     {
                         onClick: this.handleAddEmployment,
-                        className: 'btn btn-primary',
+                        className: 'btn btn-default btn-sm',
                         type: "button",
                         disabled: true
                     },

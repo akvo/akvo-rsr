@@ -82,26 +82,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             return value
     img.allow_tags = True
 
-    def edit_window_has_expired(self):
-        """Determine whether or not update timeout window has expired.
-        The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
-        defaults to 30 minutes.
-        """
-        return (datetime.now() - self.created_at) > self.edit_timeout
-
-    @property
-    def expires_at(self):
-        return to_gmt(self.created_at + self.edit_timeout)
-
-    @property
-    def edit_timeout(self):
-        timeout_minutes = getattr(settings, 'PROJECT_UPDATE_TIMEOUT', 30)
-        return timedelta(minutes=timeout_minutes)
-
-    @property
-    def edit_time_remaining(self):
-        return self.edit_timeout - self.created_at
-
     @property
     def time_gmt(self):
         return to_gmt(self.created_at)
