@@ -8,7 +8,7 @@ before_install:
   - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
 
 install:
-  - "pip install -r requirements.txt"
+  - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
 
 script:
   - python manage.py test
