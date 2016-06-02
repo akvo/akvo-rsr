@@ -7,7 +7,6 @@ before_install:
   - export DJANGO_SETTINGS_MODULE=akvo.settings
   - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
   - sudo mkdir /var/log/akvo/
-  - sudo echo '' > /var/log/akvo/akvo.log
 
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
