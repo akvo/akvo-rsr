@@ -21,7 +21,7 @@ before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
 
 script:
-  - python manage.py migrate
+  - python manage.py collectstatic
   - python manage.py test
 
 notifications:
