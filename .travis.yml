@@ -1,0 +1,26 @@
+language: python
+
+python:
+  - 2.7
+
+services: postgresql
+
+env:
+  - DJANGO=1.7.7
+
+before_install:
+  - export DJANGO_SETTINGS_MODULE=akvo.settings
+  - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
+  - export PIP_USE_MIRRORS=true
+
+install:
+  - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
+  - pip install django==$DJANGO --quiet
+  - pip install psycopg2 --quiet
+
+before_script:
+  - psql -c "CREATE DATABASE mydb;" -U postgres
+
+script:
+  - python manage.py migrate --noinput
+  - python manage.py test akvo.rsr.tests
