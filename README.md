@@ -1,6 +1,6 @@
 # Akvo Really Simple Reporting (Akvo RSR)
 
-[![Build Status](https://travis-ci.org/akvo/akvo-rsr.svg?branch=develop)](https://travis-ci.org/akvo/akvo-rsr) [![Code Health](https://landscape.io/github/akvo/akvo-rsr/develop/landscape.svg?style=flat)](https://landscape.io/github/akvo/akvo-rsr/develop)
+[![Build Status](https://travis-ci.org/akvo/akvo-rsr.svg?branch=develop)](https://travis-ci.org/akvo/akvo-rsr) [![Coverage Status](https://coveralls.io/repos/github/akvo/akvo-rsr/badge.svg?branch=develop)](https://coveralls.io/github/akvo/akvo-rsr?branch=develop) [![Code Health](https://landscape.io/github/akvo/akvo-rsr/develop/landscape.svg?style=flat)](https://landscape.io/github/akvo/akvo-rsr/develop)
 
 Akvo Foundation is a non-profit foundation that builds open source internet and mobile phone software which is used to make international development cooperation and governance more effective and transparent.
 
