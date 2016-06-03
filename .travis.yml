@@ -17,7 +17,7 @@ before_install:
   - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
 
 install:
-  - pip install yuglify
+  - npm install yuglify
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
 
 before_script:
