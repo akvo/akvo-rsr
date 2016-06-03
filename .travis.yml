@@ -1,0 +1,31 @@
+language: python
+
+services:
+  - postgresql
+
+python:
+  - "2.7"
+
+env:
+  - DJANGO=1.7.7 DB=postgres
+
+before_install:
+  - export DJANGO_SETTINGS_MODULE=akvo.settings
+  - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
+  - sudo mkdir /var/log/akvo/ && sudo chmod -R 777 /var/log/akvo/
+  - sudo mkdir /var/akvo/ && sudo chmod -R 777 /var/akvo/
+  - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
+
+install:
+#  - npm install -g yuglify
+  - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
+
+before_script:
+  - psql -c 'CREATE DATABASE travis_test;' -U postgres
+
+script:
+#  - python manage.py collectstatic --noinput
+  - python manage.py test akvo.rsr.tests.iati_import
+
+notifications:
+  email: false
