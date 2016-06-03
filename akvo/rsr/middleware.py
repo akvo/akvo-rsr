@@ -146,8 +146,9 @@ class RSRVersionHeaderMiddleware(object):
         """Add the X-RSR-Version header."""
         context = extra_context(request)
 
-        response['X-RSR-Version'] = "tag={}, commit={}, branch={}".format(
-            context['deploy_tag'],
-            context['deploy_commit_id'],
-            context['deploy_branch'])
+        if response is not None:
+            response['X-RSR-Version'] = "tag={}, commit={}, branch={}".format(
+                context['deploy_tag'],
+                context['deploy_commit_id'],
+                context['deploy_branch'])
         return response

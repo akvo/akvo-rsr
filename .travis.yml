@@ -14,8 +14,10 @@ before_install:
   - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
   - sudo mkdir /var/log/akvo/ && sudo chmod -R 777 /var/log/akvo/
   - sudo mkdir /var/akvo/ && sudo chmod -R 777 /var/akvo/
+  - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
 
 install:
+  - pip install yuglify
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
 
 before_script:
