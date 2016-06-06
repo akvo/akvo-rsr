@@ -28,7 +28,7 @@
                 <p><a href="{% url 'project-widgets' project.pk %}">{% trans 'Grab a widget' %}</a></p>
             </div>
             <div class="col-sm-6 col-md-3">
-                <p><span class="detailedInfo"><i class="fa fa-cloud-upload"></i> {% trans "Export data" %}:</span></p>
+                <p><span class="detailedInfo"><i class="fa fa-cloud-download"></i> {% trans "Export data" %}:</span></p>
                 <p>
                     <a href="{% url 'rss_project_updates' project.id %}">{% trans "RSS" %}</a><br/>
                     <a href="{% url 'project_extra-detail' project.id 'json' %}">{% trans "JSON" %}</a>
