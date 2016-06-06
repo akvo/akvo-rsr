@@ -27,18 +27,12 @@
                 <p><span class="detailedInfo"><i class="fa fa-tachometer"></i> {% trans "Widgets" %}:</span></p>
                 <p><a href="{% url 'project-widgets' project.pk %}">{% trans 'Grab a widget' %}</a></p>
             </div>
-            <div class="hidden-xs col-sm-6 col-md-3" id="project-footer-right">
-
-                <p><span class="detailedInfo">{% trans "Export data" %}:</span></p>
+            <div class="col-sm-6 col-md-3">
+                <p><span class="detailedInfo"><i class="fa fa-cloud-upload"></i> {% trans "Export data" %}:</span></p>
                 <p>
-                    <div class="col-sm-6">
-                        <a href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "RSS" %}</a><br/>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="{% url 'project_extra-detail' project.id 'json' %}"><i class="fa fa-share-alt"></i> {% trans "JSON" %}</a><br/>
-                    </div>
+                    <a href="{% url 'rss_project_updates' project.id %}">{% trans "RSS" %}</a><br/>
+                    <a href="{% url 'project_extra-detail' project.id 'json' %}">{% trans "JSON" %}</a>
                 </p>
-
             </div>
         </div>
     </div>
