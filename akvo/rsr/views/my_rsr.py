@@ -124,16 +124,29 @@ def my_projects(request):
     :param request; A Django request.
     """
 
+    # User groups
+    not_allowed_to_edit = ['Users', 'User Managers', ]
+
     # Get user organisation information
-    organisations = request.user.approved_employments().organisations()
+    employments = request.user.approved_employments()
+    organisations = employments.organisations()
     creator_organisations = organisations.filter(can_create_projects=True).\
         values_list('id', flat=True)
 
     # Get project list
     if request.user.is_superuser or request.user.is_admin:
+        # Superuser and general admins are allowed to see all projects
         projects = Project.objects.all()
     else:
-        projects = organisations.all_projects().distinct()
+        # For each employment, check if the user is allowed to edit projects (e.g. not a 'User' or
+        # 'User Manager'). If not, do not show the unpublished projects of that organisation.
+        projects = Project.objects.none()
+        for employment in employments:
+            if employment.group and employment.group.name not in not_allowed_to_edit:
+                projects = projects | employment.organisation.all_projects()
+            else:
+                projects = projects | employment.organisation.all_projects().published()
+        projects = projects.distinct()
 
     # Custom filter on project id or (sub)title
     q = request.GET.get('q')
