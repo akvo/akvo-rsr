@@ -362,13 +362,14 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
+    org_admin = user.approved_employments().filter(group__name='Admins').exists()
+    groups = ['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
+
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
         employments = Employment.objects.select_related().prefetch_related('group').order_by('-id')
         organisations = Organisation.objects.all()
-        roles = Group.objects.filter(
-            name__in=['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
-        )
+        roles = Group.objects.filter(name__in=groups)
     else:
         # Others can only manage or invite users to their own organisation, or the
         # organisations that they content own
@@ -379,7 +380,10 @@ def user_management(request):
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
             content_owned_organisations()
         employments = organisations.employments().exclude(user=user).order_by('-id')
-        roles = Group.objects.filter(name__in=['Users', 'Project Editors'])
+        if org_admin:
+            roles = Group.objects.filter(name__in=groups)
+        else:
+            roles = Group.objects.filter(name__in=groups[:-1])
 
     q = request.GET.get('q')
     if q:
@@ -406,9 +410,14 @@ def user_management(request):
     employments_array = []
     for employment in page:
         employment_dict = model_to_dict(employment)
-        employment_dict['other_groups'] = [
-            model_to_dict(group, fields=['id', 'name']) for group in all_groups
-        ]
+        if org_admin:
+            employment_dict['other_groups'] = [
+                model_to_dict(group, fields=['id', 'name']) for group in all_groups
+            ]
+        else:
+            employment_dict['other_groups'] = [
+                model_to_dict(group, fields=['id', 'name']) for group in all_groups[:-1]
+            ]
         if employment.country:
             employment_dict["country"] = codelist_name(Country, employment, 'country')
         if employment.group:
