@@ -55,6 +55,7 @@ class Indicator(models.Model):
         _(u'baseline comment'), blank=True, max_length=2000,
         help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
+    order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True)
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')

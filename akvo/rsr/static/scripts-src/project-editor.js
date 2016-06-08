@@ -2365,19 +2365,36 @@ function setIndicatorSorting() {
     var indicatorSections = document.querySelectorAll('.indicator-item');
     console.log(indicatorSections);
 
-    var dragIcon = document.createElement("span");
-    dragIcon.setAttribute('class', 'glyphicon glyphicon-show-lines');
+    var sortIndicatorNode = document.createElement('span');
+    sortIndicatorNode.setAttribute('class', 'sort-indicator');
+
+    var sortIndicatorUp = document.createElement('a');
+    var upButton = document.createElement('span');
+    upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up');
+    sortIndicatorUp.appendChild(upButton);
+
+    var sortIndicatorDown = document.createElement('a');
+    var downButton = document.createElement('span');
+    downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down');
+    sortIndicatorDown.appendChild(downButton);
+
+    sortIndicatorNode.appendChild(sortIndicatorUp);
+    sortIndicatorNode.appendChild(sortIndicatorDown);
+
+    console.log(indicatorSections);
+
+    // add arrow buttons to each indicator
 
     for (var i=0; i < indicatorSections.length; i++) {
-        indicatorSections[i].setAttribute('draggable', 'true');
         indicatorSections[i].setAttribute('key', i);
         indicatorSections[i].setAttribute('data-id', i);
 
-        var indicatorContainer = indicatorSections[i].getElementByTagName('div')[0];
+        var indicatorContainer = indicatorSections[i].querySelector('.delete-related-object-container');
         console.log(indicatorContainer);
 
-        indicatorContainer.appendChild(dragIcon);
-        
+
+        indicatorContainer.insertBefore(sortIndicatorNode.cloneNode(true), indicatorContainer.childNodes[0]);
+
     }
 }
 
