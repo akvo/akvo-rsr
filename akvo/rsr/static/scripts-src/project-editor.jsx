@@ -2361,6 +2361,26 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
+function setIndicatorSorting() {
+    var indicatorSections = document.querySelectorAll('.indicator-item');
+    console.log(indicatorSections);
+
+    var dragIcon = document.createElement("span");
+    dragIcon.setAttribute('class', 'glyphicon glyphicon-show-lines');
+
+    for (var i=0; i < indicatorSections.length; i++) {
+        indicatorSections[i].setAttribute('draggable', 'true');
+        indicatorSections[i].setAttribute('key', i);
+        indicatorSections[i].setAttribute('data-id', i);
+
+        var indicatorContainer = indicatorSections[i].getElementByTagName('div')[0];
+        console.log(indicatorContainer);
+
+        indicatorContainer.appendChild(dragIcon);
+
+    }
+}
+
 function setToggleSectionOnClick () {
     var toggleSections = document.getElementsByClassName('toggleSection');
     var projectOptions = document.querySelector('.formOverviewInfo');
@@ -2832,7 +2852,7 @@ function checkUnsavedChangesForm(form) {
     /* Checks if a form has unsaved changes. Returns true if so and false otherwise. */
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
+var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < inputElements.length; j++) {
             if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
                 return true;
@@ -3435,6 +3455,8 @@ function initApp() {
     setCurrencyOnChange();
     setFileUploads();
     checkPartnerships();
+
+    setIndicatorSorting();
 
     setValidationListeners();
     updateAllHelpIcons();
