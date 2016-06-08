@@ -113,7 +113,7 @@ class BudgetItem(models.Model):
 
     def get_label(self):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
-        if self.label.label in self.OTHER_LABELS:
+        if self.label and self.label.label in self.OTHER_LABELS:
             # display "other" if other_extra is empty.
             # Translating here without translating the other labels seems corny
             return u"other" if self.other_extra is None else self.other_extra.strip()
