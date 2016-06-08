@@ -17,10 +17,9 @@ before_install:
   - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
 
 install:
+  - sudo npm install yuglify -g --prefix /usr
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
   - pip install coveralls
-  - npm set prefix /usr
-  - sudo npm install -g yuglify
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
