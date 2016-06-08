@@ -15,6 +15,7 @@ before_install:
   - sudo mkdir /var/log/akvo/ && sudo chmod -R 777 /var/log/akvo/
   - sudo mkdir /var/akvo/ && sudo chmod -R 777 /var/akvo/
   - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
+  - sudo mkdir /usr/lib/node_modules && sudo chmod -R 777 /usr/lib/node_modules
 
 install:
   - npm install yuglify -g --prefix /usr
