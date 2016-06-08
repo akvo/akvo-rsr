@@ -15,12 +15,12 @@ before_install:
   - sudo mkdir /var/log/akvo/ && sudo chmod -R 777 /var/log/akvo/
   - sudo mkdir /var/akvo/ && sudo chmod -R 777 /var/akvo/
   - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
-  - sudo mkdir /usr/lib/node_modules && sudo chmod -R 777 /usr/lib/node_modules
 
 install:
-  - npm install yuglify -g --prefix /usr
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
   - pip install coveralls
+  - npm install -g yuglify
+  - export PATH=$PATH:/home/travis/.nvm/v0.10.36/bin/npm/yuglify
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
