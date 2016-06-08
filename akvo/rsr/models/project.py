@@ -94,7 +94,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
-        '0': 'grey',
+        '': 'grey',
         '1': 'orange',
         '2': '#AFF167',
         '3': 'grey',
