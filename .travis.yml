@@ -17,6 +17,7 @@ before_install:
   - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
 
 install:
+  - npm install -g yuglify
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
   - pip install coveralls
 
@@ -25,7 +26,8 @@ before_script:
   - python manage.py runserver &
 
 script:
-  - python manage.py test akvo.rsr.tests
+  - python manage.py collectstatic --noinput
+  - python manage.py test --noinput akvo.rsr.tests
   - coverage run --source=akvo manage.py test akvo.rsr.tests
 
 after_success:
