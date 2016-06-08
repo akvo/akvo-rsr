@@ -362,7 +362,8 @@ def user_management(request):
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    org_admin = user.approved_employments().filter(group__name='Admins').exists()
+    org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
+        user.is_admin or user.is_superuser
     groups = ['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
 
     if user.is_admin or user.is_superuser:
@@ -448,6 +449,7 @@ def user_management(request):
     context = {}
     if employments_array:
         context['employments'] = json.dumps(employments_array)
+    context['org_admin'] = org_admin
     context['organisations'] = json.dumps(organisations_list)
     context['roles'] = json.dumps(roles_list)
     context['page'] = page
