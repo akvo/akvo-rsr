@@ -20,6 +20,7 @@ from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.db.models import Q
 
 from django_counter.models import ViewCounter
 
@@ -1008,7 +1009,7 @@ class Project(TimestampsMixin, models.Model):
         totals = {}
         for c in unique_currencies:
             if c == self.currency:
-                totals[c] = budget_items.filter(currency__exact='').aggregate(Sum('amount')).values()[0]
+                totals[c] = budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values()[0]
             else:
                 totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
 
@@ -1021,7 +1022,6 @@ class Project(TimestampsMixin, models.Model):
         total_string = ''
 
         for t in totals:
-            print type(totals[t])
             total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
 
         return total_string[:-2]
