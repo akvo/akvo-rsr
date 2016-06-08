@@ -20,6 +20,7 @@ from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.db.models import Q
 
 from django_counter.models import ViewCounter
 
@@ -94,7 +95,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     STATUSES_COLORS = {
-        '0': 'grey',
+        '': 'grey',
         '1': 'orange',
         '2': '#AFF167',
         '3': 'grey',
@@ -104,40 +105,44 @@ class Project(TimestampsMixin, models.Model):
     }
 
     CODE_TO_STATUS = {
-        '0': 'N',
+        '': 'N',
         '1': 'H',
         '2': 'A',
         '3': 'C',
         '4': 'C',
         '5': 'L',
-        '6': 'R'
+        '6': 'C'
     }
 
     STATUS_TO_CODE = {
-        'N': '0',
+        'N': '',
         'H': '1',
         'A': '2',
         'C': '3',
         'L': '5',
-        'R': '6'
+        'R': '3'
     }
 
     # Status combinations used in conditionals
     EDIT_DISABLED = ['3', '5']
-    DONATE_DISABLED = ['0', '3', '4', '5', '6']
-    NOT_SUSPENDED = ['1', '2', '3', '4', '5']
+    DONATE_DISABLED = ['', '3', '4', '5', '6']
+    NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
     title = ValidXMLCharField(_(u'project title'), max_length=200, db_index=True, blank=True)
     subtitle = ValidXMLCharField(_(u'project subtitle'), max_length=200, blank=True)
-    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE)
+    status = ValidXMLCharField(
+        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE
+    )
     iati_status = ValidXMLCharField(
-        _(u'status'), max_length=1, choices=([('0', '')] + codelist_choices(ACTIVITY_STATUS)),
-        db_index=True, default='0',
+        _(u'status'), max_length=1, choices=(codelist_choices(ACTIVITY_STATUS)), db_index=True,
+        blank=True,
         help_text=_(u'There are six different project statuses:<br/>'
                     u'1) Pipeline/identification: the project is being scoped or planned<br/>'
                     u'2) Implementation: the project is currently being implemented<br/>'
-                    u'3) Completion: the project is complete or the final disbursement has been made<br/>'
-                    u'4) Post-completion: the project is complete or the final disbursement has been made, '
+                    u'3) Completion: the project is complete or the final disbursement has been '
+                    u'made<br/>'
+                    u'4) Post-completion: the project is complete or the final disbursement has '
+                    u'been made, '
                     u'but the project remains open pending financial sign off or M&E<br/>'
                     u'5) Cancelled: the project has been cancelled<br/>'
                     u'6) Suspended: the project has been temporarily suspended '
@@ -1008,7 +1013,7 @@ class Project(TimestampsMixin, models.Model):
         totals = {}
         for c in unique_currencies:
             if c == self.currency:
-                totals[c] = budget_items.filter(currency__exact='').aggregate(Sum('amount')).values()[0]
+                totals[c] = budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values()[0]
             else:
                 totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
 
@@ -1021,7 +1026,6 @@ class Project(TimestampsMixin, models.Model):
         total_string = ''
 
         for t in totals:
-            print type(totals[t])
             total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
 
         return total_string[:-2]

@@ -6,15 +6,6 @@
 
 from lxml import etree
 
-STATUS_TO_CODE = {
-    'N': '0',
-    'H': '1',
-    'A': '2',
-    'C': '3',
-    'L': '5',
-    'R': '6',
-}
-
 
 def activity_status(project):
     """
