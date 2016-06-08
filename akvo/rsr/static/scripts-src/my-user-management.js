@@ -10,7 +10,10 @@ var Button,
     Modal,
     SplitButton,
     Table,
-    initial_data,
+    initial_employment_data,
+    orgAdmin,
+    organisation_data,
+    role_data,
     i18n;
 
 // CSRF TOKEN
@@ -378,12 +381,18 @@ function initReact() {
                 )
             );
 
-            return (
-                React.DOM.span(null, 
-                    modalButton,
-                    thisModal
-                )
-            );
+            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else {
+                return (
+                    React.DOM.span(null, 
+                        modalButton,
+                        thisModal
+                    )
+                );
+            }
         }
     });
 
@@ -466,12 +475,18 @@ function initReact() {
                 )
             );
 
-            return (
-                React.DOM.span(null, 
-                    modalButton,
-                    thisModal
-                )
-            );
+            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+                return (
+                    React.DOM.span(null )
+                );
+            } else {
+                return (
+                    React.DOM.span(null, 
+                        modalButton,
+                        thisModal
+                    )
+                );
+            }
         }
     });
 
@@ -537,6 +552,10 @@ function initReact() {
             });
         },
 
+        disableButton: function() {
+            return (this.state.loading || (this.props.employment.group.name === 'Admins' && !orgAdmin));
+        },
+
         render: function() {
             var thisEmployment = this;
             var employment_id = this.props.employment.id;
@@ -587,7 +606,7 @@ function initReact() {
                     React.createElement(SplitButton, {
                         id: employment_id,
                         title: this.state.button_title,
-                        disabled: this.state.loading
+                        disabled: this.disableButton()
                     }, other_groups),
                     '  ',
                     React.createElement(DeleteModal, {
@@ -698,6 +717,7 @@ function loadAndRenderReact() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initial data
     initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+    orgAdmin = JSON.parse(document.getElementById("org-admin").innerHTML).org_admin;
     organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
     role_data = JSON.parse(document.getElementById("role-data").innerHTML);
     i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
