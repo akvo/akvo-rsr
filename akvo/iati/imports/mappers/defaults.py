@@ -183,7 +183,7 @@ class Status(ImportMapper):
 
         if not iati_status:
             self.add_log('activity-status@code', 'iati_status', 'invalid status code')
-            iati_status = '0'
+            iati_status = ''
 
         return self.update_project_field('iati_status', iati_status)
 
