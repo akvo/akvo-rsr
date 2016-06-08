@@ -2920,7 +2920,7 @@ function addOrgModal() {
 
     /* Submit the new org */
     function submitModal() {
-        if (allInputsFilled() && checkLocationFilled()) {
+        if (allInputsFilled()) {
             var api_url, request, form, form_data;
 
             // Add organisation to DB
@@ -2946,7 +2946,7 @@ function addOrgModal() {
                     organisation_id = response.id;
 
                     // Add location (fails silently)
-                    if (form.querySelector('#latitude').value !== '') {
+                    if (form.querySelector('#latitude').value !== '' && form.querySelector('#longitude').value !== '') {
                         var request_loc;
                         api_url = '/rest/v1/organisation_location/?format=json';
                         request_loc = new XMLHttpRequest();
@@ -3010,84 +3010,44 @@ function addOrgModal() {
 
     function allInputsFilled() {
         var allInputsFilledBoolean = true;
-        var shortName = document.querySelector('#name');
-        var shortNameHelp = document.querySelector('#name + label + .help-block');
-        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
-        var longName = document.querySelector('#long_name');
-        var longNameHelp = document.querySelector('#long_name + label + .help-block');
-        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
-        if (shortName.value === '') {
-            shortNameHelp.textContent = defaultValues.blank_name;
-            elAddClass(shortNameHelp, 'help-block-error');
-            elAddClass(shortNameContainer, 'has-error');
-            allInputsFilledBoolean = false;
-        } else {
-            shortNameHelp.textContent = '';
-            elRemoveClass(shortNameHelp, 'help-block-error');
-            elRemoveClass(shortNameContainer, 'has-error');
-        }
+        // Name, long name, type, latitude, longitude, country settings
+        var fields = [
+            ['name', 'newOrgName'],
+            ['long_name', 'newOrgLongName'],
+            ['new_organisation_type', 'IATIOrgTypeContainer'],
+            ['latitude', 'orgLatitude'],
+            ['longitude', 'orgLongitude'],
+            ['iati_country', 'orgCountry']
+        ];
 
-        if (longName.value === '') {
-            longNameHelp.textContent = defaultValues.blank_long_name;
-            elAddClass(longNameHelp, 'help-block-error');
-            elAddClass(longNameContainer, 'has-error');
-            allInputsFilledBoolean = false;
-        } else {
-            longNameHelp.textContent = '';
-            elRemoveClass(longNameHelp, 'help-block-error');
-            elRemoveClass(longNameContainer, 'has-error');
+        // Check all fields
+        for (var i = 0; i < fields.length; i++) {
+            var field = fields[i];
+            var fieldNode = document.querySelector('#' + field[0]);
+            var fieldNodeHelp = document.querySelector('#' + field[0] + ' + label + .help-block');
+            var fieldNodeContainer = document.querySelector('.inputContainer.' + field[1]);
+
+            if (fieldNode.value === '') {
+                fieldNodeHelp.textContent = defaultValues.blank_field;
+                elAddClass(fieldNodeHelp, 'help-block-error');
+                elAddClass(fieldNodeContainer, 'has-error');
+                allInputsFilledBoolean = false;
+            } else {
+                if ((field[0] === 'latitude' || field[0] === 'longitude') && fieldNode.value.indexOf(',') > 0) {
+                    fieldNodeHelp.textContent = defaultValues.comma_value;
+                    elAddClass(fieldNodeHelp, 'help-block-error');
+                    elAddClass(fieldNodeContainer, 'has-error');
+                    allInputsFilledBoolean = false;
+                } else {
+                    fieldNodeHelp.textContent = '';
+                    elRemoveClass(fieldNodeHelp, 'help-block-error');
+                    elRemoveClass(fieldNodeContainer, 'has-error');
+                }
+            }
         }
 
         return allInputsFilledBoolean;
-    }
-
-    function checkLocationFilled() {
-        var latitudeNode, longitudeNode, countryNode, latitudeHelp, longitudeHelp, countryHelp, result;
-
-        latitudeNode = document.querySelector('#latitude');
-        latitudeHelp = document.querySelector('#latitude + label + .help-block');
-        longitudeNode = document.querySelector('#longitude');
-        longitudeHelp = document.querySelector('#longitude + label + .help-block');
-        countryNode = document.querySelector('#iati_country');
-        countryHelp = document.querySelector('#iati_country + label + .help-block');
-
-        result = true;
-
-        if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
-            return result;
-        } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
-            if (latitudeNode.value === '') {
-                latitudeHelp.textContent = defaultValues.location_check;
-                elAddClass(latitudeHelp, 'help-block-error');
-                elAddClass(latitudeHelp.parentNode, 'has-error');
-            }
-            if (longitudeNode.value === '') {
-                longitudeHelp.textContent = defaultValues.location_check;
-                elAddClass(longitudeHelp, 'help-block-error');
-                elAddClass(longitudeHelp.parentNode, 'has-error');
-            }
-            if (countryNode.value === '') {
-                countryHelp.textContent = defaultValues.location_check;
-                elAddClass(countryHelp, 'help-block-error');
-                elAddClass(countryHelp.parentNode, 'has-error');
-            }
-            result = false;
-        } else {
-            if (latitudeNode.value.indexOf(',') > 0) {
-                latitudeHelp.textContent = defaultValues.comma_value;
-                elAddClass(latitudeHelp, 'help-block-error');
-                elAddClass(latitudeHelp.parentNode, 'has-error');
-                result = false;
-            }
-            if (longitudeNode.value.indexOf(',') > 0) {
-                longitudeHelp.textContent = defaultValues.comma_value;
-                elAddClass(longitudeHelp, 'help-block-error');
-                elAddClass(longitudeHelp.parentNode, 'has-error');
-                result = false;
-            }
-        }
-        return result;
     }
 
     var Modal = React.createClass({
@@ -3158,17 +3118,17 @@ function addOrgModal() {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="inputContainer col-md-4 form-group">
+                                        <div className="inputContainer orgLatitude col-md-4 form-group">
                                             <input name="latitude" id="latitude" type="text" className="form-control"/>
                                             <label htmlFor="latitude" className="control-label">{defaultValues.latitude}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
-                                        <div className="inputContainer col-md-4 form-group">
+                                        <div className="inputContainer orgLongitude col-md-4 form-group">
                                             <input name="longitude" id="longitude" type="text"  className="form-control"/>
                                             <label htmlFor="longitude" className="control-label">{defaultValues.longitude}<span className="mandatory in-org-modal">*</span></label>
                                             <p className="help-block"></p>
                                         </div>
-                                        <div className="inputContainer col-md-4 form-group">
+                                        <div className="inputContainer orgCountry col-md-4 form-group">
                                             <select name="iati_country" id="iati_country" className="form-control">
                                                 <option value=""></option>
                                                 {country_option_list}
