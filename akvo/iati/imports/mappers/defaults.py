@@ -4,19 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models.project import Project
 from akvo.rsr.models.project_condition import ProjectCondition
 
 from .. import ImportMapper, xml_ns
-
-CODE_TO_STATUS = {
-    '1': 'H',
-    '2': 'A',
-    '3': 'C',
-    '4': 'C',
-    '5': 'L',
-    '6': 'R'
-}
 
 
 class Language(ImportMapper):
