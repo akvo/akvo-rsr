@@ -152,8 +152,8 @@ class ProjectFilter(django_filters.FilterSet):
 
     iati_status = django_filters.ChoiceFilter(
         initial=_('All'),
-        label=_(u'iati status'),
-        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS)))
+        label=_(u'status'),
+        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)))
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
@@ -167,7 +167,7 @@ class ProjectFilter(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ['status', 'location', 'organisation', 'category',
+        fields = ['status', 'iati_status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
 
 
