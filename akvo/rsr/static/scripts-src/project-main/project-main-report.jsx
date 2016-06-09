@@ -15,7 +15,7 @@ var relatedObjectsReport = [
     ['project_contact', ['type_label', 'email', 'job_title', 'organisation', 'telephone',
         'mailing_address', 'state', 'department', 'website']],
     ['partnership', ['organisation_show_link', 'organisation_role_label', 'is_secondary_reporter',
-        'funding_amount', 'iati_activity_id']],
+        'funding_amount_label', 'iati_activity_id']],
     ['budget_item', ['currency_label', 'amount', 'label_label', 'other_extra', 'type_label',
         'status_label', 'period_start', 'period_end', 'value_date']],
     ['country_budget_item', ['code_label', 'description', 'percentage']],
