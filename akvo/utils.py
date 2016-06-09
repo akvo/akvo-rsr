@@ -487,11 +487,12 @@ def filter_query_string(qs):
         u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
-def codelist_choices(codelist):
+def codelist_choices(codelist, show_code=True):
     """
     Based on a model from the codelists app, returns a list of tuples with the available choices.
 
     :param codelist: Codelist from codelists store
+    :param show_code: Show the code (e.g. '1 - ..') in front of the name, True by default
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
     name_index = 0
@@ -500,7 +501,7 @@ def codelist_choices(codelist):
             name_index = index
             break
 
-    if name_index > 0:
+    if name_index > 0 and show_code:
         return [(cl[0], '%s - %s' % (cl[0], cl[name_index])) for cl in codelist[1:]]
     else:
         return [(cl[0], cl[name_index]) for cl in codelist[1:]]
