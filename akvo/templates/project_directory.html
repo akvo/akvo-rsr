@@ -40,7 +40,7 @@
             </div>
             <div>
                   <div class="btn-group">
-                    {% bootstrap_field filter.form.status %}
+                    {% bootstrap_field filter.form.iati_status %}
                   </div>
                 </div>
             <div>
@@ -109,7 +109,9 @@
             {% endif %}
             <div class="visible-xs-block hidden-sm">
               <p>
+              {% if project.iati_status %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+              {% endif %}
               {% if project.last_update %}
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
@@ -140,7 +142,9 @@
                 {% endfor %}
                 <br/>
               {% endif %}
+              {% if project.iati_status %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+              {% endif %}
               {% if project.last_update %}
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
@@ -178,7 +182,9 @@
                   {% endfor %}
                 {% endif %}
               </p>
+            {% if project.iati_status %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
+            {% endif %}
             <p class="complete">{{project.show_plain_status}}</p>
             <h4 class="detailedInfo">{% trans "Latest update" %}</h4>
             {% if project.last_update %}

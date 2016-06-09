@@ -40,38 +40,42 @@
                                         {{ project.iati_activity_id }}
                                     </li>
                                 {% endif %}
-                                <li>
-                                    <span class="detailedInfo">{% trans 'Status' %}</span>
-                                    <span class="detailedPoint">{{ project.show_plain_status }}</span>
-                                    {% if project.date_start_planned %}
-                                        <br/>
-                                        <span class="detailedInfo">{% trans 'Start date (planned)' %}</span>
-                                        <span class="detailedPoint">
-                                            <i class="fa fa-calendar-o"></i> {{ project.date_start_planned|date:"d-M-Y" }}
-                                        </span>
-                                    {% endif %}
-                                    {% if project.date_start_actual %}
-                                        <br/>
-                                        <span class="detailedInfo">{% trans 'Start date' %}</span>
-                                        <span class="detailedPoint">
-                                            <i class="fa fa-calendar-o"></i> {{ project.date_start_actual|date:"d-M-Y" }}
-                                        </span>
-                                    {% endif %}
-                                    {% if project.date_end_planned %}
-                                        <br/>
-                                        <span class="detailedInfo">{% trans 'End date (planned)' %}</span>
-                                        <span class="detailedPoint">
-                                            <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
-                                        </span>
-                                    {% endif %}
-                                    {% if project.date_end_actual %}
-                                        <br/>
-                                        <span class="detailedInfo">{% trans 'End date' %}</span>
-                                        <span class="detailedPoint">
-                                            <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
-                                        </span>
-                                    {% endif %}
-                                </li>
+                                {% if project.iati_status or project.date_start_planned or project.date_start_actual or project.date_end_planned or project.date_end_actual %}
+                                    <li>
+                                        {% if project.iati_status %}
+                                            <span class="detailedInfo">{% trans 'Status' %}</span>
+                                            <span class="detailedPoint">{{ project.show_plain_status }}</span>
+                                        {% endif %}
+                                        {% if project.date_start_planned %}
+                                            <br/>
+                                            <span class="detailedInfo">{% trans 'Start date (planned)' %}</span>
+                                            <span class="detailedPoint">
+                                                <i class="fa fa-calendar-o"></i> {{ project.date_start_planned|date:"d-M-Y" }}
+                                            </span>
+                                        {% endif %}
+                                        {% if project.date_start_actual %}
+                                            <br/>
+                                            <span class="detailedInfo">{% trans 'Start date' %}</span>
+                                            <span class="detailedPoint">
+                                                <i class="fa fa-calendar-o"></i> {{ project.date_start_actual|date:"d-M-Y" }}
+                                            </span>
+                                        {% endif %}
+                                        {% if project.date_end_planned %}
+                                            <br/>
+                                            <span class="detailedInfo">{% trans 'End date (planned)' %}</span>
+                                            <span class="detailedPoint">
+                                                <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
+                                            </span>
+                                        {% endif %}
+                                        {% if project.date_end_actual %}
+                                            <br/>
+                                            <span class="detailedInfo">{% trans 'End date' %}</span>
+                                            <span class="detailedPoint">
+                                                <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
+                                            </span>
+                                        {% endif %}
+                                    </li>
+                                {% endif %}
                                 {% if project.has_relations %}
                                     <li>
                                         <span class="detailedInfo">{% trans 'Hierarchy' %}</span>
