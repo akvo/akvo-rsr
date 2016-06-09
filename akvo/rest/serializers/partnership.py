@@ -23,6 +23,7 @@ class PartnershipSerializer(PartnershipRawSerializer):
     organisation_show_link = serializers.Field(source='organisation_show_link')
     partner_type = serializers.Field(source='iati_role_to_partner_type')
     organisation_role_label = serializers.Field(source='iati_organisation_role_label')
+    funding_amount_label = serializers.Field(source='funding_amount_with_currency')
 
 
 class PartnershipBasicSerializer(BaseRSRSerializer):
