@@ -2364,34 +2364,47 @@ function updateObjectCurrency(currencyDropdown) {
 function setIndicatorSorting() {
     var indicatorSections = document.querySelectorAll('.indicator-item');
 
-    var sortIndicatorNode = document.createElement('span');
-    sortIndicatorNode.setAttribute('class', 'sort-indicator');
+    if (indicatorSections.length > 1 ) {
 
-    var sortIndicatorUp = document.createElement('a');
-    var upButton = document.createElement('span');
-    upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
-    sortIndicatorUp.appendChild(upButton);
+        // add arrow buttons to each indicator
 
-    var sortIndicatorDown = document.createElement('a');
-    var downButton = document.createElement('span');
-    downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
-    sortIndicatorDown.appendChild(downButton);
+        for (var i=0; i < indicatorSections.length; i++) {
 
-    sortIndicatorNode.appendChild(sortIndicatorUp);
-    sortIndicatorNode.appendChild(sortIndicatorDown);
+            indicatorId = indicatorSections[i].getAttribute('id').split('.')[1];
 
-    // add arrow buttons to each indicator
+            var sortIndicatorNode = document.createElement('span');
+            sortIndicatorNode.setAttribute('class', 'sort-indicator');
 
-    for (var i=0; i < indicatorSections.length; i++) {
-        indicatorId = indicatorSections[i].getAttribute('id').split('.')[1];
+            var sortIndicatorUp = document.createElement('a');
+            var upButton = document.createElement('span');
+            if (i == 0) {
+                upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+            } else {
+                upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+            }
+            sortIndicatorUp.appendChild(upButton);
 
-        var indicatorContainer = indicatorSections[i].querySelector('.delete-related-object-container');
+            var sortIndicatorDown = document.createElement('a');
+            var downButton = document.createElement('span');
+            if (i == indicatorSections.length - 1) {
+                downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+            } else {
+                downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+            }
+            sortIndicatorDown.appendChild(downButton);
 
-        sortNode = sortIndicatorNode.cloneNode(true);
-        sortNode.setAttribute('id', 'indicator-id.' + indicatorId);
+            sortIndicatorNode.appendChild(sortIndicatorUp);
+            sortIndicatorNode.appendChild(sortIndicatorDown);
 
-        indicatorContainer.insertBefore(sortNode, indicatorContainer.childNodes[0]);
 
+            var indicatorContainer = indicatorSections[i].querySelector('.delete-related-object-container');
+
+            // sortNode = sortIndicatorNode.cloneNode(true);
+            sortIndicatorNode.setAttribute('id', 'indicator-id.' + indicatorId);
+
+            indicatorContainer.insertBefore(sortIndicatorNode, indicatorContainer.childNodes[0]);
+
+        }
     }
 
 }
@@ -3454,7 +3467,7 @@ function initApp() {
     checkPartnerships();
 
     setIndicatorSorting();
-    setOrderOnClick();
+    // setOrderOnClick();
 
     setValidationListeners();
     updateAllHelpIcons();

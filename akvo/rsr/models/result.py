@@ -47,6 +47,7 @@ class Result(models.Model):
     parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
                                       help_text=_(u'The parent result of this result.'),
                                       related_name='child_results')
+    order = models.PositiveSmallIntegerField(_(u'result order'), null=True, blank=True)
 
     def __unicode__(self):
         result_unicode = self.title if self.title else u'%s' % _(u'No result title')
