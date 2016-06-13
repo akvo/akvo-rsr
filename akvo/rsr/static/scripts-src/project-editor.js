@@ -2377,11 +2377,12 @@ function setIndicatorSorting() {
 
             var sortIndicatorUp = document.createElement('a');
             var upButton = document.createElement('span');
-            if (i == 0) {
+            if (i === 0) {
                 upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
             } else {
                 upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
             }
+            upButton.onclick = reorderItems('indicator', indicatorId, 'up');
             sortIndicatorUp.appendChild(upButton);
 
             var sortIndicatorDown = document.createElement('a');
@@ -2391,6 +2392,7 @@ function setIndicatorSorting() {
             } else {
                 downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
             }
+            downButton.onclick = reorderItems('indicator', indicatorId, 'down');
             sortIndicatorDown.appendChild(downButton);
 
             sortIndicatorNode.appendChild(sortIndicatorUp);
@@ -2407,27 +2409,58 @@ function setIndicatorSorting() {
         }
     }
 
+    // setOrderOnClick();
+
 }
 
 function setOrderOnClick() {
-
-    console.log('setOrderOnClick');
-
-    sortContainers = document.querySelectorAll('.sort-indicator');
-
-    for (var i=0; i < sortContainers.length; i++) {
-        indicatorId = sortContainers[i].getAttribute('id').split('.')[1];
-        console.log(indicatorId);
-
-        sortContainers[i].querySelector('sort-up').onclick = reorderIndicators(indicatorId, 'up');
-        sortContainers[i].querySelector('sort-down').onclick = reorderIndicators(indicatorId, 'down');
-    }
-}
-
-function reorderIndicators(indicatorId, direction) {
     return function(e) {
         e.preventDefault();
-        
+        console.log('setOrderOnClick');
+
+        sortContainers = document.querySelectorAll('.sort-indicator');
+
+        for (var i=0; i < sortContainers.length; i++) {
+            indicatorId = sortContainers[i].getAttribute('id').split('.')[1];
+            console.log(indicatorId);
+
+            sortContainers[i].querySelector('sort-up').onclick = reorderItems('indicator', indicatorId, 'up');
+            sortContainers[i].querySelector('sort-down').onclick = reorderItems('indicator', indicatorId, 'down');
+        }
+    };
+}
+
+function reorderItems(itemType, itemId, direction) {
+    return function(e) {
+        e.preventDefault();
+        var api_url, request;
+
+        var form_data = 'item_type=' + itemType + '&item_id=' + itemId + '&item_direction=' + direction;
+        console.log(form_data);
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/reorder_items/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+            } else {
+                // We reached our target server, but it returned an error
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            return false;
+        };
+
+        request.send(form_data);
     };
 }
 
@@ -3467,7 +3500,6 @@ function initApp() {
     checkPartnerships();
 
     setIndicatorSorting();
-    // setOrderOnClick();
 
     setValidationListeners();
     updateAllHelpIcons();

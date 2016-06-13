@@ -572,6 +572,40 @@ def project_editor(request, pk=None):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def project_editor_reorder_items(request, project_pk=None):
+    """API call to reorder results or indicators"""
+    errors = []
+
+    item_type = request.POST.get('item_type', False)
+    item_id = request.POST.get('item_id', False)
+    item_direction = request.POST.get('item_direction', False)
+
+    print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
+
+    if item_type == 'result':
+        item_parent = Project.objects.get(id=project_pk)
+        item_list = Result.objects.filter(id=item_id)
+    elif item_type == 'indicator':
+        item_parent = Indicator.objects.get(id=item_id)
+        item_list = Indicator.objects.filter(result_id=item_parent.result_id)
+    else:
+        errors += ['Invalid item type']
+
+    print item_list
+
+    if item_list[0].order:
+        print 'has order'
+    else:
+        print 'no order'
+
+    return Response(
+        {
+            'errors': errors,
+        }
+    )
+
+@api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_upload_file(request, pk=None):
     """Special API call for directly uploading a file."""

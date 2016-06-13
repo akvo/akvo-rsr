@@ -132,5 +132,6 @@ class Result(models.Model):
 
     class Meta:
         app_label = 'rsr'
+        ordering = ['order', 'id']
         verbose_name = _(u'result')
         verbose_name_plural = _(u'results')
