@@ -10,7 +10,11 @@ from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer)
-from akvo.rsr.models import Country, Organisation, Project, ProjectUpdate
+
+from akvo.codelists.models import Country, Version
+from akvo.rsr.models import Organisation, Project, ProjectUpdate
+
+from django.conf import settings
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -26,7 +30,8 @@ def rejig(queryset, serializer):
 
 @api_view(['GET'])
 def typeahead_country(request):
-    countries = Country.objects.all()
+    iati_version = Version.objects.get(code=settings.IATI_VERSION)
+    countries = Country.objects.filter(version=iati_version)
     return Response(
         rejig(countries, TypeaheadCountrySerializer(countries, many=True))
     )

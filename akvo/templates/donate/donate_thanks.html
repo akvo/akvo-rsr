@@ -12,14 +12,14 @@
     <h4>{% trans "Donation details" %}</h4>
     <p>{% trans 'Akvo transaction number' %}: {{ invoice.id }}</p>
     <p>{% trans 'Date and time' %}: {{ invoice.time|date:"l, j F Y" }}</p>
-    <p>{% trans 'Amount' %}: {{ invoice.project.get_currency_display|safe }}{{ invoice.amount }}</p>
+    <p>{% trans 'Amount' %}: {{ invoice.amount }} {{ invoice.project.currency|safe }}</p>
 </div>
 
 <div class="col-sm-4">
     <h4>{% trans "Your details" %}</h4>
     <p>{% trans 'Your name' %}: {{ invoice.get_name }}</p>
     <p>{% trans 'Your email' %}: {{ invoice.get_email }}</p>
-    {% if invoice.engine = 'ideal'  %}
+    {% if invoice.engine == 'ideal'  %}
         <p>{% trans 'Your bank' %}: {{ invoice.get_bank_display }}</p>
     {% endif %}
 </div>
@@ -27,7 +27,7 @@
 <div class="col-sm-4">
     <h4>{% trans 'Project to which you donated' %}</h4>
     <p>{% trans 'Project' %}: <a href="{% url 'project-main' project.id %}">{{ project.title }}</a></p>
-    <p>{% trans 'Location' %}: {{ project.primary_location.country.continent }} / {{project.primary_location.country}}, {{project.primary_location.city}}</p>
+    <p>{% trans 'Locations' %}: {% for country in project.recipient_countries.all %}{{ country }}{% if not forloop.last %}, {% endif %}{% empty %}{% trans 'No recipient countries specified' %}{% endfor %}</p>
     <p>{% trans 'Akvo ref' %}: {{ project.id }}</p>
 </div>
 {% endblock donatecontent %}

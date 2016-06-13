@@ -4,18 +4,15 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=location %}
     <div class="hide-partial {% if location.pk %}hidden{% endif %}">
         <p class="help-block">{% trans 'Use the link to' %}
-            <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a>
+            <a href="http://www.latlong.net/" target="_blank">http://www.latlong.net/</a>
             {% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}
         </p>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include text_input with obj=location field='latitude' %}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {% include text_input with obj=location field='longitude' %}
-            </div>
-            <div class="col-md-4">
-                {% include choice_input with obj=location field='country' %}
             </div>
         </div>
         <div class="row">

@@ -77,9 +77,7 @@ def directory(request):
     map_orgs = map_orgs
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related(
-        'primary_location__country',
-    )
+    page.object_list = page.object_list.prefetch_related('locations')
 
     return render(request, 'organisation_directory.html', {
         'orgs_count': f.qs.distinct().count(),
@@ -110,11 +108,10 @@ def main(request, organisation_id):
 def iati(request, organisation_id):
     """Retrieve the latest public IATI XML file."""
     organisation = get_object_or_404(Organisation, pk=organisation_id)
-    if organisation.public_iati_file:
-        exports = organisation.iati_exports.filter(is_public=True).exclude(iati_file='')
-        if exports:
-            latest_export = exports.order_by('-id')[0]
-            return HttpResponse(latest_export.iati_file, content_type="text/xml")
+    exports = organisation.iati_exports.filter(is_public=True).exclude(iati_file='')
+    if exports:
+        latest_export = exports.order_by('-id')[0]
+        return HttpResponse(latest_export.iati_file, content_type="text/xml")
     raise Http404
 
 

@@ -3,14 +3,14 @@
 <ul class="fundingwrap">
   <li class="totalBudget">
     <h4>{% trans "Budget" %}:</h4>
-    <span>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</span>
+    <span>{{project.budget|round|intcomma}} {{project.currency|safe}}</span>
   </li>
   <li class="raisedBudget">
     <h4>{% trans "Raised" %}:</h4>
-    <span>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</span>
+    <span>{{project.funds|round|intcomma}} {{project.currency|safe}}</span>
   </li>
   <li class="neededBudget">
     <h4>{% trans "Needed" %}:</h4>
-    <span>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</span>
+    <span>{{project.funds_needed|round|intcomma}} {{project.currency|safe}}</span>
   </li>
 </ul>

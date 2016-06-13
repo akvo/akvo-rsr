@@ -487,11 +487,12 @@ def filter_query_string(qs):
         u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
-def codelist_choices(codelist):
+def codelist_choices(codelist, show_code=True):
     """
     Based on a model from the codelists app, returns a list of tuples with the available choices.
 
     :param codelist: Codelist from codelists store
+    :param show_code: Show the code (e.g. '1 - ..') in front of the name, True by default
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
     name_index = 0
@@ -500,7 +501,7 @@ def codelist_choices(codelist):
             name_index = index
             break
 
-    if name_index > 0:
+    if name_index > 0 and show_code:
         return [(cl[0], '%s - %s' % (cl[0], cl[name_index])) for cl in codelist[1:]]
     else:
         return [(cl[0], cl[name_index]) for cl in codelist[1:]]
@@ -520,6 +521,25 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
         try:
             objects = getattr(model, 'objects')
             return objects.get(code=value, version__code=version)
+        except model.DoesNotExist:
+            return value
+    return ''
+
+
+def codelist_name(model, instance, field, version=settings.IATI_VERSION):
+    """
+    Looks up the name of a codelist
+    :param model: Model from codelists app
+    :param instance: Instance from model
+    :param field: String of the lookup field (e.g. 'type')
+    :param version: String of version (optional)
+    :return: String of the codelist instance
+    """
+    value = getattr(instance, field, None)
+    if value:
+        try:
+            objects = getattr(model, 'objects')
+            return objects.get(code=value, version__code=version).name
         except model.DoesNotExist:
             return value
     return ''

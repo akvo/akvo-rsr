@@ -143,7 +143,7 @@ class Transaction(models.Model):
                 return u'%s %s' % (self.iati_currency().name,
                                    '{:,}'.format(int(self.value)))
             else:
-                return u'%s %s' % (self.project.get_currency_display(),
+                return u'%s %s' % (self.project.currency,
                                    '{:,}'.format(int(self.value)))
         else:
             return u'%s' % _(u'No value specified')
@@ -162,8 +162,17 @@ class Transaction(models.Model):
                                                    self.receiver_organisation.name)
         return ''
 
+    def get_currency(self):
+        if self.currency:
+            return self.currency
+        else:
+            return self.project.currency
+
     def iati_currency(self):
-        return codelist_value(Currency, self, 'currency')
+        if self.currency:
+            return codelist_value(Currency, self, 'currency')
+        else:
+            return codelist_value(Currency, self.project, 'currency')
 
     def iati_aid_type(self):
         return codelist_value(AidType, self, 'aid_type')

@@ -287,80 +287,87 @@ function replaceTotalBudget(total_budget) {
     totalBudgetNode.innerHTML = total_budget;
 }
 
-function submitStep(saveButton) {
-    return function(e) {
-        /* Main function for submitting a form */
-        e.preventDefault();
+function doSubmitStep(saveButton) {
+    /* Main function for submitting a form */
+    var api_url, form, form_data, request, file_request, message;
 
-        var api_url, form, form_data, request, file_request, message;
+    // Collect form data
+    form = findAncestorByTag(saveButton, 'form');
+    form_data = serialize(form);
 
-        // Collect form data
-        form = findAncestorByTag(saveButton, 'form');
-        form_data = serialize(form);
+    // Remove existing errors and indicate that saving has started
+    removeErrors(form);
+    startSave(saveButton);
 
-        // Remove existing errors and indicate that saving has started
-        removeErrors(form);
-        startSave(saveButton);
+    // Create request
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        // Create request
-        api_url = '/rest/v1/project/' + defaultValues.project_id + '/project_editor/?format=json';
-        request = new XMLHttpRequest();
-        request.open('POST', api_url, true);
-        request.setRequestHeader("X-CSRFToken", csrftoken);
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            var response;
+            response = JSON.parse(request.responseText);
 
-        request.onload = function () {
-            if (request.status >= 200 && request.status < 400) {
-                var response;
-                response = JSON.parse(request.responseText);
-
-                // Check for errors
-                if (response.errors.length > 0) {
-                    message = defaultValues.save_error;
-                    addErrors(response.errors);
-                    finishSave(saveButton, false, message);
-                } else {
-                    message = defaultValues.save_success;
-                    finishSave(saveButton, true, message);
-                }
-
-                // Replace saved values and show that it updated
-                for (var i=0; i < response.changes.length; i++) {
-                    var formElement = document.getElementById(response.changes[i][0]);
-                    formElement.setAttribute('saved-value', response.changes[i][1]);
-                    successSave(formElement);
-                }
-
-                // Replace field IDs, names and unicode
-                replaceNames(response.rel_objects);
-
-                // Update progress bars
-                var section = findAncestorByClass(form, 'formStep');
-                setSectionCompletionPercentage(section);
-                setPageCompletionPercentage();
-
-                return false;
-            } else if (request.status === 403) {
-                // Not allowed to save
-                message = defaultValues.save_forbidden;
+            // Check for errors
+            if (response.errors.length > 0) {
+                message = defaultValues.save_error;
+                addErrors(response.errors);
                 finishSave(saveButton, false, message);
-                return false;
             } else {
-                // We reached our target server, but it returned an error
-                message = defaultValues.save_general_error;
-                finishSave(saveButton, false, message);
-                return false;
+                message = defaultValues.save_success;
+                finishSave(saveButton, true, message);
             }
-        };
 
-        request.onerror = function () {
-            // There was a connection error of some sort
-            message = defaultValues.connection_error;
+            // Replace saved values and show that it updated
+            for (var i=0; i < response.changes.length; i++) {
+                var formElement = document.getElementById(response.changes[i][0]);
+                formElement.setAttribute('saved-value', response.changes[i][1]);
+                if (formElement.parentNode !== null && elHasClass(formElement.parentNode, 'typeahead')) {
+                    var typeaheadContainer = findAncestorByClass(formElement.parentNode, 'typeahead-container');
+                    typeaheadContainer.setAttribute('data-value', response.changes[i][1]);
+                }
+                successSave(formElement);
+            }
+
+            // Replace field IDs, names and unicode
+            replaceNames(response.rel_objects);
+
+            // Update progress bars
+            var section = findAncestorByClass(form, 'formStep');
+            setSectionCompletionPercentage(section);
+            setPageCompletionPercentage();
+
+            return false;
+        } else if (request.status === 403) {
+            // Not allowed to save
+            message = defaultValues.save_forbidden;
             finishSave(saveButton, false, message);
             return false;
-        };
+        } else {
+            // We reached our target server, but it returned an error
+            message = defaultValues.save_general_error;
+            finishSave(saveButton, false, message);
+            return false;
+        }
+    };
 
-        request.send(form_data);
+    request.onerror = function () {
+        // There was a connection error of some sort
+        message = defaultValues.connection_error;
+        finishSave(saveButton, false, message);
+        return false;
+    };
+
+    request.send(form_data);
+}
+
+function submitStep(saveButton) {
+    return function(e) {
+        e.preventDefault();
+        doSubmitStep(saveButton);
     };
 }
 
@@ -940,6 +947,9 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         }
     });
 
+    var footer = document.querySelector('footer');
+    footer.setAttribute('selector', selector);
+
     ReactDOM.render(
         React.createElement(TypeaheadContainer), selectorClass
     );
@@ -959,7 +969,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 typeaheadInput.value = savedResult[displayOption];
                 typeaheadInput.setAttribute('value', savedResult.id);
-                typeaheadInput.setAttribute('saved-value', savedResult.id);
+                if (selectorClass.hasAttribute('not-saved')) {
+                    selectorClass.removeAttribute('not-saved');
+                    typeaheadInput.setAttribute('saved-value', '');
+                } else {
+                    typeaheadInput.setAttribute('saved-value', savedResult.id);
+                }
             }
         }
     } else {
@@ -1561,11 +1576,23 @@ function addPartial(partialName, partialContainer) {
             }
         }
 
+        // Update the currency
+        var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id),
+            currencyDisplays = partial.querySelectorAll('.currency-display'),
+            projectCurrency = 'EUR';
+        if (projectCurrencyDropdown !== null) {
+            projectCurrency = projectCurrencyDropdown.value;
+        }
+        for (var m = 0; m < currencyDisplays.length; m++) {
+            currencyDisplays[m].innerHTML = projectCurrency;
+        }
+
         var parentContainer, parentID;
 
-        // Update the typeaheads and datepickers
+        // Update the typeaheads, datepickers and currency fields
         updateTypeaheads();
         setDatepickers();
+        setCurrencyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
@@ -1789,7 +1816,7 @@ function getValidationSets() {
 }
 
 function inputCompleted(field) {
-    if (field.getAttribute('name') === 'rsr_project.status.' + defaultValues.project_id && field.value === 'N') {
+    if (field.getAttribute('name') === 'rsr_project.iati_status.' + defaultValues.project_id && field.value === '0') {
         // Do not count project status 'None'
         return false;
     } else if (field.type === 'checkbox') {
@@ -2143,7 +2170,7 @@ function markMandatoryFields() {
     /* Mark mandatory fields with an asterisk */
 
     // Clear any existing markers
-    var existingMarkers = document.querySelectorAll('.mandatory');
+    var existingMarkers = document.querySelectorAll('.mandatory:not(.in-org-modal)');
     for (var i = 0; i < existingMarkers.length; i++) {
         existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
     }
@@ -2267,17 +2294,69 @@ function setCurrencyOnChange() {
     if (currencyDropdown !== null) {
         currencyDropdown.onchange = updateCurrency(currencyDropdown);
     }
+
+    var currencyDropdowns = document.querySelectorAll('.currency-select');
+    for (var i = 0; i < currencyDropdowns.length; i++) {
+        var otherCurrencyDropdown = currencyDropdowns[i];
+        if (otherCurrencyDropdown !== currencyDropdown) {
+            otherCurrencyDropdown.onchange = updateObjectCurrency(otherCurrencyDropdown);
+        }
+    }
+}
+
+function hasObjectCurrency(currencyDisplay) {
+    if (currencyDisplay !== null) {
+        var parent = findAncestorByClass(currencyDisplay, 'parent');
+        if (parent !== null) {
+            var currencyNode = parent.querySelector('.currency-select');
+            if (currencyNode !== null) {
+                return currencyNode.value !== '';
+            }
+        }
+    }
+    return false;
 }
 
 function updateCurrency(currencyDropdown) {
     return function(e) {
         e.preventDefault();
 
-        var currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
+        var newCurrency = currencyDropdown.value;
         var currencyDisplays = document.querySelectorAll('.currency-display');
 
-        for (var i=0; i < currencyDisplays.length; i++) {
-            currencyDisplays[i].innerHTML = currency;
+        for (var i = 0; i < currencyDisplays.length; i++) {
+            var currencyDisplay = currencyDisplays[i];
+            if (!hasObjectCurrency(currencyDisplay)) {
+                currencyDisplay.innerHTML = newCurrency;
+            }
+        }
+    };
+}
+
+function updateObjectCurrency(currencyDropdown) {
+    return function(e) {
+        e.preventDefault();
+
+        if (currencyDropdown !== null) {
+            var parent = findAncestorByClass(currencyDropdown, 'parent'),
+                newCurrency = currencyDropdown.value;
+
+            if (newCurrency === '') {
+                var projectCurrencyDropdown = document.getElementById('rsr_project.currency.' + defaultValues.project_id);
+                if (projectCurrencyDropdown !== null) {
+                    newCurrency = projectCurrencyDropdown.value;
+                }
+            }
+            
+            if (parent !== null) {
+                var currencyDisplays = parent.querySelectorAll('.currency-display');
+                for (var i = 0; i < currencyDisplays.length; i++) {
+                    var currencyDisplay = currencyDisplays[i];
+                    if (currencyDisplay !== null) {
+                        currencyDisplay.innerHTML = newCurrency;
+                    }
+                }
+            }
         }
     };
 }
@@ -2649,9 +2728,12 @@ function setDatepickers() {
                         React.createElement(DatePicker, {
                             locale: 'en',
                             placeholderText: '',
+                            showYearDropdown: true,
                             dateFormat: 'DD/MM/YYYY',
                             selected: this.state.initialDate,
-                            onChange: this.handleDateChange
+                            onChange: this.handleDateChange,
+                            todayButton: defaultValues.today,
+                            className: 'form-control'
                         })
                     );
                 } else {
@@ -2660,7 +2742,8 @@ function setDatepickers() {
                             locale: 'en',
                             placeholderText: '',
                             dateFormat: 'DD/MM/YYYY',
-                            selected: this.state.initialDate
+                            selected: this.state.initialDate,
+                            className: 'form-control'
                         })
                     );
                 }
@@ -2697,13 +2780,16 @@ function setDatepickers() {
             );
 
             // Set id, name and saved value of datepicker input
-            inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
+            inputNode = datepickerContainer.querySelector('input');
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
             inputNode.setAttribute("saved-value", inputValue);
             if (disableInput === 'true') {
                 inputNode.setAttribute("disabled", '');
             }
+
+            // Remove 'react-datepicker__input-container' class
+            inputNode.parentNode.className = '';
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -2811,6 +2897,21 @@ function setUnsavedChangesMessage() {
 /* Show the "add organisation" modal dialog */
 function addOrgModal() {
 
+    /* Save section 3 */
+    function saveSectionThree() {
+        var saveButton = document.getElementById('panel3').querySelector('.save-button');
+        doSubmitStep(saveButton);
+    }
+
+    /* Set the new organisation on the typeahead by default */
+    function updateThisOrganisationTypeahead(orgId) {
+        var footer = document.querySelector('footer');
+        var child = document.getElementById(footer.getAttribute('selector'));
+        var parent = findAncestorByClass(child, 'typeahead-container');
+        parent.setAttribute('data-value', orgId);
+        parent.setAttribute('not-saved', '');
+    }
+
     /* Remove the modal */
     function cancelModal() {
         var modal = document.querySelector('.modalParent');
@@ -2819,7 +2920,7 @@ function addOrgModal() {
 
     /* Submit the new org */
     function submitModal() {
-        if (allInputsFilled() && checkLocationFilled()) {
+        if (allInputsFilled()) {
             var api_url, request, form, form_data;
 
             // Add organisation to DB
@@ -2845,7 +2946,7 @@ function addOrgModal() {
                     organisation_id = response.id;
 
                     // Add location (fails silently)
-                    if (form.querySelector('#latitude').value !== '') {
+                    if (form.querySelector('#latitude').value !== '' && form.querySelector('#longitude').value !== '') {
                         var request_loc;
                         api_url = '/rest/v1/organisation_location/?format=json';
                         request_loc = new XMLHttpRequest();
@@ -2868,10 +2969,8 @@ function addOrgModal() {
                         logo_request.send(logo_data);
                     }
 
-                    // This flag forces the fetching of a fresh API response
-                    var forceReloadOrg = true;
-
-                    updateOrganisationTypeaheads(forceReloadOrg);
+                    updateThisOrganisationTypeahead(organisation_id);
+                    updateOrganisationTypeaheads(true);
                     cancelModal();
                 } else if (request.status === 400) {
                     var response;
@@ -2911,84 +3010,44 @@ function addOrgModal() {
 
     function allInputsFilled() {
         var allInputsFilledBoolean = true;
-        var shortName = document.querySelector('#name');
-        var shortNameHelp = document.querySelector('#name + label + .help-block');
-        var shortNameContainer = document.querySelector('.inputContainer.newOrgName');
-        var longName = document.querySelector('#long_name');
-        var longNameHelp = document.querySelector('#long_name + label + .help-block');
-        var longNameContainer = document.querySelector('.inputContainer.newOrgLongName');
 
-        if (shortName.value === '') {
-            shortNameHelp.textContent = defaultValues.blank_name;
-            elAddClass(shortNameHelp, 'help-block-error');
-            elAddClass(shortNameContainer, 'has-error');
-            allInputsFilledBoolean = false;
-        } else {
-            shortNameHelp.textContent = '';
-            elRemoveClass(shortNameHelp, 'help-block-error');
-            elRemoveClass(shortNameContainer, 'has-error');
-        }
+        // Name, long name, type, latitude, longitude, country settings
+        var fields = [
+            ['name', 'newOrgName'],
+            ['long_name', 'newOrgLongName'],
+            ['new_organisation_type', 'IATIOrgTypeContainer'],
+            ['latitude', 'orgLatitude'],
+            ['longitude', 'orgLongitude'],
+            ['iati_country', 'orgCountry']
+        ];
 
-        if (longName.value === '') {
-            longNameHelp.textContent = defaultValues.blank_long_name;
-            elAddClass(longNameHelp, 'help-block-error');
-            elAddClass(longNameContainer, 'has-error');
-            allInputsFilledBoolean = false;
-        } else {
-            longNameHelp.textContent = '';
-            elRemoveClass(longNameHelp, 'help-block-error');
-            elRemoveClass(longNameContainer, 'has-error');
+        // Check all fields
+        for (var i = 0; i < fields.length; i++) {
+            var field = fields[i];
+            var fieldNode = document.querySelector('#' + field[0]);
+            var fieldNodeHelp = document.querySelector('#' + field[0] + ' + label + .help-block');
+            var fieldNodeContainer = document.querySelector('.inputContainer.' + field[1]);
+
+            if (fieldNode.value === '') {
+                fieldNodeHelp.textContent = defaultValues.blank_field;
+                elAddClass(fieldNodeHelp, 'help-block-error');
+                elAddClass(fieldNodeContainer, 'has-error');
+                allInputsFilledBoolean = false;
+            } else {
+                if ((field[0] === 'latitude' || field[0] === 'longitude') && fieldNode.value.indexOf(',') > 0) {
+                    fieldNodeHelp.textContent = defaultValues.comma_value;
+                    elAddClass(fieldNodeHelp, 'help-block-error');
+                    elAddClass(fieldNodeContainer, 'has-error');
+                    allInputsFilledBoolean = false;
+                } else {
+                    fieldNodeHelp.textContent = '';
+                    elRemoveClass(fieldNodeHelp, 'help-block-error');
+                    elRemoveClass(fieldNodeContainer, 'has-error');
+                }
+            }
         }
 
         return allInputsFilledBoolean;
-    }
-
-    function checkLocationFilled() {
-        var latitudeNode, longitudeNode, countryNode, latitudeHelp, longitudeHelp, countryHelp, result;
-
-        latitudeNode = document.querySelector('#latitude');
-        latitudeHelp = document.querySelector('#latitude + label + .help-block');
-        longitudeNode = document.querySelector('#longitude');
-        longitudeHelp = document.querySelector('#longitude + label + .help-block');
-        countryNode = document.querySelector('#country');
-        countryHelp = document.querySelector('#country + label + .help-block');
-
-        result = true;
-
-        if (latitudeNode.value === '' && longitudeNode.value === '' && countryNode.value === '') {
-            return result;
-        } else if (latitudeNode.value === '' || longitudeNode.value === '' || countryNode.value === '') {
-            if (latitudeNode.value === '') {
-                latitudeHelp.textContent = defaultValues.location_check;
-                elAddClass(latitudeHelp, 'help-block-error');
-                elAddClass(latitudeHelp.parentNode, 'has-error');
-            }
-            if (longitudeNode.value === '') {
-                longitudeHelp.textContent = defaultValues.location_check;
-                elAddClass(longitudeHelp, 'help-block-error');
-                elAddClass(longitudeHelp.parentNode, 'has-error');
-            }
-            if (countryNode.value === '') {
-                countryHelp.textContent = defaultValues.location_check;
-                elAddClass(countryHelp, 'help-block-error');
-                elAddClass(countryHelp.parentNode, 'has-error');
-            }
-            result = false;
-        } else {
-            if (latitudeNode.value.indexOf(',') > 0) {
-                latitudeHelp.textContent = defaultValues.comma_value;
-                elAddClass(latitudeHelp, 'help-block-error');
-                elAddClass(latitudeHelp.parentNode, 'has-error');
-                result = false;
-            }
-            if (longitudeNode.value.indexOf(',') > 0) {
-                longitudeHelp.textContent = defaultValues.comma_value;
-                elAddClass(longitudeHelp, 'help-block-error');
-                elAddClass(longitudeHelp.parentNode, 'has-error');
-                result = false;
-            }
-        }
-        return result;
     }
 
     var Modal = React.createClass({displayName: 'Modal',
@@ -3013,14 +3072,14 @@ function addOrgModal() {
                                     ),
                                     React.DOM.div( {className:"row"}, 
                                         React.DOM.div( {className:"inputContainer newOrgName col-md-4 form-group"}, 
-                                            React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"25"}),
-                                            React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory"}, "*")),
-                                            React.DOM.p( {className:"help-block"}, defaultValues.max, " 25 ", defaultValues.characters)
+                                            React.DOM.input( {name:"name", id:"name", type:"text", className:"form-control", maxLength:"40"}),
+                                            React.DOM.label( {htmlFor:"newOrgName", className:"control-label"}, defaultValues.name,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
+                                            React.DOM.p( {className:"help-block"}, defaultValues.max, " 40 ", defaultValues.characters)
                                         ),
                                         React.DOM.div( {className:"inputContainer newOrgLongName col-md-4 form-group"}, 
-                                            React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"75"}),
-                                            React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory"}, "*")),
-                                            React.DOM.p( {className:"help-block"}, defaultValues.max, " 75 ", defaultValues.characters)
+                                            React.DOM.input( {name:"long_name", id:"long_name", type:"text",  className:"form-control", maxLength:"100"}),
+                                            React.DOM.label( {htmlFor:"newOrgLongName", className:"control-label"}, defaultValues.long_name,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
+                                            React.DOM.p( {className:"help-block"}, defaultValues.max, " 100 ", defaultValues.characters)
                                         ),
                                         React.DOM.div( {className:"inputContainer newOrgIatiId col-md-4 form-group"}, 
                                             React.DOM.input( {name:"iati_org_id", id:"iati_org_id", type:"text",  className:"form-control", maxLength:"75"}),
@@ -3036,7 +3095,7 @@ function addOrgModal() {
                                     ),
                                     React.DOM.div( {className:"row"}, 
                                         React.DOM.div( {className:"IATIOrgTypeContainer inputContainer col-md-6 form-group"}, 
-                                            React.DOM.select( {name:"new_organisation_type", id:"newOrgIATIType",  className:"form-control"}, 
+                                            React.DOM.select( {name:"new_organisation_type", id:"new_organisation_type",  className:"form-control"}, 
                                                 React.DOM.option( {value:""}),
                                                 React.DOM.option( {value:"10"}, "10 - ", defaultValues.government),
                                                 React.DOM.option( {value:"15"}, "15 - ", defaultValues.other_public_sector),
@@ -3049,7 +3108,7 @@ function addOrgModal() {
                                                 React.DOM.option( {value:"70"}, "70 - ", defaultValues.private_sector),
                                                 React.DOM.option( {value:"80"}, "80 - ", defaultValues.academic_training_research)
                                             ),
-                                            React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory"}, "*")),
+                                            React.DOM.label( {htmlFor:"newOrgIATIType", className:"control-label"}, defaultValues.org_type,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
                                             React.DOM.p( {className:"help-block"})
                                         ),
                                         React.DOM.div( {className:"inputContainer col-md-6 form-group"}, 
@@ -3059,27 +3118,27 @@ function addOrgModal() {
                                         )
                                     ),
                                     React.DOM.div( {className:"row"}, 
-                                        React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
+                                        React.DOM.div( {className:"inputContainer orgLatitude col-md-4 form-group"}, 
                                             React.DOM.input( {name:"latitude", id:"latitude", type:"text", className:"form-control"}),
-                                            React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude,React.DOM.span( {className:"mandatory"}, "*")),
+                                            React.DOM.label( {htmlFor:"latitude", className:"control-label"}, defaultValues.latitude,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
                                             React.DOM.p( {className:"help-block"})
                                         ),
-                                        React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
+                                        React.DOM.div( {className:"inputContainer orgLongitude col-md-4 form-group"}, 
                                             React.DOM.input( {name:"longitude", id:"longitude", type:"text",  className:"form-control"}),
-                                            React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude,React.DOM.span( {className:"mandatory"}, "*")),
+                                            React.DOM.label( {htmlFor:"longitude", className:"control-label"}, defaultValues.longitude,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
                                             React.DOM.p( {className:"help-block"})
                                         ),
-                                        React.DOM.div( {className:"inputContainer col-md-4 form-group"}, 
-                                            React.DOM.select( {name:"country", id:"country", className:"form-control"}, 
+                                        React.DOM.div( {className:"inputContainer orgCountry col-md-4 form-group"}, 
+                                            React.DOM.select( {name:"iati_country", id:"iati_country", className:"form-control"}, 
                                                 React.DOM.option( {value:""}),
                                                 country_option_list
                                             ),
-                                            React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country,React.DOM.span( {className:"mandatory"}, "*")),
+                                            React.DOM.label( {htmlFor:"country", className:"control-label"}, defaultValues.country,React.DOM.span( {className:"mandatory in-org-modal"}, "*")),
                                             React.DOM.p( {className:"help-block"})
                                         )
                                     ),
                                     React.DOM.div( {className:"row"}, 
-                                        React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://mygeoposition.com/", target:"_blank"}, "http://mygeoposition.com/"), " ", defaultValues.coordinates)
+                                        React.DOM.p( {className:"help-block"}, defaultValues.use_link, " ", React.DOM.a( {href:"http://www.latlong.net/", target:"_blank"}, "http://www.latlong.net/"), " ", defaultValues.coordinates)
                                     ),
                                     React.DOM.div( {className:"row"}, 
                                         React.DOM.div( {className:"inputContainer col-md-6 form-group"}, 
@@ -3116,6 +3175,8 @@ function addOrgModal() {
             );
         }
     });
+
+    saveSectionThree();
 
     ReactDOM.render(
         React.createElement(Modal), document.querySelector('footer')

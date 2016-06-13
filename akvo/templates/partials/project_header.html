@@ -9,7 +9,14 @@
                 </h1>
                 <p>{{project.subtitle}}</p>
                 <div class="projectLocation">
-                    <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">{% trans 'Show map' %} +</a></p>
+                        <p class="small"><span class="glyphicon glyphicon-globe"></span>
+                        {% for recipient_country in project.recipient_countries.all %}
+                            {{ recipient_country }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            {% trans 'No recipient countries specified' %}
+                        {% endfor %}
+                        <a href="#" onclick="maptoggle()" class="map-toggle">{% trans 'Show map' %} +</a>
+                    </p>
                 </div>
             </div>
             <div class="col-sm-4 shareBlock">

@@ -4,19 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models.project import Project
 from akvo.rsr.models.project_condition import ProjectCondition
 
 from .. import ImportMapper, xml_ns
-
-CODE_TO_STATUS = {
-    '1': 'H',
-    '2': 'A',
-    '3': 'C',
-    '4': 'C',
-    '5': 'L',
-    '6': 'R'
-}
 
 
 class Language(ImportMapper):
@@ -178,16 +168,14 @@ class Status(ImportMapper):
         :return: List; contains fields that have changed
         """
 
-        status = self.get_child_elem_attrib(
+        iati_status = self.get_child_elem_attrib(
                 self.parent_elem, 'activity-status', 'code', 'status')
 
-        if status in CODE_TO_STATUS.keys():
-            status = CODE_TO_STATUS[status]
-        else:
-            self.add_log('activity-status@code', 'status', 'invalid status code')
-            status = Project.STATUS_NONE
+        if not iati_status:
+            self.add_log('activity-status@code', 'iati_status', 'invalid status code')
+            iati_status = ''
 
-        return self.update_project_field('status', status)
+        return self.update_project_field('iati_status', iati_status)
 
 
 class Conditions(ImportMapper):
@@ -242,5 +230,6 @@ class Humanitarian(ImportMapper):
         """
 
         humanitarian = self.get_attrib(self.parent_elem, 'humanitarian', 'humanitarian', None)
-        humanitarian = self.to_boolean(humanitarian)
+        if humanitarian:
+            humanitarian = self.to_boolean(humanitarian)
         return self.update_project_field('humanitarian', humanitarian)

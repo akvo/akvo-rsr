@@ -69,7 +69,10 @@ class RecipientCountry(models.Model):
 
     def __unicode__(self):
         if self.country:
-            country_unicode = self.iati_country().name
+            try:
+                country_unicode = self.iati_country().name
+            except (AttributeError, codelist_models.Country.DoesNotExist):
+                country_unicode = self.country
         else:
             country_unicode = u'%s' % _(u'No country specified')
 
@@ -85,3 +88,4 @@ class RecipientCountry(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'recipient country')
         verbose_name_plural = _(u'recipient countries')
+        ordering = ('-percentage', 'country')

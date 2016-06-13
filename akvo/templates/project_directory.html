@@ -40,7 +40,7 @@
             </div>
             <div>
                   <div class="btn-group">
-                    {% bootstrap_field filter.form.status %}
+                    {% bootstrap_field filter.form.iati_status %}
                   </div>
                 </div>
             <div>
@@ -96,21 +96,32 @@
           <div class="col-lg-4 col-sm-3 col-xs-7">
             <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
             <p class="projectSubT">{{project.subtitle}}</p>
-            {% if project.primary_location.country %}
-              <p class="projectLocation"><i class="fa fa-map-marker"></i> {{project.primary_location.country}}, {{project.primary_location.country.continent}}</p>
-            {% endif %}
+            <p class="projectLocation"><i class="fa fa-map-marker"></i>
+                {% for recipient_country in project.recipient_countries.all %}
+                    {{ recipient_country }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    {% trans 'No recipient countries specified' %}
+                {% endfor %}
+            </p>
             {% if project.primary_organisation %}
               <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
               <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="false"></div>
             {% endif %}
             <div class="visible-xs-block hidden-sm">
               <p>
-              <span class="detailedInfo">{% trans "Status" %}</span> {{project.get_status_display}}<br>
+              {% if project.iati_status %}
+              <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+              {% endif %}
               {% if project.last_update %}
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.has_multiple_budget_currencies %}
+              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}  {{project.currency}}
+                  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+              {% else %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}  {{project.currency}}
+              {% endif %}
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
@@ -131,12 +142,19 @@
                 {% endfor %}
                 <br/>
               {% endif %}
-              <span class="detailedInfo">{% trans "Status" %}</span> {{project.get_status_display}}<br>
+              {% if project.iati_status %}
+              <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+              {% endif %}
               {% if project.last_update %}
               <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
               {% endif %}
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.get_currency_display}}{{project.budget|floatformat:0|intcomma}}
+              {% if project.has_multiple_budget_currencies %}
+              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}} {{project.currency}}
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+              {% else %}
+              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}} {{project.currency}}
+              {% endif %}
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
@@ -164,8 +182,10 @@
                   {% endfor %}
                 {% endif %}
               </p>
+            {% if project.iati_status %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
-            <p class="complete">{{project.get_status_display}}</p>
+            {% endif %}
+            <p class="complete">{{project.show_plain_status}}</p>
             <h4 class="detailedInfo">{% trans "Latest update" %}</h4>
             {% if project.last_update %}
             <p><a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a></p>

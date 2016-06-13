@@ -6,15 +6,6 @@
 
 from lxml import etree
 
-STATUS_TO_CODE = {
-    'N': '6',
-    'H': '1',
-    'A': '2',
-    'C': '3',
-    'L': '5',
-    'R': '6',
-}
-
 
 def activity_status(project):
     """
@@ -23,9 +14,9 @@ def activity_status(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    if project.status in STATUS_TO_CODE.keys():
+    if project.iati_status:
         element = etree.Element("activity-status")
-        element.attrib['code'] = STATUS_TO_CODE[project.status]
+        element.attrib['code'] = project.iati_status
         return [element]
 
     return []

@@ -57,7 +57,7 @@ class CountryAdmin(admin.ModelAdmin):
 class OrganisationLocationInline(NestedStackedInline):
     model = get_model('rsr', 'organisationlocation')
     fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
-              'country')
+              'iati_country')
     fk_name = 'location_target'
 
     def get_extra(self, request, obj=None, **kwargs):
@@ -821,7 +821,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'iati_status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
                        'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
         }),
@@ -877,8 +877,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'The scope of the project refers to the geographical area that the project is active within.<br><br>'
                 u'Also add the physical locations where the project is being carried out. These will appear on '
-                u'the map on your project page. Use the link to <a href="http://mygeoposition.com/" target="_blank">'
-                u'http://mygeoposition.com/</a> to obtain the coordinates for your locations, as these are the items '
+                u'the map on your project page. Use the link to <a href="http://www.latlong.net/" target="_blank">'
+                u'http://www.latlong.net/</a> to obtain the coordinates for your locations, as these are the items '
                 u'that ensure the pin is in the correct place.'
             ),
             'fields': ('project_scope', ),
@@ -1265,13 +1265,6 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     fieldsets = (
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
-                               'piwik_id',))),
-        (u'Style and content',
-            dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
-                         'custom_favicon', 'show_keyword_logos',))),
-        (u'Languages and translation', dict(fields=('google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
@@ -1294,7 +1287,17 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             ),
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
+                               'piwik_id',))),
+        (u'Style and content',
+            dict(fields=('all_maps', 'custom_css', 'custom_logo',
+                         'custom_favicon', 'show_keyword_logos',))),
+        (u'Languages and translation', dict(fields=('google_translation',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
+
+    # exclude deprecated fields
+    exclude = ('about_box', 'about_image')
     filter_horizontal = ('keywords',)
     list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
     list_filter = ('enabled', 'keywords')
@@ -1350,7 +1353,8 @@ admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 
 class EmploymentAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Employment')
-    list_display = ('__unicode__', 'user', 'organisation', 'is_approved', 'country', 'job_title')
+    list_display = ('__unicode__', 'user', 'organisation', 'is_approved', 'iati_country',
+                    'job_title')
     list_filter = ('is_approved', 'organisation')
     search_fields = ('organisation__name', 'organisation__long_name', 'user__username')
 

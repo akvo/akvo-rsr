@@ -10,7 +10,10 @@ var Button,
     Modal,
     SplitButton,
     Table,
-    initial_data,
+    initial_employment_data,
+    orgAdmin,
+    organisation_data,
+    role_data,
     i18n;
 
 // CSRF TOKEN
@@ -378,12 +381,18 @@ function initReact() {
                 )
             );
 
-            return (
-                <span>
-                    {modalButton}
-                    {thisModal}
-                </span>
-            );
+            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+                return (
+                    <span />
+                );
+            } else {
+                return (
+                    <span>
+                        {modalButton}
+                        {thisModal}
+                    </span>
+                );
+            }
         }
     });
 
@@ -466,12 +475,18 @@ function initReact() {
                 )
             );
 
-            return (
-                <span>
-                    {modalButton}
-                    {thisModal}
-                </span>
-            );
+            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+                return (
+                    <span />
+                );
+            } else {
+                return (
+                    <span>
+                        {modalButton}
+                        {thisModal}
+                    </span>
+                );
+            }
         }
     });
 
@@ -479,7 +494,7 @@ function initReact() {
         render: function() {
             var country = this.props.country;
             var job_title = this.props.job_title;
-            if (country === null && job_title === "") {
+            if (country === "" && job_title === "") {
                 return (
                     <span>&nbsp;</span>
                 );
@@ -488,11 +503,11 @@ function initReact() {
                 if (job_title !== "") {
                     text += job_title;
                 }
-                if (country !== null) {
+                if (country !== "") {
                     if (job_title !== "") {
                         text += " ";
                     }
-                    text += i18n.in_text + ' ' + country.name;
+                    text += i18n.in_text + ' ' + country;
                 }
                 text += ")";
                 return (
@@ -535,6 +550,10 @@ function initReact() {
             this.setState({
                 button_title: group
             });
+        },
+
+        disableButton: function() {
+            return (this.state.loading || (this.props.employment.group.name === 'Admins' && !orgAdmin));
         },
 
         render: function() {
@@ -587,7 +606,7 @@ function initReact() {
                     React.createElement(SplitButton, {
                         id: employment_id,
                         title: this.state.button_title,
-                        disabled: this.state.loading
+                        disabled: this.disableButton()
                     }, other_groups),
                     '  ',
                     React.createElement(DeleteModal, {
@@ -698,6 +717,7 @@ function loadAndRenderReact() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initial data
     initial_employment_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
+    orgAdmin = JSON.parse(document.getElementById("org-admin").innerHTML).org_admin;
     organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
     role_data = JSON.parse(document.getElementById("role-data").innerHTML);
     i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);

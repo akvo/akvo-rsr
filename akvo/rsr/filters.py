@@ -11,7 +11,7 @@ import django_filters
 
 from copy import deepcopy
 from django.utils.translation import ugettext_lazy as _
-from akvo.codelists.store.codelists_v201 import SECTOR_CATEGORY
+from akvo.codelists.store.codelists_v201 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 from .models import (Category, Organisation, OrganisationLocation, Project,
                      ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
@@ -43,10 +43,10 @@ def remove_empty_querydict_items(request_get):
 
 
 def walk(node):
-    """Walks the m49 tree and return countires"""
+    """Walks the m49 tree and return countries"""
 
     if isinstance(node, basestring):
-        return [node.lower()]
+        return [node, ]
     elif isinstance(node, int):
         return walk(deepcopy(M49_HIERARCHY)[node])
     else:
@@ -57,11 +57,19 @@ def walk(node):
 
 
 def filter_m49(queryset, value):
-    """Filters countries from the m49 list"""
+    """Filters countries from the m49 list, for projects."""
     if not value:
         return queryset
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
-    return queryset.filter(primary_location__country__iso_code__in=countries)
+    return queryset.filter(recipient_countries__country__in=countries)
+
+
+def filter_m49_orgs(queryset, value):
+    """Filters countries from the m49 list, for projects."""
+    if not value:
+        return queryset
+    countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
+    return queryset.filter(locations__iati_country__in=countries)
 
 
 def get_id_for_iso(i):
@@ -142,6 +150,11 @@ class ProjectFilter(django_filters.FilterSet):
         label=_(u'status'),
         choices=ANY_CHOICE + Project.STATUSES)
 
+    iati_status = django_filters.ChoiceFilter(
+        initial=_('All'),
+        label=_(u'status'),
+        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)))
+
     title = django_filters.CharFilter(
         lookup_type='icontains',
         label=_(u'Search'),
@@ -154,16 +167,11 @@ class ProjectFilter(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ['status', 'location', 'organisation', 'category',
+        fields = ['status', 'iati_status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):
-
-    location = django_filters.ChoiceFilter(
-        choices=M49_CODES,
-        label=_(u'location'),
-        action=filter_m49)
 
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
@@ -183,7 +191,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['location', 'partner', 'sector', 'title', ]
+        fields = ['partner', 'sector', 'title', ]
 
 
 class OrganisationFilter(django_filters.FilterSet):
@@ -191,7 +199,7 @@ class OrganisationFilter(django_filters.FilterSet):
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label=_(u'location'),
-        action=filter_m49)
+        action=filter_m49_orgs)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',

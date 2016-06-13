@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ....rsr.models.country import Country, RecipientCountry
+from ....rsr.models.iati_import_log import LOG_ENTRY_TYPE
 from ....rsr.models.location import AdministrativeLocation, ProjectLocation
 from ....rsr.models.region import RecipientRegion
 
@@ -78,16 +79,14 @@ class Locations(ImportMapper):
 
             country_code = self.get_child_elem_attrib(
                 location, 'administrative', 'country', 'country_code').lower()
-            if not country_code and len(self.parent_elem.findall('recipient-country')) == 1:
-                country_code = self.get_child_elem_attrib(
-                        self.parent_elem, 'recipient-country', 'code', 'country_code').lower()
 
             country = None
             if country_code:
                 try:
                     country = Country.objects.get(iso_code=country_code)
                 except ObjectDoesNotExist as e:
-                    self.add_log('administrative', 'country', str(e))
+                    self.add_log('administrative', 'country', str(e),
+                                 LOG_ENTRY_TYPE.VALUE_NOT_SAVED)
 
             loc, created = ProjectLocation.objects.get_or_create(
                 location_target=self.project,

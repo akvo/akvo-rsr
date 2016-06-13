@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import re
+import json
 
 from lxml import etree
 from tastypie.models import ApiKey
@@ -234,7 +235,7 @@ def api_key_xml_response(user, orgs):
     user_username_element = etree.SubElement(xml_root, "username")
     user_username_element.text = user.username
 
-    # Organisationss
+    # Organisations
     for org in orgs:
         org_id_element = etree.SubElement(xml_root, "org_id")
         org_id_element.text = str(org.id)
@@ -243,14 +244,45 @@ def api_key_xml_response(user, orgs):
     api_key_element = etree.SubElement(xml_root, "api_key")
     api_key_element.text = ApiKey.objects.get_or_create(user=user)[0].key
 
-    # Published projects
+    # Published and editable projects
     projects = user.organisations.all_projects().published()
     pub_projs_element = etree.SubElement(xml_root, "published_projects")
+    edit_projs_element = etree.SubElement(xml_root, "allow_edit_projects")
     for project in projects:
         project_id_element = etree.SubElement(pub_projs_element, "id")
         project_id_element.text = str(project.id)
+        if user.has_perm('rsr.change_project', project):
+            project_id_element = etree.SubElement(edit_projs_element, "id")
+            project_id_element.text = str(project.id)
 
     return etree.tostring(etree.ElementTree(xml_root))
+
+
+def api_key_json_response(user, orgs):
+    """
+    Build the JSON response. This is used by the Up app - so make sure they match on change.
+    """
+    response_data = dict()
+
+    # User
+    response_data["user_id"] = user.id
+    response_data["username"] = user.username
+
+    # Organisations
+    response_data["organisations"] = [org.id for org in orgs]
+
+    # API key
+    response_data["api_key"] = ApiKey.objects.get_or_create(user=user)[0].key
+
+    # Published projects
+    projects = user.organisations.all_projects().published()
+    response_data["published_projects"] = [p.id for p in projects]
+
+    # Editable projects
+    perm = 'rsr.change_project'
+    response_data["allow_edit_projects"] = [p.id for p in projects if user.has_perm(perm, p)]
+
+    return json.dumps(response_data)
 
 
 @require_POST
@@ -258,10 +290,11 @@ def api_key_xml_response(user, orgs):
 def api_key(request):
     """On successful user credentials returns an auth token for API usage.
 
-    Since RSR changed in v3 to allow users without an organiation we need to
+    Since RSR changed in v3 to allow users without an organisation we need to
     introduce a way to make old Up apps work as before but new ones support
     users without any connected organisations.
     """
+    request_format = request.GET.get('format', 'xml')
     username = request.POST.get('username', False)
     password = request.POST.get('password', False)
     handles_unemployed = bool(request.POST.get("handles_unemployed", False))
@@ -271,6 +304,10 @@ def api_key(request):
         if user is not None and user.is_active:
             orgs = user.approved_organisations()
             if orgs or handles_unemployed:
-                return HttpResponse(api_key_xml_response(user, orgs),
-                                    content_type="text/xml")
+                if request_format == 'xml':
+                    return HttpResponse(api_key_xml_response(user, orgs),
+                                        content_type="text/xml")
+                elif request_format == 'json':
+                    return HttpResponse(api_key_json_response(user, orgs),
+                                        content_type="application/json")
     return HttpResponseForbidden()

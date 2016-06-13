@@ -78,3 +78,6 @@ django-nested-inline==0.3.6
 
 # Task scheduling
 django-crontab==0.6.0
+
+# Testing libraries
+xmlunittest==0.3.2
