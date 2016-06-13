@@ -2363,39 +2363,59 @@ function updateObjectCurrency(currencyDropdown) {
 
 function setIndicatorSorting() {
     var indicatorSections = document.querySelectorAll('.indicator-item');
-    console.log(indicatorSections);
 
     var sortIndicatorNode = document.createElement('span');
     sortIndicatorNode.setAttribute('class', 'sort-indicator');
 
     var sortIndicatorUp = document.createElement('a');
     var upButton = document.createElement('span');
-    upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up');
+    upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
     sortIndicatorUp.appendChild(upButton);
 
     var sortIndicatorDown = document.createElement('a');
     var downButton = document.createElement('span');
-    downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down');
+    downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
     sortIndicatorDown.appendChild(downButton);
 
     sortIndicatorNode.appendChild(sortIndicatorUp);
     sortIndicatorNode.appendChild(sortIndicatorDown);
 
-    console.log(indicatorSections);
-
     // add arrow buttons to each indicator
 
     for (var i=0; i < indicatorSections.length; i++) {
-        indicatorSections[i].setAttribute('key', i);
-        indicatorSections[i].setAttribute('data-id', i);
+        indicatorId = indicatorSections[i].getAttribute('id').split('.')[1];
 
         var indicatorContainer = indicatorSections[i].querySelector('.delete-related-object-container');
-        console.log(indicatorContainer);
 
+        sortNode = sortIndicatorNode.cloneNode(true);
+        sortNode.setAttribute('id', 'indicator-id.' + indicatorId);
 
-        indicatorContainer.insertBefore(sortIndicatorNode.cloneNode(true), indicatorContainer.childNodes[0]);
+        indicatorContainer.insertBefore(sortNode, indicatorContainer.childNodes[0]);
 
     }
+
+}
+
+function setOrderOnClick() {
+
+    console.log('setOrderOnClick');
+
+    sortContainers = document.querySelectorAll('.sort-indicator');
+
+    for (var i=0; i < sortContainers.length; i++) {
+        indicatorId = sortContainers[i].getAttribute('id').split('.')[1];
+        console.log(indicatorId);
+
+        sortContainers[i].querySelector('sort-up').onclick = reorderIndicators(indicatorId, 'up');
+        sortContainers[i].querySelector('sort-down').onclick = reorderIndicators(indicatorId, 'down');
+    }
+}
+
+function reorderIndicators(indicatorId, direction) {
+    return function(e) {
+        e.preventDefault();
+        
+    };
 }
 
 function setToggleSectionOnClick () {
@@ -3434,6 +3454,7 @@ function initApp() {
     checkPartnerships();
 
     setIndicatorSorting();
+    setOrderOnClick();
 
     setValidationListeners();
     updateAllHelpIcons();
