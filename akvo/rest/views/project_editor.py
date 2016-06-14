@@ -582,13 +582,15 @@ def project_editor_reorder_items(request, project_pk=None):
     item_id = request.POST.get('item_id', False)
     item_direction = request.POST.get('item_direction', False)
 
-    item_selected = Indicator.objects.get(id=item_id)
+
 
     print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
 
     if item_type == 'result':
+        item_selected = Result.objects.get(id=item_id)
         item_list = Result.objects.filter(project_id=project_pk)
     elif item_type == 'indicator':
+        item_selected = Indicator.objects.get(id=item_id)
         item_list = Indicator.objects.filter(result_id=item_selected.result_id)
     else:
         errors += ['Invalid item type']
@@ -602,7 +604,10 @@ def project_editor_reorder_items(request, project_pk=None):
     item_original_order = item_selected.order
 
     if item_direction == 'up' and not item_original_order < 1:
-        item_swap = Indicator.objects.get(order=item_original_order-1)
+        if item_type == 'result':
+            item_swap = Result.objects.get(order=item_original_order - 1)
+        elif item_type == 'indicator':
+            item_swap = Indicator.objects.get(order=item_original_order-1)
         item_swap.order = item_original_order
         item_swap.save()
 
@@ -610,7 +615,11 @@ def project_editor_reorder_items(request, project_pk=None):
         item_selected.save()
 
     elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
-        item_swap = Indicator.objects.get(order=item_original_order+1)
+        if item_type == 'result':
+            item_swap = Result.objects.get(order=item_original_order + 1)
+        elif item_type == 'indicator':
+            item_swap = Indicator.objects.get(order=item_original_order+1)
+
         item_swap.order = item_original_order
         item_swap.save()
 
