@@ -272,14 +272,23 @@ function initReact() {
         },
 
         saveUpdate: function() {
-            // Save an indicator update. Set the status to draft ('D') when the update is new ('N').
-            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
+            // Save an indicator update.
+            var status;
+
+            if (isAdmin) {
+                // Set the status to approved ('A') for M&E Managers and superusers.
+                status = 'A';
+            } else {
+                // Set the status to draft ('D') when the update is new ('N').
+                status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
+            }
+
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
                 'relative_data': this.state.isRelative,
                 'status': status
-            }, false, false);
+            }, false, true);
         },
 
         askForApproval: function() {
@@ -566,9 +575,9 @@ function initReact() {
         renderActual: function() {
             var inputId = "actual-input-" + this.props.update.id;
 
-            // The checkbox to make the update relative or absolute has been removed, to make
-            // things more clear for the users.
-
+            //// The checkbox to make the update relative or absolute has been removed, to make ////
+            //// things more clear for the users. ////
+            //// ---- old code ------------------ ////
             //var checkboxId = "relative-checkbox-" + this.props.update.id;
             //var checkbox;
             //if (this.state.isRelative) {
@@ -859,26 +868,45 @@ function initReact() {
                             )
                         );
                     default:
-                        // All other statuses, show: delete, cancel, save and submit for approval
-                        // buttons.
-                        return (
-                            React.DOM.div( {className:"menuAction"}, 
-                                React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
-                                ),
-                                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                    React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
+                        if (isAdmin) {
+                            // All other statuses, show: delete, cancel and save for M&E Managers and superusers.
+                            return (
+                                React.DOM.div( {className:"menuAction"}, 
+                                    React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
+                                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
                                     ),
-                                    React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
-                                    ),
-                                    React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
+                                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                        React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
+                                        ),
+                                        React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                            React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
+                                        )
                                     )
                                 )
-                            )
-                        );
+                            );
+                        } else {
+                            // All other statuses, show: delete, cancel, save and submit for approval
+                            // buttons.
+                            return (
+                                React.DOM.div( {className:"menuAction"}, 
+                                    React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
+                                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
+                                    ),
+                                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                        React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
+                                        ),
+                                        React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                            React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
+                                        ),
+                                        React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
+                                            React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
+                                        )
+                                    )
+                                )
+                            );
+                        }
                 }
             } else {
                 switch(this.props.update.status) {
@@ -909,10 +937,27 @@ function initReact() {
                         }
                         break;
                     case 'A':
-                        // Show no actions for approved indicator updates.
-                        return (
-                            React.DOM.span(null )
-                        );
+                        if (isAdmin) {
+                            // Show edit button for M&E Managers and superusers.
+                            return (
+                                React.DOM.div( {className:"menuAction"}, 
+                                    React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
+                                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
+                                    ),
+                                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                                        React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
+                                        )
+                                    )
+                                )
+                            );
+                        } else {
+                            // Show no actions for approved indicator updates.
+                            return (
+                                React.DOM.span(null )
+                            );
+                        }
+                        break;
                     default:
                         // Only show an edit button in all other cases.
                         if (this.props.update.user === user.id || isAdmin) {
