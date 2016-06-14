@@ -2361,73 +2361,76 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
+// add arrow buttons to each indicator
 function setIndicatorSorting() {
     var indicatorSections = document.querySelectorAll('.indicator-item');
 
-    if (indicatorSections.length > 1 ) {
-
-        // add arrow buttons to each indicator
-
-        for (var i=0; i < indicatorSections.length; i++) {
-
-            indicatorId = indicatorSections[i].getAttribute('id').split('.')[1];
-
-            var sortIndicatorNode = document.createElement('span');
-            sortIndicatorNode.setAttribute('class', 'sort-indicator');
-
-            var sortIndicatorUp = document.createElement('a');
-            var upButton = document.createElement('span');
-            if (i === 0) {
-                upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
-            } else {
-                upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
-            }
-            upButton.onclick = reorderItems('indicator', indicatorId, 'up');
-            sortIndicatorUp.appendChild(upButton);
-
-            var sortIndicatorDown = document.createElement('a');
-            var downButton = document.createElement('span');
-            if (i == indicatorSections.length - 1) {
-                downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
-            } else {
-                downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
-            }
-            downButton.onclick = reorderItems('indicator', indicatorId, 'down');
-            sortIndicatorDown.appendChild(downButton);
-
-            sortIndicatorNode.appendChild(sortIndicatorUp);
-            sortIndicatorNode.appendChild(sortIndicatorDown);
-
-
-            var indicatorContainer = indicatorSections[i].querySelector('.delete-related-object-container');
-
-            // sortNode = sortIndicatorNode.cloneNode(true);
-            sortIndicatorNode.setAttribute('id', 'indicator-id.' + indicatorId);
-
-            indicatorContainer.insertBefore(sortIndicatorNode, indicatorContainer.childNodes[0]);
-
-        }
+    for (var i=0; i < indicatorSections.length; i++) {
+        setReorderButtons(indicatorSections[i], 'indicator', i, indicatorSections.length);
     }
-
-    // setOrderOnClick();
 
 }
 
-function setOrderOnClick() {
-    return function(e) {
-        e.preventDefault();
-        console.log('setOrderOnClick');
+// add arrow buttons to each result
+function setResultSorting() {
+    var resultSections = document.querySelectorAll('.result-item');
 
-        sortContainers = document.querySelectorAll('.sort-indicator');
+    for (var i=0; i < resultSections.length; i++) {
+        setReorderButtons(resultSections[i], 'result', i, resultSections.length);
+    }
+}
 
-        for (var i=0; i < sortContainers.length; i++) {
-            indicatorId = sortContainers[i].getAttribute('id').split('.')[1];
-            console.log(indicatorId);
+function setReorderButtons(itemNode, itemType, itemIndex, listLength) {
+    itemId = itemNode.getAttribute('id').split('.')[1];
 
-            sortContainers[i].querySelector('sort-up').onclick = reorderItems('indicator', indicatorId, 'up');
-            sortContainers[i].querySelector('sort-down').onclick = reorderItems('indicator', indicatorId, 'down');
-        }
-    };
+    var sortItemNode = document.createElement('span');
+    // sortItemNode.setAttribute('class', 'xxxx-sorter');
+
+    var sortItemUp = document.createElement('a');
+    var upButton = document.createElement('span');
+
+    if (itemIndex === 0 || listLength < 2) {
+        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+    } else {
+        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+    }
+
+    if (itemType == 'indicator') {
+        upButton.onclick = reorderItems('indicator', itemId, 'up');
+    } else if (itemType == 'result') {
+        upButton.onclick = reorderItems('result', itemId, 'up');
+    }
+
+    sortItemUp.appendChild(upButton);
+
+
+    var sortItemDown = document.createElement('a');
+    var downButton = document.createElement('span');
+
+    if (itemIndex == listLength - 1 || listLength < 2) {
+        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+    } else {
+        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+    }
+
+    if (itemType == 'indicator') {
+        downButton.onclick = reorderItems('indicator', itemId, 'down');
+    } else if (itemType == 'result') {
+        downButton.onclick = reorderItems('result', itemId, 'down');
+    }
+
+    sortItemDown.appendChild(downButton);
+
+    sortItemNode.appendChild(sortItemUp);
+    sortItemNode.appendChild(sortItemDown);
+
+
+    var itemContainer = itemNode.querySelector('.delete-related-object-container');
+
+    // sortNode = sortIndicatorNode.cloneNode(true);
+    // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
+
+    itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
 }
 
 function reorderItems(itemType, itemId, direction) {
@@ -3500,6 +3503,7 @@ function initApp() {
     checkPartnerships();
 
     setIndicatorSorting();
+    setResultSorting();
 
     setValidationListeners();
     updateAllHelpIcons();
