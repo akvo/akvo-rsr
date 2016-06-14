@@ -101,6 +101,11 @@ class Indicator(models.Model):
             for child_result in self.result.child_results.all():
                 child_result.project.add_indicator(child_result, self)
 
+            if Indicator.objects.filter(result_id=self.result.id).exists():
+                prev_indicator = Indicator.objects.filter(result_id=self.result.id).reverse()[0]
+                if prev_indicator.order:
+                    self.order = prev_indicator.order + 1
+
         super(Indicator, self).save(*args, **kwargs)
 
     def clean(self):
@@ -129,6 +134,20 @@ class Indicator(models.Model):
 
         if validation_errors:
             raise ValidationError(validation_errors)
+
+    def delete(self, *args, **kwargs):
+        """
+        Check if indicator is ordered manually, and cascade following indicators if needed
+        """
+        if self.order:
+            sibling_indicators = Indicator.objects.filter(result_id=self.result.id)
+
+            if not self == sibling_indicators.reverse()[0]:
+                for ind in range(self.order + 1, len(sibling_indicators)):
+                    sibling_indicators[ind].order -= 1
+                    sibling_indicators[ind].save()
+
+        super(Indicator, self).delete(*args, **kwargs)
 
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')

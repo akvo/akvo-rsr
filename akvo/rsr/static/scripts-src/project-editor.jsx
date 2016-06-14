@@ -2363,12 +2363,15 @@ function updateObjectCurrency(currencyDropdown) {
 
 // add arrow buttons to each indicator
 function setIndicatorSorting() {
-    var indicatorSections = document.querySelectorAll('.indicator-item');
+    var indicatorContainers = document.querySelectorAll('.indicator-container');
 
-    for (var i=0; i < indicatorSections.length; i++) {
-        setReorderButtons(indicatorSections[i], 'indicator', i, indicatorSections.length);
+    for (var i=0; i < indicatorContainers.length; i++) {
+        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item');
+
+        for (var j=0; j < indicatorSections.length; j++) {
+            setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
+        }
     }
-
 }
 
 // add arrow buttons to each result

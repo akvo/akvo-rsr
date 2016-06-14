@@ -575,29 +575,50 @@ def project_editor(request, pk=None):
 @permission_classes((IsAuthenticated,))
 def project_editor_reorder_items(request, project_pk=None):
     """API call to reorder results or indicators"""
+
     errors = []
 
     item_type = request.POST.get('item_type', False)
     item_id = request.POST.get('item_id', False)
     item_direction = request.POST.get('item_direction', False)
 
+    item_selected = Indicator.objects.get(id=item_id)
+
     print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
 
     if item_type == 'result':
-        item_parent = Project.objects.get(id=project_pk)
-        item_list = Result.objects.filter(id=item_id)
+        item_list = Result.objects.filter(project_id=project_pk)
     elif item_type == 'indicator':
-        item_parent = Indicator.objects.get(id=item_id)
-        item_list = Indicator.objects.filter(result_id=item_parent.result_id)
+        item_list = Indicator.objects.filter(result_id=item_selected.result_id)
     else:
         errors += ['Invalid item type']
 
-    print item_list
+    # assign order if it doesn't already exist
+    if not item_list[0].order:
+        for i, item in enumerate(item_list):
+            item.order = i
+            item.save()
 
-    if item_list[0].order:
-        print 'has order'
+    item_original_order = item_selected.order
+
+    if item_direction == 'up' and not item_original_order < 1:
+        item_swap = Indicator.objects.get(order=item_original_order-1)
+        item_swap.order = item_original_order
+        item_swap.save()
+
+        item_selected.order = item_original_order-1
+        item_selected.save()
+
+    elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
+        item_swap = Indicator.objects.get(order=item_original_order+1)
+        item_swap.order = item_original_order
+        item_swap.save()
+
+        item_selected.order = item_original_order + 1
+        item_selected.save()
+
     else:
-        print 'no order'
+        errors += ['Unable to reorder the selected item, it may already be at top/bottom of list.']
 
     return Response(
         {
