@@ -2362,7 +2362,7 @@ function updateObjectCurrency(currencyDropdown) {
 }
 
 // add arrow buttons to each indicator
-function setIndicatorSorting() {
+function setIndicatorSorting () {
     var indicatorContainers = document.querySelectorAll('.indicator-container');
 
     for (var i=0; i < indicatorContainers.length; i++) {
@@ -2375,7 +2375,7 @@ function setIndicatorSorting() {
 }
 
 // add arrow buttons to each result
-function setResultSorting() {
+function setResultSorting () {
     var resultSections = document.querySelectorAll('.result-item');
 
     for (var i=0; i < resultSections.length; i++) {
@@ -2383,7 +2383,7 @@ function setResultSorting() {
     }
 }
 
-function setReorderButtons(itemNode, itemType, itemIndex, listLength) {
+function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
     itemId = itemNode.getAttribute('id').split('.')[1];
 
     var sortItemNode = document.createElement('span');
@@ -2436,7 +2436,7 @@ function setReorderButtons(itemNode, itemType, itemIndex, listLength) {
     itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
 }
 
-function reorderItems(itemType, itemId, direction) {
+function reorderItems (itemType, itemId, direction) {
     return function(e) {
         e.preventDefault();
         var api_url, request;
@@ -2455,8 +2455,14 @@ function reorderItems(itemType, itemId, direction) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 var response = JSON.parse(request.responseText);
+                if (response.swap_id > -1) {
+                    swapReorderedItems(itemType, itemId, response.swap_id, direction);
+                } else {
+                    console.log(error);
+                }
+
             } else {
-                // We reached our target server, but it returned an error
+                // We reached our target server, but it returned an error 
                 return false;
             }
         };
@@ -2468,6 +2474,42 @@ function reorderItems(itemType, itemId, direction) {
 
         request.send(form_data);
     };
+}
+
+function swapReorderedItems (itemType, itemId, swapId, direction) {
+    var selectedItem = document.getElementById(itemType + '.' + itemId);
+    var swapItem = document.getElementById(itemType + '.' + swapId);
+    var parentContainer = selectedItem.parentNode;
+
+    if (direction == 'up') {
+        parentContainer.insertBefore(selectedItem, swapItem);
+
+        console.log(parentContainer.lastElementChild);
+        console.log(parentContainer.lastElementChild.previousElementSibling);
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == selectedItem) {
+            selectedItem.querySelector('.sort-up').className += ' hidden';
+            swapItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+        } else if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
+            selectedItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+            swapItem.querySelector('.sort-down').className += ' hidden';
+        }
+    } else if (direction == 'down') {
+        parentContainer.insertBefore(swapItem, selectedItem);
+
+        console.log(parentContainer.lastElementChild);
+        console.log(parentContainer.lastElementChild.previousElementSibling);
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == swapItem) {
+            selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+            swapItem.querySelector('.sort-up').className += ' hidden';
+        } else if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
+            selectedItem.querySelector('.sort-down').className += ' hidden';
+            swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+        }
+    }
+
+
 }
 
 function setToggleSectionOnClick () {

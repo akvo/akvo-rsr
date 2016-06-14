@@ -604,34 +604,33 @@ def project_editor_reorder_items(request, project_pk=None):
     item_original_order = item_selected.order
 
     if item_direction == 'up' and not item_original_order < 1:
-        if item_type == 'result':
-            item_swap = Result.objects.get(order=item_original_order - 1)
-        elif item_type == 'indicator':
-            item_swap = Indicator.objects.get(order=item_original_order-1)
+        item_swap = item_list.get(order=item_original_order - 1)
         item_swap.order = item_original_order
         item_swap.save()
+
+        swap_id = item_swap.id
 
         item_selected.order = item_original_order-1
         item_selected.save()
 
     elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
-        if item_type == 'result':
-            item_swap = Result.objects.get(order=item_original_order + 1)
-        elif item_type == 'indicator':
-            item_swap = Indicator.objects.get(order=item_original_order+1)
-
+        item_swap = item_list.get(order=item_original_order + 1)
         item_swap.order = item_original_order
         item_swap.save()
+
+        swap_id = item_swap.id
 
         item_selected.order = item_original_order + 1
         item_selected.save()
 
     else:
+        swap_id = -1
         errors += ['Unable to reorder the selected item, it may already be at top/bottom of list.']
 
     return Response(
         {
             'errors': errors,
+            'swap_id': swap_id,
         }
     )
 
