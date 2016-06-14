@@ -2379,7 +2379,13 @@ function initReact() {
 
                 // Wait 1s, then smoothly scroll to top
                 window.setTimeout(function() {
-                    smoothScroll.animateScroll('body');
+                    if (document.getElementById('projectMenu')) {
+                        // Project page
+                        smoothScroll.animateScroll('#projectMenu');
+                    } else if (document.getElementById('resultProjectTitle')) {
+                        // MyRSR
+                        smoothScroll.animateScroll('#resultProjectTitle');
+                    }
                 }, 1000);
             } else {
                 window.location.hash = '';
