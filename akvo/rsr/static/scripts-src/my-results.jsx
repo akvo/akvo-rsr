@@ -2376,6 +2376,11 @@ function initReact() {
                 var indicator = this.findIndicator(indicatorId);
                 var resultId = indicator.result;
                 window.location.hash = 'results,' + resultId + ',' + indicatorId;
+
+                // Wait 1s, then smoothly scroll to top
+                window.setTimeout(function() {
+                    smoothScroll.animateScroll('body');
+                }, 1000);
             } else {
                 window.location.hash = '';
             }
@@ -2501,9 +2506,19 @@ var loadJS = function(url, implementationCode, location){
 };
 
 function loadAndRenderReact() {
+    function initSmoothScroll() {
+        smoothScroll.init({updateURL: false});
+        initReact();
+    }
+
+    function loadSmoothScroll() {
+        var smoothScrollSrc = document.getElementById('smooth-scroll').src;
+        loadJS(smoothScrollSrc, initSmoothScroll, document.body);
+    }
+
     function loadReactDOM() {
         var reactDOMSrc = document.getElementById('react-dom').src;
-        loadJS(reactDOMSrc, initReact, document.body);
+        loadJS(reactDOMSrc, loadSmoothScroll, document.body);
     }
 
     console.log('No React, load again.');
@@ -2526,7 +2541,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof smoothScroll !== 'undefined') {
+        smoothScroll.init({updateURL: false});
         initReact();
     } else {
         loadAndRenderReact();
