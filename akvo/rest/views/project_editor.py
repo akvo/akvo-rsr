@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import datetime
 import decimal
+import collections
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
@@ -427,7 +428,7 @@ def project_editor(request, pk=None):
     # it will definitely be able to create the indicator id, etc.
 
     for i in range(4):
-        for key in data.keys():
+        for key in sorted(data.keys()):
             # The keys in form data are of format "rsr_project.title.1234".
             # Separated by .'s, the data contains the model name, field name and object id list
             model, field, id_list = split_key(key)
