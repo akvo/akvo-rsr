@@ -2361,6 +2361,157 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
+// add arrow buttons to each indicator
+function setIndicatorSorting () {
+    var indicatorContainers = document.querySelectorAll('.indicator-container');
+
+    for (var i=0; i < indicatorContainers.length; i++) {
+        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item');
+
+        for (var j=0; j < indicatorSections.length; j++) {
+            setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
+        }
+    }
+}
+
+// add arrow buttons to each result
+function setResultSorting () {
+    var resultSections = document.querySelectorAll('.result-item');
+
+    for (var i=0; i < resultSections.length; i++) {
+        setReorderButtons(resultSections[i], 'result', i, resultSections.length);
+    }
+}
+
+function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
+    itemId = itemNode.getAttribute('id').split('.')[1];
+
+    var sortItemNode = document.createElement('span');
+    // sortItemNode.setAttribute('class', 'xxxx-sorter');
+
+    var sortItemUp = document.createElement('a');
+    var upButton = document.createElement('span');
+
+    if (itemIndex === 0 || listLength < 2) {
+        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+    } else {
+        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+    }
+
+    if (itemType == 'indicator') {
+        upButton.onclick = reorderItems('indicator', itemId, 'up');
+    } else if (itemType == 'result') {
+        upButton.onclick = reorderItems('result', itemId, 'up');
+    }
+
+    sortItemUp.appendChild(upButton);
+
+
+    var sortItemDown = document.createElement('a');
+    var downButton = document.createElement('span');
+
+    if (itemIndex == listLength - 1 || listLength < 2) {
+        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+    } else {
+        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+    }
+
+    if (itemType == 'indicator') {
+        downButton.onclick = reorderItems('indicator', itemId, 'down');
+    } else if (itemType == 'result') {
+        downButton.onclick = reorderItems('result', itemId, 'down');
+    }
+
+    sortItemDown.appendChild(downButton);
+
+    sortItemNode.appendChild(sortItemUp);
+    sortItemNode.appendChild(sortItemDown);
+
+
+    var itemContainer = itemNode.querySelector('.delete-related-object-container');
+
+    // sortNode = sortIndicatorNode.cloneNode(true);
+    // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
+
+    itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
+}
+
+function reorderItems (itemType, itemId, direction) {
+    return function(e) {
+        e.preventDefault();
+        var api_url, request;
+
+        var form_data = 'item_type=' + itemType + '&item_id=' + itemId + '&item_direction=' + direction;
+        console.log(form_data);
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/reorder_items/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+                if (response.swap_id > -1) {
+                    swapReorderedItems(itemType, itemId, response.swap_id, direction);
+                } else {
+                    console.log(error);
+                }
+
+            } else {
+                // We reached our target server, but it returned an error 
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            return false;
+        };
+
+        request.send(form_data);
+    };
+}
+
+function swapReorderedItems (itemType, itemId, swapId, direction) {
+    var selectedItem = document.getElementById(itemType + '.' + itemId);
+    var swapItem = document.getElementById(itemType + '.' + swapId);
+    var parentContainer = selectedItem.parentNode;
+
+    if (direction == 'up') {
+        parentContainer.insertBefore(selectedItem, swapItem);
+
+        console.log(parentContainer.lastElementChild);
+        console.log(parentContainer.lastElementChild.previousElementSibling);
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == selectedItem) {
+            selectedItem.querySelector('.sort-up').className += ' hidden';
+            swapItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+        } else if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
+            selectedItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+            swapItem.querySelector('.sort-down').className += ' hidden';
+        }
+    } else if (direction == 'down') {
+        parentContainer.insertBefore(swapItem, selectedItem);
+
+        console.log(parentContainer.lastElementChild);
+        console.log(parentContainer.lastElementChild.previousElementSibling);
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == swapItem) {
+            selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+            swapItem.querySelector('.sort-up').className += ' hidden';
+        } else if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
+            selectedItem.querySelector('.sort-down').className += ' hidden';
+            swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+        }
+    }
+
+
+}
+
 function setToggleSectionOnClick () {
     var toggleSections = document.getElementsByClassName('toggleSection');
     var projectOptions = document.querySelector('.formOverviewInfo');
@@ -2832,7 +2983,7 @@ function checkUnsavedChangesForm(form) {
     /* Checks if a form has unsaved changes. Returns true if so and false otherwise. */
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
+var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < inputElements.length; j++) {
             if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
                 return true;
@@ -3395,6 +3546,9 @@ function initApp() {
     setCurrencyOnChange();
     setFileUploads();
     checkPartnerships();
+
+    setIndicatorSorting();
+    setResultSorting();
 
     setValidationListeners();
     updateAllHelpIcons();

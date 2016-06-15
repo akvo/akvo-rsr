@@ -572,6 +572,69 @@ def project_editor(request, pk=None):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def project_editor_reorder_items(request, project_pk=None):
+    """API call to reorder results or indicators"""
+
+    errors = []
+
+    item_type = request.POST.get('item_type', False)
+    item_id = request.POST.get('item_id', False)
+    item_direction = request.POST.get('item_direction', False)
+
+
+
+    print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
+
+    if item_type == 'result':
+        item_selected = Result.objects.get(id=item_id)
+        item_list = Result.objects.filter(project_id=project_pk)
+    elif item_type == 'indicator':
+        item_selected = Indicator.objects.get(id=item_id)
+        item_list = Indicator.objects.filter(result_id=item_selected.result_id)
+    else:
+        errors += ['Invalid item type']
+
+    # assign order if it doesn't already exist
+    if not item_list[0].order:
+        for i, item in enumerate(item_list):
+            item.order = i
+            item.save()
+
+    item_original_order = item_selected.order
+
+    if item_direction == 'up' and not item_original_order < 1:
+        item_swap = item_list.get(order=item_original_order - 1)
+        item_swap.order = item_original_order
+        item_swap.save()
+
+        swap_id = item_swap.id
+
+        item_selected.order = item_original_order-1
+        item_selected.save()
+
+    elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
+        item_swap = item_list.get(order=item_original_order + 1)
+        item_swap.order = item_original_order
+        item_swap.save()
+
+        swap_id = item_swap.id
+
+        item_selected.order = item_original_order + 1
+        item_selected.save()
+
+    else:
+        swap_id = -1
+        errors += ['Unable to reorder the selected item, it may already be at top/bottom of list.']
+
+    return Response(
+        {
+            'errors': errors,
+            'swap_id': swap_id,
+        }
+    )
+
+@api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_upload_file(request, pk=None):
     """Special API call for directly uploading a file."""
