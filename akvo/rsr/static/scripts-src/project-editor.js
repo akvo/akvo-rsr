@@ -3004,7 +3004,7 @@ function checkUnsavedChangesForm(form) {
     /* Checks if a form has unsaved changes. Returns true if so and false otherwise. */
 
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
+        var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < inputElements.length; j++) {
             if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
                 return true;

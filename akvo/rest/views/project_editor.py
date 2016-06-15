@@ -583,9 +583,7 @@ def project_editor_reorder_items(request, project_pk=None):
     item_id = request.POST.get('item_id', False)
     item_direction = request.POST.get('item_direction', False)
 
-
-
-    print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
+    # print 'Type: %s | ID: %s | Direction: %s' % (item_type, item_id, item_direction)
 
     if item_type == 'result':
         item_selected = Result.objects.get(id=item_id)
