@@ -601,7 +601,7 @@ def project_editor_reorder_items(request, project_pk=None):
             item.order = i
             item.save()
 
-    item_original_order = item_selected.order
+    item_original_order = Indicator.objects.get(id=item_id).order
 
     if item_direction == 'up' and not item_original_order < 1:
         item_swap = item_list.get(order=item_original_order - 1)

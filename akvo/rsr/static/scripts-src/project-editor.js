@@ -344,7 +344,7 @@ function doSubmitStep(saveButton) {
             if (form_data.indexOf('rsr_indicator') > -1) {
                 setIndicatorSorting();
             }
-            if (form_data.indexOf('rsr_indicator') > -1) {
+            if (form_data.indexOf('rsr_result') > -1) {
                 setResultSorting();
             }
 
@@ -2513,7 +2513,8 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
         if (parentContainer.firstElementChild == selectedItem) {
             selectedItem.querySelector('.sort-up').className += ' hidden';
             swapItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
-        } else if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
             selectedItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
             swapItem.querySelector('.sort-down').className += ' hidden';
         }
@@ -2524,7 +2525,8 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
         if (parentContainer.firstElementChild == swapItem) {
             selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
             swapItem.querySelector('.sort-up').className += ' hidden';
-        } else if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
             selectedItem.querySelector('.sort-down').className += ' hidden';
             swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
         }
