@@ -340,6 +340,14 @@ function doSubmitStep(saveButton) {
             setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
 
+           // Reset ordering buttons if necessary
+            if (form_data.indexOf('rsr_indicator') > -1) {
+                setIndicatorSorting();
+            }
+            if (form_data.indexOf('rsr_indicator') > -1) {
+                setResultSorting();
+            }
+
             return false;
         } else if (request.status === 403) {
             // Not allowed to save
@@ -761,6 +769,7 @@ function deleteItem(itemId, itemType) {
     } else {
         request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
     }
+
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -771,6 +780,10 @@ function deleteItem(itemId, itemType) {
             // Update the budget in case of removed budget
             if (itemType === 'budget-item') {
                 getTotalBudget();
+            } else if (itemType === 'result') {
+                setResultSorting();
+            } else if (itemType === 'indicator') {
+                setIndicatorSorting();
             }
 
             // Update progress bars
@@ -2386,54 +2399,67 @@ function setResultSorting () {
 function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
     itemId = itemNode.getAttribute('id').split('.')[1];
 
-    var sortItemNode = document.createElement('span');
-    // sortItemNode.setAttribute('class', 'xxxx-sorter');
-
-    var sortItemUp = document.createElement('a');
-    var upButton = document.createElement('span');
-
-    if (itemIndex === 0 || listLength < 2) {
-        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+    if (itemNode.classList.contains('sort-buttons-set')) {
+        if (itemIndex === 0 || listLength < 2) {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+        } else {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+        }
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+        } else {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+        }
     } else {
-        upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+        var sortItemNode = document.createElement('span');
+        itemNode.className += ' sort-buttons-set';
+
+        var sortItemUp = document.createElement('a');
+        var upButton = document.createElement('span');
+
+        if (itemIndex === 0 || listLength < 2) {
+            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+        } else {
+            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+        }
+
+        if (itemType == 'indicator') {
+            upButton.onclick = reorderItems('indicator', itemId, 'up');
+        } else if (itemType == 'result') {
+            upButton.onclick = reorderItems('result', itemId, 'up');
+        }
+
+        sortItemUp.appendChild(upButton);
+
+
+        var sortItemDown = document.createElement('a');
+        var downButton = document.createElement('span');
+
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+        } else {
+            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+        }
+
+        if (itemType == 'indicator') {
+            downButton.onclick = reorderItems('indicator', itemId, 'down');
+        } else if (itemType == 'result') {
+            downButton.onclick = reorderItems('result', itemId, 'down');
+        }
+
+        sortItemDown.appendChild(downButton);
+
+        sortItemNode.appendChild(sortItemUp);
+        sortItemNode.appendChild(sortItemDown);
+
+
+        var itemContainer = itemNode.querySelector('.delete-related-object-container');
+
+        // sortNode = sortIndicatorNode.cloneNode(true);
+        // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
+
+        itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
     }
-
-    if (itemType == 'indicator') {
-        upButton.onclick = reorderItems('indicator', itemId, 'up');
-    } else if (itemType == 'result') {
-        upButton.onclick = reorderItems('result', itemId, 'up');
-    }
-
-    sortItemUp.appendChild(upButton);
-
-
-    var sortItemDown = document.createElement('a');
-    var downButton = document.createElement('span');
-
-    if (itemIndex == listLength - 1 || listLength < 2) {
-        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
-    } else {
-        downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
-    }
-
-    if (itemType == 'indicator') {
-        downButton.onclick = reorderItems('indicator', itemId, 'down');
-    } else if (itemType == 'result') {
-        downButton.onclick = reorderItems('result', itemId, 'down');
-    }
-
-    sortItemDown.appendChild(downButton);
-
-    sortItemNode.appendChild(sortItemUp);
-    sortItemNode.appendChild(sortItemDown);
-
-
-    var itemContainer = itemNode.querySelector('.delete-related-object-container');
-
-    // sortNode = sortIndicatorNode.cloneNode(true);
-    // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
-
-    itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
 }
 
 function reorderItems (itemType, itemId, direction) {
@@ -2442,7 +2468,6 @@ function reorderItems (itemType, itemId, direction) {
         var api_url, request;
 
         var form_data = 'item_type=' + itemType + '&item_id=' + itemId + '&item_direction=' + direction;
-        console.log(form_data);
 
         // Create request
         api_url = '/rest/v1/project/' + defaultValues.project_id + '/reorder_items/?format=json';
@@ -2484,8 +2509,6 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
     if (direction == 'up') {
         parentContainer.insertBefore(selectedItem, swapItem);
 
-        console.log(parentContainer.lastElementChild);
-        console.log(parentContainer.lastElementChild.previousElementSibling);
         // update buttons if necessary
         if (parentContainer.firstElementChild == selectedItem) {
             selectedItem.querySelector('.sort-up').className += ' hidden';
@@ -2497,8 +2520,6 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
     } else if (direction == 'down') {
         parentContainer.insertBefore(swapItem, selectedItem);
 
-        console.log(parentContainer.lastElementChild);
-        console.log(parentContainer.lastElementChild.previousElementSibling);
         // update buttons if necessary
         if (parentContainer.firstElementChild == swapItem) {
             selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
@@ -2508,8 +2529,6 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
             swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
         }
     }
-
-
 }
 
 function setToggleSectionOnClick () {
