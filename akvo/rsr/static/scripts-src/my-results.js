@@ -941,9 +941,6 @@ function initReact() {
                             // Show edit button for M&E Managers and superusers.
                             return (
                                 React.DOM.div( {className:"menuAction"}, 
-                                    React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
-                                    ),
                                     React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
                                         React.DOM.li( {role:"presentation", className:"editUpdate"}, 
                                             React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
