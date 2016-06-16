@@ -673,9 +673,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         project = self.period.indicator.result.project
 
         # Don't allow a data update to a private or unpublished project
-        if not (project.is_public and project.is_published()):
+        if not project.is_published():
             validation_errors['period'] = unicode(_(u'Indicator period must be part of a published '
-                                                    u'and public project to add data to it'))
+                                                    u'project to add data to it'))
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to a non-Impact project
@@ -694,7 +694,8 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
             # Don't allow an approved data update to be changed
             if orig.status == self.STATUS_APPROVED_CODE:
-                # TODO
+                # TODO: Allow edits of updates, similar to:
+                # self.period.update_actual_value(new_data - old_data, self.relative_data)
                 validation_errors['status'] = unicode(_(u'Not allowed to change approved data '
                                                         u'updates'))
 
