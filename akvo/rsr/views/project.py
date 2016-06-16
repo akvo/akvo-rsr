@@ -437,7 +437,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)
         if updateform.is_valid():
-            if update.user:
+            if update:
                 update = updateform.save(project=project, user=update.user)
             else:
                 update = updateform.save(project=project, user=request.user)

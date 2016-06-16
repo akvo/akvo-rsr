@@ -150,8 +150,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return ProjectUpdate.objects.all().order_by('-created_at')
         elif self.get_admin_employment_orgs():
             owned_organisation_users = self.get_owned_org_users()
-            print self.get_admin_employment_orgs()
-            print owned_organisation_users
             return ProjectUpdate.objects.filter(user__in=owned_organisation_users).order_by('-created_at')
         else:
             return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
