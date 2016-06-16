@@ -21,7 +21,6 @@ from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
 from django.shortcuts import redirect, render, render_to_response
@@ -85,9 +84,6 @@ def activate(request, activation_key, extra_context=None):
         context[key] = callable(value) and value() or value
     return render_to_response(
         'registration/activate.html',
-        {
-            'expiration_days': getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
-        },
         context_instance=context
     )
 
@@ -142,7 +138,7 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         login(request, invited)
         return redirect('my_details')
 
-    bad_link, signature_expired, user, inviting_user, employment = False, False, None, None, None
+    bad_link, user, inviting_user, employment = False, None, None, None
 
     try:
         user = get_user_model().objects.get(pk=user_pk)
@@ -151,21 +147,11 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
     except ObjectDoesNotExist:
         bad_link = True
 
-    expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
-
-    try:
-        TimestampSigner().unsign(':'.join([user.email, token_date, token]),
-                                 max_age=expiration_days * 24 * 60 * 60)
-    except SignatureExpired:
-        signature_expired = True
-    except BadSignature:
-        bad_link = True
-
     if user and user.is_active:
         if employment and employment.is_approved:
             # User is active and employment is approved, so nothing to do here
             return login_and_redirect(request, user)
-        elif employment and not (signature_expired or bad_link):
+        elif employment and not bad_link:
             # Employment is not yet approved, and link is ok.
             # Approve employment and log user in.
             approve_employment(inviting_user, user, employment)
@@ -183,9 +169,7 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
 
     context = {
         'form': form,
-        'expiration_days': expiration_days,
         'bad_link': bad_link,
-        'signature_expired': signature_expired
     }
     return render(request, 'registration/invite_activate.html', context)
 
