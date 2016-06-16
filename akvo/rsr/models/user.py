@@ -144,17 +144,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def updates(self):
         """
-        return all updates created by the user
+        return all updates created by the user or by organisation users if requesting user is admin
         """
-        print ProjectUpdate.objects.all()
-        if False:
-            owned_organisation_users = self.organisations.content_owned_organisations().users()
+        if self.is_superuser or self.is_admin:
+            return ProjectUpdate.objects.all().order_by('-created_at')
+        elif self.get_admin_employment_orgs():
+            owned_organisation_users = self.get_owned_org_users()
+            print self.get_admin_employment_orgs()
             print owned_organisation_users
             return ProjectUpdate.objects.filter(user__in=owned_organisation_users).order_by('-created_at')
-        elif self.is_superuser or self.is_admin:
-            return ProjectUpdate.objects.all().order_by('-created_at')
         else:
             return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+
+    def can_edit_update(self, update):
+        if self.is_admin or self.is_superuser:
+            return True
+        elif update.user in self.get_owned_org_users():
+            return True
+        else:
+            return False
 
     def latest_update_date(self):
         updates = self.updates()
@@ -217,6 +225,27 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.save()
         else:
             employment.group.delete()
+
+    def get_admin_employment_orgs(self):
+        from .employment import Employment
+        try:
+            employments = Employment.objects.filter(user=self)
+        except:
+            return None
+
+        admin_employment_orgs = []
+        for e in employments:
+            if e.group == Group.objects.get(name='Admins') and e.is_approved:
+                admin_employment_orgs += [e.organisation]
+
+        return admin_employment_orgs
+
+    def get_owned_org_users(self):
+        owned_organisation_users = []
+        for o in self.get_admin_employment_orgs():
+            owned_organisation_users += o.content_owned_organisations().users()
+            print o.content_owned_organisations()
+        return owned_organisation_users
 
     def get_is_user_manager(self, org):
         from .employment import Employment
