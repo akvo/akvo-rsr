@@ -244,7 +244,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         owned_organisation_users = []
         for o in self.get_admin_employment_orgs():
             owned_organisation_users += o.content_owned_organisations().users()
-            print o.content_owned_organisations()
         return owned_organisation_users
 
     def get_is_user_manager(self, org):
