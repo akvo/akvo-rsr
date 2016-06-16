@@ -24,7 +24,7 @@
     {% if page %}
         <div id="updates" class=" col-sm-12">
             <table class="table table-striped table-responsive">
-                <thead><tr><th>{% trans 'Media' %}</th><th>{% trans 'Title' %}</th><th>{% trans 'Date' %}</th><th>{% trans 'Project' %}</th><th class="text-right">{% trans 'Actions' %}</th></tr></thead>
+                <thead><tr><th>{% trans 'Media' %}</th><th>{% trans 'Title' %}</th>{%if org_admin_view %}<th>{% trans 'User' %}</th>{% endif %}<th>{% trans 'Date' %}</th><th>{% trans 'Project' %}</th><th class="text-right">{% trans 'Actions' %}</th></tr></thead>
                 <tbody>
                 {% for update in page %}
                     <tr id="update-{{ update.id }}-container">
@@ -42,6 +42,11 @@
                                 {{ update.title }}
                             </a>
                         </td>
+                        {%if org_admin_view %}
+                        <td>
+                            {{ update.user.get_full_name }}
+                        </td>
+                        {% endif %}
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
                         <td>

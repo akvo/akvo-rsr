@@ -106,12 +106,15 @@ def my_updates(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
+    org_admin_view = True if request.user.get_admin_employment_orgs() else False
+
     context = {
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
+        'org_admin_view': org_admin_view,
     }
     return render(request, 'myrsr/my_updates.html', context)
 
