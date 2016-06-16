@@ -146,7 +146,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return all updates created by the user
         """
-        return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+        print ProjectUpdate.objects.all()
+        if False:
+            owned_organisation_users = self.organisations.content_owned_organisations().users()
+            print owned_organisation_users
+            return ProjectUpdate.objects.filter(user__in=owned_organisation_users).order_by('-created_at')
+        elif self.is_superuser or self.is_admin:
+            return ProjectUpdate.objects.all().order_by('-created_at')
+        else:
+            return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
 
     def latest_update_date(self):
         updates = self.updates()
