@@ -21,6 +21,7 @@ from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
 from django.shortcuts import redirect, render, render_to_response
@@ -145,6 +146,11 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
         inviting_user = get_user_model().objects.get(pk=inviting_pk)
         employment = Employment.objects.get(pk=employment_pk)
     except ObjectDoesNotExist:
+        bad_link = True
+
+    try:
+        TimestampSigner().unsign(':'.join([user.email, token_date, token]))
+    except BadSignature:
         bad_link = True
 
     if user and user.is_active:
