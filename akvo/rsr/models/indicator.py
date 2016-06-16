@@ -613,6 +613,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
+        do_recalculation = False
         if not kwargs.pop('recalculate', False):
             # Always copy the period's actual value to the period_actual_value field.
             self.period_actual_value = str(self.period.actual_value or '0')
@@ -662,7 +663,16 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                         msg_context={'update': self}
                     )
 
+                # An approved indicator update has been edited. Update to the new values and
+                # recalculate
+                elif orig.status == self.STATUS_APPROVED_CODE:
+                    self.period.update_actual_value(Decimal(self.data) - Decimal(orig.data), True)
+                    do_recalculation = True
+
         super(IndicatorPeriodData, self).save(*args, **kwargs)
+
+        if do_recalculation:
+            self.period.calculate_all_updates_from_start()
 
     def clean(self):
         """
@@ -692,21 +702,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
-            # Don't allow an approved data update to be changed
-            if orig.status == self.STATUS_APPROVED_CODE:
-                # TODO: Allow edits of updates, similar to:
-                # self.period.update_actual_value(new_data - old_data, self.relative_data)
-                validation_errors['status'] = unicode(_(u'Not allowed to change approved data '
-                                                        u'updates'))
-
-            # Don't allow to approve an update that has a different actual value of the period
-            elif self.status == self.STATUS_APPROVED_CODE and \
-                    str(self.period_actual_value) != str(self.period.actual_value or '0'):
-                validation_errors['period_actual_value'] = unicode(
-                    _(u'The actual value of the period has changed (from {} to {}), please save '
-                      u'the update first before approving it'.format(self.period_actual_value,
-                                                                     str(self.period.actual)))
-                )
 
             # Don't allow for the indicator period to change
             if orig.period != self.period:
