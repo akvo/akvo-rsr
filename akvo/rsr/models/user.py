@@ -150,17 +150,18 @@ class User(AbstractBaseUser, PermissionsMixin):
             return ProjectUpdate.objects.all().order_by('-created_at')
         elif self.get_admin_employment_orgs():
             owned_organisation_users = self.get_owned_org_users()
-            return ProjectUpdate.objects.filter(user__in=owned_organisation_users).order_by('-created_at')
+            owned_updates = ProjectUpdate.objects.none()
+
+            for u in owned_organisation_users:
+                owned_updates = owned_updates | ProjectUpdate.objects.filter(user=u)
+
+            return owned_updates.order_by('-created_at')
+
         else:
             return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
 
     def can_edit_update(self, update):
-        if self.is_admin or self.is_superuser:
-            return True
-        elif update.user in self.get_owned_org_users():
-            return True
-        else:
-            return False
+        return self.is_admin or self.is_superuser or update.user in self.get_owned_org_users()
 
     def latest_update_date(self):
         updates = self.updates()
