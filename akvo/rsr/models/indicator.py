@@ -357,6 +357,27 @@ class IndicatorPeriod(models.Model):
         if validation_errors:
             raise ValidationError(validation_errors)
 
+    def calculate_all_updates_from_start(self):
+        """
+        In certain scenarios, it is needed to (re-)calculate the values of all updates from the
+        start. This will prevent strange values, for example when an update is deleted or
+        edited after it has been approved.
+        """
+        prev_val = '0'
+        for update in self.data.filter(status='A').order_by('created_at'):
+            update.period_actual_value = prev_val
+            update.save(update_fields=['period_actual_value', ], **{'recalculate': True})
+
+            if update.relative_data:
+                try:
+                    # Try to add up the update to the previous actual value
+                    prev_val = str(Decimal(prev_val) + Decimal(update.data))
+                except InvalidOperation:
+                    # If not possible, the update data is a normal string
+                    prev_val = update.data
+            else:
+                prev_val = update.data
+
     def is_calculated(self):
         """
         When a period has got indicator updates, we consider the actual value to be a
@@ -592,56 +613,66 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         Process approved data updates.
         """
-        # Always copy the period's actual value to the period_actual_value field.
-        self.period_actual_value = str(self.period.actual_value or '0')
+        do_recalculation = False
+        if not kwargs.pop('recalculate', False):
+            # Always copy the period's actual value to the period_actual_value field.
+            self.period_actual_value = str(self.period.actual_value or '0')
 
-        if not self.pk:
-            # Newly added data update
-            if self.status == self.STATUS_APPROVED_CODE:
-                # Update is immediately approved. Scenario that probably does not happen very often.
-                self.period.update_actual_value(self.data, self.relative_data)
-        else:
-            orig = IndicatorPeriodData.objects.get(pk=self.pk)
+            if not self.pk:
+                if self.status == self.STATUS_APPROVED_CODE:
+                    # Newly added data update is immediately approved.
+                    self.period.update_actual_value(self.data, self.relative_data)
+            else:
+                orig = IndicatorPeriodData.objects.get(pk=self.pk)
 
-            # Mail admins of a paying partner when an update needs to be approved
-            if orig.status != self.STATUS_PENDING_CODE and \
-                    self.status == self.STATUS_PENDING_CODE:
-                me_managers_group = Group.objects.get(name='M&E Managers')
-                me_managers = self.period.indicator.result.project.publishing_orgs.employments().\
-                    approved().filter(group=me_managers_group)
+                # Mail admins of a paying partner when an update needs to be approved
+                if orig.status != self.STATUS_PENDING_CODE and \
+                        self.status == self.STATUS_PENDING_CODE:
+                    me_managers_group = Group.objects.get(name='M&E Managers')
+                    me_managers = self.period.indicator.result.project.publishing_orgs.employments().\
+                        approved().filter(group=me_managers_group)
 
-                rsr_send_mail(
-                    [empl.user.email for empl in me_managers],
-                    subject='results_framework/approve_update_subject.txt',
-                    message='results_framework/approve_update_message.txt',
-                    html_message='results_framework/approve_update_message.html',
-                    msg_context={'update': self}
-                )
+                    rsr_send_mail(
+                        [empl.user.email for empl in me_managers],
+                        subject='results_framework/approve_update_subject.txt',
+                        message='results_framework/approve_update_message.txt',
+                        html_message='results_framework/approve_update_message.html',
+                        msg_context={'update': self}
+                    )
 
-            # Mail the user that created the update when an update needs revision
-            elif orig.status != self.STATUS_REVISION_CODE and \
-                    self.status == self.STATUS_REVISION_CODE:
-                rsr_send_mail(
-                    [self.user.email],
-                    subject='results_framework/revise_update_subject.txt',
-                    message='results_framework/revise_update_message.txt',
-                    html_message='results_framework/revise_update_message.html',
-                    msg_context={'update': self}
-                )
+                # Mail the user that created the update when an update needs revision
+                elif orig.status != self.STATUS_REVISION_CODE and \
+                        self.status == self.STATUS_REVISION_CODE:
+                    rsr_send_mail(
+                        [self.user.email],
+                        subject='results_framework/revise_update_subject.txt',
+                        message='results_framework/revise_update_message.txt',
+                        html_message='results_framework/revise_update_message.html',
+                        msg_context={'update': self}
+                    )
 
-            # Process data when the update has been approved and mail the user about it
-            elif orig.status != self.STATUS_APPROVED_CODE and \
-                    self.status == self.STATUS_APPROVED_CODE:
-                self.period.update_actual_value(self.data, self.relative_data)
-                rsr_send_mail(
-                    [self.user.email],
-                    subject='results_framework/approved_subject.txt',
-                    message='results_framework/approved_message.txt',
-                    html_message='results_framework/approved_message.html',
-                    msg_context={'update': self}
-                )
+                # Process data when the update has been approved and mail the user about it
+                elif orig.status != self.STATUS_APPROVED_CODE and \
+                        self.status == self.STATUS_APPROVED_CODE:
+                    self.period.update_actual_value(self.data, self.relative_data)
+                    rsr_send_mail(
+                        [self.user.email],
+                        subject='results_framework/approved_subject.txt',
+                        message='results_framework/approved_message.txt',
+                        html_message='results_framework/approved_message.html',
+                        msg_context={'update': self}
+                    )
+
+                # An approved indicator update has been edited. Update to the new values and
+                # recalculate
+                elif orig.status == self.STATUS_APPROVED_CODE:
+                    self.period.update_actual_value(Decimal(self.data) - Decimal(orig.data), True)
+                    do_recalculation = True
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)
+
+        if do_recalculation:
+            self.period.calculate_all_updates_from_start()
 
     def clean(self):
         """
@@ -652,9 +683,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         project = self.period.indicator.result.project
 
         # Don't allow a data update to a private or unpublished project
-        if not (project.is_public and project.is_published()):
+        if not project.is_published():
             validation_errors['period'] = unicode(_(u'Indicator period must be part of a published '
-                                                    u'and public project to add data to it'))
+                                                    u'project to add data to it'))
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to a non-Impact project
@@ -671,19 +702,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
-            # Don't allow an approved data update to be changed
-            if orig.status == self.STATUS_APPROVED_CODE:
-                validation_errors['status'] = unicode(_(u'Not allowed to change approved data '
-                                                        u'updates'))
-
-            # Don't allow to approve an update that has a different actual value of the period
-            elif self.status == self.STATUS_APPROVED_CODE and \
-                    str(self.period_actual_value) != str(self.period.actual_value or '0'):
-                validation_errors['period_actual_value'] = unicode(
-                    _(u'The actual value of the period has changed (from {} to {}), please save '
-                      u'the update first before approving it'.format(self.period_actual_value,
-                                                                     str(self.period.actual)))
-                )
 
             # Don't allow for the indicator period to change
             if orig.period != self.period:
@@ -694,12 +712,17 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
     def delete(self, *args, **kwargs):
         """
-        Check if the data update was already approved. Approved data updates should not be
-        deleted, because it could lead to strange scenarios.
+        Check if the data update was already approved. If so, try to substract the approved data
+        from the actual data of the indicator period.
         """
         if self.status == self.STATUS_APPROVED_CODE:
-            raise FieldError(unicode(_(u'It is not possible to delete an approved data update')))
+            try:
+                self.period.update_actual_value(-1 * Decimal(self.data), self.relative_data)
+            except InvalidOperation:
+                pass
         super(IndicatorPeriodData, self).delete(*args, **kwargs)
+        if self.status == self.STATUS_APPROVED_CODE:
+            self.period.calculate_all_updates_from_start()
 
     @property
     def status_display(self):
