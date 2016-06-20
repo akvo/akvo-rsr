@@ -138,20 +138,6 @@ class PublishingStatus(models.Model):
                     )
                 )
 
-            if not self.project.sectors.all():
-                validation_errors.append(
-                    ValidationError(_('Project needs to have at least one sector.'),
-                                    code='sector')
-                )
-            else:
-                for sector in self.project.sectors.all():
-                    if not (sector.sector_code and sector.vocabulary):
-                        validation_errors.append(
-                            ValidationError(_('All sectors need to have a sector code and '
-                                              'vocabulary.'), code='sector')
-                        )
-                        break
-
             if validation_errors:
                 raise ValidationError(validation_errors)
 
