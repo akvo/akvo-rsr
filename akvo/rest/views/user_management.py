@@ -123,7 +123,6 @@ def invite_user(request):
         employment.group = group
         employment.save()
 
-        expiration_days = getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
         token_value = TimestampSigner().sign(email)
         token = token_value.split(':')[2]
         token_date = token_value.split(':')[1]
@@ -139,7 +138,6 @@ def invite_user(request):
                 'employment': employment,
                 'token': token,
                 'token_date': token_date,
-                'expiration_days': expiration_days
             }
         )
 
