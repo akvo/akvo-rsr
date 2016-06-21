@@ -1371,6 +1371,7 @@ function togglePartner(selectNode) {
         }
 
         checkPartnerships();
+        markMandatoryFields();
     };
 }
 
@@ -2181,7 +2182,12 @@ function markMandatoryFields() {
         var mandatoryIndicator = '.mandatory-' + validationSets[j];
         var elementsToMark = document.querySelectorAll(mandatoryIndicator);
         for (var k = 0; k < elementsToMark.length; k++) {
-            if (!hasParent(elementsToMark[k]) || partialFilled(findAncestorByClass(elementsToMark[k], 'parent'))) {
+            if (!elementsToMark[k].hasAttribute("disabled") &&
+                    (!hasParent(elementsToMark[k]) ||
+                     partialFilled(findAncestorByClass(elementsToMark[k], 'parent')) ||
+                     (hasParent(elementsToMark[k]) &&
+                      elHasClass(findAncestorByClass(elementsToMark[k], 'related-object-container'),
+                                                     'mandatory-' + validationSets[j])))) {
                 markMandatoryField(elementsToMark[k]);
 
                 var mandatoryOrClass = mandatoryIndicator.replace('.', '') + '-or-';
