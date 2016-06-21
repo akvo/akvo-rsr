@@ -2361,6 +2361,57 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
+function setSectorOnChange () {
+    var sectorVocabularyFields = document.querySelectorAll('.sector-vocabulary');
+
+    for (var i = 0; i < sectorVocabularyFields.length; i++) {
+        sectorVocabularyFields[i].getElementsByTagName('select').onchange = sectorCodeFieldSwitcher(sectorVocabularyFields[i]);
+    }
+}
+
+function sectorCodeFieldSwitcher (vocabularyField) {
+    return function(e) {
+        e.preventDefault();
+
+        console.log(vocabularyField);
+
+        var selectField = vocabularyField.getElementByTagName('select');
+        var vocabularyValue = selectField.options[selectField.selectedIndex].value;
+
+        var sectorRow = vocabularyField.parentNode;
+        var sectorOther = sectorRow.querySelector('.sector-code-other');
+        var sectorDAC5 = sectorRow.querySelector('.sector-code-dac5');
+        var sectorDAC3 = sectorRow.querySelector('.sector-code-dac3');
+
+        if (vocabularyValue == '1') {
+            sectorDAC5.classList.remove('hidden');
+            if (!sectorOther.classList.contains('hidden')) {
+                sectorOther.classList.add('hidden');
+            }
+            if (!sectorDAC3.classList.contains('hidden')) {
+                sectorDAC3.classList.add('hidden');
+            }
+        } else if (vocabularyValue == '2') {
+            sectorDAC3.classList.remove('hidden');
+            if (!sectorOther.classList.contains('hidden')) {
+                sectorOther.classList.add('hidden');
+            }
+            if (!sectorDAC5.classList.contains('hidden')) {
+                sectorDAC5.classList.add('hidden');
+            }
+        } else {
+            sectorOther.classList.remove('hidden');
+            if (!sectorDAC5.classList.contains('hidden')) {
+                sectorDAC5.classList.add('hidden');
+            }
+            if (!sectorDAC3.classList.contains('hidden')) {
+                sectorDAC3.classList.add('hidden');
+            }
+        }
+
+    };
+}
+
 function setToggleSectionOnClick () {
     var toggleSections = document.getElementsByClassName('toggleSection');
     var projectOptions = document.querySelector('.formOverviewInfo');
@@ -3393,6 +3444,7 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
+    // setSectorOnChange();
     setFileUploads();
     checkPartnerships();
 
