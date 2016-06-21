@@ -82,36 +82,36 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         # Test if status is set to completed.
         self.assertEqual(iati_export.status, 3)
 
-    # def test_valid_xml(self):
-    #     """
-    #     - Test if the export has an XML file.
-    #     - Test if the XML is valid.
-    #     """
-    #
-    #     # Retrieve the latest IATI export
-    #     iati_export = IatiExport.objects.order_by('-id').first()
-    #
-    #     # Test if export has an XML file
-    #     self.assertNotEqual(iati_export.iati_file, '')
-    #
-    #     # Get XML string of file
-    #     tree = ElementTree.parse(iati_export.iati_file)
-    #     root = tree.getroot()
-    #     root_tostring = ElementTree.tostring(root, encoding='utf8', method='xml')
-    #
-    #     # Test if XML is valid
-    #     root_test = self.assertXmlDocument(root_tostring)
-    #
-    #     # Test if the root's tag name is 'iati-activities'
-    #     self.assertXmlNode(root_test, tag='iati-activities')
-    #
-    #     # Test if the root has attributes 'generated-datetime' and 'version'
-    #     self.assertXmlHasAttribute(root_test, 'generated-datetime')
-    #     self.assertXmlHasAttribute(root_test, 'version')
-    #
-    #     # Test if the root has correct child nodes: 'iati-activity' with an 'iati-identifier',
-    #     # 'reporting-org' and 'title'
-    #     self.assertXpathsExist(root_test, ('./iati-activity',
-    #                                        './iati-activity/iati-identifier',
-    #                                        './iati-activity/reporting-org',
-    #                                        './iati-activity/title'))
+    def test_valid_xml(self):
+        """
+        - Test if the export has an XML file.
+        - Test if the XML is valid.
+        """
+
+        # Retrieve the latest IATI export
+        iati_export = IatiExport.objects.order_by('-id').first()
+
+        # Test if export has an XML file
+        self.assertNotEqual(iati_export.iati_file, '')
+
+        # Get XML string of file
+        tree = ElementTree.parse(iati_export.iati_file.file)
+        root = tree.getroot()
+        root_tostring = ElementTree.tostring(root, encoding='utf8', method='xml')
+
+        # Test if XML is valid
+        root_test = self.assertXmlDocument(root_tostring)
+
+        # Test if the root's tag name is 'iati-activities'
+        self.assertXmlNode(root_test, tag='iati-activities')
+
+        # Test if the root has attributes 'generated-datetime' and 'version'
+        self.assertXmlHasAttribute(root_test, 'generated-datetime')
+        self.assertXmlHasAttribute(root_test, 'version')
+
+        # Test if the root has correct child nodes: 'iati-activity' with an 'iati-identifier',
+        # 'reporting-org' and 'title'
+        self.assertXpathsExist(root_test, ('./iati-activity',
+                                           './iati-activity/iati-identifier',
+                                           './iati-activity/reporting-org',
+                                           './iati-activity/title'))
