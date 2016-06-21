@@ -95,7 +95,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertNotEqual(iati_export.iati_file, '')
 
         # Get XML string of file
-        tree = ElementTree.parse(iati_export.iati_file)
+        tree = ElementTree.parse(iati_export.iati_file.file)
         root = tree.getroot()
         root_tostring = ElementTree.tostring(root, encoding='utf8', method='xml')
 
