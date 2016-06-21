@@ -19,8 +19,6 @@ before_install:
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
   - pip install coveralls
-  - npm install -g yuglify
-  - export PATH=$PATH:/home/travis/.nvm/v0.10.36/bin/npm/yuglify
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
