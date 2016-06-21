@@ -167,6 +167,12 @@ class Partnership(models.Model):
                                                    self.organisation.name)
         return ''
 
+    def funding_amount_with_currency(self):
+        """Returns the funding amount, prepended by the project's currency."""
+        if self.funding_amount and self.project and self.project.currency:
+            return u'{0} {1}'.format(self.project.currency, self.funding_amount)
+        return self.funding_amount
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project partner')

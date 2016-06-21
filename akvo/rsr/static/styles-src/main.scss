@@ -2651,6 +2651,11 @@ body {
     }
     .progress-and-publish {
         top: 20px;
+        .row {
+            .help-block-error {
+                padding-left: 15px;
+            }
+        }
     }
     .redLegenda {
         background: $progressWarning;
