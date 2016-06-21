@@ -295,6 +295,8 @@ function doSubmitStep(saveButton) {
     form = findAncestorByTag(saveButton, 'form');
     form_data = serialize(form);
 
+    console.log(form_data);
+
     // Remove existing errors and indicate that saving has started
     removeErrors(form);
     startSave(saveButton);
@@ -323,6 +325,7 @@ function doSubmitStep(saveButton) {
 
             // Replace saved values and show that it updated
             for (var i=0; i < response.changes.length; i++) {
+                console.log(response.changes[i][0]);
                 var formElement = document.getElementById(response.changes[i][0]);
                 formElement.setAttribute('saved-value', response.changes[i][1]);
                 if (formElement.parentNode !== null && elHasClass(formElement.parentNode, 'typeahead')) {
@@ -1593,6 +1596,7 @@ function addPartial(partialName, partialContainer) {
         updateTypeaheads();
         setDatepickers();
         setCurrencyOnChange();
+        setSectorOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
@@ -2365,51 +2369,79 @@ function setSectorOnChange () {
     var sectorVocabularyFields = document.querySelectorAll('.sector-vocabulary');
 
     for (var i = 0; i < sectorVocabularyFields.length; i++) {
-        sectorVocabularyFields[i].getElementsByTagName('select').onchange = sectorCodeFieldSwitcher(sectorVocabularyFields[i]);
+        sectorVocabularyFields[i].getElementsByTagName('select')[0].onchange = sectorCodeSelectorOnClick(sectorVocabularyFields[i]);
+        sectorCodeSwitcher(sectorVocabularyFields[i]);
     }
 }
 
-function sectorCodeFieldSwitcher (vocabularyField) {
+function sectorCodeSelectorOnClick (vocabularyField) {
     return function(e) {
         e.preventDefault();
+        sectorCodeSwitcher(vocabularyField);
+    };
+}
 
-        console.log(vocabularyField);
+function sectorCodeSwitcher (vocabularyField) {
 
-        var selectField = vocabularyField.getElementByTagName('select');
-        var vocabularyValue = selectField.options[selectField.selectedIndex].value;
+    var selectField = vocabularyField.getElementsByTagName('select')[0];
+    var vocabularyValue = selectField.options[selectField.selectedIndex].value;
 
-        var sectorRow = vocabularyField.parentNode;
-        var sectorOther = sectorRow.querySelector('.sector-code-other');
-        var sectorDAC5 = sectorRow.querySelector('.sector-code-dac5');
-        var sectorDAC3 = sectorRow.querySelector('.sector-code-dac3');
+    var sectorRow = vocabularyField.parentNode;
+    var sectorOther = sectorRow.querySelector('.sector-code-other');
+    var sectorDAC5 = sectorRow.querySelector('.sector-code-dac5');
+    var sectorDAC3 = sectorRow.querySelector('.sector-code-dac3');
 
-        if (vocabularyValue == '1') {
-            sectorDAC5.classList.remove('hidden');
-            if (!sectorOther.classList.contains('hidden')) {
-                sectorOther.classList.add('hidden');
-            }
-            if (!sectorDAC3.classList.contains('hidden')) {
-                sectorDAC3.classList.add('hidden');
-            }
-        } else if (vocabularyValue == '2') {
-            sectorDAC3.classList.remove('hidden');
-            if (!sectorOther.classList.contains('hidden')) {
-                sectorOther.classList.add('hidden');
-            }
-            if (!sectorDAC5.classList.contains('hidden')) {
-                sectorDAC5.classList.add('hidden');
-            }
-        } else {
-            sectorOther.classList.remove('hidden');
-            if (!sectorDAC5.classList.contains('hidden')) {
-                sectorDAC5.classList.add('hidden');
-            }
-            if (!sectorDAC3.classList.contains('hidden')) {
-                sectorDAC3.classList.add('hidden');
-            }
+    var itemName = sectorOther.getElementsByTagName('input')[0].getAttribute('name').replace('.inactive', '');
+    var itemId = sectorOther.getElementsByTagName('input')[0].getAttribute('id').replace('.other', '');
+
+    if (vocabularyValue == '1' && sectorDAC5.classList.contains('hidden')) {
+        sectorDAC5.classList.remove('hidden');
+        sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName);
+        sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId);
+
+        if (!sectorOther.classList.contains('hidden')) {
+            sectorOther.classList.add('hidden');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.inactive');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+        }
+        if (!sectorDAC3.classList.contains('hidden')) {
+            sectorDAC3.classList.add('hidden');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
         }
 
-    };
+    } else if (vocabularyValue == '2' && sectorDAC3.classList.contains('hidden')) {
+        sectorDAC3.classList.remove('hidden');
+        sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName);
+        sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId);
+
+        if (!sectorOther.classList.contains('hidden')) {
+            sectorOther.classList.add('hidden');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.inactive');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+        }
+        if (!sectorDAC5.classList.contains('hidden')) {
+            sectorDAC5.classList.add('hidden');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+        }
+
+    } else if (vocabularyValue != '1' && vocabularyValue != '2' && sectorOther.classList.contains('hidden')) {
+        sectorOther.classList.remove('hidden');
+        sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName);
+        sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId);
+
+        if (!sectorDAC5.classList.contains('hidden')) {
+            sectorDAC5.classList.add('hidden');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+        }
+        if (!sectorDAC3.classList.contains('hidden')) {
+            sectorDAC3.classList.add('hidden');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
+        }
+    }
 }
 
 function setToggleSectionOnClick () {
@@ -3444,7 +3476,7 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
-    // setSectorOnChange();
+    setSectorOnChange();
     setFileUploads();
     checkPartnerships();
 
