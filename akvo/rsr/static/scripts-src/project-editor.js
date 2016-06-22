@@ -1211,11 +1211,15 @@ function toggleDocumentUpload(toggleNode) {
         if (toggleNode.checked) {
             // Show the file upload
             fileFormGroup.classList.remove('hidden');
+            fileFormGroup.classList.remove('always-hidden');
             urlFormGroup.classList.add('hidden');
+            urlFormGroup.classList.add('always-hidden');
         } else {
             // Show the URL field
             fileFormGroup.classList.add('hidden');
+            fileFormGroup.classList.add('always-hidden');
             urlFormGroup.classList.remove('hidden');
+            urlFormGroup.classList.remove('always-hidden');
         }
     };
 }
