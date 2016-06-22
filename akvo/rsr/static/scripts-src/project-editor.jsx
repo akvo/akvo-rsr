@@ -295,8 +295,6 @@ function doSubmitStep(saveButton) {
     form = findAncestorByTag(saveButton, 'form');
     form_data = serialize(form);
 
-    console.log(form_data);
-
     // Remove existing errors and indicate that saving has started
     removeErrors(form);
     startSave(saveButton);
@@ -325,7 +323,6 @@ function doSubmitStep(saveButton) {
 
             // Replace saved values and show that it updated
             for (var i=0; i < response.changes.length; i++) {
-                console.log(response.changes[i][0]);
                 var formElement = document.getElementById(response.changes[i][0]);
                 formElement.setAttribute('saved-value', response.changes[i][1]);
                 if (formElement.parentNode !== null && elHasClass(formElement.parentNode, 'typeahead')) {
@@ -2386,62 +2383,101 @@ function sectorCodeSwitcher (vocabularyField) {
     var selectField = vocabularyField.getElementsByTagName('select')[0];
     var vocabularyValue = selectField.options[selectField.selectedIndex].value;
 
-    var sectorRow = vocabularyField.parentNode;
-    var sectorOther = sectorRow.querySelector('.sector-code-other');
-    var sectorDAC5 = sectorRow.querySelector('.sector-code-dac5');
-    var sectorDAC3 = sectorRow.querySelector('.sector-code-dac3');
+    var sectorOther = vocabularyField.parentNode.querySelector('.sector-code-other');
+    var sectorDAC5 = vocabularyField.parentNode.querySelector('.sector-code-dac5');
+    var sectorDAC3 = vocabularyField.parentNode.querySelector('.sector-code-dac3');
 
-    var itemName = sectorOther.getElementsByTagName('input')[0].getAttribute('name').replace('.inactive', '');
+    var itemName = sectorOther.getElementsByTagName('input')[0].getAttribute('name').replace('.other', '');
     var itemId = sectorOther.getElementsByTagName('input')[0].getAttribute('id').replace('.other', '');
 
     if (vocabularyValue == '1' && sectorDAC5.classList.contains('hidden')) {
         sectorDAC5.classList.remove('hidden');
+        sectorDAC5.querySelector('.form-group').classList.remove('always-hidden');
+        sectorDAC5.querySelector('.form-group').classList.remove('hidden');
+
         sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName);
         sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId);
 
         if (!sectorOther.classList.contains('hidden')) {
             sectorOther.classList.add('hidden');
-            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.inactive');
+            sectorOther.querySelector('.form-group').classList.add('always-hidden');
+            sectorOther.querySelector('.form-group').classList.add('hidden');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.other');
             sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('saved-value', sectorOther.getElementsByTagName('input')[0].getAttribute('saved-value'));
         }
         if (!sectorDAC3.classList.contains('hidden')) {
             sectorDAC3.classList.add('hidden');
-            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC3.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac3');
             sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('saved-value', sectorDAC3.getElementsByTagName('select')[0].getAttribute('saved-value'));
         }
 
     } else if (vocabularyValue == '2' && sectorDAC3.classList.contains('hidden')) {
         sectorDAC3.classList.remove('hidden');
+        sectorDAC3.querySelector('.form-group').classList.remove('always-hidden');
+        sectorDAC3.querySelector('.form-group').classList.remove('hidden');
+
         sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName);
         sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId);
 
         if (!sectorOther.classList.contains('hidden')) {
             sectorOther.classList.add('hidden');
-            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.inactive');
+            sectorOther.querySelector('.form-group').classList.add('always-hidden');
+            sectorOther.querySelector('.form-group').classList.add('hidden');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.other');
             sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('saved-value', sectorOther.getElementsByTagName('input')[0].getAttribute('saved-value'));
         }
         if (!sectorDAC5.classList.contains('hidden')) {
             sectorDAC5.classList.add('hidden');
-            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC5.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac5');
             sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('saved-value', sectorDAC5.getElementsByTagName('select')[0].getAttribute('saved-value'));
         }
 
     } else if (vocabularyValue != '1' && vocabularyValue != '2' && sectorOther.classList.contains('hidden')) {
         sectorOther.classList.remove('hidden');
+        sectorOther.querySelector('.form-group').classList.remove('always-hidden');
+        sectorOther.querySelector('.form-group').classList.remove('hidden');
+
         sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName);
         sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId);
 
         if (!sectorDAC5.classList.contains('hidden')) {
             sectorDAC5.classList.add('hidden');
-            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC5.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac5');
             sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('saved-value', sectorDAC5.getElementsByTagName('select')[0].getAttribute('saved-value'));
         }
         if (!sectorDAC3.classList.contains('hidden')) {
             sectorDAC3.classList.add('hidden');
-            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.inactive');
+            sectorDAC3.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac3');
             sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('saved-value', sectorDAC3.getElementsByTagName('select')[0].getAttribute('saved-value'));
         }
     }
+
 }
 
 function setToggleSectionOnClick () {
