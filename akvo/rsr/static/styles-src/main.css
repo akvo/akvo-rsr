@@ -2134,6 +2134,8 @@ body.translationBarActive div.skiptranslate ~ #map {
 
 .formProgress .progress-and-publish {
   top: 20px; }
+  .formProgress .progress-and-publish .row .help-block-error {
+    padding-left: 15px; }
 
 .formProgress .redLegenda {
   background: #d9534f;
@@ -2513,6 +2515,10 @@ article {
   display: -webkit-flex;
   display: flex;
   padding-left: 0; }
+  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .updates-container {
+    clear: both; }
+  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .periodValues .period-target-comment {
+    padding-right: 15px; }
 
 .baseline,
 .periodValues {
