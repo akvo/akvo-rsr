@@ -3067,6 +3067,22 @@ article {
 .results-container {
     @include display-flex;
     padding-left: 0;
+    .indicator-container {
+        .indicator-period-container {
+            .indicator-period {
+                .period-target-actual {
+                    .updates-container {
+                        clear: both;
+                    }
+                    .periodValues {
+                        .period-target-comment {
+                            padding-right: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 .baseline,
