@@ -577,13 +577,11 @@ def project_editor(request, pk=None):
 def project_editor_reorder_items(request, project_pk=None):
     """API call to reorder results or indicators"""
 
-    errors = []
-    swap_id = -1
+    errors, item_list, item_selected, swap_id = [], [], None, -1
 
     item_type = request.POST.get('item_type', False)
     item_id = request.POST.get('item_id', False)
     item_direction = request.POST.get('item_direction', False)
-
 
     if item_type == 'result':
         item_selected = Result.objects.get(id=item_id)
@@ -596,7 +594,7 @@ def project_editor_reorder_items(request, project_pk=None):
 
     if not errors:
         # assign order if it doesn't already exist
-        if not item_list[0].order:
+        if item_list and not item_list[0].order:
             for i, item in enumerate(item_list):
                 item.order = i
                 item.save()
@@ -613,8 +611,9 @@ def project_editor_reorder_items(request, project_pk=None):
 
             swap_id = item_swap.id
 
-            item_selected.order = item_original_order-1
-            item_selected.save()
+            if item_selected:
+                item_selected.order = item_original_order-1
+                item_selected.save()
 
         elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
             item_swap = item_list.get(order=item_original_order + 1)
@@ -623,11 +622,13 @@ def project_editor_reorder_items(request, project_pk=None):
 
             swap_id = item_swap.id
 
-            item_selected.order = item_original_order + 1
-            item_selected.save()
+            if item_selected:
+                item_selected.order = item_original_order + 1
+                item_selected.save()
 
         else:
-            errors += ['Unable to reorder the selected item, it may already be at top/bottom of list.']
+            errors += ['Unable to reorder the selected item, it may already be at top/bottom of '
+                       'list.']
 
     return Response(
         {
