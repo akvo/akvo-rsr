@@ -28,7 +28,6 @@ def undo_sector_validation(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        # ('rsr', '0077_auto_20160608_1227'),
         ('rsr', '0078_auto_20160613_1428'),
     ]
 
