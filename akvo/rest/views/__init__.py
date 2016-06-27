@@ -55,6 +55,7 @@ from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectIatiExportViewSet, ProjectUpViewSet
 from .project_editor import (project_editor,
                              log_project_addition,
+                             project_editor_reorder_items,
                              project_editor_upload_file,
                              project_editor_import_results,
                              project_editor_add_validation,
