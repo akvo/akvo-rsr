@@ -11,7 +11,9 @@ def sector_validation(apps, schema_editor):
     sector_validators = ['rsr_sector', 'rsr_sector.sector_code', 'rsr_sector.vocabulary']
 
     for v in sector_validators:
-        ProjectEditorValidation.objects.filter(validation_set_id=1).get(validation__exact=v).delete()
+        validation = ProjectEditorValidation.objects.filter(validation_set_id=1, validation__exact=v)
+        if validation:
+            validation.delete()
 
 def undo_sector_validation(apps, schema_editor):
     """ Remove sector from RSR validation set """
@@ -20,7 +22,7 @@ def undo_sector_validation(apps, schema_editor):
     sector_validators = ['rsr_sector', 'rsr_sector.sector_code', 'rsr_sector.vocabulary']
 
     for v in sector_validators:
-        ProjectEditorValidation(validation=v, action=1, validation_set_id = 1).save()
+        ProjectEditorValidation.objects.get_or_create(validation=v, action=1, validation_set_id=1)
 
 
 class Migration(migrations.Migration):
