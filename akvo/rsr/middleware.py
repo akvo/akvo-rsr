@@ -16,8 +16,7 @@ from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
 from django.utils import translation
-from django.http import HttpResponseRedirect, HttpResponse
-import json
+from django.http import HttpResponseRedirect
 
 
 def _is_rsr_host(hostname):
