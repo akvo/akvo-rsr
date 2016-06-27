@@ -426,6 +426,8 @@ def project_editor(request, pk=None):
     # to the project and create a result id, which will be stored in rel_objects. The second time
     # it will definitely be able to create the indicator id, etc.
 
+    print data
+
     for i in range(4):
         for key in data.keys():
             # The keys in form data are of format "rsr_project.title.1234".
