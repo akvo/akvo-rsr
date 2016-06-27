@@ -148,20 +148,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         if self.is_superuser or self.is_admin:
             return ProjectUpdate.objects.all().order_by('-created_at')
-        elif self.get_admin_employment_orgs():
-            owned_organisation_users = self.get_owned_org_users()
-            owned_updates = ProjectUpdate.objects.none()
-
-            for u in owned_organisation_users:
-                owned_updates = owned_updates | ProjectUpdate.objects.filter(user=u)
-
-            return owned_updates.order_by('-created_at')
-
         else:
-            return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+            admin_employment_orgs = self.get_admin_employment_orgs()
+            if admin_employment_orgs:
+                return admin_employment_orgs.all_updates().order_by('-created_at')
+            else:
+                return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
 
     def can_edit_update(self, update):
-        return self.is_admin or self.is_superuser or update.user in self.get_owned_org_users()
+        is_admin = self.is_admin or self.is_superuser
+        return is_admin or update in self.get_admin_employment_orgs().all_updates()
 
     def latest_update_date(self):
         updates = self.updates()
@@ -227,15 +223,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_admin_employment_orgs(self):
         from .employment import Employment
-        try:
-            employments = Employment.objects.filter(user=self)
-        except:
-            return None
+        from .organisation import Organisation
 
-        admin_employment_orgs = []
+        employments = Employment.objects.filter(user=self)
+        admin_employment_orgs = Organisation.objects.none()
+
         for e in employments:
             if e.group == Group.objects.get(name='Admins') and e.is_approved:
-                admin_employment_orgs += [e.organisation]
+                admin_employment_orgs = admin_employment_orgs | e.organisation
 
         return admin_employment_orgs
 
