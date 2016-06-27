@@ -331,6 +331,58 @@ rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin | is_
 rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
+rules.add_perm('rsr.add_organisationtotalbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationtotalbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationtotalbudget', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationrecipientorgbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationrecipientorgbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationrecipientorgbudget', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationregionbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationregionbudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationregionbudget', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationcountrybudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationcountrybudget', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationcountrybudget', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationtotalexpenditure', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationtotalexpenditure', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationtotalexpenditure', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationtotalbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationtotalbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationtotalbudgetline', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationrecipientorgbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationrecipientorgbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationrecipientorgbudgetline', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationregionbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationregionbudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationregionbudgetline', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationcountrybudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationcountrybudgetline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationcountrybudgetline', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationexpenseline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationexpenseline', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationexpenseline', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationdocument', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationdocument', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationdocument', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationdocumentcategory', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationdocumentcategory', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationdocumentcategory', is_rsr_admin | is_org_admin)
+
+rules.add_perm('rsr.add_organisationdocumentcountry', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.change_organisationdocumentcountry', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_organisationdocumentcountry', is_rsr_admin | is_org_admin)
+
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 
