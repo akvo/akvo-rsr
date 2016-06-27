@@ -340,6 +340,14 @@ function doSubmitStep(saveButton) {
             setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
 
+           // Reset ordering buttons if necessary
+            if (form_data.indexOf('rsr_indicator') > -1) {
+                setIndicatorSorting();
+            }
+            if (form_data.indexOf('rsr_result') > -1) {
+                setResultSorting();
+            }
+
             return false;
         } else if (request.status === 403) {
             // Not allowed to save
@@ -761,6 +769,7 @@ function deleteItem(itemId, itemType) {
     } else {
         request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
     }
+
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -771,6 +780,10 @@ function deleteItem(itemId, itemType) {
             // Update the budget in case of removed budget
             if (itemType === 'budget-item') {
                 getTotalBudget();
+            } else if (itemType === 'result') {
+                setResultSorting();
+            } else if (itemType === 'indicator') {
+                setIndicatorSorting();
             }
 
             // Update progress bars
@@ -1371,6 +1384,7 @@ function togglePartner(selectNode) {
         }
 
         checkPartnerships();
+        markMandatoryFields();
     };
 }
 
@@ -2182,7 +2196,12 @@ function markMandatoryFields() {
         var mandatoryIndicator = '.mandatory-' + validationSets[j];
         var elementsToMark = document.querySelectorAll(mandatoryIndicator);
         for (var k = 0; k < elementsToMark.length; k++) {
-            if (!hasParent(elementsToMark[k]) || partialFilled(findAncestorByClass(elementsToMark[k], 'parent'))) {
+            if (!elementsToMark[k].hasAttribute("disabled") &&
+                    (!hasParent(elementsToMark[k]) ||
+                     partialFilled(findAncestorByClass(elementsToMark[k], 'parent')) ||
+                     (hasParent(elementsToMark[k]) &&
+                      elHasClass(findAncestorByClass(elementsToMark[k], 'related-object-container'),
+                                                     'mandatory-' + validationSets[j])))) {
                 markMandatoryField(elementsToMark[k]);
 
                 var mandatoryOrClass = mandatoryIndicator.replace('.', '') + '-or-';
@@ -2477,7 +2496,165 @@ function sectorCodeSwitcher (vocabularyField) {
             sectorOther.getElementsByTagName('input')[0].setAttribute('saved-value', sectorDAC3.getElementsByTagName('select')[0].getAttribute('saved-value'));
         }
     }
+}
 
+// add arrow buttons to each indicator
+function setIndicatorSorting () {
+    var indicatorContainers = document.querySelectorAll('.indicator-container');
+
+    for (var i=0; i < indicatorContainers.length; i++) {
+        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item:not([id*="new"])');
+
+        for (var j=0; j < indicatorSections.length; j++) {
+            setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
+        }
+    }
+}
+
+// add arrow buttons to each result
+function setResultSorting () {
+    var resultSections = document.querySelectorAll('.result-item:not([id*="new"])');
+
+    for (var i=0; i < resultSections.length; i++) {
+        setReorderButtons(resultSections[i], 'result', i, resultSections.length);
+    }
+}
+
+function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
+    itemId = itemNode.getAttribute('id').split('.')[1];
+
+    if (itemNode.classList.contains('sort-buttons-set')) {
+        if (itemIndex === 0 || listLength < 2) {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+        } else {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+        }
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+        } else {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+        }
+    } else {
+        var sortItemNode = document.createElement('span');
+        itemNode.className += ' sort-buttons-set';
+
+        var sortItemUp = document.createElement('a');
+        var upButton = document.createElement('span');
+
+        if (itemIndex === 0 || listLength < 2) {
+            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+        } else {
+            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+        }
+
+        if (itemType == 'indicator') {
+            upButton.onclick = reorderItems('indicator', itemId, 'up');
+        } else if (itemType == 'result') {
+            upButton.onclick = reorderItems('result', itemId, 'up');
+        }
+
+        sortItemUp.appendChild(upButton);
+
+
+        var sortItemDown = document.createElement('a');
+        var downButton = document.createElement('span');
+
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+        } else {
+            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+        }
+
+        if (itemType == 'indicator') {
+            downButton.onclick = reorderItems('indicator', itemId, 'down');
+        } else if (itemType == 'result') {
+            downButton.onclick = reorderItems('result', itemId, 'down');
+        }
+
+        sortItemDown.appendChild(downButton);
+
+        sortItemNode.appendChild(sortItemUp);
+        sortItemNode.appendChild(sortItemDown);
+
+
+        var itemContainer = itemNode.querySelector('.delete-related-object-container');
+
+        // sortNode = sortIndicatorNode.cloneNode(true);
+        // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
+
+        itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
+    }
+}
+
+function reorderItems (itemType, itemId, direction) {
+    return function(e) {
+        e.preventDefault();
+        var api_url, request;
+
+        var form_data = 'item_type=' + itemType + '&item_id=' + itemId + '&item_direction=' + direction;
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/reorder_items/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+                if (response.swap_id > -1) {
+                    swapReorderedItems(itemType, itemId, response.swap_id, direction);
+                } else {
+                    console.log(error);
+                }
+
+            } else {
+                // We reached our target server, but it returned an error 
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            return false;
+        };
+
+        request.send(form_data);
+    };
+}
+
+function swapReorderedItems (itemType, itemId, swapId, direction) {
+    var selectedItem = document.getElementById(itemType + '.' + itemId);
+    var swapItem = document.getElementById(itemType + '.' + swapId);
+    var parentContainer = selectedItem.parentNode;
+
+    if (direction == 'up') {
+        parentContainer.insertBefore(selectedItem, swapItem);
+
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == selectedItem) {
+            selectedItem.querySelector('.sort-up').className += ' hidden';
+            swapItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
+            selectedItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+            swapItem.querySelector('.sort-down').className += ' hidden';
+        }
+    } else if (direction == 'down') {
+        parentContainer.insertBefore(swapItem, selectedItem);
+
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == swapItem) {
+            selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+            swapItem.querySelector('.sort-up').className += ' hidden';
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
+            selectedItem.querySelector('.sort-down').className += ' hidden';
+            swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+        }
+    }
 }
 
 function setToggleSectionOnClick () {
@@ -3515,6 +3692,9 @@ function initApp() {
     setSectorOnChange();
     setFileUploads();
     checkPartnerships();
+
+    setIndicatorSorting();
+    setResultSorting();
 
     setValidationListeners();
     updateAllHelpIcons();
