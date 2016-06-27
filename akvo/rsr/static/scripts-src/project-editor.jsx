@@ -2385,7 +2385,7 @@ function setIndicatorSorting () {
     var indicatorContainers = document.querySelectorAll('.indicator-container');
 
     for (var i=0; i < indicatorContainers.length; i++) {
-        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item');
+        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item:not([id*="new"])');
 
         for (var j=0; j < indicatorSections.length; j++) {
             setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
@@ -2395,7 +2395,7 @@ function setIndicatorSorting () {
 
 // add arrow buttons to each result
 function setResultSorting () {
-    var resultSections = document.querySelectorAll('.result-item');
+    var resultSections = document.querySelectorAll('.result-item:not([id*="new"])');
 
     for (var i=0; i < resultSections.length; i++) {
         setReorderButtons(resultSections[i], 'result', i, resultSections.length);
