@@ -380,6 +380,7 @@ def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, 
             # Somewhere else in the model a validation error occurred (or a combination of fields).
             # We display this nonetheless and do not save the field.
             errors = add_error(errors, str(e), field_name)
+        obj.delete()
     except MultipleObjectsReturned:
         # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
         # exception. In this case, display a nice error message and delete the created partnership.
@@ -425,8 +426,6 @@ def project_editor(request, pk=None):
     # This script runs 4 times if needed, the first time it is at least able to connect the result
     # to the project and create a result id, which will be stored in rel_objects. The second time
     # it will definitely be able to create the indicator id, etc.
-
-    print data
 
     for i in range(4):
         for key in data.keys():
