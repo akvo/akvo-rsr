@@ -295,8 +295,6 @@ function doSubmitStep(saveButton) {
     form = findAncestorByTag(saveButton, 'form');
     form_data = serialize(form);
 
-    console.log(form_data);
-
     // Remove existing errors and indicate that saving has started
     removeErrors(form);
     startSave(saveButton);
