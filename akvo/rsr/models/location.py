@@ -65,7 +65,7 @@ class BaseLocation(models.Model):
 class OrganisationLocation(BaseLocation):
     location_target = models.ForeignKey('Organisation', related_name='locations')
     iati_country = ValidXMLCharField(
-        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY),
+        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'The country in which the organisation is located.')
     )
 
