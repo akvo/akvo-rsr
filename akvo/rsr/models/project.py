@@ -124,7 +124,7 @@ class Project(TimestampsMixin, models.Model):
     }
 
     # Status combinations used in conditionals
-    EDIT_DISABLED = ['3', '5']
+    EDIT_DISABLED = []
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
