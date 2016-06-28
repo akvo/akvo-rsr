@@ -1172,8 +1172,7 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 class ProjectUpdateLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectupdatelocation')
     extra = 0
-    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
-              'country')
+    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode')
 
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
