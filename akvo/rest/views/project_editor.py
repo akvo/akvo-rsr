@@ -563,6 +563,13 @@ def project_editor(request, pk=None):
     updated_project = Project.objects.get(pk=pk)
     updated_project.update_iati_checks()
 
+    # Ensure errors are properly encoded
+    for error in errors:
+        if 'location' in error['name'] and 'Invalid literal' in error['error']:
+            error['error'] = 'Only decimal values are accepted.'
+        else:
+            error['error'] = unicode(error['error'], errors='ignore')
+
     return Response(
         {
             'changes': log_changes(changes, user, project),
