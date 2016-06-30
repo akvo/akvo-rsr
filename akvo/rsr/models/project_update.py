@@ -97,7 +97,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return 'update-main', (), {'project_id': self.project.pk, 'update_id': self.pk}
+        return 'update-main', (), {'project_id': self.project_id, 'update_id': self.pk}
 
     def __unicode__(self):
         return _(u'Project update for %(project_name)s') % {'project_name': self.project.title}
