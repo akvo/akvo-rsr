@@ -131,6 +131,8 @@
             "project_id": "{{ project.pk }}",
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
+            "is_admin": {% if is_admin %}true{% else %}false{% endif %},
+            "org_permissions": {{ org_permissions }},
             "save": "{% trans 'Save' %}",
             "saving": "{% trans 'Saving' %}",
             "save_error": "{% trans 'Could not save one or more fields' %}",

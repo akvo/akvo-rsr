@@ -340,7 +340,10 @@ function doSubmitStep(saveButton) {
             setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
 
-           // Reset ordering buttons if necessary
+            // Check partnerships (hide or show delete button)
+            checkPartnerships();
+
+            // Reset ordering buttons if necessary
             if (form_data.indexOf('rsr_indicator') > -1) {
                 setIndicatorSorting();
             }
@@ -1002,6 +1005,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     updateAllHelpIcons();
     markMandatoryFields();
     setHiddenFields();
+    checkPartnerships();
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
     setPageCompletionPercentage();
@@ -1279,73 +1283,99 @@ function toggleOtherLabel(selectNode) {
 }
 
 function checkPartnerships() {
-    /* Hides the trash can if there's only one partnership. */
+    /* - Hides the trash can if there's only one partnership.
+    *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
+    *  - Remove the 'Reporting organisation' option when it is already selected. */
 
-    var partnerContainer = document.getElementById('partner-container');
-    var trashCan;
+    if (!defaultValues.is_admin) {
+        var partnerContainer = document.getElementById('partner-container');
+        var trashCan;
 
-    if (partnerContainer !== null) {
-        var partnerPartials = partnerContainer.querySelectorAll('.parent');
-        if (partnerPartials.length === 1) {
-            trashCan = partnerPartials[0].querySelector('.delete-related-object');
-            if (!elHasClass(trashCan, 'hidden')) {
-                elAddClass(trashCan, 'hidden');
-            }
-        } else {
-            var reportingSelected = false;
-            var options, partialId, roleNode;
-
-            for (var i = 0; i < partnerPartials.length; i++) {
-                partialId = partnerPartials[i].getAttribute('id').split('.')[1];
-                roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
-
-                if (roleNode.value === '101') {
-                    reportingSelected = true;
+        if (partnerContainer !== null) {
+            var partnerPartials = partnerContainer.querySelectorAll('.parent');
+            if (partnerPartials.length === 1) {
+                // Hides the trash can if there's only one partnership.
+                trashCan = partnerPartials[0].querySelector('.delete-related-object');
+                if (!elHasClass(trashCan, 'hidden')) {
+                    elAddClass(trashCan, 'hidden');
                 }
+            } else {
+                // Remove the 'Reporting organisation' option when it is already selected.
+                var reportingSelected = false;
+                var options, partialId, roleNode;
 
-                trashCan = partnerPartials[i].querySelector('.delete-related-object');
-                if (elHasClass(trashCan, 'hidden')) {
-                    elRemoveClass(trashCan, 'hidden');
-                }
-            }
-
-            if (reportingSelected === true) {
-                for (var j = 0; j < partnerPartials.length; j++) {
-                    partialId = partnerPartials[j].getAttribute('id').split('.')[1];
+                for (var i = 0; i < partnerPartials.length; i++) {
+                    partialId = partnerPartials[i].getAttribute('id').split('.')[1];
                     roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
 
-                    if (roleNode.value !== '101') {
-                        options = roleNode.querySelectorAll('option');
-                        for (var k = 0; k < options.length; k++) {
-                            if (options[k].getAttribute('value') === '101') {
-                                options[k].parentNode.removeChild(options[k]);
+                    if (roleNode.value === '101') {
+                        reportingSelected = true;
+                    }
+
+                    trashCan = partnerPartials[i].querySelector('.delete-related-object');
+                    if (elHasClass(trashCan, 'hidden')) {
+                        elRemoveClass(trashCan, 'hidden');
+                    }
+                }
+
+                if (reportingSelected === true) {
+                    for (var j = 0; j < partnerPartials.length; j++) {
+                        partialId = partnerPartials[j].getAttribute('id').split('.')[1];
+                        roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+
+                        if (roleNode.value !== '101') {
+                            options = roleNode.querySelectorAll('option');
+                            for (var k = 0; k < options.length; k++) {
+                                if (options[k].getAttribute('value') === '101') {
+                                    options[k].parentNode.removeChild(options[k]);
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                for (var l = 0; l < partnerPartials.length; l++) {
-                    partialId = partnerPartials[l].getAttribute('id').split('.')[1];
-                    roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
-                    var hasReportingOption = false;
+                } else {
+                    for (var l = 0; l < partnerPartials.length; l++) {
+                        partialId = partnerPartials[l].getAttribute('id').split('.')[1];
+                        roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+                        var hasReportingOption = false;
 
-                    options = roleNode.querySelectorAll('option');
-                    for (var m = 0; m < options.length; m++) {
-                        if (options[m].getAttribute('value') === '101') {
-                            hasReportingOption = true;
+                        options = roleNode.querySelectorAll('option');
+                        for (var m = 0; m < options.length; m++) {
+                            if (options[m].getAttribute('value') === '101') {
+                                hasReportingOption = true;
+                            }
+                        }
+
+                        if (hasReportingOption === false) {
+                            var reportingOption = document.createElement('option');
+                            reportingOption.setAttribute('value', '101');
+                            var reportingOptionText = document.createTextNode(defaultValues.reporting_org);
+                            reportingOption.appendChild(reportingOptionText);
+                            roleNode.appendChild(reportingOption);
                         }
                     }
+                }
 
-                    if (hasReportingOption === false) {
-                        var reportingOption = document.createElement('option');
-                        reportingOption.setAttribute('value', '101');
-                        var reportingOptionText = document.createTextNode(defaultValues.reporting_org);
-                        reportingOption.appendChild(reportingOptionText);
-                        roleNode.appendChild(reportingOption);
+                // Hides the trash can if removing the partnership will not allow the user to edit anymore.
+                var partnerNodes = [];
+                for (var n = 0; n < partnerPartials.length; n++) {
+                    var partnerIdNode = partnerPartials[n].querySelector('.typeahead');
+                    if (partnerIdNode !== null) {
+                        var partnerId = partnerIdNode.querySelector('input').getAttribute('saved-value');
+                        if (defaultValues.org_permissions.indexOf(parseInt(partnerId)) > -1) {
+                            partnerNodes.push(partnerPartials[n].querySelector('.delete-related-object'));
+                        }
+                    }
+                }
+                if (partnerNodes.length === 1 && !elHasClass(partnerNodes[0], 'hidden')) {
+                    elAddClass(partnerNodes[0], 'hidden');
+                } else if (partnerNodes.length > 1) {
+                    for (var o = 0; o < partnerNodes.length; o++) {
+                        if (elHasClass(partnerNodes[o], 'hidden')) {
+                            elRemoveClass(partnerNodes[o], 'hidden');
+                        }
                     }
                 }
             }
-
         }
     }
 }
