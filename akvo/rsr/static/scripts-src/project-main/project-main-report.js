@@ -401,6 +401,7 @@ function renderReportTab() {
             var projectPlanText = {__html: micromarkdown.parse(proj.project_plan)};
             var goalsOverviewText = {__html: micromarkdown.parse(proj.goals_overview)};
             var targetGroupText = {__html: micromarkdown.parse(proj.target_group)};
+            var projectPlanSummaryText = {__html: micromarkdown.parse(proj.project_plan_summary)};
             var backgroundText = {__html: micromarkdown.parse(proj.background)};
             var currentStatusText = {__html: micromarkdown.parse(proj.current_status)};
             var sustainabilityText = {__html: micromarkdown.parse(proj.sustainability)};
@@ -426,7 +427,7 @@ function renderReportTab() {
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.project_plan_summary),
-                                        React.DOM.td(null, proj.project_plan_summary)
+                                        React.DOM.td( {dangerouslySetInnerHTML:projectPlanSummaryText} )
                                     ),
                                     React.DOM.tr(null, 
                                         React.DOM.th( {scope:"row"}, i18nReport.background),
