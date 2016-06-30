@@ -219,9 +219,9 @@ def _get_hierarchy_row(max_rows, projects):
 
 
 def _get_hierarchy_grid(project):
-    parents = project.parents()
-    siblings = project.siblings()
-    children = project.children()
+    parents = project.parents().published()
+    siblings = project.siblings().published()
+    children = project.children().published()
 
     # Create the lay-out of the grid
     max_rows = max(parents.count(), siblings.count() + 1, children.count())
