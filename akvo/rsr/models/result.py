@@ -47,6 +47,7 @@ class Result(models.Model):
     parent_result = models.ForeignKey('self', blank=True, null=True, default=None,
                                       help_text=_(u'The parent result of this result.'),
                                       related_name='child_results')
+    order = models.PositiveSmallIntegerField(_(u'result order'), null=True, blank=True)
 
     def __unicode__(self):
         result_unicode = self.title if self.title else u'%s' % _(u'No result title')
@@ -72,6 +73,12 @@ class Result(models.Model):
                 child_result.description = self.description
 
             child_result.save()
+
+        if not self.pk and Result.objects.filter(project_id=self.project.id).exists():
+            prev_result = Result.objects.filter(project_id=self.project.id).reverse()[0]
+            if prev_result.order:
+                self.order = prev_result.order + 1
+
         super(Result, self).save(*args, **kwargs)
 
     def clean(self):
@@ -100,6 +107,20 @@ class Result(models.Model):
 
         if validation_errors:
             raise ValidationError(validation_errors)
+
+    def delete(self, *args, **kwargs):
+        """
+        Check if indicator is ordered manually, and cascade following indicators if needed
+        """
+        if self.order:
+            sibling_results = Result.objects.filter(project_id=self.project.id)
+
+            if not self == sibling_results.reverse()[0]:
+                for ind in range(self.order + 1, len(sibling_results)):
+                    sibling_results[ind].order -= 1
+                    sibling_results[ind].save()
+
+        super(Result, self).delete(*args, **kwargs)
 
     def iati_type(self):
         return codelist_value(ResultType, self, 'type')
@@ -131,5 +152,6 @@ class Result(models.Model):
 
     class Meta:
         app_label = 'rsr'
+        ordering = ['order', 'id']
         verbose_name = _(u'result')
         verbose_name_plural = _(u'results')

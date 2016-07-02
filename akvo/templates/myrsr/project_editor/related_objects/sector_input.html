@@ -3,14 +3,61 @@
 <div class="sector-item parent" id="sector.{{ sector|obj_id }}">
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=sector %}
     <div class="hide-partial {% if sector.pk %}hidden{% endif %}">
-        <p class="help-block">{% trans 'Please visit these links for more information on sector codes: ' %}<a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">{% trans 'DAC-3 sector codes' %}</a> {% trans 'or' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">{% trans 'DAC-5 sector codes' %}</a>.</p>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 sector-vocabulary">
                 {% include choice_input with obj=sector field='vocabulary' %}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 sector-code-other">
                 {% include text_input with obj=sector field='sector_code' %}
             </div>
+            {% with obj_field_id=sector|field_id:'sector_code' obj_value=sector|value:'sector_code' field='sector_code' %}
+            <div class="col-md-4 sector-code-dac5 hidden">
+                <div class="form-group always-hidden hidden">
+                    <div class="select-group control">
+                        <select name="{{ obj_field_id }}.dac5"
+                                id="{{ obj_field_id }}.dac5"
+                                class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
+                                {% if disabled %}disabled{% endif %}>
+                            {% if not not_empty %}
+                                <option value=""{% if not obj_value %} selected="selected"{% endif %}></option>
+                            {% endif %}
+                            {% for choice in dac5_codes %}
+                                <option value="{{ choice.0 }}"{% if obj_value == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="{{ obj_field_id }}" class="control-label">
+                            {{ sector|field_name:field }} (DAC-5)
+                        </label>
+                    </div>
+                    {% if sector|help_text:field %}
+                        <p class="help-block hidden">{{ sector|help_text:field|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 sector-code-dac3 hidden">
+                <div class="form-group always-hidden hidden">
+                    <div class="select-group control">
+                        <select name="{{ obj_field_id }}.dac3"
+                                id="{{ obj_field_id }}.dac3"
+                                class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
+                                {% if disabled %}disabled{% endif %}>
+                            {% if not not_empty %}
+                                <option value=""{% if not obj_value %} selected="selected"{% endif %}></option>
+                            {% endif %}
+                            {% for choice in dac3_codes %}
+                                <option value="{{ choice.0 }}"{% if obj_value == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="{{ obj_field_id }}" class="control-label">
+                            {{ sector|field_name:field }} (DAC-3)
+                        </label>
+                    </div>
+                    {% if sector|help_text:field %}
+                        <p class="help-block hidden">{{ sector|help_text:field|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endwith %}
             <div class="col-md-4">
                 {% include percentage_input with obj=sector field='percentage' %}
             </div>

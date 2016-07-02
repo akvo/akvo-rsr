@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import datetime
 import decimal
+import collections
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
@@ -380,6 +381,7 @@ def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, 
             # Somewhere else in the model a validation error occurred (or a combination of fields).
             # We display this nonetheless and do not save the field.
             errors = add_error(errors, str(e), field_name)
+        obj.delete()
     except MultipleObjectsReturned:
         # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
         # exception. In this case, display a nice error message and delete the created partnership.
@@ -427,7 +429,7 @@ def project_editor(request, pk=None):
     # it will definitely be able to create the indicator id, etc.
 
     for i in range(4):
-        for key in data.keys():
+        for key in sorted(data.keys()):
             # The keys in form data are of format "rsr_project.title.1234".
             # Separated by .'s, the data contains the model name, field name and object id list
             model, field, id_list = split_key(key)
@@ -561,6 +563,13 @@ def project_editor(request, pk=None):
     updated_project = Project.objects.get(pk=pk)
     updated_project.update_iati_checks()
 
+    # Ensure errors are properly encoded
+    for error in errors:
+        if 'location' in error['name'] and 'Invalid literal' in error['error']:
+            error['error'] = 'Only decimal values are accepted.'
+        else:
+            error['error'] = unicode(error['error'], errors='ignore')
+
     return Response(
         {
             'changes': log_changes(changes, user, project),
@@ -570,6 +579,71 @@ def project_editor(request, pk=None):
         }
     )
 
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def project_editor_reorder_items(request, project_pk=None):
+    """API call to reorder results or indicators"""
+
+    errors, item_list, item_selected, swap_id = [], [], None, -1
+
+    item_type = request.POST.get('item_type', False)
+    item_id = request.POST.get('item_id', False)
+    item_direction = request.POST.get('item_direction', False)
+
+    if item_type == 'result':
+        item_selected = Result.objects.get(id=item_id)
+        item_list = Result.objects.filter(project_id=project_pk)
+    elif item_type == 'indicator':
+        item_selected = Indicator.objects.get(id=item_id)
+        item_list = Indicator.objects.filter(result_id=item_selected.result_id)
+    else:
+        errors += ['Invalid item type']
+
+    if not errors:
+        # assign order if it doesn't already exist
+        if item_list and not item_list[0].order:
+            for i, item in enumerate(item_list):
+                item.order = i
+                item.save()
+
+        if item_type == 'result':
+            item_original_order = Result.objects.get(id=item_id).order
+        else:
+            item_original_order = Indicator.objects.get(id=item_id).order
+
+        if item_direction == 'up' and not item_original_order < 1:
+            item_swap = item_list.get(order=item_original_order - 1)
+            item_swap.order = item_original_order
+            item_swap.save()
+
+            swap_id = item_swap.id
+
+            if item_selected:
+                item_selected.order = item_original_order-1
+                item_selected.save()
+
+        elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
+            item_swap = item_list.get(order=item_original_order + 1)
+            item_swap.order = item_original_order
+            item_swap.save()
+
+            swap_id = item_swap.id
+
+            if item_selected:
+                item_selected.order = item_original_order + 1
+                item_selected.save()
+
+        else:
+            errors += ['Unable to reorder the selected item, it may already be at top/bottom of '
+                       'list.']
+
+    return Response(
+        {
+            'errors': errors,
+            'swap_id': swap_id,
+        }
+    )
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

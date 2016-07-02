@@ -363,6 +363,17 @@ function readMoreOnClicks() {
     }
 }
 
+function setSummaryMarkdown() {
+    var summaryTruncated = document.getElementById('summary-truncated');
+    var summaryFull = document.getElementById('summary-full');
+    if (summaryTruncated !== null) {
+        summaryTruncated.innerHTML = micromarkdown.parse(summaryTruncated.innerHTML.trim());
+    }
+    if (summaryFull !== null) {
+        summaryFull.innerHTML = micromarkdown.parse(summaryFull.innerHTML.trim());
+    }
+}
+
 function showTab(tabClass) {
     var allTabs = document.querySelectorAll('.project-tab');
     var allTabLinks = document.querySelectorAll('.tab-link.selected');
@@ -478,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 
     // Setup project tabs
+    setSummaryMarkdown();
     setTabsOnClicks();
     readTabFromFragment();
     readMoreOnClicks();
