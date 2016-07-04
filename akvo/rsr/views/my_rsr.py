@@ -292,10 +292,21 @@ def project_editor(request, project_id):
     dac5_codes = codelist_choices(SECTOR)
     dac3_codes = codelist_choices(SECTOR_CATEGORY)
 
+    # Permissions
+    org_permissions = []
+    for approved_org in request.user.approved_organisations():
+        if request.user.admin_of(approved_org) or request.user.me_manager_of(approved_org) or \
+                request.user.project_editor_of(approved_org):
+            org_permissions.append(approved_org.pk)
+
     context = {
         'id': project_id,
         'project': project,
         'projectmodel': Project,
+
+        # Permissions
+        'is_admin': request.user.is_admin or request.user.is_superuser,
+        'org_permissions': list(set(org_permissions)),
 
         # Validation
         'validations': validations,
