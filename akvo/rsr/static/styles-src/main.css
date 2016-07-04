@@ -4058,3 +4058,8 @@ div.iatiFilters {
 
 .iatiCheck span.error {
   color: #ee3124; }
+
+/* User management */
+.employment-error {
+  color: #ee3124;
+  font-size: 85%; }
