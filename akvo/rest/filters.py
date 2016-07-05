@@ -66,7 +66,7 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
                         queryset = getattr(queryset, param)(*args_or_kwargs)
 
                 except FieldError as e:
-                    raise APIException("Error in request. Error msg:\n {message}".format(message=e.message))
+                    raise APIException("Error in request: {message}".format(message=e.message))
 
         # support for Q expressions, limited to OR-concatenated filtering
         if request.QUERY_PARAMS.get('q_filter1', None):
