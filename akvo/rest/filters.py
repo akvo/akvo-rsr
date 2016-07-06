@@ -7,8 +7,10 @@
 import ast
 
 from django.db.models import Q
+from django.core.exceptions import FieldError
 
-from rest_framework import filters
+from rest_framework import filters, status
+from rest_framework.exceptions import APIException
 
 
 class RSRGenericFilterBackend(filters.BaseFilterBackend):
@@ -57,10 +59,14 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
             args_or_kwargs = eval_query_value(request, param)
             if args_or_kwargs:
                 # filter and exclude are called with a dict kwarg, the _related methods with a list
-                if param in ['filter', 'exclude',]:
-                    queryset = getattr(queryset, param)(**args_or_kwargs)
-                else:
-                    queryset = getattr(queryset, param)(*args_or_kwargs)
+                try:
+                    if param in ['filter', 'exclude',]:
+                        queryset = getattr(queryset, param)(**args_or_kwargs)
+                    else:
+                        queryset = getattr(queryset, param)(*args_or_kwargs)
+
+                except FieldError as e:
+                    raise APIException("Error in request: {message}".format(message=e.message))
 
         # support for Q expressions, limited to OR-concatenated filtering
         if request.QUERY_PARAMS.get('q_filter1', None):
