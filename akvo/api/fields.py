@@ -26,14 +26,8 @@ def bundle_related_data_info_factory(request=None, parent_bundle=None):
             depth = int(request.GET.get('depth', 'not an int'))
             if depth > 0:
                 full = 'True' == request.GET.get('full', False)
-                if full:
-                    if depth > 3:
-                        depth = 3
-                else:
-                    if depth > 6:
-                        depth = 6
-                # internally depth is twice the number of relations crossed
-                depth = depth * 2
+                # Do not allow any depths bigger than 1 for performance reasons
+                depth = 1
                 ancestors = []
             else:
                 return None
