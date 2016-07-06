@@ -1180,7 +1180,7 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project=self,
                 related_to_projects__relation=1
             )
-        ).distinct()
+        ).distinct().published().public()
 
     def children(self):
         return (
@@ -1191,7 +1191,7 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project=self,
                 related_to_projects__relation=2
             )
-        ).distinct()
+        ).distinct().published().public()
 
     def siblings(self):
         return (
@@ -1202,7 +1202,7 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project=self,
                 related_to_projects__relation=3
             )
-        ).distinct()
+        ).distinct().published().public()
 
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
