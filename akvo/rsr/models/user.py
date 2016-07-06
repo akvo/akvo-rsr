@@ -472,5 +472,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         :param org; an Organisation instance
         """
-        editor_group = Group.objects.get(name='Project editors')
+        editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)
