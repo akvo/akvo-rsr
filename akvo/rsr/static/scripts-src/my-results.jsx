@@ -2406,7 +2406,10 @@ function initReact() {
 
         selectResult: function(resultId) {
             // Keep track in the state which result has been selected
-            this.setState({selectedResultId: resultId});
+            this.setState({
+                selectedResultId: resultId,
+                selectedPeriodId: null
+            });
         },
 
         selectIndicator: function(indicatorId) {
