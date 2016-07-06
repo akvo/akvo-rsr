@@ -27,7 +27,7 @@ before_script:
 
 script:
   - python manage.py collectstatic --noinput
-  - coverage run --source=akvo --omit=akvo.rsr.migrations,akvo.codelists.migrations manage.py test akvo.rsr.tests
+  - coverage run --source=akvo --omit='/home/travis/build/akvo/akvo-rsr/akvo/rsr/migrations','/home/travis/build/akvo/akvo-rsr/akvo/codelists/migrations' manage.py test akvo.rsr.tests
 
 after_success:
   - coveralls
