@@ -522,6 +522,7 @@ function initReact() {
         getInitialState: function() {
             return {
                 visible: true,
+                error: false,
                 button_title: '(' + i18n.none_text + ')',
                 loading: false
             };
@@ -571,11 +572,16 @@ function initReact() {
                         url: "/rest/v1/employment/" + employment_id + '/set_group/' + group.id + '/?format=json',
                         success: function (data) {
                             setGroupName(group.name);
+                            thisEmployment.setState({error:false});
                             loading(false);
                         }.bind(this),
                         error: function (xhr, status, err) {
                             setGroupName(old_title);
                             loading(false);
+                            var json_response = JSON.parse(xhr.responseText);
+                            if (json_response.error == 'Employment already exists.') {
+                                thisEmployment.setState({error:true});
+                            }
                         }.bind(this)
                     });
                 }
@@ -596,6 +602,32 @@ function initReact() {
 
             if (!this.state.visible) {
                 return React.createElement('span');
+            } else if (thisEmployment.state.error) {
+
+                return React.createElement('span', null,
+                    this.props.employment.organisation.name + ' ',
+                    React.createElement(CountryJobTitle, {
+                        country: this.props.employment.country,
+                        job_title: this.props.employment.job_title
+                    }),
+                    React.createElement(SplitButton, {
+                        id: employment_id,
+                        title: this.state.button_title,
+                        disabled: this.disableButton()
+                    }, other_groups),
+                    '  ',
+                    React.createElement(DeleteModal, {
+                        employment: this.props.employment,
+                        onDeleteToggle: this.onDelete
+                    }),
+                    ' ',
+                    React.createElement(ApproveModal, {
+                        employment: this.props.employment
+                    }),
+                    React.createElement('br'),
+                    React.createElement('span', { className: 'employment-error' }, i18n.employment_exists)
+                );
+
             } else {
                 return React.createElement('span', null,
                     this.props.employment.organisation.name + ' ',
@@ -665,7 +697,7 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var firstNameCell = React.createElement('th', null, i18n.first_name_text);
             var lastNameCell = React.createElement('th', null, i18n.last_name_text);
-            var organisationCell = React.createElement('th', {className: "text-right"}, i18n.last_name_text);
+            var organisationCell = React.createElement('th', {className: "text-right"}, i18n.organisations_text);
 
             var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, organisationCell);
             var tableHead = React.createElement('thead', null, tableRow);
