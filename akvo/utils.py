@@ -416,20 +416,22 @@ def custom_get_or_create_country(iso_code, country=None):
 
 
 def right_now_in_akvo():
-    """ Calculate the numbers used in the Right now in akvo box on the home page
-    This is also used by the api in RightNowInAkvoResource
+    """
+    Calculate the numbers used in the "Right now in Akvo" box on the home page.
     """
     projects = get_model('rsr', 'Project').objects.published()
     organisations = get_model('rsr', 'Organisation').objects.all()
+    updates = get_model('rsr', 'ProjectUpdate').objects.all()
+    people_served = projects.get_largest_value_sum(
+        getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected')
+    )
 
-    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
-    #round to nearest whole 1000
-    people_served = int(people_served / 1000) * 1000
-    return  {
+    return {
         'number_of_organisations': organisations.count(),
         'number_of_projects': projects.count(),
-        'people_served': people_served,
+        'people_served': int(people_served / 1000) * 1000,
         'projects_budget_millions': round(projects.budget_sum() / 100000) / 10.0,
+        'number_of_project_updates': updates.count(),
     }
 
 
