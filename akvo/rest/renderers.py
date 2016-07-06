@@ -8,7 +8,7 @@ from django.utils import six
 from django.utils.xmlutils import SimplerXMLGenerator
 
 from rest_framework.compat import StringIO, smart_text
-from rest_framework.renderers import BaseRenderer, JSONRenderer, XMLRenderer
+from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer, XMLRenderer
 
 
 def _rename_to_time_fields(results):
@@ -34,6 +34,52 @@ def _remove_domain(request, link):
     return link
 
 
+def _convert_data_for_tastypie(request, view, data):
+    """
+    Converts the paginated data from DRF format to old Tastypie format.
+    """
+    response_data = dict()
+    response_data['meta'] = {
+        'limit': view.get_paginate_by(),
+        'total_count': data.get('count'),
+        'next': _remove_domain(request, data.get('next')),
+        'previous': _remove_domain(request, data.get('previous')),
+    }
+    response_data['objects'] = _rename_to_time_fields(data.pop('results'))
+    return response_data
+
+
+class CustomHTMLRenderer(BrowsableAPIRenderer):
+    """
+    Custom HTML renderer for keeping Tastypie support.
+    """
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        """
+        In case a request is called on /api/v1/, we now redirect the call to DRF instead of
+        Tastypie. The differences between DRF and Tastypie are:
+
+        - 'created_at' is named 'time';
+        - 'last_modified_at' is named 'time_last_updated'.
+
+        On paginated results:
+          - An additional 'meta' object containing the limit, next, previous and total_count;
+          - Next and previous links do not show the domain;
+          - The key of results is 'objects' instead of 'results';
+        """
+        request = renderer_context.get('request')
+
+        if '/api/v1/' in request.path:
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+                # Paginated result
+                data = _convert_data_for_tastypie(request, renderer_context['view'], data)
+            else:
+                # Non-paginated result
+                data = _rename_to_time_fields([data])[0]
+
+        return super(CustomHTMLRenderer, self).render(data, accepted_media_type, renderer_context)
+
+
 class CustomJSONRenderer(JSONRenderer):
     """
     Custom JSON renderer for keeping Tastypie support.
@@ -57,15 +103,7 @@ class CustomJSONRenderer(JSONRenderer):
         if '/api/v1/' in request.path:
             if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
                 # Paginated result
-                response_data = dict()
-                response_data['meta'] = {
-                    'limit': renderer_context['view'].get_paginate_by(),
-                    'total_count': data.get('count'),
-                    'next': _remove_domain(request, data.get('next')),
-                    'previous': _remove_domain(request, data.get('previous')),
-                }
-                response_data['objects'] = _rename_to_time_fields(data.pop('results'))
-                data = response_data
+                data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
                 data = _rename_to_time_fields([data])[0]
@@ -132,15 +170,8 @@ class CustomXMLRenderer(BaseRenderer):
             if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
                 # Paginated result
                 xml.startElement("response", {})
-                response_data = dict()
-                response_data['meta'] = {
-                    'limit': renderer_context['view'].get_paginate_by(),
-                    'total_count': data.get('count'),
-                    'next': _remove_domain(request, data.get('next')),
-                    'previous': _remove_domain(request, data.get('previous')),
-                }
-                response_data['objects'] = _rename_to_time_fields(data.pop('results'))
-                self._to_xml(xml, response_data)
+                data = _convert_data_for_tastypie(request, renderer_context['view'], data)
+                self._to_xml(xml, data)
                 xml.endElement("response")
             else:
                 # Non-paginated result
