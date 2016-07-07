@@ -1337,6 +1337,17 @@ class Project(TimestampsMixin, models.Model):
                 return True
         return False
 
+    def toggle_aggregate_children(self):
+        """ Subtract all child indicator period updates if aggregation is toggled off """
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                if indicator.is_parent_indicator:
+                    for period in indicator.periods.all():
+                        if period.is_parent_period:
+
+                            print period.child_periods()
+
+
 
 @receiver(post_save, sender=Project)
 def default_validation_set(sender, **kwargs):
