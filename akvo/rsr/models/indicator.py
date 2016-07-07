@@ -480,8 +480,10 @@ class IndicatorPeriod(models.Model):
 
             # Update parent period (if not percentages)
             parent = self.parent_period()
-            if parent and self.indicator.measure != '2':
-                parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
+            if parent:
+                if self.indicator.result.project.aggregate_to_parent and \
+                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
+                    parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
         except (InvalidOperation, TypeError):
             if data and not updated_actual_value:
                 self.actual_value = data
