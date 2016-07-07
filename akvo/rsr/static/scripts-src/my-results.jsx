@@ -9,9 +9,9 @@ var csrftoken,
     endpoints,
     i18nResults,
     isAdmin = false,
+    isMEManager = false,
     isPublic,
     months,
-    permissions,
     projectIds,
     user;
 
@@ -142,21 +142,6 @@ function displayDate(dateString) {
     return i18nResults.unknown_date;
 }
 
-function setPermissions() {
-    // Set the specific permissions for the results framework
-    permissions = {
-        addUpdate: true,
-        editUpdate: true,
-        deleteUpdate: false,
-        unlockPeriod: isAdmin,
-        addComment: true,
-        editComment: false,
-        deleteComment: false,
-        returnForRevision: isAdmin,
-        approve: isAdmin
-    };
-}
-
 function userIsAdmin() {
     // Check if the user is an M&E manager, resulting in different actions than other users.
     var adminOrgIds = [],
@@ -164,7 +149,6 @@ function userIsAdmin() {
 
     if (user.is_admin || user.is_superuser) {
         isAdmin = true;
-        return;
     }
 
     for (var i = 0; i < user.approved_employments.length; i++) {
@@ -179,7 +163,7 @@ function userIsAdmin() {
         for (var j = 0; j < partnerships.length; j++) {
             var partnership = partnerships[j];
             if (adminOrgIds.indexOf(partnership.organisation) > -1) {
-                isAdmin = true;
+                isMEManager = true;
             }
         }
     };
@@ -272,23 +256,16 @@ function initReact() {
         },
 
         saveUpdate: function() {
-            // Save an indicator update.
-            var status;
+            // Set status to 'Draft' when a 'New' status is saved.
+            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
 
-            if (isAdmin) {
-                // Set the status to approved ('A') for M&E Managers and superusers.
-                status = 'A';
-            } else {
-                // Set the status to draft ('D') when the update is new ('N').
-                status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
-            }
-
+            // Save update and reload the whole period when an approved update is edited.
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
                 'relative_data': this.state.isRelative,
                 'status': status
-            }, false, true);
+            }, false, this.props.update.status === 'A');
         },
 
         askForApproval: function() {
@@ -765,7 +742,7 @@ function initReact() {
             var inputId = "new-comment-" + this.props.update.id;
             var addCommentInput;
 
-            if (this.editing()) {
+            // if (this.editing()) {
                 // Adding comments is only possible in edit mode.
                 if (this.state.loadingComment) {
                     addCommentInput = <div>
@@ -786,23 +763,23 @@ function initReact() {
                         </div>
                     </div>;
                 }
-            } else {
-                // Otherwise, show nothing for approved updates.
-                addCommentInput = <span />;
-            }
+            // } else {
+            //     // Otherwise, show nothing for approved updates.
+            //     addCommentInput = <span />;
+            // }
 
-            if (this.props.update.comments.length > 0 || this.editing()) {
+            // if (this.props.update.comments.length > 0 || this.editing()) {
                 return (
                     <div className="comments">
                         {comments}
                         {addCommentInput}
                     </div>
                 );
-            } else {
-                return (
-                    <span />
-                );
-            }
+            // } else {
+            //     return (
+            //         <span />
+            //     );
+            // }
         },
 
         renderFooter: function() {
@@ -843,135 +820,204 @@ function initReact() {
             } else if (this.editing()) {
                 // When editing and in the 'MyRSR' view, the actions are dependant on the status
                 // of the update.
-                switch(this.props.update.status) {
-                    case 'P':
-                        // Status 'Pending approval', show: delete, cancel, save and approve
-                        // buttons. This is only available for admins, since they can only edit
-                        // updates with the pending approval status.
-                        return (
-                            <div className="menuAction">
-                                <div role="presentation" className="removeUpdate">
-                                    <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                                </div>
-                                <ul className="nav-pills bottomRow navbar-right">
-                                    <li role="presentation" className="cancelUpdate">
-                                        <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                                    </li>
-                                    <li role="presentation" className="saveUpdate">
-                                        <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                                    </li>
-                                    <li role="presentation" className="approveUpdate">
-                                        <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        );
-                    default:
-                        if (isAdmin) {
-                            // All other statuses, show: delete, cancel and save for M&E Managers and superusers.
-                            return (
-                                <div className="menuAction">
-                                    <div role="presentation" className="removeUpdate">
-                                        <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                                    </div>
-                                    <ul className="nav-pills bottomRow navbar-right">
-                                        <li role="presentation" className="cancelUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                                        </li>
-                                        <li role="presentation" className="saveUpdate">
-                                            <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            );
-                        } else {
-                            // All other statuses, show: delete, cancel, save and submit for approval
-                            // buttons.
-                            return (
-                                <div className="menuAction">
-                                    <div role="presentation" className="removeUpdate">
-                                        <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                                    </div>
-                                    <ul className="nav-pills bottomRow navbar-right">
-                                        <li role="presentation" className="cancelUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                                        </li>
-                                        <li role="presentation" className="saveUpdate">
-                                            <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                                        </li>
-                                        <li role="presentation" className="submitUpdate">
-                                            <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18nResults.submit_for_approval}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            );
-                        }
+                var approveButtonEdit = <span />,
+                    askForApprovalButton = <span />;
+
+                if (this.props.update.status !== 'A' && isMEManager) {
+                    // Editing an non-approved update as an M&E Manager will show the 'Approve' button.
+                    approveButtonEdit = <li role="presentation" className="approveUpdate">
+                        <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
+                    </li>;
+                } else if (!isMEManager) {
+                    // Editing an update as a non-M&E Manager will show the 'Ask for approval' button.
+                    askForApprovalButton = <li role="presentation" className="submitUpdate">
+                        <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18nResults.submit_for_approval}</a>
+                    </li>;
                 }
+
+                return (
+                    <div className="menuAction">
+                        <div role="presentation" className="removeUpdate">
+                            <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
+                        </div>
+                        <ul className="nav-pills bottomRow navbar-right">
+                            <li role="presentation" className="cancelUpdate">
+                                <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
+                            </li>
+                            <li role="presentation" className="saveUpdate">
+                                <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
+                            </li>
+                            {approveButtonEdit}
+                            {askForApprovalButton}
+                        </ul>
+                    </div>
+                );
+
+                // switch(this.props.update.status) {
+                //     case 'P':
+                //         // Status 'Pending approval', show: delete, cancel, save and approve
+                //         // buttons. This is only available for M&E Managers, since they can only edit
+                //         // updates with the pending approval status.
+                //         return (
+                //             <div className="menuAction">
+                //                 <div role="presentation" className="removeUpdate">
+                //                     <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
+                //                 </div>
+                //                 <ul className="nav-pills bottomRow navbar-right">
+                //                     <li role="presentation" className="cancelUpdate">
+                //                         <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
+                //                     </li>
+                //                     <li role="presentation" className="saveUpdate">
+                //                         <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
+                //                     </li>
+                //                     <li role="presentation" className="approveUpdate">
+                //                         <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
+                //                     </li>
+                //                 </ul>
+                //             </div>
+                //         );
+                //     default:
+                //         if (isMEManager) {
+                //             // All other statuses, show: delete, cancel and save for M&E Managers.
+                //             return (
+                //                 <div className="menuAction">
+                //                     <div role="presentation" className="removeUpdate">
+                //                         <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
+                //                     </div>
+                //                     <ul className="nav-pills bottomRow navbar-right">
+                //                         <li role="presentation" className="cancelUpdate">
+                //                             <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
+                //                         </li>
+                //                         <li role="presentation" className="saveUpdate">
+                //                             <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
+                //                         </li>
+                //                     </ul>
+                //                 </div>
+                //             );
+                //         } else {
+                //             // All other statuses, show: delete, cancel, save and submit for approval
+                //             // buttons.
+                //             return (
+                //                 <div className="menuAction">
+                //                     <div role="presentation" className="removeUpdate">
+                //                         <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
+                //                     </div>
+                //                     <ul className="nav-pills bottomRow navbar-right">
+                //                         <li role="presentation" className="cancelUpdate">
+                //                             <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
+                //                         </li>
+                //                         <li role="presentation" className="saveUpdate">
+                //                             <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
+                //                         </li>
+                //                         <li role="presentation" className="submitUpdate">
+                //                             <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18nResults.submit_for_approval}</a>
+                //                         </li>
+                //                     </ul>
+                //                 </div>
+                //             );
+                //         }
+                // }
             } else {
-                switch(this.props.update.status) {
-                    case 'P':
-                        if (isAdmin) {
-                            // Status 'Pending approval', show: return for revision, edit update
-                            // and approve buttons. These are only available for admins.
-                            return (
-                                <div className="menuAction">
-                                    <ul className="nav-pills bottomRow navbar-right">
-                                        <li role="presentation" className="returnUpdate">
-                                            <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18nResults.return_for_revision}</a>
-                                        </li>
-                                        <li role="presentation" className="editUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                                        </li>
-                                        <li role="presentation" className="approveUpdate">
-                                            <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            );
-                        } else {
-                            // Show no actions.
-                            return (
-                                <span />
-                            );
-                        }
-                        break;
-                    case 'A':
-                        if (isAdmin) {
-                            // Show edit button for M&E Managers and superusers.
-                            return (
-                                <div className="menuAction">
-                                    <ul className="nav-pills bottomRow navbar-right">
-                                        <li role="presentation" className="editUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            );
-                        } else {
-                            // Show no actions for approved indicator updates.
-                            return (
-                                <span />
-                            );
-                        }
-                        break;
-                    default:
-                        // Only show an edit button in all other cases.
-                        if (this.props.update.user === user.id || isAdmin) {
-                            return (
-                                <div className="menuAction">
-                                    <ul className="nav-pills bottomRow navbar-right">
-                                        <li role="presentation" className="editUpdate">
-                                            <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            );
-                        } else {
-                            return (
-                                <span />
-                            );
-                        }
+                var returnForRevisionButton = <span />,
+                    approveButton = <span />;
+
+                if (!(this.props.update.user === user.id || isMEManager) ||
+                    (['P', 'A'].indexOf(this.props.update.status) > -1 && !isMEManager)) {
+                    // Show no actions for non-M&E Managers that have not placed the update or on a
+                    // 'Pending approval' or 'Approved' update.
+                    return (<span />);
+                } else {
+                    if (this.props.update.status === 'P' && isMEManager) {
+                        // Show the 'Return for revision' button for M&E Managers on updates with the status 'Pending approval'.
+                        returnForRevisionButton = <li role="presentation" className="returnUpdate">
+                            <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18nResults.return_for_revision}</a>
+                        </li>;
+                    }
+                    if (this.props.update.status !== 'A' && isMEManager) {
+                        // Show the 'Approve' button for M&E Managers on updates without the status 'Approval'.
+                        approveButton = <li role="presentation" className="approveUpdate">
+                            <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
+                        </li>;
+                    }
                 }
+
+                return (
+                    <div className="menuAction">
+                        <ul className="nav-pills bottomRow navbar-right">
+                            {returnForRevisionButton}
+                            <li role="presentation" className="editUpdate">
+                                <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
+                            </li>
+                            {approveButton}
+                        </ul>
+                    </div>
+                );
+
+
+                // switch(this.props.update.status) {
+                //     case 'P':
+                //         if (isAdmin) {
+                //             // Status 'Pending approval', show: return for revision, edit update
+                //             // and approve buttons. These are only available for admins.
+                //             return (
+                //                 <div className="menuAction">
+                //                     <ul className="nav-pills bottomRow navbar-right">
+                //                         <li role="presentation" className="returnUpdate">
+                //                             <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18nResults.return_for_revision}</a>
+                //                         </li>
+                //                         <li role="presentation" className="editUpdate">
+                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
+                //                         </li>
+                //                         <li role="presentation" className="approveUpdate">
+                //                             <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
+                //                         </li>
+                //                     </ul>
+                //                 </div>
+                //             );
+                //         } else {
+                //             // Show no actions.
+                //             return (
+                //                 <span />
+                //             );
+                //         }
+                //         break;
+                //     case 'A':
+                //         if (isAdmin) {
+                //             // Show edit button for M&E Managers and superusers.
+                //             return (
+                //                 <div className="menuAction">
+                //                     <ul className="nav-pills bottomRow navbar-right">
+                //                         <li role="presentation" className="editUpdate">
+                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
+                //                         </li>
+                //                     </ul>
+                //                 </div>
+                //             );
+                //         } else {
+                //             // Show no actions for approved indicator updates.
+                //             return (
+                //                 <span />
+                //             );
+                //         }
+                //         break;
+                //     default:
+                //         // Only show an edit button in all other cases.
+                //         if (this.props.update.user === user.id || isAdmin) {
+                //             return (
+                //                 <div className="menuAction">
+                //                     <ul className="nav-pills bottomRow navbar-right">
+                //                         <li role="presentation" className="editUpdate">
+                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
+                //                         </li>
+                //                     </ul>
+                //                 </div>
+                //             );
+                //         } else {
+                //             return (
+                //                 <span />
+                //             );
+                //         }
+                // }
             }
         },
 
@@ -2584,7 +2630,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!isPublic) {
         getUserData();
-        setPermissions();
     }
 
     // Check if React is loaded
