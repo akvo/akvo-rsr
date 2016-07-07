@@ -228,6 +228,16 @@ class Project(TimestampsMixin, models.Model):
                     u'target="_blank">Markdown</a> is supported.')
     )
 
+    # Result aggregation
+    aggregate_children = models.BooleanField(
+        _(u'aggregate child results'), default=True,
+        help_text=_(u'Should project aggregate the results of child projects.')
+    )
+    aggregate_to_parent = models.BooleanField(
+        _(u'aggregate results in parent'), default=True,
+        help_text=_(u'Should projects results be aggregated to parent project.')
+    )
+
     # Results framework (always on)
     is_impact_project = models.BooleanField(
         _(u'is rsr impact project'), default=True,
