@@ -124,10 +124,9 @@ class Base64ImageField(ImageField):
                     max_size = request.GET.get('image_thumb_{}_max_size'.format(name))
                     if max_size:
                         return get_thumbnail(value, '{}'.format(max_size), quality=99)
-                except ThumbnailParseError:
+                except (ThumbnailParseError, IOError):
                     return None
-                except IOError:
-                    return None
+
             # no size specification matching the name found; give up
             return None
 
@@ -136,10 +135,9 @@ class Base64ImageField(ImageField):
             try:
                 default_thumb = get_thumbnail(value, default_width, quality=99)
                 request = self.context['request']
-            except IOError:
+            except (ThumbnailParseError, IOError, KeyError):
                 return None
-            except KeyError:
-                return None
+
             # look for name(s) of thumb(s)
             image_thumb_name = request.GET.get('image_thumb_name')
             if image_thumb_name:
