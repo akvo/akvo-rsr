@@ -142,6 +142,18 @@ function displayDate(dateString) {
     return i18nResults.unknown_date;
 }
 
+function displayNumber(numberString) {
+    // Add commas to numbers of 1000 or higher.
+    if (numberString !== undefined && numberString !== null) {
+        var locale = "en-gb";
+        var float = parseFloat(numberString);
+        if (!isNaN(float)) {
+            return float.toLocaleString(locale);
+        }
+    }
+    return numberString;
+}
+
 function userIsAdmin() {
     // Check if the user is an M&E manager, resulting in different actions than other users.
     var adminOrgIds = [],
@@ -538,11 +550,11 @@ function initReact() {
                 );
             } else {
                 // Display a calculation.
-                var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
+                var relativeDataText = relativeData >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeData.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeData.toString());
                 return (
                     <div className="upActualValue">
                         <span className="update-actual-value-text">{label}: </span>
-                        <span className="update-actual-value-data">{updateData} </span>
+                        <span className="update-actual-value-data">{displayNumber(updateData)} </span>
                         <span className="update-relative-value">({relativeDataText})</span>
                     </div>
                 );
@@ -1103,7 +1115,7 @@ function initReact() {
 
         renderTargetValue: function() {
             // Render the target value, including a % sign if the measure is set to percentage.
-            var targetValue = this.props.selectedPeriod.target_value;
+            var targetValue = displayNumber(this.props.selectedPeriod.target_value);
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
             }
@@ -1112,7 +1124,7 @@ function initReact() {
 
         renderActualValue: function() {
             // Render the actual value, including a % sign if the measure is set to percentage.
-            var actualValue = this.props.selectedPeriod.actual_value;
+            var actualValue = displayNumber(this.props.selectedPeriod.actual_value);
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
             }
@@ -1363,7 +1375,7 @@ function initReact() {
 
         renderTargetValue: function() {
             // Render the target value, including a % sign when the measure is set to percentage.
-            var targetValue = this.props.period.target_value;
+            var targetValue = displayNumber(this.props.period.target_value);
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
             }
@@ -1372,7 +1384,7 @@ function initReact() {
 
         renderActualValue: function() {
             // Render the actual value, including a % sign when the measure is set to percentage.
-            var actualValue = this.props.period.actual_value;
+            var actualValue = displayNumber(this.props.period.actual_value);
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
             }
@@ -1428,7 +1440,7 @@ function initReact() {
         renderBaseline: function() {
             // Render the baseline information.
             var baselineYear = this.props.selectedIndicator.baseline_year,
-                baselineValue = this.props.selectedIndicator.baseline_value;
+                baselineValue = displayNumber(this.props.selectedIndicator.baseline_value);
 
             if (!(baselineYear === null && baselineValue === '')) {
                 // In case the measure type is 'Percentage', add a % sign.
