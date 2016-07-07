@@ -1044,7 +1044,7 @@ function initReact() {
                         <div className="new-update"></div>
                     );
                 }
-            } else if (isAdmin) {
+            } else if (isMEManager) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
                 if (this.state.unLocking) {
@@ -1321,7 +1321,7 @@ function initReact() {
                 return (
                     <span />
                 );
-            } else if (!isAdmin) {
+            } else if (!isMEManager) {
                 // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
@@ -1650,7 +1650,7 @@ function initReact() {
 
             if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
                 var addIndicatorsLink;
-                if (isAdmin) {
+                if (isAdmin || isMEManager) {
                     var language = window.location.pathname.substring(0, 3);
                     addIndicatorsLink =
                         <a href={language + "/myrsr/project_editor/" + projectIds.project_id + "/"}>{i18nResults.add_indicators}</a>;
