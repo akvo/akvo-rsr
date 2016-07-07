@@ -742,44 +742,32 @@ function initReact() {
             var inputId = "new-comment-" + this.props.update.id;
             var addCommentInput;
 
-            // if (this.editing()) {
-                // Adding comments is only possible in edit mode.
-                if (this.state.loadingComment) {
-                    addCommentInput = React.DOM.div(null, 
-                        React.DOM.div( {className:"input-group"}, 
-                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
-                            React.DOM.span( {className:"input-group-btn"}, 
-                                React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
-                            )
+            if (this.state.loadingComment) {
+                addCommentInput = React.DOM.div(null, 
+                    React.DOM.div( {className:"input-group"}, 
+                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
+                        React.DOM.span( {className:"input-group-btn"}, 
+                            React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
                         )
-                    );
-                } else {
-                    addCommentInput = React.DOM.div(null, 
-                        React.DOM.div( {className:"input-group"}, 
-                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
-                            React.DOM.span( {className:"input-group-btn"}, 
-                                React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
-                            )
-                        )
-                    );
-                }
-            // } else {
-            //     // Otherwise, show nothing for approved updates.
-            //     addCommentInput = <span />;
-            // }
-
-            // if (this.props.update.comments.length > 0 || this.editing()) {
-                return (
-                    React.DOM.div( {className:"comments"}, 
-                        comments,
-                        addCommentInput
                     )
                 );
-            // } else {
-            //     return (
-            //         <span />
-            //     );
-            // }
+            } else {
+                addCommentInput = React.DOM.div(null, 
+                    React.DOM.div( {className:"input-group"}, 
+                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                        React.DOM.span( {className:"input-group-btn"}, 
+                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                        )
+                    )
+                );
+            }
+
+            return (
+                React.DOM.div( {className:"comments"}, 
+                    comments,
+                    addCommentInput
+                )
+            );
         },
 
         renderFooter: function() {
@@ -852,71 +840,6 @@ function initReact() {
                         )
                     )
                 );
-
-                // switch(this.props.update.status) {
-                //     case 'P':
-                //         // Status 'Pending approval', show: delete, cancel, save and approve
-                //         // buttons. This is only available for M&E Managers, since they can only edit
-                //         // updates with the pending approval status.
-                //         return (
-                //             <div className="menuAction">
-                //                 <div role="presentation" className="removeUpdate">
-                //                     <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                //                 </div>
-                //                 <ul className="nav-pills bottomRow navbar-right">
-                //                     <li role="presentation" className="cancelUpdate">
-                //                         <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                //                     </li>
-                //                     <li role="presentation" className="saveUpdate">
-                //                         <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                //                     </li>
-                //                     <li role="presentation" className="approveUpdate">
-                //                         <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
-                //                     </li>
-                //                 </ul>
-                //             </div>
-                //         );
-                //     default:
-                //         if (isMEManager) {
-                //             // All other statuses, show: delete, cancel and save for M&E Managers.
-                //             return (
-                //                 <div className="menuAction">
-                //                     <div role="presentation" className="removeUpdate">
-                //                         <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                //                     </div>
-                //                     <ul className="nav-pills bottomRow navbar-right">
-                //                         <li role="presentation" className="cancelUpdate">
-                //                             <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                //                         </li>
-                //                         <li role="presentation" className="saveUpdate">
-                //                             <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                //                         </li>
-                //                     </ul>
-                //                 </div>
-                //             );
-                //         } else {
-                //             // All other statuses, show: delete, cancel, save and submit for approval
-                //             // buttons.
-                //             return (
-                //                 <div className="menuAction">
-                //                     <div role="presentation" className="removeUpdate">
-                //                         <a onClick={this.switchAskRemove} className="btn btn-default btn-xs">{i18nResults.delete}</a>
-                //                     </div>
-                //                     <ul className="nav-pills bottomRow navbar-right">
-                //                         <li role="presentation" className="cancelUpdate">
-                //                             <a onClick={this.switchEdit} className="btn btn-link btn-xs">{i18nResults.cancel}</a>
-                //                         </li>
-                //                         <li role="presentation" className="saveUpdate">
-                //                             <a onClick={this.saveUpdate} className="btn btn-default btn-xs">{i18nResults.save}</a>
-                //                         </li>
-                //                         <li role="presentation" className="submitUpdate">
-                //                             <a onClick={this.askForApproval} className="btn btn-default btn-xs">{i18nResults.submit_for_approval}</a>
-                //                         </li>
-                //                     </ul>
-                //                 </div>
-                //             );
-                //         }
-                // }
             } else {
                 var returnForRevisionButton = React.DOM.span(null ),
                     approveButton = React.DOM.span(null );
@@ -952,72 +875,6 @@ function initReact() {
                         )
                     )
                 );
-
-
-                // switch(this.props.update.status) {
-                //     case 'P':
-                //         if (isAdmin) {
-                //             // Status 'Pending approval', show: return for revision, edit update
-                //             // and approve buttons. These are only available for admins.
-                //             return (
-                //                 <div className="menuAction">
-                //                     <ul className="nav-pills bottomRow navbar-right">
-                //                         <li role="presentation" className="returnUpdate">
-                //                             <a onClick={this.returnForRevision} className="btn btn-default btn-xs">{i18nResults.return_for_revision}</a>
-                //                         </li>
-                //                         <li role="presentation" className="editUpdate">
-                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                //                         </li>
-                //                         <li role="presentation" className="approveUpdate">
-                //                             <a onClick={this.approve} className="btn btn-default btn-xs">{i18nResults.approve}</a>
-                //                         </li>
-                //                     </ul>
-                //                 </div>
-                //             );
-                //         } else {
-                //             // Show no actions.
-                //             return (
-                //                 <span />
-                //             );
-                //         }
-                //         break;
-                //     case 'A':
-                //         if (isAdmin) {
-                //             // Show edit button for M&E Managers and superusers.
-                //             return (
-                //                 <div className="menuAction">
-                //                     <ul className="nav-pills bottomRow navbar-right">
-                //                         <li role="presentation" className="editUpdate">
-                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                //                         </li>
-                //                     </ul>
-                //                 </div>
-                //             );
-                //         } else {
-                //             // Show no actions for approved indicator updates.
-                //             return (
-                //                 <span />
-                //             );
-                //         }
-                //         break;
-                //     default:
-                //         // Only show an edit button in all other cases.
-                //         if (this.props.update.user === user.id || isAdmin) {
-                //             return (
-                //                 <div className="menuAction">
-                //                     <ul className="nav-pills bottomRow navbar-right">
-                //                         <li role="presentation" className="editUpdate">
-                //                             <a onClick={this.switchEdit} className="btn btn-default btn-xs">{i18nResults.edit_update}</a>
-                //                         </li>
-                //                     </ul>
-                //                 </div>
-                //             );
-                //         } else {
-                //             return (
-                //                 <span />
-                //             );
-                //         }
-                // }
             }
         },
 
