@@ -446,6 +446,20 @@ class IndicatorPeriod(models.Model):
             period_end=self.period_end
         )
 
+    def child_periods_sum(self):
+        """
+            Returns a sum of child indicator periods.
+            """
+        print 'test'
+        period_sum = 0
+        for period in self.child_periods():
+            if period.indicator.result.project.aggregate_to_parent:
+                try:
+                    period_sum += Decimal(period.actual_value)
+                except TypeError:
+                    continue
+        return period_sum
+
     def adjacent_period(self, next_period=True):
         """
         Returns the next or previous indicator period, if we can find one with a start date,

@@ -439,9 +439,16 @@ class Project(TimestampsMixin, models.Model):
                 self.status = self.CODE_TO_STATUS[self.iati_status]
                 super(Project, self).save(update_fields=['status'])
 
+            print 'status: %s | orig status: %s' % (self.aggregate_children, orig.aggregate_children)
             if self.status != orig.status:
                 self.iati_status = self.STATUS_TO_CODE[self.status]
                 super(Project, self).save(update_fields=['iati_status'])
+
+            if self.aggregate_children != orig.aggregate_children:
+                self.toggle_aggregate_children(self.aggregate_children)
+
+            if self.aggregate_to_parent != orig.aggregate_to_parent:
+                self.toggle_aggregate_to_parent(self.aggregate_to_parent)
 
         super(Project, self).save(*args, **kwargs)
 
@@ -1337,15 +1344,18 @@ class Project(TimestampsMixin, models.Model):
                 return True
         return False
 
-    def toggle_aggregate_children(self):
-        """ Subtract all child indicator period updates if aggregation is toggled off """
+    def toggle_aggregate_children(self, aggregate):
+        """ Add/subtract all child indicator period updates if aggregation is toggled """
         for result in self.results.all():
             for indicator in result.indicators.all():
-                if indicator.is_parent_indicator:
-                    for period in indicator.periods.all():
-                        if period.is_parent_period:
+                print indicator.id
+                for period in indicator.periods.all():
+                    print period.id
+                    print period.child_periods_sum()
 
-                            print period.child_periods()
+    def toggle_aggregate_to_parent(self, aggregate):
+        """ Add/subtract child indicator period values from parent if aggregation is toggled """
+        print 'aggregate to parent'
 
 
 
