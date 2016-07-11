@@ -439,7 +439,6 @@ class Project(TimestampsMixin, models.Model):
                 self.status = self.CODE_TO_STATUS[self.iati_status]
                 super(Project, self).save(update_fields=['status'])
 
-            print 'status: %s | orig status: %s' % (self.aggregate_children, orig.aggregate_children)
             if self.status != orig.status:
                 self.iati_status = self.STATUS_TO_CODE[self.status]
                 super(Project, self).save(update_fields=['iati_status'])
@@ -1346,16 +1345,34 @@ class Project(TimestampsMixin, models.Model):
 
     def toggle_aggregate_children(self, aggregate):
         """ Add/subtract all child indicator period updates if aggregation is toggled """
+        print 'aggregate children'
         for result in self.results.all():
             for indicator in result.indicators.all():
-                print indicator.id
-                for period in indicator.periods.all():
-                    print period.id
-                    print period.child_periods_sum()
+                if indicator.is_parent_indicator() and not indicator.measure == '2':
+                    for period in indicator.periods.all():
+                        if aggregate:
+                            period.actual_value = str(Decimal(period.actual_value) + period.child_periods_sum())
+                        else:
+                            period.actual_value = str(Decimal(period.actual_value) - period.child_periods_sum())
+
+                        period.save()
+                        # period.calculate_all_updates_from_start()
 
     def toggle_aggregate_to_parent(self, aggregate):
         """ Add/subtract child indicator period values from parent if aggregation is toggled """
         print 'aggregate to parent'
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                if indicator.is_child_indicator() and not indicator.measure == '2':
+                    for period in indicator.periods.all():
+                        if period.parent_period() and period.actual_value:
+                            parent = period.parent_period()
+                            if aggregate:
+                                parent.actual_value = str(Decimal(parent.actual_value) + Decimal(period.actual_value))
+                            else:
+                                parent.actual_value = str(Decimal(parent.actual_value) - Decimal(period.actual_value))
+
+                            parent.save()
 
 
 
