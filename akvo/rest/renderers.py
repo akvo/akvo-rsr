@@ -11,16 +11,41 @@ from rest_framework.compat import StringIO, smart_text
 from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer, XMLRenderer
 
 
-def _rename_to_time_fields(results):
+def _rename_fields(results):
     """
     For Tastypie, the 'created_at' and 'last_modified_at' fields need to be called 'time' and
     'time_last_updated'.
+
+    In addition, some foreign key fields should be converted to show the API link instead of only
+    the ID.
     """
+    id_to_api = {
+        'project': '/api/v1/project/{0}/',
+        'user': '/api/v1/user/{0}/',
+        'primary_location': '/api/v1/project_location/{0}/',
+        'primary_organisation': '/api/v1/organisation/{0}/',
+        'partners': '/api/v1/organisation/{0}/',
+        'keywords': '/api/v1/keyword/{0}/',
+        'categories': '/api/v1/category/{0}/',
+    }
+
     for result in results:
         if 'created_at' in result.keys():
             result['time'] = result.pop('created_at')
         if 'last_modified_at' in result.keys():
             result['time_last_updated'] = result.pop('last_modified_at')
+        if 'validations' in result.keys():
+            result.pop('validations')
+
+        for object_id in id_to_api.keys():
+            if object_id in result.keys():
+                if isinstance(result[object_id], list):
+                    result_list, new_list = result.pop(object_id), []
+                    for list_item in result_list:
+                        new_list.append(id_to_api[object_id].format(str(list_item)))
+                    result[object_id] = new_list
+                else:
+                    result[object_id] = id_to_api[object_id].format(str(result.pop(object_id)))
     return results
 
 
@@ -45,7 +70,7 @@ def _convert_data_for_tastypie(request, view, data):
         'next': _remove_domain(request, data.get('next')),
         'previous': _remove_domain(request, data.get('previous')),
     }
-    response_data['objects'] = _rename_to_time_fields(data.pop('results'))
+    response_data['objects'] = _rename_fields(data.pop('results'))
     return response_data
 
 
@@ -59,8 +84,7 @@ class CustomHTMLRenderer(BrowsableAPIRenderer):
         In case a request is called on /api/v1/, we now redirect the call to DRF instead of
         Tastypie. The differences between DRF and Tastypie are:
 
-        - 'created_at' is named 'time';
-        - 'last_modified_at' is named 'time_last_updated'.
+        - Different names and values for several fields (see _rename_fields).
 
         On paginated results:
           - An additional 'meta' object containing the limit, next, previous and total_count;
@@ -75,7 +99,7 @@ class CustomHTMLRenderer(BrowsableAPIRenderer):
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
-                data = _rename_to_time_fields([data])[0]
+                data = _rename_fields([data])[0]
 
         return super(CustomHTMLRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -90,8 +114,7 @@ class CustomJSONRenderer(JSONRenderer):
         In case a request is called on /api/v1/, we now redirect the call to DRF instead of
         Tastypie. The differences between DRF and Tastypie are:
 
-        - 'created_at' is named 'time';
-        - 'last_modified_at' is named 'time_last_updated'.
+        - Different names and values for several fields (see _rename_fields).
 
         On paginated results:
           - An additional 'meta' object containing the limit, next, previous and total_count;
@@ -106,7 +129,7 @@ class CustomJSONRenderer(JSONRenderer):
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
-                data = _rename_to_time_fields([data])[0]
+                data = _rename_fields([data])[0]
 
         return super(CustomJSONRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -144,8 +167,7 @@ class CustomXMLRenderer(BaseRenderer):
         In case a request is called on /api/v1/, we now redirect the call to DRF instead of
         Tastypie. The differences between DRF and Tastypie are:
 
-        - 'created_at' is named 'time';
-        - 'last_modified_at' is named 'time_last_updated'.
+        - Different names and values for several fields (see _rename_fields).
 
         On paginated results:
           - An additional 'meta' object containing the limit, next, previous and total_count;
@@ -176,7 +198,7 @@ class CustomXMLRenderer(BaseRenderer):
             else:
                 # Non-paginated result
                 xml.startElement("object", {})
-                self._to_xml(xml, _rename_to_time_fields([data])[0])
+                self._to_xml(xml, _rename_fields([data])[0])
                 xml.endElement("object")
 
             xml.endDocument()
