@@ -8,6 +8,7 @@
 from akvo.rsr.models import PlannedDisbursement
 
 from .rsr_serializer import BaseRSRSerializer
+from .organisation import OrganisationBasicSerializer
 
 from rest_framework import serializers
 
@@ -16,6 +17,12 @@ class PlannedDisbursementRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = PlannedDisbursement
+
+
+class PlannedDisbursementRawDeepSerializer(PlannedDisbursementRawSerializer):
+
+    provider_organisation = OrganisationBasicSerializer(source='provider_organisation')
+    receiver_organisation = OrganisationBasicSerializer(source='receiver_organisation')
 
 
 class PlannedDisbursementSerializer(PlannedDisbursementRawSerializer):

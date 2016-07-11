@@ -39,6 +39,17 @@ def _partner_site(netloc):
     )
 
 
+def _build_api_link(request, resource):
+    """
+    Build a new link that will redirect from the '/v1/api/project/?depth=X' resource to
+    '/v1/api/project_extra(_deep)/' resource.
+    """
+    protocol = 'https' if request.is_secure() else 'http'
+    return '{0}://{1}/api/v1/{2}/?{3}'.format(
+        protocol, request.META['HTTP_HOST'], resource, request.GET.urlencode()
+    )
+
+
 class DefaultLanguageMiddleware(object):
 
     """A non working (BROKEN) default language middleware.
@@ -153,6 +164,24 @@ class RSRVersionHeaderMiddleware(object):
                 context['deploy_branch'])
         return response
 
+
+class APIRedirectMiddleware(object):
+    """
+    In special cases, the old API links should be redirected:
+
+    - /api/v1/project/ with depth = 1 should be redirected to /api/v1/project_extra/.
+    - /api/v1/project/ with depth > 1 should be redirected to /api/v1/project_extra_deep/.
+    """
+    @staticmethod
+    def process_response(request, response):
+        project_extra_fields = ['/api/v1/', '/project/', ]
+        if all(field in request.path for field in project_extra_fields):
+            depth = request.GET.get('depth')
+            if depth == '1':
+                return redirect(_build_api_link(request, 'project_extra'))
+            if depth > '1':
+                return redirect(_build_api_link(request, 'project_extra_deep'))
+        return response
 
 
 class NonHtmlDebugToolbarMiddleware(object):

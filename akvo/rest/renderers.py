@@ -25,6 +25,7 @@ def _rename_fields(results):
         'primary_location': '/api/v1/project_location/{0}/',
         'primary_organisation': '/api/v1/organisation/{0}/',
         'partners': '/api/v1/organisation/{0}/',
+        'sync_owner': '/api/v1/organisation/{0}/',
         'keywords': '/api/v1/keyword/{0}/',
         'categories': '/api/v1/category/{0}/',
     }

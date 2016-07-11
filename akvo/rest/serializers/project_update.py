@@ -11,7 +11,7 @@ from ..fields import Base64ImageField
 from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
 from .rsr_serializer import BaseRSRSerializer
-from .user import UserSerializer
+from .user import UserSerializer, UserRawSerializer
 
 
 class ProjectUpdateSerializer(BaseRSRSerializer):
@@ -24,6 +24,12 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectUpdate
+
+
+class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):
+    """Deep serializer for project updates."""
+
+    user = UserRawSerializer(source='user')
 
 
 class ProjectUpdateExtraSerializer(BaseRSRSerializer):
