@@ -1351,12 +1351,13 @@ class Project(TimestampsMixin, models.Model):
                 if indicator.is_parent_indicator() and not indicator.measure == '2':
                     for period in indicator.periods.all():
                         if aggregate:
-                            period.actual_value = str(Decimal(period.actual_value) + period.child_periods_sum())
+                            # period.actual_value = str(Decimal(period.actual_value) + period.child_periods_sum())
+                            self.update_parents(period, period.child_periods_sum())
                         else:
-                            period.actual_value = str(Decimal(period.actual_value) - period.child_periods_sum())
+                            # period.actual_value = str(Decimal(period.actual_value) - period.child_periods_sum())
+                            self.update_parents(period, -period.child_periods_sum())
 
-                        period.save()
-                        # period.calculate_all_updates_from_start()
+                        # period.save()
 
     def toggle_aggregate_to_parent(self, aggregate):
         """ Add/subtract child indicator period values from parent if aggregation is toggled """
@@ -1368,12 +1369,20 @@ class Project(TimestampsMixin, models.Model):
                         if period.parent_period() and period.actual_value:
                             parent = period.parent_period()
                             if aggregate:
-                                parent.actual_value = str(Decimal(parent.actual_value) + Decimal(period.actual_value))
+                                # parent.actual_value = str(Decimal(parent.actual_value) + Decimal(period.actual_value))
+                                self.update_parents(parent, Decimal(period.actual_value))
                             else:
-                                parent.actual_value = str(Decimal(parent.actual_value) - Decimal(period.actual_value))
+                                # parent.actual_value = str(Decimal(parent.actual_value) - Decimal(period.actual_value))
+                                self.update_parents(parent, -1 * Decimal(period.actual_value))
 
-                            parent.save()
+                            # parent.save()
 
+    def update_parents(self, update_period, difference):
+        update_period.actual_value = str(Decimal(update_period.actual_value) + difference)
+        update_period.save()
+
+        if update_period.parent_period():
+            self.update_parents(update_period.parent_period(), difference)
 
 
 @receiver(post_save, sender=Project)
