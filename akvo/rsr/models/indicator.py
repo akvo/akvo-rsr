@@ -546,38 +546,6 @@ class IndicatorPeriod(models.Model):
             self.save(update_fields=['actual_comment'])
 
 
-    # def update_actual_value(self, data, relative_data, comment=''):
-    #     """
-    #     Updates the actual value of this period and related periods (parent period and next period).
-    #
-    #     :param data; String or Integer that represents the new actual value data of the period
-    #     :param relative_data; Boolean indicating whether the data should be updated based on the
-    #     relative value of the current actual value (True) or overwrite the actual value (False)
-    #     :param comment; String that represents the new actual comment data of the period (Optional)
-    #     """
-    #     updated_actual_value = False
-    #     try:
-    #         old_actual = Decimal(self.actual_value or '0')
-    #         self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
-    #         self.save(update_fields=['actual_value'])
-    #         updated_actual_value = True
-    #
-    #         # Update parent period (if not percentages)
-    #         parent = self.parent_period()
-    #         if parent:
-    #             if self.indicator.result.project.aggregate_to_parent and \
-    #                     parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-    #                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
-    #     except (InvalidOperation, TypeError):
-    #         if data and not updated_actual_value:
-    #             self.actual_value = data
-    #             self.save(update_fields=['actual_value'])
-    #
-    #     if comment:
-    #         self.actual_comment = comment
-    #         self.save(update_fields=['actual_comment'])
-
-
     @property
     def percent_accomplishment(self):
         """
