@@ -74,6 +74,8 @@
 
     {% include 'navigation/footer.html' %}
 
+    <span id="cookieModal"></span>
+
     <script type="application/javascript">
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
@@ -88,8 +90,6 @@
     {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
 
-    <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
-
     {% block js %}{% endblock js %}
 
     <script>
@@ -103,9 +103,16 @@
         {
             "cookie_text": "{% trans 'This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our ' %}",
             "privacy_text": "{% trans 'privacy and cookies policy' %}",
-            "button_text": "{% trans 'Accept' %}"
+            "button_text": "{% trans 'Accept' %}",
+            "password_environment": "{% trans 'Password protected environment' %}",
+            "password_environment_desc": "{% trans 'This is a password protected environment, please fill in the password:' %}",
+            "password_environment_avail": "{% trans 'After 24 hours, we will ask you to fill in the password again.' %}",
+            "continue_to_rsr": "{% trans 'Continue to RSR' %}",
+            "incorrect_password": "{% trans 'Incorrect password' %}"
         }
     </script>
+
+    <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {# RSR support center help #}
     <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>

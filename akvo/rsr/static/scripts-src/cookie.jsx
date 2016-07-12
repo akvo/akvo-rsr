@@ -35,7 +35,7 @@ function createModal(){
     var Modal = ReactBootstrap.Modal;
     var Button = ReactBootstrap.Button;
 
-    var CookieModal = React.createClass({displayName: 'CookieModal',
+    var CookieModal = React.createClass({
         getInitialState: function() {
             return {
                 showModal: true,
