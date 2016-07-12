@@ -509,6 +509,7 @@ class IndicatorPeriod(models.Model):
             new_actual = data
 
         parent = self.parent_period()
+
         if old_value_is_decimal and new_value_is_decimal:
             self.actual_value = str(old_actual + new_actual) if relative_data else str(new_actual)
             self.save(update_fields=['actual_value'])
@@ -519,16 +520,21 @@ class IndicatorPeriod(models.Model):
                         parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
                     parent.update_actual_value(str(new_actual), True)
 
+        elif not old_value_is_decimal and new_value_is_decimal:
+            self.actual_value = str(new_actual + Decimal(self.child_periods_sum()))
+            self.save(update_fields=['actual_value'])
+
+            # Update parent period (if not percentages)
+            if parent:
+                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
+                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
+                    parent.update_actual_value(str(new_actual + Decimal(self.child_periods_sum())), True)
+
         else:
             self.actual_value = str(new_actual)
             self.save(update_fields=['actual_value'])
 
             # Update parent period (if not percentages)
-            if parent and new_value_is_decimal:
-                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
-                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-                    parent.update_actual_value(str(new_actual), True)
-
             if parent and old_value_is_decimal:
                 if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
                         parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
