@@ -407,6 +407,14 @@ class IndicatorPeriod(models.Model):
         """
         return self.data.exists()
 
+    def actual_value_is_decimal(self):
+
+        try:
+            Decimal(self.actual_value)
+            return True
+        except (InvalidOperation, TypeError):
+            return False
+
     def is_child_period(self):
         """
         Indicates whether this result is linked to a parent result.
@@ -455,10 +463,10 @@ class IndicatorPeriod(models.Model):
             if period.indicator.result.project.aggregate_to_parent and period.actual_value:
                 try:
                     period_sum += Decimal(period.actual_value)
-                except TypeError:
-                    continue
+                except (InvalidOperation, TypeError):
+                    pass
 
-        return period_sum
+        return str(period_sum)
 
     def adjacent_period(self, next_period=True):
         """
@@ -485,27 +493,83 @@ class IndicatorPeriod(models.Model):
         relative value of the current actual value (True) or overwrite the actual value (False)
         :param comment; String that represents the new actual comment data of the period (Optional)
         """
-        updated_actual_value = False
+        old_value_is_decimal = False
+        new_value_is_decimal = False
+
         try:
             old_actual = Decimal(self.actual_value or '0')
-            self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
+            old_value_is_decimal = True
+        except (InvalidOperation, TypeError):
+            old_actual = self.actual_value
+
+        try:
+            new_actual = Decimal(data)
+            new_value_is_decimal = True
+        except (InvalidOperation, TypeError):
+            new_actual = data
+
+        parent = self.parent_period()
+        if old_value_is_decimal and new_value_is_decimal:
+            self.actual_value = str(old_actual + new_actual) if relative_data else str(new_actual)
             self.save(update_fields=['actual_value'])
-            updated_actual_value = True
 
             # Update parent period (if not percentages)
-            parent = self.parent_period()
             if parent:
-                if self.indicator.result.project.aggregate_to_parent and \
+                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
                         parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-                    parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
-        except (InvalidOperation, TypeError):
-            if data and not updated_actual_value:
-                self.actual_value = data
-                self.save(update_fields=['actual_value'])
+                    parent.update_actual_value(str(new_actual), True)
+
+        else:
+            self.actual_value = str(new_actual)
+            self.save(update_fields=['actual_value'])
+
+            # Update parent period (if not percentages)
+            if parent and new_value_is_decimal:
+                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
+                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
+                    parent.update_actual_value(str(new_actual), True)
+
+            if parent and old_value_is_decimal:
+                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
+                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
+                    parent.update_actual_value(str(-old_actual), True)
+
 
         if comment:
             self.actual_comment = comment
             self.save(update_fields=['actual_comment'])
+
+
+    # def update_actual_value(self, data, relative_data, comment=''):
+    #     """
+    #     Updates the actual value of this period and related periods (parent period and next period).
+    #
+    #     :param data; String or Integer that represents the new actual value data of the period
+    #     :param relative_data; Boolean indicating whether the data should be updated based on the
+    #     relative value of the current actual value (True) or overwrite the actual value (False)
+    #     :param comment; String that represents the new actual comment data of the period (Optional)
+    #     """
+    #     updated_actual_value = False
+    #     try:
+    #         old_actual = Decimal(self.actual_value or '0')
+    #         self.actual_value = str(old_actual + Decimal(data)) if relative_data else str(data)
+    #         self.save(update_fields=['actual_value'])
+    #         updated_actual_value = True
+    #
+    #         # Update parent period (if not percentages)
+    #         parent = self.parent_period()
+    #         if parent:
+    #             if self.indicator.result.project.aggregate_to_parent and \
+    #                     parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
+    #                 parent.update_actual_value(str(Decimal(self.actual_value) - old_actual), True)
+    #     except (InvalidOperation, TypeError):
+    #         if data and not updated_actual_value:
+    #             self.actual_value = data
+    #             self.save(update_fields=['actual_value'])
+    #
+    #     if comment:
+    #         self.actual_comment = comment
+    #         self.save(update_fields=['actual_comment'])
 
 
     @property
@@ -703,7 +767,11 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                 # An approved indicator update has been edited. Update to the new values and
                 # recalculate
                 elif orig.status == self.STATUS_APPROVED_CODE:
-                    self.period.update_actual_value(Decimal(self.data) - Decimal(orig.data), True)
+                    try:
+                        self.period.update_actual_value(Decimal(self.data) - Decimal(orig.data), True)
+                    except (InvalidOperation, TypeError):
+                        self.period.update_actual_value(self.data, False)
+
                     do_recalculation = True
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)

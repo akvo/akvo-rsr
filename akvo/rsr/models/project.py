@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import math
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -1345,44 +1345,41 @@ class Project(TimestampsMixin, models.Model):
 
     def toggle_aggregate_children(self, aggregate):
         """ Add/subtract all child indicator period updates if aggregation is toggled """
-        print 'aggregate children'
         for result in self.results.all():
             for indicator in result.indicators.all():
                 if indicator.is_parent_indicator() and not indicator.measure == '2':
                     for period in indicator.periods.all():
                         if aggregate:
-                            # period.actual_value = str(Decimal(period.actual_value) + period.child_periods_sum())
-                            self.update_parents(period, period.child_periods_sum())
+                            self.update_parents(period, period.child_periods_sum(), 1)
                         else:
-                            # period.actual_value = str(Decimal(period.actual_value) - period.child_periods_sum())
-                            self.update_parents(period, -period.child_periods_sum())
-
-                        # period.save()
+                            self.update_parents(period, period.child_periods_sum(), -1)
 
     def toggle_aggregate_to_parent(self, aggregate):
         """ Add/subtract child indicator period values from parent if aggregation is toggled """
-        print 'aggregate to parent'
         for result in self.results.all():
             for indicator in result.indicators.all():
                 if indicator.is_child_indicator() and not indicator.measure == '2':
                     for period in indicator.periods.all():
-                        if period.parent_period() and period.actual_value:
-                            parent = period.parent_period()
+                        parent = period.parent_period()
+                        if parent and period.actual_value:
                             if aggregate:
-                                # parent.actual_value = str(Decimal(parent.actual_value) + Decimal(period.actual_value))
-                                self.update_parents(parent, Decimal(period.actual_value))
+                                self.update_parents(parent, period.actual_value, 1)
                             else:
-                                # parent.actual_value = str(Decimal(parent.actual_value) - Decimal(period.actual_value))
-                                self.update_parents(parent, -1 * Decimal(period.actual_value))
+                                self.update_parents(parent, period.actual_value, -1)
 
-                            # parent.save()
+    def update_parents(self, update_period, difference, sign):
+        """ Update parent indicator periods if they exist and allow aggregation """
+        try:
+            update_period.actual_value = str(Decimal(update_period.actual_value) + sign * Decimal(difference))
+            update_period.save()
 
-    def update_parents(self, update_period, difference):
-        update_period.actual_value = str(Decimal(update_period.actual_value) + difference)
-        update_period.save()
+            parent_period = update_period.parent_period()
+            if parent_period:
+                if parent_period.indicator.result.project.aggregate_children:
+                    self.update_parents(parent_period, difference, sign)
 
-        if update_period.parent_period():
-            self.update_parents(update_period.parent_period(), difference)
+        except (InvalidOperation, TypeError):
+            pass
 
 
 @receiver(post_save, sender=Project)
