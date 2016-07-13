@@ -501,7 +501,6 @@ class IndicatorPeriod(models.Model):
 
         try:
             old_actual = Decimal(self.actual_value or '0')
-            print 'Indicator: %s | Old: %s | New: %s' % (self, old_actual, data)
             old_value_is_decimal = True
         except (InvalidOperation, TypeError):
             old_actual = self.actual_value
@@ -513,9 +512,6 @@ class IndicatorPeriod(models.Model):
             new_actual = data
 
         parent = self.parent_period()
-        print old_value_is_decimal
-        print new_value_is_decimal
-
         if old_value_is_decimal and new_value_is_decimal:
             self.actual_value = str(old_actual + new_actual) if relative_data else str(new_actual)
             self.save(update_fields=['actual_value'])
