@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cookieDuration = 14;                    // Number of days before the cookie expires, and the banner reappears
     cookieName = 'complianceCookie';        // Name of our cookie
     cookieValue = 'on';                     // Value of cookie
-    protectCookieDuration = 1;              // Number of days before the protection cookie expires, and the modal reappears
+    protectCookieDuration = 7;              // Number of days before the protection cookie expires, and the modal reappears
     protectCookieName = 'protectCookie';    // Name of our protection cookie
     protectPassword = 'TesTing!';           // No need to encrypt this password, it's not vital
     testEnvironments = ['test', 'uat'];     // Set the test environments that need a password
