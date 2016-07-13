@@ -1200,6 +1200,17 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct().published().public()
 
+    def parents_all(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=2
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=1
+            )
+        ).distinct()
+
     def children(self):
         return (
             Project.objects.filter(
@@ -1211,6 +1222,17 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct().published().public()
 
+    def children_all(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=1
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=2
+            )
+        ).distinct()
+
     def siblings(self):
         return (
             Project.objects.filter(
@@ -1221,6 +1243,17 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__relation=3
             )
         ).distinct().published().public()
+
+    def siblings_all(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=3
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=3
+            )
+        ).distinct()
 
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
