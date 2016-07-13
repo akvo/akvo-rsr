@@ -85,6 +85,14 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
+    {# React #}
+    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
+    <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
+    <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
+
     {# RSR default libraries #}
     <script src="{{ STATIC_URL }}lib/scripts/underscore-1.8.3.min.js"></script>
     {% compressed_js 'rsr' %}
@@ -107,7 +115,7 @@
             "password_environment": "{% trans 'Password protected environment' %}",
             "password_environment_desc": "{% trans 'This is a password protected environment, please fill in the password:' %}",
             "password_environment_avail": "{% trans 'After 24 hours, we will ask you to fill in the password again.' %}",
-            "continue_to_rsr": "{% trans 'Continue to RSR' %}",
+            "continue_to_rsr": "{% trans 'Continue' %}",
             "incorrect_password": "{% trans 'Incorrect password' %}"
         }
     </script>
