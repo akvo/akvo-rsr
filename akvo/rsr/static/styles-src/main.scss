@@ -4478,6 +4478,10 @@ div.active {
     }
 }
 
+.modal-backdrop.in {
+    z-index: 1030;
+}
+
 .modalBackground {
     position: fixed;
     top: 0;

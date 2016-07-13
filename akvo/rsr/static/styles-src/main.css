@@ -3794,6 +3794,9 @@ div.active .addOrg {
   div.active .addOrg:active {
     opacity: 0.8; }
 
+.modal-backdrop.in {
+  z-index: 1030; }
+
 .modalBackground {
   position: fixed;
   top: 0;
