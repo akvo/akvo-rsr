@@ -230,12 +230,14 @@ class Project(TimestampsMixin, models.Model):
 
     # Result aggregation
     aggregate_children = models.BooleanField(
-        _(u'aggregate child results'), default=True,
-        help_text=_(u'Should project aggregate the results of child projects.')
+        _(u'Aggregate results data from child projects'), default=True,
+        help_text=_(u'By selecting this option, the results data of child projects will be aggregated to this project. '
+                    u'In the child project(s), this can be turned off per project as well.')
     )
     aggregate_to_parent = models.BooleanField(
-        _(u'aggregate results in parent'), default=True,
-        help_text=_(u'Should projects results be aggregated to parent project.')
+        _(u'Aggregate results data to parent project'), default=True,
+        help_text=_(u'By selecting this option, the results data of this project will be aggregated '
+                    u'to the parent project.')
     )
 
     # Results framework (always on)

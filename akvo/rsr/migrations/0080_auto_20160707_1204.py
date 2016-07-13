@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='aggregate_children',
-            field=models.BooleanField(default=True, help_text='Should project aggregate the results of child projects.', verbose_name='aggregate child results'),
+            field=models.BooleanField(default=True, help_text='By selecting this option, the results data of child projects will be aggregated to this project. In the child project(s), this can be turned off per project as well.', verbose_name='Aggregate results data from child projects'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='project',
             name='aggregate_to_parent',
-            field=models.BooleanField(default=True, help_text='Should projects results be aggregated to parent project.', verbose_name='aggregate results in parent'),
+            field=models.BooleanField(default=True, help_text='By selecting this option, the results data of this project will be aggregated to the parent project.', verbose_name='Aggregate results data to parent project'),
             preserve_default=True,
         ),
     ]
