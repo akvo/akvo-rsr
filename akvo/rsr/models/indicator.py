@@ -413,10 +413,7 @@ class IndicatorPeriod(models.Model):
             Decimal(self.actual_value)
             return True
         except (InvalidOperation, TypeError):
-            if not self.actual_value:
-                return True
-            else:
-                return False
+            return not self.actual_value
 
     def is_child_period(self):
         """

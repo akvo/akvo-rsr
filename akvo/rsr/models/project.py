@@ -1384,10 +1384,8 @@ class Project(TimestampsMixin, models.Model):
             for indicator in result.indicators.all():
                 if indicator.is_parent_indicator() and not indicator.measure == '2':
                     for period in indicator.periods.all():
-                        if aggregate:
-                            self.update_parents(period, period.child_periods_sum(), 1)
-                        else:
-                            self.update_parents(period, period.child_periods_sum(), -1)
+                        sign = 1 if aggregate else -1
+                        self.update_parents(period, period.child_periods_sum(), sign)
 
     def toggle_aggregate_to_parent(self, aggregate):
         """ Add/subtract child indicator period values from parent if aggregation is toggled """
@@ -1397,10 +1395,8 @@ class Project(TimestampsMixin, models.Model):
                     for period in indicator.periods.all():
                         parent = period.parent_period()
                         if parent and period.actual_value:
-                            if aggregate:
-                                self.update_parents(parent, period.actual_value, 1)
-                            else:
-                                self.update_parents(parent, period.actual_value, -1)
+                            sign = 1 if aggregate else -1
+                            self.update_parents(parent, period.actual_value, sign)
 
     def update_parents(self, update_period, difference, sign):
         """ Update parent indicator periods if they exist and allow aggregation """
