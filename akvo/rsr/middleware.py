@@ -39,14 +39,15 @@ def _partner_site(netloc):
     )
 
 
-def _build_api_link(request, resource):
+def _build_api_link(request, resource, object_id):
     """
     Build a new link that will redirect from the '/v1/api/project/?depth=X' resource to
     '/v1/api/project_extra(_deep)/' resource.
     """
     protocol = 'https' if request.is_secure() else 'http'
-    return '{0}://{1}/api/v1/{2}/?{3}'.format(
-        protocol, request.META['HTTP_HOST'], resource, request.GET.urlencode()
+    object_id_part = '/' if not object_id else '/{0}/'.format(object_id)
+    return '{0}://{1}/api/v1/{2}{3}?{4}'.format(
+        protocol, request.META['HTTP_HOST'], resource, object_id_part, request.GET.urlencode()
     )
 
 
@@ -174,13 +175,20 @@ class APIRedirectMiddleware(object):
     """
     @staticmethod
     def process_response(request, response):
-        project_extra_fields = ['/api/v1/', '/project/', ]
-        if all(field in request.path for field in project_extra_fields):
+        project_extra_fields = ['api', 'v1', 'project', ]
+        path_list = request.path.split('/')
+
+        if all(field in path_list for field in project_extra_fields):
+            try:
+                object_id = path_list[4] if len(path_list) > 4 and int(path_list[4]) else None
+            except ValueError:
+                object_id = None
+
             depth = request.GET.get('depth')
             if depth == '1':
-                return redirect(_build_api_link(request, 'project_extra'))
+                return redirect(_build_api_link(request, 'project_extra', object_id))
             if depth > '1':
-                return redirect(_build_api_link(request, 'project_extra_deep'))
+                return redirect(_build_api_link(request, 'project_extra_deep', object_id))
         return response
 
 
