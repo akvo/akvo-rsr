@@ -385,6 +385,8 @@ rules.add_perm('rsr.delete_organisationdocumentcountry', is_rsr_admin | is_org_a
 
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.view_project', is_rsr_admin | is_org_admin | is_org_user_manager |
+               is_org_project_editor | is_org_user)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 

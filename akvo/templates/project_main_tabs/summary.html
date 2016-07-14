@@ -5,7 +5,7 @@
         <div class="container">
             {% if not project.is_public %}
                 <div id="draft" class="row">
-                    {% trans 'This is a private project. It can only be seen by Administrators and Project editors of this project.' %}
+                    {% trans 'This is a private project. It can only be seen by affiliated organisation members.' %}
                 </div>
             {% elif not project.is_published %}
                 <div id="draft" class="row">
