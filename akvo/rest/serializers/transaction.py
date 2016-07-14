@@ -8,11 +8,21 @@
 from akvo.rsr.models import Transaction, TransactionSector
 
 from .rsr_serializer import BaseRSRSerializer
+from .organisation import OrganisationBasicSerializer
 
 from rest_framework import serializers
 
 
 class TransactionRawSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Transaction
+
+
+class TransactionRawDeepSerializer(TransactionRawSerializer):
+
+    provider_organisation = OrganisationBasicSerializer(source='provider_organisation')
+    receiver_organisation = OrganisationBasicSerializer(source='receiver_organisation')
 
     class Meta:
         model = Transaction

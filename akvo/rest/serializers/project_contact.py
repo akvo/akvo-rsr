@@ -7,6 +7,7 @@
 
 from akvo.rsr.models import ProjectContact
 
+from .country import CountrySerializer
 from .rsr_serializer import BaseRSRSerializer
 
 from rest_framework import serializers
@@ -16,6 +17,11 @@ class ProjectContactRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectContact
+
+
+class ProjectContactRawDeepSerializer(ProjectContactRawSerializer):
+
+    country = CountrySerializer(source='country')
 
 
 class ProjectContactSerializer(ProjectContactRawSerializer):

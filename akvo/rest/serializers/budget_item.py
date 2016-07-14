@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from .budget_item_label import BudgetItemLabelSerializer
 from akvo.rsr.models import BudgetItem, CountryBudgetItem
 
 from .rsr_serializer import BaseRSRSerializer
@@ -16,6 +17,11 @@ class BudgetItemRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItem
+
+
+class BudgetItemRawDeepSerializer(BudgetItemRawSerializer):
+
+    label = BudgetItemLabelSerializer(source='label')
 
 
 class BudgetItemSerializer(BudgetItemRawSerializer):

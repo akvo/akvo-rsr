@@ -71,6 +71,8 @@ router.register(r'project_iati_export', views.ProjectIatiExportViewSet,
                 base_name='project_iati_export')
 router.register(r'project_extra', views.ProjectExtraViewSet,
                 base_name='project_extra')
+router.register(r'project_extra_deep', views.ProjectExtraDeepViewSet,
+                base_name='project_extra_deep')
 router.register(r'project_up', views.ProjectUpViewSet,
                 base_name='project_up')
 router.register(r'project_comment', views.ProjectCommentViewSet)
@@ -133,6 +135,7 @@ urlpatterns = patterns(
     url(r'^indicator_period_data/(?P<pk>[0-9]+)/upload_file/$',
         views.indicator_upload_file,
         name='indicator_upload_file'),
+    url(r'^right_now_in_akvo/$', views.right_now_in_akvo_view, name='right_now_in_akvo'),
     url(r'^server_info/$', views.server_info, name='server_info'),
 )
 
