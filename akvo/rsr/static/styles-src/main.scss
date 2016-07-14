@@ -2532,7 +2532,6 @@ dd {
                 @media only screen and (min-width: $width-large) {
                     width: 120px;
                 }
-                word-break: break-word;
             }
         }
     }
@@ -2979,6 +2978,10 @@ body {
         -ms-transform: rotate(-90deg);
         -o-transform: rotate(-90deg);
     }
+}
+
+#import-results {
+    margin-bottom: 25px;
 }
 
 
@@ -4479,6 +4482,10 @@ div.active {
     }
 }
 
+.modal-backdrop.in {
+    z-index: 1030;
+}
+
 .modalBackground {
     position: fixed;
     top: 0;
@@ -4794,4 +4801,10 @@ div.iatiFilters {
     span.error {
         color: $akvoTvRed;
     }
+}
+
+/* User management */
+.employment-error {
+    color: $akvoTvRed;
+    font-size: 85%;
 }

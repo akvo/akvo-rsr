@@ -2040,15 +2040,13 @@ dd.currencyAmount {
 
 @media only screen and (min-width: 992px) {
   .projectReport table {
-    table-layout: auto; }
+    table-layout: auto; } }
+  @media only screen and (min-width: 992px) and (max-width: 1200px) {
     .projectReport table th {
-      word-break: break-word; } }
-    @media only screen and (min-width: 992px) and (max-width: 1200px) {
-      .projectReport table th {
-        width: 90px; } }
-    @media only screen and (min-width: 992px) and (min-width: 1200px) {
-      .projectReport table th {
-        width: 120px; } }
+      width: 90px; } }
+  @media only screen and (min-width: 992px) and (min-width: 1200px) {
+    .projectReport table th {
+      width: 120px; } }
 
 /* Project update page */
 .updateText {
@@ -2438,6 +2436,9 @@ body.translationBarActive div.skiptranslate ~ #map {
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
+
+#import-results {
+  margin-bottom: 25px; }
 
 /* New concatenated project page */
 .tab-menu {
@@ -3796,6 +3797,9 @@ div.active .addOrg {
   div.active .addOrg:active {
     opacity: 0.8; }
 
+.modal-backdrop.in {
+  z-index: 1030; }
+
 .modalBackground {
   position: fixed;
   top: 0;
@@ -4060,3 +4064,8 @@ div.iatiFilters {
 
 .iatiCheck span.error {
   color: #ee3124; }
+
+/* User management */
+.employment-error {
+  color: #ee3124;
+  font-size: 85%; }
