@@ -2984,6 +2984,16 @@ body {
     margin-bottom: 25px;
 }
 
+#warn-result-children {
+    background: rgba(#E04F46, 0.2);
+    border: 1px solid rgba(#E04F46, 0.2);
+    color: #E04F46;
+    padding: 10px;
+    text-align: center;
+    margin: 0 0 20px 0;
+    @include border-radius(5px);
+}
+
 
 /* New concatenated project page */
 
