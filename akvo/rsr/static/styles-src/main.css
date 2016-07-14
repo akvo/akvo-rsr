@@ -2437,6 +2437,9 @@ body.translationBarActive div.skiptranslate ~ #map {
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
 
+#import-results {
+  margin-bottom: 25px; }
+
 /* New concatenated project page */
 .tab-menu {
   padding: 0.5em 1em 2em 1em; }
