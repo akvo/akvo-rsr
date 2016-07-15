@@ -36,6 +36,10 @@
                 {% endif %}
                 {% if project.children_all.count > 0 and project.is_impact_project and user.can_import_results %}
                     {% include boolean_input with obj=project field='aggregate_children' %}
+                    <div class="alert alert-warning" role="alert">
+                          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                          <strong>{% trans 'Warning!' %}</strong> {% trans 'Editing and deletion of results will propagate to child projects.' %}
+                    </div>
                 {% endif %}
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_result" }}">
                     <h5>{% trans 'Results' %}</h5>
