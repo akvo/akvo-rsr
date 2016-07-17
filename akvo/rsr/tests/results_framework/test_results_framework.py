@@ -125,6 +125,28 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_string.save()
         self.assertEqual(self.period.actual_value, "five")
 
+    def test_edit_and_delete_updates(self):
+        """
+        Test if editing or deleting updates will update the actual value of the period.
+        """
+        indicator_update = IndicatorPeriodData.objects.create(
+            user=self.user,
+            period=self.period,
+            data="10"
+        )
+        self.assertEqual(self.period.actual_value, "")
+
+        indicator_update.status = "A"
+        indicator_update.save()
+        self.assertEqual(self.period.actual_value, "10")
+
+        indicator_update.data = "11"
+        indicator_update.save()
+        self.assertEqual(self.period.actual_value, "11")
+
+        indicator_update.delete()
+        self.assertEqual(self.period.actual_value, "0")
+
     def test_update_on_child(self):
         """
         Test if placing an update on the child project will update the actual value of the period,
