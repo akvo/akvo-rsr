@@ -211,6 +211,18 @@ class Indicator(models.Model):
         except (InvalidOperation, TypeError):
             return None
 
+    @property
+    def children_aggregate_percentage(self):
+        """
+        Returns True if this indicator has percentage as a measure and has children that aggregate
+        to this indicator.
+        """
+        if self.measure == '2' and self.is_parent_indicator() and \
+                self.result.project.aggregate_children and \
+                any([ind.result.project.aggregate_to_parent for ind in self.child_indicators()]):
+            return True
+        return False
+
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'id']
