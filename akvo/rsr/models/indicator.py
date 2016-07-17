@@ -772,7 +772,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
         project = self.period.indicator.result.project
 
-        # Don't allow a data update to a private or unpublished project
+        # Don't allow a data update to an unpublished project
         if not project.is_published():
             validation_errors['period'] = unicode(_(u'Indicator period must be part of a published '
                                                     u'project to add data to it'))
@@ -789,6 +789,17 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
                                                     u'data to it'))
             raise ValidationError(validation_errors)
+
+        # Don't allow a data update to an aggregated parent period with 'percentage' as measurement
+        parent_period = self.period.parent_period()
+        if parent_period and parent_period.indicator.measure == '2':
+            aggregate_from_children = parent_period.indicator.result.project.aggregate_children
+            aggregate_to_parent = self.period.indicator.result.project.aggregate_to_parent
+            if aggregate_from_children and aggregate_to_parent:
+                validation_errors['period'] = unicode(
+                    _(u'Indicator period has an average aggregate of the child projects. Disable '
+                      u'aggregations to add data to it'))
+                raise ValidationError(validation_errors)
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
