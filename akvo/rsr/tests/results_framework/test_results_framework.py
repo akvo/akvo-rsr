@@ -114,6 +114,17 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2.save()
         self.assertEqual(self.period.actual_value, "15")
 
+        indicator_update_string = IndicatorPeriodData.objects.create(
+            user=self.user,
+            period=self.period,
+            data="five"
+        )
+        self.assertEqual(self.period.actual_value, "15")
+
+        indicator_update_string.status = "A"
+        indicator_update_string.save()
+        self.assertEqual(self.period.actual_value, "five")
+
     def test_update_on_child(self):
         """
         Test if placing an update on the child project will update the actual value of the period,
