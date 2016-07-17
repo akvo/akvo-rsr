@@ -808,13 +808,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                 _(u'Indicator period has an average aggregate of the child projects. Disable '
                   u'aggregations to add data to it'))
             raise ValidationError(validation_errors)
-        
-        parent_period = self.period.parent_period()
-        if parent_period and parent_period.indicator.measure == '2':
-            aggregate_from_children = parent_period.indicator.result.project.aggregate_children
-            aggregate_to_parent = self.period.indicator.result.project.aggregate_to_parent
-            if aggregate_from_children and aggregate_to_parent:
-
 
         if self.pk:
             orig = IndicatorPeriodData.objects.get(pk=self.pk)
