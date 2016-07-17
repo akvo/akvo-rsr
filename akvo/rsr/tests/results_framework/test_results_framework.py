@@ -181,6 +181,44 @@ class ResultsFrameworkTestCase(TestCase):
             indicator__result__project=self.parent_project).first()
         self.assertEqual(parent_period.actual_value, "25")
 
+    def test_update_without_aggregations(self):
+        """
+        Test if placing an update on the child project without an aggregation will not update the
+        actual value of the parent project's period.
+        """
+        indicator_update = IndicatorPeriodData.objects.create(
+            user=self.user,
+            period=self.period,
+            data="10"
+        )
+        self.assertEqual(self.period.actual_value, "")
+
+        indicator_update.status = "A"
+        indicator_update.save()
+        self.assertEqual(self.period.actual_value, "10")
+
+        parent_project = self.period.indicator.result.project
+        parent_project.aggregate_children = False
+        parent_project.save(update_fields=['aggregate_children', ])
+
+        child_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.child_project).first()
+
+        indicator_update_2 = IndicatorPeriodData.objects.create(
+            user=self.user,
+            period=child_period,
+            data="15"
+        )
+        self.assertEqual(child_period.actual_value, "")
+
+        indicator_update_2.status = "A"
+        indicator_update_2.save()
+        self.assertEqual(child_period.actual_value, "15")
+
+        parent_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.parent_project).first()
+        self.assertEqual(parent_period.actual_value, "10")
+
     def test_updates_with_percentages(self):
         """
         Test if placing an update on two child projects will give the average of the two in the
