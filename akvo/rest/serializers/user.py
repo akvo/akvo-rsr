@@ -15,6 +15,26 @@ from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializ
 from .rsr_serializer import BaseRSRSerializer
 
 
+class UserRawSerializer(BaseRSRSerializer):
+    """
+    Raw user serializer.
+    """
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'is_active',
+            'is_staff',
+            'is_admin',
+            'is_support',
+            'is_superuser',
+        )
+
+
 class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False)

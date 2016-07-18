@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import logging
+import logging, json
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
@@ -16,7 +16,7 @@ from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
 from django.utils import translation
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 
 def _is_rsr_host(hostname):
@@ -36,6 +36,18 @@ def _partner_site(netloc):
     """From a netloc return PartnerSite or raise a DoesNotExist."""
     return PartnerSite.objects.get(
         Q(hostname=PartnerSite.yank_hostname(netloc)) | Q(cname=netloc)
+    )
+
+
+def _build_api_link(request, resource, object_id):
+    """
+    Build a new link that will redirect from the '/v1/api/project/?depth=X' resource to
+    '/v1/api/project_extra(_deep)/' resource.
+    """
+    protocol = 'https' if request.is_secure() else 'http'
+    object_id_part = '/' if not object_id else '/{0}/'.format(object_id)
+    return '{0}://{1}/api/v1/{2}{3}?{4}'.format(
+        protocol, request.META['HTTP_HOST'], resource, object_id_part, request.GET.urlencode()
     )
 
 
@@ -151,4 +163,59 @@ class RSRVersionHeaderMiddleware(object):
                 context['deploy_tag'],
                 context['deploy_commit_id'],
                 context['deploy_branch'])
+        return response
+
+
+class APIRedirectMiddleware(object):
+    """
+    In special cases, the old API links should be redirected:
+
+    - /api/v1/project/ with depth = 1 should be redirected to /api/v1/project_extra/.
+    - /api/v1/project/ with depth > 1 should be redirected to /api/v1/project_extra_deep/.
+    """
+    @staticmethod
+    def process_response(request, response):
+        project_extra_fields = ['api', 'v1', 'project', ]
+        path_list = request.path.split('/')
+
+        if all(field in path_list for field in project_extra_fields):
+            try:
+                object_id = path_list[4] if len(path_list) > 4 and int(path_list[4]) else None
+            except ValueError:
+                object_id = None
+
+            depth = request.GET.get('depth')
+            if depth == '1':
+                return redirect(_build_api_link(request, 'project_extra', object_id))
+            if depth > '1':
+                return redirect(_build_api_link(request, 'project_extra_deep', object_id))
+        return response
+
+
+class NonHtmlDebugToolbarMiddleware(object):
+    """
+    The Django Debug Toolbar usually only works for views that return HTML.
+    This middleware wraps any non-HTML response in HTML if the request
+    has a 'debug' query parameter (e.g. http://localhost/foo?debug)
+    Special handling for json (pretty printing) and
+    binary data (only show data length)
+    """
+
+    @staticmethod
+    def process_response(request, response):
+        if request.GET.get('debug') == '':
+            if response['Content-Type'] == 'application/octet-stream':
+                new_content = '<html><body>Binary Data, ' \
+                    'Length: {}</body></html>'.format(len(response.content))
+                response = HttpResponse(new_content)
+            elif response['Content-Type'] != 'text/html':
+                content = response.content
+                try:
+                    json_ = json.loads(content)
+                    content = json.dumps(json_, sort_keys=True, indent=2)
+                except ValueError:
+                    pass
+                response = HttpResponse('<html><body><pre>{}'
+                                        '</pre></body></html>'.format(content))
+
         return response

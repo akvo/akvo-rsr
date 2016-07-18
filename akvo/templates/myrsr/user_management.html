@@ -53,11 +53,6 @@
     {{ block.super }}
 
     {% if employments %}
-        {# React #}
-        <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
-        <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
-        <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
-
         {# App data #}
         <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
         <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
@@ -87,7 +82,8 @@
                 "organisations_text": "{% trans 'Organisation' %}",
                 "role_text": "{% trans 'Role' %}",
                 "select_org_text": "{% trans 'Select organisation' %}",
-                "select_role_text": "{% trans 'Select role' %}"
+                "select_role_text": "{% trans 'Select role' %}",
+                "employment_exists": "{% trans 'Employment group already exists for user.' %}"
             }
         </script>
 

@@ -81,12 +81,12 @@
                     <li><a class="addUpdate disabled" title="{% trans "Can't update an unpublished, cancelled or completed project" %}">{% trans 'Results data' %}</a></li>
                   {% endif %}
                 {% endif %}
-                {% if project.is_published and project.is_public and not project.iati_status in project.EDIT_DISABLED %}
+                {% if project.is_published and not project.iati_status in project.EDIT_DISABLED %}
                   <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
                 {% elif project.iati_status in project.EDIT_DISABLED %}
                   <li> <a class="addUpdate disabled" title="{% trans "Can't update a completed or cancelled project" %}"> {% trans "Update" %} </a></li>
                 {% else %}
-                 <li> <a class="addUpdate disabled" title="{% trans "Can't update a private or unpublished project" %}"> {% trans "Update" %} </a></li>
+                 <li> <a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}"> {% trans "Update" %} </a></li>
                  </ul>
                 {% endif %}
               </div>

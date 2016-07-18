@@ -2437,6 +2437,9 @@ body.translationBarActive div.skiptranslate ~ #map {
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
 
+#import-results {
+  margin-bottom: 25px; }
+
 /* New concatenated project page */
 .tab-menu {
   padding: 0.5em 1em 2em 1em; }
@@ -3794,6 +3797,9 @@ div.active .addOrg {
   div.active .addOrg:active {
     opacity: 0.8; }
 
+.modal-backdrop.in {
+  z-index: 1030; }
+
 .modalBackground {
   position: fixed;
   top: 0;
@@ -4058,3 +4064,8 @@ div.iatiFilters {
 
 .iatiCheck span.error {
   color: #ee3124; }
+
+/* User management */
+.employment-error {
+  color: #ee3124;
+  font-size: 85%; }

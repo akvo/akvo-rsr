@@ -2980,6 +2980,10 @@ body {
     }
 }
 
+#import-results {
+    margin-bottom: 25px;
+}
+
 
 /* New concatenated project page */
 
@@ -4478,6 +4482,10 @@ div.active {
     }
 }
 
+.modal-backdrop.in {
+    z-index: 1030;
+}
+
 .modalBackground {
     position: fixed;
     top: 0;
@@ -4793,4 +4801,10 @@ div.iatiFilters {
     span.error {
         color: $akvoTvRed;
     }
+}
+
+/* User management */
+.employment-error {
+    color: $akvoTvRed;
+    font-size: 85%;
 }

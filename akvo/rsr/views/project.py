@@ -161,7 +161,7 @@ def _check_project_viewing_permissions(user, project):
     should be logged in and able to make changes to the project (e.g. be an admin of the project).
     """
     if not ((project.is_public and project.is_published()) or
-            user.has_perm('rsr.change_project', project)):
+            user.has_perm('rsr.view_project', project)):
         raise PermissionDenied
 
 

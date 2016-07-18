@@ -10,24 +10,25 @@ from akvo.rsr.models import Project
 
 from ..fields import Base64ImageField
 
-from .budget_item import BudgetItemRawSerializer
+from .budget_item import BudgetItemRawSerializer, BudgetItemRawDeepSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
-from .partnership import PartnershipRawSerializer
-from .planned_disbursement import PlannedDisbursementRawSerializer
+from .partnership import PartnershipRawSerializer, PartnershipRawDeepSerializer
+from .planned_disbursement import (PlannedDisbursementRawSerializer,
+                                   PlannedDisbursementRawDeepSerializer)
 from .policy_marker import PolicyMarkerRawSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentRawSerializer
 from .project_location import ProjectLocationExtraSerializer, ProjectLocationSerializer
 from .project_condition import ProjectConditionRawSerializer
-from .project_contact import ProjectContactRawSerializer
-from .project_update import ProjectUpdateSerializer
+from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
+from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
 from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
 from .related_project import RelatedProjectRawSerializer
 from .result import ResultRawSerializer
 from .sector import SectorRawSerializer
-from .transaction import TransactionRawSerializer
+from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -100,6 +101,48 @@ class ProjectExtraSerializer(ProjectSerializer):
     transactions = TransactionRawSerializer(source='transactions', many=True, required=False,
                                             allow_add_remove=True)
     partnerships = PartnershipRawSerializer(source='partnerships', many=True)
+
+    class Meta(ProjectSerializer.Meta):
+        pass
+
+
+class ProjectExtraDeepSerializer(ProjectSerializer):
+
+    budget_items = BudgetItemRawDeepSerializer(source='budget_items', many=True, required=False,
+                                           allow_add_remove=True)
+    legacy_data = LegacyDataSerializer(source='legacy_data', many=True, required=False,
+                                       allow_add_remove=True)
+    links = LinkSerializer(source='links', many=True, required=False, allow_add_remove=True)
+    locations = ProjectLocationExtraSerializer(source='locations', many=True, required=False,
+                                               allow_add_remove=True)
+    planned_disbursements = PlannedDisbursementRawDeepSerializer(
+        source='planned_disbursements', many=True, required=False, allow_add_remove=True
+    )
+    policy_markers = PolicyMarkerRawSerializer(source='policy_markers', many=True, required=False,
+                                               allow_add_remove=True)
+    documents = ProjectDocumentRawSerializer(source='documents', many=True, required=False,
+                                             allow_add_remove=True)
+    comments = ProjectCommentSerializer(source='comments', many=True, required=False,
+                                        allow_add_remove=True)
+    conditions = ProjectConditionRawSerializer(source='conditions', many=True, required=False,
+                                               allow_add_remove=True)
+    contacts = ProjectContactRawDeepSerializer(source='contacts', many=True, required=False,
+                                               allow_add_remove=True)
+    project_updates = ProjectUpdateDeepSerializer(source='project_updates', many=True,
+                                                   required=False, allow_add_remove=True)
+    recipient_countries = RecipientCountryRawSerializer(source='recipient_countries', many=True,
+                                                        required=False, allow_add_remove=True)
+    recipient_regions = RecipientRegionRawSerializer(source='recipient_regions', many=True,
+                                                     required=False, allow_add_remove=True)
+    related_projects = RelatedProjectRawSerializer(source='related_projects', many=True,
+                                                   required=False, allow_add_remove=True)
+    results = ResultRawSerializer(source='results', many=True, required=False,
+                                  allow_add_remove=True)
+    sectors = SectorRawSerializer(source='sectors', many=True, required=False,
+                                  allow_add_remove=True)
+    transactions = TransactionRawDeepSerializer(source='transactions', many=True, required=False,
+                                                allow_add_remove=True)
+    partnerships = PartnershipRawDeepSerializer(source='partnerships', many=True)
 
     class Meta(ProjectSerializer.Meta):
         pass

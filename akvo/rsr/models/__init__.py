@@ -12,7 +12,7 @@ from django.conf import settings
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 
-from akvo.api.models import create_api_key
+from akvo.rest.models import create_api_key
 
 from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -385,6 +385,8 @@ rules.add_perm('rsr.delete_organisationdocumentcountry', is_rsr_admin | is_org_a
 
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.view_project', is_rsr_admin | is_org_admin | is_org_user_manager |
+               is_org_project_editor | is_org_user)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 

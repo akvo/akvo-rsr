@@ -18,6 +18,10 @@ class PartnershipRawSerializer(BaseRSRSerializer):
         model = Partnership
 
 
+class PartnershipRawDeepSerializer(PartnershipRawSerializer):
+    organisation = OrganisationBasicSerializer(source='organisation')
+
+
 class PartnershipSerializer(PartnershipRawSerializer):
 
     organisation_show_link = serializers.Field(source='organisation_show_link')
