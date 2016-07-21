@@ -803,7 +803,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             raise ValidationError(validation_errors)
 
         # Don't allow a data update to an aggregated parent period with 'percentage' as measurement
-        if self.period.indicator.children_aggregate_percentage():
+        if self.period.indicator.children_aggregate_percentage:
             validation_errors['period'] = unicode(
                 _(u'Indicator period has an average aggregate of the child projects. Disable '
                   u'aggregations to add data to it'))
