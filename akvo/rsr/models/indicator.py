@@ -493,9 +493,15 @@ class IndicatorPeriod(models.Model):
         """
         Returns the average of child indicator periods.
         """
-        number_of_child_periods = self.child_periods(has_data=True).count()
-        if number_of_child_periods > 0:
-            return str(Decimal(self.child_periods_sum()) / number_of_child_periods)
+        if self.indicator.result.project.aggregate_children:
+            child_periods = self.child_periods(has_data=True)
+            for child in child_periods:
+                if not (child.indicator.result.project.aggregate_to_parent and child.actual_value):
+                    child_periods = child_periods.exclude(pk=child.pk)
+
+            number_of_child_periods = child_periods.count()
+            if number_of_child_periods > 0:
+                return str(Decimal(self.child_periods_sum()) / number_of_child_periods)
         return '0'
 
     def adjacent_period(self, next_period=True):

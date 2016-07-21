@@ -434,6 +434,7 @@ class Project(TimestampsMixin, models.Model):
             self.iati_activity_id = self.iati_activity_id.strip()
 
         # Update legacy status field
+        orig, toggle_aggregate_children, toggle_aggregate_to_parent = None, False, False
         if self.pk is not None:
             orig = Project.objects.get(pk=self.pk)
 
@@ -446,12 +447,19 @@ class Project(TimestampsMixin, models.Model):
                 super(Project, self).save(update_fields=['iati_status'])
 
             if self.aggregate_children != orig.aggregate_children:
-                self.toggle_aggregate_children(self.aggregate_children)
+                toggle_aggregate_children = True
 
             if self.aggregate_to_parent != orig.aggregate_to_parent:
-                self.toggle_aggregate_to_parent(self.aggregate_to_parent)
+                toggle_aggregate_to_parent = True
 
         super(Project, self).save(*args, **kwargs)
+
+        # Save the project first, then update the results framework of children / parents
+        if toggle_aggregate_children:
+            self.toggle_aggregate_children(self.aggregate_children)
+
+        if toggle_aggregate_to_parent:
+            self.toggle_aggregate_to_parent(self.aggregate_to_parent)
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1382,31 +1390,43 @@ class Project(TimestampsMixin, models.Model):
         """ Add/subtract all child indicator period updates if aggregation is toggled """
         for result in self.results.all():
             for indicator in result.indicators.all():
-                if indicator.is_parent_indicator() and not indicator.measure == '2':
+                if indicator.is_parent_indicator():
                     for period in indicator.periods.all():
-                        sign = 1 if aggregate else -1
-                        self.update_parents(period, period.child_periods_sum(), sign)
+                        if indicator.measure == '2':
+                            self.update_parents(period, period.child_periods_average(), 1)
+                        else:
+                            sign = 1 if aggregate else -1
+                            self.update_parents(period, period.child_periods_sum(), sign)
 
     def toggle_aggregate_to_parent(self, aggregate):
         """ Add/subtract child indicator period values from parent if aggregation is toggled """
         for result in self.results.all():
             for indicator in result.indicators.all():
-                if indicator.is_child_indicator() and not indicator.measure == '2':
+                if indicator.is_child_indicator():
                     for period in indicator.periods.all():
                         parent = period.parent_period()
                         if parent and period.actual_value:
-                            sign = 1 if aggregate else -1
-                            self.update_parents(parent, period.actual_value, sign)
+                            if indicator.measure == '2':
+                                self.update_parents(parent, parent.child_periods_average(), 1)
+                            else:
+                                sign = 1 if aggregate else -1
+                                self.update_parents(parent, period.actual_value, sign)
 
     def update_parents(self, update_period, difference, sign):
         """ Update parent indicator periods if they exist and allow aggregation """
         try:
-            update_period.actual_value = str(Decimal(update_period.actual_value) + sign * Decimal(difference))
+            if update_period.indicator.measure == '2':
+                update_period.actual_value = str(Decimal(difference))
+            else:
+                update_period.actual_value = str(
+                    Decimal(update_period.actual_value) + sign * Decimal(difference))
             update_period.save()
 
             parent_period = update_period.parent_period()
-            if parent_period:
-                if parent_period.indicator.result.project.aggregate_children:
+            if parent_period and parent_period.indicator.result.project.aggregate_children:
+                if update_period.indicator.measure == '2':
+                    self.update_parents(parent_period, parent_period.child_periods_average(), 1)
+                else:
                     self.update_parents(parent_period, difference, sign)
 
         except (InvalidOperation, TypeError):
