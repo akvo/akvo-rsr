@@ -2521,6 +2521,16 @@ article {
   .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .periodValues .period-target-comment {
     padding-right: 15px; }
 
+.default-period-container {
+  margin-right: 10px;
+  font-size: 80%; }
+  .default-period-container .default-yes-button {
+    color: green;
+    margin-left: 5px; }
+  .default-period-container .default-no-button {
+    color: red;
+    margin-left: 5px; }
+
 .baseline,
 .periodValues {
   padding: 0.5em 0 2em 0;

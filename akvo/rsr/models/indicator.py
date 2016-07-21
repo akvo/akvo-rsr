@@ -56,8 +56,8 @@ class Indicator(models.Model):
         help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
     order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True, blank=True)
-    default_periods = models.BooleanField(
-        _(u'default indicator periods'), default=False,
+    default_periods = models.NullBooleanField(
+        _(u'default indicator periods'), default=False, blank=True,
         help_text=_(u'Determines whether periods of indicator are used by default.')
     )
 

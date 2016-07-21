@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicator',
             name='default_periods',
-            field=models.BooleanField(default=False, help_text='Determines whether periods of indicator are used by default.', verbose_name='default indicator periods'),
+            field=models.NullBooleanField(default=False, blank=True, help_text='Determines whether periods of indicator are used by default.', verbose_name='default indicator periods'),
             preserve_default=True,
         ),
     ]

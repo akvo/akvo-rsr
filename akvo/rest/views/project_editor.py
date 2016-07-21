@@ -646,6 +646,27 @@ def project_editor_reorder_items(request, project_pk=None):
     )
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def project_editor_default_periods(request, project_pk=None):
+    """API call to set default indicator periods"""
+
+    errors = []
+
+    indicator_id = request.POST.get('indicator_id', False)
+    copy = request.POST.get('copy', False)
+    set_default = request.POST.get('set_default', False)
+
+    print 'Indicator ID: %s | Copy to existing: %s | Set as default: %s' % (indicator_id, copy, set_default)
+
+
+
+    return Response(
+        {
+            'errors': errors,
+        }
+    )
+
+@api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_upload_file(request, pk=None):
     """Special API call for directly uploading a file."""
