@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import datetime
 import decimal
+import json
 import collections
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
@@ -653,11 +654,42 @@ def project_editor_default_periods(request, project_pk=None):
     errors = []
 
     indicator_id = request.POST.get('indicator_id', False)
-    copy = request.POST.get('copy', False)
-    set_default = request.POST.get('set_default', False)
+    copy = json.loads(request.POST.get('copy', False))
+    set_default = json.loads(request.POST.get('set_default', False))
 
     print 'Indicator ID: %s | Copy to existing: %s | Set as default: %s' % (indicator_id, copy, set_default)
 
+    default_indicator = Indicator.objects.get(id=indicator_id)
+
+    if set_default:
+        default_indicator.default_periods = True
+        default_indicator.save()
+
+        # copy to existing indicators if desired
+        if copy:
+            project = Project.objects.get(pk=project_pk)
+            results = Result.objects.filter(project_id=project)
+            indicators = Indicator.objects.filter(result_id__in=results)
+
+            default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
+
+            for indicator in indicators:
+                if indicator != default_indicator:
+                    for period in default_periods:
+                        period.pk = None
+
+                        # Blank all values except id and locked status
+                        period.target_value = ''
+                        period.target_comment = ''
+                        period.actual_value = ''
+                        period.actual_comment = ''
+
+                        period.indicator_id = indicator.id
+                        period.save()
+
+    else:
+        default_indicator.default_periods = False
+        default_indicator.save()
 
 
     return Response(

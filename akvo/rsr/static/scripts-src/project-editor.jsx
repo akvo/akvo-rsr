@@ -2542,7 +2542,10 @@ function setIndicatorSorting () {
 
         for (var j=0; j < indicatorSections.length; j++) {
             setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
-            setDefaultPeriodButtons(indicatorSections[j]);
+
+            if (!indicatorSections[j].classList.contains('default-period-buttons-set')) {
+                setDefaultPeriodButtons(indicatorSections[j]);
+            }
         }
     }
 }
@@ -2643,7 +2646,7 @@ function reorderItems (itemType, itemId, direction) {
                 if (response.swap_id > -1) {
                     swapReorderedItems(itemType, itemId, response.swap_id, direction);
                 } else {
-                    console.log(error);
+                    console.log(response.errors);
                 }
 
             } else {
@@ -2698,29 +2701,40 @@ function setDefaultPeriodButtons (indicatorNode) {
 
     indicatorId = indicatorNode.getAttribute('id').split('.')[1];
 
-    if (!indicatorNode.classList.contains('default-period-buttons-set')) {
-        var defaultPeriodNode = document.createElement('span');
-        defaultPeriodNode.setAttribute('class', 'default-period-container');
+    var defaultPeriodNode = document.createElement('span');
+    defaultPeriodNode.setAttribute('class', 'default-period-container');
 
-        var defaultButton = document.createElement('a');
-        defaultButton.setAttribute('class', 'default-period-button');
-        defaultButton.innerHTML = defaultValues.set_default;
+    var addButton = document.createElement('a');
+    addButton.setAttribute('class', 'default-period-add');
+    addButton.innerHTML = defaultValues.set_default;
+    addButton.onclick = promptCopyDefaultPeriods(defaultPeriodNode, indicatorId);
 
-        defaultButton.onclick = copyDefaultPeriods(defaultPeriodNode, indicatorId);
-        defaultPeriodNode.appendChild(defaultButton);
+    var removeButton = document.createElement('a');
+    removeButton.setAttribute('class', 'default-period-remove');
+    removeButton.innerHTML = defaultValues.remove_default;
+    removeButton.onclick = removeDefaultPeriods(defaultPeriodNode, indicatorId);
 
-        var indicatorContainer = indicatorNode.querySelector('.delete-related-object-container');
-        indicatorContainer.insertBefore(defaultPeriodNode, indicatorContainer.childNodes[0]);
+    defaultPeriodNode.appendChild(addButton);
+    defaultPeriodNode.appendChild(removeButton);
 
-        indicatorNode.className += ' default-period-buttons-set';
+    var indicatorContainer = indicatorNode.querySelector('.delete-related-object-container');
+    indicatorContainer.insertBefore(defaultPeriodNode, indicatorContainer.childNodes[0]);
+
+    if (false) {
+        addButton.classList.add('hidden');
+    } else {
+        removeButton.classList.add('hidden');
     }
+
+    indicatorNode.className += ' default-period-buttons-set';
+
 }
 
-function copyDefaultPeriods (defaultPeriodNode, indicatorId) {
+function promptCopyDefaultPeriods (defaultPeriodNode, indicatorId) {
     return function(e) {
         e.preventDefault();
 
-        defaultPeriodNode.querySelector('.default-period-button').classList.add('hidden');
+        defaultPeriodNode.querySelector('.default-period-add').classList.add('hidden');
 
         var confirmContainer = document.createElement('span');
         confirmContainer.setAttribute('class', 'default-confirm-container');
@@ -2731,12 +2745,12 @@ function copyDefaultPeriods (defaultPeriodNode, indicatorId) {
         var yesButton = document.createElement('a');
         yesButton.setAttribute('class', 'default-yes-button');
         yesButton.innerHTML = defaultValues.yes;
-        yesButton.onclick = confirmDefaultPeriods(defaultPeriodNode, indicatorId, true);
+        yesButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, true);
 
         var noButton = document.createElement('a');
         noButton.setAttribute('class', 'default-no-button');
         noButton.innerHTML = defaultValues.no;
-        noButton.onclick = confirmDefaultPeriods(defaultPeriodNode, indicatorId, false);
+        noButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, false);
 
         confirmContainer.appendChild(confirmText);
         confirmContainer.appendChild(yesButton);
@@ -2745,12 +2759,12 @@ function copyDefaultPeriods (defaultPeriodNode, indicatorId) {
     };
 }
 
-function confirmDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
+function setDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
     return function(e) {
         e.preventDefault();
 
         var indicatorNode = defaultPeriodNode.parentNode;
-        indicatorNode.className += ' default-indicator';
+        indicatorNode.classList.add('default-indicator');
 
         defaultPeriodNode.querySelector('.default-confirm-container').classList.add('hidden');
 
@@ -2759,17 +2773,15 @@ function confirmDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
             refreshText.innerHTML = defaultValues.refresh_periods;
             defaultPeriodNode.appendChild(refreshText);
 
-            setDefaultPeriods(indicatorId, true, true);
+            submitDefaultPeriods(indicatorId, true, true);
         } else {
-            var removeText = document.createElement('a');
-            removeText.innerHTML = defaultValues.remove_default;
-            defaultPeriodNode.appendChild(removeText);
+            defaultPeriodNode.querySelector('.default-period-remove').classList.remove('hidden');
 
-            setDefaultPeriods(indicatorId, false, true);
+            submitDefaultPeriods(indicatorId, false, true);
         }
 
-        // hide all other default buttons
-        var defaultButtons = document.querySelectorAll('.default-period-button');
+        // hide all other default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
         for (var i=0; i < defaultButtons.length; i++) {
             defaultButtons[i].classList.add('hidden');
         }
@@ -2777,7 +2789,23 @@ function confirmDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
     };
 }
 
-function setDefaultPeriods(indicatorId, copy, setDefault) {
+function removeDefaultPeriods(defaultPeriodNode, indicatorId) {
+    return function(e) {
+        e.preventDefault();
+
+        defaultPeriodNode.querySelector('.default-period-remove').classList.add('hidden');
+
+        submitDefaultPeriods(indicatorId, false, false);
+
+        // show all default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
+        for (var i=0; i < defaultButtons.length; i++) {
+            defaultButtons[i].classList.remove('hidden');
+        }
+    };
+}
+
+function submitDefaultPeriods(indicatorId, copy, setDefault) {
 
     var api_url, request;
 
@@ -2794,10 +2822,8 @@ function setDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-            if (!error) {
-                console.log('success');
-            } else {
-                console.log(error);
+            if (response.errors !== '') {
+                console.log(response.errors);
             }
 
         } else {
