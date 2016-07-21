@@ -56,6 +56,10 @@ class Indicator(models.Model):
         help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
     order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True, blank=True)
+    default_periods = models.BooleanField(
+        _(u'default indicator periods'), default=False,
+        help_text=_(u'Determines whether periods of indicator are used by default.')
+    )
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
