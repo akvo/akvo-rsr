@@ -2714,22 +2714,27 @@ function setDefaultPeriodButtons (indicatorNode) {
     removeButton.innerHTML = defaultValues.remove_default;
     removeButton.onclick = removeDefaultPeriods(defaultPeriodNode, indicatorId);
 
+    if (defaultValues.default_indicator === '-1') {
+        removeButton.classList.add('hidden');
+    } else {
+        if (indicatorId == defaultValues.default_indicator) {
+            addButton.classList.add('hidden');
+        } else {
+            addButton.classList.add('hidden');
+            removeButton.classList.add('hidden');
+        }
+    }
+
     defaultPeriodNode.appendChild(addButton);
     defaultPeriodNode.appendChild(removeButton);
 
     var indicatorContainer = indicatorNode.querySelector('.delete-related-object-container');
     indicatorContainer.insertBefore(defaultPeriodNode, indicatorContainer.childNodes[0]);
 
-    if (false) {
-        addButton.classList.add('hidden');
-    } else {
-        removeButton.classList.add('hidden');
-    }
-
     indicatorNode.className += ' default-period-buttons-set';
-
 }
 
+// ask if defaults should be copied to existing indicators
 function promptCopyDefaultPeriods (defaultPeriodNode, indicatorId) {
     return function(e) {
         e.preventDefault();
@@ -2823,7 +2828,7 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
             if (response.errors !== '') {
-                console.log(response.errors);
+                // console.log(response.errors);
             }
 
         } else {

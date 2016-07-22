@@ -9,7 +9,7 @@ from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOC
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_send_mail
-from akvo.rsr.models import Result
+from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
