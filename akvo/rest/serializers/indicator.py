@@ -16,6 +16,7 @@ class IndicatorSerializer(BaseRSRSerializer):
     result_unicode = serializers.Field(source='result')
     parent_indicator = serializers.Field(source='parent_indicator.pk')
     measure_label = serializers.Field(source='iati_measure')
+    children_aggregate_percentage = serializers.Field(source='children_aggregate_percentage')
 
     class Meta:
         model = Indicator
@@ -25,6 +26,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, allow_add_remove=True)
     parent_indicator = serializers.Field(source='parent_indicator.pk')
+    children_aggregate_percentage = serializers.Field(source='children_aggregate_percentage')
 
     class Meta:
         model = Indicator

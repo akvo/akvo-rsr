@@ -972,7 +972,10 @@ function initReact() {
             }
 
             var updatesHeader;
-            if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
+            if (this.props.selectedIndicator.children_aggregate_percentage && !isPublic) {
+                updatesHeader = <h5>{i18nResults.cant_place_updates}</h5>;
+                updates = <span />;
+            } else if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
                 updatesHeader = <h5>{i18nResults.updates}</h5>;
             } else {
                 updatesHeader = <h5>{i18nResults.no_updates_yet}</h5>;
@@ -1024,6 +1027,12 @@ function initReact() {
             this.props.unlockPeriod(this.props.selectedPeriod.id, this.finishUnlocking);
         },
 
+        percentageWithChildren: function() {
+            // Checks whether the indicator has percentages and linked children. In that case it is
+            // not allowed to update the period.
+            return this.props.selectedIndicator.measure === '2';
+        },
+
         renderNewUpdate: function() {
             // Render the button for adding a new update.
 
@@ -1042,7 +1051,17 @@ function initReact() {
                     </div>
                 );
             } else if (!this.props.selectedPeriod.locked) {
-                if (this.props.selectedPeriod.data !== undefined) {
+                if (this.props.selectedPeriod.data === undefined) {
+                    // Show nothing if the updates are still loading.
+                    return (
+                        <div className="new-update"></div>
+                    );
+                } else if (this.props.selectedIndicator.children_aggregate_percentage) {
+                    // Show nothing if it the period has percentages and linked children.
+                    return (
+                        <div className="new-update"></div>
+                    );
+                } else {
                     // If the updates have been loaded and the period is not locked, show a button
                     // to add a new update.
                     return (
@@ -1050,12 +1069,21 @@ function initReact() {
                             <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
                         </div>
                     );
-                } else {
-                    // Show nothing if the updates are still loading.
-                    return (
-                        <div className="new-update"></div>
-                    );
                 }
+                // if (this.props.selectedPeriod.data !== undefined) {
+                //     // If the updates have been loaded and the period is not locked, show a button
+                //     // to add a new update.
+                //     return (
+                //         <div className="new-update">
+                //             <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
+                //         </div>
+                //     );
+                // } else {
+                //     // Show nothing if the updates are still loading.
+                //     return (
+                //         <div className="new-update"></div>
+                //     );
+                // }
             } else if (isMEManager) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
@@ -1198,9 +1226,11 @@ function initReact() {
                             saveFileInUpdate: this.props.saveFileInUpdate,
                             saveCommentInUpdate: this.props.saveCommentInUpdate,
                             removeUpdate: this.props.removeUpdate,
+                            selectedIndicator: this.props.selectedIndicator,
                             selectedPeriod: this.props.selectedPeriod,
                             selectPeriod: this.props.selectPeriod,
-                            reloadPeriod: this.props.reloadPeriod
+                            reloadPeriod: this.props.reloadPeriod,
+                            percentageWithChildren: this.percentageWithChildren()
                         })}
                     </div>
                 </div>

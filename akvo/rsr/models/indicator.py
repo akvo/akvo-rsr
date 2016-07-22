@@ -211,6 +211,18 @@ class Indicator(models.Model):
         except (InvalidOperation, TypeError):
             return None
 
+    @property
+    def children_aggregate_percentage(self):
+        """
+        Returns True if this indicator has percentage as a measure and has children that aggregate
+        to this indicator.
+        """
+        if self.measure == '2' and self.is_parent_indicator() and \
+                self.result.project.aggregate_children and \
+                any([ind.result.project.aggregate_to_parent for ind in self.child_indicators()]):
+            return True
+        return False
+
     class Meta:
         app_label = 'rsr'
         ordering = ['order', 'id']
@@ -442,22 +454,31 @@ class IndicatorPeriod(models.Model):
         """
         return True if self.child_periods() else False
 
-    def child_periods(self):
+    def child_periods(self, has_data=False):
         """
         Returns the child indicator periods, in case this period is a parent period.
+
+        :param has_data; Only count the children with numeric data. False by default.
         """
         child_results = self.indicator.result.child_results.all()
-        return IndicatorPeriod.objects.filter(
+        children = IndicatorPeriod.objects.filter(
             indicator__result__in=child_results,
             indicator__title=self.indicator.title,
             period_start=self.period_start,
             period_end=self.period_end
         )
+        if has_data:
+            for child in children:
+                try:
+                    Decimal(child.actual_value)
+                except (InvalidOperation, TypeError):
+                    children = children.exclude(pk=child.pk)
+        return children
 
     def child_periods_sum(self):
         """
-            Returns a sum of child indicator periods.
-            """
+        Returns the sum of child indicator periods.
+        """
         period_sum = 0
         for period in self.child_periods():
             if period.indicator.result.project.aggregate_to_parent and period.actual_value:
@@ -467,6 +488,21 @@ class IndicatorPeriod(models.Model):
                     pass
 
         return str(period_sum)
+
+    def child_periods_average(self):
+        """
+        Returns the average of child indicator periods.
+        """
+        if self.indicator.result.project.aggregate_children:
+            child_periods = self.child_periods(has_data=True)
+            for child in child_periods:
+                if not (child.indicator.result.project.aggregate_to_parent and child.actual_value):
+                    child_periods = child_periods.exclude(pk=child.pk)
+
+            number_of_child_periods = child_periods.count()
+            if number_of_child_periods > 0:
+                return str(Decimal(self.child_periods_sum()) / number_of_child_periods)
+        return '0'
 
     def adjacent_period(self, next_period=True):
         """
@@ -493,57 +529,51 @@ class IndicatorPeriod(models.Model):
         relative value of the current actual value (True) or overwrite the actual value (False)
         :param comment; String that represents the new actual comment data of the period (Optional)
         """
-        old_value_is_decimal = False
-        new_value_is_decimal = False
+        old_is_decimal = False
+        new_is_decimal = False
+        parent = self.parent_period()
+        aggregate_to_parent = self.indicator.result.project.aggregate_to_parent
 
+        # Convert the old actual value (previous actual value of period)
         try:
             old_actual = Decimal(self.actual_value or '0')
-            old_value_is_decimal = True
+            old_is_decimal = True
         except (InvalidOperation, TypeError):
             old_actual = self.actual_value
 
+        # Convert the new value (new data entered in an update)
         try:
             new_actual = Decimal(data)
-            new_value_is_decimal = True
+            new_is_decimal = True
         except (InvalidOperation, TypeError):
             new_actual = data
 
-        parent = self.parent_period()
-        if old_value_is_decimal and new_value_is_decimal:
+        # Calculate the new actual value of period and parent period
+        if old_is_decimal and new_is_decimal:
             self.actual_value = str(old_actual + new_actual) if relative_data else str(new_actual)
-            self.save(update_fields=['actual_value'])
-
-            # Update parent period (if not percentages)
-            if parent:
-                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
-                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-                    parent.update_actual_value(str(new_actual), True)
-
-        elif not old_value_is_decimal and new_value_is_decimal:
+            new_parent_value = str(new_actual)
+        elif not old_is_decimal and new_is_decimal:
             self.actual_value = str(new_actual + Decimal(self.child_periods_sum()))
-            self.save(update_fields=['actual_value'])
-
-            # Update parent period (if not percentages)
-            if parent:
-                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
-                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-                    parent.update_actual_value(str(new_actual + Decimal(self.child_periods_sum())), True)
-
+            new_parent_value = str(new_actual + Decimal(self.child_periods_sum()))
         else:
             self.actual_value = str(new_actual)
-            self.save(update_fields=['actual_value'])
+            new_parent_value = str(-old_actual) if old_is_decimal or new_is_decimal else ''
 
-            # Update parent period (if not percentages)
-            if parent and old_value_is_decimal:
-                if self.indicator.result.project.aggregate_to_parent and parent.actual_value_is_decimal() and \
-                        parent.indicator.result.project.aggregate_children and self.indicator.measure != '2':
-                    parent.update_actual_value(str(-old_actual), True)
+        # Save new actual value of period
+        self.save(update_fields=['actual_value'])
 
+        # Update parent period
+        if parent and aggregate_to_parent and (old_is_decimal or new_is_decimal):
+            aggregate_from_children = parent.indicator.result.project.aggregate_children
+            if aggregate_from_children and parent.actual_value_is_decimal():
+                if self.indicator.measure != '2':
+                    parent.update_actual_value(new_parent_value, True)
+                else:
+                    parent.update_actual_value(parent.child_periods_average(), False)
 
         if comment:
             self.actual_comment = comment
             self.save(update_fields=['actual_comment'])
-
 
     @property
     def percent_accomplishment(self):
@@ -760,7 +790,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
         project = self.period.indicator.result.project
 
-        # Don't allow a data update to a private or unpublished project
+        # Don't allow a data update to an unpublished project
         if not project.is_published():
             validation_errors['period'] = unicode(_(u'Indicator period must be part of a published '
                                                     u'project to add data to it'))
@@ -776,6 +806,13 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         if self.period.locked:
             validation_errors['period'] = unicode(_(u'Indicator period must be unlocked to add '
                                                     u'data to it'))
+            raise ValidationError(validation_errors)
+
+        # Don't allow a data update to an aggregated parent period with 'percentage' as measurement
+        if self.period.indicator.children_aggregate_percentage:
+            validation_errors['period'] = unicode(
+                _(u'Indicator period has an average aggregate of the child projects. Disable '
+                  u'aggregations to add data to it'))
             raise ValidationError(validation_errors)
 
         if self.pk:
