@@ -657,8 +657,6 @@ def project_editor_default_periods(request, project_pk=None):
     copy = json.loads(request.POST.get('copy', False))
     set_default = json.loads(request.POST.get('set_default', False))
 
-    print 'Indicator ID: %s | Copy to existing: %s | Set as default: %s' % (indicator_id, copy, set_default)
-
     default_indicator = Indicator.objects.get(id=indicator_id)
 
     if set_default:
