@@ -346,8 +346,8 @@ class IndicatorPeriod(models.Model):
                 child_period.save()
 
             # Update parent actual values
-            # if self.is_child_indicator():
-            #     self.parent_period().update_parent_actual_values(Decimal(self.actual_value - orig_period.acutal_value)
+            if self.is_child_indicator() and self.actual_value != orig_period.actual_value:
+                self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
 
         # Create a new period when it's added
         else:
@@ -356,7 +356,7 @@ class IndicatorPeriod(models.Model):
 
             # Update parent actual values
             if self.is_child_indicator():
-                self.parent_period().update_parent_actual_values(self.actual_value)
+                self.parent_period().update_parent_actual_values(self.actual_value, None)
 
 
 
@@ -530,7 +530,7 @@ class IndicatorPeriod(models.Model):
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
 
-    def update_parent_actual_values(self, difference):
+    def update_parent_actual_values(self, new_value, original_value):
         """ Update parent indicator periods if they exist and allow aggregation """
         try:
             if self.indicator.measure == '2':
@@ -541,10 +541,10 @@ class IndicatorPeriod(models.Model):
 
             parent_period = self.parent_period()
             if parent_period and parent_period.indicator.result.project.aggregate_children:
-                if update_period.indicator.measure == '2':
-                    self.update_parents(parent_period, parent_period.child_periods_average(), 1)
+                if self.indicator.measure == '2':
+                    parent_period.update_parents(parent_period, parent_period.child_periods_average(), 1)
                 else:
-                    self.update_parents(parent_period, difference, sign)
+                    parent_period.update_parents(parent_period, difference, sign)
 
         except (InvalidOperation, TypeError):
             pass
