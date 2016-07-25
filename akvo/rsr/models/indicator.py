@@ -109,22 +109,6 @@ class Indicator(models.Model):
             for child_result in self.result.child_results.all():
                 child_result.project.add_indicator(child_result, self)
 
-            # default_indicator = Indicator.objects.filter(result_id=self.result.id, default_periods=True)
-            # if default_indicator:
-            #     default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
-            #
-            #     for period in default_periods:
-            #         period.pk = None
-            #
-            #         # Blank all values except id and locked status
-            #         period.target_value = ''
-            #         period.target_comment = ''
-            #         period.actual_value = ''
-            #         period.actual_comment = ''
-            #
-            #         period.indicator_id = indicator.id
-            #         period.save()
-
             if Indicator.objects.filter(result_id=self.result.id).exists():
                 prev_indicator = Indicator.objects.filter(result_id=self.result.id).reverse()[0]
                 if prev_indicator.order:
