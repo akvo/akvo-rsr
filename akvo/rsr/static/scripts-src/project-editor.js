@@ -330,7 +330,7 @@ function doSubmitStep(saveButton) {
                 }
 
                 // Set warning for default indicator periods if new indicator saved
-                if (formElement.id.indexOf('rsr_indicator') > -1) {
+                if (formElement.id.indexOf('rsr_indicator') > -1 && defaultValues.default_indicator > -1) {
                     var parentIndicator = findAncestorByClass(formElement.parentNode, 'indicator-item');
                     if (!parentIndicator.classList.contains('default-period-buttons-set')) {
                         parentIndicator.querySelector('.reload-warning').classList.remove('hidden');
@@ -2808,7 +2808,6 @@ function removeDefaultPeriods(defaultPeriodNode, indicatorId) {
         e.preventDefault();
 
         defaultPeriodNode.querySelector('.default-period-remove').classList.add('hidden');
-
         submitDefaultPeriods(indicatorId, false, false);
 
         // show all default add buttons
@@ -2836,7 +2835,11 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-
+            if (setDefault === true) {
+                defaultValues.default_indicator = indicatorId;
+            } else {
+                defaultValues.default_indicator = '-1';
+            }
         } else {
             // We reached our target server, but it returned an error
             return false;
