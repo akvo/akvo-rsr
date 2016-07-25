@@ -248,7 +248,7 @@ def add_default_periods(sender, instance, created, **kwargs):
     if created:
         project = instance.result.project
         results = Result.objects.filter(project_id=project)
-        default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True)[0]
+        default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True).first()
 
         if default_indicator:
             default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)

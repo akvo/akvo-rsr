@@ -310,7 +310,6 @@ function doSubmitStep(saveButton) {
         if (request.status >= 200 && request.status < 400) {
             var response;
             response = JSON.parse(request.responseText);
-
             // Check for errors
             if (response.errors.length > 0) {
                 message = defaultValues.save_error;
@@ -329,8 +328,18 @@ function doSubmitStep(saveButton) {
                     var typeaheadContainer = findAncestorByClass(formElement.parentNode, 'typeahead-container');
                     typeaheadContainer.setAttribute('data-value', response.changes[i][1]);
                 }
+
+                // Set warning for default indicator periods if new indicator saved
+                if (formElement.id.indexOf('rsr_indicator') > -1) {
+                    var parentIndicator = findAncestorByClass(formElement.parentNode, 'indicator-item');
+                    if (!parentIndicator.classList.contains('default-period-buttons-set')) {
+                        parentIndicator.querySelector('.reload-warning').classList.remove('hidden');
+                    }
+                }
+
                 successSave(formElement);
             }
+
 
             // Replace field IDs, names and unicode
             replaceNames(response.rel_objects);
@@ -2827,9 +2836,6 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-            if (response.errors !== '') {
-                // console.log(response.errors);
-            }
 
         } else {
             // We reached our target server, but it returned an error
