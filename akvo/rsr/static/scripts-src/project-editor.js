@@ -310,7 +310,6 @@ function doSubmitStep(saveButton) {
         if (request.status >= 200 && request.status < 400) {
             var response;
             response = JSON.parse(request.responseText);
-
             // Check for errors
             if (response.errors.length > 0) {
                 message = defaultValues.save_error;
@@ -329,8 +328,18 @@ function doSubmitStep(saveButton) {
                     var typeaheadContainer = findAncestorByClass(formElement.parentNode, 'typeahead-container');
                     typeaheadContainer.setAttribute('data-value', response.changes[i][1]);
                 }
+
+                // Set warning for default indicator periods if new indicator saved
+                if (formElement.id.indexOf('rsr_indicator') > -1 && defaultValues.default_indicator > -1) {
+                    var parentIndicator = findAncestorByClass(formElement.parentNode, 'indicator-item');
+                    if (!parentIndicator.classList.contains('default-period-buttons-set')) {
+                        parentIndicator.querySelector('.reload-warning').classList.remove('hidden');
+                    }
+                }
+
                 successSave(formElement);
             }
+
 
             // Replace field IDs, names and unicode
             replaceNames(response.rel_objects);
@@ -2532,6 +2541,7 @@ function sectorCodeSwitcher (vocabularyField) {
     }
 }
 
+
 // add arrow buttons to each indicator
 function setIndicatorSorting () {
     var indicatorContainers = document.querySelectorAll('.indicator-container');
@@ -2541,6 +2551,10 @@ function setIndicatorSorting () {
 
         for (var j=0; j < indicatorSections.length; j++) {
             setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
+
+            if (!indicatorSections[j].classList.contains('default-period-buttons-set')) {
+                setDefaultPeriodButtons(indicatorSections[j]);
+            }
         }
     }
 }
@@ -2641,7 +2655,7 @@ function reorderItems (itemType, itemId, direction) {
                 if (response.swap_id > -1) {
                     swapReorderedItems(itemType, itemId, response.swap_id, direction);
                 } else {
-                    console.log(error);
+                    console.log(response.errors);
                 }
 
             } else {
@@ -2689,6 +2703,156 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
             swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
         }
     }
+}
+
+// add buttons to set default indicator periods
+function setDefaultPeriodButtons (indicatorNode) {
+
+    indicatorId = indicatorNode.getAttribute('id').split('.')[1];
+
+    var defaultPeriodNode = document.createElement('span');
+    defaultPeriodNode.setAttribute('class', 'default-period-container');
+
+    var addButton = document.createElement('a');
+    addButton.setAttribute('class', 'default-period-add');
+    addButton.innerHTML = defaultValues.set_default;
+    addButton.onclick = promptCopyDefaultPeriods(defaultPeriodNode, indicatorId);
+
+    var removeButton = document.createElement('a');
+    removeButton.setAttribute('class', 'default-period-remove');
+    removeButton.innerHTML = defaultValues.remove_default;
+    removeButton.onclick = removeDefaultPeriods(defaultPeriodNode, indicatorId);
+
+    if (defaultValues.default_indicator === '-1') {
+        removeButton.classList.add('hidden');
+    } else {
+        if (indicatorId == defaultValues.default_indicator) {
+            addButton.classList.add('hidden');
+        } else {
+            addButton.classList.add('hidden');
+            removeButton.classList.add('hidden');
+        }
+    }
+
+    defaultPeriodNode.appendChild(addButton);
+    defaultPeriodNode.appendChild(removeButton);
+
+    var indicatorContainer = indicatorNode.querySelector('.delete-related-object-container');
+    indicatorContainer.insertBefore(defaultPeriodNode, indicatorContainer.childNodes[0]);
+
+    indicatorNode.className += ' default-period-buttons-set';
+}
+
+// ask if defaults should be copied to existing indicators
+function promptCopyDefaultPeriods (defaultPeriodNode, indicatorId) {
+    return function(e) {
+        e.preventDefault();
+
+        defaultPeriodNode.querySelector('.default-period-add').classList.add('hidden');
+
+        var confirmContainer = document.createElement('span');
+        confirmContainer.setAttribute('class', 'default-confirm-container');
+
+        var confirmText = document.createElement('span');
+        confirmText.innerHTML = defaultValues.add_to_existing;
+
+        var yesButton = document.createElement('a');
+        yesButton.setAttribute('class', 'default-yes-button');
+        yesButton.innerHTML = defaultValues.yes;
+        yesButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, true);
+
+        var noButton = document.createElement('a');
+        noButton.setAttribute('class', 'default-no-button');
+        noButton.innerHTML = defaultValues.no;
+        noButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, false);
+
+        confirmContainer.appendChild(confirmText);
+        confirmContainer.appendChild(yesButton);
+        confirmContainer.appendChild(noButton);
+        defaultPeriodNode.appendChild(confirmContainer);
+    };
+}
+
+function setDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
+    return function(e) {
+        e.preventDefault();
+
+        var indicatorNode = defaultPeriodNode.parentNode;
+        indicatorNode.classList.add('default-indicator');
+
+        defaultPeriodNode.querySelector('.default-confirm-container').classList.add('hidden');
+
+        if (addExisting === true) {
+            var refreshText = document.createElement('span');
+            refreshText.innerHTML = defaultValues.refresh_periods;
+            defaultPeriodNode.appendChild(refreshText);
+
+            submitDefaultPeriods(indicatorId, true, true);
+        } else {
+            defaultPeriodNode.querySelector('.default-period-remove').classList.remove('hidden');
+
+            submitDefaultPeriods(indicatorId, false, true);
+        }
+
+        // hide all other default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
+        for (var i=0; i < defaultButtons.length; i++) {
+            defaultButtons[i].classList.add('hidden');
+        }
+
+    };
+}
+
+function removeDefaultPeriods(defaultPeriodNode, indicatorId) {
+    return function(e) {
+        e.preventDefault();
+
+        defaultPeriodNode.querySelector('.default-period-remove').classList.add('hidden');
+        submitDefaultPeriods(indicatorId, false, false);
+
+        // show all default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
+        for (var i=0; i < defaultButtons.length; i++) {
+            defaultButtons[i].classList.remove('hidden');
+        }
+    };
+}
+
+function submitDefaultPeriods(indicatorId, copy, setDefault) {
+
+    var api_url, request;
+
+    var form_data = 'indicator_id=' + indicatorId + '&copy=' + copy + '&set_default=' + setDefault;
+
+    // Create request
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/default_periods/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var response = JSON.parse(request.responseText);
+            if (setDefault === true) {
+                defaultValues.default_indicator = indicatorId;
+            } else {
+                defaultValues.default_indicator = '-1';
+            }
+        } else {
+            // We reached our target server, but it returned an error
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send(form_data);
+
 }
 
 function setToggleSectionOnClick () {

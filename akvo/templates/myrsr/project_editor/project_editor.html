@@ -60,8 +60,6 @@
 {% block js %}
     {{ block.super }}
 
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/moment-2.10.6.min.js"></script>
-
     {# React CSS #}
     {% compressed_css 'react_datepicker_style' %}
 
@@ -190,7 +188,12 @@
             "file_size": "{% trans 'File size is too large' %}",
             "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
             "connection_error": "{% trans 'Connection error, please check your internet connection' %}",
-            "today": "{% trans 'Today' %}"
+            "today": "{% trans 'Today' %}",
+            "set_default": "{% trans 'Set periods as default' %}",
+            "remove_default": "{% trans 'Remove periods as default' %}",
+            "add_to_existing": "{% trans 'Copy to existing indicators?' %}",
+            "refresh_periods": "{% trans 'Refresh page to view copied periods' %}",
+            "default_indicator": "{{default_indicator}}"
         }
     </script>
 
