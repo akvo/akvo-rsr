@@ -350,7 +350,7 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
-    def save(self, *args, **kwargs):
+    def save(self, update_parents=True, *args, **kwargs):
         """Update the values of child periods, if a parent period is updated."""
         # Update period when it's edited
         if self.pk:
@@ -376,6 +376,13 @@ class IndicatorPeriod(models.Model):
                     child_period.target_value = self.target_value
 
                 child_period.save()
+
+            # Update parent actual values
+            if self.indicator.is_child_indicator() and self.actual_value != orig_period.actual_value and update_parents:
+                if self.parent_period().indicator.result.project.aggregate_children and \
+                        self.indicator.result.project.aggregate_to_parent:
+                    # self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
+                    self.parent_period().update_actual_value(self.actual_value, True)
 
         # Create a new period when it's added
         else:
@@ -592,7 +599,7 @@ class IndicatorPeriod(models.Model):
             new_parent_value = str(-old_actual) if old_is_decimal or new_is_decimal else ''
 
         # Save new actual value of period
-        self.save(update_fields=['actual_value'])
+        self.save(update_fields=['actual_value'], update_parents=False)
 
         # Update parent period
         if parent and aggregate_to_parent and (old_is_decimal or new_is_decimal):
