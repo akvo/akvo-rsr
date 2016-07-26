@@ -318,7 +318,7 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
-    def save(self, *args, **kwargs):
+    def save(self, update_parents=True, *args, **kwargs):
         """Update the values of child periods, if a parent period is updated."""
         # Update period when it's edited
         if self.pk:
@@ -346,19 +346,18 @@ class IndicatorPeriod(models.Model):
                 child_period.save()
 
             # Update parent actual values
-            if self.is_child_indicator() and self.actual_value != orig_period.actual_value:
-                self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
+            print 'update parents: ' + str(update_parents)
+            if self.indicator.is_child_indicator() and self.actual_value != orig_period.actual_value and update_parents:
+                if self.parent_period().indicator.result.project.aggregate_children and \
+                        self.indicator.result.project.aggregate_to_parent:
+                    # self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
+                    self.parent_period().update_actual_value(self.actual_value, True)
+                    print 'updating parents'
 
         # Create a new period when it's added
         else:
             for child_indicator in self.indicator.child_indicators():
                 child_indicator.result.project.add_period(child_indicator, self)
-
-            # Update parent actual values
-            if self.is_child_indicator():
-                self.parent_period().update_parent_actual_values(self.actual_value, None)
-
-
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
 
@@ -530,25 +529,6 @@ class IndicatorPeriod(models.Model):
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
 
-    def update_parent_actual_values(self, new_value, original_value):
-        """ Update parent indicator periods if they exist and allow aggregation """
-        try:
-            if self.indicator.measure == '2':
-                self.actual_value = str(Decimal(difference))
-            else:
-                self.actual_value = str(Decimal(self.actual_value) + Decimal(difference))
-            self.save()
-
-            parent_period = self.parent_period()
-            if parent_period and parent_period.indicator.result.project.aggregate_children:
-                if self.indicator.measure == '2':
-                    parent_period.update_parents(parent_period, parent_period.child_periods_average(), 1)
-                else:
-                    parent_period.update_parents(parent_period, difference, sign)
-
-        except (InvalidOperation, TypeError):
-            pass
-
     def update_actual_value(self, data, relative_data, comment=''):
         """
         Updates the actual value of this period and related periods (parent period and next period).
@@ -589,7 +569,7 @@ class IndicatorPeriod(models.Model):
             new_parent_value = str(-old_actual) if old_is_decimal or new_is_decimal else ''
 
         # Save new actual value of period
-        self.save(update_fields=['actual_value'])
+        self.save(update_fields=['actual_value'], update_parents=False)
 
         # Update parent period
         if parent and aggregate_to_parent and (old_is_decimal or new_is_decimal):
