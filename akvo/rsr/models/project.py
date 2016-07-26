@@ -1322,9 +1322,9 @@ class Project(TimestampsMixin, models.Model):
         import_failed = 0
         import_success = 1
 
-        if self.parents().count() == 1:
-            parent_project = self.parents()[0]
-        elif self.parents().count() == 0:
+        if self.parents_all().count() == 1:
+            parent_project = self.parents_all()[0]
+        elif self.parents_all().count() == 0:
             return import_failed, 'Project does not have a parent project'
         else:
             return import_failed, 'Project has multiple parent projects'

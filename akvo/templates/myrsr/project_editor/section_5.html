@@ -28,7 +28,7 @@
                         </div>
                         <div class="col-md-9">
                             <div class="help-block">
-                                {% trans 'Import the results framework of the parent project' %}: <a href="{% url 'project-main' project.parents.0.pk %}" target="_blank">{{ project.parents.0.title }}</a>
+                                {% trans 'Import the results framework of the parent project' %}: <a href="{% url 'project-main' project.parents_all.0.pk %}" target="_blank">{{ project.parents_all.0.title }}</a>
                             </div>
                         </div>
                     </div>
