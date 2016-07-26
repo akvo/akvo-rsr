@@ -26,7 +26,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
 from ..filters import remove_empty_querydict_items
 from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
-                      ProjectEditorValidation, ProjectEditorValidationSet)
+                      ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
 import json
 
@@ -299,6 +299,14 @@ def project_editor(request, project_id):
                 request.user.project_editor_of(approved_org):
             org_permissions.append(approved_org.pk)
 
+    # Check for default indicator
+    results = Result.objects.filter(project_id=project)
+    default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True)
+    if default_indicator:
+        default_indicator = default_indicator[0].id
+    else:
+        default_indicator = '-1'
+
     context = {
         'id': project_id,
         'project': project,
@@ -317,6 +325,9 @@ def project_editor(request, project_id):
         'countries': countries,
         'dac5_codes': dac5_codes,
         'dac3_codes': dac3_codes,
+
+        # Default indicator
+        'default_indicator': default_indicator,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,

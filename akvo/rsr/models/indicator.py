@@ -9,6 +9,7 @@ from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOC
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_send_mail
+from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
@@ -17,6 +18,8 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import FieldError, ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from sorl.thumbnail.fields import ImageField
 
@@ -56,6 +59,10 @@ class Indicator(models.Model):
         help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
     order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True, blank=True)
+    default_periods = models.NullBooleanField(
+        _(u'default indicator periods'), default=False, blank=True,
+        help_text=_(u'Determines whether periods of indicator are used by default.')
+    )
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
@@ -83,6 +90,7 @@ class Indicator(models.Model):
                 child_indicator.title = self.title
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
+                child_indicator.default_periods = self.default_periods
 
                 # Only copy the description and baseline if the child has none (e.g. new)
                 if not child_indicator.description and self.description:
@@ -228,6 +236,30 @@ class Indicator(models.Model):
         ordering = ['order', 'id']
         verbose_name = _(u'indicator')
         verbose_name_plural = _(u'indicators')
+
+
+# Add default indicator periods if necessary
+@receiver(post_save, sender=Indicator, dispatch_uid='add_default_periods')
+def add_default_periods(sender, instance, created, **kwargs):
+    if created:
+        project = instance.result.project
+        results = Result.objects.filter(project_id=project)
+        default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True).first()
+
+        if default_indicator:
+            default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
+
+            for period in default_periods:
+                period.pk = None
+
+                # Blank all values except id and locked status
+                period.target_value = ''
+                period.target_comment = ''
+                period.actual_value = ''
+                period.actual_comment = ''
+
+                period.indicator_id = instance.id
+                period.save()
 
 
 class IndicatorReference(models.Model):
