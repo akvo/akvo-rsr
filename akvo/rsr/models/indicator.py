@@ -346,13 +346,11 @@ class IndicatorPeriod(models.Model):
                 child_period.save()
 
             # Update parent actual values
-            print 'update parents: ' + str(update_parents)
             if self.indicator.is_child_indicator() and self.actual_value != orig_period.actual_value and update_parents:
                 if self.parent_period().indicator.result.project.aggregate_children and \
                         self.indicator.result.project.aggregate_to_parent:
                     # self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
                     self.parent_period().update_actual_value(self.actual_value, True)
-                    print 'updating parents'
 
         # Create a new period when it's added
         else:
