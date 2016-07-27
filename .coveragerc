@@ -8,3 +8,5 @@ omit =
 [report]
 exclude_lines =
     def __unicode__
+    if 'TRAVIS' in os.environ:
+sort = Cover
