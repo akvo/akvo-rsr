@@ -23,7 +23,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
-    data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False, allow_add_remove=True)
+    data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False)
     parent_period = serializers.Field(source='parent_period.pk')
     percent_accomplishment = serializers.Field(source='percent_accomplishment')
 

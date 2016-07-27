@@ -32,8 +32,7 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
-    comments = IndicatorPeriodDataCommentSerializer(many=True, required=False,
-                                                    allow_add_remove=True)
+    comments = IndicatorPeriodDataCommentSerializer(many=True, required=False)
     user_details = UserDetailsSerializer(source='user', required=False)
     status_display = serializers.Field(source='status_display')
     photo_url = serializers.Field(source='photo_url')

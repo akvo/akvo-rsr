@@ -27,7 +27,7 @@ class ResultSerializer(ResultRawSerializer):
 
 class ResultsFrameworkSerializer(BaseRSRSerializer):
 
-    indicators = IndicatorFrameworkSerializer(many=True, required=False, allow_add_remove=True)
+    indicators = IndicatorFrameworkSerializer(many=True, required=False)
     project_title = serializers.Field(source='project.title')
     parent_project = serializers.Field(source='parent_project')
     child_projects = serializers.Field(source='child_projects')

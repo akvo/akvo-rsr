@@ -24,7 +24,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
 class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
-    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, allow_add_remove=True)
+    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False)
     parent_indicator = serializers.Field(source='parent_indicator.pk')
     children_aggregate_percentage = serializers.Field(source='children_aggregate_percentage')
 

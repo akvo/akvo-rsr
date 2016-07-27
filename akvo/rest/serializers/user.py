@@ -38,9 +38,7 @@ class UserRawSerializer(BaseRSRSerializer):
 class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
     organisation = OrganisationExtraSerializer(source='first_organisation', required=False)
-    organisations = OrganisationExtraSerializer(
-        source='organisations', many=True, required=False, allow_add_remove=True
-    )
+    organisations = OrganisationExtraSerializer(source='organisations', many=True, required=False)
     approved_employments = EmploymentSerializer(
         source='approved_employments', many=True, required=False
     )
@@ -108,9 +106,7 @@ class UserPasswordSerializer(serializers.Serializer):
 
 class UserDetailsSerializer(BaseRSRSerializer):
 
-    approved_organisations = OrganisationBasicSerializer(
-        source='approved_organisations', many=True, required=False, allow_add_remove=True
-    )
+    approved_organisations = OrganisationBasicSerializer(source='approved_organisations', many=True, required=False)
 
     class Meta:
         model = get_user_model()
