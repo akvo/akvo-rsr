@@ -8,6 +8,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User
+
+from .xml_files import IATI_V1_STRING, IATI_V2_STRING
+
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.test import TestCase
@@ -44,61 +47,56 @@ class IatiImportTestCase(TestCase):
             password="password"
         )
 
-        # Create IATI import
-        iati_import = IatiImport.objects.create(
-            label="Test IATI import",
-            user=user
-        )
+        # Create IATI v1 import, import job and run the job
+        iati_v1_import = IatiImport.objects.create(label="Test IATI v1 import", user=user)
+        iati_v1_xml_file = NamedTemporaryFile(delete=True)
+        iati_v1_xml_file.write(IATI_V1_STRING)
+        iati_v1_xml_file.flush()
+        iati_v1_import_job = IatiImportJob.objects.create(iati_import=iati_v1_import,
+                                                          iati_xml_file=File(iati_v1_xml_file))
+        iati_v1_import_job.run()
 
-        # Create IATI import job
-        iati_xml_file = NamedTemporaryFile(delete=True)
-        iati_xml_file.write("""<iati-activities generated-datetime="2014-09-10T07:15:37Z"
-                version="2.02">
-            <iati-activity xml:lang="en" default-currency="USD"
-                    last-updated-datetime="2014-09-10T07:15:37Z">
-                <iati-identifier>NL-KVK-0987654321-1234</iati-identifier>
-                <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
-                    <narrative>Test Organisation Import</narrative>
-                </reporting-org>
-                <title>
-                    <narrative>Test project for IATI import</narrative>
-                </title>
-            </iati-activity>
-        </iati-activities>""")
-        iati_xml_file.flush()
-
-        iati_import_job = IatiImportJob.objects.create(
-            iati_import=iati_import,
-            iati_xml_file=File(iati_xml_file)
-        )
-
-        # Then run the IATI import job
-        iati_import_job.run()
+        # Create IATI v2 import, import job and run the job
+        iati_v2_import = IatiImport.objects.create(label="Test IATI v2 import", user=user)
+        iati_v2_xml_file = NamedTemporaryFile(delete=True)
+        iati_v2_xml_file.write(IATI_V2_STRING)
+        iati_v2_xml_file.flush()
+        iati_v2_import_job = IatiImportJob.objects.create(iati_import=iati_v2_import,
+                                                          iati_xml_file=File(iati_v2_xml_file))
+        iati_v2_import_job.run()
 
     def test_imported_project_data(self):
         """
         Test if the project is in the database with correct data.
         """
 
-        # Retrieve the project
-        project = Project.objects.get(iati_activity_id="NL-KVK-0987654321-1234")
+        # Retrieve the projects
+        project_v1 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v1")
+        project_v2 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
 
-        # Test if the project is an instance of Project
-        self.assertIsInstance(project, Project)
+        # Test if the projects are an instance of Project
+        self.assertIsInstance(project_v1, Project)
+        self.assertIsInstance(project_v2, Project)
 
-        # Test project's data: language, default-currency and title
-        self.assertEqual(project.language, "en")
-        self.assertEqual(project.currency, "USD")
-        self.assertEqual(project.title, "Test project for IATI import")
+        # Test projects' data: language, default-currency and title
+        self.assertEqual(project_v1.language, "en")
+        self.assertEqual(project_v2.language, "en")
+        self.assertEqual(project_v1.currency, "USD")
+        self.assertEqual(project_v2.currency, "USD")
+        self.assertEqual(project_v1.title, "Test project for IATI import v1")
+        self.assertEqual(project_v2.title, "Test project for IATI import v2")
 
     def test_imported_organisation_data(self):
         """
         Test if the reporting organisation is in the database with correct data.
         """
 
-        # Retrieve the project
-        project = Project.objects.get(iati_activity_id="NL-KVK-0987654321-1234")
+        # Retrieve the projects
+        project_v1 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v1")
+        project_v2 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
 
-        # Test project's reporting organisation
-        self.assertEqual(project.partners.count(), 1)
-        self.assertEqual(project.partners.first().iati_org_id, "NL-KVK-0987654321")
+        # Test projects' reporting organisation
+        self.assertEqual(project_v1.partners.count(), 1)
+        self.assertEqual(project_v2.partners.count(), 1)
+        self.assertEqual(project_v1.partners.first().iati_org_id, "NL-KVK-0987654321")
+        self.assertEqual(project_v2.partners.first().iati_org_id, "NL-KVK-0987654321")
