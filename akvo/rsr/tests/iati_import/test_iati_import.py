@@ -97,6 +97,6 @@ class IatiImportTestCase(TestCase):
 
         # Test projects' partners
         self.assertEqual(project_v1.partners.count(), 4)
-        self.assertEqual(project_v2.partners.count(), 1)
+        self.assertEqual(project_v2.partners.count(), 4)
         self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
         self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")
