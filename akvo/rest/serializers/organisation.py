@@ -37,7 +37,7 @@ class OrganisationSerializer(BaseRSRSerializer):
 
 class OrganisationExtraSerializer(OrganisationSerializer):
 
-    primary_location = OrganisationLocationExtraSerializer()
+    # primary_location = OrganisationLocationExtraSerializer()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (

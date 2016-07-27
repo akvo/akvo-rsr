@@ -84,6 +84,9 @@ class RecipientCountry(models.Model):
     def iati_country(self):
         return codelist_value(codelist_models.Country, self, 'country')
 
+    def iati_country_unicode(self):
+        return str(self.iati_country())
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'recipient country')

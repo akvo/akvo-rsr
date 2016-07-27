@@ -21,16 +21,16 @@ class ResultSerializer(ResultRawSerializer):
 
     project_title = serializers.ReadOnlyField(source='project.title')
     type_label = serializers.ReadOnlyField(source='iati_type')
-    parent_project = serializers.ReadOnlyField(source='parent_project')
-    child_projects = serializers.ReadOnlyField(source='child_projects')
+    parent_project = serializers.ReadOnlyField()
+    child_projects = serializers.ReadOnlyField()
 
 
 class ResultsFrameworkSerializer(BaseRSRSerializer):
 
     indicators = IndicatorFrameworkSerializer(many=True, required=False)
     project_title = serializers.ReadOnlyField(source='project.title')
-    parent_project = serializers.ReadOnlyField(source='parent_project')
-    child_projects = serializers.ReadOnlyField(source='child_projects')
+    parent_project = serializers.ReadOnlyField()
+    child_projects = serializers.ReadOnlyField()
 
     class Meta:
         model = Result

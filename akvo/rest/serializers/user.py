@@ -57,7 +57,6 @@ class UserSerializer(BaseRSRSerializer):
             'organisations',
             'approved_employments',
         )
-        # exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
@@ -114,7 +113,6 @@ class UserDetailsSerializer(BaseRSRSerializer):
             'last_name',
             'approved_organisations',
         )
-        # exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().

@@ -14,7 +14,7 @@ from .rsr_serializer import BaseRSRSerializer
 class EmploymentSerializer(BaseRSRSerializer):
 
     organisation_name = serializers.ReadOnlyField(source='organisation.long_name')
-    country_name = serializers.ReadOnlyField(source='iati_country')
+    country_name = serializers.ReadOnlyField(source='iati_country_unicode')
     group_name = serializers.ReadOnlyField(source='group.name')
 
     class Meta:

@@ -19,4 +19,4 @@ class RecipientCountryRawSerializer(BaseRSRSerializer):
 
 class RecipientCountrySerializer(RecipientCountryRawSerializer):
 
-    country_label = serializers.ReadOnlyField(source='iati_country')
+    country_label = serializers.ReadOnlyField(source='iati_country_unicode')

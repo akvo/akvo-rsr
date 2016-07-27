@@ -19,7 +19,7 @@ class PartnershipRawSerializer(BaseRSRSerializer):
 
 
 class PartnershipRawDeepSerializer(PartnershipRawSerializer):
-    organisation = OrganisationBasicSerializer(source='organisation')
+    organisation = OrganisationBasicSerializer()
 
 
 class PartnershipSerializer(PartnershipRawSerializer):
@@ -32,8 +32,8 @@ class PartnershipSerializer(PartnershipRawSerializer):
 
 class PartnershipBasicSerializer(BaseRSRSerializer):
 
-    organisation = OrganisationBasicSerializer(source='organisation')
-    iati_organisation_role_label = serializers.ReadOnlyField(source='iati_organisation_role_label')
+    organisation = OrganisationBasicSerializer()
+    iati_organisation_role_label = serializers.ReadOnlyField()
 
     class Meta:
         model = Partnership
