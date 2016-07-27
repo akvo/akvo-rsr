@@ -13,7 +13,7 @@ from akvo.rsr.models import IndicatorPeriodData, IndicatorPeriodDataComment
 
 class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(source='user', required=False)
+    user_details = UserDetailsSerializer(required=False)
 
     class Meta:
         model = IndicatorPeriodDataComment
@@ -21,7 +21,7 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
-    user_details = UserDetailsSerializer(source='user', required=False)
+    user_details = UserDetailsSerializer(required=False)
     status_display = serializers.Field(source='status_display')
     photo_url = serializers.Field(source='photo_url')
     file_url = serializers.Field(source='file_url')
@@ -33,7 +33,7 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     comments = IndicatorPeriodDataCommentSerializer(many=True, required=False)
-    user_details = UserDetailsSerializer(source='user', required=False)
+    user_details = UserDetailsSerializer(required=False)
     status_display = serializers.Field(source='status_display')
     photo_url = serializers.Field(source='photo_url')
     file_url = serializers.Field(source='file_url')

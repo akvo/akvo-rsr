@@ -66,28 +66,24 @@ class ProjectIatiExportSerializer(BaseRSRSerializer):
 
 class ProjectExtraSerializer(ProjectSerializer):
 
-    budget_items = BudgetItemRawSerializer(source='budget_items', many=True, required=False)
-    legacy_data = LegacyDataSerializer(source='legacy_data', many=True, required=False)
-    links = LinkSerializer(source='links', many=True, required=False)
-    locations = ProjectLocationExtraSerializer(source='locations', many=True, required=False)
-    planned_disbursements = PlannedDisbursementRawSerializer(
-        source='planned_disbursements', many=True, required=False)
-    policy_markers = PolicyMarkerRawSerializer(source='policy_markers', many=True, required=False)
-    documents = ProjectDocumentRawSerializer(source='documents', many=True, required=False)
-    comments = ProjectCommentSerializer(source='comments', many=True, required=False)
-    conditions = ProjectConditionRawSerializer(source='conditions', many=True, required=False)
-    contacts = ProjectContactRawSerializer(source='contacts', many=True, required=False)
-    project_updates = ProjectUpdateSerializer(source='project_updates', many=True, required=False)
-    recipient_countries = RecipientCountryRawSerializer(source='recipient_countries', many=True,
-                                                        required=False)
-    recipient_regions = RecipientRegionRawSerializer(source='recipient_regions', many=True,
-                                                     required=False)
-    related_projects = RelatedProjectRawSerializer(source='related_projects', many=True,
-                                                   required=False)
-    results = ResultRawSerializer(source='results', many=True, required=False)
-    sectors = SectorRawSerializer(source='sectors', many=True, required=False)
-    transactions = TransactionRawSerializer(source='transactions', many=True, required=False)
-    partnerships = PartnershipRawSerializer(source='partnerships', many=True)
+    budget_items = BudgetItemRawSerializer(many=True, required=False)
+    legacy_data = LegacyDataSerializer(many=True, required=False)
+    links = LinkSerializer(many=True, required=False)
+    locations = ProjectLocationExtraSerializer(many=True, required=False)
+    planned_disbursements = PlannedDisbursementRawSerializer(many=True, required=False)
+    policy_markers = PolicyMarkerRawSerializer( many=True, required=False)
+    documents = ProjectDocumentRawSerializer(many=True, required=False)
+    comments = ProjectCommentSerializer(many=True, required=False)
+    conditions = ProjectConditionRawSerializer(many=True, required=False)
+    contacts = ProjectContactRawSerializer(many=True, required=False)
+    project_updates = ProjectUpdateSerializer(many=True, required=False)
+    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
+    recipient_regions = RecipientRegionRawSerializer(many=True, required=False)
+    related_projects = RelatedProjectRawSerializer(many=True, required=False)
+    results = ResultRawSerializer(many=True, required=False)
+    sectors = SectorRawSerializer(many=True, required=False)
+    transactions = TransactionRawSerializer(many=True, required=False)
+    partnerships = PartnershipRawSerializer(many=True)
 
     class Meta(ProjectSerializer.Meta):
         pass
@@ -95,29 +91,24 @@ class ProjectExtraSerializer(ProjectSerializer):
 
 class ProjectExtraDeepSerializer(ProjectSerializer):
 
-    budget_items = BudgetItemRawDeepSerializer(source='budget_items', many=True, required=False)
-    legacy_data = LegacyDataSerializer(source='legacy_data', many=True, required=False)
-    links = LinkSerializer(source='links', many=True, required=False)
-    locations = ProjectLocationExtraSerializer(source='locations', many=True, required=False)
-    planned_disbursements = PlannedDisbursementRawDeepSerializer(
-        source='planned_disbursements', many=True, required=False)
-    policy_markers = PolicyMarkerRawSerializer(source='policy_markers', many=True, required=False)
-    documents = ProjectDocumentRawSerializer(source='documents', many=True, required=False)
-    comments = ProjectCommentSerializer(source='comments', many=True, required=False)
-    conditions = ProjectConditionRawSerializer(source='conditions', many=True, required=False)
-    contacts = ProjectContactRawDeepSerializer(source='contacts', many=True, required=False)
-    project_updates = ProjectUpdateDeepSerializer(source='project_updates', many=True,
-                                                   required=False)
-    recipient_countries = RecipientCountryRawSerializer(source='recipient_countries', many=True,
-                                                        required=False)
-    recipient_regions = RecipientRegionRawSerializer(source='recipient_regions', many=True,
-                                                     required=False)
-    related_projects = RelatedProjectRawSerializer(source='related_projects', many=True,
-                                                   required=False)
-    results = ResultRawSerializer(source='results', many=True, required=False)
-    sectors = SectorRawSerializer(source='sectors', many=True, required=False)
-    transactions = TransactionRawDeepSerializer(source='transactions', many=True, required=False)
-    partnerships = PartnershipRawDeepSerializer(source='partnerships', many=True)
+    budget_items = BudgetItemRawDeepSerializer(many=True, required=False)
+    legacy_data = LegacyDataSerializer(many=True, required=False)
+    links = LinkSerializer(many=True, required=False)
+    locations = ProjectLocationExtraSerializer(many=True, required=False)
+    planned_disbursements = PlannedDisbursementRawDeepSerializer(many=True, required=False)
+    policy_markers = PolicyMarkerRawSerializer(many=True, required=False)
+    documents = ProjectDocumentRawSerializer(many=True, required=False)
+    comments = ProjectCommentSerializer(many=True, required=False)
+    conditions = ProjectConditionRawSerializer(many=True, required=False)
+    contacts = ProjectContactRawDeepSerializer( many=True, required=False)
+    project_updates = ProjectUpdateDeepSerializer(many=True, required=False)
+    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
+    recipient_regions = RecipientRegionRawSerializer(many=True, required=False)
+    related_projects = RelatedProjectRawSerializer(many=True, required=False)
+    results = ResultRawSerializer(many=True, required=False)
+    sectors = SectorRawSerializer( many=True, required=False)
+    transactions = TransactionRawDeepSerializer(many=True, required=False)
+    partnerships = PartnershipRawDeepSerializer(many=True)
 
     class Meta(ProjectSerializer.Meta):
         pass
@@ -126,7 +117,7 @@ class ProjectExtraDeepSerializer(ProjectSerializer):
 class ProjectUpSerializer(ProjectSerializer):
     """ Custom endpoint for RSR Up
     """
-    primary_location = ProjectLocationSerializer(source='primary_location', many=False, required=False)
+    primary_location = ProjectLocationSerializer(many=False, required=False)
 
     class Meta(ProjectSerializer.Meta):
         pass

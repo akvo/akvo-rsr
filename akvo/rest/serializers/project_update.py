@@ -18,7 +18,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     """Serializer for project updates."""
 
-    locations = ProjectUpdateLocationNestedSerializer(source='locations', many=True, required=False)
+    locations = ProjectUpdateLocationNestedSerializer(many=True, required=False)
     photo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
@@ -28,7 +28,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):
     """Deep serializer for project updates."""
 
-    user = UserRawSerializer(source='user')
+    user = UserRawSerializer()
 
 
 class ProjectUpdateExtraSerializer(BaseRSRSerializer):

@@ -22,27 +22,13 @@ from .rsr_serializer import BaseRSRSerializer
 
 class OrganisationSerializer(BaseRSRSerializer):
 
-    total_budgets = OrganisationTotalBudgetSerializer(
-        source='total_budgets', many=True, required=False
-    )
-    recipient_org_budgets = OrganisationRecipientOrgBudgetSerializer(
-        source='recipient_org_budgets', many=True, required=False
-    )
-    region_budgets = OrganisationRegionBudgetSerializer(
-        source='recipient_region_budgets', many=True, required=False
-    )
-    country_budgets = OrganisationCountryBudgetSerializer(
-        source='recipient_country_budgets', many=True, required=False
-    )
-    total_expenditures = OrganisationTotalExpenditureSerializer(
-        source='total_expenditures', many=True, required=False
-    )
-    documents = OrganisationDocumentSerializer(
-        source='documents', many=True, required=False
-    )
-    locations = OrganisationLocationSerializer(
-        source='locations', many=True, required=False
-    )
+    total_budgets = OrganisationTotalBudgetSerializer(many=True, required=False)
+    recipient_org_budgets = OrganisationRecipientOrgBudgetSerializer(many=True, required=False)
+    region_budgets = OrganisationRegionBudgetSerializer(source='recipient_region_budgets', many=True, required=False)
+    country_budgets = OrganisationCountryBudgetSerializer(source='recipient_country_budgets', many=True, required=False)
+    total_expenditures = OrganisationTotalExpenditureSerializer(many=True, required=False)
+    documents = OrganisationDocumentSerializer(many=True, required=False)
+    locations = OrganisationLocationSerializer(many=True, required=False)
     logo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:

@@ -20,7 +20,7 @@ class OrganisationCountryBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationCountryBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationCountryBudgetLineSerializer(source='budget_lines', many=True, required=False)
+    budget_lines = OrganisationCountryBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationCountryBudget
@@ -34,7 +34,7 @@ class OrganisationRecipientOrgBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationRecipientOrgBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationRecipientOrgBudgetLineSerializer(source='budget_lines', many=True, required=False)
+    budget_lines = OrganisationRecipientOrgBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationRecipientOrgBudget
@@ -48,7 +48,7 @@ class OrganisationRegionBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationRegionBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationRegionBudgetLineSerializer(source='budget_lines', many=True, required=False)
+    budget_lines = OrganisationRegionBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationRegionBudget
@@ -62,7 +62,7 @@ class OrganisationTotalBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationTotalBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationTotalBudgetLineSerializer(source='budget_lines', many=True, required=False)
+    budget_lines = OrganisationTotalBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationTotalBudget
