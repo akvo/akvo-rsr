@@ -14,10 +14,10 @@ from rest_framework import serializers
 
 class CrsAddSerializer(BaseRSRSerializer):
 
-    repayment_type_label = serializers.Field(source='iati_repayment_type')
-    repayment_plan_label = serializers.Field(source='iati_repayment_plan')
-    currency_label = serializers.Field(source='iati_currency')
-    channel_code_label = serializers.Field(source='iati_channel_code')
+    repayment_type_label = serializers.ReadOnlyField(source='iati_repayment_type')
+    repayment_plan_label = serializers.ReadOnlyField(source='iati_repayment_plan')
+    currency_label = serializers.ReadOnlyField(source='iati_currency')
+    channel_code_label = serializers.ReadOnlyField(source='iati_channel_code')
 
     class Meta:
         model = CrsAdd
@@ -25,7 +25,7 @@ class CrsAddSerializer(BaseRSRSerializer):
 
 class CrsAddOtherFlagSerializer(BaseRSRSerializer):
 
-    code_label = serializers.Field(source='iati_code')
+    code_label = serializers.ReadOnlyField(source='iati_code')
 
     class Meta:
         model = CrsAddOtherFlag

@@ -12,9 +12,9 @@ from rest_framework import serializers
 
 class IatiExportSerializer(BaseRSRSerializer):
 
-    user_name = serializers.Field(source='user.get_full_name')
-    status_label = serializers.Field(source='show_status')
-    processed_projects = serializers.Field(source='processed_projects')
+    user_name = serializers.ReadOnlyField(source='user.get_full_name')
+    status_label = serializers.ReadOnlyField(source='show_status')
+    processed_projects = serializers.ReadOnlyField(source='processed_projects')
 
     class Meta:
         model = IatiExport

@@ -20,5 +20,5 @@ class SectorRawSerializer(BaseRSRSerializer):
 
 class SectorSerializer(SectorRawSerializer):
 
-    code_label = serializers.Field(source='iati_sector')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+    code_label = serializers.ReadOnlyField(source='iati_sector')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')

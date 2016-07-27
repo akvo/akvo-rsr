@@ -19,7 +19,7 @@ class BaseRSRSerializer(serializers.ModelSerializer):
 
         # Add 'absolute_url' field if the model defines the get_absolute_url method
         if getattr(self.Meta.model, 'get_absolute_url', None):
-            self.fields['absolute_url'] = serializers.Field(source='get_absolute_url')
+            self.fields['absolute_url'] = serializers.ReadOnlyField(source='get_absolute_url')
 
         # Add the ValidXMLXXXFields to the model-to-rest-field mapping and use the modified
         # CharField, NonNullCharField or URLField that returns '' for None values.

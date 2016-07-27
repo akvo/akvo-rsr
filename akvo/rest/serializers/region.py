@@ -19,5 +19,5 @@ class RecipientRegionRawSerializer(BaseRSRSerializer):
 
 class RecipientRegionSerializer(RecipientRegionRawSerializer):
 
-    region_label = serializers.Field(source='iati_region')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+    region_label = serializers.ReadOnlyField(source='iati_region')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')

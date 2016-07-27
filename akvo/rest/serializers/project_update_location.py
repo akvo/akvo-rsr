@@ -27,7 +27,7 @@ class ProjectUpdateLocationNestedSerializer(ProjectUpdateLocationSerializer):
 class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
 
     # Limit update data to its PK, this is needed because of Meta.depth = 2
-    location_target = serializers.Field(source='location_target.pk')
+    location_target = serializers.ReadOnlyField(source='location_target.pk')
 
     class Meta(ProjectUpdateLocationSerializer.Meta):
         depth = 2

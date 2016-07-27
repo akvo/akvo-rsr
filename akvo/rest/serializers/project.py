@@ -34,12 +34,12 @@ from .rsr_serializer import BaseRSRSerializer
 
 class ProjectSerializer(BaseRSRSerializer):
 
-    publishing_status = serializers.Field(source='publishingstatus.status')
+    publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
     current_image = Base64ImageField(required=False, allow_empty_file=True)
-    sync_owner = serializers.Field(source='reporting_org.id')
-    sync_owner_secondary_reporter = serializers.Field(source='reporting_partner.is_secondary_reporter')
-    status_label = serializers.Field(source='show_plain_status')
-    keyword_labels = serializers.Field(source='keyword_labels')
+    sync_owner = serializers.ReadOnlyField(source='reporting_org.id')
+    sync_owner_secondary_reporter = serializers.ReadOnlyField(source='reporting_partner.is_secondary_reporter')
+    status_label = serializers.ReadOnlyField(source='show_plain_status')
+    keyword_labels = serializers.ReadOnlyField()
 
     class Meta:
         model = Project
@@ -47,9 +47,9 @@ class ProjectSerializer(BaseRSRSerializer):
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):
 
-    publishing_status = serializers.Field(source='publishingstatus.status')
-    checks_errors = serializers.Field(source='iati_errors')
-    checks_warnings = serializers.Field(source='iati_warnings')
+    publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
+    checks_errors = serializers.ReadOnlyField(source='iati_errors')
+    checks_warnings = serializers.ReadOnlyField(source='iati_warnings')
 
     class Meta:
         model = Project

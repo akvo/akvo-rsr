@@ -20,6 +20,6 @@ class PolicyMarkerRawSerializer(BaseRSRSerializer):
 
 class PolicyMarkerSerializer(PolicyMarkerRawSerializer):
 
-    policy_marker_label = serializers.Field(source='iati_policy_marker')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
-    significance_label = serializers.Field(source='iati_significance')
+    policy_marker_label = serializers.ReadOnlyField(source='iati_policy_marker')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
+    significance_label = serializers.ReadOnlyField(source='iati_significance')

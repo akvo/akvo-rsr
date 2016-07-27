@@ -13,9 +13,9 @@ from rest_framework import serializers
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
-    indicator_unicode = serializers.Field(source='indicator')
-    parent_period = serializers.Field(source='parent_period.pk')
-    percent_accomplishment = serializers.Field(source='percent_accomplishment')
+    indicator_unicode = serializers.ReadOnlyField(source='indicator')
+    parent_period = serializers.ReadOnlyField(source='parent_period.pk')
+    percent_accomplishment = serializers.ReadOnlyField(source='percent_accomplishment')
 
     class Meta:
         model = IndicatorPeriod
@@ -24,8 +24,8 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
     data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False)
-    parent_period = serializers.Field(source='parent_period.pk')
-    percent_accomplishment = serializers.Field(source='percent_accomplishment')
+    parent_period = serializers.ReadOnlyField(source='parent_period.pk')
+    percent_accomplishment = serializers.ReadOnlyField(source='percent_accomplishment')
 
     class Meta:
         model = IndicatorPeriod

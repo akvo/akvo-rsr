@@ -26,4 +26,4 @@ class ProjectContactRawDeepSerializer(ProjectContactRawSerializer):
 
 class ProjectContactSerializer(ProjectContactRawSerializer):
 
-    type_label = serializers.Field(source='iati_type')
+    type_label = serializers.ReadOnlyField(source='iati_type')
