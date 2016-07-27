@@ -95,8 +95,8 @@ class IatiImportTestCase(TestCase):
         project_v1 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v1")
         project_v2 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
 
-        # Test projects' reporting organisation
-        self.assertEqual(project_v1.partners.count(), 1)
+        # Test projects' partners
+        self.assertEqual(project_v1.partners.count(), 4)
         self.assertEqual(project_v2.partners.count(), 1)
-        self.assertEqual(project_v1.partners.first().iati_org_id, "NL-KVK-0987654321")
-        self.assertEqual(project_v2.partners.first().iati_org_id, "NL-KVK-0987654321")
+        self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
+        self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")
