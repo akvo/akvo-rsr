@@ -22,6 +22,7 @@ data/*
 !data/simple-load.sh
 
 # Dev environment
+.coverage
 .vagrant
 Vagrantfile
 dev-env

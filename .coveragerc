@@ -1,0 +1,10 @@
+[run]
+source = akvo
+omit =
+    akvo/rsr/migrations/*
+    akvo/codelists/migrations/*
+    akvo/codelists/store/*
+
+[report]
+exclude_lines =
+    def __unicode__
