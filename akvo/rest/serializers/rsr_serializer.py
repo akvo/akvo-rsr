@@ -17,13 +17,15 @@ class BaseRSRSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(BaseRSRSerializer, self).__init__(*args, **kwargs)
 
+        print self
+
         # Add 'absolute_url' field if the model defines the get_absolute_url method
-        if getattr(self.opts.model, 'get_absolute_url', None):
+        if getattr(self.Meta.model, 'get_absolute_url', None):
             self.fields['absolute_url'] = serializers.Field(source='get_absolute_url')
 
         # Add the ValidXMLXXXFields to the model-to-rest-field mapping and use the modified
         # CharField, NonNullCharField or URLField that returns '' for None values.
-        self.field_mapping.update(
+        self.serializer_field_mapping.update(
             {
                 models.URLField: NonNullURLField,
                 ValidXMLCharField: NonNullCharField,
