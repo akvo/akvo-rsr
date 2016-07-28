@@ -15,7 +15,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
     result_unicode = serializers.ReadOnlyField(source='result.__unicode__')
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator.pk')
-    measure_label = serializers.ReadOnlyField(source='iati_measure')
+    measure_label = serializers.ReadOnlyField(source='iati_measure_unicode')
     children_aggregate_percentage = serializers.ReadOnlyField()
 
     class Meta:

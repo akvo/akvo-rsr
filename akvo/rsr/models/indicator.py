@@ -160,6 +160,9 @@ class Indicator(models.Model):
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
 
+    def iati_measure_unicode(self):
+        return str(self.iati_measure())
+
     def is_calculated(self):
         return self.result.project.is_impact_project
 
