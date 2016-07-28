@@ -29,7 +29,7 @@ class ProjectLocationSerializer(ProjectLocationRawSerializer):
 
 class AdministrativeLocationSerializer(BaseRSRSerializer):
 
-    location_unicode = serializers.ReadOnlyField(source='location')
+    location_unicode = serializers.ReadOnlyField(source='location.__unicode__')
     vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
 
     class Meta:

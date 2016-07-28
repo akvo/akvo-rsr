@@ -28,7 +28,7 @@ class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
 
 class ProjectDocumentCategorySerializer(BaseRSRSerializer):
 
-    document_unicode = serializers.ReadOnlyField(source='document')
+    document_unicode = serializers.ReadOnlyField(source='document.__unicode__')
     category_label = serializers.ReadOnlyField(source='iati_category')
 
     class Meta:

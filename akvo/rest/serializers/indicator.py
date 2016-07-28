@@ -13,7 +13,7 @@ from rest_framework import serializers
 
 class IndicatorSerializer(BaseRSRSerializer):
 
-    result_unicode = serializers.ReadOnlyField(source='result')
+    result_unicode = serializers.ReadOnlyField(source='result.__unicode__')
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator.pk')
     measure_label = serializers.ReadOnlyField(source='iati_measure')
     children_aggregate_percentage = serializers.ReadOnlyField()

@@ -46,7 +46,7 @@ class TransactionSerializer(TransactionRawSerializer):
 
 class TransactionSectorSerializer(BaseRSRSerializer):
 
-    transaction_unicode = serializers.ReadOnlyField(source='transaction')
+    transaction_unicode = serializers.ReadOnlyField(source='transaction.__unicode__')
     code_label = serializers.ReadOnlyField(source='iati_sector')
     vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
 

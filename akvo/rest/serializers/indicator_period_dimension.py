@@ -12,7 +12,7 @@ from rest_framework import serializers
 
 class IndicatorPeriodActualDimensionSerializer(BaseRSRSerializer):
 
-    period_unicode = serializers.ReadOnlyField(source='period')
+    period_unicode = serializers.ReadOnlyField(source='period.__unicode__')
 
     class Meta:
         model = IndicatorPeriodActualDimension
@@ -20,7 +20,7 @@ class IndicatorPeriodActualDimensionSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodTargetDimensionSerializer(BaseRSRSerializer):
 
-    period_unicode = serializers.ReadOnlyField(source='period')
+    period_unicode = serializers.ReadOnlyField(source='period.__unicode__')
 
     class Meta:
         model = IndicatorPeriodTargetDimension
