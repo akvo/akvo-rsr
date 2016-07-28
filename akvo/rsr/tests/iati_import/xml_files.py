@@ -112,7 +112,7 @@ IATI_V1_STRING = """
             <indicator measure="1" ascending="1">
                 <title>Indicator 1 title</title>
                 <description>Indicator 1 description text</description>
-                <baseline year="2012" value="10">
+                <baseline value="10">
                     <comment>Baseline comment text</comment>
                 </baseline>
                 <period>
@@ -133,7 +133,6 @@ IATI_V1_STRING = """
         <crs-add>
             <aidtype-flag code="1" significance="1" />
             <loan-terms rate-1="4" rate-2="3">
-                <repayment-type code="1" />
                 <repayment-plan code="4" />
                 <commitment-date iso-date="2013-09-01"/>
                 <repayment-first-date iso-date="2014-01-01" />
@@ -390,8 +389,7 @@ IATI_V2_STRING = """
         <crs-add>
             <other-flags code="1" significance="1" />
             <loan-terms rate-1="4" rate-2="3">
-                <repayment-type code="1" />
-                <repayment-plan code="4" />
+                <repayment-type />
                 <commitment-date iso-date="2013-09-01"/>
                 <repayment-first-date iso-date="2014-01-01" />
                 <repayment-final-date iso-date="2020-12-31" />
@@ -437,8 +435,8 @@ IATI_V2_STRING_INCORRECT = """
         </other-identifier>
         <activity-date iso-date="2012-04-15" type="1" />
         <activity-date iso-date="2012-04-28" type="2" />
-        <activity-date iso-date="2015-12-31" type="3" />
-        <activity-date iso-date="2015-12-31" type="4" />
+        <activity-date iso-date="31-12-2015" type="3" />
+        <activity-date type="4" />
         <contact-info type="1">
             <organisation>
                 <narrative>Agency A</narrative>
@@ -1015,7 +1013,7 @@ IATI_V2_STRING_INCORRECT = """
                 <reference vocabulary="1" code="3429" />
                 <reference vocabulary="7" code="861" />
                 <reference vocabulary="99" code="B1" indicator-uri="http://example.com/indicators.html" />
-                <baseline year="2012" value="10">
+                <baseline year="year" value="10">
                     <comment>
                         <narrative>Baseline comment text</narrative>
                     </comment>
@@ -1051,7 +1049,30 @@ IATI_V2_STRING_INCORRECT = """
             <narrative>Test Organisation Import</narrative>
         </reporting-org>
         <description type="1">
-           <narrative>General activity description text.  Long description of the activity with no particular structure.</narrative>
+            <narrative>
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+                General activity description text. Long description of the activity with no particular structure.
+            </narrative>
         </description>
         <description akvo:type="99" akvo:label="New one" akvo:section="2" akvo:max-characters="150" akvo:help-text="Help"
                 akvo:mandatory="true">
@@ -1098,7 +1119,10 @@ IATI_V2_STRING_INCORRECT = """
         <location ref="KH-PNH">
             <location-reach code="1" />
             <name>
-                <narrative>Location #2 name</narrative>
+                <narrative>
+                    This name is way too long to fit in the name field. Therefore it should be cut
+                    off and then it will fit in the name field.
+                </narrative>
             </name>
             <description>
                 <narrative>Location #2 description</narrative>
@@ -1199,7 +1223,180 @@ IATI_V2_STRING_INCORRECT = """
             <description>
                 <narrative>Result description text</narrative>
             </description>
-            <indicator measure="1" ascending="1">
+            <indicator measure="1" ascending="false">
+                <title>
+                    <narrative>Indicator title</narrative>
+                </title>
+                <description>
+                    <narrative>Indicator description text</narrative>
+                </description>
+                <reference vocabulary="1" code="3429" />
+                <reference vocabulary="7" code="861" />
+                <reference vocabulary="99" code="B1" indicator-uri="http://example.com/indicators.html" />
+                <period>
+                    <period-start iso-date="2013-01-01" />
+                    <period-end iso-date="2013-03-31" />
+                </period>
+           </indicator>
+        </result>
+    </iati-activity>
+    <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="a">
+        <iati-identifier>NL-KVK-0987654321-incorrect</iati-identifier>
+        <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
+            <narrative>Test Organisation Import</narrative>
+        </reporting-org>
+        <description type="1">
+            <narrative>General activity description text. Long description of the activity with no particular structure.</narrative>
+        </description>
+        <description akvo:type="99" akvo:label="New one" akvo:section="2" akvo:max-characters="150" akvo:help-text="Help"
+                akvo:mandatory="true">
+           <narrative>Bla bla bla.</narrative>
+        </description>
+        <description type="3">
+           <narrative>Statement of groups targeted to benefit from the activity.</narrative>
+        </description>
+        <other-identifier ref="ABC123-XYZ" type="A1">
+            <owner-org ref="AA-AAA-123456789">
+                <narrative>Organisation name</narrative>
+            </owner-org>
+        </other-identifier>
+        <activity-date iso-date="2012-04-15" type="1" />
+        <activity-date iso-date="28-04-2012" type="2" />
+        <activity-date iso-date="2015-12-31" type="3" />
+        <activity-date type="4" />
+        <contact-info type="1">
+            <organisation>
+                <narrative>Agency A</narrative>
+            </organisation>
+            <department>
+                <narrative>Department B</narrative>
+            </department>
+            <person-name>
+                <narrative>A. Example</narrative>
+            </person-name>
+            <job-title>
+                <narrative>Transparency Lead</narrative>
+            </job-title>
+            <telephone>0044111222333444</telephone>
+            <email>transparency@example.org</email>
+            <website>http://www.example.org</website>
+            <mailing-address>
+                <narrative>Transparency House, The Street, Town, City, Postcode</narrative>
+            </mailing-address>
+        </contact-info>
+        <activity-scope code="3" />
+        <recipient-country code="AF" percentage="25" />
+        <recipient-country code="AG" percentage="25" />
+        <recipient-region code="489" vocabulary="1" percentage="25" />
+        <recipient-region code="289" vocabulary="1" percentage="25" />
+        <recipient-region code="A1" vocabulary="99" vocabulary-uri="http://example.com/vocab.html" percentage="100" />
+        <location ref="KH-PNH">
+            <location-reach code="1" />
+            <name>
+                <narrative>
+                    This name is way too long to fit in the name field. Therefore it should be cut
+                    off and then it will fit in the name field.
+                </narrative>
+            </name>
+            <description>
+                <narrative>Location #2 description</narrative>
+            </description>
+            <activity-description>
+                <narrative>A description that qualifies the activity taking place at location #2</narrative>
+            </activity-description>
+            <administrative code="1234" country="XX" />
+            <exactness code="1"/>
+            <location-class code="2"/>
+            <location-type code="ADMF"/>
+        </location>
+        <sector vocabulary="2" code="111" percentage="50" />
+        <sector vocabulary="2" code="112" percentage="50" />
+        <sector vocabulary="999999" vocabulary-uri="http://example.com/vocab.html" code="A1" percentage="100" />
+        <country-budget-items vocabulary="2">
+            <budget-item code="1.1.1" percentage="50">
+                <description>
+                    <narrative>Description text</narrative>
+                </description>
+            </budget-item>
+            <budget-item code="1.2.1"  percentage="50">
+                <description>
+                    <narrative>Description text</narrative>
+                </description>
+            </budget-item>
+        </country-budget-items>
+        <humanitarian-scope type="1" vocabulary="1-2" code="2015-000050" />
+        <humanitarian-scope type="1" vocabulary="99" vocabulary-uri="http://example.com/vocab.html" code="A1">
+            <narrative xml:lang="en">Syrian refugee crisis, Middle-east &amp; Europe (2011 onwards)</narrative>
+        </humanitarian-scope>
+        <policy-marker vocabulary="1" code="2" significance="3" />
+        <policy-marker vocabulary="1" code="9" significance="4" />
+        <policy-marker vocabulary="99" vocabulary-uri="http://example.com/vocab.html" code="A1" significance="3" />
+        <collaboration-type code="1" />
+        <default-flow-type code="10" />
+        <default-finance-type code="110" />
+        <default-aid-type code="A01" />
+        <default-tied-status code="3" />
+        <budget type="1" akvo:type="1" status="1" akvo:label="Other">
+            <period-start iso-date="2014-01-01" />
+            <period-end iso-date="2014-12-31" />
+            <value value-date="2014-01-01">3000</value>
+        </budget>
+        <planned-disbursement type="1">
+            <period-start iso-date="2014-01-01" />
+            <period-end iso-date="2014-12-31" />
+            <provider-org provider-activity-id="BB-BBB-123456789-1234AA" type="10" ref="BB-BBB-123456789">
+                <narrative>Agency B</narrative>
+            </provider-org>
+            <receiver-org receiver-activity-id="AA-AAA-123456789-1234" type="23" ref="AA-AAA-123456789">
+                <narrative>Agency A</narrative>
+            </receiver-org>
+        </planned-disbursement>
+        <capital-spend percentage="88.8" />
+        <transaction ref="1234" humanitarian="1">
+            <transaction-type code="1" />
+            <description>
+                <narrative>Transaction description text</narrative>
+            </description>
+            <disbursement-channel code="1" />
+            <sector vocabulary="2" code="111" />
+            <recipient-country code="TM" />
+            <recipient-region code="616" vocabulary="1" />
+            <flow-type code="10" />
+            <finance-type code="110" />
+            <aid-type code="A01" />
+            <tied-status code="3" />
+        </transaction>
+        <document-link url="http://akvo.org/wp-content/themes/Akvo-responsive/images/ThisImageDoesNotExist.png" akvo:photo-credit="Me">
+            <title>
+                <narrative>Project Report 2013</narrative>
+            </title>
+            <category code="A01" />
+            <language code="en" />
+            <document-date iso-date="2014-02-05" />
+        </document-link>
+        <activity-website>http://rsr.akvo.org/en/</activity-website>
+        <document-link format="application/http" url="http://rsr.akvo.org/en/" />
+        <document-link format="application/http" url="http://www.google.nl/">
+            <title>
+                <narrative>Search engine</narrative>
+            </title>
+        </document-link>
+        <related-activity ref="AA-AAA-123456789-6789" type="1" />
+        <legacy-data name="Project Status" value="7" iati-equivalent="activity-status" />
+        <legacy-data name="cost" value="1000" iati-equivalent="transaction" />
+        <conditions attached="1">
+            <condition type="1">
+                <narrative>Conditions text</narrative>
+            </condition>
+        </conditions>
+        <result type="1" aggregation-status="1">
+            <title>
+                <narrative>Result title</narrative>
+            </title>
+            <description>
+                <narrative>Result description text</narrative>
+            </description>
+            <indicator measure="1" ascending="unknown">
                 <title>
                     <narrative>Indicator title</narrative>
                 </title>

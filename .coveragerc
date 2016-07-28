@@ -10,4 +10,5 @@ exclude_lines =
     def __unicode__
     if 'TRAVIS' in os.environ:
     if not chunk:
+    raise NotImplementedError
 sort = Cover
