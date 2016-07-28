@@ -10,7 +10,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User, BudgetItemLabel
 from akvo.codelists.models import BudgetIdentifier, ResultType, Version
 
-from .xml_files import IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING
+from .xml_files import (IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING,
+                        IATI_CORDAID_STRING)
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -130,9 +131,9 @@ class IatiImportTestCase(TestCase):
         iati_icco_xml_file = NamedTemporaryFile(delete=True)
         iati_icco_xml_file.write(IATI_ICCO_STRING)
         iati_icco_xml_file.flush()
-        iati_inc_import_job = IatiImportJob.objects.create(iati_import=iati_icco_import,
-                                                           iati_xml_file=File(iati_icco_xml_file))
-        iati_inc_import_job.run()
+        iati_icco_import_job = IatiImportJob.objects.create(iati_import=iati_icco_import,
+                                                            iati_xml_file=File(iati_icco_xml_file))
+        iati_icco_import_job.run()
 
         project_icco = Project.objects.get(iati_activity_id="NL-KVK-0987654321-icco")
         self.assertIsInstance(project_icco, Project)
@@ -142,3 +143,45 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_icco.title, "Test project for IATI ICCO import")
         self.assertEqual(project_icco.partners.count(), 4)
         self.assertEqual(project_icco.reporting_org.iati_org_id, "NL-KVK-0987654321")
+
+    def test_iati_cordaid_import(self):
+        """
+        Test an IATI import for Cordaid.
+        """
+        # Create business unit, Cordaid and Other organisations
+        Organisation.objects.create(
+            id=959,
+            name="Cordaid business unit",
+            long_name="Cordaid business unit",
+            iati_org_id="NL-KVK-0987654321-business"
+        )
+        Organisation.objects.create(
+            id=273,
+            name="Cordaid",
+            long_name="Cordaid",
+            iati_org_id="NL-KVK-cordaid"
+        )
+        Organisation.objects.create(
+            id=1653,
+            name="Cordaid - Others",
+            long_name="Cordaid - Others",
+            iati_org_id="NL-KVK-others"
+        )
+
+        iati_cordaid_import = IatiImport.objects.create(
+            label="Test IATI Cordaid import", user=self.user, mapper_prefix="Cordaid")
+        iati_cordaid_xml_file = NamedTemporaryFile(delete=True)
+        iati_cordaid_xml_file.write(IATI_CORDAID_STRING)
+        iati_cordaid_xml_file.flush()
+        iati_cordaid_import_job = IatiImportJob.objects.create(
+            iati_import=iati_cordaid_import, iati_xml_file=File(iati_cordaid_xml_file))
+        iati_cordaid_import_job.run()
+
+        project_cordaid = Project.objects.get(iati_activity_id="NL-KVK-0987654321-cordaid")
+        self.assertIsInstance(project_cordaid, Project)
+        self.assertEqual(project_cordaid.language, "en")
+        self.assertEqual(project_cordaid.currency, "USD")
+        self.assertEqual(project_cordaid.hierarchy, 1)
+        self.assertEqual(project_cordaid.title, "Test project for IATI Cordaid import")
+        self.assertEqual(project_cordaid.partners.count(), 5)
+        self.assertEqual(project_cordaid.reporting_org.iati_org_id, "NL-KVK-0987654321")

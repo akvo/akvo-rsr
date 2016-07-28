@@ -102,7 +102,7 @@ class Partnerships(Partnerships):
                     organisation_role = None
                     self.add_log('role', 'iati_organisation_role', str(e))
 
-            if not (organisation or organisation_role):
+            if not (organisation and organisation_role):
                 self.add_log('participating-org', 'participating_org',
                              'participating organisation or role missing')
                 continue

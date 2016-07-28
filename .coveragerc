@@ -4,6 +4,7 @@ omit =
     akvo/rsr/migrations/*
     akvo/codelists/migrations/*
     akvo/codelists/store/*
+    akvo/iati/imports/mappers/CordaidZip/*
 
 [report]
 exclude_lines =
