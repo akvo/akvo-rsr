@@ -29,12 +29,12 @@ class BudgetItemSerializer(BudgetItemRawSerializer):
     label_label = serializers.ReadOnlyField(source='get_label')
     type_label = serializers.ReadOnlyField(source='iati_type_unicode')
     currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
-    status_label = serializers.ReadOnlyField(source='iati_status')
+    status_label = serializers.ReadOnlyField(source='iati_status_unicode')
 
 
 class CountryBudgetItemSerializer(BaseRSRSerializer):
 
-    code_label = serializers.ReadOnlyField(source='iati_code')
+    code_label = serializers.ReadOnlyField(source='iati_code_unicode')
 
     class Meta:
         model = CountryBudgetItem

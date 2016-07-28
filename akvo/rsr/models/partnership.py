@@ -154,11 +154,17 @@ class Partnership(models.Model):
         else:
             return ''
 
+    def iati_organisation_role_label_unicode(self):
+        return str(self.iati_organisation_role_label())
+
     def iati_role_to_partner_type(self):
         if self.iati_organisation_role:
             return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(int(self.iati_organisation_role))
         else:
             return None
+
+    def iati_role_to_partner_type_unicode(self):
+        return str(self.iati_role_to_partner_type())
 
     def organisation_show_link(self):
         if self.organisation:

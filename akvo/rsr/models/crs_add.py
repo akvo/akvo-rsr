@@ -106,8 +106,14 @@ class CrsAdd(models.Model):
     def iati_repayment_type(self):
         return codelist_value(LoanRepaymentType, self, 'repayment_type')
 
+    def iati_repayment_type_unicode(self):
+        return str(self.iati_repayment_type())
+
     def iati_repayment_plan(self):
         return codelist_value(LoanRepaymentPeriod, self, 'repayment_plan')
+
+    def iati_repayment_plan_unicode(self):
+        return str(self.iati_repayment_plan())
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')
@@ -117,6 +123,9 @@ class CrsAdd(models.Model):
 
     def iati_channel_code(self):
         return codelist_value(CRSChannelCode, self, 'channel_code')
+
+    def iati_channel_code_unicode(self):
+        return str(self.iati_channel_code())
 
     class Meta:
         app_label = 'rsr'
@@ -150,6 +159,9 @@ class CrsAddOtherFlag(models.Model):
 
     def iati_code(self):
         return codelist_value(CRSAddOtherFlags, self, 'code')
+
+    def iati_code_unicode(self):
+        return str(self.iati_code())
 
     class Meta:
         app_label = 'rsr'

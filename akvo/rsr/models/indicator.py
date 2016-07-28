@@ -299,6 +299,9 @@ class IndicatorReference(models.Model):
     def iati_vocabulary(self):
         return codelist_value(IndicatorVocabulary, self, 'vocabulary')
 
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
+
 
 class IndicatorPeriod(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')

@@ -20,17 +20,17 @@ class ProjectLocationRawSerializer(BaseRSRSerializer):
 class ProjectLocationSerializer(ProjectLocationRawSerializer):
 
     country_label = serializers.ReadOnlyField(source='iati_country_unicode')
-    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
-    exactness_label = serializers.ReadOnlyField(source='iati_exactness')
-    reach_label = serializers.ReadOnlyField(source='iati_reach')
-    class_label = serializers.ReadOnlyField(source='iati_class')
-    feature_designation_label = serializers.ReadOnlyField(source='iati_designation')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
+    exactness_label = serializers.ReadOnlyField(source='iati_exactness_unicode')
+    reach_label = serializers.ReadOnlyField(source='iati_reach_unicode')
+    class_label = serializers.ReadOnlyField(source='iati_class_unicode')
+    feature_designation_label = serializers.ReadOnlyField(source='iati_designation_unicode')
 
 
 class AdministrativeLocationSerializer(BaseRSRSerializer):
 
     location_unicode = serializers.ReadOnlyField(source='location.__unicode__')
-    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
 
     class Meta:
         model = AdministrativeLocation

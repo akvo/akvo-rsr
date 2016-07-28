@@ -146,6 +146,9 @@ class BudgetItem(models.Model):
     def iati_status(self):
         return codelist_value(BudgetStatus, self, 'status')
 
+    def iati_status_unicode(self):
+        return str(self.iati_status())
+
     class Meta:
         app_label = 'rsr'
         ordering = ('label',)
@@ -178,6 +181,9 @@ class CountryBudgetItem(models.Model):
 
     def iati_code(self):
         return codelist_value(BudgetIdentifier, self, 'code')
+
+    def iati_code_unicode(self):
+        return str(self.iati_code())
 
     class Meta:
         app_label = 'rsr'

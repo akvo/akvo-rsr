@@ -64,11 +64,20 @@ class PolicyMarker(models.Model):
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')
 
+    def iati_policy_marker_unicode(self):
+        return str(self.iati_policy_marker())
+
     def iati_significance(self):
         return codelist_value(codelist_models.PolicySignificance, self, 'significance')
 
+    def iati_significance_unicode(self):
+        return str(self.iati_significance())
+
     def iati_vocabulary(self):
         return codelist_value(codelist_models.PolicyMarkerVocabulary, self, 'vocabulary')
+
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'

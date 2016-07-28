@@ -33,22 +33,22 @@ class TransactionSerializer(TransactionRawSerializer):
     provider_organisation_show_link = serializers.ReadOnlyField()
     receiver_organisation_show_link = serializers.ReadOnlyField()
     currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
-    transaction_type_label = serializers.ReadOnlyField(source='iati_transaction_type')
-    aid_type_label = serializers.ReadOnlyField(source='iati_aid_type')
-    disbursement_channel_label = serializers.ReadOnlyField(source='iati_disbursement_channel')
-    finance_type_label = serializers.ReadOnlyField(source='iati_finance_type')
-    flow_type_label = serializers.ReadOnlyField(source='iati_flow_type')
-    tied_status_label = serializers.ReadOnlyField(source='iati_tied_status')
-    recipient_country_label = serializers.ReadOnlyField(source='iati_recipient_country')
-    recipient_region_label = serializers.ReadOnlyField(source='iati_recipient_region')
-    recipient_region_vocabulary_label = serializers.ReadOnlyField(source='iati_recipient_region_vocabulary')
+    transaction_type_label = serializers.ReadOnlyField(source='iati_transaction_type_unicode')
+    aid_type_label = serializers.ReadOnlyField(source='iati_aid_type_unicode')
+    disbursement_channel_label = serializers.ReadOnlyField(source='iati_disbursement_channel_unicode')
+    finance_type_label = serializers.ReadOnlyField(source='iati_finance_type_unicode')
+    flow_type_label = serializers.ReadOnlyField(source='iati_flow_type_unicode')
+    tied_status_label = serializers.ReadOnlyField(source='iati_tied_status_unicode')
+    recipient_country_label = serializers.ReadOnlyField(source='iati_recipient_country_unicode')
+    recipient_region_label = serializers.ReadOnlyField(source='iati_recipient_region_unicode')
+    recipient_region_vocabulary_label = serializers.ReadOnlyField(source='iati_recipient_region_vocabulary_unicode')
 
 
 class TransactionSectorSerializer(BaseRSRSerializer):
 
     transaction_unicode = serializers.ReadOnlyField(source='transaction.__unicode__')
-    code_label = serializers.ReadOnlyField(source='iati_sector')
-    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
+    code_label = serializers.ReadOnlyField(source='iati_sector_unicode')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
 
     class Meta:
         model = TransactionSector

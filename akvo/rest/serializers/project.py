@@ -48,8 +48,8 @@ class ProjectSerializer(BaseRSRSerializer):
 class ProjectIatiExportSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
-    checks_errors = serializers.ReadOnlyField(source='iati_errors')
-    checks_warnings = serializers.ReadOnlyField(source='iati_warnings')
+    checks_errors = serializers.ReadOnlyField(source='iati_errors_unicode')
+    checks_warnings = serializers.ReadOnlyField(source='iati_warnings_unicode')
 
     class Meta:
         model = Project
