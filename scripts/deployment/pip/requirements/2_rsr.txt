@@ -18,7 +18,6 @@ djangorestframework==3.3.3
 djangorestframework-xml==1.3.0
 django-tastypie==0.12.1
 django-rest-swagger==0.3.10
-# -e git://github.com/pySilver/django-rest-swagger.git@9be124e17d6c2200c0953eefc51d2e39c822cb55#egg=django-rest-swagger
 
 # Django apps from VCS web services
 -e git://github.com/akvo/django-counter.git@3b38f45a243970fda1a61124fd6ec8b9bd352c35#egg=django-counter
