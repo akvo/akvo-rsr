@@ -20,4 +20,4 @@ class ProjectConditionRawSerializer(BaseRSRSerializer):
 
 class ProjectConditionSerializer(ProjectConditionRawSerializer):
 
-    type_label = serializers.ReadOnlyField(source='iati_type')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')

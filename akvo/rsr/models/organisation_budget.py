@@ -63,6 +63,9 @@ class OrganisationFinanceBasic(models.Model):
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
 
 class OrganisationBudget(OrganisationFinanceBasic):
     status = ValidXMLCharField(
@@ -209,6 +212,9 @@ class LineBasic(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
+
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
 
 
 class OrganisationTotalBudgetLine(LineBasic):

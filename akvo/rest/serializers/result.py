@@ -20,7 +20,7 @@ class ResultRawSerializer(BaseRSRSerializer):
 class ResultSerializer(ResultRawSerializer):
 
     project_title = serializers.ReadOnlyField(source='project.title')
-    type_label = serializers.ReadOnlyField(source='iati_type')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
 

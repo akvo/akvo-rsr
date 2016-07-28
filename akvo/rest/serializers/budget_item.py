@@ -27,8 +27,8 @@ class BudgetItemRawDeepSerializer(BudgetItemRawSerializer):
 class BudgetItemSerializer(BudgetItemRawSerializer):
 
     label_label = serializers.ReadOnlyField(source='get_label')
-    type_label = serializers.ReadOnlyField(source='iati_type')
-    currency_label = serializers.ReadOnlyField(source='iati_currency')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')
+    currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
     status_label = serializers.ReadOnlyField(source='iati_status')
 
 

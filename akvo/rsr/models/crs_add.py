@@ -112,6 +112,9 @@ class CrsAdd(models.Model):
     def iati_currency(self):
         return codelist_value(Currency, self, 'loan_status_currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
     def iati_channel_code(self):
         return codelist_value(CRSChannelCode, self, 'channel_code')
 

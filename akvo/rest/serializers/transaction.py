@@ -32,7 +32,7 @@ class TransactionSerializer(TransactionRawSerializer):
 
     provider_organisation_show_link = serializers.ReadOnlyField()
     receiver_organisation_show_link = serializers.ReadOnlyField()
-    currency_label = serializers.ReadOnlyField(source='iati_currency')
+    currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
     transaction_type_label = serializers.ReadOnlyField(source='iati_transaction_type')
     aid_type_label = serializers.ReadOnlyField(source='iati_aid_type')
     disbursement_channel_label = serializers.ReadOnlyField(source='iati_disbursement_channel')

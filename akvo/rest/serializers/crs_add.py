@@ -16,7 +16,7 @@ class CrsAddSerializer(BaseRSRSerializer):
 
     repayment_type_label = serializers.ReadOnlyField(source='iati_repayment_type')
     repayment_plan_label = serializers.ReadOnlyField(source='iati_repayment_plan')
-    currency_label = serializers.ReadOnlyField(source='iati_currency')
+    currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
     channel_code_label = serializers.ReadOnlyField(source='iati_channel_code')
 
     class Meta:

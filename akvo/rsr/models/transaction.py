@@ -174,6 +174,9 @@ class Transaction(models.Model):
         else:
             return codelist_value(Currency, self.project, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
     def iati_aid_type(self):
         return codelist_value(AidType, self, 'aid_type')
 

@@ -14,7 +14,7 @@ from rest_framework import serializers
 
 class HumanitarianScopeSerializer(BaseRSRSerializer):
 
-    type_label = serializers.ReadOnlyField(source='iati_type')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')
     vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
 
     class Meta:

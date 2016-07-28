@@ -29,5 +29,5 @@ class PlannedDisbursementSerializer(PlannedDisbursementRawSerializer):
 
     provider_organisation_show_link = serializers.ReadOnlyField()
     receiver_organisation_show_link = serializers.ReadOnlyField()
-    currency_label = serializers.ReadOnlyField(source='iati_currency')
-    type_label = serializers.ReadOnlyField(source='iati_type')
+    currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')
