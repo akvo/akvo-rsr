@@ -48,9 +48,9 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             exclude_params = ['limit', 'format', 'page', 'ordering', 'partner_type', 'sync_owner',
                               'reporting_org', ]
             filters = {}
-            for key in request.QUERY_PARAMS.keys():
+            for key in request.query_params.keys():
                 if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):
-                    filters.update({key: request.QUERY_PARAMS.get(key)})
+                    filters.update({key: request.query_params.get(key)})
             return filters
 
         def get_lookups_from_filters(legacy_filters):

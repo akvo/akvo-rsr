@@ -46,7 +46,7 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
             :param param: the query string param key
             :return: a python data type object, or None if literal_eval() fails
             """
-            value = request.QUERY_PARAMS.get(key, None)
+            value = request.query_params.get(key, None)
             try:
                 return ast.literal_eval(value)
             except ValueError:
@@ -69,10 +69,10 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
                     raise APIException("Error in request: {message}".format(message=e.message))
 
         # support for Q expressions, limited to OR-concatenated filtering
-        if request.QUERY_PARAMS.get('q_filter1', None):
+        if request.query_params.get('q_filter1', None):
             i = 1
             q_queries = []
-            while request.QUERY_PARAMS.get('q_filter{}'.format(i), None):
+            while request.query_params.get('q_filter{}'.format(i), None):
                 query_arg = eval_query_value(request, 'q_filter{}'.format(i))
                 if query_arg:
                     q_queries += [query_arg]
