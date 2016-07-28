@@ -14,7 +14,7 @@ class IatiExportSerializer(BaseRSRSerializer):
 
     user_name = serializers.ReadOnlyField(source='user.get_full_name')
     status_label = serializers.ReadOnlyField(source='show_status')
-    processed_projects = serializers.ReadOnlyField(source='processed_projects')
+    processed_projects = serializers.ReadOnlyField()
 
     class Meta:
         model = IatiExport

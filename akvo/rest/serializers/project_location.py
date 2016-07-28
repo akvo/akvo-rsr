@@ -19,7 +19,7 @@ class ProjectLocationRawSerializer(BaseRSRSerializer):
 
 class ProjectLocationSerializer(ProjectLocationRawSerializer):
 
-    country_label = serializers.ReadOnlyField(source='country_label')
+    country_label = serializers.ReadOnlyField()
     vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary')
     exactness_label = serializers.ReadOnlyField(source='iati_exactness')
     reach_label = serializers.ReadOnlyField(source='iati_reach')
@@ -38,7 +38,7 @@ class AdministrativeLocationSerializer(BaseRSRSerializer):
 
 class ProjectLocationExtraSerializer(ProjectLocationRawSerializer):
 
-    country = CountrySerializer(source='country')
+    country = CountrySerializer()
 
 
 class MapProjectSerializer(serializers.Serializer):

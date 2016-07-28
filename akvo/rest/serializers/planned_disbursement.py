@@ -21,13 +21,13 @@ class PlannedDisbursementRawSerializer(BaseRSRSerializer):
 
 class PlannedDisbursementRawDeepSerializer(PlannedDisbursementRawSerializer):
 
-    provider_organisation = OrganisationBasicSerializer(source='provider_organisation')
-    receiver_organisation = OrganisationBasicSerializer(source='receiver_organisation')
+    provider_organisation = OrganisationBasicSerializer()
+    receiver_organisation = OrganisationBasicSerializer()
 
 
 class PlannedDisbursementSerializer(PlannedDisbursementRawSerializer):
 
-    provider_organisation_show_link = serializers.ReadOnlyField(source='provider_organisation_show_link')
-    receiver_organisation_show_link = serializers.ReadOnlyField(source='receiver_organisation_show_link')
+    provider_organisation_show_link = serializers.ReadOnlyField()
+    receiver_organisation_show_link = serializers.ReadOnlyField()
     currency_label = serializers.ReadOnlyField(source='iati_currency')
     type_label = serializers.ReadOnlyField(source='iati_type')

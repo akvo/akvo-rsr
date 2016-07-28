@@ -21,7 +21,7 @@ class ProjectContactRawSerializer(BaseRSRSerializer):
 
 class ProjectContactRawDeepSerializer(ProjectContactRawSerializer):
 
-    country = CountrySerializer(source='country')
+    country = CountrySerializer()
 
 
 class ProjectContactSerializer(ProjectContactRawSerializer):

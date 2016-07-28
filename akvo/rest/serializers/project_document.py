@@ -20,7 +20,7 @@ class ProjectDocumentRawSerializer(BaseRSRSerializer):
 
 class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
 
-    document_show_link = serializers.ReadOnlyField(source='document_show_link')
+    document_show_link = serializers.ReadOnlyField()
     language_label = serializers.ReadOnlyField(source='iati_language')
     title_language_label = serializers.ReadOnlyField(source='iati_title_language')
     format_label = serializers.ReadOnlyField(source='iati_format')

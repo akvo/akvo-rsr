@@ -21,7 +21,7 @@ class BudgetItemRawSerializer(BaseRSRSerializer):
 
 class BudgetItemRawDeepSerializer(BudgetItemRawSerializer):
 
-    label = BudgetItemLabelSerializer(source='label')
+    label = BudgetItemLabelSerializer()
 
 
 class BudgetItemSerializer(BudgetItemRawSerializer):

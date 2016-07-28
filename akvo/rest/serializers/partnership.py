@@ -24,7 +24,7 @@ class PartnershipRawDeepSerializer(PartnershipRawSerializer):
 
 class PartnershipSerializer(PartnershipRawSerializer):
 
-    organisation_show_link = serializers.ReadOnlyField(source='organisation_show_link')
+    organisation_show_link = serializers.ReadOnlyField()
     partner_type = serializers.ReadOnlyField(source='iati_role_to_partner_type')
     organisation_role_label = serializers.ReadOnlyField(source='iati_organisation_role_label')
     funding_amount_label = serializers.ReadOnlyField(source='funding_amount_with_currency')

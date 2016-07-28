@@ -21,8 +21,8 @@ class TransactionRawSerializer(BaseRSRSerializer):
 
 class TransactionRawDeepSerializer(TransactionRawSerializer):
 
-    provider_organisation = OrganisationBasicSerializer(source='provider_organisation')
-    receiver_organisation = OrganisationBasicSerializer(source='receiver_organisation')
+    provider_organisation = OrganisationBasicSerializer()
+    receiver_organisation = OrganisationBasicSerializer()
 
     class Meta:
         model = Transaction
@@ -30,8 +30,8 @@ class TransactionRawDeepSerializer(TransactionRawSerializer):
 
 class TransactionSerializer(TransactionRawSerializer):
 
-    provider_organisation_show_link = serializers.ReadOnlyField(source='provider_organisation_show_link')
-    receiver_organisation_show_link = serializers.ReadOnlyField(source='receiver_organisation_show_link')
+    provider_organisation_show_link = serializers.ReadOnlyField()
+    receiver_organisation_show_link = serializers.ReadOnlyField()
     currency_label = serializers.ReadOnlyField(source='iati_currency')
     transaction_type_label = serializers.ReadOnlyField(source='iati_transaction_type')
     aid_type_label = serializers.ReadOnlyField(source='iati_aid_type')

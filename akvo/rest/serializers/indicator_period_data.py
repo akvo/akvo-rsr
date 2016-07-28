@@ -22,9 +22,9 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
     user_details = UserDetailsSerializer(required=False)
-    status_display = serializers.ReadOnlyField(source='status_display')
-    photo_url = serializers.ReadOnlyField(source='photo_url')
-    file_url = serializers.ReadOnlyField(source='file_url')
+    status_display = serializers.ReadOnlyField()
+    photo_url = serializers.ReadOnlyField()
+    file_url = serializers.ReadOnlyField()
 
     class Meta:
         model = IndicatorPeriodData
@@ -34,9 +34,9 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     comments = IndicatorPeriodDataCommentSerializer(many=True, required=False)
     user_details = UserDetailsSerializer(required=False)
-    status_display = serializers.ReadOnlyField(source='status_display')
-    photo_url = serializers.ReadOnlyField(source='photo_url')
-    file_url = serializers.ReadOnlyField(source='file_url')
+    status_display = serializers.ReadOnlyField()
+    photo_url = serializers.ReadOnlyField()
+    file_url = serializers.ReadOnlyField()
 
     class Meta:
         model = IndicatorPeriodData
