@@ -10,7 +10,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User, BudgetItemLabel
 from akvo.codelists.models import BudgetIdentifier, ResultType, Version
 
-from .xml_files import IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT
+from .xml_files import IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -120,3 +120,25 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_inc.title, "Test project for IATI import (incorrect)")
         self.assertEqual(project_inc.partners.count(), 1)
         self.assertEqual(project_inc.reporting_org.iati_org_id, "NL-KVK-0987654321")
+
+    def test_iati_icco_import(self):
+        """
+        Test an IATI import for ICCO.
+        """
+        iati_icco_import = IatiImport.objects.create(
+            label="Test IATI ICCO import", user=self.user, mapper_prefix="ICCO")
+        iati_icco_xml_file = NamedTemporaryFile(delete=True)
+        iati_icco_xml_file.write(IATI_ICCO_STRING)
+        iati_icco_xml_file.flush()
+        iati_inc_import_job = IatiImportJob.objects.create(iati_import=iati_icco_import,
+                                                           iati_xml_file=File(iati_icco_xml_file))
+        iati_inc_import_job.run()
+
+        project_icco = Project.objects.get(iati_activity_id="NL-KVK-0987654321-icco")
+        self.assertIsInstance(project_icco, Project)
+        self.assertEqual(project_icco.language, "en")
+        self.assertEqual(project_icco.currency, "USD")
+        self.assertEqual(project_icco.hierarchy, 1)
+        self.assertEqual(project_icco.title, "Test project for IATI ICCO import")
+        self.assertEqual(project_icco.partners.count(), 4)
+        self.assertEqual(project_icco.reporting_org.iati_org_id, "NL-KVK-0987654321")

@@ -1415,3 +1415,117 @@ IATI_V2_STRING_INCORRECT = """
     </iati-activity>
 </iati-activities>
 """
+
+IATI_ICCO_STRING = """
+<iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02">
+    <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
+        <iati-identifier>NL-KVK-0987654321-icco</iati-identifier>
+        <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
+            <narrative>Test Organisation Import</narrative>
+        </reporting-org>
+        <title>
+            <narrative>Test project for IATI ICCO import</narrative>
+        </title>
+        <description>
+            <narrative>Subtitle: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>Project summary: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>Background: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>Baseline situation: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>Project plan: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>Sustainability: Test subtitle</narrative>
+        </description>
+        <participating-org ref="BB-BBB-123456789" role="1" type="40" activity-id="BB-BBB-123456789-1234">
+           <narrative>Name of Agency B</narrative>
+        </participating-org>
+        <participating-org ref="CC-CCC-123456789" role="2" type="10" activity-id="CC-CCC-123456789-1234">
+           <narrative>Name of Agency C</narrative>
+        </participating-org>
+        <participating-org ref="AA-AAA-123456789" role="3" type="21" activity-id="AA-AAA-123456789-1234">
+           <narrative>Name of Agency A</narrative>
+        </participating-org>
+    </iati-activity>
+    <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
+        <iati-identifier>NL-KVK-0987654321-icco</iati-identifier>
+        <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
+            <narrative>Test Organisation Import</narrative>
+        </reporting-org>
+        <title>
+            <narrative>Test project for IATI ICCO import</narrative>
+        </title>
+        <description>
+            <narrative>Project name: Test subtitle</narrative>
+        </description>
+        <description>
+            <narrative>
+                Project summary:
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+                This text is way too long to fit in the project summary field. It will not fit and will therefore not be stored in the summary.
+            </narrative>
+        </description>
+        <participating-org ref="BB-BBB-123456789" role="1" type="40" activity-id="BB-BBB-123456789-1234">
+           <narrative>Name of Agency B</narrative>
+        </participating-org>
+        <participating-org ref="CC-CCC-123456789" role="2" type="10" activity-id="CC-CCC-123456789-1234">
+           <narrative>Name of Agency C</narrative>
+        </participating-org>
+        <participating-org ref="AA-AAA-123456789" role="3" type="21" activity-id="AA-AAA-123456789-1234">
+           <narrative>Name of Agency A</narrative>
+        </participating-org>
+    </iati-activity>
+        <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
+        <iati-identifier>NL-KVK-0987654321-icco</iati-identifier>
+        <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
+            <narrative>Test Organisation Import</narrative>
+        </reporting-org>
+        <title>
+            <narrative>Test project for IATI ICCO import</narrative>
+        </title>
+        <description type="1">
+           <narrative>General activity description text.  Long description of the activity with no particular structure.</narrative>
+        </description>
+        <description type="2">
+           <narrative>Objectives for the activity, for example from a logical framework.</narrative>
+        </description>
+        <description type="3">
+           <narrative>Statement of groups targeted to benefit from the activity.</narrative>
+        </description>
+        <participating-org ref="BB-BBB-123456789" role="1" type="40" activity-id="BB-BBB-123456789-1234">
+           <narrative>Name of Agency B</narrative>
+        </participating-org>
+        <participating-org ref="CC-CCC-123456789" role="2" type="10" activity-id="CC-CCC-123456789-1234">
+           <narrative>Name of Agency C</narrative>
+        </participating-org>
+        <participating-org ref="AA-AAA-123456789" role="3" type="21" activity-id="AA-AAA-123456789-1234">
+           <narrative>Name of Agency A</narrative>
+        </participating-org>
+    </iati-activity>
+</iati-activities>
+"""
