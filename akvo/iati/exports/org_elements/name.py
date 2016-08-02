@@ -15,10 +15,7 @@ def name(organisation, _request):
     :param _request: Django request (not used)
     :return: A list of Etree elements
     """
-    if organisation.long_name or organisation.name:
-        element = etree.Element("name")
-        narrative_element = etree.SubElement(element, "narrative")
-        narrative_element.text = organisation.long_name or organisation.name
-        return [element]
-
-    return []
+    element = etree.Element("name")
+    narrative_element = etree.SubElement(element, "narrative")
+    narrative_element.text = organisation.long_name or organisation.name
+    return [element]

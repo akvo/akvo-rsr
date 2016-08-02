@@ -56,10 +56,9 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         )
 
         # Set test image path
+        base_image_path = '/var/akvo/rsr/code/'
         if 'TRAVIS' in os.environ:
             base_image_path = '/home/travis/build/akvo/akvo-rsr/'
-        else:
-            base_image_path = '/var/akvo/rsr/code/'
         self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
 
     def test_complete_project_export(self):
