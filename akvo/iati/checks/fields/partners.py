@@ -26,8 +26,7 @@ def partners(project):
             org_name = org.long_name or org.name
 
             if partnership.iati_organisation_role and \
-                    partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4] and \
-                    (org.iati_org_id or org_name):
+                    partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4]:
                 valid_partner = True
 
             if not partnership.iati_organisation_role:
@@ -36,10 +35,6 @@ def partners(project):
 
             if not org.iati_org_id:
                 checks.append((u'warning', u'partner %s has no IATI identifier' % org_name))
-
-            if not org_name:
-                checks.append((u'warning', u'%s has no organisation name' %
-                               partnership.iati_organisation_role))
 
         else:
             all_checks_passed = False
