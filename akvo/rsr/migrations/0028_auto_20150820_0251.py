@@ -6,7 +6,6 @@ from django.db import migrations
 def keywords_from_sponsor_partners(apps, schema_editor):
     Keyword = apps.get_model('rsr', 'Keyword')
     Project = apps.get_model('rsr', 'Project')
-    print
 
     projects = Project.objects.filter(partnerships__partner_type=u'sponsor')
     for project in projects:
@@ -18,11 +17,6 @@ def keywords_from_sponsor_partners(apps, schema_editor):
                 )
             )
             project.keywords.add(keyword)
-
-    print "Keyword distribution after migration:"
-    for keyword in Keyword.objects.all():
-        projects = Project.objects.filter(keywords__exact=keyword)
-        print keyword.label, projects.count()
 
 
 class Migration(migrations.Migration):

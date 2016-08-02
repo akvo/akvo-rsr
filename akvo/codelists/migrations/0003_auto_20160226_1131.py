@@ -17,7 +17,6 @@ def add_v202_codelists(apps, schema_editor):
     # Add all new codelists, linked to the v2.02 version
     for codelist in codelists_v202.codelist_list:
         if codelist != 'VERSION':
-            print 'Importing {}...'.format(codelist.lower())
             codelist_tuples = getattr(codelists_v202, codelist, None)
             if codelist_tuples is not None:
                 codelist_fields = codelist_tuples[0]

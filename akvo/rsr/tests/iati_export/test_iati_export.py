@@ -632,7 +632,18 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
 
         # In order to easily access the XML file, generate the IATI file again
         tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        etree.tostring(tmp_iati_xml.iati_activities)
+        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
+
+        # Perform checks on IATI export
+        self.assertEqual(iati_export.status, 3)
+        self.assertNotEqual(iati_export.iati_file, '')
+
+        # Perform checks on IATI XML file
+        root_test = self.assertXmlDocument(iati_xml)
+        self.assertXmlNode(root_test, tag='iati-activities')
+        self.assertXmlHasAttribute(root_test, 'generated-datetime')
+        self.assertXmlHasAttribute(root_test, 'version')
+        self.assertXpathsExist(root_test, ('./iati-activity', ))
 
     def test_project_with_only_credit_export(self):
         """
@@ -662,4 +673,15 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
 
         # In order to easily access the XML file, generate the IATI file again
         tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        etree.tostring(tmp_iati_xml.iati_activities)
+        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
+
+        # Perform checks on IATI export
+        self.assertEqual(iati_export.status, 3)
+        self.assertNotEqual(iati_export.iati_file, '')
+
+        # Perform checks on IATI XML file
+        root_test = self.assertXmlDocument(iati_xml)
+        self.assertXmlNode(root_test, tag='iati-activities')
+        self.assertXmlHasAttribute(root_test, 'generated-datetime')
+        self.assertXmlHasAttribute(root_test, 'version')
+        self.assertXpathsExist(root_test, ('./iati-activity',))

@@ -21,8 +21,6 @@ def unique_iati_id(apps, schema_editor):
             if same_iati_id.count() > 1:
                 similar_iati_ids[project.iati_activity_id] = same_iati_id
 
-    print str(similar_iati_ids)
-
     for iati_id in similar_iati_ids.keys():
         for count, project in enumerate(similar_iati_ids[iati_id]):
             if count == 0:
