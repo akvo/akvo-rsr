@@ -132,8 +132,8 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
 
 
 def rsr_send_mail_to_users(users,
-                           subject='templates/email/test_subject.txt',
-                           message='templates/email/test_message.txt',
+                           subject='test/test_subject.txt',
+                           message='test/test_message.txt',
                            subject_context=None,
                            msg_context=None):
     """
@@ -145,14 +145,6 @@ def rsr_send_mail_to_users(users,
         msg_context = {}
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)
-
-
-def qs_column_sum(qs, col):
-    #This won't work:
-    #return sum(qs.values_list(col, flat=True))
-    #when you have multiple rows with the exact same amount. They only get counted once
-    #Workoaround:
-    return sum([row[col] for row in qs.values()])
 
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
@@ -190,78 +182,9 @@ def send_donation_confirmation_emails(invoice_id):
         msg.send(fail_silently=True)
 
 
-def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
-    """get a number of blog posts from wordpress
-    category_id is the numerical ID of the category to filter on
-    limit is the number of posts
-    """
-    from django.db import connections
-    try:
-        cursor = connections[connection].cursor()
-        cursor.execute("SELECT option_value FROM options where option_id = 1")
-        option_rows = cursor.fetchall()
-        site_url = option_rows[0][0]
-    except:
-        site_url = 'http://akvo.org/blog'
-
-    try:
-        if category_id:
-            cursor.execute("""
-                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users, term_relationships
-                    WHERE post_status = 'publish'
-                        AND post_type = 'post'
-                        AND term_taxonomy_id = %d
-                        and posts.ID = object_id
-                        AND posts.post_author = users.ID
-                    ORDER By post_date DESC LIMIT %d
-                """ % (category_id, limit)
-            )
-        else:
-            cursor.execute("""
-                SELECT posts.ID, post_title, post_content, post_date, display_name  FROM posts, users
-                    WHERE post_status = 'publish'
-                        AND post_status != 'auto-draft'
-                        AND post_type = 'post'
-                        AND posts.post_author = users.ID
-                    ORDER By post_date DESC LIMIT %d
-                """ % limit
-            )
-        rows = cursor.fetchall()
-
-    except:
-        return None
-
-    posts = []
-    for post in rows:
-        post_content_soup = BeautifulSoup(post[2])
-
-        # Find first image in post
-        try:
-            post_img = post_content_soup('img')[0]['src']
-        except:
-            post_img = ''
-
-        # Find first paragraph in post
-        try:
-            post_p = post_content_soup('p')[0].contents
-        except: # no p-tags
-            post_p = ''.join(post_content_soup.findAll(text=True))
-
-        posts.append({ 'title': post[1], 'image': post_img, 'text': post_p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
-
-    return posts
-
-
-def get_random_from_qs(qs, count):
-    "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
-    qs_list = list(qs.values_list('pk', flat=True))
-    random.shuffle(qs_list)
-    return qs.filter(pk__in=qs_list[:count])
-
-
 def who_am_i():
     "introspecting function returning the name of the function where who_am_i is called"
-    return inspect.stack()[1][3]
+    return inspect.stack()[1][3] #TODO: in test
 
 
 def who_is_parent():
@@ -269,127 +192,12 @@ def who_is_parent():
     introspecting function returning the name of the caller of the function
     where who_is_parent is called
     """
-    return inspect.stack()[2][3]
-
-
-def send_now(users, label, extra_context=None, on_site=True, sender=None):
-    """
-    GvH: Modified version of notification.models.send_now
-
-    Creates a new notice.
-
-    This is intended to be how other apps create new notices.
-
-    notification.send(user, 'friends_invite_sent', {
-        'spam': 'eggs',
-        'foo': 'bar',
-    )
-
-    You can pass in on_site=False to prevent the notice emitted from being
-    displayed on the site.
-    """
-    logger.debug("Entering: %s()" % who_am_i())
-    if extra_context is None:
-        extra_context = {}
-
-    notice_type = NoticeType.objects.get(label=label)
-
-    protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-    current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
-
-    notices_url = u"%s://%s%s" % (
-        protocol,
-        unicode(current_site),
-        reverse("notification_notices"),
-    )
-
-    current_language = get_language()
-
-    formats = (
-        'short.txt',
-        'full.txt',
-        'sms.txt',
-        'notice.html',
-        'full.html',
-    ) # TODO make formats configurable
-
-    for user in users:
-        recipients = []
-        # get user language for user from language store defined in
-        # NOTIFICATION_LANGUAGE_MODULE setting
-        try:
-            language = get_notification_language(user)
-        except LanguageStoreNotAvailable:
-            language = None
-
-        if language is not None:
-            # activate the user's language
-            activate(language)
-
-        # update context with user specific translations
-        context = Context({
-            "recipient": user,
-            "sender": sender,
-            "notice": ugettext(notice_type.display),
-            "notices_url": notices_url,
-            "current_site": current_site,
-        })
-        context.update(extra_context)
-
-        # get prerendered format messages
-        messages = get_formatted_messages(formats, label, context)
-
-        # Strip newlines from subject
-        subject = ''.join(render_to_string('notification/email_subject.txt', {
-            'message': messages['short.txt'],
-        }, context).splitlines())
-
-        body = render_to_string('notification/email_body.txt', {
-            'message': messages['full.txt'],
-        }, context)
-
-        notice = Notice.objects.create(recipient=user, message=messages['notice.html'],
-            notice_type=notice_type, on_site=on_site, sender=sender)
-        if user.is_active:
-            if should_send(user, notice_type, "email") and user.email: # Email
-                recipients.append(user.email)
-            logger.info("Sending email notification of type %s to %s" % (notice_type, recipients, ))
-            # don't send anything in debug/develop mode
-            if not getattr(settings, 'SMS_DEBUG', False):
-                send_mail(
-                    subject,
-                    body,
-                    getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
-                    recipients
-                )
-            if should_send(user, notice_type, "sms") and user.phone_number: # SMS
-                # strip newlines
-                sms = ''.join(render_to_string('notification/email_subject.txt', {
-                    'message': messages['sms.txt'],
-                }, context).splitlines())
-                #extra_context['gw_number'] holds a GatewayNumber object
-                logger.info("Sending SMS notification of type %s to %s, mobile phone number: %s." % (notice_type, user, extra_context['phone_number'], ))
-                # don't send anything in debug/develop mode
-                if not getattr(settings, 'SMS_DEBUG', False):
-                    extra_context['gw_number'].send_sms(extra_context['phone_number'], sms)
-
-
-    # reset environment to original language
-    activate(current_language)
-    logger.debug("Exiting: %s()" % who_am_i())
-
-
-# workflow helpers
-
-def state_equals(obj, state):
-    if type(state) != type([]):
-        state = [state]
-    return get_state(obj) in State.objects.filter(name__in=state)
+    return inspect.stack()[2][3] #TODO: in test
 
 
 # convert naive datetime to GMT format
 def to_gmt(dt):
-    gmt = pytz.timezone('GMT')
+    gmt = pytz.timezone('GMT') #TODO: in test
     return dt.replace(tzinfo=gmt).astimezone(gmt)
 
 
@@ -398,7 +206,7 @@ def custom_get_or_create_country(iso_code, country=None):
         or create a new one with the given iso_code if it doesn't already exist
     """
     # for some reason, maybe some circular import issue importing Country at the module level doesn't work
-    from akvo.rsr.models import Country
+    from akvo.rsr.models import Country #TODO: in test
     iso_code = iso_code.lower()
     if  not country:
         try:
@@ -419,7 +227,7 @@ def right_now_in_akvo():
     """
     Calculate the numbers used in the "Right now in Akvo" box on the home page.
     """
-    projects = get_model('rsr', 'Project').objects.published()
+    projects = get_model('rsr', 'Project').objects.published() #TODO: in test
     organisations = get_model('rsr', 'Organisation').objects.all()
     updates = get_model('rsr', 'ProjectUpdate').objects.all()
     people_served = projects.get_largest_value_sum(
@@ -436,7 +244,7 @@ def right_now_in_akvo():
 
 
 def rsr_show_keywords(instance):
-    if len(instance.keywords.all()) > 0:
+    if len(instance.keywords.all()) > 0: #TODO: in test
         keyword_str = '<ul>'
         for key in instance.keywords.all():
             keyword_str += '<li>%s</li>' % key.label
@@ -454,7 +262,7 @@ def pagination(page, object_list, objects_per_page):
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         page = paginator.page(1)
-    except EmptyPage:
+    except EmptyPage: #TODO: in test
         # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
 
@@ -462,7 +270,7 @@ def pagination(page, object_list, objects_per_page):
     active = page.number
 
     if not len(page_range) < 10:
-        if active > 4:
+        if active > 4: #TODO: in test
             page_range[1] = '...'
             del page_range[2:active-2]
         if (page_range[-1] - active) > 3:
@@ -486,7 +294,7 @@ def filter_query_string(qs):
         return ''
 
     return u'&{}'.format(
-        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
+        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8') #TODO: in test
 
 
 def codelist_choices(codelist, show_code=True):
@@ -539,7 +347,7 @@ def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     """
     value = getattr(instance, field, None)
     if value:
-        try:
+        try: #TODO: in test
             objects = getattr(model, 'objects')
             return objects.get(code=value, version__code=version).name
         except model.DoesNotExist:
@@ -559,7 +367,7 @@ def file_from_zip_archive(zip, file_name):
     :param file_name: name of the file to retrieve from the archive
     :return: the file or None
     """
-    zip = zipfile.ZipFile(zip, 'r')
+    zip = zipfile.ZipFile(zip, 'r') #TODO: in test
     try:
         return zip.open(file_name)
     except KeyError:
