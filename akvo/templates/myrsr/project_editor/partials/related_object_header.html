@@ -1,12 +1,12 @@
 {% load i18n project_editor %}
 
 <div class="row partial-header">
-    <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+    <div class="col-md-7 col-sm-6 col-xs-6 hide-partial-click">
         <span class="folded-sign">{% if rel_obj.pk %}+{% else %}-{% endif %}</span>
         {{ rel_obj|field_model_name }}:
         <span class="unicode">{% if rel_obj.pk %}{{ rel_obj|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
     </div>
-    <div class="col-md-3 col-sm-6 col-xs-6 text-right delete-related-object-container">
+    <div class="col-md-5 col-sm-6 col-xs-6 text-right delete-related-object-container">
         <a class="delete-related-object">
             <span class="glyphicon glyphicon-trash"></span>
         </a>
