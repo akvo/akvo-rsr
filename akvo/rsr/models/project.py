@@ -1365,8 +1365,7 @@ class Project(TimestampsMixin, models.Model):
             description=indicator.description,
             baseline_year=indicator.baseline_year,
             baseline_value=indicator.baseline_value,
-            baseline_comment=indicator.baseline_comment,
-            default_periods=indicator.default_periods
+            baseline_comment=indicator.baseline_comment
         )
 
         for period in indicator.periods.all():

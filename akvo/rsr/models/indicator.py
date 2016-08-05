@@ -90,7 +90,6 @@ class Indicator(models.Model):
                 child_indicator.title = self.title
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
-                child_indicator.default_periods = self.default_periods
 
                 # Only copy the description and baseline if the child has none (e.g. new)
                 if not child_indicator.description and self.description:
@@ -244,7 +243,8 @@ def add_default_periods(sender, instance, created, **kwargs):
     if created:
         project = instance.result.project
         results = Result.objects.filter(project_id=project)
-        default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True).first()
+        default_indicator = Indicator.objects.filter(result_id__in=results,
+                                                     default_periods=True).first()
 
         if default_indicator:
             default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
