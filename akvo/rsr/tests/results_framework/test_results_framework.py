@@ -114,17 +114,6 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2.save()
         self.assertEqual(self.period.actual_value, "15")
 
-        indicator_update_string = IndicatorPeriodData.objects.create(
-            user=self.user,
-            period=self.period,
-            data="five"
-        )
-        self.assertEqual(self.period.actual_value, "15")
-
-        indicator_update_string.status = "A"
-        indicator_update_string.save()
-        self.assertEqual(self.period.actual_value, "five")
-
     def test_edit_and_delete_updates(self):
         """
         Test if editing or deleting updates will update the actual value of the period.

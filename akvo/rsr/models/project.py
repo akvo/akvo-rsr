@@ -460,7 +460,7 @@ class Project(TimestampsMixin, models.Model):
                     if self.aggregate_children:
                         period.recalculate_period()
                     else:
-                        print(period.recalculate_period(only_self=True))
+                        period.recalculate_period(only_self=True)
 
             # Update aggregation to parent
             if self.aggregate_to_parent != orig_aggregate_to_parent:
