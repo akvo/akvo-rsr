@@ -184,7 +184,7 @@ def send_donation_confirmation_emails(invoice_id):
 
 def who_am_i():
     "introspecting function returning the name of the function where who_am_i is called"
-    return inspect.stack()[1][3] #TODO: in test
+    return inspect.stack()[1][3]
 
 
 def who_is_parent():
@@ -192,12 +192,12 @@ def who_is_parent():
     introspecting function returning the name of the caller of the function
     where who_is_parent is called
     """
-    return inspect.stack()[2][3] #TODO: in test
+    return inspect.stack()[2][3]
 
 
 # convert naive datetime to GMT format
 def to_gmt(dt):
-    gmt = pytz.timezone('GMT') #TODO: in test
+    gmt = pytz.timezone('GMT')
     return dt.replace(tzinfo=gmt).astimezone(gmt)
 
 

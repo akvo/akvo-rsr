@@ -9,10 +9,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import User, Project, Invoice
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
-                        send_donation_confirmation_emails)
+                        send_donation_confirmation_emails, who_am_i, who_is_parent, to_gmt, )
 
 from django.core import mail
 from django.test import TestCase
+
+import datetime, pytz
 
 
 class GeneralUtilsTestCase(TestCase):
@@ -66,3 +68,21 @@ class GeneralUtilsTestCase(TestCase):
 
         # Test that the mail is in the outbox.
         self.assertIn("Thank you from Akvo.org!", [sent_mail.subject for sent_mail in mail.outbox])
+
+    def test_inspection_definitions(self):
+        """
+        Tests for inspecting definitions.
+        """
+        this_definition = who_am_i()
+        parent_definition = who_is_parent()
+        self.assertEqual(this_definition, "test_inspection_definitions")
+        self.assertEqual(parent_definition, "run")
+
+    def test_to_gmt(self):
+        """
+        Test for converting to GMT.
+        """
+        gmt = pytz.timezone('GMT')
+        current_datetime = datetime.datetime.now(tz=gmt)
+        gmt_datetime = to_gmt(current_datetime)
+        self.assertEqual(current_datetime, gmt_datetime)
