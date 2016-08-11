@@ -54,16 +54,26 @@ def invite_user(request):
     else:
         data = json.loads(data)
 
-    # Check email
-    email = data['email'].lower().strip()
-    if not (email and valid_email(email) and user.email != email):
-        missing_data.append('email')
-
     # Check organisation
     try:
         organisation = Organisation.objects.get(pk=int(data['organisation']))
     except (Organisation.DoesNotExist, ValueError):
         missing_data.append('organisation')
+
+    # Check email
+    email = data['email'].lower().strip()
+    if not (email and valid_email(email)):
+        missing_data.append('email')
+    elif user.email == email and organisation:
+        # Only superusers, RSR admins and organisation admins can invite themselves
+        if not (user.is_admin or user.is_superuser):
+            admin_group = Group.objects.get(name='Admins')
+            content_owned = []
+            for empl in Employment.objects.filter(user=user, group=admin_group).exclude(
+                    organisation=None):
+                content_owned += empl.organisation.content_owned_organisations()
+            if organisation not in content_owned:
+                missing_data.append('email')
 
     # Check group
     try:
