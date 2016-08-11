@@ -6,8 +6,12 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.http import HttpResponse
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 def server_error(request, template_name='500.html'):
-    HttpResponse("Server Error - 500")
+    response = render_to_response('500.html', {}, context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
+

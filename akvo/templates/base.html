@@ -74,6 +74,8 @@
 
     {% include 'navigation/footer.html' %}
 
+    <span id="cookieModal"></span>
+
     <script type="application/javascript">
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
@@ -83,12 +85,21 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
+    {# Other third party libraries #}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/moment-2.10.6.min.js"></script>
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/underscore-1.8.3.min.js"></script>
+
+    {# React #}
+    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
+    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
+    <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
+    <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
+    <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
+
     {# RSR default libraries #}
-    <script src="{{ STATIC_URL }}lib/scripts/underscore-1.8.3.min.js"></script>
     {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
-
-    <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {% block js %}{% endblock js %}
 
@@ -103,9 +114,16 @@
         {
             "cookie_text": "{% trans 'This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our ' %}",
             "privacy_text": "{% trans 'privacy and cookies policy' %}",
-            "button_text": "{% trans 'Accept' %}"
+            "button_text": "{% trans 'Accept' %}",
+            "password_environment": "{% trans 'Password protected environment' %}",
+            "password_environment_desc": "{% trans 'This is a password protected environment, please fill in the password:' %}",
+            "password_environment_avail": "{% trans 'After a week we will ask you to fill in the password again.' %}",
+            "continue_to_rsr": "{% trans 'Continue' %}",
+            "incorrect_password": "{% trans 'Incorrect password' %}"
         }
     </script>
+
+    <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {# RSR support center help #}
     <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>

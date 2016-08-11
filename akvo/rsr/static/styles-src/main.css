@@ -2040,15 +2040,13 @@ dd.currencyAmount {
 
 @media only screen and (min-width: 992px) {
   .projectReport table {
-    table-layout: auto; }
+    table-layout: auto; } }
+  @media only screen and (min-width: 992px) and (max-width: 1200px) {
     .projectReport table th {
-      word-break: break-word; } }
-    @media only screen and (min-width: 992px) and (max-width: 1200px) {
-      .projectReport table th {
-        width: 90px; } }
-    @media only screen and (min-width: 992px) and (min-width: 1200px) {
-      .projectReport table th {
-        width: 120px; } }
+      width: 90px; } }
+  @media only screen and (min-width: 992px) and (min-width: 1200px) {
+    .projectReport table th {
+      width: 120px; } }
 
 /* Project update page */
 .updateText {
@@ -2134,6 +2132,8 @@ body.translationBarActive div.skiptranslate ~ #map {
 
 .formProgress .progress-and-publish {
   top: 20px; }
+  .formProgress .progress-and-publish .row .help-block-error {
+    padding-left: 15px; }
 
 .formProgress .redLegenda {
   background: #d9534f;
@@ -2437,6 +2437,9 @@ body.translationBarActive div.skiptranslate ~ #map {
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
 
+#import-results {
+  margin-bottom: 25px; }
+
 /* New concatenated project page */
 .tab-menu {
   padding: 0.5em 1em 2em 1em; }
@@ -2513,6 +2516,24 @@ article {
   display: -webkit-flex;
   display: flex;
   padding-left: 0; }
+  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .updates-container {
+    clear: both; }
+  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .periodValues .period-target-comment {
+    padding-right: 15px; }
+
+.reload-warning {
+  margin-left: 15px;
+  margin-right: 15px; }
+
+.default-period-container {
+  margin-right: 10px;
+  font-size: 80%; }
+  .default-period-container .default-yes-button {
+    color: green;
+    margin-left: 5px; }
+  .default-period-container .default-no-button {
+    color: red;
+    margin-left: 5px; }
 
 .baseline,
 .periodValues {
@@ -3790,6 +3811,9 @@ div.active .addOrg {
   div.active .addOrg:active {
     opacity: 0.8; }
 
+.modal-backdrop.in {
+  z-index: 1030; }
+
 .modalBackground {
   position: fixed;
   top: 0;
@@ -4054,3 +4078,8 @@ div.iatiFilters {
 
 .iatiCheck span.error {
   color: #ee3124; }
+
+/* User management */
+.employment-error {
+  color: #ee3124;
+  font-size: 85%; }

@@ -60,17 +60,8 @@
 {% block js %}
     {{ block.super }}
 
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/moment-2.10.6.min.js"></script>
-
     {# React CSS #}
     {% compressed_css 'react_datepicker_style' %}
-
-    {# React #}
-    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
-    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
-    <script id="react-typeahead" src="{{ STATIC_URL }}lib/scripts/react-typeahead.js"></script>
-    <script id="react-onclickoutside" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-    <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
 
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
@@ -131,6 +122,8 @@
             "project_id": "{{ project.pk }}",
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
+            "is_admin": {% if is_admin %}true{% else %}false{% endif %},
+            "org_permissions": {{ org_permissions }},
             "save": "{% trans 'Save' %}",
             "saving": "{% trans 'Saving' %}",
             "save_error": "{% trans 'Could not save one or more fields' %}",
@@ -195,7 +188,14 @@
             "file_size": "{% trans 'File size is too large' %}",
             "file_size_allowed": "{% trans 'Maximum file size allowed is' %}",
             "connection_error": "{% trans 'Connection error, please check your internet connection' %}",
-            "today": "{% trans 'Today' %}"
+            "today": "{% trans 'Today' %}",
+            "set_default": "{% trans 'Set periods as default' %}",
+            "remove_default": "{% trans 'Remove periods as default' %}",
+            "add_to_existing": "{% trans 'Copy to all indicators for this project?' %}",
+            "refresh_periods": "{% trans 'Refresh page to view copied periods' %}",
+            "default_indicator": "{{default_indicator}}",
+            "move_up": "{% trans 'Move up' %}",
+            "move_down": "{% trans 'Move down' %}"
         }
     </script>
 

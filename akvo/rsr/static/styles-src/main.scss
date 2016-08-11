@@ -2532,7 +2532,6 @@ dd {
                 @media only screen and (min-width: $width-large) {
                     width: 120px;
                 }
-                word-break: break-word;
             }
         }
     }
@@ -2651,6 +2650,11 @@ body {
     }
     .progress-and-publish {
         top: 20px;
+        .row {
+            .help-block-error {
+                padding-left: 15px;
+            }
+        }
     }
     .redLegenda {
         background: $progressWarning;
@@ -2976,6 +2980,10 @@ body {
     }
 }
 
+#import-results {
+    margin-bottom: 25px;
+}
+
 
 /* New concatenated project page */
 
@@ -3062,6 +3070,40 @@ article {
 .results-container {
     @include display-flex;
     padding-left: 0;
+    .indicator-container {
+        .indicator-period-container {
+            .indicator-period {
+                .period-target-actual {
+                    .updates-container {
+                        clear: both;
+                    }
+                    .periodValues {
+                        .period-target-comment {
+                            padding-right: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.reload-warning {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.default-period-container {
+    margin-right: 10px;
+    font-size: 80%;
+    .default-yes-button {
+        color: green;
+        margin-left: 5px;
+    }
+    .default-no-button {
+        color: red;
+        margin-left: 5px;
+    }
 }
 
 .baseline,
@@ -4458,6 +4500,10 @@ div.active {
     }
 }
 
+.modal-backdrop.in {
+    z-index: 1030;
+}
+
 .modalBackground {
     position: fixed;
     top: 0;
@@ -4773,4 +4819,10 @@ div.iatiFilters {
     span.error {
         color: $akvoTvRed;
     }
+}
+
+/* User management */
+.employment-error {
+    color: $akvoTvRed;
+    font-size: 85%;
 }

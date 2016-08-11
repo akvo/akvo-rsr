@@ -7,9 +7,12 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from akvo.iati.exports.iati_export import IatiXML
 from akvo.rsr.models import IatiExport, Organisation, Partnership, Project, User
+
 from django.test import TestCase
-from xml.etree import ElementTree
+
+from lxml import etree
 from xmlunittest import XmlTestMixin
 
 
@@ -71,6 +74,10 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         # Run IATI export
         iati_export.create_iati_file()
 
+        # In order to easily access the XML file, generate the IATI file again
+        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
+        self.iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
+
     def test_status(self):
         """
         Test if the status of the export is set to completed.
@@ -82,25 +89,22 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         # Test if status is set to completed.
         self.assertEqual(iati_export.status, 3)
 
-    def test_valid_xml(self):
+    def test_existing_xml(self):
         """
-        - Test if the export has an XML file.
-        - Test if the XML is valid.
+        Test if the export has an XML file.
         """
-
         # Retrieve the latest IATI export
         iati_export = IatiExport.objects.order_by('-id').first()
 
         # Test if export has an XML file
         self.assertNotEqual(iati_export.iati_file, '')
 
-        # Get XML string of file
-        tree = ElementTree.parse(iati_export.iati_file)
-        root = tree.getroot()
-        root_tostring = ElementTree.tostring(root, encoding='utf8', method='xml')
-
+    def test_valid_xml(self):
+        """
+        Test if the XML is valid.
+        """
         # Test if XML is valid
-        root_test = self.assertXmlDocument(root_tostring)
+        root_test = self.assertXmlDocument(self.iati_xml)
 
         # Test if the root's tag name is 'iati-activities'
         self.assertXmlNode(root_test, tag='iati-activities')

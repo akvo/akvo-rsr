@@ -36,7 +36,7 @@ class Employment(models.Model):
                                       help_text=_('Designates whether this employment is approved '
                                                   'by an administrator.'))
     country = ValidXMLCharField(
-        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY)
+        _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False)
     )
     job_title = ValidXMLCharField(_(u'job title'), max_length=50, blank=True)
 

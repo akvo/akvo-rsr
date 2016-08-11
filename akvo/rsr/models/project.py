@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import math
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -42,6 +42,7 @@ from ..mixins import TimestampsMixin
 
 from .country import Country
 from .iati_check import IatiCheck
+from .indicator import IndicatorPeriod
 from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
@@ -124,7 +125,7 @@ class Project(TimestampsMixin, models.Model):
     }
 
     # Status combinations used in conditionals
-    EDIT_DISABLED = ['3', '5']
+    EDIT_DISABLED = []
     DONATE_DISABLED = ['', '3', '4', '5', '6']
     NOT_SUSPENDED = ['', '1', '2', '3', '4', '5']
 
@@ -226,6 +227,18 @@ class Project(TimestampsMixin, models.Model):
                     u'that are being impacted by this project. For links and styling of the text, '
                     u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
                     u'target="_blank">Markdown</a> is supported.')
+    )
+
+    # Result aggregation
+    aggregate_children = models.BooleanField(
+        _(u'Aggregate results data from child projects'), default=True,
+        help_text=_(u'By selecting this option, the results data of child projects will be aggregated to this project. '
+                    u'In the child project(s), this can be turned off per project as well.')
+    )
+    aggregate_to_parent = models.BooleanField(
+        _(u'Aggregate results data to parent project'), default=True,
+        help_text=_(u'By selecting this option, the results data of this project will be aggregated '
+                    u'to the parent project.')
     )
 
     # Results framework (always on)
@@ -421,19 +434,39 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
-        # Update legacy status field
-        if self.pk is not None:
+        orig, orig_aggregate_children, orig_aggregate_to_parent = None, None, None
+        if self.pk:
             orig = Project.objects.get(pk=self.pk)
 
+            # Update legacy status field
             if self.iati_status != orig.iati_status:
                 self.status = self.CODE_TO_STATUS[self.iati_status]
                 super(Project, self).save(update_fields=['status'])
 
+            # Update IATI status field
             if self.status != orig.status:
                 self.iati_status = self.STATUS_TO_CODE[self.status]
                 super(Project, self).save(update_fields=['iati_status'])
 
+            orig_aggregate_children = orig.aggregate_children
+            orig_aggregate_to_parent = orig.aggregate_to_parent
+
         super(Project, self).save(*args, **kwargs)
+
+        if orig:
+            # Update aggregation from children
+            if self.aggregate_children != orig_aggregate_children:
+                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
+                    if self.aggregate_children:
+                        period.recalculate_period()
+                    else:
+                        period.recalculate_period(only_self=True)
+
+            # Update aggregation to parent
+            if self.aggregate_to_parent != orig_aggregate_to_parent:
+                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
+                    if period.parent_period():
+                        period.parent_period().recalculate_period()
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1180,6 +1213,17 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project=self,
                 related_to_projects__relation=1
             )
+        ).distinct().published().public()
+
+    def parents_all(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=2
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=1
+            )
         ).distinct()
 
     def children(self):
@@ -1191,9 +1235,31 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project=self,
                 related_to_projects__relation=2
             )
+        ).distinct().published().public()
+
+    def children_all(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=1
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=2
+            )
         ).distinct()
 
     def siblings(self):
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=3
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=3
+            )
+        ).distinct().published().public()
+
+    def siblings_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
@@ -1263,9 +1329,9 @@ class Project(TimestampsMixin, models.Model):
         import_failed = 0
         import_success = 1
 
-        if self.parents().count() == 1:
-            parent_project = self.parents()[0]
-        elif self.parents().count() == 0:
+        if self.parents_all().count() == 1:
+            parent_project = self.parents_all()[0]
+        elif self.parents_all().count() == 0:
             return import_failed, 'Project does not have a parent project'
         else:
             return import_failed, 'Project has multiple parent projects'
@@ -1326,6 +1392,56 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
+
+    def toggle_aggregate_children(self, aggregate):
+        """
+        If aggregation to children is turned off,
+
+        :param aggregate; Boolean, indicating if aggregation is turned on (True) or off (False)
+        """
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                if indicator.is_parent_indicator():
+                    for period in indicator.periods.all():
+                        if indicator.measure == '2':
+                            self.update_parents(period, period.child_periods_average(), 1)
+                        else:
+                            sign = 1 if aggregate else -1
+                            self.update_parents(period, period.child_periods_sum(), sign)
+
+    def toggle_aggregate_to_parent(self, aggregate):
+        """ Add/subtract child indicator period values from parent if aggregation is toggled """
+        for result in self.results.all():
+            for indicator in result.indicators.all():
+                if indicator.is_child_indicator():
+                    for period in indicator.periods.all():
+                        parent = period.parent_period()
+                        if parent and period.actual_value:
+                            if indicator.measure == '2':
+                                self.update_parents(parent, parent.child_periods_average(), 1)
+                            else:
+                                sign = 1 if aggregate else -1
+                                self.update_parents(parent, period.actual_value, sign)
+
+    def update_parents(self, update_period, difference, sign):
+        """ Update parent indicator periods if they exist and allow aggregation """
+        try:
+            if update_period.indicator.measure == '2':
+                update_period.actual_value = str(Decimal(difference))
+            else:
+                update_period.actual_value = str(
+                    Decimal(update_period.actual_value) + sign * Decimal(difference))
+            update_period.save()
+
+            parent_period = update_period.parent_period()
+            if parent_period and parent_period.indicator.result.project.aggregate_children:
+                if update_period.indicator.measure == '2':
+                    self.update_parents(parent_period, parent_period.child_periods_average(), 1)
+                else:
+                    self.update_parents(parent_period, difference, sign)
+
+        except (InvalidOperation, TypeError):
+            pass
 
 
 @receiver(post_save, sender=Project)

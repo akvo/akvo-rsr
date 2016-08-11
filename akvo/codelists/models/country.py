@@ -20,6 +20,6 @@ class Country(BaseCodelist):
 
     class Meta:
         app_label = 'codelists'
-        ordering = ('-version', 'code')
+        ordering = ('-version', 'name', 'code')
         verbose_name = _(u'country')
         verbose_name_plural = _(u'countries')

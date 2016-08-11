@@ -110,7 +110,7 @@ class Transaction(models.Model):
     )
     recipient_country = ValidXMLCharField(
         _(u'transaction recipient country'), blank=True, max_length=2,
-        choices=codelist_choices(COUNTRY),
+        choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'Enter the country that will benefit from this transaction. It can only be '
                     u'one country per transaction. For reference, please visit: '
                     u'<a href="http://iatistandard.org/202/codelists/Country/" target="_blank">'

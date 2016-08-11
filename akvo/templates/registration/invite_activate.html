@@ -8,20 +8,7 @@
 
 {% block maincontent %}
     <div class="container">
-        {% if signature_expired %}
-            <div class="row">
-                <h1>{% trans 'Your activation code has expired' %}</h1>
-		        <h2>
-                    <small>
-                        {% trans 'Unfortunately, your activation code has expired. Please contact' %}
-                        {# Javascript will generate the support feedback email, as to reduce spam #}
-                        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
-                        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>
-                        {% trans 'to get a new activation code.' %}
-                    </small>
-                </h2>
-            </div>
-        {% elif bad_link %}
+        {% if bad_link %}
             <div class="row">
                 <h1>{% trans 'Your activation link is incorrect' %}</h1>
 		        <h2>

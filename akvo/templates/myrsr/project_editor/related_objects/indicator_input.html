@@ -4,6 +4,12 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=indicator %}
     <div class="hide-partial {% if indicator.pk %}hidden{% endif %}">
         <div class="row">
+            <div class="alert alert-warning reload-warning hidden" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <strong>{% trans 'Warning!' %}</strong> {% trans 'Reload page to see default indicator periods.' %}
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-8">
                 {% if indicator.is_child_indicator %}
                     {% include text_input with obj=indicator field='title' disabled=True %}

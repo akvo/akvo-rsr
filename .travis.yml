@@ -22,10 +22,12 @@ install:
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
+  - python manage.py migrate --noinput
+  - python manage.py runserver &
 
 script:
-  - python manage.py test akvo.rsr.tests.iati_import
-  - coverage run --source=akvo manage.py test akvo.rsr.tests.iati_import
+  - python manage.py collectstatic --noinput
+  - coverage run --source=akvo --omit="akvo/rsr/migrations/*,akvo/codelists/migrations/*" manage.py test akvo.rsr.tests
 
 after_success:
   - coveralls

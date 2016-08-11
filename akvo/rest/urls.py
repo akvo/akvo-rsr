@@ -71,6 +71,8 @@ router.register(r'project_iati_export', views.ProjectIatiExportViewSet,
                 base_name='project_iati_export')
 router.register(r'project_extra', views.ProjectExtraViewSet,
                 base_name='project_extra')
+router.register(r'project_extra_deep', views.ProjectExtraDeepViewSet,
+                base_name='project_extra_deep')
 router.register(r'project_up', views.ProjectUpViewSet,
                 base_name='project_up')
 router.register(r'project_comment', views.ProjectCommentViewSet)
@@ -133,6 +135,7 @@ urlpatterns = patterns(
     url(r'^indicator_period_data/(?P<pk>[0-9]+)/upload_file/$',
         views.indicator_upload_file,
         name='indicator_upload_file'),
+    url(r'^right_now_in_akvo/$', views.right_now_in_akvo_view, name='right_now_in_akvo'),
     url(r'^server_info/$', views.server_info, name='server_info'),
 )
 
@@ -148,6 +151,12 @@ urlpatterns += patterns(
     url(r'^project/(?P<project_pk>[0-9]+)/import_results/$',
         views.project_editor_import_results,
         name='project_editor_import_results'),
+    url(r'^project/(?P<project_pk>[0-9]+)/reorder_items/$',
+        views.project_editor_reorder_items,
+        name='project_editor_reorder_items'),
+    url(r'^project/(?P<project_pk>[0-9]+)/default_periods/$',
+        views.project_editor_default_periods,
+        name='project_editor_default_periods'),
     url(r'^project/(?P<project_pk>[0-9]+)/add_validation/(?P<validation_pk>[0-9]+)/$',
         views.project_editor_add_validation,
         name='project_editor_add_validation'),

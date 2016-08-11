@@ -6,7 +6,7 @@
     <div class="header-container">
         {% include "partials/project_header.html" %}
     </div>
-    <div class="projectMenu">
+    <div class="projectMenu" id="projectMenu">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 ">
@@ -36,10 +36,8 @@
 {% block js %}
     {{ block.super }}
 
-    {# React #}
-    <script id="react" src="{{ STATIC_URL }}lib/scripts/react-0.14.7.min.js"></script>
-    <script id="react-dom" src="{{ STATIC_URL }}lib/scripts/react-dom-0.14.7.min.js"></script>
-    <script id="react-bootstrap" src="{{ STATIC_URL }}lib/scripts/react-bootstrap-0.28.3.min.js"></script>
+    {# Smooth scroll #}
+    <script id="smooth-scroll" src="{{ STATIC_URL }}lib/scripts/smooth-scroll-9.1.4.min.js"></script>
 
     {# Markdown #}
     <script id="markdown" src="{{ STATIC_URL }}lib/scripts/micromarkdown-0.3.4.js"></script>
@@ -187,6 +185,7 @@
                 "update": "{% trans 'Indicator Update' %}",
                 "updates": "{% trans 'Indicator Updates' %}",
                 "no_updates_yet": "{% trans 'This period has no updates yet' %}",
+                "cant_place_updates": "{% trans 'This period is an average of the child projects, disable aggregations to place updates on this period' %}",
                 "new_update": "{% trans 'New indicator update' %}",
                 "adding_update": "{% trans 'Adding new update' %}",
                 "edit_update": "{% trans 'Edit update' %}",

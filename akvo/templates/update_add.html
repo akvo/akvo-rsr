@@ -19,9 +19,15 @@
                 {% else %}
                 {% if edit_mode %}
                     <p class="small">
+                    {% if request.user == update.user %}
                     {% blocktrans with update_time=update.time_gmt|date:"H:i T (j F Y)" %}
                         You posted this update at {{update_time}}.
                     {% endblocktrans %}
+                    {% else %}
+                    {% blocktrans with update_time=update.time_gmt|date:"H:i T (j F Y)" %}
+                    {{update_user}} posted this update at {{update_time}}.
+                    {% endblocktrans %}
+                    {% endif %}
                     </p>
                 {% endif %}
                 {% if update and update.photo and edit_mode %}

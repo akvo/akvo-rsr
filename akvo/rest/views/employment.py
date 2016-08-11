@@ -6,10 +6,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 from akvo.rsr.models import Employment
 from ..serializers import EmploymentSerializer
 from ..viewsets import BaseRSRViewSet
@@ -48,6 +50,10 @@ def set_group(request, pk=None, group_id=None):
         raise PermissionDenied
 
     employment.group = group
-    employment.save()
+    try:
+        employment.save()
+    except IntegrityError:
+        return Response({'status': 'group not set', 'error': 'Employment already exists.'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     return Response({'status': 'group set'})

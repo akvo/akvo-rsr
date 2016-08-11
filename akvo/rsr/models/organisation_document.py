@@ -123,7 +123,7 @@ class OrganisationDocumentCountry(models.Model):
     document = models.ForeignKey(OrganisationDocument, related_name='countries',
                                  verbose_name=_(u'document'))
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY),
+        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'This identifies the country which concerns the organisation document.')
     )
     text = ValidXMLCharField(

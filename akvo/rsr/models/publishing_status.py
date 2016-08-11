@@ -90,7 +90,7 @@ class PublishingStatus(models.Model):
             else:
                 for funding_partner in self.project.partnerships.filter(
                         iati_organisation_role=Partnership.IATI_FUNDING_PARTNER):
-                    if not funding_partner.funding_amount:
+                    if not funding_partner.funding_amount and not funding_partner.funding_amount == 0:
                         validation_errors.append(
                             ValidationError(_('All funding partners should have a funding amount.'),
                                             code='partners'
@@ -130,27 +130,13 @@ class PublishingStatus(models.Model):
                     ValidationError(_('Project needs to have at least one budget item.'),
                                     code='budget_item')
                 )
-            elif not self.project.budget_items.filter(amount__gt=0).exists():
+            elif not self.project.budget_items.filter(amount__gte=0).exists():
                 validation_errors.append(
                     ValidationError(
                         _('Project needs to have at least one budget item with an amount.'),
                         code='budget_item'
                     )
                 )
-
-            if not self.project.sectors.all():
-                validation_errors.append(
-                    ValidationError(_('Project needs to have at least one sector.'),
-                                    code='sector')
-                )
-            else:
-                for sector in self.project.sectors.all():
-                    if not (sector.sector_code and sector.vocabulary):
-                        validation_errors.append(
-                            ValidationError(_('All sectors need to have a sector code and '
-                                              'vocabulary.'), code='sector')
-                        )
-                        break
 
             if validation_errors:
                 raise ValidationError(validation_errors)

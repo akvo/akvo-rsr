@@ -161,7 +161,7 @@ def _check_project_viewing_permissions(user, project):
     should be logged in and able to make changes to the project (e.g. be an admin of the project).
     """
     if not ((project.is_public and project.is_published()) or
-            user.has_perm('rsr.change_project', project)):
+            user.has_perm('rsr.view_project', project)):
         raise PermissionDenied
 
 
@@ -419,11 +419,13 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
 
     updates = project.updates_desc()[:5]
     update = None
+    update_user = None
 
     if update_id is not None:
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
-        if not request.user == update.user:
+        update_user = update.user.get_full_name()
+        if not request.user == update.user and not request.user.can_edit_update(update):
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
@@ -435,7 +437,10 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)
         if updateform.is_valid():
-            update = updateform.save(project=project, user=request.user)
+            if update:
+                update = updateform.save(project=project, user=update.user)
+            else:
+                update = updateform.save(project=project, user=request.user)
             return redirect(update.get_absolute_url())
     else:
         updateform = form_class(instance=update)
@@ -444,6 +449,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         'project': project,
         'updates': updates,
         'update': update,
+        'update_user': update_user,
         'updateform': updateform,
         'edit_mode': edit_mode,
         'allow_update': allow_update

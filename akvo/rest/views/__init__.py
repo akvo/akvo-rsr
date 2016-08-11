@@ -52,9 +52,12 @@ from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import ProjectViewSet, ProjectExtraViewSet, ProjectIatiExportViewSet, ProjectUpViewSet
+from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
+                      ProjectIatiExportViewSet, ProjectUpViewSet)
 from .project_editor import (project_editor,
                              log_project_addition,
+                             project_editor_reorder_items,
+                             project_editor_default_periods,
                              project_editor_upload_file,
                              project_editor_import_results,
                              project_editor_add_validation,
@@ -79,6 +82,7 @@ from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import reports, report_formats
 from .result import ResultsViewSet, ResultsFrameworkViewSet
+from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
 from .server_info import server_info
 from .transaction import TransactionViewSet, TransactionSectorViewSet
@@ -162,6 +166,7 @@ __all__ = [
     'ProjectDocumentViewSet',
     'ProjectDocumentCategoryViewSet',
     'ProjectExtraViewSet',
+    'ProjectExtraDeepViewSet',
     'ProjectIatiCheckView',
     'ProjectIatiExportViewSet',
     'ProjectLocationViewSet',
@@ -186,6 +191,7 @@ __all__ = [
     'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
+    'right_now_in_akvo_view',
     'SectorViewSet',
     'server_info',
     'set_group',

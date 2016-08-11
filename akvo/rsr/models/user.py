@@ -144,9 +144,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def updates(self):
         """
-        return all updates created by the user
+        return all updates created by the user or by organisation users if requesting user is admin
         """
-        return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+        if self.is_superuser or self.is_admin:
+            return ProjectUpdate.objects.all().order_by('-created_at')
+        else:
+            admin_employment_orgs = self.get_admin_employment_orgs()
+            if admin_employment_orgs:
+                return admin_employment_orgs.all_updates().order_by('-created_at')
+            else:
+                return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+
+    def can_edit_update(self, update):
+        is_admin = self.is_admin or self.is_superuser
+        return is_admin or update in self.get_admin_employment_orgs().all_updates()
 
     def latest_update_date(self):
         updates = self.updates()
@@ -209,6 +220,25 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.save()
         else:
             employment.group.delete()
+
+    def get_admin_employment_orgs(self):
+        from .employment import Employment
+        from .organisation import Organisation
+
+        employments = Employment.objects.filter(user=self)
+        admin_employment_orgs = Organisation.objects.none()
+
+        for e in employments:
+            if e.group == Group.objects.get(name='Admins') and e.is_approved:
+                admin_employment_orgs = admin_employment_orgs | e.organisation
+
+        return admin_employment_orgs
+
+    def get_owned_org_users(self):
+        owned_organisation_users = []
+        for o in self.get_admin_employment_orgs():
+            owned_organisation_users += o.content_owned_organisations().users()
+        return owned_organisation_users
 
     def get_is_user_manager(self, org):
         from .employment import Employment
@@ -442,5 +472,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         :param org; an Organisation instance
         """
-        editor_group = Group.objects.get(name='Project editors')
+        editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)

@@ -19,13 +19,14 @@ from django.shortcuts import get_object_or_404, render
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY,SECTOR
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import codelist_name, pagination, filter_query_string
+from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
-                      ProjectEditorValidation, ProjectEditorValidationSet)
+                      ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
 import json
 
@@ -106,12 +107,16 @@ def my_updates(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
+    org_admin_view = True if request.user.get_admin_employment_orgs() or \
+                             request.user.is_admin or request.user.is_superuser else False
+
     context = {
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
+        'org_admin_view': org_admin_view,
     }
     return render(request, 'myrsr/my_updates.html', context)
 
@@ -282,17 +287,47 @@ def project_editor(request, project_id):
     validation_sets = ProjectEditorValidationSet.objects.all()
     project_validation_sets = project.validations.all()
 
-    # Countries
+    # IATI fields
     countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
+    dac5_codes = codelist_choices(SECTOR)
+    dac3_codes = codelist_choices(SECTOR_CATEGORY)
+
+    # Permissions
+    org_permissions = []
+    for approved_org in request.user.approved_organisations():
+        if request.user.admin_of(approved_org) or request.user.me_manager_of(approved_org) or \
+                request.user.project_editor_of(approved_org):
+            org_permissions.append(approved_org.pk)
+
+    # Check for default indicator
+    results = Result.objects.filter(project_id=project)
+    default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True)
+    if default_indicator:
+        default_indicator = default_indicator[0].id
+    else:
+        default_indicator = '-1'
 
     context = {
         'id': project_id,
         'project': project,
         'projectmodel': Project,
+
+        # Permissions
+        'is_admin': request.user.is_admin or request.user.is_superuser,
+        'org_permissions': list(set(org_permissions)),
+
+        # Validation
         'validations': validations,
         'validation_sets': validation_sets,
         'project_validation_sets': project_validation_sets,
+
+        # IATI fields
         'countries': countries,
+        'dac5_codes': dac5_codes,
+        'dac3_codes': dac3_codes,
+
+        # Default indicator
+        'default_indicator': default_indicator,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,

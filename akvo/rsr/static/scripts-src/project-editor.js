@@ -310,7 +310,6 @@ function doSubmitStep(saveButton) {
         if (request.status >= 200 && request.status < 400) {
             var response;
             response = JSON.parse(request.responseText);
-
             // Check for errors
             if (response.errors.length > 0) {
                 message = defaultValues.save_error;
@@ -329,8 +328,18 @@ function doSubmitStep(saveButton) {
                     var typeaheadContainer = findAncestorByClass(formElement.parentNode, 'typeahead-container');
                     typeaheadContainer.setAttribute('data-value', response.changes[i][1]);
                 }
+
+                // Set warning for default indicator periods if new indicator saved
+                if (formElement.id.indexOf('rsr_indicator') > -1 && defaultValues.default_indicator > -1) {
+                    var parentIndicator = findAncestorByClass(formElement.parentNode, 'indicator-item');
+                    if (!parentIndicator.classList.contains('default-period-buttons-set')) {
+                        parentIndicator.querySelector('.reload-warning').classList.remove('hidden');
+                    }
+                }
+
                 successSave(formElement);
             }
+
 
             // Replace field IDs, names and unicode
             replaceNames(response.rel_objects);
@@ -339,6 +348,17 @@ function doSubmitStep(saveButton) {
             var section = findAncestorByClass(form, 'formStep');
             setSectionCompletionPercentage(section);
             setPageCompletionPercentage();
+
+            // Check partnerships (hide or show delete button)
+            checkPartnerships();
+
+            // Reset ordering buttons if necessary
+            if (form_data.indexOf('rsr_indicator') > -1) {
+                setIndicatorSorting();
+            }
+            if (form_data.indexOf('rsr_result') > -1) {
+                setResultSorting();
+            }
 
             return false;
         } else if (request.status === 403) {
@@ -761,6 +781,7 @@ function deleteItem(itemId, itemType) {
     } else {
         request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
     }
+
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -771,6 +792,10 @@ function deleteItem(itemId, itemType) {
             // Update the budget in case of removed budget
             if (itemType === 'budget-item') {
                 getTotalBudget();
+            } else if (itemType === 'result') {
+                setResultSorting();
+            } else if (itemType === 'indicator') {
+                setIndicatorSorting();
             }
 
             // Update progress bars
@@ -989,6 +1014,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     updateAllHelpIcons();
     markMandatoryFields();
     setHiddenFields();
+    checkPartnerships();
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListener();
     setPageCompletionPercentage();
@@ -1211,11 +1237,15 @@ function toggleDocumentUpload(toggleNode) {
         if (toggleNode.checked) {
             // Show the file upload
             fileFormGroup.classList.remove('hidden');
+            fileFormGroup.classList.remove('always-hidden');
             urlFormGroup.classList.add('hidden');
+            urlFormGroup.classList.add('always-hidden');
         } else {
             // Show the URL field
             fileFormGroup.classList.add('hidden');
+            fileFormGroup.classList.add('always-hidden');
             urlFormGroup.classList.remove('hidden');
+            urlFormGroup.classList.remove('always-hidden');
         }
     };
 }
@@ -1262,73 +1292,99 @@ function toggleOtherLabel(selectNode) {
 }
 
 function checkPartnerships() {
-    /* Hides the trash can if there's only one partnership. */
+    /* - Hides the trash can if there's only one partnership.
+    *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
+    *  - Remove the 'Reporting organisation' option when it is already selected. */
 
-    var partnerContainer = document.getElementById('partner-container');
-    var trashCan;
+    if (!defaultValues.is_admin) {
+        var partnerContainer = document.getElementById('partner-container');
+        var trashCan;
 
-    if (partnerContainer !== null) {
-        var partnerPartials = partnerContainer.querySelectorAll('.parent');
-        if (partnerPartials.length === 1) {
-            trashCan = partnerPartials[0].querySelector('.delete-related-object');
-            if (!elHasClass(trashCan, 'hidden')) {
-                elAddClass(trashCan, 'hidden');
-            }
-        } else {
-            var reportingSelected = false;
-            var options, partialId, roleNode;
-
-            for (var i = 0; i < partnerPartials.length; i++) {
-                partialId = partnerPartials[i].getAttribute('id').split('.')[1];
-                roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
-
-                if (roleNode.value === '101') {
-                    reportingSelected = true;
+        if (partnerContainer !== null) {
+            var partnerPartials = partnerContainer.querySelectorAll('.parent');
+            if (partnerPartials.length === 1) {
+                // Hides the trash can if there's only one partnership.
+                trashCan = partnerPartials[0].querySelector('.delete-related-object');
+                if (!elHasClass(trashCan, 'hidden')) {
+                    elAddClass(trashCan, 'hidden');
                 }
+            } else {
+                // Remove the 'Reporting organisation' option when it is already selected.
+                var reportingSelected = false;
+                var options, partialId, roleNode;
 
-                trashCan = partnerPartials[i].querySelector('.delete-related-object');
-                if (elHasClass(trashCan, 'hidden')) {
-                    elRemoveClass(trashCan, 'hidden');
-                }
-            }
-
-            if (reportingSelected === true) {
-                for (var j = 0; j < partnerPartials.length; j++) {
-                    partialId = partnerPartials[j].getAttribute('id').split('.')[1];
+                for (var i = 0; i < partnerPartials.length; i++) {
+                    partialId = partnerPartials[i].getAttribute('id').split('.')[1];
                     roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
 
-                    if (roleNode.value !== '101') {
-                        options = roleNode.querySelectorAll('option');
-                        for (var k = 0; k < options.length; k++) {
-                            if (options[k].getAttribute('value') === '101') {
-                                options[k].parentNode.removeChild(options[k]);
+                    if (roleNode.value === '101') {
+                        reportingSelected = true;
+                    }
+
+                    trashCan = partnerPartials[i].querySelector('.delete-related-object');
+                    if (elHasClass(trashCan, 'hidden')) {
+                        elRemoveClass(trashCan, 'hidden');
+                    }
+                }
+
+                if (reportingSelected === true) {
+                    for (var j = 0; j < partnerPartials.length; j++) {
+                        partialId = partnerPartials[j].getAttribute('id').split('.')[1];
+                        roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+
+                        if (roleNode.value !== '101') {
+                            options = roleNode.querySelectorAll('option');
+                            for (var k = 0; k < options.length; k++) {
+                                if (options[k].getAttribute('value') === '101') {
+                                    options[k].parentNode.removeChild(options[k]);
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                for (var l = 0; l < partnerPartials.length; l++) {
-                    partialId = partnerPartials[l].getAttribute('id').split('.')[1];
-                    roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
-                    var hasReportingOption = false;
+                } else {
+                    for (var l = 0; l < partnerPartials.length; l++) {
+                        partialId = partnerPartials[l].getAttribute('id').split('.')[1];
+                        roleNode = document.getElementById('rsr_partnership.iati_organisation_role.' + partialId);
+                        var hasReportingOption = false;
 
-                    options = roleNode.querySelectorAll('option');
-                    for (var m = 0; m < options.length; m++) {
-                        if (options[m].getAttribute('value') === '101') {
-                            hasReportingOption = true;
+                        options = roleNode.querySelectorAll('option');
+                        for (var m = 0; m < options.length; m++) {
+                            if (options[m].getAttribute('value') === '101') {
+                                hasReportingOption = true;
+                            }
+                        }
+
+                        if (hasReportingOption === false) {
+                            var reportingOption = document.createElement('option');
+                            reportingOption.setAttribute('value', '101');
+                            var reportingOptionText = document.createTextNode(defaultValues.reporting_org);
+                            reportingOption.appendChild(reportingOptionText);
+                            roleNode.appendChild(reportingOption);
                         }
                     }
+                }
 
-                    if (hasReportingOption === false) {
-                        var reportingOption = document.createElement('option');
-                        reportingOption.setAttribute('value', '101');
-                        var reportingOptionText = document.createTextNode(defaultValues.reporting_org);
-                        reportingOption.appendChild(reportingOptionText);
-                        roleNode.appendChild(reportingOption);
+                // Hides the trash can if removing the partnership will not allow the user to edit anymore.
+                var partnerNodes = [];
+                for (var n = 0; n < partnerPartials.length; n++) {
+                    var partnerIdNode = partnerPartials[n].querySelector('.typeahead');
+                    if (partnerIdNode !== null) {
+                        var partnerId = partnerIdNode.querySelector('input').getAttribute('saved-value');
+                        if (defaultValues.org_permissions.indexOf(parseInt(partnerId)) > -1) {
+                            partnerNodes.push(partnerPartials[n].querySelector('.delete-related-object'));
+                        }
+                    }
+                }
+                if (partnerNodes.length === 1 && !elHasClass(partnerNodes[0], 'hidden')) {
+                    elAddClass(partnerNodes[0], 'hidden');
+                } else if (partnerNodes.length > 1) {
+                    for (var o = 0; o < partnerNodes.length; o++) {
+                        if (elHasClass(partnerNodes[o], 'hidden')) {
+                            elRemoveClass(partnerNodes[o], 'hidden');
+                        }
                     }
                 }
             }
-
         }
     }
 }
@@ -1371,6 +1427,7 @@ function togglePartner(selectNode) {
         }
 
         checkPartnerships();
+        markMandatoryFields();
     };
 }
 
@@ -1593,6 +1650,7 @@ function addPartial(partialName, partialContainer) {
         updateTypeaheads();
         setDatepickers();
         setCurrencyOnChange();
+        setSectorOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons('.' + partialName + '-container');
@@ -2181,7 +2239,12 @@ function markMandatoryFields() {
         var mandatoryIndicator = '.mandatory-' + validationSets[j];
         var elementsToMark = document.querySelectorAll(mandatoryIndicator);
         for (var k = 0; k < elementsToMark.length; k++) {
-            if (!hasParent(elementsToMark[k]) || partialFilled(findAncestorByClass(elementsToMark[k], 'parent'))) {
+            if (!elementsToMark[k].hasAttribute("disabled") &&
+                    (!hasParent(elementsToMark[k]) ||
+                     partialFilled(findAncestorByClass(elementsToMark[k], 'parent')) ||
+                     (hasParent(elementsToMark[k]) &&
+                      elHasClass(findAncestorByClass(elementsToMark[k], 'related-object-container'),
+                                                     'mandatory-' + validationSets[j])))) {
                 markMandatoryField(elementsToMark[k]);
 
                 var mandatoryOrClass = mandatoryIndicator.replace('.', '') + '-or-';
@@ -2359,6 +2422,439 @@ function updateObjectCurrency(currencyDropdown) {
             }
         }
     };
+}
+
+function setSectorOnChange () {
+    var sectorVocabularyFields = document.querySelectorAll('.sector-vocabulary');
+
+    for (var i = 0; i < sectorVocabularyFields.length; i++) {
+        sectorVocabularyFields[i].getElementsByTagName('select')[0].onchange = sectorCodeSelectorOnClick(sectorVocabularyFields[i]);
+        sectorCodeSwitcher(sectorVocabularyFields[i]);
+    }
+}
+
+function sectorCodeSelectorOnClick (vocabularyField) {
+    return function(e) {
+        e.preventDefault();
+        sectorCodeSwitcher(vocabularyField);
+    };
+}
+
+function sectorCodeSwitcher (vocabularyField) {
+
+    var selectField = vocabularyField.getElementsByTagName('select')[0];
+    var vocabularyValue = selectField.options[selectField.selectedIndex].value;
+
+    var sectorOther = vocabularyField.parentNode.querySelector('.sector-code-other');
+    var sectorDAC5 = vocabularyField.parentNode.querySelector('.sector-code-dac5');
+    var sectorDAC3 = vocabularyField.parentNode.querySelector('.sector-code-dac3');
+
+    var itemName = sectorOther.getElementsByTagName('input')[0].getAttribute('name').replace('.other', '');
+    var itemId = sectorOther.getElementsByTagName('input')[0].getAttribute('id').replace('.other', '');
+
+    if (vocabularyValue == '1' && sectorDAC5.classList.contains('hidden')) {
+        sectorDAC5.classList.remove('hidden');
+        sectorDAC5.querySelector('.form-group').classList.remove('always-hidden');
+        sectorDAC5.querySelector('.form-group').classList.remove('hidden');
+
+        sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName);
+        sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId);
+
+        if (!sectorOther.classList.contains('hidden')) {
+            sectorOther.classList.add('hidden');
+            sectorOther.querySelector('.form-group').classList.add('always-hidden');
+            sectorOther.querySelector('.form-group').classList.add('hidden');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.other');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('saved-value', sectorOther.getElementsByTagName('input')[0].getAttribute('saved-value'));
+        }
+        if (!sectorDAC3.classList.contains('hidden')) {
+            sectorDAC3.classList.add('hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac3');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('saved-value', sectorDAC3.getElementsByTagName('select')[0].getAttribute('saved-value'));
+        }
+
+    } else if (vocabularyValue == '2' && sectorDAC3.classList.contains('hidden')) {
+        sectorDAC3.classList.remove('hidden');
+        sectorDAC3.querySelector('.form-group').classList.remove('always-hidden');
+        sectorDAC3.querySelector('.form-group').classList.remove('hidden');
+
+        sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName);
+        sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId);
+
+        if (!sectorOther.classList.contains('hidden')) {
+            sectorOther.classList.add('hidden');
+            sectorOther.querySelector('.form-group').classList.add('always-hidden');
+            sectorOther.querySelector('.form-group').classList.add('hidden');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName + '.other');
+            sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId + '.other');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('saved-value', sectorOther.getElementsByTagName('input')[0].getAttribute('saved-value'));
+        }
+        if (!sectorDAC5.classList.contains('hidden')) {
+            sectorDAC5.classList.add('hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac5');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('saved-value', sectorDAC5.getElementsByTagName('select')[0].getAttribute('saved-value'));
+        }
+
+    } else if (vocabularyValue != '1' && vocabularyValue != '2' && sectorOther.classList.contains('hidden')) {
+        sectorOther.classList.remove('hidden');
+        sectorOther.querySelector('.form-group').classList.remove('always-hidden');
+        sectorOther.querySelector('.form-group').classList.remove('hidden');
+
+        sectorOther.getElementsByTagName('input')[0].setAttribute('name', itemName);
+        sectorOther.getElementsByTagName('input')[0].setAttribute('id', itemId);
+
+        if (!sectorDAC5.classList.contains('hidden')) {
+            sectorDAC5.classList.add('hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC5.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac5');
+            sectorDAC5.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac5');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('saved-value', sectorDAC5.getElementsByTagName('select')[0].getAttribute('saved-value'));
+        }
+        if (!sectorDAC3.classList.contains('hidden')) {
+            sectorDAC3.classList.add('hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('always-hidden');
+            sectorDAC3.querySelector('.form-group').classList.add('hidden');
+
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('name', itemName + '.dac3');
+            sectorDAC3.getElementsByTagName('select')[0].setAttribute('id', itemId + '.dac3');
+
+            sectorOther.getElementsByTagName('input')[0].setAttribute('saved-value', sectorDAC3.getElementsByTagName('select')[0].getAttribute('saved-value'));
+        }
+    }
+}
+
+
+// add arrow buttons to each indicator
+function setIndicatorSorting () {
+    var indicatorContainers = document.querySelectorAll('.indicator-container');
+
+    for (var i=0; i < indicatorContainers.length; i++) {
+        var indicatorSections = indicatorContainers[i].querySelectorAll('.indicator-item:not([id*="new"])');
+
+        for (var j=0; j < indicatorSections.length; j++) {
+            setReorderButtons(indicatorSections[j], 'indicator', j, indicatorSections.length);
+
+            if (!indicatorSections[j].classList.contains('default-period-buttons-set')) {
+                setDefaultPeriodButtons(indicatorSections[j]);
+            }
+        }
+    }
+}
+
+// add arrow buttons to each result
+function setResultSorting () {
+    var resultSections = document.querySelectorAll('.result-item:not([id*="new"])');
+
+    for (var i=0; i < resultSections.length; i++) {
+        setReorderButtons(resultSections[i], 'result', i, resultSections.length);
+    }
+}
+
+function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
+    var itemId = itemNode.getAttribute('id').split('.')[1];
+
+    if (itemNode.classList.contains('sort-buttons-set')) {
+        if (itemIndex === 0 || listLength < 2) {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'sort-up hidden');
+        } else {
+            itemNode.querySelector('.sort-up').setAttribute('class', 'sort-up');
+        }
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'sort-down hidden');
+        } else {
+            itemNode.querySelector('.sort-down').setAttribute('class', 'sort-down');
+        }
+    } else {
+        var sortItemNode = document.createElement('span');
+        itemNode.className += ' sort-buttons-set';
+
+        var sortItemUp = document.createElement('a');
+        var upButton = document.createElement('span');
+        upButton.style = 'margin-right: 10px; font-size: 80%;';
+
+        if (itemIndex === 0 || listLength < 2) {
+            upButton.setAttribute('class', 'sort-up hidden');
+            upButton.innerHTML = defaultValues.move_up;
+        } else {
+            upButton.setAttribute('class', 'sort-up');
+            upButton.innerHTML = defaultValues.move_up;
+        }
+
+        if (itemType == 'indicator') {
+            upButton.onclick = reorderItems('indicator', itemId, 'up');
+        } else if (itemType == 'result') {
+            upButton.onclick = reorderItems('result', itemId, 'up');
+        }
+
+        sortItemUp.appendChild(upButton);
+
+
+        var sortItemDown = document.createElement('a');
+        var downButton = document.createElement('span');
+        downButton.style = 'margin-right: 10px; font-size: 80%;';
+
+        if (itemIndex == listLength - 1 || listLength < 2) {
+            downButton.setAttribute('class', 'sort-down hidden');
+            downButton.innerHTML = defaultValues.move_down;
+        } else {
+            downButton.setAttribute('class', 'sort-down');
+            downButton.innerHTML = defaultValues.move_down;
+        }
+
+        if (itemType == 'indicator') {
+            downButton.onclick = reorderItems('indicator', itemId, 'down');
+        } else if (itemType == 'result') {
+            downButton.onclick = reorderItems('result', itemId, 'down');
+        }
+
+        sortItemDown.appendChild(downButton);
+
+        sortItemNode.appendChild(sortItemUp);
+        sortItemNode.appendChild(sortItemDown);
+
+
+        var itemContainer = itemNode.querySelector('.delete-related-object-container');
+        itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
+    }
+}
+
+function reorderItems (itemType, itemId, direction) {
+    return function(e) {
+        e.preventDefault();
+        var api_url, request;
+
+        var form_data = 'item_type=' + itemType + '&item_id=' + itemId + '&item_direction=' + direction;
+
+        // Create request
+        api_url = '/rest/v1/project/' + defaultValues.project_id + '/reorder_items/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('POST', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+                if (response.swap_id > -1) {
+                    swapReorderedItems(itemType, itemId, response.swap_id, direction);
+                } else {
+                    console.log(response.errors);
+                }
+
+            } else {
+                // We reached our target server, but it returned an error 
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            return false;
+        };
+
+        request.send(form_data);
+    };
+}
+
+function swapReorderedItems (itemType, itemId, swapId, direction) {
+    var selectedItem = document.getElementById(itemType + '.' + itemId);
+    var swapItem = document.getElementById(itemType + '.' + swapId);
+    var parentContainer = selectedItem.parentNode;
+
+    if (direction == 'up') {
+        parentContainer.insertBefore(selectedItem, swapItem);
+
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == selectedItem) {
+            selectedItem.querySelector('.sort-up').className += ' hidden';
+            elRemoveClass(swapItem.querySelector('.sort-up'), 'hidden');
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
+            elRemoveClass(selectedItem.querySelector('.sort-down'), 'hidden');
+            swapItem.querySelector('.sort-down').className += ' hidden';
+        }
+    } else if (direction == 'down') {
+        parentContainer.insertBefore(swapItem, selectedItem);
+
+        // update buttons if necessary
+        if (parentContainer.firstElementChild == swapItem) {
+            elRemoveClass(selectedItem.querySelector('.sort-up'), 'hidden');
+            swapItem.querySelector('.sort-up').className += ' hidden';
+        }
+        if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
+            selectedItem.querySelector('.sort-down').className += ' hidden';
+            elRemoveClass(swapItem.querySelector('.sort-down'), 'hidden');
+        }
+    }
+}
+
+// add buttons to set default indicator periods
+function setDefaultPeriodButtons (indicatorNode) {
+
+    indicatorId = indicatorNode.getAttribute('id').split('.')[1];
+
+    var defaultPeriodNode = document.createElement('span');
+    defaultPeriodNode.setAttribute('class', 'default-period-container');
+
+    var addButton = document.createElement('a');
+    addButton.setAttribute('class', 'default-period-add');
+    addButton.innerHTML = defaultValues.set_default;
+    addButton.onclick = promptCopyDefaultPeriods(defaultPeriodNode, indicatorId);
+
+    var removeButton = document.createElement('a');
+    removeButton.setAttribute('class', 'default-period-remove');
+    removeButton.innerHTML = defaultValues.remove_default;
+    removeButton.onclick = removeDefaultPeriods(defaultPeriodNode, indicatorId);
+
+    if (defaultValues.default_indicator === '-1') {
+        removeButton.classList.add('hidden');
+    } else {
+        if (indicatorId == defaultValues.default_indicator) {
+            addButton.classList.add('hidden');
+        } else {
+            addButton.classList.add('hidden');
+            removeButton.classList.add('hidden');
+        }
+    }
+
+    defaultPeriodNode.appendChild(addButton);
+    defaultPeriodNode.appendChild(removeButton);
+
+    var indicatorContainer = indicatorNode.querySelector('.delete-related-object-container');
+    indicatorContainer.insertBefore(defaultPeriodNode, indicatorContainer.childNodes[0]);
+
+    indicatorNode.className += ' default-period-buttons-set';
+}
+
+// ask if defaults should be copied to existing indicators
+function promptCopyDefaultPeriods (defaultPeriodNode, indicatorId) {
+    return function(e) {
+        e.preventDefault();
+
+        defaultPeriodNode.querySelector('.default-period-add').classList.add('hidden');
+
+        var confirmContainer = document.createElement('span');
+        confirmContainer.setAttribute('class', 'default-confirm-container');
+
+        var confirmText = document.createElement('span');
+        confirmText.innerHTML = defaultValues.add_to_existing;
+
+        var yesButton = document.createElement('a');
+        yesButton.setAttribute('class', 'default-yes-button');
+        yesButton.innerHTML = defaultValues.yes;
+        yesButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, true);
+
+        var noButton = document.createElement('a');
+        noButton.setAttribute('class', 'default-no-button');
+        noButton.innerHTML = defaultValues.no;
+        noButton.onclick = setDefaultPeriods(defaultPeriodNode, indicatorId, false);
+
+        confirmContainer.appendChild(confirmText);
+        confirmContainer.appendChild(yesButton);
+        confirmContainer.appendChild(noButton);
+        defaultPeriodNode.appendChild(confirmContainer);
+    };
+}
+
+function setDefaultPeriods (defaultPeriodNode, indicatorId, addExisting) {
+    return function(e) {
+        e.preventDefault();
+
+        var indicatorNode = defaultPeriodNode.parentNode;
+        indicatorNode.classList.add('default-indicator');
+
+        defaultPeriodNode.querySelector('.default-confirm-container').classList.add('hidden');
+
+        if (addExisting === true) {
+            var refreshText = document.createElement('span');
+            refreshText.innerHTML = defaultValues.refresh_periods;
+            defaultPeriodNode.appendChild(refreshText);
+
+            submitDefaultPeriods(indicatorId, true, true);
+        } else {
+            defaultPeriodNode.querySelector('.default-period-remove').classList.remove('hidden');
+
+            submitDefaultPeriods(indicatorId, false, true);
+        }
+
+        // hide all other default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
+        for (var i=0; i < defaultButtons.length; i++) {
+            defaultButtons[i].classList.add('hidden');
+        }
+
+    };
+}
+
+function removeDefaultPeriods(defaultPeriodNode, indicatorId) {
+    return function(e) {
+        e.preventDefault();
+
+        defaultPeriodNode.querySelector('.default-period-remove').classList.add('hidden');
+        submitDefaultPeriods(indicatorId, false, false);
+
+        // show all default add buttons
+        var defaultButtons = document.querySelectorAll('.default-period-add');
+        for (var i=0; i < defaultButtons.length; i++) {
+            defaultButtons[i].classList.remove('hidden');
+        }
+    };
+}
+
+function submitDefaultPeriods(indicatorId, copy, setDefault) {
+
+    var api_url, request;
+
+    var form_data = 'indicator_id=' + indicatorId + '&copy=' + copy + '&set_default=' + setDefault;
+
+    // Create request
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/default_periods/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var response = JSON.parse(request.responseText);
+            if (setDefault === true) {
+                defaultValues.default_indicator = indicatorId;
+            } else {
+                defaultValues.default_indicator = '-1';
+            }
+        } else {
+            // We reached our target server, but it returned an error
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send(form_data);
+
 }
 
 function setToggleSectionOnClick () {
@@ -3393,8 +3889,12 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
+    setSectorOnChange();
     setFileUploads();
     checkPartnerships();
+
+    setIndicatorSorting();
+    setResultSorting();
 
     setValidationListeners();
     updateAllHelpIcons();

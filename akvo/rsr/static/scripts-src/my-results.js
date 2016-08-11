@@ -9,9 +9,9 @@ var csrftoken,
     endpoints,
     i18nResults,
     isAdmin = false,
+    isMEManager = false,
     isPublic,
     months,
-    permissions,
     projectIds,
     user;
 
@@ -142,19 +142,16 @@ function displayDate(dateString) {
     return i18nResults.unknown_date;
 }
 
-function setPermissions() {
-    // Set the specific permissions for the results framework
-    permissions = {
-        addUpdate: true,
-        editUpdate: true,
-        deleteUpdate: false,
-        unlockPeriod: isAdmin,
-        addComment: true,
-        editComment: false,
-        deleteComment: false,
-        returnForRevision: isAdmin,
-        approve: isAdmin
-    };
+function displayNumber(numberString) {
+    // Add commas to numbers of 1000 or higher.
+    if (numberString !== undefined && numberString !== null) {
+        var locale = "en-gb";
+        var float = parseFloat(numberString);
+        if (!isNaN(float)) {
+            return float.toLocaleString(locale);
+        }
+    }
+    return numberString;
 }
 
 function userIsAdmin() {
@@ -164,7 +161,6 @@ function userIsAdmin() {
 
     if (user.is_admin || user.is_superuser) {
         isAdmin = true;
-        return;
     }
 
     for (var i = 0; i < user.approved_employments.length; i++) {
@@ -179,7 +175,7 @@ function userIsAdmin() {
         for (var j = 0; j < partnerships.length; j++) {
             var partnership = partnerships[j];
             if (adminOrgIds.indexOf(partnership.organisation) > -1) {
-                isAdmin = true;
+                isMEManager = true;
             }
         }
     };
@@ -272,14 +268,16 @@ function initReact() {
         },
 
         saveUpdate: function() {
-            // Save an indicator update. Set the status to draft ('D') when the update is new ('N').
+            // Set status to 'Draft' when a 'New' status is saved.
             var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
+
+            // Save update and reload the whole period when an approved update is edited.
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
                 'relative_data': this.state.isRelative,
                 'status': status
-            }, false, false);
+            }, false, this.props.update.status === 'A');
         },
 
         askForApproval: function() {
@@ -552,11 +550,11 @@ function initReact() {
                 );
             } else {
                 // Display a calculation.
-                var relativeDataText = relativeData >= 0 ? periodActualValue.toString() + '+' + relativeData.toString() : periodActualValue.toString() + relativeData.toString();
+                var relativeDataText = relativeData >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeData.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeData.toString());
                 return (
                     React.DOM.div( {className:"upActualValue"}, 
                         React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
-                        React.DOM.span( {className:"update-actual-value-data"}, updateData, " " ),
+                        React.DOM.span( {className:"update-actual-value-data"}, displayNumber(updateData), " " ),
                         React.DOM.span( {className:"update-relative-value"}, "(",relativeDataText,")")
                     )
                 );
@@ -566,9 +564,9 @@ function initReact() {
         renderActual: function() {
             var inputId = "actual-input-" + this.props.update.id;
 
-            // The checkbox to make the update relative or absolute has been removed, to make
-            // things more clear for the users.
-
+            //// The checkbox to make the update relative or absolute has been removed, to make ////
+            //// things more clear for the users. ////
+            //// ---- old code ------------------ ////
             //var checkboxId = "relative-checkbox-" + this.props.update.id;
             //var checkbox;
             //if (this.state.isRelative) {
@@ -756,45 +754,32 @@ function initReact() {
             var inputId = "new-comment-" + this.props.update.id;
             var addCommentInput;
 
-            if (this.props.update.status !== 'A' && this.editing()) {
-                // Adding comments is only possible when the update has not yet been
-                // approved (status 'A').
-                if (this.state.loadingComment) {
-                    addCommentInput = React.DOM.div(null, 
-                        React.DOM.div( {className:"input-group"}, 
-                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
-                            React.DOM.span( {className:"input-group-btn"}, 
-                                React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
-                            )
+            if (this.state.loadingComment) {
+                addCommentInput = React.DOM.div(null, 
+                    React.DOM.div( {className:"input-group"}, 
+                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
+                        React.DOM.span( {className:"input-group-btn"}, 
+                            React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
                         )
-                    );
-                } else {
-                    addCommentInput = React.DOM.div(null, 
-                        React.DOM.div( {className:"input-group"}, 
-                            React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
-                            React.DOM.span( {className:"input-group-btn"}, 
-                                React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
-                            )
-                        )
-                    );
-                }
-            } else {
-                // Otherwise, show nothing for approved updates.
-                addCommentInput = React.DOM.span(null );
-            }
-
-            if (this.props.update.comments.length > 0 || this.editing()) {
-                return (
-                    React.DOM.div( {className:"comments"}, 
-                        comments,
-                        addCommentInput
                     )
                 );
             } else {
-                return (
-                    React.DOM.span(null )
+                addCommentInput = React.DOM.div(null, 
+                    React.DOM.div( {className:"input-group"}, 
+                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
+                        React.DOM.span( {className:"input-group-btn"}, 
+                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                        )
+                    )
                 );
             }
+
+            return (
+                React.DOM.div( {className:"comments"}, 
+                    comments,
+                    addCommentInput
+                )
+            );
         },
 
         renderFooter: function() {
@@ -835,102 +820,73 @@ function initReact() {
             } else if (this.editing()) {
                 // When editing and in the 'MyRSR' view, the actions are dependant on the status
                 // of the update.
-                switch(this.props.update.status) {
-                    case 'P':
-                        // Status 'Pending approval', show: delete, cancel, save and approve
-                        // buttons. This is only available for admins, since they can only edit
-                        // updates with the pending approval status.
-                        return (
-                            React.DOM.div( {className:"menuAction"}, 
-                                React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
-                                ),
-                                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                    React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
-                                    ),
-                                    React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
-                                    ),
-                                    React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
-                                    )
-                                )
-                            )
-                        );
-                    default:
-                        // All other statuses, show: delete, cancel, save and submit for approval
-                        // buttons.
-                        return (
-                            React.DOM.div( {className:"menuAction"}, 
-                                React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                                    React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
-                                ),
-                                React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                    React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                        React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
-                                    ),
-                                    React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                        React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
-                                    ),
-                                    React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
-                                    )
-                                )
-                            )
-                        );
+                var approveButtonEdit = React.DOM.span(null ),
+                    askForApprovalButton = React.DOM.span(null );
+
+                if (this.props.update.status !== 'A' && isMEManager) {
+                    // Editing an non-approved update as an M&E Manager will show the 'Approve' button.
+                    approveButtonEdit = React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
+                    );
+                } else if (!isMEManager) {
+                    // Editing an update as a non-M&E Manager will show the 'Ask for approval' button.
+                    askForApprovalButton = React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
+                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
+                    );
                 }
+
+                return (
+                    React.DOM.div( {className:"menuAction"}, 
+                        React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
+                            React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
+                        ),
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
+                            ),
+                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
+                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
+                            ),
+                            approveButtonEdit,
+                            askForApprovalButton
+                        )
+                    )
+                );
             } else {
-                switch(this.props.update.status) {
-                    case 'P':
-                        if (isAdmin) {
-                            // Status 'Pending approval', show: return for revision, edit update
-                            // and approve buttons. These are only available for admins.
-                            return (
-                                React.DOM.div( {className:"menuAction"}, 
-                                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                        React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
-                                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18nResults.return_for_revision)
-                                        ),
-                                        React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
-                                        ),
-                                        React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
-                                        )
-                                    )
-                                )
-                            );
-                        } else {
-                            // Show no actions.
-                            return (
-                                React.DOM.span(null )
-                            );
-                        }
-                        break;
-                    case 'A':
-                        // Show no actions for approved indicator updates.
-                        return (
-                            React.DOM.span(null )
+                var returnForRevisionButton = React.DOM.span(null ),
+                    approveButton = React.DOM.span(null );
+
+                if (!(this.props.update.user === user.id || isMEManager) ||
+                    (['P', 'A'].indexOf(this.props.update.status) > -1 && !isMEManager)) {
+                    // Show no actions for non-M&E Managers that have not placed the update or on a
+                    // 'Pending approval' or 'Approved' update.
+                    return (React.DOM.span(null ));
+                } else {
+                    if (this.props.update.status === 'P' && isMEManager) {
+                        // Show the 'Return for revision' button for M&E Managers on updates with the status 'Pending approval'.
+                        returnForRevisionButton = React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
+                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18nResults.return_for_revision)
                         );
-                    default:
-                        // Only show an edit button in all other cases.
-                        if (this.props.update.user === user.id || isAdmin) {
-                            return (
-                                React.DOM.div( {className:"menuAction"}, 
-                                    React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                                        React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                            React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
-                                        )
-                                    )
-                                )
-                            );
-                        } else {
-                            return (
-                                React.DOM.span(null )
-                            );
-                        }
+                    }
+                    if (this.props.update.status !== 'A' && isMEManager) {
+                        // Show the 'Approve' button for M&E Managers on updates without the status 'Approval'.
+                        approveButton = React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
+                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
+                        );
+                    }
                 }
+
+                return (
+                    React.DOM.div( {className:"menuAction"}, 
+                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
+                            returnForRevisionButton,
+                            React.DOM.li( {role:"presentation", className:"editUpdate"}, 
+                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
+                            ),
+                            approveButton
+                        )
+                    )
+                );
             }
         },
 
@@ -1016,7 +972,10 @@ function initReact() {
             }
 
             var updatesHeader;
-            if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
+            if (this.props.selectedIndicator.children_aggregate_percentage && !isPublic) {
+                updatesHeader = React.DOM.h5(null, i18nResults.cant_place_updates);
+                updates = React.DOM.span(null );
+            } else if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
                 updatesHeader = React.DOM.h5(null, i18nResults.updates);
             } else {
                 updatesHeader = React.DOM.h5(null, i18nResults.no_updates_yet);
@@ -1068,6 +1027,12 @@ function initReact() {
             this.props.unlockPeriod(this.props.selectedPeriod.id, this.finishUnlocking);
         },
 
+        percentageWithChildren: function() {
+            // Checks whether the indicator has percentages and linked children. In that case it is
+            // not allowed to update the period.
+            return this.props.selectedIndicator.measure === '2';
+        },
+
         renderNewUpdate: function() {
             // Render the button for adding a new update.
 
@@ -1086,7 +1051,17 @@ function initReact() {
                     )
                 );
             } else if (!this.props.selectedPeriod.locked) {
-                if (this.props.selectedPeriod.data !== undefined) {
+                if (this.props.selectedPeriod.data === undefined) {
+                    // Show nothing if the updates are still loading.
+                    return (
+                        React.DOM.div( {className:"new-update"})
+                    );
+                } else if (this.props.selectedIndicator.children_aggregate_percentage) {
+                    // Show nothing if it the period has percentages and linked children.
+                    return (
+                        React.DOM.div( {className:"new-update"})
+                    );
+                } else {
                     // If the updates have been loaded and the period is not locked, show a button
                     // to add a new update.
                     return (
@@ -1094,13 +1069,22 @@ function initReact() {
                             React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18nResults.new_update)
                         )
                     );
-                } else {
-                    // Show nothing if the updates are still loading.
-                    return (
-                        React.DOM.div( {className:"new-update"})
-                    );
                 }
-            } else if (isAdmin) {
+                // if (this.props.selectedPeriod.data !== undefined) {
+                //     // If the updates have been loaded and the period is not locked, show a button
+                //     // to add a new update.
+                //     return (
+                //         <div className="new-update">
+                //             <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
+                //         </div>
+                //     );
+                // } else {
+                //     // Show nothing if the updates are still loading.
+                //     return (
+                //         <div className="new-update"></div>
+                //     );
+                // }
+            } else if (isMEManager) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
                 if (this.state.unLocking) {
@@ -1159,7 +1143,7 @@ function initReact() {
 
         renderTargetValue: function() {
             // Render the target value, including a % sign if the measure is set to percentage.
-            var targetValue = this.props.selectedPeriod.target_value;
+            var targetValue = displayNumber(this.props.selectedPeriod.target_value);
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
             }
@@ -1168,7 +1152,7 @@ function initReact() {
 
         renderActualValue: function() {
             // Render the actual value, including a % sign if the measure is set to percentage.
-            var actualValue = this.props.selectedPeriod.actual_value;
+            var actualValue = displayNumber(this.props.selectedPeriod.actual_value);
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
             }
@@ -1242,9 +1226,11 @@ function initReact() {
                             saveFileInUpdate: this.props.saveFileInUpdate,
                             saveCommentInUpdate: this.props.saveCommentInUpdate,
                             removeUpdate: this.props.removeUpdate,
+                            selectedIndicator: this.props.selectedIndicator,
                             selectedPeriod: this.props.selectedPeriod,
                             selectPeriod: this.props.selectPeriod,
-                            reloadPeriod: this.props.reloadPeriod
+                            reloadPeriod: this.props.reloadPeriod,
+                            percentageWithChildren: this.percentageWithChildren()
                         })
                     )
                 )
@@ -1377,7 +1363,7 @@ function initReact() {
                 return (
                     React.DOM.span(null )
                 );
-            } else if (!isAdmin) {
+            } else if (!isMEManager) {
                 // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
@@ -1419,7 +1405,7 @@ function initReact() {
 
         renderTargetValue: function() {
             // Render the target value, including a % sign when the measure is set to percentage.
-            var targetValue = this.props.period.target_value;
+            var targetValue = displayNumber(this.props.period.target_value);
             if (this.props.selectedIndicator.measure === '2' && targetValue !== '') {
                 targetValue += '%';
             }
@@ -1428,7 +1414,7 @@ function initReact() {
 
         renderActualValue: function() {
             // Render the actual value, including a % sign when the measure is set to percentage.
-            var actualValue = this.props.period.actual_value;
+            var actualValue = displayNumber(this.props.period.actual_value);
             if (this.props.selectedIndicator.measure === '2' && actualValue !== '') {
                 actualValue += '%';
             }
@@ -1484,7 +1470,7 @@ function initReact() {
         renderBaseline: function() {
             // Render the baseline information.
             var baselineYear = this.props.selectedIndicator.baseline_year,
-                baselineValue = this.props.selectedIndicator.baseline_value;
+                baselineValue = displayNumber(this.props.selectedIndicator.baseline_value);
 
             if (!(baselineYear === null && baselineValue === '')) {
                 // In case the measure type is 'Percentage', add a % sign.
@@ -1706,7 +1692,7 @@ function initReact() {
 
             if (this.props.selectedResult !== null && this.props.selectedResult.indicators !== undefined && this.props.selectedResult.indicators.length === 0) {
                 var addIndicatorsLink;
-                if (isAdmin) {
+                if (isAdmin || isMEManager) {
                     var language = window.location.pathname.substring(0, 3);
                     addIndicatorsLink =
                         React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
@@ -2364,7 +2350,10 @@ function initReact() {
 
         selectResult: function(resultId) {
             // Keep track in the state which result has been selected
-            this.setState({selectedResultId: resultId});
+            this.setState({
+                selectedResultId: resultId,
+                selectedPeriodId: null
+            });
         },
 
         selectIndicator: function(indicatorId) {
@@ -2376,6 +2365,17 @@ function initReact() {
                 var indicator = this.findIndicator(indicatorId);
                 var resultId = indicator.result;
                 window.location.hash = 'results,' + resultId + ',' + indicatorId;
+
+                // Wait 1s, then smoothly scroll to top
+                window.setTimeout(function() {
+                    if (document.getElementById('projectMenu')) {
+                        // Project page
+                        smoothScroll.animateScroll('#projectMenu');
+                    } else if (document.getElementById('resultProjectTitle')) {
+                        // MyRSR
+                        smoothScroll.animateScroll('#resultProjectTitle');
+                    }
+                }, 1000);
             } else {
                 window.location.hash = '';
             }
@@ -2501,9 +2501,19 @@ var loadJS = function(url, implementationCode, location){
 };
 
 function loadAndRenderReact() {
+    function initSmoothScroll() {
+        smoothScroll.init({updateURL: false});
+        initReact();
+    }
+
+    function loadSmoothScroll() {
+        var smoothScrollSrc = document.getElementById('smooth-scroll').src;
+        loadJS(smoothScrollSrc, initSmoothScroll, document.body);
+    }
+
     function loadReactDOM() {
         var reactDOMSrc = document.getElementById('react-dom').src;
-        loadJS(reactDOMSrc, initReact, document.body);
+        loadJS(reactDOMSrc, loadSmoothScroll, document.body);
     }
 
     console.log('No React, load again.');
@@ -2522,11 +2532,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!isPublic) {
         getUserData();
-        setPermissions();
     }
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof smoothScroll !== 'undefined') {
+        smoothScroll.init({updateURL: false});
         initReact();
     } else {
         loadAndRenderReact();

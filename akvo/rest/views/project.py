@@ -7,8 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import Project
 
-from ..serializers import (ProjectSerializer, ProjectExtraSerializer, ProjectIatiExportSerializer,
-                           ProjectUpSerializer)
+from ..serializers import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
+                           ProjectIatiExportSerializer, ProjectUpSerializer)
 from ..viewsets import PublicProjectViewSet
 
 
@@ -116,6 +116,46 @@ class ProjectExtraViewSet(ProjectViewSet):
     paginate_by_param = 'limit'
     paginate_by = 10
     max_paginate_by = 30
+
+
+class ProjectExtraDeepViewSet(ProjectViewSet):
+
+    """
+    Viewset providing extra deep (depth=2 or bigger) Project data.
+
+    Allowed parameters are:
+    __limit__ (default 5, max 10),
+    __partnerships\__organisation__ (filter on organisation ID), and
+    __publishingstatus\__status__ (filter on publishing status)
+    """
+
+    queryset = Project.objects.prefetch_related(
+        'publishingstatus',
+        'sectors',
+        'partnerships',
+        'budget_items',
+        'legacy_data',
+        'links',
+        'locations',
+        'locations__country',
+        'planned_disbursements',
+        'policy_markers',
+        'documents',
+        'comments',
+        'conditions',
+        'contacts',
+        'project_updates',
+        'recipient_countries',
+        'recipient_regions',
+        'related_projects',
+        'results',
+        'sectors',
+        'transactions',
+    )
+    serializer_class = ProjectExtraDeepSerializer
+    paginate_by_param = 'limit'
+    paginate_by = 5
+    max_paginate_by = 10
 
 
 class ProjectUpViewSet(ProjectViewSet):
