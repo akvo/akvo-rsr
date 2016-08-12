@@ -16,6 +16,7 @@ omit =
 [report]
 exclude_lines =
     pragma: no cover
+    if settings.DEBUG:
     def __unicode__
     if 'TRAVIS' in os.environ:
     if 'rosetta' in settings.INSTALLED_APPS:

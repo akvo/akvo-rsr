@@ -7,7 +7,8 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import User, Project, Invoice, Country, Keyword, Sector
+from akvo.rsr.models import (User, Project, Invoice, Country, Keyword, Sector, PayPalGateway,
+                             PaymentGatewaySelector)
 from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
                         send_donation_confirmation_emails, who_am_i, who_is_parent, to_gmt,
@@ -62,13 +63,26 @@ class GeneralUtilsTestCase(TestCase):
         """
         Test sending a confirmation email for donations.
         """
+        # Add a new invoice
         invoice = Invoice.objects.create(
             test=True,
             user=self.user,
             project=self.project,
             amount=50,
         )
+
+        # Make sure the project has a PayPal gateway
+        paypal_gateway, _created = PayPalGateway.objects.get_or_create(
+            name='PayPal',
+            notification_email='paypal.test@akvo.org',
+            account_email='paypal.test@akvo.org',
+        )
         send_donation_confirmation_emails(invoice)
+        payment_gateway_selector, _created = PaymentGatewaySelector.objects.get_or_create(
+            project=self.project
+        )
+        payment_gateway_selector.paypal_gateway = paypal_gateway
+        payment_gateway_selector.save()
 
         # Test that the mail is in the outbox.
         self.assertIn("Thank you from Akvo.org!", [sent_mail.subject for sent_mail in mail.outbox])
