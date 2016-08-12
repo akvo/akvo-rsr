@@ -128,7 +128,7 @@ def create_payment_gateway_selector(instance, created, **kwargs):
 def donation_completed(instance, created, **kwargs):
     invoice = instance
     if not created and invoice.status == 3:
-        send_donation_confirmation_emails(invoice.id)
+        send_donation_confirmation_emails(invoice)
 
 
 def set_showcase_project(instance, created, **kwargs):

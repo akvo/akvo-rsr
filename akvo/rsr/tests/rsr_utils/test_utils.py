@@ -68,7 +68,7 @@ class GeneralUtilsTestCase(TestCase):
             project=self.project,
             amount=50,
         )
-        send_donation_confirmation_emails(invoice.pk)
+        send_donation_confirmation_emails(invoice)
 
         # Test that the mail is in the outbox.
         self.assertIn("Thank you from Akvo.org!", [sent_mail.subject for sent_mail in mail.outbox])

@@ -159,13 +159,13 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     )
 
 
-def send_donation_confirmation_emails(invoice_id):
+def send_donation_confirmation_emails(invoice):
     if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
-        invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
         site_url = 'http://%s' % getattr(settings, "RSR_DOMAIN", "rsr.akvo.org")
         base_project_url = reverse("project-main", kwargs=dict(project_id=invoice.project.id))
         project_url = urljoin(site_url, base_project_url)
-        base_project_updates_url = reverse("project-updates", kwargs=dict(project_id=invoice.project.id))
+        base_project_updates_url = reverse("project-updates",
+                                           kwargs=dict(project_id=invoice.project.id))
         project_updates_url = urljoin(site_url, base_project_updates_url)
         template = loader.get_template("donate/donation_confirmation_email.html")
         context = Context(dict(invoice=invoice,

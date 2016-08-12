@@ -27,7 +27,7 @@ before_script:
 script:
   - python manage.py collectstatic --noinput
   - coverage run manage.py test akvo
-  - coverage report
+  - coverage report -m
 
 after_success:
   - coveralls
