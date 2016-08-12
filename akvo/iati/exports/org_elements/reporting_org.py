@@ -15,21 +15,18 @@ def reporting_org(organisation, _request):
     :param _request: Django request (not used)
     :return: A list of Etree elements
     """
-    if organisation:
-        element = etree.Element("reporting-org")
+    element = etree.Element("reporting-org")
 
-        if organisation.iati_org_id:
-            element.attrib['ref'] = organisation.iati_org_id
+    if organisation.iati_org_id:
+        element.attrib['ref'] = organisation.iati_org_id
 
-        element.attrib['secondary-reporter'] = '0'
+    element.attrib['secondary-reporter'] = '0'
 
-        if organisation.new_organisation_type:
-            element.attrib['type'] = str(organisation.new_organisation_type)
+    if organisation.new_organisation_type:
+        element.attrib['type'] = str(organisation.new_organisation_type)
 
-        if organisation.long_name or organisation.name:
-            narrative_element = etree.SubElement(element, "narrative")
-            narrative_element.text = organisation.long_name or organisation.name
+    if organisation.long_name or organisation.name:
+        narrative_element = etree.SubElement(element, "narrative")
+        narrative_element.text = organisation.long_name or organisation.name
 
-        return [element]
-
-    return []
+    return [element]

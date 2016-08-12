@@ -18,7 +18,6 @@ before_install:
 
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
-  - pip install coveralls
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
@@ -27,7 +26,8 @@ before_script:
 
 script:
   - python manage.py collectstatic --noinput
-  - coverage run --source=akvo --omit="akvo/rsr/migrations/*,akvo/codelists/migrations/*" manage.py test akvo.rsr.tests
+  - coverage run manage.py test akvo
+  - coverage report -m
 
 after_success:
   - coveralls

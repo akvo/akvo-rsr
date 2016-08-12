@@ -7,28 +7,26 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.iati.exports.iati_export import IatiXML
-from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
-                             LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
-                             PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
-                             BudgetItem, BudgetItemLabel, ProjectContact, PlannedDisbursement,
-                             Link, ProjectDocument, ProjectDocumentCategory, ProjectUpdate,
+import datetime, os
+
+from akvo.iati.checks.iati_checks import IatiChecks
+from akvo.rsr.models import (Partnership, Project, ProjectCondition, LegacyData, RecipientCountry,
+                             RelatedProject, Sector, RecipientRegion, PolicyMarker,
+                             HumanitarianScope, CountryBudgetItem, Fss, FssForecast, BudgetItem,
+                             BudgetItemLabel, ProjectContact, PlannedDisbursement, Link,
+                             ProjectDocument, ProjectDocumentCategory, ProjectUpdate,
                              ProjectLocation, AdministrativeLocation, CrsAdd, CrsAddOtherFlag,
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
                              IndicatorPeriodTargetDimension, IndicatorPeriodTargetLocation,
-                             IndicatorReference)
+                             IndicatorReference, Organisation, User)
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-import datetime, os, shutil
-from lxml import etree
-from xmlunittest import XmlTestMixin
 
-
-class IatiExportTestCase(TestCase, XmlTestMixin):
-    """Tests the IATI export, and validates the XML file which is outputted."""
+class IatiChecksTestCase(TestCase):
+    """Tests the IATI checks."""
 
     def setUp(self):
         """
@@ -61,15 +59,29 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             base_image_path = '/home/travis/build/akvo/akvo-rsr/'
         self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
 
-    def test_complete_project_export(self):
+    def test_iati_checks_empty_project(self):
         """
-        Test the export of a fully filled project.
+        Test the checks of an empty project.
         """
-        # Create project
+        # Create empty project
+        empty_project = Project.objects.create()
+
+        # Create IATI checks
+        iati_checks = IatiChecks(empty_project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
+
+    def test_iati_checks_correct_project(self):
+        """
+        Test the checks of a correctly filled project.
+        """
+        # Create a filled project
         project = Project.objects.create(
             title="Test project for IATI export",
             subtitle="Test project for IATI export (subtitle)",
-            iati_activity_id="NL-KVK-1234567890-1234",
+            iati_activity_id="NL-KVK-IatiChecks",
             language="en",
             hierarchy=1,
             humanitarian=True,
@@ -89,9 +101,9 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             background="Background",
             target_group="Target group",
             date_start_planned=datetime.date.today(),
-            date_start_actual=datetime.date.today(),
-            date_end_planned=datetime.date.today() + datetime.timedelta(days=1),
-            date_end_actual=datetime.date.today() + datetime.timedelta(days=1),
+            date_start_actual=datetime.date.today() - datetime.timedelta(days=2),
+            date_end_planned=datetime.date.today() - datetime.timedelta(days=1),
+            date_end_actual=datetime.date.today() - datetime.timedelta(days=1),
             country_budget_vocabulary="1",
             current_image=SimpleUploadedFile(
                 name='test_image.jpg',
@@ -143,8 +155,14 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         RecipientCountry.objects.create(
             project=project,
             country="NL",
-            percentage=100,
+            percentage=50,
             text="The Netherlands"
+        )
+        RecipientCountry.objects.create(
+            project=project,
+            country="BE",
+            percentage=50,
+            text="Belgium"
         )
 
         # Add related projects
@@ -170,18 +188,16 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             sector_code="140",
             vocabulary="1",
             vocabulary_uri="http://akvo.org",
-            percentage=100,
+            percentage=50,
             text="WASH",
         )
-
-        # Add recipient region
-        RecipientRegion.objects.create(
+        Sector.objects.create(
             project=project,
-            region="100",
-            percentage=100,
-            region_vocabulary="1",
-            region_vocabulary_uri="http://akvo.org",
-            text="Some region",
+            sector_code="150",
+            vocabulary="1",
+            vocabulary_uri="http://akvo.org",
+            percentage=50,
+            text="WASH",
         )
 
         # Add policy marker
@@ -204,11 +220,18 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             text="Humanitarian scope",
         )
 
-        # Add country budget item
+        # Add country budget items
         CountryBudgetItem.objects.create(
             project=project,
             code="1",
             description="Description",
+            percentage=50,
+        )
+        CountryBudgetItem.objects.create(
+            project=project,
+            code="1",
+            description="Description",
+            percentage=50,
         )
 
         # Add FSS and forecast
@@ -292,14 +315,6 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             document=doc,
             category="A1"
         )
-        ProjectDocument.objects.create(
-            project=project,
-            document=SimpleUploadedFile(
-                name='test_image.jpg',
-                content=open(self.image_path, 'rb').read(),
-                content_type='image/jpeg'
-            ),
-        )
 
         # Add project update
         ProjectUpdate.objects.create(
@@ -358,7 +373,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         )
 
         # Add transaction
-        transaction = Transaction.objects.create(
+        Transaction.objects.create(
             project=project,
             reference="ref",
             humanitarian=True,
@@ -373,21 +388,10 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             receiver_organisation_activity="NL-KVK-rec",
             provider_organisation=self.reporting_org,
             receiver_organisation=self.reporting_org,
-            recipient_country="NL",
-            recipient_region="110",
-            recipient_region_vocabulary="1",
-            recipient_region_vocabulary_uri="http://akvo.org",
             flow_type="1",
             finance_type="1",
             aid_type="1",
             tied_status="1",
-        )
-        TransactionSector.objects.create(
-            transaction=transaction,
-            code="140",
-            vocabulary="1",
-            vocabulary_uri="http://akvo.org",
-            text="WASH",
         )
 
         # Add results framework
@@ -442,245 +446,335 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             value="Value",
         )
 
-        # Create IATI export
-        iati_export = IatiExport.objects.create(
-            reporting_organisation=self.reporting_org,
-            user=self.user
-        )
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
 
-        # Add a project to the IATI export
-        iati_export.projects.add(project)
+        # Test the IATI checks
+        self.assertTrue(all_checks_passed)
 
-        # Remove folder
-        media_root = '/var/akvo/rsr/mediaroot/'
-        directory = 'db/org/%s/iati/' % str(self.reporting_org.pk)
-        if os.path.exists(media_root + directory):
-            shutil.rmtree(media_root + directory)
-
-        # Run IATI export
-        iati_export.create_iati_file()
-
-        # In order to easily access the XML file, generate the IATI file again
-        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
-
-        # Perform checks on IATI export
-        self.assertEqual(iati_export.status, 3)
-        self.assertNotEqual(iati_export.iati_file, '')
-
-        # Perform checks on IATI XML file
-        root_test = self.assertXmlDocument(iati_xml)
-        self.assertXmlNode(root_test, tag='iati-activities')
-        self.assertXmlHasAttribute(root_test, 'generated-datetime')
-        self.assertXmlHasAttribute(root_test, 'version')
-        self.assertXpathsExist(root_test, ('./iati-activity',
-                                           './iati-activity/iati-identifier',
-                                           './iati-activity/reporting-org',
-                                           './iati-activity/title'))
-
-    def test_different_complete_project_export(self):
+    def test_iati_checks_incorrect_project(self):
         """
-        Test the export of a fully filled project with different settings.
+        Test the checks of an incorrect project.
         """
-        # Create project
+        # Create empty project
         project = Project.objects.create(
-            title="Test project for IATI export",
-            subtitle="Test project for IATI export (subtitle)",
-            iati_activity_id="NL-KVK-1234567890-1234",
-            language="en",
-            hierarchy=1,
-            humanitarian=True,
-            current_image=SimpleUploadedFile(
-                name='test_image.jpg',
-                content=open(self.image_path, 'rb').read(),
-                content_type='image/jpeg'
-            ),
-            current_image_caption="Only caption",
+            date_start_actual=datetime.date.today() + datetime.timedelta(days=1),
+            date_end_actual=datetime.date.today() + datetime.timedelta(days=2),
+            currency=''
         )
 
-        # Remove long name and IATI identifier from reporting org
-        self.reporting_org.long_name = ""
-        self.reporting_org.iati_org_id = ""
+        # Remove IATI ID of reporting org
+        self.reporting_org.iati_org_id = ''
         self.reporting_org.save()
 
-        # Create partnership
+        # Add reporting partner without IATI organisation ID
         Partnership.objects.create(
-            organisation=self.reporting_org,
             project=project,
+            organisation=self.reporting_org,
             iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-            is_secondary_reporter=True,
-            internal_id="123"
         )
 
-        # Create another partnership
+        # Add partnership without role
         Partnership.objects.create(
+            project=project,
             organisation=self.reporting_org,
-            project=project,
-            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
-            iati_activity_id="NL-KVK-Test"
         )
 
-        # Create budget item
-        BudgetItem.objects.create(
+        # Add partnership without organisation
+        Partnership.objects.create(
             project=project,
-            type="1",
-            status="1",
-            period_start=datetime.date.today(),
-            period_end=datetime.date.today() + datetime.timedelta(days=1),
-            amount=1,
-            value_date=datetime.date.today(),
-            currency="EUR",
-            other_extra="Other extra",
         )
 
-        # Add planned disbursement
+        # Add empty project document
+        ProjectDocument.objects.create(
+            project=project,
+            title='',
+
+        )
+
+        # Add location with code, but without vocabulary (and same for administrative)
+        loc = ProjectLocation.objects.create(
+            location_target=project,
+            location_code="1",
+        )
+        AdministrativeLocation.objects.create(
+            location=loc,
+            code="1",
+        )
+
+        # Add legacy data without name or value
+        LegacyData.objects.create(
+            project=project,
+        )
+
+        # Add condition without type or text
+        ProjectCondition.objects.create(
+            project=project,
+        )
+
+        # Add policy marker with vocabulary 99 and no URI, and vocabulary 1 and no significance
+        PolicyMarker.objects.create(
+            project=project,
+            vocabulary='99',
+        )
+        PolicyMarker.objects.create(
+            project=project,
+            vocabulary='1',
+        )
+
+        # Add CRS++ without flag code or significance, and without loan status year or currency
+        crs = CrsAdd.objects.create(
+            project=project,
+            interest_received=1,
+        )
+        CrsAddOtherFlag.objects.create(
+            crs=crs,
+        )
+
+        # Add related project without related project, or with related project without IATI ID
+        RelatedProject.objects.create(
+            project=project,
+        )
+        related_project = Project.objects.create()
+        RelatedProject.objects.create(
+            project=project,
+            related_project=related_project,
+        )
+
+        # Add FSS without extraction date, and forecast without value, year or currency
+        fss = Fss.objects.create(
+            project=project,
+        )
+        FssForecast.objects.create(
+            fss=fss,
+        )
+
+        # Add humanitarian scope without code, type or vocabulary, and with vocabulary 99 but
+        # without URI
+        HumanitarianScope.objects.create(
+            project=project,
+        )
+        HumanitarianScope.objects.create(
+            project=project,
+            vocabulary='99',
+        )
+
+        # Add empty planned disbursement, and one with the start date after the end date
         PlannedDisbursement.objects.create(
             project=project,
-            type="1",
-            period_start=datetime.date.today(),
-            period_end=datetime.date.today() + datetime.timedelta(days=1),
-            value=1,
-            value_date=datetime.date.today(),
-            currency="EUR",
-            provider_organisation_activity="NL-KVK-prov",
-            receiver_organisation_activity="NL-KVK-rec",
-            provider_organisation=self.reporting_org,
+        )
+        PlannedDisbursement.objects.create(
+            project=project,
             receiver_organisation=self.reporting_org,
+            provider_organisation=self.reporting_org,
+            period_start=datetime.date.today() + datetime.timedelta(days=1),
+            period_end=datetime.date.today(),
         )
 
-        # Add transaction
+        # Add empty budget, and one with the start date after the end date
+        BudgetItem.objects.create(
+            project=project,
+        )
+        BudgetItem.objects.create(
+            project=project,
+            period_start=datetime.date.today() + datetime.timedelta(days=1),
+            period_end=datetime.date.today(),
+        )
+
+        # Add empty transaction, and one with the transaction date in the future
         Transaction.objects.create(
             project=project,
-            reference="ref",
-            humanitarian=True,
-            transaction_type="1",
-            transaction_date=datetime.date.today(),
-            value=1,
-            currency="EUR",
-            value_date=datetime.date.today(),
-            description="Description",
-            disbursement_channel="1",
-            provider_organisation_activity="NL-KVK-prov",
-            receiver_organisation_activity="NL-KVK-rec",
-            provider_organisation=self.reporting_org,
+        )
+        Transaction.objects.create(
+            project=project,
             receiver_organisation=self.reporting_org,
+            provider_organisation=self.reporting_org,
+            recipient_region_vocabulary="99",
+            transaction_date=datetime.date.today() + datetime.timedelta(days=1),
+        )
+
+        # Add sectors with incorrect percentage, and vocabulary without URI
+        Sector.objects.create(
+            project=project,
+            percentage=10,
+        )
+        Sector.objects.create(
+            project=project,
+        )
+        Sector.objects.create(
+            project=project,
+            vocabulary="99",
+        )
+
+        # Add empty results framework
+        Result.objects.create(
+            project=project,
+        )
+        result = Result.objects.create(
+            project=project,
+        )
+        indicator = Indicator.objects.create(
+            result=result,
+            baseline_value="1",
+        )
+        IndicatorReference.objects.create(
+            indicator=indicator,
+        )
+        IndicatorReference.objects.create(
+            indicator=indicator,
+            vocabulary="99",
+        )
+        IndicatorPeriod.objects.create(
+            indicator=indicator,
+        )
+        IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today() + datetime.timedelta(days=1),
+            period_end=datetime.date.today(),
+            target_comment="Comment",
+            actual_comment="Comment",
+        )
+
+        # Add multiple recipient countries and regions
+        RecipientCountry.objects.create(
+            project=project,
+        )
+        RecipientCountry.objects.create(
+            project=project,
+            percentage=5,
+        )
+        RecipientRegion.objects.create(
+            project=project,
+        )
+        RecipientRegion.objects.create(
+            project=project,
+            percentage=5,
+            region_vocabulary="99",
+        )
+
+        # Add a country budget item without a vocabulary
+        CountryBudgetItem.objects.create(
+            project=project,
+        )
+        CountryBudgetItem.objects.create(
+            project=project,
+            percentage=5,
+        )
+
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
+
+    def test_iati_checks_multiple_level_sectors(self):
+        """
+        Test the checks for sectors on project and transaction level.
+        """
+        # Create empty project
+        project = Project.objects.create()
+
+        # Add sector
+        sector = Sector.objects.create(
+            project=project,
+        )
+
+        # Add recipient country
+        RecipientCountry.objects.create(
+            project=project,
+        )
+
+        # Add transaction and sector
+        transaction = Transaction.objects.create(
+            project=project,
+        )
+        trans_sector = TransactionSector.objects.create(
+            transaction=transaction,
+        )
+        Transaction.objects.create(
+            project=project,
+        )
+
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
+
+        # Delete the transaction sector and sector
+        trans_sector.delete()
+        sector.delete()
+
+        # Create IATI checks again
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks again
+        self.assertFalse(all_checks_passed)
+
+    def test_iati_checks_transaction_level_sectors(self):
+        """
+        Test the checks for sectors on transaction level.
+        """
+        # Create empty project
+        project = Project.objects.create()
+
+        # Add transaction sector
+        transaction = Transaction.objects.create(
+            project=project,
             recipient_country="NL",
-            recipient_region="110",
-            recipient_region_vocabulary="1",
-            recipient_region_vocabulary_uri="http://akvo.org",
-            flow_type="1",
-            finance_type="1",
-            aid_type="1",
-            tied_status="1",
+            recipient_region="101",
+        )
+        TransactionSector.objects.create(
+            transaction=transaction,
+            vocabulary="99",
+        )
+        TransactionSector.objects.create(
+            transaction=transaction,
+            vocabulary="99",
         )
 
-        # Create IATI export
-        iati_export = IatiExport.objects.create(
-            reporting_organisation=self.reporting_org,
-            user=self.user
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
+
+        # Remove recipient region from transaction
+        transaction.recipient_region = ''
+        transaction.save()
+
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
+
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
+
+        # Add another transaction
+        Transaction.objects.create(
+            project=project,
         )
 
-        # Add a project to the IATI export
-        iati_export.projects.add(project)
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
 
-        # Run IATI export
-        iati_export.create_iati_file()
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)
 
-        # In order to easily access the XML file, generate the IATI file again
-        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
-
-        # Perform checks on IATI export
-        self.assertEqual(iati_export.status, 3)
-        self.assertNotEqual(iati_export.iati_file, '')
-
-        # Perform checks on IATI XML file
-        root_test = self.assertXmlDocument(iati_xml)
-        self.assertXmlNode(root_test, tag='iati-activities')
-        self.assertXmlHasAttribute(root_test, 'generated-datetime')
-        self.assertXmlHasAttribute(root_test, 'version')
-        self.assertXpathsExist(root_test, ('./iati-activity',
-                                           './iati-activity/iati-identifier',
-                                           './iati-activity/reporting-org',
-                                           './iati-activity/title'))
-
-    def test_empty_project_export(self):
-        """
-        Test the export of an empty project (with only an image).
-        """
-        # Create project
-        empty_project = Project.objects.create(
-            current_image=SimpleUploadedFile(
-                name='test_image.jpg',
-                content=open(self.image_path, 'rb').read(),
-                content_type='image/jpeg'
-            ),
+        # Add a recipient country
+        RecipientCountry.objects.create(
+            project=project,
         )
 
-        # Create IATI export
-        iati_export = IatiExport.objects.create(
-            reporting_organisation=self.reporting_org,
-            user=self.user
-        )
+        # Create IATI checks
+        iati_checks = IatiChecks(project)
+        all_checks_passed, checks_results = iati_checks.perform_checks()
 
-        # Add a project to the IATI export
-        iati_export.projects.add(empty_project)
-
-        # Run IATI export
-        iati_export.create_iati_file()
-
-        # In order to easily access the XML file, generate the IATI file again
-        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
-
-        # Perform checks on IATI export
-        self.assertEqual(iati_export.status, 3)
-        self.assertNotEqual(iati_export.iati_file, '')
-
-        # Perform checks on IATI XML file
-        root_test = self.assertXmlDocument(iati_xml)
-        self.assertXmlNode(root_test, tag='iati-activities')
-        self.assertXmlHasAttribute(root_test, 'generated-datetime')
-        self.assertXmlHasAttribute(root_test, 'version')
-        self.assertXpathsExist(root_test, ('./iati-activity', ))
-
-    def test_project_with_only_credit_export(self):
-        """
-        Test the export of an empty project (with only an image and image credit).
-        """
-        # Create project
-        empty_project = Project.objects.create(
-            current_image=SimpleUploadedFile(
-                name='test_image.jpg',
-                content=open(self.image_path, 'rb').read(),
-                content_type='image/jpeg'
-            ),
-            current_image_credit="Only credit"
-        )
-
-        # Create IATI export
-        iati_export = IatiExport.objects.create(
-            reporting_organisation=self.reporting_org,
-            user=self.user
-        )
-
-        # Add a project to the IATI export
-        iati_export.projects.add(empty_project)
-
-        # Run IATI export
-        iati_export.create_iati_file()
-
-        # In order to easily access the XML file, generate the IATI file again
-        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
-        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
-
-        # Perform checks on IATI export
-        self.assertEqual(iati_export.status, 3)
-        self.assertNotEqual(iati_export.iati_file, '')
-
-        # Perform checks on IATI XML file
-        root_test = self.assertXmlDocument(iati_xml)
-        self.assertXmlNode(root_test, tag='iati-activities')
-        self.assertXmlHasAttribute(root_test, 'generated-datetime')
-        self.assertXmlHasAttribute(root_test, 'version')
-        self.assertXpathsExist(root_test, ('./iati-activity',))
+        # Test the IATI checks
+        self.assertFalse(all_checks_passed)

@@ -79,5 +79,6 @@ django-nested-inline==0.3.6
 # Task scheduling
 django-crontab==0.6.0
 
-# Testing libraries
+# Testing and code coverage libraries
+coveralls
 xmlunittest==0.3.2

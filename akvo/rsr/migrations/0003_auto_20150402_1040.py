@@ -34,7 +34,6 @@ def fix_results(apps, schema_editor):
 
 def reverse_hierarchy(apps, schema_editor):
     RelatedProject = apps.get_model("rsr", "RelatedProject")
-    print ""
     for related_project in RelatedProject.objects.all():
         if related_project.relation == '1':
             related_project.relation = '2'
