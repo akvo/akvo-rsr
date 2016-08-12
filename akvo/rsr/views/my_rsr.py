@@ -428,11 +428,12 @@ def user_management(request):
         ]
         organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
             content_owned_organisations()
-        employments = organisations.employments().exclude(user=user).order_by('-id')
         if org_admin:
             roles = Group.objects.filter(name__in=groups)
+            employments = organisations.employments().order_by('-id')
         else:
             roles = Group.objects.filter(name__in=groups[:-1])
+            employments = organisations.employments().exclude(user=user).order_by('-id')
 
     q = request.GET.get('q')
     if q:
