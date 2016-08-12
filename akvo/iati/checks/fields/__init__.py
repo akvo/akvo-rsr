@@ -15,6 +15,7 @@ from .document_links import document_links
 from .fss import fss
 from .humanitarian_scope import humanitarian_scope
 from .iati_identifier import iati_identifier
+from .language import language
 from .legacy_data import legacy_data
 from .locations import locations
 from .partners import partners
@@ -41,6 +42,7 @@ __all__ = [
     'fss',
     'humanitarian_scope',
     'iati_identifier',
+    'language',
     'legacy_data',
     'locations',
     'partners',

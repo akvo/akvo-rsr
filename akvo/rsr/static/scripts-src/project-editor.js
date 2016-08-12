@@ -2569,18 +2569,18 @@ function setResultSorting () {
 }
 
 function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
-    itemId = itemNode.getAttribute('id').split('.')[1];
+    var itemId = itemNode.getAttribute('id').split('.')[1];
 
     if (itemNode.classList.contains('sort-buttons-set')) {
         if (itemIndex === 0 || listLength < 2) {
-            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+            itemNode.querySelector('.sort-up').setAttribute('class', 'sort-up hidden');
         } else {
-            itemNode.querySelector('.sort-up').setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+            itemNode.querySelector('.sort-up').setAttribute('class', 'sort-up');
         }
         if (itemIndex == listLength - 1 || listLength < 2) {
-            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+            itemNode.querySelector('.sort-down').setAttribute('class', 'sort-down hidden');
         } else {
-            itemNode.querySelector('.sort-down').setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+            itemNode.querySelector('.sort-down').setAttribute('class', 'sort-down');
         }
     } else {
         var sortItemNode = document.createElement('span');
@@ -2588,11 +2588,14 @@ function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
 
         var sortItemUp = document.createElement('a');
         var upButton = document.createElement('span');
+        upButton.style = 'margin-right: 10px; font-size: 80%;';
 
         if (itemIndex === 0 || listLength < 2) {
-            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up hidden');
+            upButton.setAttribute('class', 'sort-up hidden');
+            upButton.innerHTML = defaultValues.move_up;
         } else {
-            upButton.setAttribute('class', 'glyphicon glyphicon-chevron-up sort-up');
+            upButton.setAttribute('class', 'sort-up');
+            upButton.innerHTML = defaultValues.move_up;
         }
 
         if (itemType == 'indicator') {
@@ -2606,11 +2609,14 @@ function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
 
         var sortItemDown = document.createElement('a');
         var downButton = document.createElement('span');
+        downButton.style = 'margin-right: 10px; font-size: 80%;';
 
         if (itemIndex == listLength - 1 || listLength < 2) {
-            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down hidden');
+            downButton.setAttribute('class', 'sort-down hidden');
+            downButton.innerHTML = defaultValues.move_down;
         } else {
-            downButton.setAttribute('class', 'glyphicon glyphicon-chevron-down sort-down');
+            downButton.setAttribute('class', 'sort-down');
+            downButton.innerHTML = defaultValues.move_down;
         }
 
         if (itemType == 'indicator') {
@@ -2626,10 +2632,6 @@ function setReorderButtons (itemNode, itemType, itemIndex, listLength) {
 
 
         var itemContainer = itemNode.querySelector('.delete-related-object-container');
-
-        // sortNode = sortIndicatorNode.cloneNode(true);
-        // sortItemNode.setAttribute('id', 'indicator-id.' + indicatorId);
-
         itemContainer.insertBefore(sortItemNode, itemContainer.childNodes[0]);
     }
 }
@@ -2684,10 +2686,10 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
         // update buttons if necessary
         if (parentContainer.firstElementChild == selectedItem) {
             selectedItem.querySelector('.sort-up').className += ' hidden';
-            swapItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+            elRemoveClass(swapItem.querySelector('.sort-up'), 'hidden');
         }
         if (parentContainer.lastElementChild.previousElementSibling == swapItem) {
-            selectedItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+            elRemoveClass(selectedItem.querySelector('.sort-down'), 'hidden');
             swapItem.querySelector('.sort-down').className += ' hidden';
         }
     } else if (direction == 'down') {
@@ -2695,12 +2697,12 @@ function swapReorderedItems (itemType, itemId, swapId, direction) {
 
         // update buttons if necessary
         if (parentContainer.firstElementChild == swapItem) {
-            selectedItem.querySelector('.sort-up').className = 'glyphicon glyphicon-chevron-up sort-up';
+            elRemoveClass(selectedItem.querySelector('.sort-up'), 'hidden');
             swapItem.querySelector('.sort-up').className += ' hidden';
         }
         if (parentContainer.lastElementChild.previousElementSibling == selectedItem) {
             selectedItem.querySelector('.sort-down').className += ' hidden';
-            swapItem.querySelector('.sort-down').className = 'glyphicon glyphicon-chevron-down sort-down';
+            elRemoveClass(swapItem.querySelector('.sort-down'), 'hidden');
         }
     }
 }
