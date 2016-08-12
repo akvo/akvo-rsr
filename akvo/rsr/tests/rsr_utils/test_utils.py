@@ -7,11 +7,15 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import User, Project, Invoice
+from akvo.rsr.models import User, Project, Invoice, Country, Keyword, Sector
+from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
-                        send_donation_confirmation_emails, who_am_i, who_is_parent, to_gmt, )
+                        send_donation_confirmation_emails, who_am_i, who_is_parent, to_gmt,
+                        custom_get_or_create_country, right_now_in_akvo, rsr_show_keywords,
+                        pagination, filter_query_string, codelist_name, )
 
 from django.core import mail
+from django.http.request import QueryDict
 from django.test import TestCase
 
 import datetime, pytz
@@ -86,3 +90,70 @@ class GeneralUtilsTestCase(TestCase):
         current_datetime = datetime.datetime.now(tz=gmt)
         gmt_datetime = to_gmt(current_datetime)
         self.assertEqual(current_datetime, gmt_datetime)
+
+    def test_get_country(self):
+        """
+        Test for getting or creating a country.
+        """
+        country = custom_get_or_create_country('NL')
+        self.assertIsInstance(country, Country)
+
+        # Try again for existing country
+        country = custom_get_or_create_country('NL')
+        self.assertIsInstance(country, Country)
+
+    def test_right_now_in_akvo(self):
+        """
+        Testing the right_now_in_akvo definition.
+        """
+        keys = ['number_of_organisations', 'number_of_projects', 'people_served',
+                'projects_budget_millions', 'number_of_project_updates', ]
+
+        right_now = right_now_in_akvo()
+        for key in keys:
+            self.assertIn(key, right_now)
+
+    def test_keywords_display(self):
+        """
+        Test the display of keywords.
+        """
+        no_keyword = rsr_show_keywords(self.project)
+        self.assertEqual(no_keyword, 'None')
+
+        keyword, _created = Keyword.objects.get_or_create(label='A keyword')
+        self.project.keywords.add(keyword)
+        with_keyword = rsr_show_keywords(self.project)
+        self.assertIn('<ul>', with_keyword)
+        self.assertIn('<li>', with_keyword)
+        self.assertIn('A keyword', with_keyword)
+
+    def test_pagination(self):
+        """
+        Test the pagination.
+        """
+        page, paginator, page_range = pagination(1000, Project.objects.all(), 10)
+        self.assertEqual(page.number, paginator.num_pages)
+
+        for num in range(0, 10):
+            Project.objects.create()
+
+        page, paginator, page_range = pagination(5, Project.objects.all(), 1)
+        self.assertEqual(page.number, 5)
+
+    def test_filter_query_string(self):
+        """
+        Test the filter query string definition.
+        """
+        test_dict = {'test': '1'}
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(test_dict)
+        new_query_string = filter_query_string(query_dict)
+        self.assertEqual(new_query_string, '&test=1')
+
+    def test_codelist_name(self):
+        """
+        Test retrieving a codelist name.
+        """
+        sector = Sector.objects.create(project=self.project, sector_code='140')
+        name = codelist_name(CodelistSector, sector, 'sector_code', version='16')
+        self.assertEqual(name, '140')

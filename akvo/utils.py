@@ -205,10 +205,10 @@ def custom_get_or_create_country(iso_code, country=None):
     """ add the missing fields to a skeleton country object from the admin
         or create a new one with the given iso_code if it doesn't already exist
     """
-    # for some reason, maybe some circular import issue importing Country at the module level doesn't work
-    from akvo.rsr.models import Country #TODO: in test
+    # Importing Country at the module level doesn't work, because of circular imports
+    from akvo.rsr.models import Country
     iso_code = iso_code.lower()
-    if  not country:
+    if not country:
         try:
             country = Country.objects.get(iso_code=iso_code)
             return country
@@ -227,7 +227,7 @@ def right_now_in_akvo():
     """
     Calculate the numbers used in the "Right now in Akvo" box on the home page.
     """
-    projects = get_model('rsr', 'Project').objects.published() #TODO: in test
+    projects = get_model('rsr', 'Project').objects.published()
     organisations = get_model('rsr', 'Organisation').objects.all()
     updates = get_model('rsr', 'ProjectUpdate').objects.all()
     people_served = projects.get_largest_value_sum(
@@ -244,7 +244,7 @@ def right_now_in_akvo():
 
 
 def rsr_show_keywords(instance):
-    if len(instance.keywords.all()) > 0: #TODO: in test
+    if len(instance.keywords.all()) > 0:
         keyword_str = '<ul>'
         for key in instance.keywords.all():
             keyword_str += '<li>%s</li>' % key.label
@@ -262,7 +262,7 @@ def pagination(page, object_list, objects_per_page):
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         page = paginator.page(1)
-    except EmptyPage: #TODO: in test
+    except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
 
@@ -270,7 +270,7 @@ def pagination(page, object_list, objects_per_page):
     active = page.number
 
     if not len(page_range) < 10:
-        if active > 4: #TODO: in test
+        if active > 4:
             page_range[1] = '...'
             del page_range[2:active-2]
         if (page_range[-1] - active) > 3:
@@ -294,7 +294,7 @@ def filter_query_string(qs):
         return ''
 
     return u'&{}'.format(
-        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8') #TODO: in test
+        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
 def codelist_choices(codelist, show_code=True):
@@ -347,7 +347,7 @@ def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     """
     value = getattr(instance, field, None)
     if value:
-        try: #TODO: in test
+        try:
             objects = getattr(model, 'objects')
             return objects.get(code=value, version__code=version).name
         except model.DoesNotExist:
@@ -360,7 +360,7 @@ def check_auth_groups(group_names):
         Group.objects.get_or_create(name=group_name)
 
 
-def file_from_zip_archive(zip, file_name):
+def file_from_zip_archive(zip, file_name):  # pragma: no cover
     """
     Return a file from a zip archive
     :param zip: zip file or file name
