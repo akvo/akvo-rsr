@@ -7,6 +7,8 @@
 from django.utils import six
 from django.utils.xmlutils import SimplerXMLGenerator
 
+from six import string_types
+
 from rest_framework.compat import StringIO, smart_text
 from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer, XMLRenderer
 
@@ -43,10 +45,15 @@ def _rename_fields(results):
                 if isinstance(result[object_id], list):
                     result_list, new_list = result.pop(object_id), []
                     for list_item in result_list:
-                        new_list.append(id_to_api[object_id].format(str(list_item)))
+                        if isinstance(list_item, string_types) and '/api/v1/' in list_item:
+                            new_list.append(list_item)
+                        else:
+                            new_list.append(id_to_api[object_id].format(str(list_item)))
                     result[object_id] = new_list
                 else:
-                    result[object_id] = id_to_api[object_id].format(str(result.pop(object_id)))
+                    if not (isinstance(result[object_id], string_types) and
+                            '/api/v1' in result[object_id]):
+                        result[object_id] = id_to_api[object_id].format(str(result.pop(object_id)))
     return results
 
 
