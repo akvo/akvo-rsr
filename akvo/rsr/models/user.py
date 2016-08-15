@@ -222,17 +222,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.group.delete()
 
     def get_admin_employment_orgs(self):
-        from .employment import Employment
-        from .organisation import Organisation
-
-        employments = Employment.objects.filter(user=self)
-        admin_employment_orgs = Organisation.objects.none()
-
-        for e in employments:
-            if e.group == Group.objects.get(name='Admins') and e.is_approved:
-                admin_employment_orgs = admin_employment_orgs | e.organisation
-
-        return admin_employment_orgs
+        employments = Employment.objects.filter(user=self, is_approved=True, group__name='Admins')
+        return employments.organisations()
 
     def get_owned_org_users(self):
         owned_organisation_users = []
