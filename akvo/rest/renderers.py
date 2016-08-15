@@ -68,6 +68,7 @@ def _convert_data_for_tastypie(request, view, data):
     response_data['meta'] = {
         'limit': view.get_paginate_by(),
         'total_count': data.get('count'),
+        'offset': data.get('offset'),
         'next': _remove_domain(request, data.get('next')),
         'previous': _remove_domain(request, data.get('previous')),
     }
@@ -95,12 +96,14 @@ class CustomHTMLRenderer(BrowsableAPIRenderer):
         request = renderer_context.get('request')
 
         if '/api/v1/' in request.path:
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return super(CustomHTMLRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -125,12 +128,14 @@ class CustomJSONRenderer(JSONRenderer):
         request = renderer_context.get('request')
 
         if '/api/v1/' in request.path:
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return super(CustomJSONRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -190,7 +195,7 @@ class CustomXMLRenderer(BaseRenderer):
             xml = SimplerXMLGenerator(stream, self.charset)
             xml.startDocument()
 
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 xml.startElement("response", {})
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
@@ -204,5 +209,7 @@ class CustomXMLRenderer(BaseRenderer):
 
             xml.endDocument()
             return stream.getvalue()
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return XMLRenderer().render(data, accepted_media_type, renderer_context)
