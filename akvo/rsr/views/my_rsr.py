@@ -547,7 +547,9 @@ def my_results(request, project_id):
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')
-    me_managers = project.publishing_orgs.employments().approved().filter(group=me_managers_group)
+    admins_group = Group.objects.get(name='Admins')
+    me_managers = project.publishing_orgs.employments().approved().\
+        filter(group__in=[admins_group, me_managers_group])
 
     context = {
         'project': project,

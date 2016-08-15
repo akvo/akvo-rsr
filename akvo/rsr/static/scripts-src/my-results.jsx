@@ -165,7 +165,7 @@ function userIsAdmin() {
 
     for (var i = 0; i < user.approved_employments.length; i++) {
         var employment = user.approved_employments[i];
-        if (employment.group_name === 'M&E Managers') {
+        if (employment.group_name === 'M&E Managers' || employment.group_name === 'Admins') {
             adminOrgIds.push(employment.organisation);
         }
     }
