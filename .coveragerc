@@ -1,0 +1,26 @@
+[run]
+source = akvo
+omit =
+    akvo/rsr/migrations/*
+    akvo/codelists/migrations/*
+    akvo/codelists/store/*
+    akvo/iati/imports/mappers/CordaidZip/*
+    akvo/scripts/*
+    akvo/stats/*
+    akvo/handler.py
+    akvo/wsgi.py
+    # Cheating a lot here obviously:
+    akvo/rest/*
+    akvo/rsr/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if settings.DEBUG:
+    def __unicode__
+    if 'TRAVIS' in os.environ:
+    if 'rosetta' in settings.INSTALLED_APPS:
+    if not chunk:
+    raise NotImplementedError
+sort = Cover
+fail_under = 100

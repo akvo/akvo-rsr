@@ -128,16 +128,11 @@ class Links(ImportMapper):
             imported_links.append(link)
 
         for doc_link in self.parent_elem.findall("document-link[@format='application/http']"):
-
             url = self.get_attrib(doc_link, 'url', 'url')
+
+            # Skip RSR links
             if url and 'rsr.akvo.org' in url:
                 continue
-
-            if 'url' in doc_link.attrib.keys():
-                url = doc_link.attrib['url']
-                # Skip RSR links
-                if url and 'rsr.akvo.org' in url:
-                    continue
 
             caption = self.get_child_element_text(doc_link, 'title', 'caption')
 

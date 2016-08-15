@@ -6,7 +6,6 @@
 
 from akvo.rsr.models.custom_field import ProjectCustomField
 from akvo.rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
-from akvo.rsr.models.internal_organisation_id import InternalOrganisationID
 from akvo.rsr.models.organisation import Organisation, ORG_TYPE_NGO
 from akvo.rsr.models.project import Project
 
@@ -76,7 +75,7 @@ class ImportMapper(object):
         self.model = Project
         self._log_objects = []
 
-    def get_or_create_organisation(self, ref='', name='', org_id=None, internal_id=None):
+    def get_or_create_organisation(self, ref='', name=''):
         """
         Looks for an organisation in the RSR database.
         First the ref will be looked up in the Organisation.iati_org_id field. If this does not
@@ -87,20 +86,12 @@ class ImportMapper(object):
         :param name: String; the name of the organisation that is specified in the IATI file.
         :return: Organisation instance or None
         """
-        if not (ref or name or (org_id and internal_id)):
+        if not (ref or name):
             return None
 
         if ref:
             try:
                 return Organisation.objects.get(iati_org_id=ref)
-            except Organisation.DoesNotExist:
-                pass
-
-        if org_id and internal_id:
-            try:
-                return Organisation.objects.get(
-                        pk=InternalOrganisationID.objects.get(
-                                recording_org=org_id, identifier=internal_id))
             except Organisation.DoesNotExist:
                 pass
 
@@ -270,11 +261,8 @@ class ImportMapper(object):
         :param default: a default value returned if no value is found or the value is too long
         :return: a string or the value of the default param
         """
-        try:
-            value = element.get(attr)
-            if value is None:
-                return default
-        except AttributeError:
+        value = element.get(attr)
+        if value is None:
             return default
         try:
             max_length = self.model._meta.get_field(field).max_length
@@ -310,11 +298,10 @@ class ImportMapper(object):
         :param default: a default value returned if no child is found
         :return: String or the value of the default param
         """
-        try:
-            element = parent.find(tag)
-        except AttributeError:
-            return default
-        return self.get_attrib(element, attr, field, default)
+        element = parent.find(tag)
+        if element is not None:
+            return self.get_attrib(element, attr, field, default)
+        return default
 
     def get_element_text(self, element, field, default=''):
         """
@@ -364,10 +351,7 @@ class ImportMapper(object):
         :param field: the name of a model field. Used for error logging
         :return: datetime.Datetime object or none
         """
-        try:
-            date_text = element.get(attr)
-        except AttributeError:
-            return None
+        date_text = element.get(attr)
         if not date_text:
             date_text = self.get_text(element)
         if date_text:
