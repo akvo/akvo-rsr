@@ -17,11 +17,8 @@ def merge_keys(apps, schema_editor):
     }
     Keyword = apps.get_model('rsr', 'Keyword')
     Project = apps.get_model('rsr', 'Project')
-    print
-    print "Keyword distribution before migration:"
     for keyword in Keyword.objects.all():
         projects = Project.objects.filter(keywords__exact=keyword)
-        print keyword.label, projects.count()
 
     # dict holding old labels as keys and the keword objects that replace the old labelled keywords
     keyword_merger_objects = {}
@@ -30,7 +27,7 @@ def merge_keys(apps, schema_editor):
             new_key = Keyword.objects.get(label=keyword_mergers_labels[old_label])
             keyword_merger_objects[old_label] = new_key
         except:
-            print "Error: %s keyword does not exist" % str(keyword_mergers_labels[old_label])
+            pass
 
     for project in Project.objects.all():
         # create a list of keyword objects for the project
@@ -45,9 +42,6 @@ def merge_keys(apps, schema_editor):
                     project.keywords.add(keyword_merger_objects[keyword.label])
                 # remove old keyword
                 project.keywords.remove(keyword)
-                print "Project {}: keyword {} changed to {}".format(
-                    project.id, keyword.label, keyword_merger_objects[keyword.label].label
-                )
             project.save()
 
 

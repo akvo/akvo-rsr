@@ -7,6 +7,8 @@
 from django.utils import six
 from django.utils.xmlutils import SimplerXMLGenerator
 
+from six import string_types
+
 from rest_framework.compat import StringIO, smart_text
 from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer, XMLRenderer
 
@@ -43,10 +45,15 @@ def _rename_fields(results):
                 if isinstance(result[object_id], list):
                     result_list, new_list = result.pop(object_id), []
                     for list_item in result_list:
-                        new_list.append(id_to_api[object_id].format(str(list_item)))
+                        if isinstance(list_item, string_types) and '/api/v1/' in list_item:
+                            new_list.append(list_item)
+                        else:
+                            new_list.append(id_to_api[object_id].format(str(list_item)))
                     result[object_id] = new_list
                 else:
-                    result[object_id] = id_to_api[object_id].format(str(result.pop(object_id)))
+                    if not (isinstance(result[object_id], string_types) and
+                            '/api/v1' in result[object_id]):
+                        result[object_id] = id_to_api[object_id].format(str(result.pop(object_id)))
     return results
 
 
@@ -68,6 +75,7 @@ def _convert_data_for_tastypie(request, view, data):
     response_data['meta'] = {
         'limit': view.get_paginate_by(),
         'total_count': data.get('count'),
+        'offset': data.get('offset'),
         'next': _remove_domain(request, data.get('next')),
         'previous': _remove_domain(request, data.get('previous')),
     }
@@ -95,12 +103,14 @@ class CustomHTMLRenderer(BrowsableAPIRenderer):
         request = renderer_context.get('request')
 
         if '/api/v1/' in request.path:
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return super(CustomHTMLRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -125,12 +135,14 @@ class CustomJSONRenderer(JSONRenderer):
         request = renderer_context.get('request')
 
         if '/api/v1/' in request.path:
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return super(CustomJSONRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -190,7 +202,7 @@ class CustomXMLRenderer(BaseRenderer):
             xml = SimplerXMLGenerator(stream, self.charset)
             xml.startDocument()
 
-            if all(k in data.keys() for k in ['count', 'next', 'previous', 'results']):
+            if all(k in data.keys() for k in ['count', 'next', 'previous', 'offset', 'results']):
                 # Paginated result
                 xml.startElement("response", {})
                 data = _convert_data_for_tastypie(request, renderer_context['view'], data)
@@ -204,5 +216,7 @@ class CustomXMLRenderer(BaseRenderer):
 
             xml.endDocument()
             return stream.getvalue()
+        elif 'offset' in data.keys():
+            data.pop('offset')
 
         return XMLRenderer().render(data, accepted_media_type, renderer_context)

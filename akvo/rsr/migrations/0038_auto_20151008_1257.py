@@ -34,16 +34,13 @@ def add_projects_creators(apps, schema_editor):
         2842,  # KNVB
     ]
     Organisation = apps.get_model("rsr", "Organisation")
-    print(u'\nSetting the following Organisations to be project creators:')
     for creator_pk in project_creators:
         try:
             org = Organisation.objects.get(pk=creator_pk)
             org.can_create_projects = True
             org.save()
-            print(u'{}, "{}"'.format(org.pk, org.name))
         except Exception as e:
-            print(u'Error trying to set project creator for Organisation with ID {}, '
-                  u'error message: \n{}'.format(creator_pk, e.message))
+            pass
 
 
 class Migration(migrations.Migration):

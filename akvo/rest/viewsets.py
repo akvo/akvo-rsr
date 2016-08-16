@@ -7,12 +7,16 @@
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
+from django.core.paginator import InvalidPage
+from django.http import Http404
 
 from akvo.rest.models import TastyTokenAuthentication
 
 from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
+
+import warnings
 
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
@@ -36,6 +40,70 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
     ordering_fields = '__all__'
 
+    def paginate_queryset(self, queryset, page_size=None):
+        """
+        Paginate a queryset if required, either returning a page object,
+        or `None` if pagination is not configured for this view.
+        """
+        if '/rest/v1/' in self.request.path:
+            return super(BaseRSRViewSet, self).paginate_queryset(queryset, page_size)
+
+        deprecated_style = False
+        if page_size is not None:
+            warnings.warn('The `page_size` parameter to `paginate_queryset()` '
+                          'is deprecated. '
+                          'Note that the return style of this method is also '
+                          'changed, and will simply return a page object '
+                          'when called without a `page_size` argument.',
+                          DeprecationWarning, stacklevel=2)
+            deprecated_style = True
+        else:
+            # Determine the required page size.
+            # If pagination is not configured, simply return None.
+            page_size = self.get_paginate_by()
+            if not page_size:
+                return None
+
+        if not self.allow_empty:
+            warnings.warn(
+                'The `allow_empty` parameter is deprecated. '
+                'To use `allow_empty=False` style behavior, You should override '
+                '`get_queryset()` and explicitly raise a 404 on empty querysets.',
+                DeprecationWarning, stacklevel=2
+            )
+
+        paginator = self.paginator_class(queryset, page_size,
+                                         allow_empty_first_page=self.allow_empty)
+        offset_kwarg = self.kwargs.get('offset')
+        offset_query_param = self.request.QUERY_PARAMS.get('offset')
+
+        try:
+            offset = int(offset_kwarg or offset_query_param or 0)
+        except ValueError:
+            raise Http404(_("Offset cannot be converted to an int."))
+
+        page = int(offset / page_size) + 1
+
+        try:
+            page_number = paginator.validate_number(page)
+        except InvalidPage:
+            if page == 'last':
+                page_number = paginator.num_pages
+            else:
+                raise Http404(_("Page is not 'last', nor can it be converted to an int."))
+        try:
+            page = paginator.page(page_number)
+        except InvalidPage as exc:
+            error_format = _('Invalid page (%(page_number)s): %(message)s')
+            raise Http404(error_format % {
+                'page_number': page_number,
+                'message': str(exc)
+            })
+
+        if deprecated_style:
+            return (paginator, page, page.object_list, page.has_other_pages())
+        return page
+
     def get_queryset(self):
 
         def django_filter_filters(request):
@@ -45,8 +113,8 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             # query string keys reserved by the RSRGenericFilterBackend
             qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related', ]
             # query string keys used by core DRF, OrderingFilter and Akvo custom views
-            exclude_params = ['limit', 'format', 'page', 'ordering', 'partner_type', 'sync_owner',
-                              'reporting_org', ]
+            exclude_params = ['limit', 'format', 'page', 'offset', 'ordering', 'partner_type',
+                              'sync_owner', 'reporting_org', ]
             filters = {}
             for key in request.QUERY_PARAMS.keys():
                 if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):
