@@ -365,7 +365,7 @@ class Project(TimestampsMixin, models.Model):
                     u'FlowType/</a>.')
     )
     default_tied_status = ValidXMLCharField(
-        _(u'default tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS),
+        _(u'default tied status'), blank=True, max_length=10, choices=codelist_choices(TIED_STATUS),
         help_text=_(u'This element specifies a default for all the activity’s financial '
                     u'transactions; it can be overridden at the individual transaction level. For '
                     u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
