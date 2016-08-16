@@ -183,5 +183,5 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_cordaid.currency, "USD")
         self.assertEqual(project_cordaid.hierarchy, 1)
         self.assertEqual(project_cordaid.title, "Test project for IATI Cordaid import")
-        self.assertEqual(project_cordaid.partners.count(), 5)
+        self.assertEqual(project_cordaid.partners.count(), 4)
         self.assertEqual(project_cordaid.reporting_org.iati_org_id, "NL-KVK-0987654321")

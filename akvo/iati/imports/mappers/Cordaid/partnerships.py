@@ -70,20 +70,6 @@ class Partnerships(Partnerships):
         Set up the custom Cordaid partnerships.
         :return: List; contains fields that have changed
         """
-        business_units = {
-            "27239": 273,
-            "K6020": 959,
-            "K6090": 962,
-            "K6030": 961,
-            "K6070": 950,
-            "K6110": 1099,
-            "K6100": 953,
-            "K6010": 949,
-            "K6060": 1241,
-            "K6080": 946,
-            "K6040": 955,
-            "K6050": 960,
-        }
         # "Regular" partners
         for partnership in self.parent_elem.findall('participating-org'):
 
@@ -109,21 +95,13 @@ class Partnerships(Partnerships):
 
             self.get_or_create_partnership(organisation, organisation_role, None)
 
-        # Cordaid business unit set up as a sponsor partner
-        # TODO: fix this, we wanna get rid of sponsor partners!
-        business_unit = self.get_attrib(
-                self.parent_elem, akvo_ns('business-unit-id'), 'organisation')
-        business_unit = Organisation.objects.get(pk=business_units[business_unit])
-        self.get_or_create_partnership(business_unit, Partnership.AKVO_SPONSOR_PARTNER)
-
         # Cordaid funding partners.
         self.add_funding_partner(CORDAID)
         self.add_funding_partner(OTHERS)
 
         self._changes += self.delete_objects(
-                # TODO: is this filter correct?
                 self.project.partnerships.filter(
-                        iati_organisation_role__lt=Partnership.AKVO_SPONSOR_PARTNER),
+                    iati_organisation_role__lt=Partnership.AKVO_SPONSOR_PARTNER),
                 self._imported_partnerships, 'partnership')
 
         return self._changes
