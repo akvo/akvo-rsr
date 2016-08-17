@@ -109,7 +109,7 @@ class CustomHTMLRenderer(BrowsableAPIRenderer):
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
-        elif 'offset' in data.keys():
+        elif isinstance(data, dict) and 'offset' in data.keys():
             data.pop('offset')
 
         return super(CustomHTMLRenderer, self).render(data, accepted_media_type, renderer_context)
@@ -141,7 +141,7 @@ class CustomJSONRenderer(JSONRenderer):
             else:
                 # Non-paginated result
                 data = _rename_fields([data])[0]
-        elif 'offset' in data.keys():
+        elif isinstance(data, dict) and 'offset' in data.keys():
             data.pop('offset')
 
         return super(CustomJSONRenderer, self).render(data, accepted_media_type, renderer_context)
@@ -216,7 +216,7 @@ class CustomXMLRenderer(BaseRenderer):
 
             xml.endDocument()
             return stream.getvalue()
-        elif 'offset' in data.keys():
+        elif isinstance(data, dict) and 'offset' in data.keys():
             data.pop('offset')
 
         return XMLRenderer().render(data, accepted_media_type, renderer_context)
