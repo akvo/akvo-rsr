@@ -41,7 +41,7 @@ function initReact() {
 
         render: function() {
             return (
-                React.DOM.div( {className:"form-group"}, 
+                React.DOM.div(null, 
                     React.createElement(Typeahead, {
                         placeholder: i18n.typeahead_placeholder,
                         maxVisible: 15,
@@ -73,7 +73,7 @@ function initReact() {
             });
 
             return (
-                React.DOM.div( {className:"form-group"}, 
+                React.DOM.div(null, 
                     React.DOM.div( {className:"select-group control"}, 
                         React.DOM.select( {className:"form-control", defaultValue:"", onChange:this.selectProject}, 
                             React.DOM.option( {value:""} ),
@@ -146,7 +146,7 @@ function initReact() {
                     );
                 } else if (this.state.projects.length < 15) {
                     return (
-                        React.DOM.form(null, 
+                        React.DOM.div(null, 
                             React.DOM.label(null, i18n.select_project),
                             React.createElement(ProjectDropDown, {
                                 projects: this.state.projects
@@ -155,7 +155,7 @@ function initReact() {
                     );
                 } else {
                     return (
-                        React.DOM.form(null, 
+                        React.DOM.div(null, 
                             React.DOM.label(null, i18n.select_project),
                             React.createElement(ProjectTypeahead, {
                                 projects: this.state.projects
