@@ -3238,7 +3238,7 @@ function setDatepickers() {
                             selected: this.state.initialDate,
                             onChange: this.handleDateChange,
                             todayButton: defaultValues.today,
-                            className: 'form-control'
+                            className: this.props.classNames
                         })
                     );
                 } else {
@@ -3248,7 +3248,7 @@ function setDatepickers() {
                             placeholderText: '',
                             dateFormat: 'DD/MM/YYYY',
                             selected: this.state.initialDate,
-                            className: 'form-control'
+                            className: this.props.classNames
                         })
                     );
                 }
@@ -3278,10 +3278,12 @@ function setDatepickers() {
             }
 
             var mandatoryOr = datepickerContainer.getAttribute('mandatory-or');
+            var classNames = 'form-control ' + datepickerContainer.getAttribute('data-classes');
 
             DatePickerComponent = getDatepickerComponent(datepickerId, initialDate, disableInput);
             ReactDOM.render(
-                React.createElement(DatePickerComponent, {key: datepickerId}), datepickerContainer
+                React.createElement(DatePickerComponent, {key: datepickerId, classNames: classNames}),
+                datepickerContainer
             );
 
             // Set id, name and saved value of datepicker input
@@ -3295,9 +3297,6 @@ function setDatepickers() {
 
             // Remove 'react-datepicker__input-container' class
             inputNode.parentNode.className = '';
-
-            // Set classes of datepicker input
-            inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
 
             // Set addtional attributes of input
             inputNode.setAttribute('mandatory-or', mandatoryOr);
