@@ -905,7 +905,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
             o.filterOption = o.name + ' ' + o.long_name;
             o.displayOption = newName;
-        });        
+        });
         filterOption = 'filterOption';
         displayOption = 'displayOption';
     }
@@ -2410,7 +2410,7 @@ function updateObjectCurrency(currencyDropdown) {
                     newCurrency = projectCurrencyDropdown.value;
                 }
             }
-            
+
             if (parent !== null) {
                 var currencyDisplays = parent.querySelectorAll('.currency-display');
                 for (var i = 0; i < currencyDisplays.length; i++) {
@@ -2661,7 +2661,7 @@ function reorderItems (itemType, itemId, direction) {
                 }
 
             } else {
-                // We reached our target server, but it returned an error 
+                // We reached our target server, but it returned an error
                 return false;
             }
         };
@@ -3685,7 +3685,7 @@ function addOrgModal() {
 
     ReactDOM.render(
         React.createElement(Modal), document.querySelector('footer')
-    );    
+    );
 }
 
 /* Add validation set to the progress bar */
