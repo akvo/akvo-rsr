@@ -3215,7 +3215,16 @@ function setDatepickers() {
             handleDateChange: function (date) {
                 this.setState({
                     initialDate: date
-                });
+                }, this.fireInputChangeListener);
+            },
+
+            fireInputChangeListener: function () {
+                // Fire the change listener here: react-datepicker changes the
+                // input element and the listener setup in
+                // setSectionChangeListener doesn't get fired.
+                var inputNode = this.getDOMNode().querySelector('input');
+                var section = findAncestorByClass(inputNode, 'formStep');
+                getChangeListener(section, inputNode)();
             },
 
             render: function () {
