@@ -3296,6 +3296,7 @@ function setDatepickers() {
             }
 
             // Remove 'react-datepicker__input-container' class
+            // This is required for the current CSS to not break
             inputNode.parentNode.className = '';
 
             // Set addtional attributes of input
