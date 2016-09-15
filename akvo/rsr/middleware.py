@@ -11,7 +11,7 @@ import logging, json
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.core.urlresolvers import (get_resolver, LocaleRegexURLResolver)
 from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
@@ -21,7 +21,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 def _is_rsr_host(hostname):
     """Predicate function that checks if request is made to the RSR_DOMAIN."""
-    rsr_hosts = ['127.0.0.1', 'localhost', settings.RSR_DOMAIN]
+    rsr_hosts = {'127.0.0.1', 'localhost', settings.RSR_DOMAIN}
     return hostname in rsr_hosts
 
 
@@ -112,7 +112,7 @@ class HostDispatchMiddleware(object):
     def process_request(self, request):
         """Route on request."""
         request.rsr_page = None
-        host = request.get_host()
+        host = request.get_host().split(':')[0]
 
         # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
         # Do nothing if called on "normal" RSR host.
