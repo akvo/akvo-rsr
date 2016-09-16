@@ -44,6 +44,7 @@ class UserSerializer(BaseRSRSerializer):
     approved_employments = EmploymentSerializer(
         source='approved_employments', many=True, required=False
     )
+    # Legacy fields to support Tastypie API emulation
     user_profile = serializers.SerializerMethodField('get_user_profile')
     username = serializers.SerializerMethodField('get_username')
 
