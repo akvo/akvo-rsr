@@ -49,14 +49,12 @@ class ProjectEditorValidation(Model):
     """
     MANDATORY_ACTION = 1
     HIDDEN_ACTION = 2
-    # READ_ONLY_ACTION = 3
 
-    ACTIONS_LIST = [MANDATORY_ACTION, HIDDEN_ACTION,]# READ_ONLY_ACTION]
+    ACTIONS_LIST = [MANDATORY_ACTION, HIDDEN_ACTION,]
 
     ACTIONS_LABELS = [
         _(u'Mandatory'),
         _(u'Hidden'),
-        # _(u'Read only'),
     ]
 
     ACTIONS = zip(ACTIONS_LIST, ACTIONS_LABELS)

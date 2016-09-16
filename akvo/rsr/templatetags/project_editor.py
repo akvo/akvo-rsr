@@ -216,7 +216,7 @@ def mandatory_or_hidden(validations, field):
     """
     Retrieves the mandatory and hidden fields for project editor validations.
 
-    :returns A string on the form mandatory-{validation ID} and/or hidden-{validation_ID}
+    :returns A string of the form mandatory-{validation ID} and/or hidden-{validation_ID}
     """
     indications = ''
 
