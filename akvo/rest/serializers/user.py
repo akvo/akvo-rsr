@@ -86,7 +86,9 @@ class UserSerializer(BaseRSRSerializer):
     def get_user_profile(self, obj):
         """ The Tastypie endpoint included the organisation ID in a separate sub-object
         """
-        return {"object": "/api/v1/organisation/{}/".format(obj.first_organisation().id)}
+        if obj.first_organisation():
+            return {"object": "/api/v1/organisation/{}/".format(obj.first_organisation().id)}
+        return None
 
     def get_username(self, obj):
         return obj.email
