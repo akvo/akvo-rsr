@@ -2240,6 +2240,7 @@ function markMandatoryFields() {
         var elementsToMark = document.querySelectorAll(mandatoryIndicator);
         for (var k = 0; k < elementsToMark.length; k++) {
             if (!elementsToMark[k].hasAttribute("disabled") &&
+                !findAncestorByClass(elementsToMark[k], 'always-hidden') &&
                     (!hasParent(elementsToMark[k]) ||
                      partialFilled(findAncestorByClass(elementsToMark[k], 'parent')) ||
                      (hasParent(elementsToMark[k]) &&
