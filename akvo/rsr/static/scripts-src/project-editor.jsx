@@ -905,7 +905,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
             o.filterOption = o.name + ' ' + o.long_name;
             o.displayOption = newName;
-        });        
+        });
         filterOption = 'filterOption';
         displayOption = 'displayOption';
     }
@@ -2410,7 +2410,7 @@ function updateObjectCurrency(currencyDropdown) {
                     newCurrency = projectCurrencyDropdown.value;
                 }
             }
-            
+
             if (parent !== null) {
                 var currencyDisplays = parent.querySelectorAll('.currency-display');
                 for (var i = 0; i < currencyDisplays.length; i++) {
@@ -2661,7 +2661,7 @@ function reorderItems (itemType, itemId, direction) {
                 }
 
             } else {
-                // We reached our target server, but it returned an error 
+                // We reached our target server, but it returned an error
                 return false;
             }
         };
@@ -3215,7 +3215,16 @@ function setDatepickers() {
             handleDateChange: function (date) {
                 this.setState({
                     initialDate: date
-                });
+                }, this.fireInputChangeListener);
+            },
+
+            fireInputChangeListener: function () {
+                // Fire the change listener here: react-datepicker changes the
+                // input element and the listener setup in
+                // setSectionChangeListener doesn't get fired.
+                var inputNode = this.getDOMNode().querySelector('input');
+                var section = findAncestorByClass(inputNode, 'formStep');
+                getChangeListener(section, inputNode)();
             },
 
             render: function () {
@@ -3229,7 +3238,7 @@ function setDatepickers() {
                             selected: this.state.initialDate,
                             onChange: this.handleDateChange,
                             todayButton: defaultValues.today,
-                            className: 'form-control'
+                            className: this.props.classNames
                         })
                     );
                 } else {
@@ -3239,7 +3248,7 @@ function setDatepickers() {
                             placeholderText: '',
                             dateFormat: 'DD/MM/YYYY',
                             selected: this.state.initialDate,
-                            className: 'form-control'
+                            className: this.props.classNames
                         })
                     );
                 }
@@ -3269,10 +3278,12 @@ function setDatepickers() {
             }
 
             var mandatoryOr = datepickerContainer.getAttribute('mandatory-or');
+            var classNames = 'form-control ' + datepickerContainer.getAttribute('data-classes');
 
             DatePickerComponent = getDatepickerComponent(datepickerId, initialDate, disableInput);
             ReactDOM.render(
-                React.createElement(DatePickerComponent, {key: datepickerId}), datepickerContainer
+                React.createElement(DatePickerComponent, {key: datepickerId, classNames: classNames}),
+                datepickerContainer
             );
 
             // Set id, name and saved value of datepicker input
@@ -3285,10 +3296,8 @@ function setDatepickers() {
             }
 
             // Remove 'react-datepicker__input-container' class
+            // This is required for the current CSS to not break
             inputNode.parentNode.className = '';
-
-            // Set classes of datepicker input
-            inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
 
             // Set addtional attributes of input
             inputNode.setAttribute('mandatory-or', mandatoryOr);
@@ -3676,7 +3685,7 @@ function addOrgModal() {
 
     ReactDOM.render(
         React.createElement(Modal), document.querySelector('footer')
-    );    
+    );
 }
 
 /* Add validation set to the progress bar */
