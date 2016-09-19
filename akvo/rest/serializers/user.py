@@ -45,7 +45,7 @@ class UserSerializer(BaseRSRSerializer):
         source='approved_employments', many=True, required=False
     )
     # Legacy fields to support Tastypie API emulation
-    user_profile = serializers.SerializerMethodField('get_user_profile')
+    legacy_org = serializers.SerializerMethodField('get_legacy_org')
     username = serializers.SerializerMethodField('get_username')
 
     class Meta:
@@ -64,7 +64,7 @@ class UserSerializer(BaseRSRSerializer):
             'organisation',
             'organisations',
             'approved_employments',
-            'user_profile',
+            'legacy_org',
         )
         exclude = ('absolute_url',)
 
@@ -72,7 +72,7 @@ class UserSerializer(BaseRSRSerializer):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
         It's neither correct nor do we want this data to be visible.
 
-        Remove the fields "user_profile" and "username" that are only present to support older
+        Remove the fields "legacy_org" and "username" that are only present to support older
         versions of Up calling the Tastypie API endpoints that we now emulate using DRF
         """
         super(UserSerializer, self).__init__(*args, **kwargs)
@@ -81,14 +81,14 @@ class UserSerializer(BaseRSRSerializer):
         # Remove the fields unless we're called via Tastypie URLs
         request =  kwargs.get("context", {}).get("request", None)
         if request and "/api/v1/" not in request.path:
-            del self.fields['user_profile']
+            del self.fields['legacy_org']
             del self.fields['username']
 
-    def get_user_profile(self, obj):
-        """ The Tastypie endpoint included the organisation ID in a separate sub-object
+    def get_legacy_org(self, obj):
+        """ Up needs the last tag to be the user's org, it only needs the org ID
         """
         if obj.first_organisation():
-            return {"object": "/api/v1/organisation/{}/".format(obj.first_organisation().id)}
+            return {"object": {"id": obj.first_organisation().id}}
         return None
 
     def get_username(self, obj):
