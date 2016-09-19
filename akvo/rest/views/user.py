@@ -39,6 +39,24 @@ class UserViewSet(BaseRSRViewSet):
         'organisations__primary_location__location_target',)
     serializer_class = UserSerializer
 
+    # def get_serializer(self, instance=None, data=None,
+    #                    files=None, many=False, partial=False):
+    #
+    #     """
+    #     Return the serializer instance that should be used for validating and
+    #     deserializing input, and for serializing output.
+    #     """
+    #
+    #     ### DEBUG ###
+    #     import pdb
+    #     pdb.set_trace()
+    #     ### DEBUG ###
+    #
+    #     serializer_class = self.get_serializer_class()
+    #     context = self.get_serializer_context()
+    #     return serializer_class(instance, data=data, files=files,
+    #                             many=many, partial=partial, context=context)
+
 
 @api_view(['POST'])
 def change_password(request, pk=None):

@@ -44,6 +44,9 @@ class UserSerializer(BaseRSRSerializer):
     approved_employments = EmploymentSerializer(
         source='approved_employments', many=True, required=False
     )
+    # Legacy fields to support Tastypie API emulation
+    user_profile = serializers.SerializerMethodField('get_user_profile')
+    username = serializers.SerializerMethodField('get_username')
 
     class Meta:
         model = get_user_model()
@@ -52,6 +55,7 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
+            'username',
             'is_active',
             'is_staff',
             'is_admin',
@@ -60,15 +64,35 @@ class UserSerializer(BaseRSRSerializer):
             'organisation',
             'organisations',
             'approved_employments',
+            'user_profile',
         )
         exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
         It's neither correct nor do we want this data to be visible.
+
+        Remove the fields "user_profile" and "username" that are only present to support older
+        versions of Up calling the Tastypie API endpoints that we now emulate using DRF
         """
         super(UserSerializer, self).__init__(*args, **kwargs)
         del self.fields['absolute_url']
+
+        # Remove the fields unless we're called via Tastypie URLs
+        request =  kwargs.get("context", {}).get("request", None)
+        if request and "/api/v1/" not in request.path:
+            del self.fields['user_profile']
+            del self.fields['username']
+
+    def get_user_profile(self, obj):
+        """ The Tastypie endpoint included the organisation ID in a separate sub-object
+        """
+        if obj.first_organisation():
+            return {"object": "/api/v1/organisation/{}/".format(obj.first_organisation().id)}
+        return None
+
+    def get_username(self, obj):
+        return obj.email
 
 
 class UserPasswordSerializer(serializers.Serializer):
