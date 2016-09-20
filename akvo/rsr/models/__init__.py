@@ -17,7 +17,7 @@ from akvo.rest.models import create_api_key
 from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, act_on_log_entry,
+    create_payment_gateway_selector, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
     update_project_funding
 )
@@ -168,7 +168,7 @@ __all__ = [
 
 # Permission rules
 import rules
-from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, 
+from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor,
                            is_org_user, is_self)
 
 rules.add_perm('rsr', rules.always_allow)
@@ -414,9 +414,6 @@ post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
 post_save.connect(create_payment_gateway_selector, sender=Project)
-
-if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
-    post_save.connect(donation_completed, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)

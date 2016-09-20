@@ -11,8 +11,8 @@ from akvo.rsr.models import (User, Project, Invoice, Country, Keyword, Sector, P
                              PaymentGatewaySelector)
 from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
-                        send_donation_confirmation_emails, who_am_i, who_is_parent, to_gmt,
-                        custom_get_or_create_country, right_now_in_akvo, rsr_show_keywords,
+                        who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
+                        custom_get_or_create_country, right_now_in_akvo,
                         pagination, filter_query_string, codelist_name, )
 
 from django.core import mail
@@ -58,34 +58,6 @@ class GeneralUtilsTestCase(TestCase):
         self.assertIn('1', filename_list)
         self.assertIn('fieldname', filename_list)
         self.assertEqual('.jpg', filename[-4:])
-
-    def test_send_donation_confirmation_emails(self):
-        """
-        Test sending a confirmation email for donations.
-        """
-        # Add a new invoice
-        invoice = Invoice.objects.create(
-            test=True,
-            user=self.user,
-            project=self.project,
-            amount=50,
-        )
-
-        # Make sure the project has a PayPal gateway
-        paypal_gateway, _created = PayPalGateway.objects.get_or_create(
-            name='PayPal',
-            notification_email='paypal.test@akvo.org',
-            account_email='paypal.test@akvo.org',
-        )
-        send_donation_confirmation_emails(invoice)
-        payment_gateway_selector, _created = PaymentGatewaySelector.objects.get_or_create(
-            project=self.project
-        )
-        payment_gateway_selector.paypal_gateway = paypal_gateway
-        payment_gateway_selector.save()
-
-        # Test that the mail is in the outbox.
-        self.assertIn("Thank you from Akvo.org!", [sent_mail.subject for sent_mail in mail.outbox])
 
     def test_inspection_definitions(self):
         """

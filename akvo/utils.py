@@ -159,29 +159,6 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     )
 
 
-def send_donation_confirmation_emails(invoice):
-    if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
-        site_url = 'http://%s' % getattr(settings, "RSR_DOMAIN", "rsr.akvo.org")
-        base_project_url = reverse("project-main", kwargs=dict(project_id=invoice.project.id))
-        project_url = urljoin(site_url, base_project_url)
-        base_project_updates_url = reverse("project-updates",
-                                           kwargs=dict(project_id=invoice.project.id))
-        project_updates_url = urljoin(site_url, base_project_updates_url)
-        template = loader.get_template("donate/donation_confirmation_email.html")
-        context = Context(dict(invoice=invoice,
-                               site_url=site_url,
-                               project_url=project_url,
-                               project_updates_url=project_updates_url))
-        message_body = template.render(context)
-        subject_field = _("Thank you from Akvo.org!")
-        from_field = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org")
-        bcc_field = [invoice.notification_email]
-        to_field = [invoice.get_email]
-        msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
-        msg.content_subtype = "html"
-        msg.send(fail_silently=True)
-
-
 def who_am_i():
     "introspecting function returning the name of the function where who_am_i is called"
     return inspect.stack()[1][3]

@@ -22,7 +22,7 @@ from django.db.models import get_model, Q
 
 from sorl.thumbnail import ImageField
 
-from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
+from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
 
 
 def create_publishing_status(sender, **kwargs):
@@ -123,12 +123,6 @@ def create_payment_gateway_selector(instance, created, **kwargs):
         project = instance
         gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
         gateway_selector.create(project=project)
-
-
-def donation_completed(instance, created, **kwargs):
-    invoice = instance
-    if not created and invoice.status == 3:
-        send_donation_confirmation_emails(invoice)
 
 
 def set_showcase_project(instance, created, **kwargs):
