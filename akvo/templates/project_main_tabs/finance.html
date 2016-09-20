@@ -55,17 +55,13 @@
                           <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount">{{pledged|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
                       {% endif %}
                   </dl>
-                  <h4>{% trans "Donations" %}:</h4>
-                  <dl class="dl-horizontal">
-                      {% for donation in project.all_donations %}
-                      <dt class="donation">{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><br class="donationBreak"><dd class="currencyAmount donation"><span class="currency"> ({% trans "excl. fee" %}: </span>{{donation.donation_fee|floatformat:0|intcomma}}<span class="currency"> {{project.currency}})</span> {{donation.amount_received|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
-                      {% empty %}
-                      <dt>{% trans "No donations" %}</dt><dd></dd>
-                      {% endfor %}
-                      {% if project.all_donations %}
-                      <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount">{{project.all_donations_amount_received|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
-                      {% endif %}
-                  </dl>
+                  {% if project.accepts_donations %}
+                    <dl class="dl-horizontal">
+                      <div class="donateButton">
+                        <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                      </div>
+                    </dl>
+                  {% endif %}
               </div>
               <div class="col-sm-4">
                   <h4 class="">{% trans "Project funding" %}:</h4>
