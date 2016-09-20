@@ -29,8 +29,8 @@ before_script:
 script:
   - python manage.py collectstatic --noinput
   - coverage run manage.py test akvo
+  - coverage run manage.py test --testrunner=django_behave.runner.DjangoBehaveOnlyTestSuiteRunner akvo.rsr
   - coverage report -m
-  - python manage.py test --testrunner=django_behave.runner.DjangoBehaveOnlyTestSuiteRunner akvo.rsr
 
 after_success:
   - coveralls
