@@ -25,11 +25,12 @@ before_script:
   - python manage.py migrate --noinput
   - python manage.py runserver &
   - ./akvo/rsr/fixtures/download.sh
+  - coverage erase
 
 script:
   - python manage.py collectstatic --noinput
-  - coverage run manage.py test akvo
-  - coverage run manage.py test --testrunner=django_behave.runner.DjangoBehaveOnlyTestSuiteRunner akvo.rsr
+  - coverage run -a manage.py test akvo
+  - coverage run -a manage.py test --testrunner=django_behave.runner.DjangoBehaveOnlyTestSuiteRunner akvo.rsr
   - coverage report -m
 
 after_success:
