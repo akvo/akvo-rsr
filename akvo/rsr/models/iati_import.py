@@ -30,7 +30,7 @@ def get_subpackages(module):
 def custom_mappers():
     "Create a list of available custom mapper, for use in the admin"
     from ...iati.imports import mappers
-    subs = get_subpackages(mappers)
+    subs = sorted(get_subpackages(mappers))
     return [(sub, sub) for sub in subs]
 
 import logging
