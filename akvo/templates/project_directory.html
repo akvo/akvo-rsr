@@ -125,7 +125,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
               </p>
@@ -158,7 +158,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
             </p>

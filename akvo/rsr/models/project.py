@@ -295,11 +295,12 @@ class Project(TimestampsMixin, models.Model):
     # primary_organisation is a denormalized field used for performance of the project list page
     primary_organisation = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
 
-    # donate button
-    donate_button = models.BooleanField(
-        _(u'donate button'), default=False,
-        help_text=_(u'Show donate button for this project. If not selected, it is not possible '
-                    u'to donate to this project and the donate button will not be shown.')
+    # donate url
+    donate_url = models.URLField(
+        # FIXME: _(u'donate url') may need fixes?
+        _(u'donate url'), null=True, blank=True, max_length=200,
+        help_text=_(u'Add a donation url for this project. If no URL is added, it is not possible '
+                    u'to donate to this project through RSR.')
     )
 
     # extra IATI fields
@@ -498,9 +499,9 @@ class Project(TimestampsMixin, models.Model):
 
     def accepts_donations(self):
         """Returns True if a project accepts donations, otherwise False.
-        A project accepts donations when the donate button settings is True, the project is published,
+        A project accepts donations when the donate url is set, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_button and self.is_published() and self.funds_needed > 0 and not \
+        if self.donate_url and self.is_published() and self.funds_needed > 0 and not \
                 self.iati_status in Project.DONATE_DISABLED:
             return True
         return False

@@ -1,5 +1,5 @@
 {% load i18n rsr_filters %}
 
 {% if project.funds_needed|round != 0 and not project.iati_status in project.DONATE_DISABLED and project.donate_button %}
-  <a href="/project/{{project.id}}/donate/" class="orangeAction">{% trans "Donate" %}</a>
+  <a href="{{ project.donate_url }}" class="orangeAction">{% trans "Donate" %}</a>
 {% endif %}
