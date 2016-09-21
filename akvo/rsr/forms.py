@@ -387,54 +387,6 @@ class UserAvatarForm(forms.ModelForm):
         fields = ('avatar',)
 
 
-class InvoiceForm(forms.ModelForm):
-    def __init__(self, project, engine, *args, **kwargs):
-        super(InvoiceForm, self).__init__(*args, **kwargs)
-        self.project = project
-        self.engine = engine
-        if engine == 'ideal':
-            self.fields['bank'] = forms.CharField(max_length=4,
-                widget=forms.Select(choices=get_mollie_banklist()))
-
-    """HACK:
-    Ideally the name and email fields in the Invoice model
-    should be required. They are not because of the original (legacy)
-    design of the Invoice model.
-    The fields below *override* the model to ensure data consistency.
-    """
-    amount = forms.IntegerField(min_value=2)
-    name = forms.CharField(label=_(u"Full name"))
-    email = forms.EmailField(label=_(u"Email address"))
-    email2 = forms.EmailField(label=_(u"Email address (repeat)"))
-    campaign_code = forms.CharField(required=False, label=_(u"Campaign code (optional)"))
-    is_public = forms.BooleanField(required=False, label=_(u"List name next to donation"))
-
-    class Meta:
-        model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'email2', 'campaign_code', 'is_public')
-
-    def over_donated(self):
-        donation = self.cleaned_data.get('amount', 0)
-        if self.engine == Invoice.PAYMENT_ENGINE_PAYPAL:
-            if self.project.amount_needed_to_fully_fund_via_paypal() < donation:
-                return True
-        else:
-            if self.project.amount_needed_to_fully_fund_via_ideal() < donation:
-                return True
-        return False
-
-    def clean(self):
-        if self.over_donated():
-            raise forms.ValidationError(
-                _(u'You cannot donate more than the project actually needs!')
-            )
-        cd = self.cleaned_data
-        if 'email' in cd and 'email2' in cd:
-            if cd['email'] != cd['email2']:
-                raise forms.ValidationError(_(u'You must type the same email address each time!'))
-        return cd
-
-
 class SelectOrgForm(forms.Form):
     """Form for selecting an organisation."""
 
