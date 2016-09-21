@@ -16,13 +16,11 @@ from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
-from mollie.ideal.utils import get_mollie_banklist
-
 from registration.models import RegistrationProfile
 
 from urlparse import urlsplit, urlunsplit
 
-from .models import Country, Invoice, Organisation, Project, ProjectUpdate, ProjectUpdateLocation
+from .models import Country, Organisation, Project, ProjectUpdate, ProjectUpdateLocation
 
 from akvo import settings
 

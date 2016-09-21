@@ -18,8 +18,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.conf.urls.i18n import i18n_patterns
 
-from paypal.standard.ipn.views import ipn as paypal_ipn
-
 admin.autodiscover()
 
 ####################################################################################

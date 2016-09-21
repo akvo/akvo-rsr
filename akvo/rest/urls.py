@@ -45,7 +45,6 @@ router.register(r'indicator_period_target_location', views.IndicatorPeriodTarget
 router.register(r'indicator_reference', views.IndicatorReferenceViewSet)
 router.register(r'internal_organisation_id',
                 views.InternalOrganisationIDViewSet)
-router.register(r'invoice', views.InvoiceViewSet)
 router.register(r'keyword', views.KeywordViewSet)
 router.register(r'legacy_data', views.LegacyDataViewSet)
 router.register(r'link', views.LinkViewSet)

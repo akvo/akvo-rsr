@@ -114,17 +114,6 @@ def change_name_of_file_on_change(sender, **kwargs):
                         pass
 
 
-def create_payment_gateway_selector(instance, created, **kwargs):
-    """Associates a newly created project with the default PayPal
-    and Mollie payment gateways
-    """
-    # kwargs['raw'] is True when we're running manage.py loaddata
-    if created and not kwargs.get('raw', False):
-        project = instance
-        gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
-        gateway_selector.create(project=project)
-
-
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
@@ -310,7 +299,7 @@ def update_project_budget(sender, **kwargs):
 
 def update_project_funding(sender, **kwargs):
     """
-    called when Invoice or Partnership objects are added/changed/deleted
+    called when Partnership objects are added/changed/deleted
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):

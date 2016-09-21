@@ -7,8 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import (User, Project, Invoice, Country, Keyword, Sector, PayPalGateway,
-                             PaymentGatewaySelector)
+from akvo.rsr.models import User, Project, Country, Keyword, Sector
 from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
