@@ -24,6 +24,16 @@ class ResultSerializer(ResultRawSerializer):
     parent_project = serializers.Field(source='parent_project')
     child_projects = serializers.Field(source='child_projects')
 
+    def to_native(self, obj):
+        """ Debugging method. Prints all queries made after calling super() """
+        ret = super(ResultSerializer, self).to_native(obj)
+
+        from django.db import connection, reset_queries
+        for c in connection.queries:
+            print c
+        reset_queries()
+        return ret
+
 
 class ResultsFrameworkSerializer(BaseRSRSerializer):
 
