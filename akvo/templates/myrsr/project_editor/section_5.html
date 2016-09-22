@@ -38,7 +38,7 @@
                     {% include boolean_input with obj=project field='aggregate_children' %}
                     <div class="alert alert-warning" role="alert">
                           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                          <strong>{% trans 'Warning!' %}</strong> {% trans 'Editing and deletion of results will propagate to child projects.' %}
+                          <strong>{% trans 'Warning!' %}</strong> {% trans 'Editing or deleting results will propagate to child projects.' %}
                     </div>
                 {% endif %}
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_result" }}">

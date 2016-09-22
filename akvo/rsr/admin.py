@@ -1486,6 +1486,7 @@ admin.site.register(get_model('rsr', 'IatiExport'), IatiExportAdmin)
 class ValidationInline(admin.TabularInline):
     model = get_model('rsr', 'ProjectEditorValidation')
     fields = ('validation', 'action', )
+    ordering = ('validation',)
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:

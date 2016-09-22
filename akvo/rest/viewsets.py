@@ -13,6 +13,7 @@ from akvo.rest.models import TastyTokenAuthentication
 from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
+from .pagination import TastypieOffsetPagination
 
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
@@ -36,6 +37,13 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
     ordering_fields = '__all__'
 
+    def paginate_queryset(self, queryset):
+        """ Custom offset-based pagination for the Tastypie API emulation
+        """
+        if self.request and '/api/v1/' in self.request.path:
+            self.pagination_class = TastypieOffsetPagination
+        return super(BaseRSRViewSet, self).paginate_queryset(queryset)
+
     def get_queryset(self):
 
         def django_filter_filters(request):
@@ -45,8 +53,8 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             # query string keys reserved by the RSRGenericFilterBackend
             qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related', ]
             # query string keys used by core DRF, OrderingFilter and Akvo custom views
-            exclude_params = ['limit', 'format', 'page', 'ordering', 'partner_type', 'sync_owner',
-                              'reporting_org', ]
+            exclude_params = ['limit', 'format', 'page', 'offset', 'ordering', 'partner_type',
+                              'sync_owner', 'reporting_org', ]
             filters = {}
             for key in request.query_params.keys():
                 if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):

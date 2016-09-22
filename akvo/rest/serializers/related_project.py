@@ -20,5 +20,5 @@ class RelatedProjectRawSerializer(BaseRSRSerializer):
 
 class RelatedProjectSerializer(RelatedProjectRawSerializer):
 
-    related_project_show_link = serializers.ReadOnlyField(source='related_project_show_link')
+    related_project_show_link = serializers.ReadOnlyField()
     relation_label = serializers.ReadOnlyField(source='iati_relation_unicode')

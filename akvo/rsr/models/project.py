@@ -42,6 +42,7 @@ from ..mixins import TimestampsMixin
 
 from .country import Country
 from .iati_check import IatiCheck
+from .indicator import IndicatorPeriod
 from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
@@ -364,7 +365,7 @@ class Project(TimestampsMixin, models.Model):
                     u'FlowType/</a>.')
     )
     default_tied_status = ValidXMLCharField(
-        _(u'default tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS),
+        _(u'default tied status'), blank=True, max_length=10, choices=codelist_choices(TIED_STATUS),
         help_text=_(u'This element specifies a default for all the activity’s financial '
                     u'transactions; it can be overridden at the individual transaction level. For '
                     u'reference, please visit: <a href="http://iatistandard.org/202/codelists/'
@@ -433,33 +434,39 @@ class Project(TimestampsMixin, models.Model):
         if self.iati_activity_id:
             self.iati_activity_id = self.iati_activity_id.strip()
 
-        # Update legacy status field
-        orig, toggle_aggregate_children, toggle_aggregate_to_parent = None, False, False
-        if self.pk is not None:
+        orig, orig_aggregate_children, orig_aggregate_to_parent = None, None, None
+        if self.pk:
             orig = Project.objects.get(pk=self.pk)
 
+            # Update legacy status field
             if self.iati_status != orig.iati_status:
                 self.status = self.CODE_TO_STATUS[self.iati_status]
                 super(Project, self).save(update_fields=['status'])
 
+            # Update IATI status field
             if self.status != orig.status:
                 self.iati_status = self.STATUS_TO_CODE[self.status]
                 super(Project, self).save(update_fields=['iati_status'])
 
-            if self.aggregate_children != orig.aggregate_children:
-                toggle_aggregate_children = True
-
-            if self.aggregate_to_parent != orig.aggregate_to_parent:
-                toggle_aggregate_to_parent = True
+            orig_aggregate_children = orig.aggregate_children
+            orig_aggregate_to_parent = orig.aggregate_to_parent
 
         super(Project, self).save(*args, **kwargs)
 
-        # Save the project first, then update the results framework of children / parents
-        if toggle_aggregate_children:
-            self.toggle_aggregate_children(self.aggregate_children)
+        if orig:
+            # Update aggregation from children
+            if self.aggregate_children != orig_aggregate_children:
+                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
+                    if self.aggregate_children:
+                        period.recalculate_period()
+                    else:
+                        period.recalculate_period(only_self=True)
 
-        if toggle_aggregate_to_parent:
-            self.toggle_aggregate_to_parent(self.aggregate_to_parent)
+            # Update aggregation to parent
+            if self.aggregate_to_parent != orig_aggregate_to_parent:
+                for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
+                    if period.parent_period():
+                        period.parent_period().recalculate_period()
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1385,8 +1392,7 @@ class Project(TimestampsMixin, models.Model):
             description=indicator.description,
             baseline_year=indicator.baseline_year,
             baseline_value=indicator.baseline_value,
-            baseline_comment=indicator.baseline_comment,
-            default_periods=indicator.default_periods
+            baseline_comment=indicator.baseline_comment
         )
 
         for period in indicator.periods.all():
@@ -1415,7 +1421,11 @@ class Project(TimestampsMixin, models.Model):
         return False
 
     def toggle_aggregate_children(self, aggregate):
-        """ Add/subtract all child indicator period updates if aggregation is toggled """
+        """
+        If aggregation to children is turned off,
+
+        :param aggregate; Boolean, indicating if aggregation is turned on (True) or off (False)
+        """
         for result in self.results.all():
             for indicator in result.indicators.all():
                 if indicator.is_parent_indicator():

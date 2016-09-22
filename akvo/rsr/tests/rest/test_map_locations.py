@@ -36,6 +36,5 @@ class ProjectMapLocationTest(TestCase):
     def test_one(self):
         """Test the name & the unicode method."""
         self.c.login(username='testuser', password='password')
-        resp = self.c.get('/rest/v1/project_map_location/?format=json')
+        resp = self.c.get('/rest/v1/project_map_location/', {'format': 'json'})
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(1, 1)

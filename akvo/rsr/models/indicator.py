@@ -90,7 +90,6 @@ class Indicator(models.Model):
                 child_indicator.title = self.title
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
-                child_indicator.default_periods = self.default_periods
 
                 # Only copy the description and baseline if the child has none (e.g. new)
                 if not child_indicator.description and self.description:
@@ -247,7 +246,8 @@ def add_default_periods(sender, instance, created, **kwargs):
     if created:
         project = instance.result.project
         results = Result.objects.filter(project_id=project)
-        default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True).first()
+        default_indicator = Indicator.objects.filter(result_id__in=results,
+                                                     default_periods=True).first()
 
         if default_indicator:
             default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
@@ -356,46 +356,55 @@ class IndicatorPeriod(models.Model):
 
         return period_unicode
 
-    def save(self, update_parents=True, *args, **kwargs):
-        """Update the values of child periods, if a parent period is updated."""
-        # Update period when it's edited
-        if self.pk:
-            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
-            child_results = self.indicator.result.child_results.all()
-            child_periods = IndicatorPeriod.objects.filter(
-                indicator__result__in=child_results,
-                period_start=orig_period.period_start,
-                period_end=orig_period.period_end
-            )
+    def save(self, *args, **kwargs):
+        actual_value_changed = False
 
-            for child_period in child_periods:
+        # When the general information of a parent period is updated, this information should also
+        # be reflected in the child periods.
+        if self.pk:
+            for child_period in self.child_periods():
                 # Always copy period start and end. They should be the same as the parent.
                 child_period.period_start = self.period_start
                 child_period.period_end = self.period_end
 
-                # Only copy the target value and comments if the child has no values (e.g. new)
+                # Only copy the target value and comments if the child has no values (in case the
+                # child period is new). Afterwards, it is possible to adjust these values (update
+                # the target for the child, for instance) and then these values should not be
+                # overwritten.
                 if not child_period.target_value and self.target_value:
                     child_period.target_value = self.target_value
                 if not child_period.target_comment and self.target_comment:
                     child_period.target_comment = self.target_comment
-                if not child_period.target_value and self.target_value:
-                    child_period.target_value = self.target_value
 
                 child_period.save()
 
-            # Update parent actual values
-            if self.indicator.is_child_indicator() and self.actual_value != orig_period.actual_value and update_parents:
-                if self.parent_period().indicator.result.project.aggregate_children and \
-                        self.indicator.result.project.aggregate_to_parent:
-                    # self.parent_period().update_parent_actual_values(self.actual_value, orig_period.actual_value)
-                    self.parent_period().update_actual_value(self.actual_value, True)
+            # Check if the actual value has changed
+            orig_period = IndicatorPeriod.objects.get(pk=self.pk)
+            if orig_period.actual_value != self.actual_value:
+                actual_value_changed = True
 
-        # Create a new period when it's added
+        # In case the period is new and the period's indicator does have child indicators, the (new)
+        # period should also be copied to the child indicator.
         else:
             for child_indicator in self.indicator.child_indicators():
                 child_indicator.result.project.add_period(child_indicator, self)
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
+
+        # If the actual value has changed, the period has a parent period and aggregations are on,
+        # then the the parent should be updated as well
+        if actual_value_changed and self.is_child_period() and \
+                self.parent_period().indicator.result.project.aggregate_children and \
+                self.indicator.result.project.aggregate_to_parent:
+            self.parent_period().recalculate_period()
+
+    def delete(self, *args, **kwargs):
+
+        # Delete the child periods as well
+        for child_period in self.child_periods():
+            child_period.delete()
+
+        super(IndicatorPeriod, self).delete(*args, **kwargs)
 
     def clean(self):
         validation_errors = {}
@@ -435,26 +444,78 @@ class IndicatorPeriod(models.Model):
         if validation_errors:
             raise ValidationError(validation_errors)
 
-    def calculate_all_updates_from_start(self):
+    def recalculate_period(self, save=True, only_self=False):
         """
-        In certain scenarios, it is needed to (re-)calculate the values of all updates from the
-        start. This will prevent strange values, for example when an update is deleted or
-        edited after it has been approved.
+        Re-calculate the values of all updates from the start. This will prevent strange values,
+        for example when an update is deleted or edited after it has been approved.
+
+        :param save; Boolean, saves actual value to period if True
+        :param only_self; Boolean, to take into account if this is a parent or just re-calculate
+        this period only
+        :return Actual value of period
         """
+
+        # If this period is a parent period, the sum or average of the children should be
+        # re-calculated
+        if not only_self and self.is_parent_period() and \
+                self.indicator.result.project.aggregate_children:
+            return self.recalculate_children(save)
+
         prev_val = '0'
+
+        # For every approved update, add up the new value (if possible)
         for update in self.data.filter(status='A').order_by('created_at'):
             update.period_actual_value = prev_val
-            update.save(update_fields=['period_actual_value', ], **{'recalculate': True})
+            update.save(recalculate=False)
 
             if update.relative_data:
                 try:
                     # Try to add up the update to the previous actual value
                     prev_val = str(Decimal(prev_val) + Decimal(update.data))
                 except InvalidOperation:
-                    # If not possible, the update data is a normal string
+                    # If not possible, the update data or previous value is a normal string
                     prev_val = update.data
             else:
                 prev_val = update.data
+
+        # For every non-approved update, set the data to the current data
+        for update in self.data.exclude(status='A'):
+            update.period_actual_value = prev_val
+            update.save(recalculate=False)
+
+        # Special case: only_self and no data should give an empty string instead of '0'
+        if only_self and not self.data.exists():
+            prev_val = ''
+
+        # Finally, update the actual value of the period itself
+        if save:
+            self.actual_value = prev_val
+            self.save()
+
+        # Return the actual value of the period itself
+        return prev_val
+
+    def recalculate_children(self, save=True):
+        """
+        Re-calculate the actual value of this period based on the actual values of the child
+        periods.
+
+        In case the measurement is 'Percentage', it should be an average of all child periods.
+        Otherwise, the child period values can just be added up.
+
+        :param save; Boolean, saves to period if True
+        :return Actual value of period
+        """
+        if self.indicator.measure == '2':
+            new_value = self.child_periods_average()
+        else:
+            new_value = self.child_periods_sum(include_self=True)
+
+        if save:
+            self.actual_value = new_value
+            self.save()
+
+        return new_value
 
     def is_calculated(self):
         """
@@ -520,11 +581,17 @@ class IndicatorPeriod(models.Model):
                     children = children.exclude(pk=child.pk)
         return children
 
-    def child_periods_sum(self):
+    def child_periods_sum(self, include_self=False):
         """
         Returns the sum of child indicator periods.
+
+        :param include_self; Boolean to include the updates on the period itself, as well as its'
+        children
+        :return String of the sum
         """
         period_sum = 0
+
+        # Loop through the child periods and sum up all the values
         for period in self.child_periods():
             if period.indicator.result.project.aggregate_to_parent and period.actual_value:
                 try:
@@ -532,11 +599,19 @@ class IndicatorPeriod(models.Model):
                 except (InvalidOperation, TypeError):
                     pass
 
+        if include_self:
+            try:
+                period_sum += Decimal(self.recalculate_period(save=False, only_self=True))
+            except (InvalidOperation, TypeError):
+                pass
+
         return str(period_sum)
 
     def child_periods_average(self):
         """
         Returns the average of child indicator periods.
+
+        :return String of the average
         """
         if self.indicator.result.project.aggregate_children:
             child_periods = self.child_periods(has_data=True)
@@ -564,61 +639,6 @@ class IndicatorPeriod(models.Model):
         else:
             return self.indicator.periods.exclude(period_start=None).filter(
                 period_start__lt=self.period_start).order_by('-period_start').first()
-
-    def update_actual_value(self, data, relative_data, comment=''):
-        """
-        Updates the actual value of this period and related periods (parent period and next period).
-
-        :param data; String or Integer that represents the new actual value data of the period
-        :param relative_data; Boolean indicating whether the data should be updated based on the
-        relative value of the current actual value (True) or overwrite the actual value (False)
-        :param comment; String that represents the new actual comment data of the period (Optional)
-        """
-        old_is_decimal = False
-        new_is_decimal = False
-        parent = self.parent_period()
-        aggregate_to_parent = self.indicator.result.project.aggregate_to_parent
-
-        # Convert the old actual value (previous actual value of period)
-        try:
-            old_actual = Decimal(self.actual_value or '0')
-            old_is_decimal = True
-        except (InvalidOperation, TypeError):
-            old_actual = self.actual_value
-
-        # Convert the new value (new data entered in an update)
-        try:
-            new_actual = Decimal(data)
-            new_is_decimal = True
-        except (InvalidOperation, TypeError):
-            new_actual = data
-
-        # Calculate the new actual value of period and parent period
-        if old_is_decimal and new_is_decimal:
-            self.actual_value = str(old_actual + new_actual) if relative_data else str(new_actual)
-            new_parent_value = str(new_actual)
-        elif not old_is_decimal and new_is_decimal:
-            self.actual_value = str(new_actual + Decimal(self.child_periods_sum()))
-            new_parent_value = str(new_actual + Decimal(self.child_periods_sum()))
-        else:
-            self.actual_value = str(new_actual)
-            new_parent_value = str(-old_actual) if old_is_decimal or new_is_decimal else ''
-
-        # Save new actual value of period
-        self.save(update_fields=['actual_value'], update_parents=False)
-
-        # Update parent period
-        if parent and aggregate_to_parent and (old_is_decimal or new_is_decimal):
-            aggregate_from_children = parent.indicator.result.project.aggregate_children
-            if aggregate_from_children and parent.actual_value_is_decimal():
-                if self.indicator.measure != '2':
-                    parent.update_actual_value(new_parent_value, True)
-                else:
-                    parent.update_actual_value(parent.child_periods_average(), False)
-
-        if comment:
-            self.actual_comment = comment
-            self.save(update_fields=['actual_comment'])
 
     @property
     def percent_accomplishment(self):
@@ -758,74 +778,21 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         verbose_name = _(u'indicator period data')
         verbose_name_plural = _(u'indicator period data')
 
-    def save(self, *args, **kwargs):
-        """
-        Process approved data updates.
-        """
-        do_recalculation = False
-        if not kwargs.pop('recalculate', False):
-            # Always copy the period's actual value to the period_actual_value field.
-            self.period_actual_value = str(self.period.actual_value or '0')
-
-            if not self.pk:
-                if self.status == self.STATUS_APPROVED_CODE:
-                    # Newly added data update is immediately approved.
-                    self.period.update_actual_value(self.data, self.relative_data)
-            else:
-                orig = IndicatorPeriodData.objects.get(pk=self.pk)
-
-                # Mail admins of a paying partner when an update needs to be approved
-                if orig.status != self.STATUS_PENDING_CODE and \
-                        self.status == self.STATUS_PENDING_CODE:
-                    me_managers_group = Group.objects.get(name='M&E Managers')
-                    me_managers = self.period.indicator.result.project.publishing_orgs.employments().\
-                        approved().filter(group=me_managers_group)
-
-                    rsr_send_mail(
-                        [empl.user.email for empl in me_managers],
-                        subject='results_framework/approve_update_subject.txt',
-                        message='results_framework/approve_update_message.txt',
-                        html_message='results_framework/approve_update_message.html',
-                        msg_context={'update': self}
-                    )
-
-                # Mail the user that created the update when an update needs revision
-                elif orig.status != self.STATUS_REVISION_CODE and \
-                        self.status == self.STATUS_REVISION_CODE:
-                    rsr_send_mail(
-                        [self.user.email],
-                        subject='results_framework/revise_update_subject.txt',
-                        message='results_framework/revise_update_message.txt',
-                        html_message='results_framework/revise_update_message.html',
-                        msg_context={'update': self}
-                    )
-
-                # Process data when the update has been approved and mail the user about it
-                elif orig.status != self.STATUS_APPROVED_CODE and \
-                        self.status == self.STATUS_APPROVED_CODE:
-                    self.period.update_actual_value(self.data, self.relative_data)
-                    rsr_send_mail(
-                        [self.user.email],
-                        subject='results_framework/approved_subject.txt',
-                        message='results_framework/approved_message.txt',
-                        html_message='results_framework/approved_message.html',
-                        msg_context={'update': self}
-                    )
-
-                # An approved indicator update has been edited. Update to the new values and
-                # recalculate
-                elif orig.status == self.STATUS_APPROVED_CODE:
-                    try:
-                        self.period.update_actual_value(Decimal(self.data) - Decimal(orig.data), True)
-                    except (InvalidOperation, TypeError):
-                        self.period.update_actual_value(self.data, False)
-
-                    do_recalculation = True
-
+    def save(self, recalculate=True, *args, **kwargs):
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
-        if do_recalculation:
-            self.period.calculate_all_updates_from_start()
+        # In case the status is approved, recalculate the period
+        if recalculate and self.status == self.STATUS_APPROVED_CODE:
+            self.period.recalculate_period()
+
+    def delete(self, *args, **kwargs):
+        old_status = self.status
+
+        super(IndicatorPeriodData, self).delete(*args, **kwargs)
+
+        # In case the status was approved, recalculate the period
+        if old_status == self.STATUS_APPROVED_CODE:
+            self.period.recalculate_period()
 
     def clean(self):
         """
@@ -869,20 +836,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                                                         u'in a data update'))
         if validation_errors:
             raise ValidationError(validation_errors)
-
-    def delete(self, *args, **kwargs):
-        """
-        Check if the data update was already approved. If so, try to substract the approved data
-        from the actual data of the indicator period.
-        """
-        if self.status == self.STATUS_APPROVED_CODE:
-            try:
-                self.period.update_actual_value(-1 * Decimal(self.data), self.relative_data)
-            except InvalidOperation:
-                pass
-        super(IndicatorPeriodData, self).delete(*args, **kwargs)
-        if self.status == self.STATUS_APPROVED_CODE:
-            self.period.calculate_all_updates_from_start()
 
     @property
     def status_display(self):
