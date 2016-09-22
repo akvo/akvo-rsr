@@ -146,7 +146,7 @@ class Result(models.Model):
         Return a dictionary of this result's child projects.
         """
         projects = {}
-        for result in Result.objects.filter(parent_result=self).select_related('project__title'):
+        for result in Result.objects.filter(parent_result=self).select_related('project'):
             projects[result.project.id] = result.project.title
         return projects
 
