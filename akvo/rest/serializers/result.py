@@ -25,12 +25,9 @@ class ResultSerializer(ResultRawSerializer):
     child_projects = serializers.ReadOnlyField()
 
 
-class ResultsFrameworkSerializer(BaseRSRSerializer):
+class ResultsFrameworkSerializer(ResultRawSerializer):
 
     indicators = IndicatorFrameworkSerializer(many=True, required=False)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Result
