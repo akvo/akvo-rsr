@@ -13,7 +13,7 @@ from ..viewsets import PublicProjectViewSet
 class ResultsViewSet(PublicProjectViewSet):
     """Results resource."""
 
-    queryset = Result.objects.all()
+    queryset = Result.objects.all().select_related('project')
     serializer_class = ResultSerializer
 
 

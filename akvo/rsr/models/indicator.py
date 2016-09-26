@@ -517,6 +517,29 @@ class IndicatorPeriod(models.Model):
 
         return new_value
 
+    def update_actual_comment(self, save=True):
+        """
+        Set the actual comment to the text of the latest approved update.
+
+        :param save; Boolean, save period if True
+        :return Actual comment of period
+        """
+
+        approved_updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+        update_texts = [
+            '{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
+            for update in approved_updates.order_by('-created_at')
+        ]
+        actual_comment = ' | '.join(update_texts)
+        if len(actual_comment) >= 2000:  # max_size
+            actual_comment = '{} ...'.format(actual_comment[:1995])
+
+        self.actual_comment = actual_comment
+        if save:
+            self.save()
+
+        return self.actual_comment
+
     def is_calculated(self):
         """
         When a period has got indicator updates, we consider the actual value to be a
@@ -784,6 +807,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         # In case the status is approved, recalculate the period
         if recalculate and self.status == self.STATUS_APPROVED_CODE:
             self.period.recalculate_period()
+            self.period.update_actual_comment()
 
     def delete(self, *args, **kwargs):
         old_status = self.status

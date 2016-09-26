@@ -8,6 +8,7 @@ from django.utils import six
 from django.utils.xmlutils import SimplerXMLGenerator
 
 from six import string_types
+
 from django.utils.six import StringIO
 from django.utils.encoding import smart_text
 
