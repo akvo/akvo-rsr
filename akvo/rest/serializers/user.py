@@ -44,6 +44,9 @@ class UserSerializer(BaseRSRSerializer):
     approved_employments = EmploymentSerializer(
         source='approved_employments', many=True, required=False
     )
+    # Legacy fields to support Tastypie API emulation
+    legacy_org = serializers.SerializerMethodField('get_legacy_org')
+    username = serializers.SerializerMethodField('get_username')
 
     class Meta:
         model = get_user_model()
@@ -52,6 +55,7 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
+            'username',
             'is_active',
             'is_staff',
             'is_admin',
@@ -60,15 +64,35 @@ class UserSerializer(BaseRSRSerializer):
             'organisation',
             'organisations',
             'approved_employments',
+            'legacy_org',
         )
         exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
         It's neither correct nor do we want this data to be visible.
+
+        Remove the fields "legacy_org" and "username" that are only present to support older
+        versions of Up calling the Tastypie API endpoints that we now emulate using DRF
         """
         super(UserSerializer, self).__init__(*args, **kwargs)
         del self.fields['absolute_url']
+
+        # Remove the fields unless we're called via Tastypie URLs
+        request =  kwargs.get("context", {}).get("request", None)
+        if request and "/api/v1/" not in request.path:
+            del self.fields['legacy_org']
+            del self.fields['username']
+
+    def get_legacy_org(self, obj):
+        """ Up needs the last tag to be the user's org, it only needs the org ID
+        """
+        if obj.first_organisation():
+            return {"object": {"id": obj.first_organisation().id}}
+        return None
+
+    def get_username(self, obj):
+        return obj.email
 
 
 class UserPasswordSerializer(serializers.Serializer):
