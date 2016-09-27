@@ -160,73 +160,22 @@ class MigrationGetTestCase(TestCase):
         '/rest/v1/typeaheads/user_organisations?format=json',
         '/rest/v1/typeaheads/user_projects?format=json',
 
-        # FIXME: Need to figure out METHOD and use accordingly
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/result/{result}/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/result/?format=json&project={project}",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator/?format=json&result__project={project}",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_framework/{period}/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_data_framework/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_data_comment/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/user/{{ user.pk }}/?format=json",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/partnership/?format=json&project={{ project.pk }}",
-        # # akvo/templates/myrsr/my_results.html
-        # "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/iati_export/?format=json&reporting_organisation={{ selected_org.id }}",
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/iati_export/{iati_export}/?format=json",
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/iati_export/?format=json",
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/iati_activity_export/?format=json&iati_export={iati_export}",
-        # # akvo/templates/myrsr/my_iati.html
-        # "/rest/v1/project_iati_export/?format=json&limit=50&reporting_org={{ selected_org.id }}"
-        # # akvo/templates/project_directory.html
-        # "/rest/v1/partnership_more_link/?format=json&project={project}"
-        # # akvo/templates/project_main.html
-        # "/rest/v1/result/{result}/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/result/?format=json&project={project}",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator/?format=json&result__project={project}",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_framework/{period}/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_data_framework/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_data_comment/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/user/{{ user.pk }}/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/partnership/?format=json&project={{ project.pk }}",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
-        # # akvo/templates/project_main.html
-        # "/rest/v1/partnership_more_link/?format=json&project={project}"
+        # akvo/rsr/static/scripts-src/my-results.js
+        '/rest/v1/partnership/?format=json&project=4',
+        '/rest/v1/user/6/?format=json',
+        '/rest/v1/result/?format=json&project=4',
+        '/rest/v1/indicator/?format=json&result__project=4',
+        '/rest/v1/indicator_period/?format=json&indicator__result__project=4',
+        '/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=4',
+        '/rest/v1/indicator_period_framework/1/?format=json',
 
+        # akvo/rsr/static/scripts-src/my-iati.js
+        '/rest/v1/project_iati_export/?format=json&limit=50&reporting_org=3',
+        '/rest/v1/iati_export/?format=json&reporting_organisation=2&ordering=-id&limit=1',
+        '/rest/v1/iati_export/?format=json&reporting_organisation=3',
 
+        # akvo/rsr/static/scripts-src/project-main/project-main-partners.js
+        '/rest/v1/partnership_more_link/?format=json&project=4',
 
         '/rest/v1/project_update/?format=xml&project=3&last_modified_at__gt=2014-01-01',
 
@@ -251,6 +200,15 @@ class MigrationGetTestCase(TestCase):
         '/rest/v1/employment/{employment_id}/approve/?format=json',
         '/rest/v1/employment/{employment_id}/set_group/{group_id}/?format=json',
 
+        # akvo/rsr/static/scripts-src/my-results.js
+        "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
+        "/rest/v1/indicator_period_data_comment/?format=json",
+        "/rest/v1/indicator_period_data_framework/?format=json"
+
+        # akvo/rsr/static/scripts-src/my-iati.js
+        '/rest/v1/iati_export/?format=json',
+
+
     ]
 
     PATCH_URLS = [
@@ -258,6 +216,14 @@ class MigrationGetTestCase(TestCase):
         '/rest/v1/project/{project_id}/?format=json',
         '/rest/v1/project_document/{documentId}/?format=json',
         '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
+
+        # akvo/rsr/static/scripts-src/my-results.js
+        "/rest/v1/indicator_period_data_framework/{update}/?format=json",
+        "/rest/v1/indicator_period_framework/{period}/?format=json",
+
+        # akvo/rsr/static/scripts-src/my-iati.js
+        "/rest/v1/iati_export/{iati_export}/?format=json",
+        "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
     ]
 
 
@@ -282,6 +248,9 @@ class MigrationGetTestCase(TestCase):
 
         # akvo/rsr/static/scripts-src/my-updates.js
         '/rest/v1/project_update/{update_id}/?format=json',
+
+        # akvo/rsr/static/scripts-src/my-results.js
+        "/rest/v1/indicator_period_data_framework/{update}/?format=json",
     ]
 
     @classmethod
