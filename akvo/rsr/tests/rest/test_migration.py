@@ -63,6 +63,8 @@ def collect_responses():
     with open(EXPECTED_RESPONSES_FILE, 'w') as f:
         json.dump(output, f, indent=2)
 
+    print('Collected responses for {} urls'.format(len(output)))
+
 
 def load_fixture_data():
     """Load up fixture data."""
@@ -205,7 +207,6 @@ class MigrationGetTestCase(TestCase):
         # akvo/rsr/static/scripts-src/my-iati.js
         '/rest/v1/iati_export/?format=json',
 
-
     ]
 
     PATCH_URLS = [
@@ -281,6 +282,9 @@ class MigrationGetTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        if not cls.errors:
+            return
+
         for url, _, _, e in cls.errors:
             print(e)
             print('Response for {}'.format(url))
@@ -290,8 +294,7 @@ class MigrationGetTestCase(TestCase):
         for url, _, _, _ in cls.errors:
             print(url)
 
-        if cls.errors:
-            raise AssertionError('Some tests failed')
+        raise AssertionError('Some tests failed')
 
 
     @classmethod
