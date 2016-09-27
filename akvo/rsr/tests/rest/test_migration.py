@@ -293,7 +293,8 @@ class MigrationGetTestCase(TestCase):
         for url, _, _, _ in cls.errors:
             print(url)
 
-        raise AssertionError('Some tests failed')
+        if cls.errors:
+            raise AssertionError('Some tests failed')
 
 
     @classmethod
