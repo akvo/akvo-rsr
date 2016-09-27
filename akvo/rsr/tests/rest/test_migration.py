@@ -267,14 +267,15 @@ class MigrationGetTestCase(TestCase):
         # Load some initial fixture data
         load_fixture_data()
 
+        # Make sure user is logged in, etc.
+        cls.setup_user_context()
+
         if MODE != TEST:
             collect_responses()
             raise unittest.SkipTest('Collecting expected responses')
 
         cls.errors = []
         cls._load_expected()
-
-        cls.setup_user_context()
 
     @classmethod
     def setup_user_context(cls):
