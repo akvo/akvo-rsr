@@ -176,7 +176,31 @@ class MigrationGetTestCase(TestCase):
         # akvo/rsr/static/scripts-src/project-main/project-main-partners.js
         '/rest/v1/partnership_more_link/?format=json&project=4',
 
+        # RSR UP urls ################
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
         '/rest/v1/project_update/?format=xml&project=3&last_modified_at__gt=2014-01-01',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/VerifyProjectUpdateService.java
+        '/rest/v1/project_update/?format=xml&uuid=%s&limit=2',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
+        '/rest/v1/project_up/%s/?format=xml&image_thumb_name=up&image_thumb_up_width=100',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
+        '/rest/v1/country/?format=json&limit=50',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
+        '/rest/v1/user/6/?format=json&depth=1',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetOrgDataService.java
+        '/rest/v1/organisation/?format=json&limit=10',
+        '/rest/v1/employment/?format=json&user=3',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
+        '/rest/v1/organisation/3/?format=json',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
+        '/rest/v1/results_framework/?format=json&project=4',
 
     ]
 
@@ -206,6 +230,19 @@ class MigrationGetTestCase(TestCase):
 
         # akvo/rsr/static/scripts-src/my-iati.js
         '/rest/v1/iati_export/?format=json',
+
+
+        # RSR UP urls ################
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
+        '/rest/v1/project_update/?format=xml',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitIpdService.java
+        '/rest/v1/indicator_period_data/?format=json',
+
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
+        '/rest/v1/user/%s/request_organisation/?format=json',
+
 
     ]
 
