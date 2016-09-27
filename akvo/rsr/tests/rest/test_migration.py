@@ -57,9 +57,6 @@ def collect_responses():
     output = {}
 
     for url in MigrationGetTestCase.GET_URLS:
-        if 'xml' in url:
-            from IPython.core.debugger import Tracer; Tracer()()
-
         response = CLIENT.get(url)
         output[url] = response.content
 
