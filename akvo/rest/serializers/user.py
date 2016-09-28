@@ -120,10 +120,6 @@ class UserPasswordSerializer(serializers.Serializer):
 
         return attrs
 
-    def restore_object(self, attrs, instance=None):
-        """Not needed, changing passwords happens in UserViewSet."""
-        return attrs
-
 
 class UserDetailsSerializer(BaseRSRSerializer):
 

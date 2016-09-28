@@ -72,7 +72,7 @@ def change_password(request, pk=None):
         raise PermissionDenied()
 
     # Process request
-    serializer = UserPasswordSerializer(data=request.DATA, instance=user)
+    serializer = UserPasswordSerializer(data=request.data, instance=user)
     if serializer.is_valid():
         user.set_password(serializer.data['new_password2'])
         user.save()
@@ -95,12 +95,12 @@ def update_details(request, pk=None):
         raise PermissionDenied()
 
     # Process request
-    serializer = UserDetailsSerializer(data=request.DATA, instance=user)
+    serializer = UserDetailsSerializer(data=request.data, instance=user)
     if serializer.is_valid():
         user.first_name = serializer.data['first_name']
         user.last_name = serializer.data['last_name']
         user.save()
-        return Response(request.DATA)
+        return Response(request.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -120,10 +120,10 @@ def request_organisation(request, pk=None):
     # Users themselves are only allowed to request to join an organisation
     if not user_by_pk == request.user:
         raise PermissionDenied()
-    request.DATA['user'] = pk
+    request.data['user'] = pk
 
     # Process request
-    serializer = EmploymentSerializer(data=request.DATA)
+    serializer = EmploymentSerializer(data=request.data)
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])

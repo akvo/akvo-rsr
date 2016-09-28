@@ -139,14 +139,12 @@ def validate_date(date):
 @permission_classes((IsAuthenticated, ))
 def upload_indicator_update_photo(request, pk=None):
     update = ProjectUpdate.objects.get(pk=pk)
-    user = request.user
 
     # TODO: permissions
 
-    files = request.FILES
-
-    if 'photo' in files.keys():
-        update.photo = files['photo']
+    data = request.data
+    if 'photo' in data.keys():
+        update.photo = data['photo']
         update.save(update_fields=['photo'])
 
     return Response(ProjectUpdateExtraSerializer(update).data)
