@@ -100,6 +100,8 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.title, "Test project for IATI import v2")
         self.assertEqual(project_v2.partners.count(), 4)
         self.assertEqual(project_v2.transactions.count(), 1)
+        self.assertEqual(project_v2.budget_items.count(), 1)
+        self.assertEqual(project_v2.planned_disbursements.count(), 2)
         self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_incorrect_import(self):

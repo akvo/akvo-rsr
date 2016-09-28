@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from akvo.codelists.models import BudgetType, Currency
 from akvo.codelists.store.codelists_v202 import BUDGET_TYPE, CURRENCY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class PlannedDisbursement(models.Model):
@@ -56,12 +56,7 @@ class PlannedDisbursement(models.Model):
 
     def __unicode__(self):
         if self.value:
-            if self.currency:
-                return u'%s %s' % (self.iati_currency().name,
-                                   '{:,}'.format(int(self.value)))
-            else:
-                return u'%s %s' % (self.project.currency,
-                                   '{:,}'.format(int(self.value)))
+            return u'%s %s' % (get_codelist_value_name(self.iati_currency()), '{:,}'.format(int(self.value)))
         else:
             return u'%s' % _(u'No value specified')
 
@@ -80,10 +75,7 @@ class PlannedDisbursement(models.Model):
         return ''
 
     def iati_currency(self):
-        if self.currency:
-            return codelist_value(Currency, self, 'currency')
-        else:
-            return codelist_value(Currency, self.project, 'currency')
+        return codelist_value(Currency, self if self.currency else self.project, 'currency')
 
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
