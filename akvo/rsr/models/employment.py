@@ -6,7 +6,7 @@
 
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.codelists_v202 import COUNTRY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
@@ -114,7 +114,7 @@ class Employment(models.Model):
             user_full=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
             is_approved=self.is_approved,
             job_title=self.job_title,
-            country_full=self.iati_country().name if self.country else '',
+            country_full=get_codelist_value_name(self.iati_country()),
             group=user_group,
             other_groups=other_groups,
             actions=True if self.organisation in org_list else False,

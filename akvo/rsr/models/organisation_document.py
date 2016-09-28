@@ -13,7 +13,7 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Country, DocumentCategory, Language
 from akvo.codelists.store.codelists_v202 import COUNTRY, DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 def document_path(self, filename):
@@ -108,10 +108,7 @@ class OrganisationDocumentCategory(models.Model):
 
     def __unicode__(self):
         if self.category:
-            try:
-                return self.iati_category().name
-            except AttributeError:
-                return self.iati_category()
+            return get_codelist_value_name(self.iati_category())
         else:
             return '%s' % _(u'No category specified')
 
@@ -139,10 +136,7 @@ class OrganisationDocumentCountry(models.Model):
 
     def __unicode__(self):
         if self.country:
-            try:
-                return self.iati_country().name
-            except AttributeError:
-                return self.iati_country()
+            return get_codelist_value_name(self.iati_country())
         else:
             return '%s' % _(u'No country specified')
 
