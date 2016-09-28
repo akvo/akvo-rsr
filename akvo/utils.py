@@ -336,6 +336,19 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     return ''
 
 
+def get_codelist_value_name(value):
+    """
+    Return name for a codelist value object.
+    :param value: Codelist instance
+    :return: Name of the codelist instance or value itself
+    """
+
+    try:
+        return value.name
+    except AttributeError:
+        return value
+
+
 def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     """
     Looks up the name of a codelist
