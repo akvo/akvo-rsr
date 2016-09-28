@@ -30,11 +30,14 @@ You should get an output with all the offending URLs.
 
 from __future__ import print_function
 
+
+from contextlib import contextmanager
 import json
 from os.path import abspath, dirname, exists, join
 import unittest
 
 from django.conf import settings
+from django.db import transaction
 from django.test import TestCase, Client
 from django.core import management
 import xmltodict
@@ -50,20 +53,39 @@ MODE = TEST if exists(EXPECTED_RESPONSES_FILE) else COLLECT
 CLIENT = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
 
+class CancelTransactionError(Exception):
+    """The exception we raise to cancel a transaction."""
+
+
 def collect_responses():
     """ Collect responses for all the interesting urls."""
 
     load_fixture_data()
     output = {}
 
+    get_responses = output.setdefault('GET', {})
     for url in MigrationGetTestCase.GET_URLS:
-        response = CLIENT.get(url)
-        output[url] = response.content
+        get_responses[url] = CLIENT.get(url).content
+    print('Collected GET responses for {} urls'.format(len(get_responses)))
+
+    post_responses = output.setdefault('POST', {})
+    for url, data, queries in MigrationGetTestCase.POST_URLS:
+        post_responses[url] = MigrationGetTestCase.get_post_response_dict(url, data, queries)
+    print('Collected POST responses for {} urls'.format(len(post_responses)))
 
     with open(EXPECTED_RESPONSES_FILE, 'w') as f:
         json.dump(output, f, indent=2)
 
-    print('Collected responses for {} urls'.format(len(output)))
+
+@contextmanager
+def do_in_transaction():
+    """A context manager to do things inside a transaction, and then rollback."""
+    try:
+        with transaction.atomic():
+            yield
+            raise CancelTransactionError('Cancel the transaction!')
+    except CancelTransactionError:
+        pass
 
 
 def load_fixture_data():
@@ -205,44 +227,48 @@ class MigrationGetTestCase(TestCase):
     ]
 
     POST_URLS = [
-        # akvo/scripts/cordaid/organisation_upload.py
-        '/rest/v1/internal_organisation_id/',
-
         # akvo/rsr/static/scripts-src/project-editor.jsx
-        '/rest/v1/project/{project_id}/project_editor/?format=json',
-        '/rest/v1/project/{project_id}/upload_file/?format=json',
-        '/rest/v1/project/{project_id}/reorder_items/?format=json',
-        '/rest/v1/project/{project_id}/default_periods/?format=json',
-        '/rest/v1/project/{project_id}/import_results/?format=json',
-        '/rest/v1/organisation/?format=json',
-        '/rest/v1/organisation_location/?format=json',
-        '/rest/v1/organisation/{organisation_id}/add_logo/?format=json',
+        ('/rest/v1/project/4/project_editor/?format=json',
+         {'rsr_project.title.4': 'foo bar'},
+         ('Project.objects.get(id=4).title',),
+        ),
 
-        # akvo/rsr/static/scripts-src/my-user-management.js
-        '/rest/v1/invite_user/?format=json',
-        '/rest/v1/employment/{employment_id}/approve/?format=json',
-        '/rest/v1/employment/{employment_id}/set_group/{group_id}/?format=json',
+        # XXX Figure out data to send
+        # '/rest/v1/project/{project_id}/upload_file/?format=json',
+        # '/rest/v1/project/{project_id}/reorder_items/?format=json',
+        # '/rest/v1/project/{project_id}/default_periods/?format=json',
+        # '/rest/v1/project/{project_id}/import_results/?format=json',
+        # '/rest/v1/organisation/?format=json',
+        # '/rest/v1/organisation_location/?format=json',
+        # '/rest/v1/organisation/{organisation_id}/add_logo/?format=json',
 
-        # akvo/rsr/static/scripts-src/my-results.js
-        "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
-        "/rest/v1/indicator_period_data_comment/?format=json",
-        "/rest/v1/indicator_period_data_framework/?format=json"
+        # # akvo/scripts/cordaid/organisation_upload.py
+        # XXX: '/rest/v1/internal_organisation_id/',
 
-        # akvo/rsr/static/scripts-src/my-iati.js
-        '/rest/v1/iati_export/?format=json',
+        # # akvo/rsr/static/scripts-src/my-user-management.js
+        # '/rest/v1/invite_user/?format=json',
+        # '/rest/v1/employment/{employment_id}/approve/?format=json',
+        # '/rest/v1/employment/{employment_id}/set_group/{group_id}/?format=json',
+
+        # # akvo/rsr/static/scripts-src/my-results.js
+        # "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
+        # "/rest/v1/indicator_period_data_comment/?format=json",
+        # "/rest/v1/indicator_period_data_framework/?format=json"
+
+        # # akvo/rsr/static/scripts-src/my-iati.js
+        # '/rest/v1/iati_export/?format=json',
 
 
-        # RSR UP urls ################
+        # # RSR UP urls ################
 
-        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
-        '/rest/v1/project_update/?format=xml',
+        # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
+        # '/rest/v1/project_update/?format=xml',
 
-        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitIpdService.java
-        '/rest/v1/indicator_period_data/?format=json',
+        # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitIpdService.java
+        # '/rest/v1/indicator_period_data/?format=json',
 
-        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
-        '/rest/v1/user/%s/request_organisation/?format=json',
-
+        # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
+        # '/rest/v1/user/%s/request_organisation/?format=json',
 
     ]
 
@@ -340,18 +366,72 @@ class MigrationGetTestCase(TestCase):
             cls._expected = json.load(f)
 
 
-    def test_get(self):
-        """Test if the get requests return the same data as expected."""
+    @staticmethod
+    def get_post_response_dict(url, data, queries):
+        response_dict = {}
 
+        with do_in_transaction():
+            # POST
+            response_dict['post'] = CLIENT.post(url, data).content
+
+            # GET
+            response_dict['get'] = CLIENT.get(url).content
+
+            # query assertions
+            queries_dict = response_dict.setdefault('queries', {})
+            EXEC_CODE = 'from akvo.rsr.models import *; output = {}'
+            for query in queries:
+                code = EXEC_CODE.format(query)
+                ns = {}
+                exec(code, ns)
+                queries_dict[query] = ns['output']
+
+        return response_dict
+
+
+    def test_get(self):
+        """Test if GET requests return expected data."""
+
+        expected_responses = self._expected.get('GET', {})
         for url in self.GET_URLS:
-            if url not in self._expected:
+            if url not in expected_responses:
                 print('Expected output not recorded for {}'.format(url))
                 continue
             response = self.c.get(url)
-            expected = parse_response(url, self._expected[url])
+            expected = parse_response(url, expected_responses[url])
             actual = parse_response(url, response.content)
             try:
                 self.assertEqual(expected, actual)
 
             except AssertionError as e:
                 self.errors.append((url, expected, actual, e))
+
+    def test_post(self):
+        """Test if POST requests post data correctly."""
+
+        expected_responses = self._expected.get('POST', {})
+        for url, data, queries in self.POST_URLS:
+
+            if url not in expected_responses:
+                print('Expected output not recorded for {}'.format(url))
+                continue
+
+            response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
+            self.assertResponseDictEqual(expected_responses[url], response_dict, url)
+
+    def assertResponseDictEqual(self, expected, actual, url):
+        # FIXME: It's weird for an assertion to take a url as argument
+        for key, expected_value in expected.items():
+            try:
+                if isinstance(expected_value, dict):
+                    self.assertEqual(expected_value, actual[key])
+
+                else:
+                    self.assertEqual(
+                        parse_response(url, expected_value),
+                        parse_response(url, actual[key])
+                    )
+
+            except AssertionError as e:
+                self.errors.append(('{}:{}'.format(key, url), expected, actual, e))
+                break
