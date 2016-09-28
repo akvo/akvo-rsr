@@ -49,7 +49,7 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
             value = request.query_params.get(key, None)
             try:
                 return ast.literal_eval(value)
-            except ValueError:
+            except (ValueError, SyntaxError):
                 return None
 
         qs_params = ['filter', 'exclude', 'select_related', 'prefetch_related']
