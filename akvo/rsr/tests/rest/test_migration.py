@@ -107,7 +107,7 @@ def parse_response(url, response):
     else:
         parsed = json.loads(response)
 
-    return _drop_unimportant_data(parsed)
+    return parsed
 
 
 def _drop_unimportant_data(d):
@@ -117,6 +117,7 @@ def _drop_unimportant_data(d):
 
     ignored_string_prefixes = (
         '/media/cache/',
+        '/var/akvo/rsr/mediaroot',
     )
 
 
@@ -241,8 +242,12 @@ class MigrationGetTestCase(TestCase):
         ),
 
         # XXX Figure out data to send
-        # '/rest/v1/project/{project_id}/upload_file/?format=json',
-        # '/rest/v1/project/{project_id}/reorder_items/?format=json',
+        ('/rest/v1/project/4/upload_file/?format=json',
+         {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
+          'field_id': 'rsr_project.current_image.4'
+         },
+         ('Project.objects.get(id=4).current_image.path',),
+        ),
         # '/rest/v1/project/{project_id}/default_periods/?format=json',
         # '/rest/v1/project/{project_id}/import_results/?format=json',
         # '/rest/v1/organisation/?format=json',
@@ -425,6 +430,11 @@ class MigrationGetTestCase(TestCase):
 
             response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
             self.assertResponseDictEqual(expected_responses[url], response_dict, url)
+
+    def assertEqual(self, expected, actual, msg=None):
+        expected = _drop_unimportant_data(expected)
+        actual = _drop_unimportant_data(actual)
+        super(MigrationGetTestCase, self).assertEqual(expected, actual, msg)
 
     def assertResponseDictEqual(self, expected, actual, url):
         # FIXME: It's weird for an assertion to take a url as argument
