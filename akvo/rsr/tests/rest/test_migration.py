@@ -42,7 +42,7 @@ from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import Indicator, Organisation, Project, Result
+from akvo.rsr.models import Indicator, IndicatorPeriod, Organisation, Project, Result
 
 
 TEST = 0
@@ -105,8 +105,11 @@ def load_fixture_data():
         for title in ('first', 'second', 'third'):
             r = Result(project=project, title=title)
             r.save()
-            i = Indicator(result=r, title=title)
-            i.save()
+            for title in ('1', '2', '3'):
+                i = Indicator(result=r, title=title)
+                i.save()
+                ip = IndicatorPeriod(indicator=i)
+                ip.save()
 
 
 def parse_response(url, response):
@@ -261,17 +264,71 @@ class MigrationGetTestCase(TestCase):
          {'item_type': 'result', 'item_id': 1, 'item_direction': 'up'},
          ('Result.objects.count()',),
         ),
+
         ('/rest/v1/project/4/reorder_items/?format=json&dedup_param=indicator',
          {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down'},
          ('Indicator.objects.count()',),
         ),
 
+        ('/rest/v1/project/4/default_periods/?format=json',
+         {'indicator_id': '1', 'copy': 'true', 'set_default': 'true'},
+         ('Indicator.objects.count()',
+          'IndicatorPeriod.objects.count()'),
+        ),
+
+        ('/rest/v1/project/4/import_results/?format=json',
+         {}, (),
+        ),
+
+        ('/rest/v1/organisation/2/add_logo/?format=json',
+         {'logo': open(join(dirname(HERE), 'iati_export', 'test_image.jpg'))},
+         ('Organisation.objects.get(id=2).logo.path',),
+        ),
+
+        ('/rest/v1/organisation_location/?format=json',
+         {"latitude": 60,
+          "longitude": 5,
+          "city": "Amsterdam",
+          "location_target": 1,
+          "iati_country": "NL",
+          "country": 3
+         },
+         ('OrganisationLocation.objects.count()',
+          'OrganisationLocation.objects.get(id=4).latitude',
+          'OrganisationLocation.objects.get(id=4).longitude'),
+        ),
+
+        ('/rest/v1/organisation/?format=json',
+         {
+             "locations": [
+                 {
+                     "latitude": 50,
+                     "longitude": 90,
+                     "location_target": 3,
+                     "iati_country": "ID",
+                     "country": 55
+                 }
+             ],
+             "id": 3,
+             "name": "ABC",
+             "long_name": "ABC.XYZ",
+             "language": "en",
+             "organisation_type": "N",
+             "currency": "EUR",
+             "new_organisation_type": 22,
+             "url": "http://www.google.com/",
+             "primary_location": 3,
+             "can_create_projects": True,
+             "allow_edit": True,
+             "public_iati_file": True,
+             "can_become_reporting": False
+         },
+         ('Organisation.objects.count()',
+          'Organisation.objects.get(id=4).name',
+          'Organisation.objects.get(id=4).locations.first().latitude',),
+        )
+
         # XXX Figure out data to send
-        # '/rest/v1/project/{project_id}/default_periods/?format=json',
-        # '/rest/v1/project/{project_id}/import_results/?format=json',
-        # '/rest/v1/organisation/?format=json',
-        # '/rest/v1/organisation_location/?format=json',
-        # '/rest/v1/organisation/{organisation_id}/add_logo/?format=json',
 
         # # akvo/scripts/cordaid/organisation_upload.py
         # XXX: '/rest/v1/internal_organisation_id/',
@@ -288,7 +345,6 @@ class MigrationGetTestCase(TestCase):
 
         # # akvo/rsr/static/scripts-src/my-iati.js
         # '/rest/v1/iati_export/?format=json',
-
 
         # # RSR UP urls ################
 
