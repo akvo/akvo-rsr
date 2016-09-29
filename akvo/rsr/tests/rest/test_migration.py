@@ -60,7 +60,6 @@ class CancelTransactionError(Exception):
 def collect_responses():
     """ Collect responses for all the interesting urls."""
 
-    load_fixture_data()
     output = {}
 
     get_responses = output.setdefault('GET', {})
@@ -100,16 +99,18 @@ def load_fixture_data():
     Organisation.objects.update(can_create_projects=True)
 
     ## Publish a bunch of indicators and results
-    if Result.objects.count() == 0:
-        project = Project.objects.get(id=4)
-        for title in ('first', 'second', 'third'):
-            r = Result(project=project, title=title)
-            r.save()
-            for title in ('1', '2', '3'):
-                i = Indicator(result=r, title=title)
-                i.save()
-                ip = IndicatorPeriod(indicator=i)
-                ip.save()
+    project = Project.objects.get(id=4)
+    for title in ('first', 'second', 'third'):
+        r = Result(project=project, title=title)
+        r.save()
+        for title in ('1', '2', '3'):
+            i = Indicator(result=r, title=title)
+            i.save()
+            ip = IndicatorPeriod(indicator=i)
+            ip.save()
+
+    # Create an unapproved employment
+    Employment(organisation_id=1, user_id=2).save()
 
 
 def parse_response(url, response):
