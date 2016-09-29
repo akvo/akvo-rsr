@@ -42,7 +42,7 @@ from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import Indicator, IndicatorPeriod, Organisation, Project, Result
+from akvo.rsr.models import Employment, Indicator, IndicatorPeriod, Organisation, Project, Result, User
 
 
 TEST = 0
@@ -127,7 +127,7 @@ def parse_response(url, response):
 def _drop_unimportant_data(d):
     """Recursively drop unimportant data from given dict or list."""
 
-    unimportant_keys = ['last_modified_at']
+    unimportant_keys = ['last_modified_at', 'created_at']
 
     ignored_string_prefixes = (
         '/media/cache/',
@@ -300,44 +300,36 @@ class MigrationGetTestCase(TestCase):
         ),
 
         ('/rest/v1/organisation/?format=json',
-         {
-             "locations": [
-                 {
-                     "latitude": 50,
-                     "longitude": 90,
-                     "location_target": 3,
-                     "iati_country": "ID",
-                     "country": 55
-                 }
-             ],
-             "id": 3,
-             "name": "ABC",
-             "long_name": "ABC.XYZ",
-             "language": "en",
-             "organisation_type": "N",
-             "currency": "EUR",
-             "new_organisation_type": 22,
-             "url": "http://www.google.com/",
-             "primary_location": 3,
-             "can_create_projects": True,
-             "allow_edit": True,
-             "public_iati_file": True,
-             "can_become_reporting": False
-         },
+         {u'allow_edit': True,
+          u'can_become_reporting': False,
+          u'can_create_projects': True,
+          u'content_owner': None,
+          u'currency': u'EUR',
+          u'language': u'en',
+          u'long_name': u'ABC XYZ',
+          u'name': u'XYZ',
+          u'new_organisation_type': 70,
+          u'organisation_type': u'C',
+          u'primary_location': 2,
+          u'public_iati_file': True,
+          u'url': u'http://gooddeeds.example.com/'},
          ('Organisation.objects.count()',
-          'Organisation.objects.get(id=4).name',
-          'Organisation.objects.get(id=4).locations.first().latitude',),
-        )
+          'Organisation.objects.get(id=4).name',),
+        ),
 
-        # XXX Figure out data to send
+        # akvo/rsr/static/scripts-src/my-user-management.js
+        ('/rest/v1/invite_user/?format=json',
+         {'user_data': '{"organisation": 1, "group": 2, "email": "abc@example.com"}'},
+         ('User.objects.count()',),
+        ),
 
-        # # akvo/scripts/cordaid/organisation_upload.py
-        # XXX: '/rest/v1/internal_organisation_id/',
+        ('/rest/v1/employment/14/approve/?format=json',
+         {}, ('Employment.objects.filter(is_approved=True).count()',)
+        ),
 
-        # # akvo/rsr/static/scripts-src/my-user-management.js
-        # '/rest/v1/invite_user/?format=json',
-        # '/rest/v1/employment/{employment_id}/approve/?format=json',
-        # '/rest/v1/employment/{employment_id}/set_group/{group_id}/?format=json',
+        ('/rest/v1/employment/14/set_group/2/?format=json',
+         {}, ('Employment.objects.filter(group_id=2).count()',)
+        ),
 
         # # akvo/rsr/static/scripts-src/my-results.js
         # "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
@@ -346,6 +338,16 @@ class MigrationGetTestCase(TestCase):
 
         # # akvo/rsr/static/scripts-src/my-iati.js
         # '/rest/v1/iati_export/?format=json',
+
+        # FIXME: akvo/scripts/cordaid/organisation_upload.py
+        # ('/rest/v1/internal_organisation_id/',
+        #  {
+        #     "recording_org": 1,
+        #     "referenced_org": 1,
+        #     "identifier": "ABC"
+        #  },
+        #  ('InternalOrganisationID.objects.count()',),
+        # ),
 
         # # RSR UP urls ################
 
@@ -488,13 +490,18 @@ class MigrationGetTestCase(TestCase):
                 print('Expected output not recorded for {}'.format(url))
                 continue
             response = self.c.get(url)
-            expected = parse_response(url, expected_responses[url])
-            actual = parse_response(url, response.content)
             try:
+                expected = parse_response(url, expected_responses[url])
+                actual = parse_response(url, response.content)
                 self.assertEqual(expected, actual)
 
-            except AssertionError as e:
+            except (ValueError, AssertionError) as e:
                 self.errors.append((url, expected, actual, e))
+
+            except Exception:
+                print(url)
+                raise
+
 
     def test_post(self):
         """Test if POST requests post data correctly."""
@@ -530,3 +537,7 @@ class MigrationGetTestCase(TestCase):
             except AssertionError as e:
                 self.errors.append(('{}:{}'.format(key, url), expected, actual, e))
                 break
+
+            except Exception:
+                print(url)
+                raise
