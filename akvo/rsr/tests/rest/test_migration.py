@@ -107,26 +107,33 @@ def parse_response(url, response):
     else:
         parsed = json.loads(response)
 
-    return _drop_unimportant_keys(parsed)
+    return _drop_unimportant_data(parsed)
 
 
-def _drop_unimportant_keys(d):
-    """Recursively drop unimportant keys from given dict or list."""
+def _drop_unimportant_data(d):
+    """Recursively drop unimportant data from given dict or list."""
 
     unimportant_keys = ['last_modified_at']
+
+    ignored_string_prefixes = (
+        '/media/cache/',
+    )
+
 
     if isinstance(d, dict):
         for key in unimportant_keys:
             if key in d:
                 d.pop(key)
 
-        for value in d.values():
-            if isinstance(d, dict) or isinstance(d, list):
-                _drop_unimportant_keys(value)
+        for key, value in d.items():
+            d[key] = _drop_unimportant_data(value)
 
     elif isinstance(d, list):
-        for element in d:
-            _drop_unimportant_keys(element)
+        for i, element in enumerate(d):
+            d[i] = _drop_unimportant_data(element)
+
+    elif isinstance(d, basestring) and d.startswith(ignored_string_prefixes):
+        d = 'IGNORED_STRING'
 
     return d
 
