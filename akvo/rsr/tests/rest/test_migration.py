@@ -459,7 +459,9 @@ class MigrationGetTestCase(TestCase):
 
         with do_in_transaction():
             # POST
-            response_dict['post'] = CLIENT.post(url, data).content
+            r = CLIENT.post(url, data)
+            assert int(r.status_code/100) == 2
+            response_dict['post'] = r.content
 
             # GET
             response_dict['get'] = CLIENT.get(url).content
