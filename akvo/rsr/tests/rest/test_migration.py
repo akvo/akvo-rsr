@@ -42,7 +42,7 @@ from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import Organisation
+from akvo.rsr.models import Indicator, Organisation, Project, Result
 
 
 TEST = 0
@@ -96,7 +96,17 @@ def load_fixture_data():
     )
 
     # FIXME: Ideally, the dump data should already have this.
+    ## Let organisations create projects
     Organisation.objects.update(can_create_projects=True)
+
+    ## Publish a bunch of indicators and results
+    if Result.objects.count() == 0:
+        project = Project.objects.get(id=4)
+        for title in ('first', 'second', 'third'):
+            r = Result(project=project, title=title)
+            r.save()
+            i = Indicator(result=r, title=title)
+            i.save()
 
 
 def parse_response(url, response):
@@ -241,13 +251,22 @@ class MigrationGetTestCase(TestCase):
          ('Project.objects.get(id=4).title',),
         ),
 
-        # XXX Figure out data to send
         ('/rest/v1/project/4/upload_file/?format=json',
          {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
-          'field_id': 'rsr_project.current_image.4'
-         },
+          'field_id': 'rsr_project.current_image.4'},
          ('Project.objects.get(id=4).current_image.path',),
         ),
+
+        ('/rest/v1/project/4/reorder_items/?format=json',
+         {'item_type': 'result', 'item_id': 1, 'item_direction': 'up'},
+         ('Result.objects.count()',),
+        ),
+        ('/rest/v1/project/4/reorder_items/?format=json&dedup_param=indicator',
+         {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down'},
+         ('Indicator.objects.count()',),
+        ),
+
+        # XXX Figure out data to send
         # '/rest/v1/project/{project_id}/default_periods/?format=json',
         # '/rest/v1/project/{project_id}/import_results/?format=json',
         # '/rest/v1/organisation/?format=json',
