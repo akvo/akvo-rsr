@@ -47,7 +47,7 @@ class Base64ImageField(ImageField):
         'jpg',
         'png',
     )
-    def from_native(self, base64_data):
+    def to_internal_value(self, base64_data):
         # Check if this is a base64 string
         if isinstance(base64_data, basestring):
             # Try to decode the file. Return validation error if it fails.
@@ -69,9 +69,9 @@ class Base64ImageField(ImageField):
         else:
             data = base64_data
 
-        return super(Base64ImageField, self).from_native(data)
+        return super(Base64ImageField, self).to_internal_value(data)
 
-    def to_native(self, value):
+    def to_representation(self, value):
         """
         :param value: A Base64ImageField object
         :return: a path to a thumbnail with a predetermined size, the default thumb

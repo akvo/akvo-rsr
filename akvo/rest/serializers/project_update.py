@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from rest_framework import serializers
 from akvo.rsr.models import ProjectUpdate
+from akvo.rsr.models import ProjectUpdateLocation
 from ..fields import Base64ImageField
 from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
@@ -24,6 +25,12 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     class Meta:
         model = ProjectUpdate
 
+    def create(self, validated_data):
+        locations_data = validated_data.pop('locations')
+        update = ProjectUpdate.objects.create(**validated_data)
+        for location_data in locations_data:
+            ProjectUpdateLocation.objects.create(location_target=update, **location_data)
+        return update
 
 class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):
     """Deep serializer for project updates."""
