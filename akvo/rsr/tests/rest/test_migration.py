@@ -39,30 +39,9 @@ from akvo.rsr.models import (
 from .migration_data import (GET_URLS, HERE, POST_URLS)
 
 
-TEST = 0
-COLLECT = 1
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
-MODE = TEST if exists(EXPECTED_RESPONSES_FILE) else COLLECT
 CLIENT = Client(HTTP_HOST=settings.RSR_DOMAIN)
 FIXTURE = 'test_data.json'
-
-def collect_responses():
-    """ Collect responses for all the interesting urls."""
-
-    output = {}
-
-    get_responses = output.setdefault('GET', {})
-    for url in GET_URLS:
-        get_responses[url] = CLIENT.get(url).content
-    print('Collected GET responses for {} urls'.format(len(get_responses)))
-
-    post_responses = output.setdefault('POST', {})
-    for url, data, queries in POST_URLS:
-        post_responses[url] = MigrationGetTestCase.get_post_response_dict(url, data, queries)
-    print('Collected POST responses for {} urls'.format(len(post_responses)))
-
-    with open(EXPECTED_RESPONSES_FILE, 'w') as f:
-        json.dump(output, f, indent=2)
 
 
 @contextmanager
@@ -201,11 +180,17 @@ class MigrationGetTestCase(TestCase):
         # Make sure user is logged in, etc.
         cls.setup_user_context()
 
-        if MODE != TEST:
-            collect_responses()
-            raise unittest.SkipTest('Collecting expected responses')
-
+        cls.collected_count = 0
         cls._load_expected()
+
+    @classmethod
+    def tearDownClass(cls):
+        from IPython.core.debugger import Tracer; Tracer()()
+        if cls.collected_count == 0:
+            return
+        print('Collected new outputs for {} urls.'.format(cls.collected_count))
+        with open(EXPECTED_RESPONSES_FILE, 'w') as f:
+            json.dump(cls._expected, f, indent=2)
 
     @classmethod
     def setup_user_context(cls):
@@ -214,6 +199,10 @@ class MigrationGetTestCase(TestCase):
 
     @classmethod
     def _load_expected(cls):
+        if not exists(EXPECTED_RESPONSES_FILE):
+            cls._expected = {}
+            return
+
         with open(EXPECTED_RESPONSES_FILE) as f:
             cls._expected = json.load(f)
 
@@ -247,11 +236,13 @@ class MigrationGetTestCase(TestCase):
     def get_test(self, url):
         """Test if GET requests return expected data."""
 
-        expected_responses = self._expected.get('GET', {})
-        if url not in expected_responses:
-            raise unittest.SkipTest('Expected output not recorded for {}'.format(url))
-
         response = self.c.get(url)
+        expected_responses = self._expected.setdefault('GET', {})
+        if url not in expected_responses:
+            expected_responses[url] = response.content
+            self.__class__.collected_count += 1
+            raise unittest.SkipTest('No previously recorded output for {}'.format(url))
+
         expected = parse_response(url, expected_responses[url])
         actual = parse_response(url, response.content)
         self.assertEqual(expected, actual)
@@ -259,11 +250,13 @@ class MigrationGetTestCase(TestCase):
     def post_test(self, url, data, queries):
         """Test if POST requests post data correctly."""
 
-        expected_responses = self._expected.get('POST', {})
-        if url not in expected_responses:
-            raise unittest.SkipTest('Expected output not recorded for {}'.format(url))
-
         response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
+        expected_responses = self._expected.setdefault('POST', {})
+        if url not in expected_responses:
+            expected_responses[url] = response_dict
+            self.__class__.collected_count += 1
+            raise unittest.SkipTest('No previously recorded output for {}'.format(url))
+
         self.assertResponseDictEqual(expected_responses[url], response_dict, url)
 
     def assertEqual(self, expected, actual, msg=None):
