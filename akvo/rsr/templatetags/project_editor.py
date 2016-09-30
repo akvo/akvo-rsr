@@ -11,6 +11,8 @@ from django import template
 from django.db import models
 from django.db.models import get_model
 
+from akvo.rsr.models import ProjectEditorValidation
+
 register = template.Library()
 
 
@@ -214,7 +216,7 @@ def mandatory_or_hidden(validations, field):
     """
     Retrieves the mandatory and hidden fields for project editor validations.
 
-    :returns "mandatory-1 mandatory-or-2-subtitle hidden-3"
+    :returns A string of the form mandatory-{validation ID} and/or hidden-{validation_ID}
     """
     indications = ''
 
@@ -227,7 +229,8 @@ def mandatory_or_hidden(validations, field):
             validation_action = validation.action
 
             if new_field_name in validation_list:
-                if validation_action == 1 and not field == 'rsr_project.current_image':
+                if (validation_action == ProjectEditorValidation.MANDATORY_ACTION and not
+                        field == 'rsr_project.current_image'):
                     indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
 
                     if len(validation_list) > 1:
@@ -237,15 +240,15 @@ def mandatory_or_hidden(validations, field):
                                 str(validation.validation_set.pk),
                                 or_indication.split('.')[1]
                             )
-                elif validation_action == 2:
+                elif validation_action == ProjectEditorValidation.HIDDEN_ACTION:
                     indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
 
     else:
         # Full models like 'rsr_relatedproject'
         for validation in validations.filter(validation=field):
-            if validation.action == 1:
+            if validation.action == ProjectEditorValidation.MANDATORY_ACTION:
                 indications += 'mandatory-{0} '.format(str(validation.validation_set.pk))
-            elif validation.action == 2:
+            elif validation.action == ProjectEditorValidation.HIDDEN_ACTION:
                 indications += 'hidden-{0} '.format(str(validation.validation_set.pk))
 
     return indications
