@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 Usage:
 
-    ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationGetTestCase
+    ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationMTestCase
 
 The expected_responses.json has the outputs we obtained from an older version
 of the API and this will test the current outputs against it.  You should get
@@ -157,8 +157,13 @@ class MigrationTestsMeta(type):
         return fn
 
 
-class MigrationGetTestCase(TestCase):
-    """Tests the GET endpoints."""
+class MigrationTestCase(TestCase):
+    """Test the endpoints.
+
+    The actual test methods are generated using the metaclass
+    MigrationTestsMeta and the list of endpoints/urls to test with.
+
+    """
 
     __metaclass__ = MigrationTestsMeta
 
@@ -185,7 +190,6 @@ class MigrationGetTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        from IPython.core.debugger import Tracer; Tracer()()
         if cls.collected_count == 0:
             return
         print('Collected new outputs for {} urls.'.format(cls.collected_count))
@@ -250,28 +254,22 @@ class MigrationGetTestCase(TestCase):
     def post_test(self, url, data, queries):
         """Test if POST requests post data correctly."""
 
-        response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
+        response_dict = self.get_post_response_dict(url, data, queries)
         expected_responses = self._expected.setdefault('POST', {})
         if url not in expected_responses:
             expected_responses[url] = response_dict
             self.__class__.collected_count += 1
             raise unittest.SkipTest('No previously recorded output for {}'.format(url))
 
-        self.assertResponseDictEqual(expected_responses[url], response_dict, url)
+        for key, expected_value in expected_responses[url].items():
+            actual_value = response_dict[key]
+            if not isinstance(expected_value, dict):
+                expected_value = parse_response(url, expected_value)
+                actual_value = parse_response(url, actual_value)
+
+            self.assertEqual(expected_value, actual_value)
 
     def assertEqual(self, expected, actual, msg=None):
         expected = _drop_unimportant_data(expected)
         actual = _drop_unimportant_data(actual)
-        super(MigrationGetTestCase, self).assertEqual(expected, actual, msg)
-
-    def assertResponseDictEqual(self, expected, actual, url):
-        # FIXME: It's weird for an assertion to take a url as argument
-        for key, expected_value in expected.items():
-            if isinstance(expected_value, dict):
-                self.assertEqual(expected_value, actual[key])
-
-            else:
-                self.assertEqual(
-                    parse_response(url, expected_value),
-                    parse_response(url, actual[key])
-                )
+        super(MigrationTestCase, self).assertEqual(expected, actual, msg)
