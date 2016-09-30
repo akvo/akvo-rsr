@@ -8,23 +8,14 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 Usage:
 
-1. First, you need to have the test fixture to be able to run these tests.  To
-get the fixture file, run the script akvo/rsr/fixtures/download.sh.  This test
-data is a json fixture of the dump that localdev uses.
-
-2. Once you have the test data, you will first need to run these tests against
-the old API.  This will create an `expected_responses.json` file in this
-directory.  You can run the tests as follows:
-
     ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationGetTestCase
 
-3. Next, you should run these tests against the new API.  Make sure you are on
-the new akvo-rsr branch.  Also make sure that you have the correct version of
-DRF installed. Now, run the tests as before.
+The expected_responses.json has the outputs we obtained from an older version
+of the API and this will test the current outputs against it.  You should get
+an output with all the offending URLs.
 
-    ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationGetTestCase
-
-You should get an output with all the offending URLs.
+To update the expected_responses.json file, you can just delete it and run the
+same command as above.
 
 """
 
@@ -33,7 +24,7 @@ from __future__ import print_function
 
 from contextlib import contextmanager
 import json
-from os.path import exists, join
+from os.path import dirname, exists, join
 import unittest
 
 from django.conf import settings
@@ -53,11 +44,7 @@ COLLECT = 1
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
 MODE = TEST if exists(EXPECTED_RESPONSES_FILE) else COLLECT
 CLIENT = Client(HTTP_HOST=settings.RSR_DOMAIN)
-
-
-class CancelTransactionError(Exception):
-    """The exception we raise to cancel a transaction."""
-
+FIXTURE = 'test_data.json'
 
 def collect_responses():
     """ Collect responses for all the interesting urls."""
@@ -81,6 +68,10 @@ def collect_responses():
 @contextmanager
 def do_in_transaction():
     """A context manager to do things inside a transaction, and then rollback."""
+
+    class CancelTransactionError(Exception):
+        """The exception we raise to cancel a transaction."""
+
     try:
         with transaction.atomic():
             yield
@@ -89,11 +80,22 @@ def do_in_transaction():
         pass
 
 
+def download_fixture_data():
+    """Download fixture data, if required."""
+
+    fixture_path = join(dirname(dirname(HERE)), 'fixtures', FIXTURE)
+    if not exists(fixture_path):
+        import subprocess
+        subprocess.call(['/usr/bin/env', 'bash', join(dirname(fixture_path), 'download.sh')])
+
+
 def load_fixture_data():
     """Load up fixture data."""
 
+    download_fixture_data()
+
     management.call_command(
-        'loaddata', 'test_data.json', verbosity=3, interactive=False
+        'loaddata', FIXTURE, verbosity=3, interactive=False
     )
 
     # FIXME: Ideally, the dump data should already have this.
