@@ -157,8 +157,31 @@ def _drop_unimportant_data(d):
     return d
 
 
+class MigrationTestsMeta(type):
+    def __new__(cls, name, bases, attrs):
+
+        for i, url in enumerate(GET_URLS):
+            data = (url,)
+            attrs['test_get_{}'.format(i)] = cls.gen(data, 'get')
+
+        for i, data in enumerate(POST_URLS):
+            attrs['test_post_{}'.format(i)] = cls.gen(data, 'post')
+
+        return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
+
+    @classmethod
+    def gen(cls, x, method='get'):
+        # Return a testcase that tests ``x``.
+        def fn(self):
+            getattr(self, '{}_test'.format(method))(*x)
+        fn.__doc__ = '{} on {}'.format(method.upper(), x[0])
+        return fn
+
+
 class MigrationGetTestCase(TestCase):
     """Tests the GET endpoints."""
+
+    __metaclass__ = MigrationTestsMeta
 
     @classmethod
     def setUpClass(cls):
@@ -166,6 +189,7 @@ class MigrationGetTestCase(TestCase):
 
         # Allow showing full diff
         cls.maxDiff = None
+
         # Allow showing standard assertion error msg along with ours
         cls.longMessage = True
 
@@ -181,29 +205,12 @@ class MigrationGetTestCase(TestCase):
             collect_responses()
             raise unittest.SkipTest('Collecting expected responses')
 
-        cls.errors = []
         cls._load_expected()
 
     @classmethod
     def setup_user_context(cls):
         # Login as super admin
         cls.c.login(username='su@localdev.akvo.org', password='password')
-
-    @classmethod
-    def tearDownClass(cls):
-        if not cls.errors:
-            return
-
-        for url, _, _, e in cls.errors:
-            print(e)
-            print('Response for {}'.format(url))
-            print('=' * 40)
-
-        print('Following end point responses changed:')
-        for url, _, _, _ in cls.errors:
-            print(url)
-
-        raise AssertionError('Some tests failed')
 
     @classmethod
     def _load_expected(cls):
@@ -237,39 +244,27 @@ class MigrationGetTestCase(TestCase):
 
         return response_dict
 
-    def test_get(self):
+    def get_test(self, url):
         """Test if GET requests return expected data."""
 
         expected_responses = self._expected.get('GET', {})
-        for url in GET_URLS:
-            if url not in expected_responses:
-                print('Expected output not recorded for {}'.format(url))
-                continue
-            response = self.c.get(url)
-            try:
-                expected = parse_response(url, expected_responses[url])
-                actual = parse_response(url, response.content)
-                self.assertEqual(expected, actual)
+        if url not in expected_responses:
+            raise unittest.SkipTest('Expected output not recorded for {}'.format(url))
 
-            except (ValueError, AssertionError) as e:
-                self.errors.append((url, expected, actual, e))
+        response = self.c.get(url)
+        expected = parse_response(url, expected_responses[url])
+        actual = parse_response(url, response.content)
+        self.assertEqual(expected, actual)
 
-            except Exception:
-                print(url)
-                raise
-
-    def test_post(self):
+    def post_test(self, url, data, queries):
         """Test if POST requests post data correctly."""
 
         expected_responses = self._expected.get('POST', {})
-        for url, data, queries in POST_URLS:
+        if url not in expected_responses:
+            raise unittest.SkipTest('Expected output not recorded for {}'.format(url))
 
-            if url not in expected_responses:
-                print('Expected output not recorded for {}'.format(url))
-                continue
-
-            response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
-            self.assertResponseDictEqual(expected_responses[url], response_dict, url)
+        response_dict = MigrationGetTestCase.get_post_response_dict(url, data, queries)
+        self.assertResponseDictEqual(expected_responses[url], response_dict, url)
 
     def assertEqual(self, expected, actual, msg=None):
         expected = _drop_unimportant_data(expected)
@@ -279,20 +274,11 @@ class MigrationGetTestCase(TestCase):
     def assertResponseDictEqual(self, expected, actual, url):
         # FIXME: It's weird for an assertion to take a url as argument
         for key, expected_value in expected.items():
-            try:
-                if isinstance(expected_value, dict):
-                    self.assertEqual(expected_value, actual[key])
+            if isinstance(expected_value, dict):
+                self.assertEqual(expected_value, actual[key])
 
-                else:
-                    self.assertEqual(
-                        parse_response(url, expected_value),
-                        parse_response(url, actual[key])
-                    )
-
-            except AssertionError as e:
-                self.errors.append(('{}:{}'.format(key, url), expected, actual, e))
-                break
-
-            except Exception:
-                print(url)
-                raise
+            else:
+                self.assertEqual(
+                    parse_response(url, expected_value),
+                    parse_response(url, actual[key])
+                )
