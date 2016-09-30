@@ -42,7 +42,9 @@ from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import Employment, Indicator, IndicatorPeriod, Organisation, Project, Result, User
+from akvo.rsr.models import (
+    Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Organisation, Project, Result
+)
 
 
 TEST = 0
@@ -106,8 +108,10 @@ def load_fixture_data():
         for title in ('1', '2', '3'):
             i = Indicator(result=r, title=title)
             i.save()
-            ip = IndicatorPeriod(indicator=i)
+            ip = IndicatorPeriod(indicator=i, locked=False)
             ip.save()
+
+            IndicatorPeriodData(period=ip, user_id=2).save()
 
     # Create an unapproved employment
     Employment(organisation_id=1, user_id=2).save()
@@ -131,6 +135,7 @@ def _drop_unimportant_data(d):
 
     ignored_string_prefixes = (
         '/media/cache/',
+        '/media/db/',
         '/var/akvo/rsr/mediaroot',
     )
 
@@ -332,22 +337,37 @@ class MigrationGetTestCase(TestCase):
         ),
 
         # # akvo/rsr/static/scripts-src/my-results.js
-        # "/rest/v1/indicator_period_data/{update}/upload_file/?format=json",
-        # "/rest/v1/indicator_period_data_comment/?format=json",
-        # "/rest/v1/indicator_period_data_framework/?format=json"
+        ('/rest/v1/indicator_period_data/1/upload_file/?format=json',
+         {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
+          'type': 'photo'},
+         (),
+        ),
 
-        # # akvo/rsr/static/scripts-src/my-iati.js
-        # '/rest/v1/iati_export/?format=json',
+        ('/rest/v1/indicator_period_data_comment/?format=json',
+         {"data": 4, "user": 1, "comment": "My awesome comment"},
+         ('IndicatorPeriodDataComment.objects.count()',),
+        ),
 
-        # FIXME: akvo/scripts/cordaid/organisation_upload.py
-        # ('/rest/v1/internal_organisation_id/',
-        #  {
-        #     "recording_org": 1,
-        #     "referenced_org": 1,
-        #     "identifier": "ABC"
-        #  },
-        #  ('InternalOrganisationID.objects.count()',),
-        # ),
+        ('/rest/v1/indicator_period_data_framework/?format=json',
+         {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "N"},
+         ('IndicatorPeriodData.objects.count()',),
+        ),
+
+        # akvo/rsr/static/scripts-src/my-iati.js
+        ('/rest/v1/iati_export/?format=json',
+         {"reporting_organisation": 1, "user": 1, "version": "2"},
+         ('IatiExport.objects.count()',),
+        ),
+
+        # akvo/scripts/cordaid/organisation_upload.py
+        ('/rest/v1/internal_organisation_id/?format=json',
+         {
+            "recording_org": 1,
+            "referenced_org": 1,
+            "identifier": "ABC"
+         },
+         ('InternalOrganisationID.objects.count()',),
+        ),
 
         # # RSR UP urls ################
 
@@ -463,7 +483,8 @@ class MigrationGetTestCase(TestCase):
         with do_in_transaction():
             # POST
             r = CLIENT.post(url, data)
-            assert int(r.status_code/100) == 2
+            if int(r.status_code/100) != 2:
+                from IPython.core.debugger import Tracer; Tracer()()
             response_dict['post'] = r.content
 
             # GET
