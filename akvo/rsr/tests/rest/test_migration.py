@@ -369,10 +369,13 @@ class MigrationGetTestCase(TestCase):
          ('InternalOrganisationID.objects.count()',),
         ),
 
-        # # RSR UP urls ################
+        # RSR UP urls ################
 
-        # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
-        # '/rest/v1/project_update/?format=xml',
+        # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
+        ('/rest/v1/project_update/?format=xml',
+         open(join(HERE, 'update.xml')).read(),
+         (),
+        )
 
         # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitIpdService.java
         # '/rest/v1/indicator_period_data/?format=json',
@@ -482,9 +485,11 @@ class MigrationGetTestCase(TestCase):
 
         with do_in_transaction():
             # POST
-            r = CLIENT.post(url, data)
-            if int(r.status_code/100) != 2:
-                from IPython.core.debugger import Tracer; Tracer()()
+            r = (
+                CLIENT.post(url, data, content_type='application/xml') if 'format=xml' in url else
+                CLIENT.post(url, data)
+            )
+            assert int(r.status_code/100) == 2
             response_dict['post'] = r.content
 
             # GET
