@@ -25,7 +25,6 @@ django-tastypie==0.12.1
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
--e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
 
 # General requirements
