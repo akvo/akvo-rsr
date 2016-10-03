@@ -255,12 +255,6 @@ urlpatterns += patterns(
         {'document_root': settings.MEDIA_ROOT}),
 )
 
-if 'rosetta' in settings.INSTALLED_APPS:
-    urlpatterns += patterns(
-        '',
-        url(r'^rosetta/', include('rosetta.urls')),
-    )
-
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
 
