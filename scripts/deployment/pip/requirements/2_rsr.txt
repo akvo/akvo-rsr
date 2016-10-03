@@ -27,7 +27,6 @@ django-tastypie==0.12.1
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
 
 # General requirements
-BeautifulSoup==3.2.1
 httplib2==0.9
 lxml==3.3.5
 defusedxml==0.4.1
