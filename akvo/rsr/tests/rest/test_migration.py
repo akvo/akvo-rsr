@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 Usage:
 
-    ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationMTestCase
+    ./scripts/devhelpers/manage.sh test -v 3 akvo.rsr.tests.rest.test_migration.MigrationTestCase
 
 The expected_responses.json has the outputs we obtained from an older version
 of the API and this will test the current outputs against it.  You should get
