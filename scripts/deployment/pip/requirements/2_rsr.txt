@@ -37,6 +37,7 @@ lxml==3.3.5
 defusedxml==0.4.1
 pytz==2014.3
 django-smtp-ssl==1.0
+xmltodict==0.10.2
 
 # RSR requirements
 Markdown==2.4
