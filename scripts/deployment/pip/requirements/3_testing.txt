@@ -1,3 +1,7 @@
+# Testing and code coverage libraries
+coveralls
+xmlunittest==0.3.2
+
 # Requirements for building splinter
 lxml==2.3.6
 
