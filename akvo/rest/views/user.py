@@ -16,6 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
+from akvo.utils import get_codelist_value_name
 from ...rsr.models import Country, Employment, Organisation
 from ..viewsets import BaseRSRViewSet
 from ..serializers import EmploymentSerializer, OrganisationSerializer, CountrySerializer
@@ -140,7 +141,7 @@ def request_organisation(request, pk=None):
                             status=status.HTTP_409_CONFLICT)
 
         if serializer.data['country']:
-            serializer.data['country_full'] = employment.iati_country().name
+            serializer.data['country_full'] = get_codelist_value_name(employment.iati_country())
         else:
             serializer.data['country_full'] = ''
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data

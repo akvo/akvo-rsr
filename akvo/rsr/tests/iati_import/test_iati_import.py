@@ -77,6 +77,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v1.currency, "USD")
         self.assertEqual(project_v1.title, "Test project for IATI import v1")
         self.assertEqual(project_v1.partners.count(), 4)
+        self.assertEqual(project_v1.transactions.count(), 2)
         self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_v2_import(self):
@@ -98,6 +99,17 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.hierarchy, 1)
         self.assertEqual(project_v2.title, "Test project for IATI import v2")
         self.assertEqual(project_v2.partners.count(), 4)
+        self.assertEqual(project_v2.transactions.count(), 1)
+        self.assertEqual(project_v2.budget_items.count(), 1)
+        self.assertEqual(project_v2.planned_disbursements.count(), 2)
+        self.assertEqual(project_v2.recipient_regions.count(), 3)
+        self.assertEqual(project_v2.recipient_countries.count(), 2)
+        self.assertEqual(project_v2.locations.count(), 2)
+        self.assertEqual(project_v2.sectors.count(), 3)
+        self.assertEqual(project_v2.results.count(), 1)
+        self.assertEqual(project_v2.contacts.count(), 1)
+        self.assertEqual(project_v2.conditions.count(), 1)
+        self.assertEqual(project_v2.documents.count(), 1)
         self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_incorrect_import(self):
@@ -120,6 +132,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_inc.hierarchy, None)
         self.assertEqual(project_inc.title, "Test project for IATI import (incorrect)")
         self.assertEqual(project_inc.partners.count(), 1)
+        self.assertEqual(project_inc.transactions.count(), 1)
         self.assertEqual(project_inc.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_icco_import(self):
@@ -184,4 +197,5 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_cordaid.hierarchy, 1)
         self.assertEqual(project_cordaid.title, "Test project for IATI Cordaid import")
         self.assertEqual(project_cordaid.partners.count(), 4)
+        self.assertEqual(project_cordaid.transactions.count(), 2)
         self.assertEqual(project_cordaid.reporting_org.iati_org_id, "NL-KVK-0987654321")

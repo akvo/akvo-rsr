@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import codelist_choices, codelist_name, rsr_image_path
+from akvo.utils import codelist_choices, codelist_name, get_codelist_value_name, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
@@ -211,7 +211,7 @@ class Organisation(TimestampsMixin, models.Model):
         elif not name:
             # This prevents organisation names with only spaces
             validation_errors['name'] = _(u'Organisation name may not be blank')
-        
+
         if long_name and long_names.exists():
             validation_errors['long_name'] = u'{}: {}'.format(
                 _('An Organisation with this long name already exists'), long_name)
@@ -441,7 +441,7 @@ class Organisation(TimestampsMixin, models.Model):
         countries = []
         for location in self.locations.all():
             if location.iati_country:
-                countries.append(location.iati_country_value().name)
+                countries.append(get_codelist_value_name(location.iati_country_value()))
         return countries
 
     def iati_file(self):

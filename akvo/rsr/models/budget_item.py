@@ -15,7 +15,7 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import BudgetIdentifier, BudgetStatus, BudgetType, Currency
 from akvo.codelists.store.codelists_v202 import (BUDGET_IDENTIFIER, BUDGET_TYPE, BUDGET_STATUS,
                                                  CURRENCY)
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class BudgetItemLabel(models.Model):
@@ -123,19 +123,13 @@ class BudgetItem(models.Model):
             return self.__unicode__()
 
     def get_currency(self):
-        if self.currency:
-            return self.currency
-        else:
-            return self.project.currency
+        return self.currency if self.currency else self.project.currency
 
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
 
     def iati_currency(self):
-        if self.currency:
-            return codelist_value(Currency, self, 'currency')
-        else:
-            return codelist_value(Currency, self.project, 'currency')
+        return codelist_value(Currency, self if self.currency else self.project, 'currency')
 
     def iati_status(self):
         return codelist_value(BudgetStatus, self, 'status')
@@ -168,7 +162,7 @@ class CountryBudgetItem(models.Model):
     )
 
     def __unicode__(self):
-        return self.iati_code().name if self.code else u'%s' % _(u'No code specified')
+        return get_codelist_value_name(self.iati_code()) if self.code else u'%s' % _(u'No code specified')
 
     def iati_code(self):
         return codelist_value(BudgetIdentifier, self, 'code')

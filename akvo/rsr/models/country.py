@@ -14,7 +14,7 @@ from ..iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.codelists_v202 import COUNTRY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class Country(models.Model):
@@ -69,10 +69,7 @@ class RecipientCountry(models.Model):
 
     def __unicode__(self):
         if self.country:
-            try:
-                country_unicode = self.iati_country().name
-            except (AttributeError, codelist_models.Country.DoesNotExist):
-                country_unicode = self.country
+            country_unicode = get_codelist_value_name(self.iati_country())
         else:
             country_unicode = u'%s' % _(u'No country specified')
 

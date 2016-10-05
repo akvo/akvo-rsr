@@ -12,7 +12,7 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import ResultType
 from akvo.codelists.store.codelists_v202 import RESULT_TYPE
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class Result(models.Model):
@@ -53,7 +53,7 @@ class Result(models.Model):
         result_unicode = self.title if self.title else u'%s' % _(u'No result title')
 
         if self.type:
-            result_unicode += u' (' + self.iati_type().name + u')'
+            result_unicode += u' ({})'.format(get_codelist_value_name(self.iati_type()))
 
         if self.indicators.all():
             result_unicode += _(u' - %s indicators') % (unicode(self.indicators.count()))

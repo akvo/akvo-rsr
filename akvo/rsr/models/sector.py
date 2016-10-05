@@ -13,7 +13,7 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.codelists_v202 import SECTOR_VOCABULARY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class Sector(models.Model):
@@ -53,15 +53,8 @@ class Sector(models.Model):
     def __unicode__(self):
         if self.sector_code:
             # Check if the code is specified
-            try:
-                sector_text = u'%s' % self.iati_sector().name.capitalize()
-            except AttributeError:
-                sector_text = self.text
-
-            try:
-                vocabulary = self.iati_vocabulary().name
-            except AttributeError:
-                vocabulary = ''
+            sector_text = u'%s' % get_codelist_value_name(self.iati_vocabulary()).capitalize()
+            vocabulary = get_codelist_value_name(self.iati_vocabulary())
 
             return u'{0}{1}{2}{3}'.format(
                 u'{0}: '.format(vocabulary) if vocabulary else u'',

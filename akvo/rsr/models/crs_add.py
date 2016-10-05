@@ -16,7 +16,7 @@ from akvo.codelists.models import (CRSAddOtherFlags, LoanRepaymentType, LoanRepa
 from akvo.codelists.store.codelists_v202 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
                                                  LOAN_REPAYMENT_PERIOD, CURRENCY,
                                                  C_R_S_CHANNEL_CODE)
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class CrsAdd(models.Model):
@@ -138,10 +138,7 @@ class CrsAddOtherFlag(models.Model):
 
     def __unicode__(self):
         if self.code:
-            try:
-                return self.iati_code().name
-            except AttributeError:
-                return self.iati_code()
+            return get_codelist_value_name(self.iati_code())
         else:
             return u'%s' % _(u'No other flag code specified')
 

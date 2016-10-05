@@ -15,7 +15,7 @@ from ..fields import ValidXMLCharField
 from akvo.codelists import models as codelist_models
 from akvo.codelists.store.codelists_v202 import (POLICY_MARKER, POLICY_SIGNIFICANCE,
                                                  POLICY_MARKER_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class PolicyMarker(models.Model):
@@ -53,13 +53,12 @@ class PolicyMarker(models.Model):
     description = ValidXMLCharField(_(u'policy marker description'), max_length=255, blank=True)
 
     def __unicode__(self):
-        try:
-            return self.iati_policy_marker().name
-        except AttributeError:
-            if self.description:
-                return unicode(self.description)
-            else:
-                return u'%s' % _(u'Policy marker not specified')
+        name = get_codelist_value_name(self.iati_policy_marker())
+        if not name and self.description:
+            name = unicode(self.description)
+
+        else:
+            return u'%s' % _(u'Policy marker not specified')
 
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')

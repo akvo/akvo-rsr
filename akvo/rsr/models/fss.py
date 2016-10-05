@@ -12,7 +12,7 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Currency
 from akvo.codelists.store.codelists_v202 import CURRENCY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class Fss(models.Model):
@@ -67,10 +67,7 @@ class FssForecast(models.Model):
 
     def __unicode__(self):
         if self.value and self.currency:
-            try:
-                return u'{0} {1}'.format(self.iati_currency().name, self.value)
-            except AttributeError:
-                return u'{0} {1}'.format(self.iati_currency(), self.value)
+            return u'{0} {1}'.format(get_codelist_value_name(self.iati_currency()), self.value)
         else:
             return u'%s' % _(u'No currency or interest received specified')
 

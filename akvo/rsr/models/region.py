@@ -13,7 +13,7 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Region, RegionVocabulary
 from akvo.codelists.store.codelists_v202 import REGION, REGION_VOCABULARY
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_codelist_value_name
 
 
 class RecipientRegion(models.Model):
@@ -57,10 +57,7 @@ class RecipientRegion(models.Model):
 
     def __unicode__(self):
         if self.region:
-            try:
-                region_unicode = self.iati_region().name
-            except AttributeError:
-                region_unicode = self.iati_region()
+            region_unicode = get_codelist_value_name(self.iati_region())
         else:
             region_unicode = u'%s' % _(u'No region specified')
 
