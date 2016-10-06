@@ -7,12 +7,26 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import base64
 import json
+import tempfile
 
 from akvo.rsr.models import Project, User, ProjectUpdate
 
 from django.conf import settings
 from django.test import TestCase, Client
+
+# Data for a WMF image file
+WMF_DATA = (
+    '\xd7\xcd\xc6\x9a\x00\x00\x00\x00\x00\x00\xd4\x00\xd4\x00\xb0\x04\x00\x00\x00\x00\xa1S\x01\x00\t\x00\x00\x03'
+    'p\x00\x00\x00\x03\x00\x14\x00\x00\x00\x00\x00\x05\x00\x00\x00\x0c\x02\xd4\x00\xd4\x00\x05\x00\x00\x00\x0b\x02'
+    '\x00\x00\x00\x00\x04\x00\x00\x00\x03\x01\x08\x00\x05\x00\x00\x00\x02\x01\x01\x00\x00\x00\x05\x00\x00\x00\x06\x01'
+    '\x02\x00\x00\x00\x05\x00\x00\x00.\x01\x18\x00\x00\x00\x05\x00\x00\x00\t\x02\x00\x00\x00\x00\x05\x00\x00\x00'
+    '\x04\x01\r\x00\x00\x00\x07\x00\x00\x00&\x06\x17\x00\x04\x00\x05\x00\x00\x00\x08\x00\x00\x00\xfa\x02\x00\x00'
+    '\x01\x00\x00\x00\x00\x00\x00\x00\x08\x00\x00\x00\xfa\x02\x05\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00'
+    '-\x01\x01\x00\x07\x00\x00\x00\xfc\x02\x01\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00-\x01\x02\x00\x04\x00'
+    '\x00\x00\xf0\x01\x02\x00\x04\x00\x00\x00\xf0\x01\x01\x00\x04\x00\x00\x00\xf0\x01\x00\x00\x03\x00\x00\x00\x00\x00'
+)
 
 
 class RestProjectUpdateTestCase(TestCase):
@@ -104,3 +118,38 @@ class RestProjectUpdateTestCase(TestCase):
                                    'title': 'Allowed'
                                })
         self.assertEqual(response.status_code, 201)
+
+    def test_rest_post_project_update_wmf_string(self):
+        """
+        Checks posting a project update with a WMF photo base64 encoded.
+        """
+
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/?format=json',
+                               {
+                                   'project': self.project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Allowed',
+                                   'photo': base64.standard_b64encode(WMF_DATA)
+                               })
+        self.assertEqual(response.status_code, 400)
+
+    def test_rest_post_project_update_wmf_file(self):
+        """
+        Checks posting a project update with a WMF photo base64 encoded.
+        """
+
+        with tempfile.NamedTemporaryFile(suffix='.wmf') as f:
+            f.write(WMF_DATA)
+            f.flush()
+
+            self.c.login(username=self.user.username, password='password')
+            response = self.c.post('/rest/v1/project_update/?format=json',
+                                   {
+                                       'project': self.project.pk,
+                                       'user': self.user.pk,
+                                       'title': 'Allowed',
+                                       'photo': open(f.name)
+                                   })
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('photo', json.loads(response.content))
