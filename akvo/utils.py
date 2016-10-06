@@ -338,7 +338,7 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
 
 def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     """
-    Looks up the name of a codelist
+    Looks up the name of a codelist, returns the field value if the lookup fails
     :param model: Model from codelists app
     :param instance: Instance from model
     :param field: String of the lookup field (e.g. 'type')
