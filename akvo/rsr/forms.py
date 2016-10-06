@@ -289,10 +289,13 @@ class ProjectUpdateForm(forms.ModelForm):
         'placeholder': _(u'Description'),
         }))
     language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
-    photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
-        'class': 'input',
-        'size': '15',
-        }))
+    photo = forms.ImageField(required=False,
+                             widget=forms.FileInput(attrs={
+                                 'class': 'input',
+                                 'size': '15',
+                             }),
+                             help_text=_(u'Please upload an image of 2 MB or less.'),
+    )
     photo_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
