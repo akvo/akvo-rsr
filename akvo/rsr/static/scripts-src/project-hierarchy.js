@@ -33,6 +33,8 @@ jsPlumb.ready(function() {
         var i;
 
         if (top_sibling_windows.length) {
+            // Iterate over top siblings in reverse for symmetry with bottom
+            top_sibling_windows = top_sibling_windows.get().reverse();
             instance.addEndpoint(project_window, {uuid: "project-top", anchor: "Top", maxConnections: -1});
         }
         if (bottom_sibling_windows.length) {
@@ -51,7 +53,7 @@ jsPlumb.ready(function() {
             instance.connect({
                 uuids:[parent_uuid, "project-left"],
                 overlays:arrow,
-                connector:["Bezier", {curviness:(i+1) * 20}]
+                connector:["Bezier", {curviness:20}]
             });
         }
         for (i = 0; i < top_sibling_windows.length; i++) {
@@ -60,7 +62,7 @@ jsPlumb.ready(function() {
             instance.connect({
                 uuids:[top_sibling_uuid, "project-top"],
                 overlays:get_two_arrows(i),
-                connector:["Bezier", {curviness:(i+1) * 20}]
+                connector:["Bezier", {curviness:((i+1) * 20) % 100}]
             });
         }
         for (i = 0; i < bottom_sibling_windows.length; i++) {
@@ -69,7 +71,7 @@ jsPlumb.ready(function() {
             instance.connect({
                 uuids:[bottom_sibling_uuid, "project-bottom"],
                 overlays:get_two_arrows(i),
-                connector:["Bezier", {curviness:(i+1) * 20}]
+                connector:["Bezier", {curviness:((i+1) * 10) % 100}]
             });
         }
         for (i = 0; i < child_windows.length; i++) {
@@ -78,7 +80,7 @@ jsPlumb.ready(function() {
             instance.connect({
                 uuids:["project-right", child_uuid],
                 overlays:arrow,
-                connector:["Bezier", {curviness:(i+1) * 20}]
+                connector:["Bezier", {curviness:20}]
             });
         }
     });
