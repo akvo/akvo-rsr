@@ -13,6 +13,8 @@
             <div class="col-sm-12 hidden-xs project-hierarchy small" id="project-hierarchy">
                 {% for row in hierarchy_grid %}
                 <div class="row">
+                    {# parent node #}
+
                     {% if row.0.0 %}
                     <a href="{% url 'project-hierarchy' row.0.0.pk %}">
                         <div class="project-hierarchy-window project-hierarchy-{{row.0.1}}" id="project-hierarchy-{{row.0.1}}{{forloop.counter}}">{{row.0.0.title}}</div>
@@ -20,6 +22,9 @@
                     {% else %}
                     <div class="project-hierarchy-empty-window"></div>
                     {% endif %}
+
+                    {# project node/sibling nodes #}
+
                     {% if row.1.0 and not row.1.1 == 'project' %}
                     <a href="{% url 'project-hierarchy' row.1.0.pk %}">
                         <div class="project-hierarchy-window project-hierarchy-{{row.1.1}}" id="project-hierarchy-{{row.1.1}}{{forloop.counter}}">{{row.1.0.title}}</div>
@@ -29,6 +34,9 @@
                     {% else %}
                     <div class="project-hierarchy-empty-window"></div>
                     {% endif %}
+
+                    {# child nodes #}
+
                     {% if row.2.0 %}
                     <a href="{% url 'project-hierarchy' row.2.0.pk %}">
                         <div class="project-hierarchy-window project-hierarchy-{{row.2.1}}" id="project-hierarchy-{{row.2.1}}{{forloop.counter}}">{{row.2.0.title}}</div>
@@ -36,6 +44,7 @@
                     {% else %}
                     <div class="project-hierarchy-empty-window"></div>
                     {% endif %}
+
                 </div>
                 {% endfor %}
             </div>
