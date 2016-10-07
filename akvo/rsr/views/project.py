@@ -442,6 +442,9 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             else:
                 update = updateform.save(project=project, user=request.user)
             return redirect(update.get_absolute_url())
+        else:
+            # Django forms takes care of this, and displays the errors!
+            pass
     else:
         updateform = form_class(instance=update)
 
