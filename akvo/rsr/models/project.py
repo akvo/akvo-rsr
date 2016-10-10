@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import get_model, Max, Sum
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
@@ -1468,4 +1468,17 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
+    project.save(last_updated=True)
+
+
+@receiver(post_delete, sender=ProjectUpdate)
+def rewind_last_update(sender, **kwargs):
+    """ Updates the denormalized project.last_update on related project,
+        sets it to the latest available update if any"""
+    project_update = kwargs['instance']
+    project = project_update.project
+    try:
+        project.last_update = project.updates_desc()[0]
+    except IndexError:
+        project.last_update = None
     project.save(last_updated=True)
