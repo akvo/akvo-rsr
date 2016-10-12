@@ -220,7 +220,7 @@ class MigrationTestCase(TestCase):
                 CLIENT.post(url, data, content_type='application/xml') if 'format=xml' in url else
                 CLIENT.post(url, data)
             )
-            assert int(r.status_code/100) == 2
+            assert int(r.status_code / 100) == 2, r.status_code
             response_dict['post'] = r.content
 
             # GET
