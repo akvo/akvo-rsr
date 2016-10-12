@@ -199,6 +199,7 @@ class MigrationTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        management.call_command('flush', interactive=False)
         if cls.collected_count == 0:
             return
         print('Collected new outputs for {} urls.'.format(cls.collected_count))
