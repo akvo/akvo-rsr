@@ -109,14 +109,23 @@ def parse_response(url, response):
 def _drop_unimportant_data(d):
     """Recursively drop unimportant data from given dict or list."""
 
-    unimportant_keys = ['last_modified_at', 'created_at']
+    unimportant_keys = [
+        # These get changed because the setUp - load_fixture_data - actually
+        # creates some required objects and not everything is in the fixutres.
+        'last_modified_at',
+        'created_at',
+    ]
 
     ignored_string_prefixes = (
+        # File paths may change, when hashes are used, etc.
         '/media/cache/',
         '/media/db/',
         '/var/akvo/rsr/mediaroot',
+        # The error from GET is sent using detail key.  This changes from
+        # "Method 'GET' not allowed." to 'Method "GET" not allowed.',
+        "Method 'GET' not allowed.",
+        'Method "GET" not allowed.',
     )
-
 
     if isinstance(d, dict):
         for key in unimportant_keys:
