@@ -238,7 +238,7 @@ class MigrationTestCase(TestCase):
 
             # query assertions
             queries_dict = response_dict.setdefault('queries', {})
-            EXEC_CODE = 'from akvo.rsr.models import *; output = {}'
+            EXEC_CODE = 'from django.contrib.admin.models import *; from akvo.rsr.models import *; output = {}'
             for query in queries:
                 code = EXEC_CODE.format(query)
                 ns = {}

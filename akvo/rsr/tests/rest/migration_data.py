@@ -247,14 +247,53 @@ POST_URLS = [
     ('/rest/v1/project_update/?format=xml',
      PROJECT_UPDATE_XML.strip(),
      (),
-    )
-
-    # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitIpdService.java
-    # '/rest/v1/indicator_period_data/?format=json',
+    ),
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
-    # '/rest/v1/user/%s/request_organisation/?format=json',
+    ('/rest/v1/user/1/request_organisation/?format=json',
+     {'organisation': 2, 'group': 13, 'country': u'NL', 'job_title': u'Superuser'},
+     ('Employment.objects.filter(user_id=2).count()',)),
 
+    # Missing URLs from frequency data
+    ('/rest/v1/partnership/?format=json',
+     {'organisation': 1, 'project': 4, },
+     ('Partnership.objects.count()',)),
+
+    ('/rest/v1/project/?format=json',
+     {
+         'publishing_status': u'unpublished',
+         'title': u'Our amazing project',
+         'status': u'N',
+         'aggregate_children': True,
+         'aggregate_to_parent': True,
+         'is_impact_project': True,
+         'is_public': True,
+         'currency': u'EUR',
+         'validations': [1],
+     },
+     ('Project.objects.count()',)),
+
+    ('/rest/v1/project/4/add_validation/2/?format=json',
+     {},
+     ('Project.objects.get(id=4).validations.count()',)),
+
+    ('/rest/v1/user/1/update_details/?format=json',
+     {'first_name': 'Angela', 'last_name': 'K'},
+     ('User.objects.get(id=1).first_name', 'User.objects.get(id=1).last_name',)),
+
+    ('/rest/v1/user/1/change_password/?format=json',
+     {'old_password': 'password',
+      'new_password1': 'my-awesome-new-password',
+      'new_password2': 'my-awesome-new-password'},
+     ('User.objects.get(id=1).check_password("my-awesome-new-password")',)),
+
+    ('/rest/v1/project/4/log_project_addition/?format=json',
+     {},
+     ('LogEntry.objects.count()',)),
+
+    ('/rest/v1/project_custom_field/?format=json',
+     {'project': 4, 'section': 2, 'order': 1, 'type': u'text', 'name': 'wow factor'},
+     ('ProjectCustomField.objects.count()',))
 ]
 
 PATCH_URLS = [
