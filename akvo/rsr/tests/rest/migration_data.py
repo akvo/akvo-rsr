@@ -144,7 +144,7 @@ POST_URLS = [
     ),
 
     ('/rest/v1/project/4/reorder_items/?format=json',
-     {'item_type': 'result', 'item_id': 1, 'item_direction': 'up'},
+     {'item_type': 'result', 'item_id': 2, 'item_direction': 'up'},
      ('Result.objects.count()',),
     ),
 
