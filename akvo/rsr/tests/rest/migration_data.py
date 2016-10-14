@@ -330,20 +330,20 @@ PUT_URLS = [
 DELETE_URLS = [
 
     # akvo/rsr/static/scripts-src/my-details-employments.jsx
-    "/rest/v1/employment/{employment_id}",
+    ('/rest/v1/employment/1/?format=json',
+     {},
+     ('Employment.objects.count()', )),
+
 
     # akvo/rsr/static/scripts-src/project-editor.jsx
-    '/rest/v1/project/{project_id}/remove_keyword/{item_id}/?format=json',
-    '/rest/v1/{itemType}/{itemId}/?format=json',
-    '/rest/v1/project/{project_id}/remove_validation/{validation_set_id}/?format=json',
-    '/rest/v1/project/{project_id}/add_validation/{validation_set_id}/?format=json',
+    # '/rest/v1/project/{project_id}/remove_keyword/{item_id}/?format=json',
+    # '/rest/v1/{itemType}/{itemId}/?format=json',
+    # '/rest/v1/project/{project_id}/remove_validation/{validation_set_id}/?format=json',
+    # '/rest/v1/project/{project_id}/add_validation/{validation_set_id}/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-user-management.js
-    '/rest/v1/employment/{employment_id}/?format=json',
+    # # akvo/rsr/static/scripts-src/my-updates.js
+    # '/rest/v1/project_update/{update_id}/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-updates.js
-    '/rest/v1/project_update/{update_id}/?format=json',
-
-    # akvo/rsr/static/scripts-src/my-results.js
-    "/rest/v1/indicator_period_data_framework/{update}/?format=json",
+    # # akvo/rsr/static/scripts-src/my-results.js
+    # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
 ]

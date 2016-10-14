@@ -36,7 +36,7 @@ import xmltodict
 from akvo.rsr.models import (
     Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Organisation, Project, Result
 )
-from .migration_data import (GET_URLS, HERE, POST_URLS)
+from .migration_data import (DELETE_URLS, GET_URLS, HERE, POST_URLS)
 
 
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
@@ -99,6 +99,9 @@ def load_fixture_data():
 
 
 def parse_response(url, response):
+    if not response:
+        return response
+
     # XXX: converting ordered dict to dict for pretty diffs
     return (
         json.loads(json.dumps(xmltodict.parse(response))) if 'format=xml' in url
@@ -154,6 +157,9 @@ class MigrationTestsMeta(type):
 
         for i, data in enumerate(POST_URLS):
             attrs['test_post_{}'.format(i)] = cls.gen(data, 'post')
+
+        for i, data in enumerate(DELETE_URLS):
+            attrs['test_delete_{}'.format(i)] = cls.gen(data, 'delete')
 
         return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
 
@@ -221,14 +227,15 @@ class MigrationTestCase(TestCase):
             cls._expected = json.load(f)
 
     @staticmethod
-    def get_post_response_dict(url, data, queries):
+    def get_response_dict(method, url, data=None, queries=None):
         response_dict = {}
 
         with do_in_transaction():
-            # POST
+            # METHOD calls
+            method = getattr(CLIENT, method)
             r = (
-                CLIENT.post(url, data, content_type='application/xml') if 'format=xml' in url else
-                CLIENT.post(url, data)
+                method(url, data, content_type='application/xml') if 'format=xml' in url else
+                method(url, data)
             )
             assert int(r.status_code / 100) == 2, r.status_code
             response_dict['post'] = r.content
@@ -264,8 +271,27 @@ class MigrationTestCase(TestCase):
     def post_test(self, url, data, queries):
         """Test if POST requests post data correctly."""
 
-        response_dict = self.get_post_response_dict(url, data, queries)
+        response_dict = self.get_response_dict('post', url, data, queries)
         expected_responses = self._expected.setdefault('POST', {})
+        if url not in expected_responses:
+            expected_responses[url] = response_dict
+            self.__class__.collected_count += 1
+            raise unittest.SkipTest('No previously recorded output for {}'.format(url))
+
+        for key, expected_value in expected_responses[url].items():
+            actual_value = response_dict[key]
+            if not isinstance(expected_value, dict):
+                expected_value = parse_response(url, expected_value)
+                actual_value = parse_response(url, actual_value)
+
+            self.assertEqual(expected_value, actual_value)
+
+    def delete_test(self, url, data, queries):
+        """Test if DELETE requests work correctly."""
+
+        response_dict = self.get_response_dict('delete', url, data, queries)
+
+        expected_responses = self._expected.setdefault('DELETE', {})
         if url not in expected_responses:
             expected_responses[url] = response_dict
             self.__class__.collected_count += 1
