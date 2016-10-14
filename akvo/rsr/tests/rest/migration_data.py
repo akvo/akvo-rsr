@@ -336,10 +336,13 @@ DELETE_URLS = [
 
 
     # akvo/rsr/static/scripts-src/project-editor.jsx
-    # '/rest/v1/project/{project_id}/remove_keyword/{item_id}/?format=json',
+    ('/rest/v1/project/4/remove_validation/1/?format=json', {},
+     ('Project.objects.get(id=4).validations.count()',)),
+
+    ('/rest/v1/project/4/remove_keyword/1/?format=json', {},
+     ('Project.objects.get(id=4).keywords.count()',)),
+
     # '/rest/v1/{itemType}/{itemId}/?format=json',
-    # '/rest/v1/project/{project_id}/remove_validation/{validation_set_id}/?format=json',
-    # '/rest/v1/project/{project_id}/add_validation/{validation_set_id}/?format=json',
 
     # # akvo/rsr/static/scripts-src/my-updates.js
     # '/rest/v1/project_update/{update_id}/?format=json',

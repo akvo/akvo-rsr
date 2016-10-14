@@ -34,7 +34,7 @@ from django.core import management
 import xmltodict
 
 from akvo.rsr.models import (
-    Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Organisation, Project, Result
+    Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation, Project, Result
 )
 from .migration_data import (DELETE_URLS, GET_URLS, HERE, POST_URLS)
 
@@ -96,6 +96,11 @@ def load_fixture_data():
 
     # Create an unapproved employment
     Employment(organisation_id=1, user_id=2).save()
+
+    # Add a keyword
+    k = Keyword(label='new-keyword')
+    k.save()
+    project.keywords.add(k)
 
 
 def parse_response(url, response):
