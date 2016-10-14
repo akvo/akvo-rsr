@@ -30,6 +30,11 @@ PROJECT_UPDATE_XML = """
 </update>
 """
 
+ORGANISATION_XML = """
+<?xml version="1.0" encoding="utf-8"?>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><long_name>ABC.XYZ</long_name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url><primary_location>3</primary_location><can_create_projects>True</can_create_projects><content_owner></content_owner><allow_edit>True</allow_edit><public_iati_file>True</public_iati_file><can_become_reporting>False</can_become_reporting><internal_org_ids></internal_org_ids><absolute_url>/en-us/organisation/4/</absolute_url></root>
+"""
+
 GET_URLS = [
     # akvo/rsr/static/scripts-src/my-projects.js
     '/rest/v1/project/?format=json',
@@ -192,6 +197,11 @@ POST_URLS = [
       u'url': u'http://gooddeeds.example.com/'},
      ('Organisation.objects.count()',
       'Organisation.objects.get(id=4).name',),
+    ),
+
+    ('/rest/v1/organisation/?format=xml',
+     ORGANISATION_XML.strip(),
+     ('Organisation.objects.count()',),
     ),
 
     # akvo/rsr/static/scripts-src/my-user-management.js
