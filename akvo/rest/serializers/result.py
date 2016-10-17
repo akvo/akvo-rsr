@@ -27,7 +27,8 @@ class ResultSerializer(ResultRawSerializer):
 
 class ResultsFrameworkSerializer(ResultRawSerializer):
 
-    indicators = IndicatorFrameworkSerializer(many=True, required=False)
+    indicators = IndicatorFrameworkSerializer(many=True, read_only=True)
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
