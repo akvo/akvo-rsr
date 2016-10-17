@@ -111,10 +111,13 @@ class UserPasswordSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Check if password1 and password2 match"""
-
         if data['new_password1'] != data['new_password2']:
             raise serializers.ValidationError(_(u'Passwords do not match.'))
         return data
+
+    def update(self, instance, validated_data):
+        instance.password = validated_data.get('new_password2', instance.password)
+        return instance
 
 
 class UserDetailsSerializer(BaseRSRSerializer):

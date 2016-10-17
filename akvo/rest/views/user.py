@@ -74,7 +74,7 @@ def change_password(request, pk=None):
     # Process request
     serializer = UserPasswordSerializer(data=request.data, instance=user)
     if serializer.is_valid():
-        user.set_password(serializer.data['new_password2'])
+        user = serializer.update(serializer.instance, serializer.validated_data)
         user.save()
         return Response({'status': 'password set'})
     else:
