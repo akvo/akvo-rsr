@@ -122,6 +122,16 @@ def _drop_unimportant_data(d):
         # creates some required objects and not everything is in the fixutres.
         'last_modified_at',
         'created_at',
+        'id',
+        # IDs of the Result and Indicator
+        'result',
+        'indicator',
+        # TODO: check what format images URLs should have
+        'logo',
+        'photo',
+        'file',
+        # request meta
+        'next',
     ]
 
     ignored_string_prefixes = (
@@ -133,6 +143,8 @@ def _drop_unimportant_data(d):
         # "Method 'GET' not allowed." to 'Method "GET" not allowed.',
         "Method 'GET' not allowed.",
         'Method "GET" not allowed.',
+        u'Not found',
+        u'Not found.',
     )
 
     if isinstance(d, dict):
