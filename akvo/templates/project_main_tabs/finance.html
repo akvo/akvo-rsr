@@ -58,7 +58,7 @@
                   {% if project.accepts_donations %}
                     <dl class="dl-horizontal">
                       <div class="donateButton">
-                        <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                        <a onClick="showDonatePopup('{{ project.donate_url }}')" class="btn btn-primary">{% trans "Donate" %}</a>
                       </div>
                     </dl>
                   {% endif %}

@@ -127,7 +127,7 @@
                                             </dd>
                                             {% endif %}
                                         </dl>
-                                        <a href="{{ project.donate_url }}" target="_blank" class="btn btn-default donateButton">{% trans "Donate" %}</a>
+                                        <a onClick="showDonatePopup('{{ project.donate_url }}')" class="btn btn-default donateButton">{% trans "Donate" %}</a>
                                     </li>
                                 {% endif %}
                             </ul>

@@ -125,7 +125,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
               </p>
@@ -158,7 +158,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{{ project.donate_url }}" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
             </p>
@@ -233,7 +233,12 @@
         "organisations_text": "{% trans 'Organisations' %}",
         "locations_text": "{% trans 'Locations' %}",
         "organisation_text": "{% trans 'organisation' %}",
-        "all_text": "{% trans 'All' %}"
+        "all_text": "{% trans 'All' %}",
+
+        "donate_heading": "{% trans 'Donate' %}",
+        "donate_summary": "{% trans 'To make a donation to the project, click Donate. You will be sent to an external website that accepts your donations.' %}",
+        "donate_text": "{% trans 'Donate' %}",
+        "donate_confirm_cancel_text": "{% trans 'Cancel' %}"
     }
     </script>
 
@@ -262,4 +267,5 @@
   {% compressed_js 'project_directory' %}
   {% compressed_js 'project_directory_typeahead' %}
   {% compressed_js 'more_partners' %}
+  {% compressed_js 'donate_popup' %}
 {% endblock js %}
