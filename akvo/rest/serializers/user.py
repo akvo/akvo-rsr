@@ -116,7 +116,7 @@ class UserPasswordSerializer(serializers.Serializer):
         return data
 
     def update(self, instance, validated_data):
-        instance.password = validated_data.get('new_password2', instance.password)
+        instance.set_password(validated_data.get('new_password2', instance.password))
         return instance
 
 
