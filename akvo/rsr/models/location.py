@@ -165,8 +165,11 @@ class ProjectLocation(BaseLocation):
             u' ({0})'.format(self.name) if self.name else u''
         )
 
-    def country_label(self):
-        return self.country or ''
+    def iati_country(self):
+        return codelist_value(Country, self, 'country')
+
+    def iati_country_unicode(self):
+        return str(self.iati_country())
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
