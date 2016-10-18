@@ -132,6 +132,7 @@ def _drop_unimportant_data(d):
         'file',
         # request meta
         'next',
+        'limit',
     ]
 
     ignored_string_prefixes = (
