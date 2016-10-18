@@ -139,13 +139,15 @@ def request_organisation(request, pk=None):
             return Response({'detail': _(u'User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)
 
-        if serializer.data['country']:
-            serializer.data['country_full'] = employment.iati_country().name
+        data = serializer.data
+        if data['country']:
+            data['country_full'] = employment.iati_country().name
+            data['country_name'] = str(employment.iati_country())
         else:
-            serializer.data['country_full'] = ''
-        serializer.data['organisation_full'] = OrganisationSerializer(organisation).data
-        serializer.data['id'] = employment.pk
+            data['country_full'] = ''
+        data['organisation_full'] = OrganisationSerializer(organisation).data
+        data['id'] = employment.pk
 
-        return Response(serializer.data)
+        return Response(data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
