@@ -152,7 +152,9 @@ class Partnership(models.Model):
         return dict(self.IATI_ROLES).get(self.iati_organisation_role, '')
 
     def iati_organisation_role_label_unicode(self):
-        return u"".format(self.iati_organisation_role_label())
+        label = self.iati_organisation_role_label()
+        # label is a django.utils.functional.__proxy__ object
+        return label.format()
 
     def iati_role_to_partner_type(self):
         if self.iati_organisation_role:
