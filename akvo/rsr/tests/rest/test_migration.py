@@ -119,7 +119,7 @@ def _drop_unimportant_data(d):
 
     unimportant_keys = [
         # These get changed because the setUp - load_fixture_data - actually
-        # creates some required objects and not everything is in the fixutres.
+        # creates some required objects and not everything is in the fixtures.
         'last_modified_at',
         'created_at',
         'id',
@@ -133,6 +133,15 @@ def _drop_unimportant_data(d):
         # request meta
         'next',
         'limit',
+        # project budget info, old data is int, new is decimal
+        'budget',
+        'funds',
+        'funds_needed',
+        # NullBooleanFields, they should probably be True, False or None as in DRF3
+        'humanitarian',
+        'is_secondary_reporter',
+        # PartnershipSerializer.partner_type changed to emit '' instead of None
+        'partner_type',
     ]
 
     ignored_string_prefixes = (
