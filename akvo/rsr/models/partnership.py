@@ -152,18 +152,13 @@ class Partnership(models.Model):
         return dict(self.IATI_ROLES).get(self.iati_organisation_role, '')
 
     def iati_organisation_role_label_unicode(self):
-        label = self.iati_organisation_role_label()
-        # label is a django.utils.functional.__proxy__ object
-        return label.format()
+        return u"{}".format(self.iati_organisation_role_label())
 
     def iati_role_to_partner_type(self):
-        if self.iati_organisation_role:
-            return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(int(self.iati_organisation_role))
-        else:
-            return None
+        return dict(self.ROLES_TO_PARTNER_TYPES_MAP).get(self.iati_organisation_role, '')
 
     def iati_role_to_partner_type_unicode(self):
-        return str(self.iati_role_to_partner_type())
+        return u"{}".format(self.iati_role_to_partner_type())
 
     def organisation_show_link(self):
         if self.organisation:
