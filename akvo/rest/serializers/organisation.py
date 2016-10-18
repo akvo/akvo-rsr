@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from rest_framework import serializers
+
 from akvo.rsr.models import Organisation
 
 from ..fields import Base64ImageField
@@ -22,6 +24,9 @@ from .rsr_serializer import BaseRSRSerializer
 
 class OrganisationSerializer(BaseRSRSerializer):
 
+    content_owner = serializers.PrimaryKeyRelatedField(
+        queryset=Organisation.objects.all(), required=False
+    )
     total_budgets = OrganisationTotalBudgetSerializer(read_only=True, many=True, required=False)
     recipient_org_budgets = OrganisationRecipientOrgBudgetSerializer(
         read_only=True, many=True, required=False

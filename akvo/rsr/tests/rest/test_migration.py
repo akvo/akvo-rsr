@@ -264,8 +264,21 @@ class MigrationTestCase(TestCase):
                 method(url, data, content_type='application/xml') if 'format=xml' in url else
                 method(url, data)
             )
-            assert int(r.status_code / 100) == 2, r.status_code
+            assert int(r.status_code / 100) == 2, "Status: {} \nMessage:{}".format(
+                r.status_code, r.content
+            )
             response_dict['post'] = r.content
+
+            # if 'format=xml' in url:
+            #     response = method(url, data, content_type='application/xml')
+            # elif 'format=json' in url:
+            #     response = method(url, data, content_type='application/json')
+            # else:
+            #     response = method(url, data)
+            # assert int(response.status_code / 100) == 2, "Status: {} \nMessage:{}".format(
+            #     response.status_code, response.content
+            # )
+            # response_dict['post'] = response.content
 
             # GET
             response_dict['get'] = CLIENT.get(url).content
