@@ -51,7 +51,7 @@ function showDonatePopup(url) {
                 ),
                 React.createElement(Modal.Footer, null,
                     React.createElement(Button, {onClick: this.close}, i18n.donate_confirm_cancel_text),
-                    React.createElement(Button, null,
+                    React.createElement(Button, {onClick: this.close},
                         React.createElement('a', {href: this.props.url, target: "_blank"}, i18n.donate_text)
                     )
                 )
