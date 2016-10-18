@@ -16,6 +16,10 @@ class Command(BaseCommand):
     help = "Set Project.last_update field. Fixes potential errors due to a bug"
 
     def handle(self, *args, **options):
+        """Set Project.last_update to latest update for the project.
+
+        This fixes a bug that was introduced when updates could be deleted.
+        """
         sys.stdout.write(u"Fix latest update for projects"
             "\n+ means latest update added"
             "\n. means no change"

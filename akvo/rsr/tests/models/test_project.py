@@ -17,10 +17,12 @@ class ProjectModelTestCase(TestCase):
     """Tests for the project model"""
 
     def test_project_last_update(self):
-        """ Test Project.last_update. The field is a denormalization keeping track of the latest
-        update for a project, if any. When deletion of updates was introduced, a bug occurs when
-        deleting the latest update, as the Project.last_update field was set to None in that case.
-        The tests check that the fix for this bug works correctly
+        """Test that Project.last_update is updated correctly when an update is deleted.
+
+        The field is a denormalization keeping track of the latest update for a project, if any.
+        When deletion of updates was introduced, a bug occurs when deleting the latest update, as
+        the Project.last_update field was set to None in that case.
+        The tests check that the fix for this bug works correctly.
         """
         # setup needed model instances
         paypal = PayPalGateway.objects.create(name='paypal')
