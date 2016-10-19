@@ -296,10 +296,15 @@ class Project(TimestampsMixin, models.Model):
 
     # donate url
     donate_url = models.URLField(
-        # FIXME: _(u'donate url') may need fixes?
         _(u'donate url'), null=True, blank=True, max_length=200,
         help_text=_(u'Add a donation url for this project. If no URL is added, it is not possible '
                     u'to donate to this project through RSR.')
+    )
+
+    # donations
+    donations = models.DecimalField(
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0,
+        help_text=_(u'The total sum of donations the project has already recieved.')
     )
 
     # extra IATI fields
@@ -438,6 +443,12 @@ class Project(TimestampsMixin, models.Model):
         if self.pk:
             orig = Project.objects.get(pk=self.pk)
 
+            # Update funds and funds_needed if donations change.  Any other
+            # changes (budget, pledged amounts, ...) are handled by signals.
+            if self.donations != orig.donations:
+                self.funds = self.get_funds()
+                self.funds_needed = self.get_funds_needed()
+
             # Update legacy status field
             if self.iati_status != orig.iati_status:
                 self.status = self.CODE_TO_STATUS[self.iati_status]
@@ -551,7 +562,7 @@ class Project(TimestampsMixin, models.Model):
 
     def get_funds(self):
         """ All money given to a project"""
-        return self.get_pledged()
+        return self.donations + self.get_pledged()
 
     def update_funds(self):
         "Update de-normalized field"
