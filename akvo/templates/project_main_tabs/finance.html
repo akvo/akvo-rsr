@@ -55,6 +55,12 @@
                           <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount">{{pledged|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
                       {% endif %}
                   </dl>
+                  {% if project.donations or project.donate_url %}
+                    <h4>{% trans "Donations" %}:</h4>
+                    <dl class="dl-horizontal">
+                      <dt>{% trans "Total" %}:</dt><dd class="currencyAmount">{{project.donations|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                    </dl>
+                  {% endif %}
                   {% if project.accepts_donations %}
                     <dl class="dl-horizontal">
                       <div class="donateButton">
@@ -67,6 +73,9 @@
                   <h4 class="">{% trans "Project funding" %}:</h4>
                   <dl class="dl-horizontal">
                       <dt>{% trans "Current funders" %}:</dt><dd class="currencyAmount">{% if pledged %}{{pledged|floatformat:0|intcomma}}{% else %}0{% endif %}<span class="currency"> {{project.currency}}</span></dd>
+                      {% if project.donations or project.donate_url %}
+                      <dt>{% trans "Donations" %}:</dt><dd class="currencyAmount">{{project.donations|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
+                      {% endif %}
                       <hr>
                       <dt>{% trans "Total funded" %}:</dt><dd class="currencyAmount">{{project.funds|floatformat:0|intcomma}}<span class="currency"> {{project.currency}}</span></dd>
                       <dt>{% trans "Project budget" %}:</dt>

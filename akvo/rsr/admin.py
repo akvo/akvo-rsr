@@ -901,7 +901,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'You can define the budget information as a total for the whole project or within sections and '
                 u'periods to provide more granular information about where the project funds are being spent.'
             ),
-            'fields': ('capital_spend_percentage', ),
+            'fields': ('capital_spend_percentage', 'donations', ),
         }),
         (_(u'Project Financials - Transactions'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
