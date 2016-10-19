@@ -823,7 +823,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'iati_status', 'date_start_planned',
                        'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
-                       'currency', 'donate_button', 'hierarchy', 'is_public', 'validations'),
+                       'currency', 'donate_url', 'hierarchy', 'is_public', 'validations'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1207,55 +1207,6 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
 
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
-
-
-class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test',
-                    'is_anonymous')
-    list_filter = ('engine', 'status', 'test', 'is_anonymous')
-    actions = ('void_invoices',)
-
-    def void_invoices(self, request, queryset):
-        """Manually void invoices with a status of 1 (Pending) or 4 (Stale)
-
-        Checks for invalid invoice selections, refuses to operate on them
-        and flags up a notification.
-
-        Status codes:
-
-            1 - Pending (valid for voiding)
-            2 - Void (invalid)
-            3 - Complete (invalid)
-            4 - Stale (valid)
-        """
-        valid_invoices = queryset.filter(status__in=[1, 4])
-        invalid_invoices = queryset.filter(status__in=[2, 3])
-        if invalid_invoices:
-            if valid_invoices:
-                for invoice in valid_invoices:
-                    self.message_user(request, 'Invoice %d successfully voided.' % int(invoice.pk))
-                valid_invoices.update(status=2)
-            for invoice in invalid_invoices:
-                # beth: put proper translation tag back in later--ugettext removed
-                # Translators: invoice_status can be
-                msg = u'Invoice %(invoice_id)d could not be voided. It is already %(invoice_status)s.' % dict(
-                    invoice_id=invoice.pk, invoice_status=invoice.get_status_display().lower()
-                )
-                self.message_user(request, msg)
-        else:
-            for invoice in queryset:
-                self.message_user(request, 'Invoice %d successfully voided.' % int(invoice.pk))
-                queryset.update(status=2)
-    void_invoices.short_description = u'Mark selected invoices as void'
-
-admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
-
-
-class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'paypal_gateway', 'mollie_gateway')
-    list_filter = ('paypal_gateway', 'mollie_gateway')
-
-admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
 
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):

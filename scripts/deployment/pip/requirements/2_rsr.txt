@@ -5,7 +5,6 @@ Django==1.7.7
 django-filter==0.9
 django-markup==0.4
 django-pagination==1.0.7
-django-paypal==0.1.3
 
 # Bootstrap
 django-bootstrap3==4.11.0
@@ -24,7 +23,6 @@ django-tastypie==0.12.1
 -e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
 # Akvonaut apps
--e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
 -e git://github.com/zzgvh/django-notification.git#egg=django_notification
 -e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
 -e git://github.com/zzgvh/django-workflows.git#egg=django_workflows

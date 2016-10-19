@@ -104,23 +104,9 @@ def partner_sites_funding_box(context, project):
         }
 
 
-@register.inclusion_tag('inclusion_tags/individual_donate_button.html',
-                        takes_context=True)
-def individual_donate_button(context, project):
-    '''Show the individual doante button. CSS in widget_global.css'''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
-
-
 @register.inclusion_tag('inclusion_tags/institutions_sponsor.html',
                         takes_context=True)
 def institutions_sponsor(context, project):
-    '''Show the individual doante button. CSS in widget_global.css'''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
-
-
-@register.inclusion_tag('inclusion_tags/project_budget.html',
-                        takes_context=True)
-def project_budget(context, project):
     '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
