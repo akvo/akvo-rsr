@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User, BudgetItemLabel
-from akvo.codelists.models import BudgetIdentifier, ResultType, Version
+from akvo.codelists.models import BudgetIdentifier, Currency, ResultType, Version
 
 from .xml_files import (IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING,
                         IATI_CORDAID_STRING)
@@ -59,6 +59,10 @@ class IatiImportTestCase(TestCase):
         # Create result type code
         ResultType.objects.create(version=iati_version, code="1", name="Output")
 
+        # Create a pair of Currency codelist objects for use in the transaction import
+        Currency.objects.create(code='EUR', name=u'Euro', version=iati_version)
+        Currency.objects.create(code='USD', name=u'US Dollar', version=iati_version)
+
     def test_iati_v1_import(self):
         """
         Test the IATI v1 import.
@@ -72,11 +76,22 @@ class IatiImportTestCase(TestCase):
         iati_v1_import_job.run()
 
         project_v1 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v1")
+        transaction_1 = project_v1.transactions.get(reference='1234')
+        transaction_2 = project_v1.transactions.get(reference='4321')
         self.assertIsInstance(project_v1, Project)
         self.assertEqual(project_v1.language, "en")
         self.assertEqual(project_v1.currency, "USD")
         self.assertEqual(project_v1.title, "Test project for IATI import v1")
         self.assertEqual(project_v1.partners.count(), 4)
+
+        self.assertEqual(project_v1.transactions.count(), 2)
+        self.assertEqual(project_v1.transactions.count(), 2)
+        self.assertEqual(transaction_1.reference, '1234')
+        self.assertEqual(transaction_1.currency, 'EUR')
+        self.assertEqual(transaction_1.iati_currency(), u'Euro')
+        self.assertEqual(transaction_2.reference, '4321')
+        self.assertEqual(transaction_2.currency, 'USD')
+        self.assertEqual(transaction_2.iati_currency(), u'US Dollar')
         self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_v2_import(self):
@@ -98,6 +113,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.hierarchy, 1)
         self.assertEqual(project_v2.title, "Test project for IATI import v2")
         self.assertEqual(project_v2.partners.count(), 4)
+        self.assertEqual(project_v2.transactions.count(), 1)
         self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_incorrect_import(self):

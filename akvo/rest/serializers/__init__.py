@@ -33,7 +33,6 @@ from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
 from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
-from .invoice import InvoiceSerializer
 from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
@@ -127,7 +126,6 @@ __all__ = [
     'IndicatorPeriodTargetLocationSerializer',
     'IndicatorReferenceSerializer',
     'InternalOrganisationIDSerializer',
-    'InvoiceSerializer',
     'KeywordSerializer',
     'LegacyDataSerializer',
     'LinkSerializer',

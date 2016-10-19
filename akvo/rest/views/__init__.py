@@ -32,7 +32,6 @@ from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
                                         IndicatorPeriodTargetLocationViewSet)
 from .indicator_reference import IndicatorReferenceViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
-from .invoice import InvoiceViewSet
 from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
@@ -134,7 +133,6 @@ __all__ = [
     'indicator_upload_file',
     'InternalOrganisationIDViewSet',
     'invite_user',
-    'InvoiceViewSet',
     'KeywordViewSet',
     'LegacyDataViewSet',
     'LinkViewSet',
