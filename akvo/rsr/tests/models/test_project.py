@@ -9,7 +9,7 @@ from unittest import TestCase
 
 from django.contrib.auth import get_user_model
 
-from akvo.rsr.models import Partnership, Project, ProjectUpdate
+from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate
 
 
 class ProjectModelTestCase(TestCase):
@@ -48,19 +48,23 @@ class ProjectModelTestCase(TestCase):
 
         # setup needed model instances
         project_1 = Project.objects.create(title="Test project 1")
+        budget_item = BudgetItem.objects.create(project=project_1, amount=200)
 
         # Change donations
         project_1.donations = 100
         project_1.save()
 
         # assert that funds for the project are correct
+        self.assertEqual(project_1.budget, budget_item.amount)
         self.assertEqual(project_1.donations, project_1.funds)
+        self.assertEqual(project_1.funds_needed, project_1.budget - project_1.funds)
 
     def test_project_funds_update_on_pledges_change(self):
         """Test that Project.funds is correct when pledged amounts change."""
 
         # setup needed model instances
         project_1 = Project.objects.create(title="Test project 1")
+        budget_item = BudgetItem.objects.create(project=project_1, amount=200)
         partnership = Partnership.objects.create(
             iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
             project=project_1, funding_amount=100
@@ -73,4 +77,6 @@ class ProjectModelTestCase(TestCase):
         project_1.save()
 
         # assert that funds for the project are correct
+        self.assertEqual(project_1.budget, budget_item.amount)
         self.assertEqual(project_1.funds, partnership.funding_amount + project_1.donations)
+        self.assertEqual(project_1.funds_needed, project_1.budget - project_1.funds)
