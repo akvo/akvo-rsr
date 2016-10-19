@@ -443,6 +443,12 @@ class Project(TimestampsMixin, models.Model):
         if self.pk:
             orig = Project.objects.get(pk=self.pk)
 
+            # Update funds and funds_needed if donations change.  Any other
+            # changes (budget, pledged amounts, ...) are handled by signals.
+            if self.donations != orig.donations:
+                self.funds = self.get_funds()
+                self.funds_needed = self.get_funds_needed()
+
             # Update legacy status field
             if self.iati_status != orig.iati_status:
                 self.status = self.CODE_TO_STATUS[self.iati_status]
