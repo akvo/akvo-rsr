@@ -1412,8 +1412,11 @@ def update_denormalized_project(sender, **kwargs):
 
 @receiver(post_delete, sender=ProjectUpdate)
 def rewind_last_update(sender, **kwargs):
-    """ Updates the denormalized project.last_update on related project,
-        sets it to the latest available update if any"""
+    """ Updates the denormalized project.last_update on related project
+
+        When deleting an update we have to set project.last_update again since it'll change if the
+        deleted update was tha latest or if it was the only update for the project
+        """
     project_update = kwargs['instance']
     project = project_update.project
     try:

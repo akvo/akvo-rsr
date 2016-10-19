@@ -10,7 +10,7 @@ from unittest import TestCase
 from django.contrib.auth import get_user_model
 
 from akvo.rsr.models import Project
-from akvo.rsr.models import ProjectUpdate, PayPalGateway, MollieGateway, PaymentGatewaySelector
+from akvo.rsr.models import ProjectUpdate
 
 
 class ProjectModelTestCase(TestCase):
@@ -25,8 +25,6 @@ class ProjectModelTestCase(TestCase):
         The tests check that the fix for this bug works correctly.
         """
         # setup needed model instances
-        paypal = PayPalGateway.objects.create(name='paypal')
-        mollie = MollieGateway.objects.create(name='mollie')
         project_1 = Project.objects.create(title="Test project 1")
         user_1 = get_user_model().objects.create(email='user1@com.com')
         update_1 = ProjectUpdate.objects.create(title="Test update 1", project=project_1, user=user_1)
