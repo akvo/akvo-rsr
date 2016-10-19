@@ -18,8 +18,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.conf.urls.i18n import i18n_patterns
 
-from paypal.standard.ipn.views import ipn as paypal_ipn
-
 admin.autodiscover()
 
 ####################################################################################
@@ -133,35 +131,6 @@ urlpatterns = i18n_patterns(
 
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
-
-    # Donations
-    url(r'^mollie/report/$',
-        'akvo.rsr.views.donate.mollie_report',
-        name='mollie_report'),
-
-    url(r'^invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
-        'akvo.rsr.views.donate.void_invoice',
-        name='void_invoice'),
-
-    url(r'^project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
-        'akvo.rsr.views.donate.donate',
-        name='complete_donation'),
-
-    url(r'^project/(?P<project_id>\d+)/donate/$',
-        'akvo.rsr.views.donate.setup_donation',
-        name='project-donate'),
-
-    url(r'^donate/thanks/$',
-        'akvo.rsr.views.donate.donate_thanks',
-        name='donate_thanks'),
-
-    url(r'^donate/500/$',
-        TemplateView.as_view(template_name="donate/donate_500.html"),
-        name='donate_500'),
-
-    url(r'^donate/paypal/ipn/$',
-        csrf_exempt(paypal_ipn),
-        name='paypal_ipn'),
 
     # Admin
     (r'^admin/', include(admin.site.urls)),

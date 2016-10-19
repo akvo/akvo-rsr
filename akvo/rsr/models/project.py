@@ -43,7 +43,6 @@ from ..mixins import TimestampsMixin
 from .country import Country
 from .iati_check import IatiCheck
 from .indicator import IndicatorPeriod
-from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
@@ -295,11 +294,12 @@ class Project(TimestampsMixin, models.Model):
     # primary_organisation is a denormalized field used for performance of the project list page
     primary_organisation = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
 
-    # donate button
-    donate_button = models.BooleanField(
-        _(u'donate button'), default=False,
-        help_text=_(u'Show donate button for this project. If not selected, it is not possible '
-                    u'to donate to this project and the donate button will not be shown.')
+    # donate url
+    donate_url = models.URLField(
+        # FIXME: _(u'donate url') may need fixes?
+        _(u'donate url'), null=True, blank=True, max_length=200,
+        help_text=_(u'Add a donation url for this project. If no URL is added, it is not possible '
+                    u'to donate to this project through RSR.')
     )
 
     # extra IATI fields
@@ -498,55 +498,12 @@ class Project(TimestampsMixin, models.Model):
 
     def accepts_donations(self):
         """Returns True if a project accepts donations, otherwise False.
-        A project accepts donations when the donate button settings is True, the project is published,
+        A project accepts donations when the donate url is set, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_button and self.is_published() and self.funds_needed > 0 and not \
+        if self.donate_url and self.is_published() and self.funds_needed > 0 and not \
                 self.iati_status in Project.DONATE_DISABLED:
             return True
         return False
-
-    def all_donations(self):
-        return Invoice.objects.filter(
-            project__exact=self.id
-        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True)
-
-    def public_donations(self):
-        return Invoice.objects.filter(
-            project__exact=self.id
-        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)\
-            .exclude(test=True).exclude(is_anonymous=True)
-
-    def all_donations_amount(self):
-        return Invoice.objects.filter(
-            project__exact=self.id
-        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
-            all_donations_sum=Sum('amount')
-        )['all_donations_sum']
-
-    def all_donations_amount_received(self):
-        return Invoice.objects.filter(
-            project__exact=self.id).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
-            all_donations_sum=Sum('amount_received')
-        )['all_donations_sum']
-
-    def amount_needed_to_fully_fund_via_paypal(self):
-        if self.currency == 'USD':
-            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_USD', 3.9)
-            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_USD', 0.30)
-        else:
-            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_EUR', 3.4)
-            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_EUR', 0.35)
-        return int(math.ceil(float(self.funds_needed) / (1 - PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
-
-    def amount_needed_to_fully_fund_via_ideal(self):
-        MOLLIE_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
-        return int(math.ceil(float(self.funds_needed) + MOLLIE_FEE_BASE))
-
-    def anonymous_donations_amount_received(self):
-        amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
-        amount = amount.filter(status__exact=3).aggregate(sum=Sum('amount_received'))['sum']
-        return amount or 0
 
     # New API, de-normalized fields support
     def get_budget(self):
@@ -586,18 +543,6 @@ class Project(TimestampsMixin, models.Model):
         self.budget = self.get_budget()
         self.save()
 
-    def get_donations(self):
-        """ Confirmed donations to the project, after middleman fees"""
-        return Invoice.objects.filter(project__exact=self).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
-
-    def get_pending_donations(self):
-        """ Unconfirmed donations, before middleman fees have been deducted"""
-        return Invoice.objects.filter(project__exact=self).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_PENDING
-        ).aggregate(Sum('amount'))['amount__sum'] or 0
-
     def get_pledged(self):
         """ How much is pledges by funding organisations"""
         return Partnership.objects.filter(project__exact=self).filter(
@@ -606,7 +551,7 @@ class Project(TimestampsMixin, models.Model):
 
     def get_funds(self):
         """ All money given to a project"""
-        return self.get_donations() + self.get_pledged()
+        return self.get_pledged()
 
     def update_funds(self):
         "Update de-normalized field"
@@ -756,11 +701,6 @@ class Project(TimestampsMixin, models.Model):
 
         def dollars(self):
             return self.filter(currency='USD')
-
-        def donated(self):
-            return self.filter(
-                    invoice__status=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-                ).annotate(donated=Sum('invoice__amount_received')).distinct()
 
         # aggregates
         def budget_sum(self):
@@ -1008,9 +948,8 @@ class Project(TimestampsMixin, models.Model):
         exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
                           'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
                           'iatiexport', 'iatiimportjob', 'id', 'is_impact_project', 'is_public',
-                          'last_modified_at', 'partners', 'partnerships', 'paymentgatewayselector',
-                          'primary_organisation', 'primary_organisation_id', 'publishingstatus',
-                          'status', 'validations']
+                          'last_modified_at', 'partners', 'partnerships', 'primary_organisation',
+                          'primary_organisation_id', 'publishingstatus', 'status', 'validations']
 
         for field in Project._meta.get_all_field_names():
             if field not in exclude_fields:
