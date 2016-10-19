@@ -74,3 +74,13 @@ function showDonatePopup(url) {
     // Open the dialog
     this.donateComponent.open();
 }
+
+/* Initialise page */
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial data
+    var data_element = document.getElementById("project-main-text") || document.getElementById("typeahead-header-text");
+    i18n = JSON.parse(data_element.innerHTML);
+
+    // Hack to make this name available to onClick in HTML.
+    window.showDonatePopup = showDonatePopup;
+});
