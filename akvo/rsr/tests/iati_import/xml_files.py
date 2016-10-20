@@ -83,8 +83,8 @@ IATI_V1_STRING = """
            <transaction-date iso-date="2012-01-01" />
            <disbursement-channel code="1" />
         </transaction>
-        <transaction ref="1234">
-           <value currency="EUR" value-date="2012-01-01">1000</value>
+        <transaction ref="4321">
+           <value currency="USD" value-date="2012-01-01">1000</value>
            <description>Transaction description text</description>
            <transaction-type code="IF" />
            <provider-org provider-activity-id="BB-BBB-123456789-1234AA" ref="BB-BBB-123456789">Agency B</provider-org>
