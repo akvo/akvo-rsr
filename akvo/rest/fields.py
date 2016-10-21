@@ -48,8 +48,10 @@ class Base64ImageField(ImageField):
         'png',
     )
     def from_native(self, base64_data):
+        if base64_data is None:
+            data = base64_data
         # Check if this is a base64 string
-        if isinstance(base64_data, basestring):
+        elif isinstance(base64_data, basestring):
             # Try to decode the file. Return validation error if it fails.
             try:
                 decoded_file = base64.b64decode(base64_data)
