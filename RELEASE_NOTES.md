@@ -4,6 +4,9 @@
 
 ## Bug fixes
 
+[#2421] (https://github.com/akvo/akvo-rsr/issues/2421) RSR User management page
+in the French site will now correctly show the user list.
+
 # Akvo RSR version 3.17 Ulaanbaatar
 Thursday 20th of October, 2016 [@nadiagorchakova](https://github.com/nadiagorchakova)
 
