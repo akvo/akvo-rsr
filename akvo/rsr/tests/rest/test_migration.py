@@ -36,7 +36,7 @@ import xmltodict
 from akvo.rsr.models import (
     Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation, Project, Result
 )
-from .migration_data import (DELETE_URLS, GET_URLS, HERE, POST_URLS)
+from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 
 
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
@@ -89,7 +89,8 @@ def load_fixture_data():
         for title in ('1', '2', '3'):
             i = Indicator(result=r, title=title)
             i.save()
-            ip = IndicatorPeriod(indicator=i, locked=False)
+            locked = False if title != '3' else True
+            ip = IndicatorPeriod(indicator=i, locked=locked)
             ip.save()
 
             IndicatorPeriodData(period=ip, user_id=2).save()
@@ -165,6 +166,9 @@ class MigrationTestsMeta(type):
 
         for i, data in enumerate(DELETE_URLS):
             attrs['test_delete_{}'.format(i)] = cls.gen(data, 'delete')
+
+        for i, data in enumerate(PATCH_URLS):
+            attrs['test_patch_{}'.format(i)] = cls.gen(data, 'patch')
 
         return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
 
@@ -283,6 +287,24 @@ class MigrationTestCase(TestCase):
         expected = parse_response(url, expected_responses[url])
         actual = parse_response(url, response.content)
         self.assertEqual(expected, actual)
+
+    def patch_test(self, url, data, queries):
+        """Test if PATCH requests patch data correctly."""
+
+        response_dict = self.get_response_dict('patch', url, data, queries)
+        expected_responses = self._expected.setdefault('PATCH', {})
+        if url not in expected_responses:
+            expected_responses[url] = response_dict
+            self.__class__.collected_count += 1
+            raise unittest.SkipTest('No previously recorded output for {}'.format(url))
+
+        for key, expected_value in expected_responses[url].items():
+            actual_value = response_dict[key]
+            if not isinstance(expected_value, dict):
+                expected_value = parse_response(url, expected_value)
+                actual_value = parse_response(url, actual_value)
+
+            self.assertEqual(expected_value, actual_value)
 
     def post_test(self, url, data, queries):
         """Test if POST requests post data correctly."""
