@@ -238,12 +238,23 @@ class MigrationTestCase(TestCase):
         with do_in_transaction():
             # METHOD calls
             method = getattr(CLIENT, method)
-            r = (
-                method(url, data, content_type='application/xml') if 'format=xml' in url else
-                method(url, data)
+            if isinstance(data, basestring):
+                content_type = 'application/xml'
+            else:
+                content_type = data.pop('content_type', 'application/json')
+                if content_type == 'application/json':
+                    data = json.dumps(data)
+
+            if content_type is None:
+                response = method(url, data)
+
+            else:
+                response = method(url, data, content_type=content_type)
+
+            assert int(response.status_code / 100) == 2, "Status: {} \nMessage:{}".format(
+                response.status_code, response.content
             )
-            assert int(r.status_code / 100) == 2, r.status_code
-            response_dict['post'] = r.content
+            response_dict['post'] = response.content
 
             # GET
             response_dict['get'] = CLIENT.get(url).content
