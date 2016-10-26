@@ -39,9 +39,14 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
+    # HACK: In DRF3, any boolean field which is missing is assumed to be False,
+    # because HTML checkboxes are dropped from forms, when unchecked.  But, we
+    # we have a default value of True for this field in the model. So, we use a
+    # NullBooleanField to accept a None and use it as a True.
+    # http://www.django-rest-framework.org/topics/release-notes/?q=BooleanField#322
+    # A more correct fix would be to ensure that the form which submits this
+    # data has a hidden checkbox for relative_data that is always checked.
+    relative_data = serializers.NullBooleanField(required=False)
 
     class Meta:
         model = IndicatorPeriodData
-
-    def create(self, validated_data):
-        return IndicatorPeriodData.objects.create(**validated_data)
