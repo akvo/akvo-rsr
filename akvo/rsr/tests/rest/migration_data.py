@@ -133,28 +133,30 @@ GET_URLS = [
 POST_URLS = [
     # akvo/rsr/static/scripts-src/project-editor.jsx
     ('/rest/v1/project/4/project_editor/?format=json',
-     {'rsr_project.title.4': 'foo bar'},
+     {'rsr_project.title.4': 'foo bar', 'content_type': None},
      ('Project.objects.get(id=4).title',),
     ),
 
     ('/rest/v1/project/4/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
-      'field_id': 'rsr_project.current_image.4'},
+      'field_id': 'rsr_project.current_image.4',
+      'content_type': None,
+     },
      ('Project.objects.get(id=4).current_image.path',),
     ),
 
     ('/rest/v1/project/4/reorder_items/?format=json',
-     {'item_type': 'result', 'item_id': 2, 'item_direction': 'up'},
+     {'item_type': 'result', 'item_id': 2, 'item_direction': 'up', 'content_type': None},
      ('Result.objects.count()',),
     ),
 
     ('/rest/v1/project/4/reorder_items/?format=json&dedup_param=indicator',
-     {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down'},
+     {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down', 'content_type': None},
      ('Indicator.objects.count()',),
     ),
 
     ('/rest/v1/project/4/default_periods/?format=json',
-     {'indicator_id': '1', 'copy': 'true', 'set_default': 'true'},
+     {'indicator_id': '1', 'copy': 'true', 'set_default': 'true', 'content_type': None},
      ('Indicator.objects.count()',
       'IndicatorPeriod.objects.count()'),
     ),
@@ -164,7 +166,9 @@ POST_URLS = [
     ),
 
     ('/rest/v1/organisation/2/add_logo/?format=json',
-     {'logo': open(join(dirname(HERE), 'iati_export', 'test_image.jpg'))},
+     {'logo': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
+      'content_type': None,
+     },
      ('Organisation.objects.get(id=2).logo.path',),
     ),
 
@@ -196,7 +200,42 @@ POST_URLS = [
       u'public_iati_file': True,
       u'url': u'http://gooddeeds.example.com/'},
      ('Organisation.objects.count()',
-      'Organisation.objects.get(id=4).name',),
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
+    ),
+
+    ('/rest/v1/organisation/?format=json&dedup=content_owner',
+     {u'allow_edit': True,
+      u'can_become_reporting': False,
+      u'can_create_projects': True,
+      u'content_owner': 1,
+      u'currency': u'EUR',
+      u'language': u'en',
+      u'long_name': u'ABC XYZX',
+      u'name': u'XYZX',
+      u'new_organisation_type': 70,
+      u'organisation_type': u'C',
+      u'primary_location': 2,
+      u'public_iati_file': True,
+      u'url': u'http://moregooddeeds.example.com/'},
+     ('Organisation.objects.count()',
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
+    ),
+
+    ('/rest/v1/organisation/?format=json&dedup=no_content_owner',
+     {u'allow_edit': True,
+      u'can_become_reporting': False,
+      u'can_create_projects': True,
+      u'currency': u'EUR',
+      u'language': u'en',
+      u'long_name': u'ABC XYZX',
+      u'name': u'XYZX',
+      u'new_organisation_type': 70,
+      u'organisation_type': u'C',
+      u'primary_location': 2,
+      u'public_iati_file': True,
+      u'url': u'http://moregooddeeds.example.com/'},
+     ('Organisation.objects.count()',
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
     ),
 
     ('/rest/v1/organisation/?format=xml',
@@ -221,7 +260,9 @@ POST_URLS = [
     # # akvo/rsr/static/scripts-src/my-results.js
     ('/rest/v1/indicator_period_data/1/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
-      'type': 'photo'},
+      'type': 'photo',
+      'content_type': None,
+     },
      (),
     ),
 
@@ -308,17 +349,26 @@ POST_URLS = [
 
 PATCH_URLS = [
     # akvo/rsr/static/scripts-src/project-editor.jsx
-    '/rest/v1/project/{project_id}/?format=json',
-    '/rest/v1/project_document/{documentId}/?format=json',
-    '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
+    # '/rest/v1/project/{project_id}/?format=json',
+    # '/rest/v1/project_document/{documentId}/?format=json',
+    # '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
 
     # akvo/rsr/static/scripts-src/my-results.js
-    "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-    "/rest/v1/indicator_period_framework/{period}/?format=json",
+    # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
+
+    ('/rest/v1/indicator_period_framework/6/?format=json',
+     {"locked": True},
+     ('IndicatorPeriod.objects.filter(locked=True).count()',),
+    ),
+
+    ('/rest/v1/indicator_period_framework/6/?format=json&unlock',
+     {"locked": False},
+     ('IndicatorPeriod.objects.filter(locked=False).count()',),
+    )
 
     # akvo/rsr/static/scripts-src/my-iati.js
-    "/rest/v1/iati_export/{iati_export}/?format=json",
-    "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
+    # "/rest/v1/iati_export/{iati_export}/?format=json",
+    # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
 ]
 
 

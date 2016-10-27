@@ -653,9 +653,10 @@ def project_editor_default_periods(request, project_pk=None):
 
     errors = []
 
+    # FIXME: We are doing a get using indicator_id, cannot have default as False
     indicator_id = request.POST.get('indicator_id', False)
-    copy = json.loads(request.POST.get('copy', False))
-    set_default = json.loads(request.POST.get('set_default', False))
+    copy = json.loads(request.POST.get('copy', 'false'))
+    set_default = json.loads(request.POST.get('set_default', 'false'))
 
     default_indicator = Indicator.objects.get(id=indicator_id)
 
