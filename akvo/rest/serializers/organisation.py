@@ -24,9 +24,6 @@ from .rsr_serializer import BaseRSRSerializer
 
 class OrganisationSerializer(BaseRSRSerializer):
 
-    content_owner = serializers.PrimaryKeyRelatedField(
-        queryset=Organisation.objects.all(), required=False
-    )
     total_budgets = OrganisationTotalBudgetSerializer(read_only=True, many=True, required=False)
     recipient_org_budgets = OrganisationRecipientOrgBudgetSerializer(
         read_only=True, many=True, required=False
