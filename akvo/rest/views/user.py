@@ -95,11 +95,9 @@ def update_details(request, pk=None):
         raise PermissionDenied()
 
     # Process request
-    serializer = UserDetailsSerializer(data=request.data, instance=user)
+    serializer = UserDetailsSerializer(data=request.data)
     if serializer.is_valid():
-        user.first_name = serializer.data['first_name']
-        user.last_name = serializer.data['last_name']
-        user.save()
+        serializer.update(user, serializer.initial_data)
         return Response(request.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -139,7 +137,7 @@ def request_organisation(request, pk=None):
             return Response({'detail': _(u'User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)
 
-        data = serializer.data
+        data = EmploymentSerializer(employment).data
         if data['country']:
             data['country_full'] = employment.iati_country().name
             data['country_name'] = str(employment.iati_country())
