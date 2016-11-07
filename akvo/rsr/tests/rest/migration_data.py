@@ -302,7 +302,7 @@ POST_URLS = [
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
     ('/rest/v1/user/1/request_organisation/?format=json',
-     {'organisation': 2, 'group': 13, 'country': u'NL', 'job_title': u'Superuser'},
+     {'organisation': 2, 'group': 9, 'country': u'NL', 'job_title': u'User'},
      ('Employment.objects.filter(user_id=2).count()',)),
 
     # Missing URLs from frequency data
