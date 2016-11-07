@@ -10,11 +10,6 @@ PROJECT_UPDATE_XML = """
       <id>4</id>
       <latitude>-23.0595163</latitude>
       <longitude>14.8535156</longitude>
-      <city/>
-      <state/>
-      <address_1/>
-      <address_2/>
-      <postcode/>
     </list-item>
   </locations>
   <text>Bar</text>
