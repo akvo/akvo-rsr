@@ -95,7 +95,7 @@ GET_URLS = [
     '/rest/v1/typeaheads/impact_projects?format=json',
 
     # akvo/rsr/static/scripts-src/my-iati.js
-    '/rest/v1/project_iati_export/?format=json&limit=50&reporting_org=3',
+    '/rest/v1/project_iati_export/?format=json&limit=50&reporting_org=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=2&ordering=-id&limit=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=3',
 
