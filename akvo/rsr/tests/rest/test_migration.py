@@ -139,6 +139,8 @@ def _drop_unimportant_data(d):
         'funds_needed',
         # PartnershipSerializer.partner_type changed to emit '' instead of None
         'partner_type',
+        # empty filefield is None instead of ''
+        'iati_file',
     ]
 
     ignored_string_prefixes = (
