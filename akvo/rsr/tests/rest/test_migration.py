@@ -147,6 +147,7 @@ def _drop_unimportant_data(d):
         'budget',
         'funds',
         'funds_needed',
+        'version',
         # PartnershipSerializer.partner_type changed to emit '' instead of None
         'partner_type',
         # empty filefield is None instead of ''
