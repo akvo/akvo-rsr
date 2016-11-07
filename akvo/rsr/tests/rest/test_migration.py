@@ -34,7 +34,8 @@ from django.core import management
 import xmltodict
 
 from akvo.rsr.models import (
-    Employment, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation, Project, Result
+    Employment, IatiExport, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation,
+    Partnership, Project, Result
 )
 from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 
@@ -102,6 +103,15 @@ def load_fixture_data():
     k = Keyword(label='new-keyword')
     k.save()
     project.keywords.add(k)
+
+    # Add an iati export
+    iati_export = IatiExport.objects.create(user_id=1, reporting_organisation_id=1)
+    project = Project.objects.get(id=4)
+    partnership = Partnership.objects.get(project=project, organisation_id=1)
+    partnership.iati_organisation_role = 101  # reporting partner
+    partnership.save()
+    iati_export.projects.add(project)
+    project.update_iati_checks()
 
 
 def parse_response(url, response):
