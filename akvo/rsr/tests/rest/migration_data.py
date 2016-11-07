@@ -278,7 +278,7 @@ POST_URLS = [
 
     # akvo/rsr/static/scripts-src/my-iati.js
     ('/rest/v1/iati_export/?format=json',
-     {"reporting_organisation": 1, "user": 1, "version": "2"},
+     {"reporting_organisation": 1, "user": 1, "version": "2", "projects": [4]},
      ('IatiExport.objects.count()',),
     ),
 
