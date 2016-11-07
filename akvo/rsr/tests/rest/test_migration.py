@@ -234,6 +234,9 @@ class MigrationTestCase(TestCase):
 
         cls.c = CLIENT
 
+        # Clear the db before doing anything
+        management.call_command('flush', interactive=False)
+
         # Load some initial fixture data
         load_fixture_data()
 
