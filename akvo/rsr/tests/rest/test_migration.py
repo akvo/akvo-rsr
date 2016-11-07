@@ -159,6 +159,7 @@ def _drop_unimportant_data(d):
         '/media/cache/',
         '/media/db/',
         '/var/akvo/rsr/mediaroot',
+        '/var/www/akvo/mediaroot',
         # The error from GET is sent using detail key.  This changes from
         # "Method 'GET' not allowed." to 'Method "GET" not allowed.',
         "Method 'GET' not allowed.",
