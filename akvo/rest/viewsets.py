@@ -218,13 +218,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         # Otherwise, check to which objects the user has (change) permission
         elif private_objects:
             permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
-            permitted_obj_pks = []
-
-            # Loop through all 'private' objects to see if the user has permission to change
-            # it. If so add its PK to the list of permitted objects.
-            for obj in private_objects:
-                if user.has_perm(permission, obj):
-                    permitted_obj_pks.append(obj.pk)
-            queryset = public_objects | queryset.filter(pk__in=permitted_obj_pks).distinct()
+            filter_ = user.get_permission_filter(permission, project_relation)
+            queryset = public_objects | private_objects.filter(filter_).distinct()
 
         return queryset
