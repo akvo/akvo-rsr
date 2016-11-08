@@ -19,8 +19,7 @@ class IndicatorPeriodModelTestCase(TestCase):
 
     def setUp(self):
         # Clear all projects, users since some tests may not tear down!
-        Project.objects.all().delete()
-        User.objects.all().delete()
+        self.tearDown()
 
         # Setup a project with results framework and a user
         self.project = Project.objects.create(title="Test project 1")
@@ -29,6 +28,10 @@ class IndicatorPeriodModelTestCase(TestCase):
         self.period = IndicatorPeriod.objects.create(indicator=self.indicator,
                                                      actual_comment='initial actual comment')
         self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
+
+    def tearDown(self):
+        Project.objects.all().delete()
+        User.objects.all().delete()
 
     def test_unapproved_period_data_does_not_update_actual_comment(self):
         """Unapproved IndicatorPeriodData doesn't update IndicatorPeriod.actual_comment."""
