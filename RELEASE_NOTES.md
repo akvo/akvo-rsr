@@ -4,6 +4,10 @@
 
 ## Bug fixes
 
+[#2417] (https://github.com/akvo/akvo-rsr/issues/2417) Fix bug in API calls
+which accept an image, which can be None, for example deleting project photo
+from the project editor.
+
 [#2421] (https://github.com/akvo/akvo-rsr/issues/2421) RSR User management page
 in the French site will now correctly show the user list.
 

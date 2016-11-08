@@ -119,6 +119,22 @@ class RestProjectUpdateTestCase(TestCase):
                                })
         self.assertEqual(response.status_code, 201)
 
+    def test_rest_post_project_update_photo_none(self):
+        """
+        Checks posting a project update with photo being None
+        """
+
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/?format=json',
+                               json.dumps({
+                                   'project': self.project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Allowed',
+                                   'photo': None,
+                               }),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
     def test_rest_post_project_update_wmf_string(self):
         """
         Checks posting a project update with a WMF photo base64 encoded.
