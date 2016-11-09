@@ -7,6 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import collections
 import re
 
 from django.conf import settings
@@ -25,6 +26,7 @@ def slugify(s):
 
 
 User = get_user_model()
+group_count = collections.namedtuple('group_count', ('admin', 'anonymous', 'editor', 'other'))
 
 
 class PermissionFilteringTestCase(TestCase):
@@ -222,156 +224,285 @@ class PermissionFilteringTestCase(TestCase):
 
         # 4 projects per organisation
         #   2 public, 2 private
-        model_map[M.Project] = {'counts': (8, 4, 6, 4), 'project_relation': ''}
+        model_map[M.Project] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': ''
+        }
 
         # one condition per project
-        model_map[M.ProjectCondition] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.ProjectCondition] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one benchmark per project
-        model_map[M.Benchmark] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Benchmark] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # FIXME: Using change_* permission for viewsets is kinda weird. For
         # instance, ProjectComments made by a non-privileged on private
-        # projects is not visible to them, because of this! (56, 28, 42, 30)
-        # therefore becomes (56, 28, 42, 28)
+        # projects is not visible to them, because of this! group_count(56, 28, 42, 30)
+        # therefore becomes group_count(56, 28, 42, 28)
         # one benchmarkname per benchmark
-        model_map[M.Benchmarkname] = {'counts': (8, 4, 4, 4), 'project_relation': 'benchmark__project__'}
+        model_map[M.Benchmarkname] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'benchmark__project__'
+        }
 
         # one budget item per projct
-        model_map[M.BudgetItem] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.BudgetItem] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one country budget item per project
-        model_map[M.CountryBudgetItem] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.CountryBudgetItem] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one crs per project
         # FIXME: change_* wierdness.
-        model_map[M.CrsAdd] = {'counts': (8, 4, 4, 4), 'project_relation': 'project__'}
+        model_map[M.CrsAdd] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'project__'
+        }
 
         # one per project
         # FIXME: change_* wierdness.
-        model_map[M.CrsAddOtherFlag] = {'counts': (8, 4, 4, 4), 'project_relation': 'crs__project__'}
+        model_map[M.CrsAddOtherFlag] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'crs__project__'
+        }
 
         # one fss per project
         # FIXME: change_* wierdness.
-        model_map[M.Fss] = {'counts': (8, 4, 4, 4), 'project_relation': 'project__'}
+        model_map[M.Fss] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'project__'
+        }
 
         # on fss forecast per fss
-        model_map[M.FssForecast] = {'counts': (8, 4, 4, 4), 'project_relation': 'fss__project__'}
+        model_map[M.FssForecast] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'fss__project__'
+        }
 
         # one goal
-        model_map[M.Goal] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Goal] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one legacy data item per project
-        model_map[M.LegacyData] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.LegacyData] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one link per project
-        model_map[M.Link] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Link] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one humanitarian_scope per project
         # FIXME: change_* permissions weirdness: admins can't see
         # humanitarian_scope of private projects
-        model_map[M.HumanitarianScope] = {'counts': (8, 4, 4, 4), 'project_relation': 'project__'}
+        model_map[M.HumanitarianScope] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'project__'
+        }
 
         # FIXME: change_* wierdness.
-        model_map[M.ProjectComment] = {'counts': (56, 28, 42, 28), 'project_relation': 'project__'}
+        model_map[M.ProjectComment] = {
+            'group_count': group_count(56, 28, 42, 28),
+            'project_relation': 'project__'
+        }
 
         # one contact per project
-        model_map[M.ProjectContact] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.ProjectContact] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one custom field per project
-        model_map[M.ProjectCustomField] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.ProjectCustomField] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one document per project
-        model_map[M.ProjectDocument] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.ProjectDocument] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one document category per document
         # FIXME: admins also can't see private document categories??
-        model_map[M.ProjectDocumentCategory] = {'counts': (8, 4, 4, 4), 'project_relation': 'document__project__'}
+        model_map[M.ProjectDocumentCategory] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'document__project__'
+        }
 
         # one location per project
-        model_map[M.ProjectLocation] = {'counts': (8, 4, 6, 4), 'project_relation': 'location_target__'}
+        model_map[M.ProjectLocation] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'location_target__'
+        }
 
         # one administrative location per project
         # FIXME: change_* permissions weirdness, different from ProjectLocation permissions!
-        model_map[M.AdministrativeLocation] = {'counts': (8, 4, 4, 4), 'project_relation': 'location__location_target__'}
+        model_map[M.AdministrativeLocation] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'location__location_target__'
+        }
 
-        # 7 project updates (for each user in each group) per project
+        # 7 project updates group_count(for each user in each group) per project
         # Every non-privileged user will also be able to see their update
-        model_map[M.ProjectUpdate] = {'counts': (56, 28, 42, 30), 'project_relation': 'project__'}
+        model_map[M.ProjectUpdate] = {
+            'group_count': group_count(56, 28, 42, 30),
+            'project_relation': 'project__'
+        }
 
         # one location per update - only admin users are allowed to edit
-        model_map[M.ProjectUpdateLocation] = {'counts': (56, 28, 28, 28), 'project_relation': 'location_target__project__'}
+        model_map[M.ProjectUpdateLocation] = {
+            'group_count': group_count(56, 28, 28, 28),
+            'project_relation': 'location_target__project__'
+        }
 
         # one recipient country per project
-        model_map[M.RecipientCountry] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.RecipientCountry] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one recipient region per project
-        model_map[M.RecipientRegion] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.RecipientRegion] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one related_project per project
-        model_map[M.RelatedProject] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.RelatedProject] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one planned disbursement per project
-        model_map[M.PlannedDisbursement] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.PlannedDisbursement] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one policy marker per project
-        model_map[M.PolicyMarker] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.PolicyMarker] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one publishing status per project
         # FIXME: change_* permissions weirdness.
-        # FIXME: permissions for admins group and other editors (m&e,
+        # FIXME: permissions for admins group and other editors group_count(m&e,
         # project_editor)  differ. hence, the tuple weirdness
-        model_map[M.PublishingStatus] = {'counts': (8, 4, (6, 4), 4), 'project_relation': 'project__'}
+        model_map[M.PublishingStatus] = {
+            'group_count': group_count(8, 4, (6, 4), 4),
+            'project_relation': 'project__'
+        }
 
         # one sector per project
-        model_map[M.Sector] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Sector] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one transaction per project
-        model_map[M.Transaction] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Transaction] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one transaction sector per transaction
         # FIXME: change_* permissions weirdness
-        model_map[M.TransactionSector] = {'counts': (8, 4, 4, 4), 'project_relation': 'transaction__project__'}
+        model_map[M.TransactionSector] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'transaction__project__'
+        }
 
         # one result per project
-        model_map[M.Result] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Result] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         # one indicator per result
-        model_map[M.Indicator] = {'counts': (8, 4, 6, 4), 'project_relation': 'result__project__'}
+        model_map[M.Indicator] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'result__project__'
+        }
 
         # one reference per indicator
         # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorReference] = {'counts': (8, 4, 4, 4), 'project_relation': 'indicator__result__project__'}
+        model_map[M.IndicatorReference] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'indicator__result__project__'
+        }
 
         # one indicator period per indicator
-        model_map[M.IndicatorPeriod] = {'counts': (8, 4, 6, 4), 'project_relation': 'indicator__result__project__'}
+        model_map[M.IndicatorPeriod] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'indicator__result__project__'
+        }
 
         # one indicator period actual dimension per period
         # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodActualDimension] = {'counts': (8, 4, 4, 4), 'project_relation': 'period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodActualDimension] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
 
         # one indicator period actual location per period
         # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodActualLocation] = {'counts': (8, 4, 4, 4), 'project_relation': 'period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodActualLocation] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
 
         # one indicator period target dimension per period
         # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodTargetDimension] = {'counts': (8, 4, 4, 4), 'project_relation': 'period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodTargetDimension] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
 
         # one indicator period target location per period
         # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodTargetLocation] = {'counts': (8, 4, 4, 4), 'project_relation': 'period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodTargetLocation] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
 
         # one indicator period data per user per indicator period
         # FIXME: IndicatorPeriodData entries on private projects are not visible to non
         # privileged users?! Weirdness because of using change_* permission
-        model_map[M.IndicatorPeriodData] = {'counts': (56, 28, 42, 28), 'project_relation': 'period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodData] = {
+            'group_count': group_count(56, 28, 42, 28),
+            'project_relation': 'period__indicator__result__project__'
+        }
 
         # one comment per indicator period data
-        model_map[M.IndicatorPeriodDataComment] = {'counts': (56, 28, 42, 28), 'project_relation': 'data__period__indicator__result__project__'}
+        model_map[M.IndicatorPeriodDataComment] = {
+            'group_count': group_count(56, 28, 42, 28),
+            'project_relation': 'data__period__indicator__result__project__'
+        }
 
         # one partnership per project per org
-        model_map[M.Partnership] = {'counts': (8, 4, 6, 4), 'project_relation': 'project__'}
+        model_map[M.Partnership] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
 
         return model_map
 
@@ -401,19 +532,17 @@ class PermissionFilteringTestCase(TestCase):
         for user in User.objects.filter(is_admin=True):
             for queryset, project_relation, count in self.iter_queryset('admin'):
                 filtered_queryset = PublicProjectViewSet.projects_filter_for_non_privileged_users(
-                    user, queryset, project_relation)
-                self.assertEqual(filtered_queryset.count(), count,
-                                 '{} has incorrect permissions on {}.'.format(
-                                     user.username, queryset.model.__name__))
+                    user, queryset, project_relation
+                )
+                self.assertPermissions(user, count, filtered_queryset)
 
     def test_anonymous(self):
         user = AnonymousUser()
         for queryset, project_relation, count in self.iter_queryset('anonymous'):
             filtered_queryset = PublicProjectViewSet.projects_filter_for_non_privileged_users(
-                user, queryset, project_relation)
-            self.assertEqual(filtered_queryset.count(), count,
-                             '{} has incorrect permissions on {}.'.format(
-                                 user.username, queryset.model.__name__))
+                user, queryset, project_relation
+            )
+            self.assertPermissions(user, count, filtered_queryset)
 
     def test_logged_in_user(self):
         from akvo.rest.viewsets import PublicProjectViewSet
@@ -421,30 +550,34 @@ class PermissionFilteringTestCase(TestCase):
         p_e = Group.objects.get(name='Project Editors')
         admins = Group.objects.get(name='Admins')
         for user in User.objects.filter(is_admin=False, is_superuser=False):
-            # If not project editor, then counts are same as anonymous user
-            user_type = 'editor' if user.in_group(m_e) or user.in_group(p_e) or user.in_group(admins) else ''
+            if user.in_group(m_e) or user.in_group(p_e) or user.in_group(admins):
+                user_type = 'editor'
+            else:
+                user_type = 'other'
+
             for queryset, project_relation, count in self.iter_queryset(user_type):
                 filtered_queryset = PublicProjectViewSet.projects_filter_for_non_privileged_users(
-                    user, queryset, project_relation)
-                # Some things have different permissions between Admins group
-                # and other editor groups
+                    user, queryset, project_relation
+                )
+                # Users in the Admins group sometimes have more permissions
+                # than users in the other 'editor' groups - Project Editor or
+                # M&E Managers.  Hence, the tuple weirdness.
                 if isinstance(count, tuple):
                     count = count[0] if user.in_group(admins) else count[1]
-                self.assertEqual(filtered_queryset.count(), count,
-                                 '{} has incorrect permissions on {}.'.format(
-                                     user.username, queryset.model.__name__))
 
-    def iter_queryset(self, user_type=None):
+                self.assertPermissions(user, count, filtered_queryset)
+
+    def assertPermissions(self, user, expected_count, queryset):
+        """Assert that count of objects in queryset matches expected_count."""
+
+        actual_count = queryset.count()
+        msg = '{} has incorrect permissions on {}.'.format(user.username, queryset.model.__name__)
+        self.assertEqual(actual_count, expected_count, msg)
+
+    def iter_queryset(self, user_type='other'):
         """An iterator over querysets to test permissions with."""
 
         for model in self.model_map:
             data = self.model_map[model]
-            if user_type == 'admin':
-                count, _, _, _ = data['counts']
-            elif user_type == 'anonymous':
-                _, count, _, _ = data['counts']
-            elif user_type == 'editor':
-                _, _, count, _ = data['counts']
-            else:
-                _, _, _, count = data['counts']
-            yield model.objects.all(), data['project_relation'], count
+            group_count = getattr(data['group_count'], user_type)
+            yield model.objects.all(), data['project_relation'], group_count
