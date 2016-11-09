@@ -3032,7 +3032,7 @@ and rsr_partnership.organisation_id = ?)
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Projects with planned end data overdue"</expression>
             </structure>
-            <text-property name="text">Projects with planned end data overdue</text-property>
+            <text-property name="text">Projects with planned end date overdue</text-property>
         </label>
         <label id="560">
             <property name="fontFamily">"Calibri"</property>
