@@ -9,6 +9,7 @@ import re
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 import rules
@@ -471,12 +472,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_project_editor_me_manager_employment_orgs(self):
         """Return all organisations where user is a project editor or m&e manager."""
 
-        employments = Employment.objects.filter(user=self, is_approved=True, group__name__in=['Project Editors', 'M&E Managers'])
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name__in=['Project Editors', 'M&E Managers']
+        )
         return employments.organisations()
 
     def get_user_manager_employment_orgs(self):
         """Return all organisations where user is a user manager."""
-        employments = Employment.objects.filter(user=self, is_approved=True, group__name='User Managers')
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name='User Managers'
+        )
         return employments.organisations()
 
     def admin_projects(self):
@@ -507,18 +512,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         permission_predicate = rules.permissions.permissions.get(permission, None)
         if permission_predicate is None:
-            return models.Q(pk=None)  # No such permission exists!
+            return Q(pk=None)  # No such permission exists!
 
         project_filter_name = '{}in'.format(project_relation or 'id__')
         permission_expression = permission_predicate.name
         permissions = {
-            'is_rsr_admin': models.Q() if self.is_authenticated() and self.is_admin else models.Q(pk=None),
-            'is_org_admin': models.Q(**{project_filter_name: self.admin_projects()}),
-            'is_org_project_editor': models.Q(**{project_filter_name: self.project_editor_me_manager_projects()}),
-            'is_org_user_manager': models.Q(**{project_filter_name: self.user_manager_projects()}) & models.Q(user=self),
-            'is_org_user': models.Q(**{project_filter_name: self.my_projects()}) & models.Q(user=self),
+            'is_rsr_admin': Q() if self.is_authenticated() and self.is_admin else Q(pk=None),
+            'is_org_admin': Q(**{project_filter_name: self.admin_projects()}),
+            'is_org_project_editor': Q(
+                **{project_filter_name: self.project_editor_me_manager_projects()}
+            ),
+            'is_org_user_manager': (
+                Q(**{project_filter_name: self.user_manager_projects()}) & Q(user=self)
+            ),
+            'is_org_user': Q(**{project_filter_name: self.my_projects()}) & Q(user=self),
         }
-        operators = {'|': models.Q.OR, '&': models.Q.AND}
+        operators = {'|': Q.OR, '&': Q.AND}
         return self.parse_permission_expression(permission_expression, permissions, operators)
 
     @staticmethod
