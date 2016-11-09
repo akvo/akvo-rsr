@@ -778,7 +778,7 @@ GROUP BY rsr_country.name, p1.id
             <xml-property name="queryText"><![CDATA[SELECT
   p1.id, p1.budget, p1.currency, p1.funds, p1.funds_needed, p1.date_start_planned, p1.date_end_planned, p1.title, p1.iati_activity_id,
   count(DISTINCT rsr_projectupdate.id) AS update_count,
-  rsr_country.name, concat('http://rsr.test.akvo.org/en/project/', p1.id::text) AS project_url
+  rsr_country.name, concat('http://rsr.akvo.org/en/project/', p1.id::text) AS project_url
 
 FROM rsr_project p1
   LEFT JOIN rsr_publishingstatus ON p1.id = rsr_publishingstatus.project_id
@@ -1135,7 +1135,7 @@ WHERE rsr_partnership.organisation_id = ?
             <xml-property name="queryText"><![CDATA[SELECT
   p1.id, p1.budget, p1.currency, p1.funds, p1.funds_needed, p1.date_start_planned, p1.date_end_planned, p1.title, p1.iati_activity_id,
   count(DISTINCT rsr_projectupdate.id) AS update_count,
-  rsr_country.name, concat('http://rsr.test.akvo.org/en/project/', p1.id::text) AS project_url
+  rsr_country.name, concat('http://rsr.akvo.org/en/project/', p1.id::text) AS project_url
 
 FROM rsr_project p1
   LEFT JOIN rsr_publishingstatus ON p1.id = rsr_publishingstatus.project_id
@@ -1951,7 +1951,7 @@ WHERE id = ?
   (SELECT string_agg(k.label, ', ')
     FROM rsr_project p2, rsr_keyword k, rsr_project_keywords pk
     WHERE k.id = pk.keyword_id AND p2.id = pk.project_id AND p2.id = p1.id
-    group by pk.project_id) keywords, p1.last_modified_at, concat('http://rsr.test.akvo.org/en/project/', p1.id::text) AS project_url
+    group by pk.project_id) keywords, p1.last_modified_at, concat('http://rsr.akvo.org/en/project/', p1.id::text) AS project_url
 
 FROM rsr_project p1
   LEFT JOIN rsr_publishingstatus ON p1.id = rsr_publishingstatus.project_id
@@ -2614,15 +2614,15 @@ WHERE rsr_partnership.organisation_id = ?
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
-  count(p1.id)
+  count(DISTINCT p1.id)
 --  p1.id, rsr_partnership.*
 FROM rsr_project p1
   LEFT JOIN rsr_publishingstatus ON p1.id = rsr_publishingstatus.project_id
-  LEFT JOIN rsr_partnership ON p1.id = rsr_partnership.project_id
   LEFT JOIN rsr_projectlocation ON rsr_projectlocation.location_target_id = p1.id
   LEFT JOIN rsr_country ON rsr_country.id = rsr_projectlocation.country_id
 
-WHERE rsr_partnership.organisation_id = ?
+WHERE exists ( select 1 from rsr_partnership where p1.id = rsr_partnership.project_id
+and rsr_partnership.organisation_id = ?)
       AND rsr_publishingstatus.status = 'published'
       AND p1.date_end_planned::date < now()::date
       AND p1.status = 'A'
@@ -2885,6 +2885,10 @@ WHERE rsr_partnership.organisation_id = ?
             <expression name="valueExpr">"Data quality report for " + row["name"]</expression>
             <property name="contentType">html</property>
         </text-data>
+        <label id="562">
+            <property name="fontFamily">"Calibri"</property>
+            <text-property name="text">Sorted by country and id, only active and completed projects</text-property>
+        </label>
         <label id="704">
             <property name="fontFamily">"Calibri"</property>
             <property name="fontSize">14pt</property>
@@ -3640,10 +3644,6 @@ WHERE rsr_partnership.organisation_id = ?
                 <expression name="expressionValue" type="javascript">"Projects that need funding"</expression>
             </structure>
             <text-property name="text">Projects that need funding</text-property>
-        </label>
-        <label id="562">
-            <property name="fontFamily">"Calibri"</property>
-            <text-property name="text">Sorted by country and id, only active and completed projects</text-property>
         </label>
         <table id="468">
             <property name="fontFamily">"Calibri"</property>
