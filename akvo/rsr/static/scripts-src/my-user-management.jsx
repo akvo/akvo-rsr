@@ -380,8 +380,8 @@ function initReact() {
                     React.createElement(Button, {onClick: this.deleteEmployment, bsStyle: "danger"}, i18n.remove_button_text)
                 )
             );
-
-            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+            var group = this.props.employment.group;
+            if (group && group.name === 'Admins' && !orgAdmin) {
                 return (
                     <span />
                 );
@@ -475,7 +475,8 @@ function initReact() {
                 )
             );
 
-            if (this.props.employment.group.name === 'Admins' && !orgAdmin) {
+            var group = this.props.employment.group;
+            if (group && group.name === 'Admins' && !orgAdmin) {
                 return (
                     <span />
                 );
@@ -554,7 +555,8 @@ function initReact() {
         },
 
         disableButton: function() {
-            return (this.state.loading || (this.props.employment.group.name === 'Admins' && !orgAdmin));
+            var group = this.props.employment.group;
+            return (this.state.loading || (group && group.name === 'Admins' && !orgAdmin));
         },
 
         render: function() {
