@@ -1,6 +1,4 @@
-# Currently in develop
-
-## Improvements
+# Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
 
