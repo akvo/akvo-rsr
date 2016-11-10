@@ -8,6 +8,10 @@
 number of projects in data quality reports if an organisation has multiple
 partnership roles for a project.
 
+[#2398] (https://github.com/akvo/akvo-rsr/issues/2398) Fix empty user
+management page when a user in a page has an employment that does not have a
+group defined.
+
 [#2424] (https://github.com/akvo/akvo-rsr/issues/2424) Optimize how queryset filtering based on permissions is made. This is necessary since some filtering is taking so long that the request times out before completing.  The fix is based around parsing the django-rules predicates and turning them into Django Q object queryset filters. This results in speedup of at least an order of magnitude for complex filters.
 
 [#2417] (https://github.com/akvo/akvo-rsr/issues/2417) Fix bug in API calls
