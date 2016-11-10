@@ -4,6 +4,9 @@
 
 ## Bug fixes
 
+[#2416] (https://github.com/akvo/akvo-rsr/issues/2416) Fix wrong country counts
+for organisations in the project overview report.
+
 [#2434] (https://github.com/akvo/akvo-rsr/issues/2434) Fix wrong counts for
 number of projects in data quality reports if an organisation has multiple
 partnership roles for a project.
