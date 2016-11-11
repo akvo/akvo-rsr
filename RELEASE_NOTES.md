@@ -1,11 +1,29 @@
-# Currently in develop
-
-## Improvements
+# Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
 
+[#2416] (https://github.com/akvo/akvo-rsr/issues/2416) Fix wrong country counts
+for organisations in the project overview report.
+
+[#2434] (https://github.com/akvo/akvo-rsr/issues/2434) Fix wrong counts for
+number of projects in data quality reports if an organisation has multiple
+partnership roles for a project.
+
+[#2398] (https://github.com/akvo/akvo-rsr/issues/2398) Fix empty user
+management page when a user in a page has an employment that does not have a
+group defined.
+
+[#2424] (https://github.com/akvo/akvo-rsr/issues/2424) Optimize how queryset filtering based on permissions is made. This is necessary since some filtering is taking so long that the request times out before completing.  The fix is based around parsing the django-rules predicates and turning them into Django Q object queryset filters. This results in speedup of at least an order of magnitude for complex filters.
+
+[#2417] (https://github.com/akvo/akvo-rsr/issues/2417) Fix bug in API calls
+which accept an image, which can be None, for example deleting project photo
+from the project editor.
+
 [#2421] (https://github.com/akvo/akvo-rsr/issues/2421) RSR User management page
 in the French site will now correctly show the user list.
+
+[#2426] (https://github.com/akvo/akvo-rsr/issues/2426) Fix unicode error when
+adding an indicator period comment with non-ASCII characters
 
 # Akvo RSR version 3.17 Ulaanbaatar
 Thursday 20th of October, 2016 [@nadiagorchakova](https://github.com/nadiagorchakova)
