@@ -10,8 +10,11 @@ def fix_employment_groups(apps, schema_editor):
     Group = apps.get_model("auth", "Group")
     Employment = apps.get_model("rsr", "Employment")
     for employment in Employment.objects.filter(group=None):
-        employment.group = Group.objects.get(name='Users')
-        employment.save()
+        try:
+            employment.group = Group.objects.get(name='Users')
+            employment.save()
+        except Exception as e:
+            print(e)
 
 
 class Migration(migrations.Migration):
