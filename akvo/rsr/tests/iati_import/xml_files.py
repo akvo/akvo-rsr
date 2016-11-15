@@ -1818,3 +1818,145 @@ IATI_CORDAID_STRING = """
     </iati-activity>
 </iati-activities>
 """
+
+
+IATI_V2_RESULT_ONLY = """
+<iati-activities generated-datetime="2014-09-10T07:15:37Z" version="2.02">
+    <iati-activity xml:lang="en" default-currency="USD" last-updated-datetime="2014-09-10T07:15:37Z" hierarchy="1" humanitarian="1">
+        <iati-identifier>NL-KVK-0987654321-v2</iati-identifier>
+        <reporting-org ref="NL-KVK-0987654321" type="22" secondary-reporter="0">
+            <narrative>Test Organisation Import</narrative>
+        </reporting-org>
+        <result type="1" aggregation-status="1">
+            <title>
+                <narrative>Result title</narrative>
+            </title>
+            <description>
+                <narrative>Result description text</narrative>
+            </description>
+            <indicator measure="1" ascending="1">
+                <title>
+                    <narrative>Indicator title</narrative>
+                </title>
+                <description>
+                    <narrative>Indicator description text</narrative>
+                </description>
+                <reference vocabulary="1" code="3429" />
+                <reference vocabulary="7" code="861" />
+                <reference vocabulary="99" code="B1" indicator-uri="http://example.com/indicators.html" />
+                <baseline year="2012" value="10">
+                    <comment>
+                        <narrative>Baseline comment text</narrative>
+                    </comment>
+                </baseline>
+                <period>
+                    <period-start iso-date="2013-01-01" />
+                    <period-end iso-date="2013-03-31" />
+                    <target value="10">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Target comment text</narrative>
+                        </comment>
+                    </target>
+                    <actual value="22">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Actual comment text</narrative>
+                        </comment>
+                    </actual>
+                </period>
+           </indicator>
+        </result>
+        <result type="1" aggregation-status="1">
+            <title>
+                <narrative>New result title</narrative>
+            </title>
+            <description>
+                <narrative>New result description text</narrative>
+            </description>
+            <indicator measure="1" ascending="1">
+                <title>
+                    <narrative>New indicator title</narrative>
+                </title>
+                <description>
+                    <narrative>New indicator description text</narrative>
+                </description>
+                <reference vocabulary="1" code="3429" />
+                <reference vocabulary="7" code="861" />
+                <reference vocabulary="99" code="B1" indicator-uri="http://example.com/indicators.html" />
+                <baseline year="2012" value="10">
+                    <comment>
+                        <narrative>Baseline comment text</narrative>
+                    </comment>
+                </baseline>
+                <period>
+                    <period-start iso-date="2013-01-01" />
+                    <period-end iso-date="2013-03-31" />
+                    <target value="20">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Target comment text</narrative>
+                        </comment>
+                    </target>
+                    <actual value="33">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Actual comment text</narrative>
+                        </comment>
+                    </actual>
+                </period>
+            </indicator>
+            <indicator measure="1" ascending="1">
+                <title>
+                    <narrative>Another indicator title</narrative>
+                </title>
+                <description>
+                    <narrative>Another indicator description text</narrative>
+                </description>
+                <reference vocabulary="1" code="3429" />
+                <reference vocabulary="7" code="861" />
+                <reference vocabulary="99" code="B1" indicator-uri="http://example.com/indicators.html" />
+                <baseline year="2012" value="10">
+                    <comment>
+                        <narrative>Baseline comment text</narrative>
+                    </comment>
+                </baseline>
+                <period>
+                    <period-start iso-date="2013-01-01" />
+                    <period-end iso-date="2013-03-31" />
+                    <target value="20">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Target comment text</narrative>
+                        </comment>
+                    </target>
+                    <actual value="33">
+                        <location ref="AF-KAN" />
+                        <location ref="KH-PNH" />
+                        <dimension name="sex" value="female" />
+                        <dimension name="age" value="adult" />
+                        <comment>
+                            <narrative>Actual comment text</narrative>
+                        </comment>
+                    </actual>
+                </period>
+           </indicator>
+        </result>
+    </iati-activity>
+</iati-activities>
+"""
