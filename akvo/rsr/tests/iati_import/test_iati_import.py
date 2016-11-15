@@ -11,7 +11,7 @@ from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, Us
 from akvo.codelists.models import BudgetIdentifier, Currency, ResultType, Version
 
 from .xml_files import (IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING,
-                        IATI_CORDAID_STRING)
+                        IATI_CORDAID_STRING, IATI_V2_RESULT_ONLY)
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -201,3 +201,46 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_cordaid.title, "Test project for IATI Cordaid import")
         self.assertEqual(project_cordaid.partners.count(), 4)
         self.assertEqual(project_cordaid.reporting_org.iati_org_id, "NL-KVK-0987654321")
+
+
+    def test_iati_result_only_import(self):
+        """
+        Test an IATI import only importing Result.
+        """
+        iati_v2_import = IatiImport.objects.create(label="Test IATI v2 import", user=self.user)
+        iati_v2_xml_file = NamedTemporaryFile(delete=True)
+        iati_v2_xml_file.write(IATI_V2_STRING)
+        iati_v2_xml_file.flush()
+        iati_v2_import_job = IatiImportJob.objects.create(iati_import=iati_v2_import,
+                                                          iati_xml_file=File(iati_v2_xml_file))
+        iati_v2_import_job.run()
+
+        project_v2 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
+        self.assertEqual(project_v2.results.count(), 1)
+
+        result_only_import = IatiImport.objects.create(
+            label="Test IATI Result only import", user=self.user, mapper_prefix="Result_only")
+        result_only_xml_file = NamedTemporaryFile(delete=True)
+        result_only_xml_file.write(IATI_V2_RESULT_ONLY)
+        result_only_xml_file.flush()
+        result_only_import_job = IatiImportJob.objects.create(iati_import=result_only_import,
+                                                              iati_xml_file=File(result_only_xml_file))
+        result_only_import_job.run()
+
+        project_result_only = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
+        self.assertIsInstance(project_result_only, Project)
+        self.assertEqual(project_result_only.language, "en")
+        self.assertEqual(project_result_only.currency, "USD")
+        self.assertEqual(project_result_only.hierarchy, 1)
+        self.assertEqual(project_result_only.title, "Test project for IATI import v2")
+        self.assertEqual(project_result_only.partners.count(), 4)
+        self.assertEqual(project_result_only.transactions.count(), 1)
+        self.assertEqual(project_result_only.reporting_org.iati_org_id, "NL-KVK-0987654321")
+        self.assertEqual(project_result_only.results.count(), 2)
+        result_1 = project_result_only.results.get(title="Result title")
+        self.assertEqual(result_1.indicators.count(), 1)
+        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'22')
+
+        result_2 = project_result_only.results.get(title="New result title")
+        self.assertEqual(result_2.indicators.count(), 2)
+
