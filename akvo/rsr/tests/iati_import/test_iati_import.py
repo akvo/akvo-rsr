@@ -202,7 +202,6 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_cordaid.partners.count(), 4)
         self.assertEqual(project_cordaid.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
-
     def test_iati_result_only_import(self):
         """
         Test an IATI import only importing Result.
@@ -243,4 +242,3 @@ class IatiImportTestCase(TestCase):
 
         result_2 = project_result_only.results.get(title="New result title")
         self.assertEqual(result_2.indicators.count(), 2)
-

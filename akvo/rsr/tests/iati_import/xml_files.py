@@ -1935,7 +1935,8 @@ IATI_V2_RESULT_ONLY = """
                 </baseline>
                 <period>
                     <period-start iso-date="2013-01-01" />
-                    <period-end iso-date="2013-03-31" />
+                    <!-- Date in incorrect format to test error handling -->
+                    <period-end iso-date="31 March 2013" />
                     <target value="20">
                         <location ref="AF-KAN" />
                         <location ref="KH-PNH" />
