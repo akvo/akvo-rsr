@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">526</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">526</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">526</property>
+        </structure>
+    </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -2771,10 +2785,11 @@ GROUP BY rsr_country.name, p1.id
             <xml-property name="queryText"><![CDATA[SELECT currency, SUM(budget) budget, SUM(funds) funds, SUM(funds_needed) needed   
 from rsr_project
 left join rsr_publishingstatus on rsr_project.id = rsr_publishingstatus.project_id
-left join rsr_partnership on rsr_project.id = rsr_partnership.project_id
 left join rsr_projectupdate on rsr_project.id = rsr_projectupdate.project_id
-Where rsr_partnership.organisation_id =?
-and rsr_publishingstatus.status = 'published'
+where rsr_publishingstatus.status = 'published'
+  and exists ( select 1 from rsr_partnership
+               where rsr_project.id = rsr_partnership.project_id
+               and rsr_partnership.organisation_id = ?)
 group by currency;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2981,13 +2996,14 @@ Where rsr_organisation.id=?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select date_trunc('year', rsr_project.date_start_planned) start_year, count(*) 
 from rsr_project 
-LEFT JOIN rsr_publishingstatus ON rsr_project.id = rsr_publishingstatus.project_id
-  LEFT JOIN rsr_partnership ON rsr_project.id = rsr_partnership.project_id
-WHERE rsr_partnership.organisation_id = ?
-      AND rsr_publishingstatus.status = 'published'
+left join rsr_publishingstatus on rsr_project.id = rsr_publishingstatus.project_id
+where rsr_publishingstatus.status = 'published'
+  and exists ( select 1 from rsr_partnership
+               where rsr_project.id = rsr_partnership.project_id
+               and rsr_partnership.organisation_id = ?)
 
-group by date_trunc('year', rsr_project.date_start_planned) 
-order by date_trunc('year', rsr_project.date_start_planned)]]></xml-property>
+group by start_year
+order by start_year]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -3413,21 +3429,37 @@ group by rsr_project.status
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Projects per country" id="526">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">project_count</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">project_count</text-property>
                     <text-property name="heading">project_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">update_count</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">update_count</text-property>
                     <text-property name="heading">update_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">projid</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -3486,7 +3518,7 @@ FROM rsr_project
   LEFT JOIN rsr_country ON rsr_country.id = rsr_projectlocation.country_id
   LEFT JOIN rsr_projectupdate ON rsr_project.id = rsr_projectupdate.project_id
 
-WHERE rsr_partnership.organisation_id = 42
+WHERE rsr_partnership.organisation_id = ?
       AND rsr_publishingstatus.status = 'published'
 
 GROUP BY rsr_country.name
@@ -3494,6 +3526,23 @@ GROUP BY rsr_country.name
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>

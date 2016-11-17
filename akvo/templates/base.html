@@ -112,14 +112,14 @@
     {# Translation strings #}
     <script type="application/json" id="cookie-text">
         {
-            "cookie_text": "{% trans 'This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our ' %}",
-            "privacy_text": "{% trans 'privacy and cookies policy' %}",
-            "button_text": "{% trans 'Accept' %}",
-            "password_environment": "{% trans 'Password protected environment' %}",
-            "password_environment_desc": "{% trans 'This is a password protected environment, please fill in the password:' %}",
-            "password_environment_avail": "{% trans 'After a week we will ask you to fill in the password again.' %}",
-            "continue_to_rsr": "{% trans 'Continue' %}",
-            "incorrect_password": "{% trans 'Incorrect password' %}"
+            "cookie_text": "{% trans 'This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our '|escapejs %}",
+            "privacy_text": "{% trans 'privacy and cookies policy'|escapejs %}",
+            "button_text": "{% trans 'Accept'|escapejs %}",
+            "password_environment": "{% trans 'Password protected environment'|escapejs %}",
+            "password_environment_desc": "{% trans 'This is a password protected environment, please fill in the password:'|escapejs %}",
+            "password_environment_avail": "{% trans 'After a week we will ask you to fill in the password again.'|escapejs %}",
+            "continue_to_rsr": "{% trans 'Continue'|escapejs %}",
+            "incorrect_password": "{% trans 'Incorrect password'|escapejs %}"
         }
     </script>
 
