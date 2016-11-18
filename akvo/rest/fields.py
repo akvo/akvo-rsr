@@ -47,9 +47,12 @@ class Base64ImageField(ImageField):
         'jpg',
         'png',
     )
+
     def to_internal_value(self, base64_data):
+        if base64_data is None:
+            data = base64_data
         # Check if this is a base64 string
-        if isinstance(base64_data, basestring):
+        elif isinstance(base64_data, basestring):
             # Try to decode the file. Return validation error if it fails.
             try:
                 decoded_file = base64.b64decode(base64_data)
@@ -60,14 +63,14 @@ class Base64ImageField(ImageField):
             file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
-            if file_extension not in self.ALLOWED_IMAGE_TYPES:
-                raise serializers.ValidationError(
-                    _(u"The type of the image couldn't been determined.")
-                )
+            self.check_file_extension(file_extension)
             complete_file_name = file_name + "." + file_extension
             data = ContentFile(decoded_file, name=complete_file_name)
         else:
             data = base64_data
+            file_extension = self.get_file_extension(data.name, data.read())
+            self.check_file_extension(file_extension)
+            data.seek(0)
 
         return super(Base64ImageField, self).to_internal_value(data)
 
@@ -154,3 +157,10 @@ class Base64ImageField(ImageField):
         extension = imghdr.what(filename, decoded_file)
         extension = "jpg" if extension == "jpeg" else extension
         return extension
+
+    def check_file_extension(self, file_extension):
+        if file_extension not in self.ALLOWED_IMAGE_TYPES:
+            formats = {'format': ', '.join(self.ALLOWED_IMAGE_TYPES)}
+            raise serializers.ValidationError(
+                _(u"Unknown image type. Only the following types are accepted: %(format)s") % formats
+            )

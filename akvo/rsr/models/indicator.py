@@ -527,12 +527,12 @@ class IndicatorPeriod(models.Model):
 
         approved_updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
         update_texts = [
-            '{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
+            u'{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
             for update in approved_updates.order_by('-created_at')
         ]
-        actual_comment = ' | '.join(update_texts)
+        actual_comment = u' | '.join(update_texts)
         if len(actual_comment) >= 2000:  # max_size
-            actual_comment = '{} ...'.format(actual_comment[:1995])
+            actual_comment = u'{} ...'.format(actual_comment[:1995])
 
         self.actual_comment = actual_comment
         if save:

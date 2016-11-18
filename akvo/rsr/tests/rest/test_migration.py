@@ -24,19 +24,17 @@ from __future__ import print_function
 
 from contextlib import contextmanager
 import json
-from os.path import dirname, exists, join
+from os.path import exists, join
 import unittest
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import (
-    Employment, IatiExport, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation,
-    Partnership, Project, Result
-)
+from .fixture_factory import populate_test_data
 from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 
 
@@ -60,60 +58,6 @@ def do_in_transaction():
         pass
 
 
-def download_fixture_data():
-    """Download fixture data, if required."""
-
-    fixture_path = join(dirname(dirname(HERE)), 'fixtures', FIXTURE)
-    if not exists(fixture_path):
-        import subprocess
-        subprocess.call(['/usr/bin/env', 'bash', join(dirname(fixture_path), 'download.sh')])
-
-
-def load_fixture_data():
-    """Load up fixture data."""
-
-    download_fixture_data()
-
-    management.call_command(
-        'loaddata', FIXTURE, verbosity=3, interactive=False
-    )
-
-    # FIXME: Ideally, the dump data should already have this.
-    ## Let organisations create projects
-    Organisation.objects.update(can_create_projects=True)
-
-    ## Publish a bunch of indicators and results
-    project = Project.objects.get(id=4)
-    for title in ('first', 'second', 'third'):
-        r = Result(project=project, title=title)
-        r.save()
-        for title in ('1', '2', '3'):
-            i = Indicator(result=r, title=title)
-            i.save()
-            locked = False if title != '3' else True
-            ip = IndicatorPeriod(indicator=i, locked=locked)
-            ip.save()
-
-            IndicatorPeriodData(period=ip, user_id=2).save()
-
-    # Create an unapproved employment
-    Employment(organisation_id=1, user_id=2).save()
-
-    # Add a keyword
-    k = Keyword(label='new-keyword')
-    k.save()
-    project.keywords.add(k)
-
-    # Add an iati export
-    iati_export = IatiExport.objects.create(user_id=1, reporting_organisation_id=1)
-    project = Project.objects.get(id=4)
-    partnership = Partnership.objects.get(project=project, organisation_id=1)
-    partnership.iati_organisation_role = 101  # reporting partner
-    partnership.save()
-    iati_export.projects.add(project)
-    project.update_iati_checks()
-
-
 def parse_response(url, response):
     if not response:
         return response
@@ -129,8 +73,8 @@ def _drop_unimportant_data(d):
     """Recursively drop unimportant data from given dict or list."""
 
     unimportant_keys = [
-        # These get changed because the setUp - load_fixture_data - actually
-        # creates some required objects and not everything is in the fixtures.
+        # These get changed because the setUp actually creates some required
+        # objects and not everything is in the fixutres.
         'last_modified_at',
         'created_at',
         'id',
@@ -145,6 +89,7 @@ def _drop_unimportant_data(d):
         'next',
         # project budget info, old data is int, new is decimal
         'budget',
+        'donations',
         'funds',
         'funds_needed',
         'version',
@@ -179,6 +124,9 @@ def _drop_unimportant_data(d):
     elif isinstance(d, list):
         for i, element in enumerate(d):
             d[i] = _drop_unimportant_data(element)
+        # Some responses don't have an ordering, and the DB can randomly change
+        # the order of results in a response. So, we sort here.
+        d = sorted(d)
 
     elif isinstance(d, basestring) and d.startswith(ignored_string_prefixes):
         d = 'IGNORED_STRING'
@@ -191,16 +139,16 @@ class MigrationTestsMeta(type):
 
         for i, url in enumerate(GET_URLS):
             data = (url,)
-            attrs['test_get_{}'.format(i)] = cls.gen(data, 'get')
+            attrs['test_get_{:02d}'.format(i)] = cls.gen(data, 'get')
 
         for i, data in enumerate(POST_URLS):
-            attrs['test_post_{}'.format(i)] = cls.gen(data, 'post')
+            attrs['test_post_{:02d}'.format(i)] = cls.gen(data, 'post')
 
         for i, data in enumerate(DELETE_URLS):
-            attrs['test_delete_{}'.format(i)] = cls.gen(data, 'delete')
+            attrs['test_delete_{:02d}'.format(i)] = cls.gen(data, 'delete')
 
         for i, data in enumerate(PATCH_URLS):
-            attrs['test_patch_{}'.format(i)] = cls.gen(data, 'patch')
+            attrs['test_patch_{:02d}'.format(i)] = cls.gen(data, 'patch')
 
         return super(MigrationTestsMeta, cls).__new__(cls, name, bases, attrs)
 
@@ -235,11 +183,8 @@ class MigrationTestCase(TestCase):
 
         cls.c = CLIENT
 
-        # Clear the db before doing anything
-        management.call_command('flush', interactive=False)
-
-        # Load some initial fixture data
-        load_fixture_data()
+        # Populate the db with test data
+        populate_test_data()
 
         # Make sure user is logged in, etc.
         cls.setup_user_context()
@@ -247,8 +192,21 @@ class MigrationTestCase(TestCase):
         cls.collected_count = 0
         cls._load_expected()
 
+        # Pagination can cause elements in results to be different, if there is
+        # no ordering for a response, by default.  We make the page so large,
+        # that no pagination occurs for any response
+        cls.old_settings = dict(settings.REST_FRAMEWORK)
+        new_settings = {
+            'PAGE_SIZE': 10000,
+            'MAX_PAGINATE_BY': 10000,
+            'PAGINATE_BY': 10000,
+        }
+        settings.REST_FRAMEWORK.update(new_settings)
+
+
     @classmethod
     def tearDownClass(cls):
+        settings.REST_FRAMEWORK = cls.old_settings
         management.call_command('flush', interactive=False)
         if cls.collected_count == 0:
             return
@@ -259,7 +217,9 @@ class MigrationTestCase(TestCase):
     @classmethod
     def setup_user_context(cls):
         # Login as super admin
-        cls.c.login(username='su@localdev.akvo.org', password='password')
+        username = 'user-0@foo.com'
+        cls.user = get_user_model().objects.get(email=username)
+        cls.c.login(username=username, password='password')
 
     @classmethod
     def _load_expected(cls):
@@ -312,7 +272,25 @@ class MigrationTestCase(TestCase):
     def get_test(self, url):
         """Test if GET requests return expected data."""
 
-        response = self.c.get(url)
+        if 'do_format=1' in url:
+            api_key = self.user.api_key.key
+            username = self.user.username
+            url_ = url.format(api_key=api_key, username=username)
+        else:
+            url_ = url
+
+        response = self.c.get(url_)
+        self.assertEqual(
+            200, response.status_code,
+            "Status: {} \nMessage:{}".format(response.status_code, response.content)
+        )
+        actual = parse_response(url, response.content)
+        if 'count' in actual:
+            self.assertGreater(actual['count'], 0, msg='Response: {}'.format(actual))
+
+        elif 'root' in actual and 'count' in actual['root']:
+            self.assertGreater(actual['root']['count'], 0, msg='Response: {}'.format(actual))
+
         expected_responses = self._expected.setdefault('GET', {})
         if url not in expected_responses:
             expected_responses[url] = response.content
@@ -320,7 +298,6 @@ class MigrationTestCase(TestCase):
             raise unittest.SkipTest('No previously recorded output for {}'.format(url))
 
         expected = parse_response(url, expected_responses[url])
-        actual = parse_response(url, response.content)
         self.assertEqual(expected, actual)
 
     def patch_test(self, url, data, queries):

@@ -135,36 +135,34 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
         queryset = super(PublicProjectViewSet, self).get_queryset()
 
-        def projects_filter_for_non_privileged_users(user, queryset):
-            # Construct the public projects filter field lookup.
-            project_filter = self.project_relation + 'is_public'
-
-            # Filter the object list into two querysets;
-            # One where the related Projects are public and one where they are private
-            public_objects = queryset.filter(**{project_filter: True}).distinct()
-            private_objects = queryset.filter(**{project_filter: False}).distinct()
-
-            # In case of an anonymous user, only return the public objects
-            if user.is_anonymous():
-                queryset = public_objects
-
-            # Otherwise, check to which objects the user has (change) permission
-            elif private_objects:
-                permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
-                permitted_obj_pks = []
-
-                # Loop through all 'private' objects to see if the user has permission to change
-                # it. If so add its PK to the list of permitted objects.
-                for obj in private_objects:
-                    if user.has_perm(permission, obj):
-                        permitted_obj_pks.append(obj.pk)
-
-                queryset = public_objects | queryset.filter(pk__in=permitted_obj_pks).distinct()
-
-            return queryset
-
         # filter projects if user is "non-privileged"
         if user.is_anonymous() or not (user.is_superuser or user.is_admin):
-            queryset = projects_filter_for_non_privileged_users(user, queryset)
+            queryset = self.projects_filter_for_non_privileged_users(user, queryset, self.project_relation)
+
+        return queryset
+
+    @staticmethod
+    def projects_filter_for_non_privileged_users(user, queryset, project_relation):
+
+        if not user.is_anonymous() and (user.is_admin or user.is_superuser):
+            return queryset
+
+        # Construct the public projects filter field lookup.
+        project_filter = project_relation + 'is_public'
+
+        # Filter the object list into two querysets;
+        # One where the related Projects are public and one where they are private
+        public_objects = queryset.filter(**{project_filter: True}).distinct()
+        private_objects = queryset.filter(**{project_filter: False}).distinct()
+
+        # In case of an anonymous user, only return the public objects
+        if user.is_anonymous():
+            queryset = public_objects
+
+        # Otherwise, check to which objects the user has (change) permission
+        elif private_objects:
+            permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
+            filter_ = user.get_permission_filter(permission, project_relation)
+            queryset = public_objects | private_objects.filter(filter_).distinct()
 
         return queryset

@@ -8,7 +8,7 @@
               <button class="btn btn-default btn-sm" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
               <p class="text-danger" id="projectCreationError"></p>
           {% endif %}
-      </div>   
+      </div>
       <div class="col-sm-6 btnHeader text-right">
           <form class="navbar-form" role="search">
             <div class="input-group">
@@ -134,13 +134,13 @@
         {
             "employments": {{ reportable_organisations }},
             "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "type": "{{ field.type }}", "section": {{ field.section }}, "order": {{ field.order }}, "max_characters": {% if field.max_characters %}{{ field.max_characters }}{% else %}0{% endif %}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}],
-            "connection_error": "{% trans 'General connection error, please check your internet connection' %}",
-            "could_not_add": "{% trans 'Could not add' %}",
-            "project": "{% trans 'project' %}",
-            "reporting_organisation": "{% trans 'reporting organisation' %}",
-            "project_log": "{% trans 'project log' %}",
-            "custom_fields": "{% trans 'custom fields' %}",
-            "contact_us": "{% trans 'Please contact Akvo staff by using the Help button on the right.' %}"
+            "connection_error": "{% trans 'General connection error, please check your internet connection'|escapejs %}",
+            "could_not_add": "{% trans 'Could not add'|escapejs %}",
+            "project": "{% trans 'project'|escapejs %}",
+            "reporting_organisation": "{% trans 'reporting organisation'|escapejs %}",
+            "project_log": "{% trans 'project log'|escapejs %}",
+            "custom_fields": "{% trans 'custom fields'|escapejs %}",
+            "contact_us": "{% trans 'Please contact Akvo staff by using the Help button on the right.'|escapejs %}"
         }
     </script>
 

@@ -100,20 +100,20 @@
     {# Translation strings #}
     <script type="application/json" id="my-details-text">
         {
-            "too_large_text": "{% trans 'is larger than the allowed limit' %}",
-            "close_text": "{% trans 'Close' %}",
-            "details_updated_text": "{% trans 'Your details have been updated.' %}",
-            "my_organisations_text": "{% trans 'My organisations' %}",
-            "connect_employer_text": "{% trans 'Connect with your employer' %}",
-            "not_approved_text": "{% trans 'Not approved' %}",
-            "organisation_text": "{% trans 'Organisation' %}",
-            "country_text": "{% trans 'Country (optional)' %}",
-            "job_title_text": "{% trans 'Job title (optional)' %}",
-            "request_join_text": "{% trans 'Request to join' %}",
-            "sending_request_text": "{% trans 'Sending request...' %}",
-            "required_text": "{% trans 'This field is required.' %}",
-            "already_connected_text": "{% trans 'You are already connected to this organisation as a user or your request is pending approval.' %}",
-            "not_connected_text": "{% trans 'Could not connect to organisation.' %}"
+            "too_large_text": "{% trans 'is larger than the allowed limit'|escapejs %}",
+            "close_text": "{% trans 'Close'|escapejs %}",
+            "details_updated_text": "{% trans 'Your details have been updated.'|escapejs %}",
+            "my_organisations_text": "{% trans 'My organisations'|escapejs %}",
+            "connect_employer_text": "{% trans 'Connect with your employer'|escapejs %}",
+            "not_approved_text": "{% trans 'Not approved'|escapejs %}",
+            "organisation_text": "{% trans 'Organisation'|escapejs %}",
+            "country_text": "{% trans 'Country (optional)'|escapejs %}",
+            "job_title_text": "{% trans 'Job title (optional)'|escapejs %}",
+            "request_join_text": "{% trans 'Request to join'|escapejs %}",
+            "sending_request_text": "{% trans 'Sending request...'|escapejs %}",
+            "required_text": "{% trans 'This field is required.'|escapejs %}",
+            "already_connected_text": "{% trans 'You are already connected to this organisation as a user or your request is pending approval.'|escapejs %}",
+            "not_connected_text": "{% trans 'Could not connect to organisation.'|escapejs %}"
         }
     </script>
 
@@ -127,8 +127,8 @@
     {# Translation strings #}
     <script type="application/json" id="password-change-strings">
       {
-          "close_text": "{% trans 'Close' %}",
-          "password_update_text": "{% trans 'Password has been updated.' %}"
+          "close_text": "{% trans 'Close'|escapejs %}",
+          "password_update_text": "{% trans 'Password has been updated.'|escapejs %}"
       }
     </script>
 

@@ -17,7 +17,7 @@ from akvo.codelists.store.codelists_v202 import (AID_TYPE, CURRENCY, DISBURSEMEN
                                                  FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
                                                  TRANSACTION_TYPE, COUNTRY, REGION,
                                                  REGION_VOCABULARY, SECTOR_VOCABULARY)
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, codelist_name
 
 
 class Transaction(models.Model):
@@ -139,12 +139,8 @@ class Transaction(models.Model):
 
     def __unicode__(self):
         if self.value:
-            if self.currency:
-                return u'%s %s' % (self.iati_currency().name,
-                                   '{:,}'.format(int(self.value)))
-            else:
-                return u'%s %s' % (self.project.currency,
-                                   '{:,}'.format(int(self.value)))
+            return u'%s %s' % (self.iati_currency(),
+                               '{:,}'.format(int(self.value)))
         else:
             return u'%s' % _(u'No value specified')
 
@@ -170,9 +166,9 @@ class Transaction(models.Model):
 
     def iati_currency(self):
         if self.currency:
-            return codelist_value(Currency, self, 'currency')
+            return codelist_name(Currency, self, 'currency')
         else:
-            return codelist_value(Currency, self.project, 'currency')
+            return codelist_name(Currency, self.project, 'currency')
 
     def iati_currency_unicode(self):
         return str(self.iati_currency())

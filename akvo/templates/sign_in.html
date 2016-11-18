@@ -35,12 +35,12 @@
     {# Translation strings #}
     <script type="application/json" id="reset-password-text">
         {
-            "reset_your_password_text": "{% trans 'Reset your password' %}",
-            "fill_email_text": "{% trans 'Fill in your email address in the field below. We will send you instructions on how to reset your password.' %}",
-            "email_text": "{% trans 'Email' %}",
-            "reset_password_text": "{% trans 'Reset password' %}",
-            "forgot_password_text": "{% trans 'I forgot my password' %}",
-            "close_text": "{% trans 'Close' %}"
+            "reset_your_password_text": "{% trans 'Reset your password'|escapejs %}",
+            "fill_email_text": "{% trans 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'|escapejs %}",
+            "email_text": "{% trans 'Email'|escapejs %}",
+            "reset_password_text": "{% trans 'Reset password'|escapejs %}",
+            "forgot_password_text": "{% trans 'I forgot my password'|escapejs %}",
+            "close_text": "{% trans 'Close'|escapejs %}"
         }
     </script>
 

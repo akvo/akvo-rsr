@@ -35,7 +35,7 @@ GET_URLS = [
     '/rest/v1/project/?format=json',
 
     # akvo/scripts/cordaid/organisation_upload.py
-    '/api/v1/user/?format=json&api_key=df405025a990bc4c5644f54f8e3760118c736f53&username=admin@good-deeds.io&user__username=admin@good-deeds.io',
+    '/api/v1/user/?format=json&api_key={api_key}&username={username}&user__username={username}&do_format=1',
     # XXX: /rest/v1/internal_organisation_id/?recording_org={recording_org}&identifier={identifier}&format=json,
 
     # akvo/rest/filters.py doc examples
@@ -79,10 +79,8 @@ GET_URLS = [
 
     # akvo/rsr/static/scripts-src/my-results.js
     '/rest/v1/partnership/?format=json&project=4',
-    '/rest/v1/user/6/?format=json',
+    '/rest/v1/user/3/?format=json',
     '/rest/v1/result/?format=json&project=4',
-    '/rest/v1/indicator/?format=json&result__project=4',
-    '/rest/v1/indicator_period/?format=json&indicator__result__project=4',
     '/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_framework/1/?format=json',
 
@@ -105,13 +103,13 @@ GET_URLS = [
     '/rest/v1/project_update/?format=xml&uuid=%s&limit=2',
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
-    '/rest/v1/project_up/%s/?format=xml&image_thumb_name=up&image_thumb_up_width=100',
+    '/rest/v1/project_up/3/?format=xml&image_thumb_name=up&image_thumb_up_width=100',
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
     '/rest/v1/country/?format=json&limit=50',
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
-    '/rest/v1/user/6/?format=json&depth=1',
+    '/rest/v1/user/3/?format=json&depth=1',
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetOrgDataService.java
     '/rest/v1/organisation/?format=json&limit=10',
@@ -173,11 +171,12 @@ POST_URLS = [
       "city": "Amsterdam",
       "location_target": 1,
       "iati_country": "NL",
-      "country": 3
+      "country": 3,
+      "postcode": "101010"
      },
      ('OrganisationLocation.objects.count()',
-      'OrganisationLocation.objects.get(id=4).latitude',
-      'OrganisationLocation.objects.get(id=4).longitude'),
+      'OrganisationLocation.objects.get(postcode="101010").latitude',
+      'OrganisationLocation.objects.get(postcode="101010").longitude'),
     ),
 
     ('/rest/v1/organisation/?format=json',
@@ -297,7 +296,7 @@ POST_URLS = [
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
     ('/rest/v1/user/1/request_organisation/?format=json',
-     {'organisation': 2, 'group': 9, 'country': u'NL', 'job_title': u'User'},
+     {'organisation': 2, 'group': 5, 'country': u'NL', 'job_title': u'User'},
      ('Employment.objects.filter(user_id=2).count()',)),
 
     # Missing URLs from frequency data
@@ -366,11 +365,6 @@ PATCH_URLS = [
     # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
 ]
 
-
-PUT_URLS = [
-    # akvo/scripts/cordaid/organisation_upload.py
-    '/rest/v1/organisation/{pk}/',
-]
 
 DELETE_URLS = [
 

@@ -139,13 +139,23 @@ class IatiImport(models.Model):
         """
 
         from ...iati.imports import mappers
-        # assign all base class names to mapper_class_names
-        from ...iati.imports.mappers import __all__ as mapper_class_names
         klasses = []
 
+        # "_only" mappers will only use the classes listed in module.__all__
+        if self.mapper_prefix and self.mapper_prefix[-5:] == "_only":
+            module = import_module(
+                'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
+            mapper_class_names = module.__all__
+
+        else:
+            # assign all base class names to mapper_class_names
+            from ...iati.imports.mappers import __all__ as mapper_class_names
+
+        # For each class name get it from the base mappers
         for class_name in mapper_class_names:
             klass = getattr(mappers, class_name)
-            # if a prefix is set for this import, look for a submodule with that name
+            # if a prefix is set for this import, look for a submodule with that name and replace
+            # with classes we find in the submodule
             if self.mapper_prefix:
                 module = import_module(
                         'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
