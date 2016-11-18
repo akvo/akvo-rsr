@@ -24,19 +24,16 @@ from __future__ import print_function
 
 from contextlib import contextmanager
 import json
-from os.path import dirname, exists, join
+from os.path import exists, join
 import unittest
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
-from akvo.rsr.models import (
-    Employment, IatiExport, Indicator, IndicatorPeriod, IndicatorPeriodData, Keyword, Organisation,
-    Partnership, Project, Result
-)
 from .fixture_factory import populate_test_data
 from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 
@@ -196,7 +193,9 @@ class MigrationTestCase(TestCase):
     @classmethod
     def setup_user_context(cls):
         # Login as super admin
-        cls.c.login(username='user-0@foo.com', password='password')
+        username = 'user-0@foo.com'
+        cls.user = get_user_model().objects.get(email=username)
+        cls.c.login(username=username, password='password')
 
     @classmethod
     def _load_expected(cls):
@@ -249,7 +248,14 @@ class MigrationTestCase(TestCase):
     def get_test(self, url):
         """Test if GET requests return expected data."""
 
-        response = self.c.get(url)
+        if 'do_format=1' in url:
+            api_key = self.user.api_key.key
+            username = self.user.username
+            url_ = url.format(api_key=api_key, username=username)
+        else:
+            url_ = url
+
+        response = self.c.get(url_)
         self.assertEqual(
             200, response.status_code,
             "Status: {} \nMessage:{}".format(response.status_code, response.content)

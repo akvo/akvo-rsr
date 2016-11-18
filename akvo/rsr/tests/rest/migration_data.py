@@ -35,7 +35,7 @@ GET_URLS = [
     '/rest/v1/project/?format=json',
 
     # akvo/scripts/cordaid/organisation_upload.py
-    '/api/v1/user/?format=json&api_key=df405025a990bc4c5644f54f8e3760118c736f53&username=admin@good-deeds.io&user__username=admin@good-deeds.io',
+    '/api/v1/user/?format=json&api_key={api_key}&username={username}&user__username={username}&do_format=1',
     # XXX: /rest/v1/internal_organisation_id/?recording_org={recording_org}&identifier={identifier}&format=json,
 
     # akvo/rest/filters.py doc examples
