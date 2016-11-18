@@ -169,20 +169,8 @@ class MigrationTestCase(TestCase):
         cls.collected_count = 0
         cls._load_expected()
 
-        # Pagination can cause elements in results to be different, if there is
-        # no ordering for a response, by default.  We make the page so large,
-        # that no pagination occurs for any response
-        cls.old_settings = dict(settings.REST_FRAMEWORK)
-        new_settings = {
-            'MAX_PAGINATE_BY': 10000,
-            'PAGINATE_BY': 10000,
-        }
-        settings.REST_FRAMEWORK.update(new_settings)
-
-
     @classmethod
     def tearDownClass(cls):
-        settings.REST_FRAMEWORK = cls.old_settings
         management.call_command('flush', interactive=False)
         if cls.collected_count == 0:
             return
