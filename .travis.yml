@@ -20,6 +20,7 @@ before_install:
 
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
+  - pip install -r scripts/deployment/pip/requirements/3_testing.txt
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
