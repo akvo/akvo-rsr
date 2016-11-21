@@ -21,11 +21,6 @@ before_install:
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
 
-before_script:
-  - psql -c 'CREATE DATABASE travis_test;' -U postgres
-  - python manage.py migrate --noinput
-  - python manage.py runserver &
-
 script:
   - python manage.py collectstatic --noinput
   - coverage run manage.py test akvo
