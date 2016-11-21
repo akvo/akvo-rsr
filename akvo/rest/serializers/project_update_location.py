@@ -40,7 +40,7 @@ class MapProjectUpdateSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField()
     url = serializers.URLField(source='get_absolute_url')
-    photo = Base64ImageField(required=False, allow_empty_file=True)
+    photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     video = serializers.CharField(required=False)
 
 

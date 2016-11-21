@@ -35,7 +35,7 @@ from .rsr_serializer import BaseRSRSerializer
 class ProjectSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
-    current_image = Base64ImageField(required=False, allow_empty_file=True)
+    current_image = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     sync_owner = serializers.ReadOnlyField(source='reporting_org.id')
     sync_owner_secondary_reporter = serializers.ReadOnlyField(source='reporting_partner.is_secondary_reporter')
     status_label = serializers.ReadOnlyField(source='show_plain_status')
