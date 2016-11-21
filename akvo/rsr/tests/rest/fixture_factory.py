@@ -274,7 +274,7 @@ class EmploymentFactory(DjangoModelFactory):
 
     user = factory.Iterator(User.objects.all())
     organisation = factory.Iterator(Organisation.objects.all())
-    group = factory.Sequence(lambda x: Group.objects.get(id=((x % 5) + 1)))
+    group = factory.Sequence(lambda x: Group.objects.get(id=Group.objects.order_by('id').values_list('id', flat=True)[x % Group.objects.count()]))
 
 
 class KeywordFactory(DjangoModelFactory):
@@ -302,6 +302,7 @@ def populate_test_data(seed=42):
     reseed_random(seed)
     random.seed(seed)
 
+    Group.objects.all().delete()
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
 
     User.objects.delete()
