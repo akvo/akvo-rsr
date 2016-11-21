@@ -24,6 +24,7 @@ from __future__ import print_function
 
 from contextlib import contextmanager
 import json
+import os
 from os.path import exists, join
 import unittest
 
@@ -41,6 +42,7 @@ from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
 CLIENT = Client(HTTP_HOST=settings.RSR_DOMAIN)
 FIXTURE = 'test_data.json'
+SLOW_TESTS = 'SLOW_TESTS' in os.environ
 
 
 @contextmanager
@@ -161,6 +163,7 @@ class MigrationTestsMeta(type):
         return fn
 
 
+@unittest.skipIf(not SLOW_TESTS, 'Not running slow tests')
 class MigrationTestCase(TestCase):
     """Test the endpoints.
 
@@ -192,21 +195,8 @@ class MigrationTestCase(TestCase):
         cls.collected_count = 0
         cls._load_expected()
 
-        # Pagination can cause elements in results to be different, if there is
-        # no ordering for a response, by default.  We make the page so large,
-        # that no pagination occurs for any response
-        cls.old_settings = dict(settings.REST_FRAMEWORK)
-        new_settings = {
-            'PAGE_SIZE': 10000,
-            'MAX_PAGINATE_BY': 10000,
-            'PAGINATE_BY': 10000,
-        }
-        settings.REST_FRAMEWORK.update(new_settings)
-
-
     @classmethod
     def tearDownClass(cls):
-        settings.REST_FRAMEWORK = cls.old_settings
         management.call_command('flush', interactive=False)
         if cls.collected_count == 0:
             return
