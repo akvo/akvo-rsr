@@ -24,6 +24,7 @@ from __future__ import print_function
 
 from contextlib import contextmanager
 import json
+import os
 from os.path import exists, join
 import unittest
 
@@ -41,6 +42,7 @@ from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
 CLIENT = Client(HTTP_HOST=settings.RSR_DOMAIN)
 FIXTURE = 'test_data.json'
+SLOW_TESTS = 'SLOW_TESTS' in os.environ
 
 
 @contextmanager
@@ -138,6 +140,7 @@ class MigrationTestsMeta(type):
         return fn
 
 
+@unittest.skipIf(not SLOW_TESTS, 'Not running slow tests')
 class MigrationTestCase(TestCase):
     """Test the endpoints.
 
