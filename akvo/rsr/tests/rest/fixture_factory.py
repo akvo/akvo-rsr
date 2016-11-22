@@ -17,8 +17,8 @@ from factory.django import DjangoModelFactory
 from factory.fuzzy import reseed_random
 
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
-from akvo.rsr.models import PublishingStatus, Partnership, ProjectLocation, Country, Keyword
-from akvo.rsr.models import User, Project, Organisation, Indicator, Result, IndicatorPeriod
+from akvo.rsr.models import PublishingStatus, Partnership, Country, Keyword
+from akvo.rsr.models import User, Project, Organisation, Indicator, Result, IndicatorPeriod, IndicatorPeriodData, ProjectEditorValidationSet
 from akvo.utils import check_auth_groups
 
 
@@ -127,6 +127,15 @@ class FssFactory(DjangoModelFactory):
         model = 'rsr.Fss'
 
     forecasts = factory.RelatedFactory(FssForecastFactory, 'fss')
+    project = factory.Iterator(Project.objects.all())
+
+
+class ProjectCommentFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.ProjectComment'
+
+    user = factory.Iterator(User.objects.all())
     project = factory.Iterator(Project.objects.all())
 
 
@@ -253,6 +262,15 @@ class IndicatorPeriodDataFactory(DjangoModelFactory):
     period = factory.Iterator(IndicatorPeriod.objects.all())
 
 
+class IndicatorPeriodDataCommentFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.IndicatorPeriodDataComment'
+
+    data = factory.Iterator(IndicatorPeriodData.objects.all())
+    user = factory.Iterator(User.objects.all())
+
+
 class IatiExportFactory(DjangoModelFactory):
 
     class Meta:
@@ -264,6 +282,7 @@ class IatiExportFactory(DjangoModelFactory):
     @factory.post_generation
     def post(obj, create, extracted, **kwargs):
         for project in obj.reporting_organisation.projects.distinct():
+            project.update_iati_checks()
             obj.projects.add(project)
 
 
@@ -296,6 +315,57 @@ class ProjectEditorValidationSetFactory(DjangoModelFactory):
             project.validations.add(obj)
 
 
+class ProjectEditorValidationFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.ProjectEditorValidation'
+
+    validation_set = factory.Iterator(ProjectEditorValidationSet.objects.all())
+    validation = factory.fuzzy.FuzzyText()
+    action = factory.fuzzy.FuzzyInteger(1, 2)
+
+
+class RelatedProjectFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.RelatedProject'
+
+    project = factory.Iterator(Project.objects.all())
+    related_project = factory.Iterator(Project.objects.all())
+
+
+class RecipientCountryFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.RecipientCountry'
+
+    project = factory.Iterator(Project.objects.all())
+    percentage = factory.fuzzy.FuzzyDecimal(1, 100)
+
+
+class CustomFieldFactory(DjangoModelFactory):
+
+    name = factory.fuzzy.FuzzyText()
+    section = factory.fuzzy.FuzzyInteger(1, 10)
+    order = factory.fuzzy.FuzzyInteger(1, 10)
+
+
+class ProjectCustomFieldFactory(CustomFieldFactory):
+
+    class Meta:
+        model = 'rsr.ProjectCustomField'
+
+    project = factory.Iterator(Project.objects.all())
+
+
+class OrganisationCustomFieldFactory(CustomFieldFactory):
+
+    class Meta:
+        model = 'rsr.OrganisationCustomField'
+
+    organisation = factory.Iterator(Organisation.objects.all())
+
+
 def populate_test_data(seed=42):
     """Populate the DB for tests using the factories defined."""
 
@@ -307,11 +377,17 @@ def populate_test_data(seed=42):
     UserFactory.create(is_admin=True, is_superuser=True, is_staff=True)
     UserFactory.create_batch(4)
     OrganisationFactory.create_batch(3)
+    OrganisationCustomFieldFactory.create_batch(9)
 
     ProjectFactory.create_batch(10)
+    RecipientCountryFactory.create_batch(10)
     CrsAddFactory.create_batch(10)
     FssFactory.create_batch(10)
     PartnershipFactory.create_batch(10)
+
+    ProjectCustomFieldFactory.create_batch(20)
+    ProjectCommentFactory.create_batch(20)
+    RelatedProjectFactory.create_batch(10)
 
     ProjectUpdateFactory.create_batch(100)
     ResultFactory.create_batch(40)
@@ -323,6 +399,7 @@ def populate_test_data(seed=42):
     IndicatorPeriodActualLocationFactory.create_batch(240)
     IndicatorPeriodTargetLocationFactory.create_batch(240)
     IndicatorPeriodDataFactory.create_batch(1200)
+    IndicatorPeriodDataCommentFactory.create_batch(1200)
     IatiExportFactory.create_batch(3)
 
     for _ in range(10):
@@ -342,33 +419,24 @@ def populate_test_data(seed=42):
             project.keywords.add(keyword)
 
     ProjectEditorValidationSetFactory.create_batch(2)
+    ProjectEditorValidationFactory.create_batch(20)
+    # FIXME: Enforce this!
+    verify_model_instances()
 
-    # FIXME: Check if all models have at least one object.
-    # for model in akvo.rsr.models: assert model.objects.count() > 0
 
-# Organisation.objects.update(can_create_projects=True)
+def verify_model_instances(enforce=False):
+    """Verify that there's at least one instance of all the models."""
 
-# ## Publish a bunch of indicators and results
-# project = Project.objects.get(id=4)
-# for title in ('first', 'second', 'third'):
-#     r = Result(project=project, title=title)
-#     r.save()
-#     for title in ('1', '2', '3'):
-#         i = Indicator(result=r, title=title)
-#         i.save()
-#         locked = False if title != '3' else True
-#         ip = IndicatorPeriod(indicator=i, locked=locked)
-#         ip.save()
+    from akvo.rsr import models as M
+    from django.db.models import Model
 
-#         IndicatorPeriodData(period=ip, user_id=2).save()
+    for model in sorted(M.__dict__.values()):
+        if not (isinstance(model, type) and issubclass(model, Model)) or model.objects.count() > 0:
+            continue
+        msg = 'No instances of {} found'.format(model)
 
-# # Create an unapproved employment
-# Employment(organisation_id=1, user_id=2).save()
+        if enforce:
+            assert False, msg
 
-# project = Project.objects.get(id=4)
-# partnership = Partnership.objects.get(project=project, organisation_id=1)
-# partnership.iati_organisation_role = 101  # reporting partner
-# partnership.save()
-
-# iati_export.projects.add(project)
-# project.update_iati_checks()
+        else:
+            print msg
