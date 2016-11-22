@@ -302,15 +302,7 @@ def populate_test_data(seed=42):
     reseed_random(seed)
     random.seed(seed)
 
-    Group.objects.all().delete()
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-    User.objects.delete()
-    Project.objects.delete()
-    Organisation.objects.delete()
-    Partnership.objects.all().delete()
-    ProjectLocation.objects.all().delete()
-    Indicator.objects.all().delete()
 
     UserFactory.create(is_admin=True, is_superuser=True, is_staff=True)
     UserFactory.create_batch(4)
