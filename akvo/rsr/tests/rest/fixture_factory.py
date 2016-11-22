@@ -310,6 +310,20 @@ class IatiExportFactory(DjangoModelFactory):
             obj.projects.add(project)
 
 
+class IatiImportFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.IatiImport'
+
+    user = factory.LazyFunction(lambda: User.objects.get(is_superuser=True))
+    label = factory.Sequence(lambda x: 'iati-import-{}'.format(x))
+    frequency = factory.fuzzy.FuzzyInteger(1, 7)
+
+    @factory.post_generation
+    def post(obj, create, extracted, **kwargs):
+        obj.execute_import()
+
+
 class EmploymentFactory(DjangoModelFactory):
 
     class Meta:
@@ -424,7 +438,9 @@ def populate_test_data(seed=42):
     IndicatorPeriodTargetLocationFactory.create_batch(240)
     IndicatorPeriodDataFactory.create_batch(1200)
     IndicatorPeriodDataCommentFactory.create_batch(1200)
+
     IatiExportFactory.create_batch(3)
+    IatiImportFactory.create_batch(3)
 
     for _ in range(10):
         created = False
