@@ -61,6 +61,12 @@ class ProjectLocationFactory(OrganisationLocationFactory):
     administratives = factory.RelatedFactory(AdministrativeLocationFactory, 'location')
 
 
+class ProjectUpdateLocationFactory(OrganisationLocationFactory):
+
+    class Meta:
+        model = 'rsr.ProjectUpdateLocation'
+
+
 class OrganisationFactory(DjangoModelFactory):
 
     class Meta:
@@ -139,6 +145,23 @@ class ProjectCommentFactory(DjangoModelFactory):
     project = factory.Iterator(Project.objects.all())
 
 
+class ProjectContactFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.ProjectContact'
+
+    project = factory.Iterator(Project.objects.all())
+
+
+class ProjectConditionFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.ProjectCondition'
+
+    project = factory.Iterator(Project.objects.all())
+    type = factory.Iterator(['1', '2', '3'])
+
+
 class ProjectFactory(DjangoModelFactory):
 
     class Meta:
@@ -148,11 +171,11 @@ class ProjectFactory(DjangoModelFactory):
     title = factory.Sequence(
         lambda x: ('Fiber Project - {}' if x % 3 == 0 else 'Water Project - {}').format(x)
     )
-    locations = factory.RelatedFactory(
-        'akvo.rsr.tests.rest.fixture_factory.ProjectLocationFactory', 'location_target'
-    )
+    locations = factory.RelatedFactory(ProjectLocationFactory, 'location_target')
     transactions = factory.RelatedFactory(TransactionFactory, 'project')
     documents = factory.RelatedFactory(ProjectDocumentFactory, 'project')
+    contacts = factory.RelatedFactory(ProjectContactFactory, 'project')
+    conditions = factory.RelatedFactory(ProjectConditionFactory, 'project')
     post__publishingstatus__status = PublishingStatus.STATUS_PUBLISHED
 
     @factory.post_generation
@@ -184,6 +207,7 @@ class ProjectUpdateFactory(DjangoModelFactory):
     project = factory.Iterator(Project.objects.all())
     user = factory.Iterator(User.objects.all())
     title = factory.Sequence(lambda x: 'Project Update - {}'.format(x))
+    locations = factory.RelatedFactory(ProjectUpdateLocationFactory, 'location_target')
 
 
 class ResultFactory(DjangoModelFactory):
