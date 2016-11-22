@@ -220,8 +220,8 @@ class IndicatorPeriodActualDimensionFactory(DjangoModelFactory):
         model = 'rsr.IndicatorPeriodActualDimension'
 
     period = factory.Iterator(IndicatorPeriod.objects.all())
-    name = factory.fuzzy.FuzzyText
-    value = factory.fuzzy.FuzzyDecimal
+    name = factory.fuzzy.FuzzyText()
+    value = factory.fuzzy.FuzzyDecimal(0, 100)
 
 
 class IndicatorPeriodTargetDimensionFactory(IndicatorPeriodActualDimensionFactory):
