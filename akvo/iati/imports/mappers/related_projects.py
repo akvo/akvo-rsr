@@ -30,6 +30,10 @@ class RelatedProjects(ImportMapper):
         imported_related_projects = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('related-activity'):
+            return changes
+
         for related_activity in self.parent_elem.findall('related-activity'):
 
             related_iati_id = self.get_attrib(related_activity, 'ref', 'related_iati_id')

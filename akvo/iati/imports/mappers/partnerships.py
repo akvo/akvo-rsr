@@ -38,6 +38,10 @@ class Partnerships(ImportMapper):
         changes = []
         funding_amount_present = False
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('participating-org'):
+            return changes
+
         for partnership in self.parent_elem.findall('participating-org'):
 
             org_ref = self.get_attrib(partnership, 'ref', None)
