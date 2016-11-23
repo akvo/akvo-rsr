@@ -236,50 +236,52 @@ def employment_post_save(sender, **kwargs):
     admins_group = Group.objects.get(name='Admins')
     employment = kwargs.get("instance", None)
 
-    if employment:
-        user = employment.user
+    if not employment:
+        return
 
-        # Set user to staff when in a certain group
-        if (employment.group in [project_editors_group, user_managers_group, admins_group] and
-                employment.is_approved) or user.is_superuser or user.is_admin:
-            user.is_staff = True
-            user.save()
+    user = employment.user
 
-        # Send an 'Organisation request' mail when an employment has been newly created, the
-        # user is active and the employment has not been approved yet.
-        if kwargs['created'] and user.is_active and not employment.is_approved:
-            organisation = employment.organisation
+    # Set user to staff when in a certain group
+    if (employment.group in [project_editors_group, user_managers_group, admins_group] and
+            employment.is_approved) or user.is_superuser or user.is_admin:
+        user.is_staff = True
+        user.save()
 
-            # Retrieve all active support users
-            active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
+    # Send an 'Organisation request' mail when an employment has been newly created, the
+    # user is active and the employment has not been approved yet.
+    if kwargs['created'] and user.is_active and not employment.is_approved:
+        organisation = employment.organisation
 
-            # General (support) admins will always be informed
-            admin_users = active_support_users.filter(is_admin=True)
+        # Retrieve all active support users
+        active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
 
-            # As well as organisation (+ content owners) User managers and Admins
-            employer_users = active_support_users.filter(
-                employers__organisation__in=organisation.content_owned_by(),
-                employers__group__in=[user_managers_group, admins_group]
-            )
+        # General (support) admins will always be informed
+        admin_users = active_support_users.filter(is_admin=True)
 
-            notify = active_support_users.filter(
-                Q(pk__in=admin_users.values_list('pk', flat=True)) |
-                Q(pk__in=employer_users.values_list('pk', flat=True))
-            ).exclude(pk=user.pk).distinct()
+        # As well as organisation (+ content owners) User managers and Admins
+        employer_users = active_support_users.filter(
+            employers__organisation__in=organisation.content_owned_by(),
+            employers__group__in=[user_managers_group, admins_group]
+        )
 
-            rsr_send_mail_to_users(
-                notify,
-                subject='registration/user_organisation_request_subject.txt',
-                message='registration/user_organisation_request_message.txt',
-                subject_context={
-                    'user': user,
-                    'organisation': organisation
-                },
-                msg_context={
-                    'user': user,
-                    'organisation': organisation
-                },
-            )
+        notify = active_support_users.filter(
+            Q(pk__in=admin_users.values_list('pk', flat=True)) |
+            Q(pk__in=employer_users.values_list('pk', flat=True))
+        ).exclude(pk=user.pk).distinct()
+
+        rsr_send_mail_to_users(
+            notify,
+            subject='registration/user_organisation_request_subject.txt',
+            message='registration/user_organisation_request_message.txt',
+            subject_context={
+                'user': user,
+                'organisation': organisation
+            },
+            msg_context={
+                'user': user,
+                'organisation': organisation
+            },
+        )
 
 
 def update_project_budget(sender, **kwargs):
