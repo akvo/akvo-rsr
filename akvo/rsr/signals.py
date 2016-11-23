@@ -169,6 +169,9 @@ def act_on_log_entry(sender, **kwargs):
 def employment_pre_save(sender, **kwargs):
     """
     This signal intends to send a mail to the user when his/her account has been approved.
+
+    This signal also sets 'Users' Group for the employment if no group has been set
+
     A mail will be sent when:
 
     - A new employment is created with is_approved = True.
@@ -176,7 +179,12 @@ def employment_pre_save(sender, **kwargs):
     - An existing employment is updated from is_approved = False changed to True.
       * We assume this happens when an existing user has requested to join an organisation himself.
     """
+    # FIXME: The actual save may fail. Why are emails being sent pre_save?!
     employment = kwargs.get("instance", None)
+
+    # Set the group to 'Users' when no group has been specified
+    if not employment.group:
+        employment.group = Group.objects.get(name='Users')
 
     try:
         obj = sender.objects.get(pk=employment.pk)
@@ -218,13 +226,11 @@ def employment_post_save(sender, **kwargs):
     - Set User to is_staff (for admin access) when the employment is approved and the Group is set
       to 'Project Editors', 'User managers' or 'Admins', or when the user is a superuser or general
       admin.
-    - Set 'Users' Group for the employment if no group has been set
 
     If a new employment is created for an active user of which the employment is not approved yet:
     - Inform RSR support users, organisation admins and organisation user managers of the request
     """
     # Retrieve all user groups and the employment
-    users_group = Group.objects.get(name='Users')
     project_editors_group = Group.objects.get(name='Project Editors')
     user_managers_group = Group.objects.get(name='User Managers')
     admins_group = Group.objects.get(name='Admins')
@@ -238,11 +244,6 @@ def employment_post_save(sender, **kwargs):
                 employment.is_approved) or user.is_superuser or user.is_admin:
             user.is_staff = True
             user.save()
-
-        # Set the group to 'Users' when no group has been specified
-        if not employment.group:
-            employment.group = users_group
-            employment.save()
 
         # Send an 'Organisation request' mail when an employment has been newly created, the
         # user is active and the employment has not been approved yet.
