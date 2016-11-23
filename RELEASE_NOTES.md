@@ -1,3 +1,10 @@
+# Currently on `develop`
+
+## Bug fixes
+
+[#2374] (https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
+employments to the same organisation & group.
+
 # Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
