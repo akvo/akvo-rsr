@@ -1643,6 +1643,40 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                     </cell>
                     <cell id="350">
                         <data id="351">
+                            <list-property name="mapRules">
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["type"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">1</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Output</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["type"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">2</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Outcome</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["type"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">3</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Impact</text-property>
+                                </structure>
+                                <structure>
+                                    <expression name="testExpr" type="javascript">row["type"]</expression>
+                                    <property name="operator">eq</property>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">9</value>
+                                    </simple-property-list>
+                                    <text-property name="display">Other</text-property>
+                                </structure>
+                            </list-property>
                             <property name="resultSetColumn">type</property>
                         </data>
                     </cell>
