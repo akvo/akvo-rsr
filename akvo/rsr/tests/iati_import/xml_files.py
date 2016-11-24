@@ -268,7 +268,7 @@ IATI_V2_STRING = """
                 </description>
             </budget-item>
         </country-budget-items>
-        <humanitarian-scope type="1" vocabulary="1-2" code="2015-000050" />
+        <humanitarian-scope type="1" vocabulary="1-2" code="2015-000050"/>
         <humanitarian-scope type="1" vocabulary="99" vocabulary-uri="http://example.com/vocab.html" code="A1">
             <narrative xml:lang="en">Syrian refugee crisis, Middle-east &amp; Europe (2011 onwards)</narrative>
         </humanitarian-scope>
@@ -1981,13 +1981,10 @@ IATI_PARTIAL_IMPORT = """
         <description type="3">
            <narrative>Statement of groups targeted to benefit from the activity.</narrative>
         </description>
-        <participating-org ref="BB-BBB-123456789" role="1" type="40" activity-id="BB-BBB-123456789-1234">
-           <narrative>Name of Agency B</narrative>
-        </participating-org>
-        <participating-org ref="CC-CCC-123456789" role="2" type="10" activity-id="CC-CCC-123456789-1234">
+        <participating-org akvo:import="0" ref="DD-DDD-123456789" role="2" type="10" activity-id="CC-CCC-123456789-1234">
            <narrative>Name of Agency C</narrative>
         </participating-org>
-        <participating-org ref="AA-AAA-123456789" role="3" type="21" activity-id="AA-AAA-123456789-1234">
+        <participating-org akvo:import="0" ref="AA-AAA-123456789" role="3" type="21" activity-id="AA-AAA-123456789-1234">
            <narrative>Name of Agency A</narrative>
         </participating-org>
         <other-identifier ref="ABC123-XYZ" type="A1">
@@ -2021,11 +2018,11 @@ IATI_PARTIAL_IMPORT = """
             </mailing-address>
         </contact-info>
         <activity-scope code="3" />
-        <recipient-country code="AF" percentage="25" />
-        <recipient-country code="AG" percentage="25" />
-        <recipient-region code="489" vocabulary="1" percentage="25" />
+        <recipient-country code="AF" percentage="25" akvo:import="false"/>
+        <recipient-country code="AG" percentage="25" akvo:import="false" />
+        <recipient-country code="SE" percentage="25" akvo:import="false" />
+        <recipient-region code="489" vocabulary="1" percentage="25" akvo:import="false" />
         <recipient-region code="289" vocabulary="1" percentage="25" />
-        <recipient-region code="A1" vocabulary="99" vocabulary-uri="http://example.com/vocab.html" percentage="100" />
         <location ref="OP-GNO" akvo:import="0">
             <location-reach code="1" />
             <location-id vocabulary="G1" code="998887" />
@@ -2064,9 +2061,7 @@ IATI_PARTIAL_IMPORT = """
             <location-class code="2"/>
             <feature-designation code="ADMF"/>
         </location>
-        <sector vocabulary="2" code="111" percentage="50" />
-        <sector vocabulary="2" code="112" percentage="50" />
-        <sector vocabulary="98" vocabulary-uri="http://example.com/vocab.html" code="A1" percentage="100" />
+        <sector vocabulary="2" code="111" percentage="50" akvo:import="no"/>
         <country-budget-items vocabulary="2">
             <budget-item code="1.1.1" percentage="50">
                 <description>
@@ -2079,13 +2074,8 @@ IATI_PARTIAL_IMPORT = """
                 </description>
             </budget-item>
         </country-budget-items>
-        <humanitarian-scope type="1" vocabulary="1-2" code="2015-000050" />
-        <humanitarian-scope type="1" vocabulary="99" vocabulary-uri="http://example.com/vocab.html" code="A1">
-            <narrative xml:lang="en">Syrian refugee crisis, Middle-east &amp; Europe (2011 onwards)</narrative>
-        </humanitarian-scope>
-        <policy-marker vocabulary="1" code="2" significance="3" />
-        <policy-marker vocabulary="1" code="9" significance="4" />
-        <policy-marker vocabulary="99" vocabulary-uri="http://example.com/vocab.html" code="A1" significance="3" />
+        <humanitarian-scope type="1" vocabulary="1-2" code="2016-00200" akvo:import="false" />
+        <policy-marker vocabulary="1" code="2" significance="3" akvo:import="false" />
         <collaboration-type code="1" />
         <default-flow-type code="10" />
         <default-finance-type code="110" />
@@ -2096,7 +2086,7 @@ IATI_PARTIAL_IMPORT = """
             <period-end iso-date="2014-12-31" />
             <value currency="EUR" value-date="2014-01-01">3000</value>
         </budget>
-        <planned-disbursement type="1">
+        <planned-disbursement type="1" akvo:import="false">
             <period-start iso-date="2014-01-01" />
             <period-end iso-date="2014-12-31" />
             <value currency="EUR" value-date="2014-01-01">3000</value>
@@ -2107,16 +2097,33 @@ IATI_PARTIAL_IMPORT = """
                 <narrative>Agency A</narrative>
             </receiver-org>
         </planned-disbursement>
-        <planned-disbursement type="1">
-            <period-start iso-date="2014-01-01" />
-            <period-end iso-date="2014-12-31" />
-            <value currency="EUR" value-date="2014-01-01">3000</value>
-        </planned-disbursement>
         <capital-spend percentage="88.8" />
         <transaction ref="1234" humanitarian="1">
             <transaction-type code="1" />
             <transaction-date iso-date="2012-01-01" />
             <value currency="EUR" value-date="2012-01-01">1000</value>
+            <description>
+                <narrative>Transaction description text</narrative>
+            </description>
+            <provider-org provider-activity-id="BB-BBB-123456789-1234AA" type="10" ref="BB-BBB-123456789">
+                <narrative>Agency B</narrative>
+            </provider-org>
+            <receiver-org receiver-activity-id="AA-AAA-123456789-1234" type="23" ref="AA-AAA-123456789">
+                <narrative>Agency A</narrative>
+            </receiver-org>
+            <disbursement-channel code="1" />
+            <sector vocabulary="2" code="111" />
+            <recipient-country code="TM" />
+            <recipient-region code="616" vocabulary="1" />
+            <flow-type code="10" />
+            <finance-type code="110" />
+            <aid-type code="A01" />
+            <tied-status code="3" />
+        </transaction>
+        <transaction ref="2345" humanitarian="2" akvo:import="false">
+            <transaction-type code="2" />
+            <transaction-date iso-date="2012-01-01" />
+            <value currency="EUR" value-date="2012-01-01">2000</value>
             <description>
                 <narrative>Transaction description text</narrative>
             </description>
@@ -2143,9 +2150,9 @@ IATI_PARTIAL_IMPORT = """
             <language code="en" />
             <document-date iso-date="2014-02-05" />
         </document-link>
-        <related-activity ref="AA-AAA-123456789-6789" type="1" />
-        <legacy-data name="Project Status" value="7" iati-equivalent="activity-status" />
-        <legacy-data name="cost" value="1000" iati-equivalent="transaction" />
+        <related-activity ref="AA-AAA-123456789-9876" type="1" akvo:import="false"/>
+        <legacy-data akvo:import="no" name="Project Status" value="17" iati-equivalent="activity-status" />
+        <legacy-data name="cost" akvo:import="f" value="999" iati-equivalent="transaction" />
         <conditions attached="1">
             <condition type="1">
                 <narrative>Conditions text</narrative>
@@ -2197,7 +2204,7 @@ IATI_PARTIAL_IMPORT = """
                 </period>
            </indicator>
         </result>
-        <result type="1" aggregation-status="1">
+        <result type="1" aggregation-status="1" akvo:import="false">
             <title>
                 <narrative>Another result title</narrative>
             </title>

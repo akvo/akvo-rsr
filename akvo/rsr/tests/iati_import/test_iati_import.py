@@ -9,6 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User, BudgetItemLabel
 from akvo.codelists.models import BudgetIdentifier, Currency, ResultType, Version
+from akvo.rsr.models import RelatedProject
 
 from .xml_files import (IATI_V1_STRING, IATI_V2_STRING, IATI_V2_STRING_INCORRECT, IATI_ICCO_STRING,
                         IATI_CORDAID_STRING, IATI_V2_RESULT_ONLY, IATI_PARTIAL_IMPORT)
@@ -247,6 +248,9 @@ class IatiImportTestCase(TestCase):
         """
         Test an IATI import that ignores elements with the akvo:import attribute set to falsey
         values, i.e. "false", "no", "f" or "0"
+        budget, contact-info, humanitarian-scope, legacy-data,
+        location, participating-org, planned-disbursement, policy-marker,
+        recipient-country, recipient-region, related-activity, result, sector and transaction
         """
         #import a project
         iati_v2_import = IatiImport.objects.create(label="Test IATI v2 import", user=self.user)
@@ -258,11 +262,6 @@ class IatiImportTestCase(TestCase):
         iati_v2_import_job.run()
 
         project_v2 = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
-
-        self.assertEqual(project_v2.results.count(), 1)
-        result_1 = project_v2.results.get(title="Result title")
-        self.assertEqual(result_1.indicators.count(), 1)
-        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'11')
 
         self.assertEqual(project_v2.contacts.count(), 1)
         contact_info = project_v2.contacts.all()[0]
@@ -289,14 +288,12 @@ class IatiImportTestCase(TestCase):
         project_partial_import = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
         self.assertIsInstance(project_partial_import, Project)
 
-        # Assert that this data is new
-        self.assertEqual(project_v2.results.count(), 2)
-        result_1 = project_v2.results.get(title="New result title")
-        self.assertEqual(result_1.description, "New result description text")
+        # Assert that no data has changed, even if the XML has
+        self.assertEqual(project_v2.results.count(), 1)
+        result_1 = project_v2.results.get(title="Result title")
         self.assertEqual(result_1.indicators.count(), 1)
-        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'44')
+        self.assertEqual(result_1.indicators.all()[0].periods.all()[0].actual_value, u'11')
 
-        # Assert this data hasn't changed, even if the XML has
         self.assertEqual(project_v2.contacts.count(), 1)
         contact_info = project_v2.contacts.all()[0]
         self.assertEqual(contact_info.organisation, "Agency A")
@@ -307,3 +304,22 @@ class IatiImportTestCase(TestCase):
         location_2 = project_v2.locations.get(reference="KH-PNH")
         self.assertEqual(location_1.location_code, "1453782")
         self.assertEqual(location_2.location_code, "1821306")
+
+        self.assertEqual(project_v2.humanitarian_scopes.count(), 2)
+        humanitarian_scope_1 = project_v2.humanitarian_scopes.get(vocabulary="1-2")
+        humanitarian_scope_2 = project_v2.humanitarian_scopes.get(vocabulary="99")
+        self.assertEqual(humanitarian_scope_1.code, "2015-000050")
+        self.assertEqual(humanitarian_scope_2.vocabulary_uri,"http://example.com/vocab.html")
+
+        # three participating orgs, and one reporting org
+        self.assertEqual(project_v2.partners.count(), 4)
+        self.assertEqual(project_v2.planned_disbursements.count(), 2)
+        self.assertEqual(project_v2.policy_markers.count(), 3)
+        self.assertEqual(project_v2.recipient_countries.count(), 2)
+        self.assertEqual(project_v2.recipient_regions.count(), 3)
+
+        related_project_1 = project_v2.related_projects.get(
+                related_iati_id="AA-AAA-123456789-6789")
+        self.assertIsInstance(related_project_1, RelatedProject)
+        self.assertEqual(project_v2.sectors.count(), 3)
+        self.assertEqual(project_v2.transactions.count(), 1)
