@@ -2,6 +2,12 @@
 
 ## Improvements
 
+### Cluster all the employments of a user
+
+Group all the employments of a user together in the user management page.
+
+GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
+
 ### Add a management command to bulk unlock/lock periods by keyword
 
 To simplify locking and unlocking a whole bunch of keywords, a management
