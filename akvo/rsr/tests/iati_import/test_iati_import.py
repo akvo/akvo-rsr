@@ -323,3 +323,4 @@ class IatiImportTestCase(TestCase):
         self.assertIsInstance(related_project_1, RelatedProject)
         self.assertEqual(project_v2.sectors.count(), 3)
         self.assertEqual(project_v2.transactions.count(), 1)
+        self.assertEqual(project_v2.budget_items.count(), 1)

@@ -2081,7 +2081,12 @@ IATI_PARTIAL_IMPORT = """
         <default-finance-type code="110" />
         <default-aid-type code="A01" />
         <default-tied-status code="3" />
-        <budget type="1" status="1">
+        <budget type="1" status="1" akvo:import="false">
+            <period-start iso-date="2014-01-01" />
+            <period-end iso-date="2014-12-31" />
+            <value currency="EUR" value-date="2014-01-01">2000</value>
+        </budget>
+        <budget type="2" status="2" akvo:import="false">
             <period-start iso-date="2014-01-01" />
             <period-end iso-date="2014-12-31" />
             <value currency="EUR" value-date="2014-01-01">3000</value>
