@@ -11,6 +11,9 @@ wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
 [#2374] (https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
+
 # Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
