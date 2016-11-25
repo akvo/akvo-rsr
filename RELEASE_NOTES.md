@@ -1,4 +1,13 @@
-# Currently on `develop`
+# Currently in develop
+
+## Improvements
+
+### Add a management command to bulk unlock/lock periods by keyword
+
+To simplify locking and unlocking a whole bunch of keywords, a management
+command has been added to do this based on project keywords.
+
+GitHub issue: [#2449] (https://github.com/akvo/akvo-rsr/issues/2449)
 
 ## Bug fixes
 
