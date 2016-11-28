@@ -1,4 +1,15 @@
-[#2542] Enable partial import of IATI activity XML. Elements of the XML can be ignored when importing IATI data if the attribute akvo:import="false" is added to at least one element of the type to be ignored. All elements of that type will be omitted from the import and any data of that type already present on the Project will remain unchanged. For more information see [the IATI import wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
+[#2452] Enable partial import of IATI activity XML. Elements of the XML can be ignored when
+importing IATI data if the attribute akvo:import="false" is added to at least one element of the
+type to be ignored. All elements of that type will be omitted from the import and any data of that
+type already present on the Project will remain unchanged. For more information see [the IATI import
+wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
+
+# Currently on `develop`
+
+## Bug fixes
+
+[#2374] (https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
+employments to the same organisation & group.
 
 # Akvo RSR version 3.18 Vilnius
 
