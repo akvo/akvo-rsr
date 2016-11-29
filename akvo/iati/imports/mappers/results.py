@@ -28,6 +28,10 @@ class Results(ImportMapper):
         imported_results = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('result'):
+            return changes
+
         for result in self.parent_elem.findall('result'):
 
             result_type = self.get_attrib(result, 'type', 'type')

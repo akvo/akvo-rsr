@@ -56,6 +56,10 @@ class Sectors(ImportMapper):
         imported_sectors = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('sector'):
+            return changes
+
         for sector in self.parent_elem.findall('sector'):
 
             text = self.get_element_text(sector, 'text')
@@ -104,6 +108,10 @@ class PolicyMarkers(ImportMapper):
 
         :return: List; contains fields that have changed
         """
+        # Check if import should ignore this kind of data
+        if self.skip_importing('policy-marker'):
+            return []
+
         imported_markers = []
         changes = []
 
