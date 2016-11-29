@@ -30,6 +30,10 @@ class LegacyDatas(ImportMapper):
         imported_lds = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('legacy-data'):
+            return changes
+
         for legacy in self.parent_elem.findall('legacy-data'):
 
             name = self.get_attrib(legacy, 'name', 'name')

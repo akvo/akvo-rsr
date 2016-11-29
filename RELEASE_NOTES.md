@@ -1,3 +1,20 @@
+# Akvo RSR version 3.18.2 Vilnius (hot-fix)
+
+## Improvements
+
+[#2452](https://github.com/akvo/akvo-rsr/issues/2452) Enable partial import of IATI activity XML. Elements of the XML can be ignored when
+importing IATI data if the attribute akvo:import="false" is added to at least one element of the
+type to be ignored. All elements of that type will be omitted from the import and any data of that
+type already present on the Project will remain unchanged. For more information see [the IATI import
+wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
+
+# Akvo RSR version 3.18.1 Vilnius (hot-fix)
+
+## Improvements
+
+[#2442](https://github.com/akvo/akvo-rsr/issues/2442) Custom mapper to import Result data only, using the IATI import,
+without over-writing the content of an existing project.
+
 # Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
