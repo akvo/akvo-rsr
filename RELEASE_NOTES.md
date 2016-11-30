@@ -2,6 +2,9 @@
 
 ## Bug fixes
 
+[#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
+button for project summary, when it ends with a list.
+
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
