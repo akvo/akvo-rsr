@@ -31,6 +31,9 @@ wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
 [#2442](https://github.com/akvo/akvo-rsr/issues/2442) Custom mapper to import Result data only, using the IATI import,
 without over-writing the content of an existing project.
 
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
+
 # Akvo RSR version 3.18 Vilnius
 
 ## Bug fixes
