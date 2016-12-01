@@ -98,7 +98,7 @@ def request_organisation(request, pk=None):
     # request.user is the user identified by the auth token
     user = request.user
     # Users themselves are only allowed to request to join an organisation
-    if not user_by_pk == request.user:
+    if not user_by_pk == user:
         raise PermissionDenied()
     request.data['user'] = pk
 
@@ -107,14 +107,13 @@ def request_organisation(request, pk=None):
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])
-            employment = Employment(
+            employment = Employment.objects.create(
                 user=user,
                 organisation=organisation,
                 country=serializer.data['country'],
                 job_title=serializer.data['job_title'],
                 is_approved=False,
             )
-            employment.save()
         except IntegrityError:
             return Response({'detail': _(u'User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)

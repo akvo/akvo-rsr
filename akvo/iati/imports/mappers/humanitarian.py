@@ -25,6 +25,10 @@ class HumanitarianScopes(ImportMapper):
         imported_scopes = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('humanitarian-scope'):
+            return changes
+
         for scope in self.parent_elem.findall('humanitarian-scope'):
 
             text = self.get_element_text(scope, 'text')
