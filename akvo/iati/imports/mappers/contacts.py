@@ -27,6 +27,10 @@ class Contacts(ImportMapper):
         imported_contacts = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('contact-info'):
+            return changes
+
         for contact in self.parent_elem.findall('contact-info'):
 
             contact_type = self.get_attrib(contact, 'type', 'type')

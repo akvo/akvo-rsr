@@ -307,7 +307,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.organisations.all().all_projects()
 
     def first_organisation(self):
-        all_orgs = self.organisations.all()
+        all_orgs = self.approved_organisations()
         if all_orgs:
             return all_orgs[0]
         else:
