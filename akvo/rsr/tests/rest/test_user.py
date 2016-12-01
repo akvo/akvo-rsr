@@ -33,7 +33,7 @@ class UserTestCase(TransactionTestCase):
 
     def test_request_organisation_once(self):
         # Given
-        data = {'organisation': self.org.id}
+        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
         pk = self.user.id
 
         # When
@@ -48,7 +48,7 @@ class UserTestCase(TransactionTestCase):
 
     def test_request_organisation_twice(self):
         # Given
-        data = {'organisation': self.org.id}
+        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
         pk = self.user.id
         self.c.post('/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data)
 

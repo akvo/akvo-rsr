@@ -89,6 +89,9 @@ def update_details(request, pk=None):
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
 
+    if 'group' not in request.data:
+        request.data['group'] = ''
+
     # Get the user, or return an error if the user does not exist
     try:
         user_by_pk = get_user_model().objects.get(pk=pk)
