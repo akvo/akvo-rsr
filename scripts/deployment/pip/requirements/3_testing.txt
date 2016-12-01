@@ -1,14 +1,11 @@
 # Requirements for building splinter
 lxml==2.3.6
 
-# Requirements for building lettuce
-fuzzywuzzy==0.1
-sure==1.0.6
-
 # Modules used for app testing
 nose==1.2.1
 mox==0.5.3
 py==1.4.12
-selenium==2.31.0
-splinter==0.4.8
-lettuce==0.2.15
+selenium==2.53.6
+splinter==0.7.4
+behave==1.2.5
+-e git+https://github.com/django-behave/django-behave.git@4f795a91fbf8905165bae52f4fa4fbd167e53981#egg=django_behave
