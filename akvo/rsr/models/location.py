@@ -75,6 +75,9 @@ class OrganisationLocation(BaseLocation):
     def iati_country_value(self):
         return codelist_value(Country, self, 'iati_country')
 
+    def iati_country_value_unicode(self):
+        return str(self.iati_country_value())
+
 
 class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', related_name='locations')
@@ -162,23 +165,41 @@ class ProjectLocation(BaseLocation):
             u' ({0})'.format(self.name) if self.name else u''
         )
 
-    def country_label(self):
-        return self.country or ''
+    def iati_country(self):
+        return codelist_value(Country, self, 'country')
+
+    def iati_country_unicode(self):
+        return str(self.iati_country())
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
 
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
+
     def iati_exactness(self):
         return codelist_value(GeographicExactness, self, 'exactness')
+
+    def iati_exactness_unicode(self):
+        return str(self.iati_exactness())
 
     def iati_reach(self):
         return codelist_value(GeographicLocationReach, self, 'location_reach')
 
+    def iati_reach_unicode(self):
+        return str(self.iati_reach())
+
     def iati_class(self):
         return codelist_value(GeographicLocationClass, self, 'location_class')
 
+    def iati_class_unicode(self):
+        return str(self.iati_class())
+
     def iati_designation(self):
         return codelist_value(LocationType, self, 'feature_designation')
+
+    def iati_designation_unicode(self):
+        return str(self.iati_designation())
 
 
 class AdministrativeLocation(models.Model):
@@ -206,6 +227,9 @@ class AdministrativeLocation(models.Model):
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
+
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'

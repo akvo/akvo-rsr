@@ -57,6 +57,9 @@ class ProjectContact(models.Model):
     def iati_type(self):
         return codelist_value(ContactType, self, 'type')
 
+    def iati_type_unicode(self):
+        return str(self.iati_type())
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'contact')

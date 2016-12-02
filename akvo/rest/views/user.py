@@ -54,9 +54,9 @@ def change_password(request, pk=None):
         raise PermissionDenied()
 
     # Process request
-    serializer = UserPasswordSerializer(data=request.DATA, instance=user)
+    serializer = UserPasswordSerializer(data=request.data, instance=user)
     if serializer.is_valid():
-        user.set_password(serializer.data['new_password2'])
+        user = serializer.update(serializer.instance, serializer.validated_data)
         user.save()
         return Response({'status': 'password set'})
     else:
@@ -77,12 +77,10 @@ def update_details(request, pk=None):
         raise PermissionDenied()
 
     # Process request
-    serializer = UserDetailsSerializer(data=request.DATA, instance=user)
+    serializer = UserDetailsSerializer(data=request.data)
     if serializer.is_valid():
-        user.first_name = serializer.data['first_name']
-        user.last_name = serializer.data['last_name']
-        user.save()
-        return Response(request.DATA)
+        serializer.update(user, serializer.initial_data)
+        return Response(request.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -90,6 +88,9 @@ def update_details(request, pk=None):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
+
+    if 'group' not in request.data:
+        request.data['group'] = ''
 
     # Get the user, or return an error if the user does not exist
     try:
@@ -102,10 +103,10 @@ def request_organisation(request, pk=None):
     # Users themselves are only allowed to request to join an organisation
     if not user_by_pk == user:
         raise PermissionDenied()
-    request.DATA['user'] = pk
+    request.data['user'] = pk
 
     # Process request
-    serializer = EmploymentSerializer(data=request.DATA)
+    serializer = EmploymentSerializer(data=request.data)
     if serializer.is_valid():
         try:
             organisation = Organisation.objects.get(pk=serializer.data['organisation'])
@@ -120,13 +121,15 @@ def request_organisation(request, pk=None):
             return Response({'detail': _(u'User already linked to this organisation')},
                             status=status.HTTP_409_CONFLICT)
 
-        if serializer.data['country']:
-            serializer.data['country_full'] = employment.iati_country().name
+        data = EmploymentSerializer(employment).data
+        if data['country']:
+            data['country_full'] = employment.iati_country().name
+            data['country_name'] = str(employment.iati_country())
         else:
-            serializer.data['country_full'] = ''
-        serializer.data['organisation_full'] = OrganisationSerializer(organisation).data
-        serializer.data['id'] = employment.pk
+            data['country_full'] = ''
+        data['organisation_full'] = OrganisationSerializer(organisation).data
+        data['id'] = employment.pk
 
-        return Response(serializer.data)
+        return Response(data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -55,7 +55,7 @@ class IatiExport(TimestampsMixin, models.Model):
         if self.status not in STATUS_CODE.keys():
             return _(u'unknown status')
         else:
-            return STATUS_CODE[int(self.status)].title()
+            return STATUS_CODE[self.status].title()
 
     def update_status(self, status_code):
         """

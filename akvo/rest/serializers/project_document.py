@@ -20,16 +20,16 @@ class ProjectDocumentRawSerializer(BaseRSRSerializer):
 
 class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
 
-    document_show_link = serializers.Field(source='document_show_link')
-    language_label = serializers.Field(source='iati_language')
-    title_language_label = serializers.Field(source='iati_title_language')
-    format_label = serializers.Field(source='iati_format')
+    document_show_link = serializers.ReadOnlyField()
+    language_label = serializers.ReadOnlyField(source='iati_language_unicode')
+    title_language_label = serializers.ReadOnlyField(source='iati_title_language_unicode')
+    format_label = serializers.ReadOnlyField(source='iati_format_unicode')
 
 
 class ProjectDocumentCategorySerializer(BaseRSRSerializer):
 
-    document_unicode = serializers.Field(source='document')
-    category_label = serializers.Field(source='iati_category')
+    document_unicode = serializers.ReadOnlyField(source='document.__unicode__')
+    category_label = serializers.ReadOnlyField(source='iati_category_unicode')
 
     class Meta:
         model = ProjectDocumentCategory

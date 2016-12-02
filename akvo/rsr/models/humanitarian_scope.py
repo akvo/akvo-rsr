@@ -60,5 +60,11 @@ class HumanitarianScope(models.Model):
     def iati_type(self):
         return codelist_value(HumanitarianScopeType, self, 'type')
 
+    def iati_type_unicode(self):
+        return str(self.iati_type())
+
     def iati_vocabulary(self):
         return codelist_value(HumanitarianScopeVocabulary, self, 'vocabulary')
+
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())

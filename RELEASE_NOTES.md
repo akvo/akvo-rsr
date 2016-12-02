@@ -20,6 +20,11 @@ GitHub issue: [#2449] (https://github.com/akvo/akvo-rsr/issues/2449)
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
+## Under the hood
+
+[#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
+been upgraded to 3.2.5 from v2.3.13 which is quite old.
+
 # Akvo RSR version 3.18.2 Vilnius (hot-fix)
 
 ## Improvements
