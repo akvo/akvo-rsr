@@ -75,7 +75,7 @@ class ProjectDocument(models.Model):
 
         # Check for non-unicode characters
         if self.document:
-            self.document.name = self.document.name.encode('ascii','ignore')
+            self.document.name = self.document.name.encode('ascii', 'ignore')
 
     def document_show_link(self):
         if self.document:

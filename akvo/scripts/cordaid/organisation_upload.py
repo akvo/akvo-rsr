@@ -17,7 +17,7 @@ import json
 import sys
 from lxml import etree
 
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED  
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
 from akvo.scripts.cordaid.requester import Requester
 
@@ -47,6 +47,7 @@ ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
     me.UPLOAD_ROOT_DIR, me.ORGANISATIONS_UPLOAD_LOG_FILENAME
 )
 
+
 def user_org(user_cred):
     try:
         profile = Requester(
@@ -61,6 +62,7 @@ def user_org(user_cred):
     except Exception, e:
         print "{message}".format(message=e.message)
         return False, None
+
 
 def find_org(user_cred, reporting_org_id, internal_org_id):
     """
@@ -86,6 +88,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
         print "{message}".format(message=e.message)
         return False, None
     return True, org_id
+
 
 def post_an_org(org_element, user_cred):
     internal_org_id = org_element.find('org_id').text
@@ -129,6 +132,7 @@ def post_an_org(org_element, user_cred):
             )
         )
 
+
 def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
     try:
         internal_org_id = Requester(
@@ -156,6 +160,7 @@ def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
             pk = internal_org_id.response.json()['identifier'],
             event = ACTION_CREATE_IOI
         )
+
 
 def put_an_org(org_element, user_cred, pk):
     internal_org_id = org_element.find('org_id').text
@@ -192,6 +197,7 @@ def put_an_org(org_element, user_cred, pk):
             )
         )
 
+
 def usage(script_name):
     print(
         "\nUsage: %s <domain> <username> [options]\n\n"
@@ -204,6 +210,7 @@ def usage(script_name):
         "     -k KEY, --api_key=KEY\n"
         "       Supply the API key generated in your Akvo user profile\n"
         % script_name)
+
 
 def api_user(domain, username, password='', api_key=''):
     user = dict(domain=domain, username=username, api_version=API_VERSION,)
@@ -223,6 +230,7 @@ def api_user(domain, username, password='', api_key=''):
         return user
     else:
         raise Exception("Either password or API key must be supplied")
+
 
 def credentials_from_args(argv):
     try:
@@ -254,6 +262,7 @@ def credentials_from_args(argv):
         print "{message}".format(message=e.message)
         usage(argv[0])
         return None
+
 
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)

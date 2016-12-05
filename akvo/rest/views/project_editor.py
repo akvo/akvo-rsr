@@ -622,7 +622,7 @@ def project_editor_reorder_items(request, project_pk=None):
             swap_id = item_swap.id
 
             if item_selected:
-                item_selected.order = item_original_order-1
+                item_selected.order = item_original_order - 1
                 item_selected.save()
 
         elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
@@ -646,6 +646,7 @@ def project_editor_reorder_items(request, project_pk=None):
             'swap_id': swap_id,
         }
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -697,6 +698,7 @@ def project_editor_default_periods(request, project_pk=None):
             'errors': errors,
         }
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

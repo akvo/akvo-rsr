@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import re
@@ -23,6 +23,7 @@ def __dict_replace(s, d):
         s = s.replace(key, value)
     return s
 
+
 def __escape(data, entities):
     # must do ampersand first
     data = data.replace("&", "&amp;")
@@ -31,6 +32,7 @@ def __escape(data, entities):
     if entities:
         data = __dict_replace(data, entities)
     return data
+
 
 def escape(data, entities={}):
     """Modification to xml.sax.saxutils.escape to that detects CDATA blocks that are not escaped
@@ -67,6 +69,7 @@ def escape(data, entities={}):
 class RSRSimplerXMLGenerator(XMLGenerator):
     """subclassed to be able to call custom escape() function, see above
     """
+
     def characters(self, content):
         self._write(escape(content))
 
@@ -125,6 +128,7 @@ class RSRMediaRssFeed(Rss201rev2Feed):
         self.write_items(handler)
         self.endChannelElement(handler)
         handler.endElement(u"rss")
+
 
 class UpdateFeed(Feed):
     """base class generating Update feeds
@@ -186,6 +190,7 @@ class UpdateFeed(Feed):
 
 class ProjectUpdates(UpdateFeed):
     """RSS feed for last 25 RSR updates of a project."""
+
     def get_object(self, request, project_id):
         return Project.objects.get(pk__exact=project_id)
 
@@ -213,7 +218,7 @@ class OrganisationUpdates(UpdateFeed):
         return get_object_or_404(Organisation, id=int(org_id))
 
     def title(self, obj):
-        return _(u'Projects of %(org_name)s') % {'org_name':obj.name,}
+        return _(u'Projects of %(org_name)s') % {'org_name': obj.name, }
 
     def description(self, obj):
         if obj.name == obj.long_name:
@@ -242,7 +247,7 @@ class OrganisationUpdates(UpdateFeed):
 class AllProjectUpdates(UpdateFeed):
     """RSS feed for last 25 RSR updates."""
     title = _(u'Last 25 RSR project updates')
-    
+
     def link(self):
         return reverse('update-directory')
 

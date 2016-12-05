@@ -28,7 +28,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        
+
         # parse options
         verbosity = int(options['verbosity'])
         delete = bool(options['delete'])

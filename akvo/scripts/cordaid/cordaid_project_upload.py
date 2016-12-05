@@ -14,7 +14,7 @@ from lxml import etree
 from os.path import join, pardir
 from tastypie.http import HttpCreated, HttpNoContent
 
-project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir] * 3)
 sys.path.append(project_root)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -84,7 +84,7 @@ def check_activity_language(activity_element):
             # Look up the elements' children and count their number of appearances
             child_tag_list = [child.tag for child in list(element.iterchildren())]
             child_tag_list_counter = collections.Counter(child_tag_list)
-            multiple_children_list = [i for i in child_tag_list_counter if child_tag_list_counter[i]>1]
+            multiple_children_list = [i for i in child_tag_list_counter if child_tag_list_counter[i] > 1]
 
             # For all children that appear multiple times
             for child_tag in multiple_children_list:
@@ -147,6 +147,7 @@ def post_an_activity(activity_element, user):
 
 # root[i].findall('iati-identifier')[0].text
 
+
 def put_an_activity(activity_element, pk, url_args):
     "NOTE: does not work!!!"
     url_args.update(pk=pk)
@@ -192,6 +193,7 @@ def put_an_activity(activity_element, pk, url_args):
             )
         )
 
+
 def usage(script_name):
     print(
         "\nUsage: %s <domain> <username> [options]\n\n"
@@ -204,6 +206,7 @@ def usage(script_name):
         "     -k KEY, --api_key=KEY\n"
         "       Supply the API key generated in your Akvo user profile\n"
         % script_name)
+
 
 def api_user(domain, username, password='', api_key=''):
     user = dict(domain=domain, username=username, api_version=API_VERSION,)
@@ -223,6 +226,7 @@ def api_user(domain, username, password='', api_key=''):
         return user
     else:
         raise Exception("Either password or API key must be supplied")
+
 
 def credentials_from_args(argv):
     try:
@@ -255,6 +259,7 @@ def credentials_from_args(argv):
         usage(argv[0])
         return None
 
+
 def get_project_count(user, **q_args):
     """
     query the API for projects associated with a given internal_id
@@ -276,6 +281,7 @@ def get_project_count(user, **q_args):
         return False, None
     return True, project
 
+
 def upload_activities(argv):
     user = credentials_from_args(argv)
     if user:
@@ -287,8 +293,8 @@ def upload_activities(argv):
             activity_count = len(activities)
             for i in range(activity_count):
                 internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
-                iati_id=activities[i].findall('iati-identifier')[0].text
-                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i+1, activity_count=activity_count, iati_id=iati_id),
+                iati_id = activities[i].findall('iati-identifier')[0].text
+                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i + 1, activity_count=activity_count, iati_id=iati_id),
                 if len(activities[i].findall('participating-org')) > 0:
                     if internal_id:
                         ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))

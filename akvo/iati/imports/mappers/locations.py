@@ -154,7 +154,7 @@ class Administratives(ImportMapper):
                 try:
                     level = int(level)
                 except ValueError as e:
-                    self.add_log('administrative', 'level',str(e))
+                    self.add_log('administrative', 'level', str(e))
 
             admin, created = AdministrativeLocation.objects.get_or_create(
                 location=self.related_obj,
@@ -195,9 +195,9 @@ class RecipientCountries(ImportMapper):
         for country in self.parent_elem.findall('recipient-country'):
 
             text = self.get_element_text(country, 'text')
-            country_code = self.get_attrib(country,'code', 'country')
+            country_code = self.get_attrib(country, 'code', 'country')
 
-            percentage = self.get_attrib(country,'percentage', 'percentage', None)
+            percentage = self.get_attrib(country, 'percentage', 'percentage', None)
             if percentage:
                 percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
 
@@ -244,7 +244,7 @@ class RecipientRegions(ImportMapper):
             text = self.get_element_text(region, 'text')
             region_code = self.get_attrib(region, 'code', 'region')
 
-            percentage = self.get_attrib(region,'percentage', 'percentage')
+            percentage = self.get_attrib(region, 'percentage', 'percentage')
             percentage = self.cast_to_decimal(percentage, 'percentage', 'percentage')
 
             region_vocabulary = self.get_attrib(region, 'vocabulary', 'region_vocabulary')

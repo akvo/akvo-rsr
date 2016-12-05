@@ -24,6 +24,7 @@ class NonNullCharField(serializers.CharField):
     """ Fix fo CharField so that '' is returned if the field value is None
         see https://github.com/tomchristie/django-rest-framework/pull/1665
     """
+
     def from_native(self, value):
         if isinstance(value, six.string_types):
             return value

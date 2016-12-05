@@ -26,6 +26,7 @@ from akvo.utils import get_sha1_hash
 class IatiIdNotFoundException(Exception):
     pass
 
+
 class IatiActivityImport(TimestampsMixin):
     """
     The IatiActivityImport tracks the import of one IATI activity. One IatiActivityImport instance

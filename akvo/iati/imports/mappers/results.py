@@ -162,7 +162,7 @@ class IndicatorReferences(ImportMapper):
             reference_code = self.get_attrib(reference, 'code', 'code')
             vocabulary = self.get_attrib(reference, 'vocabulary', 'vocabulary')
             vocabulary_uri = self.get_attrib(reference, 'indicator-uri', 'vocabulary_uri')
-            
+
             reference_obj, created = IndicatorReference.objects.get_or_create(
                 indicator=self.related_obj,
                 reference=reference_code,
@@ -170,7 +170,7 @@ class IndicatorReferences(ImportMapper):
                 vocabulary_uri=vocabulary_uri,
             )
             if created:
-                changes.append(u'added indicator reference (id: {}): {}'.format(reference_obj.pk, 
+                changes.append(u'added indicator reference (id: {}): {}'.format(reference_obj.pk,
                                                                                 reference_obj))
             imported_references.append(reference_obj)
 

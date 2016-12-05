@@ -310,7 +310,7 @@ class IatiImportTestCase(TestCase):
         humanitarian_scope_1 = project_v2.humanitarian_scopes.get(vocabulary="1-2")
         humanitarian_scope_2 = project_v2.humanitarian_scopes.get(vocabulary="99")
         self.assertEqual(humanitarian_scope_1.code, "2015-000050")
-        self.assertEqual(humanitarian_scope_2.vocabulary_uri,"http://example.com/vocab.html")
+        self.assertEqual(humanitarian_scope_2.vocabulary_uri, "http://example.com/vocab.html")
 
         # three participating orgs, and one reporting org
         self.assertEqual(project_v2.partners.count(), 4)

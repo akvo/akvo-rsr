@@ -21,11 +21,13 @@ from .iati_import_log import LOG_ENTRY_TYPE
 
 def get_subpackages(module):
     dir = os.path.dirname(module.__file__)
+
     def is_package(d):
         d = os.path.join(dir, d)
         return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
 
     return filter(is_package, os.listdir(dir))
+
 
 def custom_mappers():
     "Create a list of available custom mapper, for use in the admin"
@@ -38,13 +40,16 @@ from inspect import currentframe, getframeinfo
 
 logger = logging.getLogger(__name__)
 
+
 def debug_enter(func_or_meth, parent, line_no):
     "Use at start of function/method to log that it is called and from where"
     logger.debug("L{} Calling {}() from {}()".format(line_no, func_or_meth, parent))
 
+
 def debug_exit(func_or_meth, line_no):
     "Use at end of function/method"
     logger.debug("L{} Exiting {}()".format(line_no, func_or_meth))
+
 
 def debug_message(msg, *args):
     "Use to log info"

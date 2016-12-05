@@ -211,7 +211,7 @@ class Organisation(TimestampsMixin, models.Model):
         elif not name:
             # This prevents organisation names with only spaces
             validation_errors['name'] = _(u'Organisation name may not be blank')
-        
+
         if long_name and long_names.exists():
             validation_errors['long_name'] = u'{}: {}'.format(
                 _('An Organisation with this long name already exists'), long_name)

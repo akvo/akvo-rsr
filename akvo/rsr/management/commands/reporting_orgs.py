@@ -17,6 +17,7 @@ from ...models import Project, Partnership, Organisation
 FixProject = namedtuple('FixProject', ['project', 'reason', 'partners', 'sync_owner'])
 OKProject = namedtuple('OKProject', ['project', 'organisation'])
 
+
 class ReportingOrgMaker(object):
 
     NO_CANDIDATE = 'no candidate'

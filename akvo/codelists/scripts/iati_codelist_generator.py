@@ -28,13 +28,14 @@ VERSIONS = {
 def pythonify_codelist_name(codelist_name):
     "Turn OrganisationType into ORGANISATION_TYPE"
     bits = re.findall('[A-Z][^A-Z]*', codelist_name)
-    return '_'.join(bits).upper().replace("-","_")
+    return '_'.join(bits).upper().replace("-", "_")
 
 
 def stringify(bits):
     "Add unicode string 'markup' to strings"
     return [(lambda bit: "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
     # return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
+
 
 def prettify_country_name(country):
     """ ALL CAPS IS UGLY!
@@ -58,6 +59,7 @@ def prettify_country_name(country):
         bits.append(bit)
         previous = bit
     return ' '.join(bits)
+
 
 def codelist_to_tuples(xml_string, codelist, version):
     "Takes XML codelist string and converts it to tuples"

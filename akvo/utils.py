@@ -238,11 +238,11 @@ def pagination(page, object_list, objects_per_page):
     if not len(page_range) < 10:
         if active > 4:
             page_range[1] = '...'
-            del page_range[2:active-2]
+            del page_range[2:active - 2]
         if (page_range[-1] - active) > 3:
             page_range[-2] = '...'
             active_index = page_range.index(active)
-            del page_range[active_index+2:-2]
+            del page_range[active_index + 2:-2]
 
     return page, paginator, page_range
 

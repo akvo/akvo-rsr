@@ -172,4 +172,3 @@ class IatiImportLog(models.Model):
 
     iati_import_job_admin_url.allow_tags = True
     iati_import_job_admin_url.short_description = "IATI import job"
-

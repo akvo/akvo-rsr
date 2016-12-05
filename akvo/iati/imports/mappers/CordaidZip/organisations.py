@@ -14,8 +14,10 @@ from .....rsr.models.organisation import Organisation
 from ... import ImportMapper
 from . import same_data
 
+
 class NotOwnedOrganisationException(Exception):
     pass
+
 
 class InternalOrganisationIDs(ImportMapper):
 

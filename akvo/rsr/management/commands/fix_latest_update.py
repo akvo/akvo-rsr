@@ -12,6 +12,7 @@ from django.db.models import Prefetch
 
 from ...models import Project, ProjectUpdate
 
+
 class Command(BaseCommand):
     help = "Set Project.last_update field. Fixes potential errors due to a bug"
 

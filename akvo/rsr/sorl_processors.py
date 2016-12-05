@@ -8,6 +8,7 @@
 
 from PIL import Image
 
+
 def scale_and_pad(im, requested_size, opts):
     if opts.get('pad') or 'pad' in opts:
         x, y = [float(v) for v in im.size]
@@ -24,7 +25,7 @@ def scale_and_pad(im, requested_size, opts):
 
         # Difference (for x and y) between new image size and requested size.
         x, y = [float(v) for v in im.size]
-        dx, dy = (xr - x), (yr -y)
+        dx, dy = (xr - x), (yr - y)
         ex, ey = dx / 2, dy / 2
         box = [int(ex), int(ey), int(x + ex), int(y + ey)]
 

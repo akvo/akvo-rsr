@@ -48,5 +48,3 @@ class Command(BaseCommand):
         for key in mergers.keys():
             self.stdout.write(u"Deleting keyword {}".format(key))
             Keyword.objects.get(label=key).delete()
-
-

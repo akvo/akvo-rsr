@@ -322,7 +322,7 @@ def global_project_map(width, height, dynamic='dynamic'):
                 thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
-                              [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
+                              [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
         except:
             pass
 
@@ -385,7 +385,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
             thumbnail = organisation.logo.url
             locations.append([location.latitude,
                               location.longitude,
-                              [str(organisation.pk),organisation.name.encode('utf8'), thumbnail, 'organisation']])
+                              [str(organisation.pk), organisation.name.encode('utf8'), thumbnail, 'organisation']])
         except:
             pass
 

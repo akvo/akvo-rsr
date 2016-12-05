@@ -13,7 +13,7 @@ import sys
 from lxml import etree
 from os.path import join, pardir
 
-project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir] * 3)
 sys.path.append(project_root)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -28,6 +28,7 @@ from akvo.scripts.cordaid import (
     CORDAID_ORG_CSV_FILE, init_log, outsys, CORDAID_IATI_ACTIVITIES_XML,
     ERROR_BUSINESS_UNIT_MISSING, ACTION_BENCH_FOUND, ACTION_BENCH_CREATE, ERROR_CATEGORY_MISSING,
 )
+
 
 def find_cordaid_business_units(business_units):
     outsys("\nRunning {}() ".format(who_am_i()))
@@ -71,7 +72,7 @@ def find_cordaid_business_units(business_units):
         if cat_name:
             new_cat, created = Category.objects.get_or_create(name=cat_name)
             if created:
-                log(u"Created cat: {id}, {cat_name}",dict(id=new_cat.id, cat_name=cat_name))
+                log(u"Created cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
                 new_cat.focus_area.add(FocusArea.objects.get(name=fa_name))
             else:
                 log(u"Found existing cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))

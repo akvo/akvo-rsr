@@ -32,6 +32,7 @@ from akvo.utils import rsr_send_mail, file_from_zip_archive
 def file_path(self, filename):
     return 'db/iati_import/{}'.format(filename)
 
+
 class IatiImportJob(models.Model):
     """
     The IatiImportJob model records the running of an import once.
@@ -189,7 +190,7 @@ class IatiImportJob(models.Model):
         """
         headers, records = self.get_log_list(type)
         if records:
-            data = tablib.Dataset(*records,headers=headers)
+            data = tablib.Dataset(*records, headers=headers)
             return [{'filename': "{}.csv".format(type), 'content': data.csv, 'mimetype': 'text/csv'}]
         return []
 

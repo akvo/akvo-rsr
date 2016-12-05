@@ -37,7 +37,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        
+
         # parse options
         verbosity = int(options['verbosity'])
         delete = bool(options['delete'])
@@ -72,7 +72,7 @@ class Command(BaseCommand):
 
             for n, u in enumerate(non_active):
                 if verbosity > 1: self.stdout.write('- %s (joined %s) [%s/%s]'
-                                                    % (u.username, u.date_joined, n+1, len(non_active)))
+                                                    % (u.username, u.date_joined, n + 1, len(non_active)))
                 if delete:
                     u.delete()
 

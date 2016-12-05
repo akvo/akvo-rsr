@@ -13,6 +13,7 @@ from akvo.utils import model_and_instance_based_filename
 def temp_image(obj, file_name):
     return 'db/temp/%s' % file_name
 
+
 def cleanup_images(queryset):
     """Clean out the images file tree of old images.
     The method for cleaning out old images is as follows:
@@ -68,16 +69,16 @@ def cleanup_images(queryset):
                     model_field.save(name, model_field.file)
                     print "Putting back:",  model_field.name
 
+
 def cleanup():
     projects = Project.objects.all()
     cleanup_images(projects)
-    
+
     orgs = Organisation.objects.all()
     cleanup_images(orgs)
-    
+
     updates = ProjectUpdate.objects.all()
     cleanup_images(updates)
-        
+
 if __name__ == '__main__':
     cleanup()
-
