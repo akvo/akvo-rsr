@@ -53,8 +53,8 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
 
 
 def send_mail_with_attachments(subject, message, from_email, recipient_list,
-              fail_silently=False, auth_user=None, auth_password=None,
-              connection=None, html_message=None, attachments=None):
+                               fail_silently=False, auth_user=None, auth_password=None,
+                               connection=None, html_message=None, attachments=None):
     """
     Extension of django.core.main.send_mail to allow the inclusion of attachments
 
@@ -101,7 +101,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     if undefined
     """
     subject_context = subject_context or {}
-    msg_context = msg_context  or {}
+    msg_context = msg_context or {}
     current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
 
     subject_context.update({'site': current_site})

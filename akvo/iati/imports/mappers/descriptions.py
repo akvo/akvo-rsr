@@ -17,8 +17,8 @@ SECTION_ONE = 1
 SECTION_FOUR = 4
 
 TextFieldInfo = collections.namedtuple(
-        'TextFieldInfo',
-        ['akvo_type', 'order', 'cf_section']
+    'TextFieldInfo',
+    ['akvo_type', 'order', 'cf_section']
 )
 
 project_text_fields = {
@@ -39,14 +39,14 @@ class Descriptions(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Descriptions, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = Project
 
     def find_description_by_akvo_type(self, field):
         type = project_text_fields[field].akvo_type
         if type:
             return self.parent_elem.find(
-                    "description[@{}='{}']".format(akvo_ns('type'), type))
+                "description[@{}='{}']".format(akvo_ns('type'), type))
 
     def find_description_by_order(self, field):
         """
@@ -106,7 +106,7 @@ class Descriptions(ImportMapper):
 
     def get_goals_overview(self):
         text, element = self.get_child_element_text(
-                self.parent_elem, "description[@type='2']", 'goals_overview', return_element=True)
+            self.parent_elem, "description[@type='2']", 'goals_overview', return_element=True)
         if element is None:
             text = '\n'.join(
                 ["- {}".format(
@@ -118,7 +118,7 @@ class Descriptions(ImportMapper):
 
     def get_target_group(self):
         text, element = self.get_child_element_text(
-                self.parent_elem, "description[@type='3']", 'target_group', return_element=True)
+            self.parent_elem, "description[@type='3']", 'target_group', return_element=True)
         return element, text
 
 
@@ -155,7 +155,7 @@ class CustomFields(ImportMapper):
                 self.add_log(custom_description, 'section', str(e))
 
             max_characters = self.get_attrib(
-                    custom_field, akvo_ns('max-characters'), 'max_characters')
+                custom_field, akvo_ns('max-characters'), 'max_characters')
             try:
                 max_characters = int(max_characters)
             except ValueError as e:
@@ -164,7 +164,7 @@ class CustomFields(ImportMapper):
             help_text = self.get_attrib(custom_field, akvo_ns('help-text'), 'help_text')
 
             mandatory = self.get_attrib(
-                    custom_field, akvo_ns('mandatory'), 'mandatory', 'false')
+                custom_field, akvo_ns('mandatory'), 'mandatory', 'false')
             mandatory = self.to_boolean(mandatory)
 
             order = self.get_attrib(custom_field, akvo_ns('order'), 'order', 0)
@@ -186,7 +186,7 @@ class CustomFields(ImportMapper):
             )
             if created:
                 changes.append(u'added custom field (id: {}): {}'.format(
-                        custom_field_obj.pk, custom_field_obj))
+                    custom_field_obj.pk, custom_field_obj))
             imported_fields.append(custom_field_obj)
 
         for custom_field in self.project.custom_fields.all():
@@ -195,7 +195,7 @@ class CustomFields(ImportMapper):
                                              'goals_overview', 'background', 'current_status',
                                              'target_group']:
                     changes.append(u'deleted custom field (id: {}): {}'.format(
-                            custom_field.pk, custom_field.__unicode__()))
+                        custom_field.pk, custom_field.__unicode__()))
                     custom_field.delete()
 
         return changes

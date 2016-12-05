@@ -110,22 +110,22 @@ class IatiImport(models.Model):
 
     label = models.CharField(max_length=50, verbose_name=_(u'label'), unique=True)
     next_execution = models.DateTimeField(
-            verbose_name=_(u'next time the import is run'), null=True, blank=True)
+        verbose_name=_(u'next time the import is run'), null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCIES, null=True, blank=True,
                                             help_text='Set the frequency interval of the import')
     user = models.ForeignKey(
-            settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
+        settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
     url = models.URLField(_(u'url'), blank=True)
     mapper_prefix = models.CharField(
-            max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
-            help_text='Choose a custom mapper to invoke custom behaviour for this import')
+        max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
+        help_text='Choose a custom mapper to invoke custom behaviour for this import')
     enabled = models.BooleanField(verbose_name=_(u'importing enabled'), default=False,
                                   help_text='Set to enable running of this import.')
     run_immediately = models.BooleanField(verbose_name=_(u'run immediately'), default=False,
-                                  help_text='Run the job immediately.')
+                                          help_text='Run the job immediately.')
     running = models.BooleanField(verbose_name=_(u'import currently running'), default=False,
-            help_text='Running is set while the import executes. This is to guarantee that the same '
-                      'import never runs twice (or more) in parallel.')
+                                  help_text='Running is set while the import executes. This is to guarantee that the same '
+                                  'import never runs twice (or more) in parallel.')
 
 
     def __unicode__(self):
@@ -136,7 +136,7 @@ class IatiImport(models.Model):
         verbose_name = _(u'IATI import')
         verbose_name_plural = _(u'IATI imports')
 
-    def  model_mappers(self):
+    def model_mappers(self):
         """
         Import the ImportMapper subclasses for this IatiImport instance.
         See ImportMapper docstring for more info.
@@ -163,7 +163,7 @@ class IatiImport(models.Model):
             # with classes we find in the submodule
             if self.mapper_prefix:
                 module = import_module(
-                        'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
+                    'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
                 if getattr(module, class_name, None):
                     klass = getattr(module, class_name)
             klasses.append(klass)

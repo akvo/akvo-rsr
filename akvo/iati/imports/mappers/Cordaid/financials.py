@@ -15,10 +15,10 @@ class BudgetItems(BudgetItems):
         activity = self.parent_elem
         budget_item_data = dict(project=self.project,
                                 label=BudgetItemLabel.objects.get(label='Total'),
-                                other_extra = '',)
+                                other_extra='',)
 
         budget = budget_item_data['budget'] = activity.find(
-                'budget[@{}="{}"]'.format(akvo_ns('budget-from'), budget_from))
+            'budget[@{}="{}"]'.format(akvo_ns('budget-from'), budget_from))
 
         if budget is not None:
             budget_item_data['type'] = self.get_attrib(budget, 'type', 'type')

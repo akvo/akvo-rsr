@@ -19,7 +19,7 @@ class Locations(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Locations, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = ProjectLocation
 
     def do_import(self):
@@ -40,7 +40,7 @@ class Locations(ImportMapper):
 
             reference = self.get_attrib(location, 'ref', 'reference')
             location_reach = self.get_child_elem_attrib(
-                    location, 'location-reach', 'code', 'location_reach')
+                location, 'location-reach', 'code', 'location_reach')
 
             id_element = location.find('location-id')
             if id_element is not None:
@@ -53,7 +53,7 @@ class Locations(ImportMapper):
             name = self.get_child_element_text(location, 'name', 'name')
             description = self.get_child_element_text(location, 'description', 'description')
             activity_description = self.get_child_element_text(
-                    location, 'activity-description', 'activity_description')
+                location, 'activity-description', 'activity_description')
 
             point = location.find('point')
             if point is not None:
@@ -64,19 +64,19 @@ class Locations(ImportMapper):
                 coordinates = location.find('coordinates')
                 if coordinates is not None:
                     latitude = self.get_child_elem_attrib(
-                            location, 'coordinates', 'latitude', 'latitude', 0)
+                        location, 'coordinates', 'latitude', 'latitude', 0)
                     longitude = self.get_child_elem_attrib(
-                            location, 'coordinates', 'longitude', 'longitude', 0)
+                        location, 'coordinates', 'longitude', 'longitude', 0)
                 else:
                     latitude = None
                     longitude = None
 
             exactness = self.get_child_elem_attrib(location, 'exactness', 'code', 'exactness')
             location_class = self.get_child_elem_attrib(
-                    location, 'location-class', 'code', 'location_class')
+                location, 'location-class', 'code', 'location_class')
 
             feature_designation = self.get_child_elem_attrib(
-                    location, 'feature-designation', 'code', 'feature_designation').upper()
+                location, 'feature-designation', 'code', 'feature_designation').upper()
             if not feature_designation:
                 feature_designation = self.get_child_elem_attrib(
                     location, 'location-type', 'code', 'feature_designation').upper()
@@ -117,8 +117,8 @@ class Locations(ImportMapper):
 
                 # Process location administratives
                 administratives = Administratives(
-                        self.iati_import_job, location, self.project, self.globals,
-                        related_obj=loc)
+                    self.iati_import_job, location, self.project, self.globals,
+                    related_obj=loc)
                 for admin_change in administratives.do_import():
                     changes.append(admin_change)
 
@@ -167,7 +167,7 @@ class Administratives(ImportMapper):
             imported_admins.append(admin)
 
         changes += self.delete_objects(
-                self.related_obj.administratives, imported_admins, 'location administrative')
+            self.related_obj.administratives, imported_admins, 'location administrative')
         return changes
 
 
@@ -209,11 +209,11 @@ class RecipientCountries(ImportMapper):
             )
             if created:
                 changes.append(u'added recipient country (id: {}): {}'.format(
-                        recipient_country.pk, recipient_country))
+                    recipient_country.pk, recipient_country))
             imported_countries.append(recipient_country)
 
         changes += self.delete_objects(
-                self.project.recipient_countries, imported_countries, 'recipient country')
+            self.project.recipient_countries, imported_countries, 'recipient country')
         return changes
 
 
@@ -222,7 +222,7 @@ class RecipientRegions(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(RecipientRegions, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = RecipientRegion
 
     def do_import(self):
@@ -261,7 +261,7 @@ class RecipientRegions(ImportMapper):
             )
             if created:
                 changes.append(
-                        u'added recipient region (id: {}): {}'.format(region_obj.pk, region_obj))
+                    u'added recipient region (id: {}): {}'.format(region_obj.pk, region_obj))
             imported_regions.append(region_obj)
 
         changes += self.delete_objects(

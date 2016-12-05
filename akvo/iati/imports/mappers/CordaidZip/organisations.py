@@ -24,7 +24,7 @@ class InternalOrganisationIDs(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(InternalOrganisationIDs, self).__init__(
-                iati_import_job, parent_elem, project, globals, related_obj)
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = InternalOrganisationID
 
     def do_import(self):
@@ -40,7 +40,7 @@ class Organisations(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Organisations, self).__init__(
-                iati_import_job, parent_elem, project, globals, related_obj)
+            iati_import_job, parent_elem, project, globals, related_obj)
         self.model = Organisation
         # HACK: "fix" globals so we get the straight text from elements
         self.globals['version'] = '1'
@@ -92,7 +92,7 @@ class Organisations(ImportMapper):
         """
 
         ioids = InternalOrganisationIDs(
-                self.iati_import_job, self.parent_elem, self.project, self.globals)
+            self.iati_import_job, self.parent_elem, self.project, self.globals)
         identifier = ioids.get_child_element_text(ioids.parent_elem, 'org_id', 'identifier')
         if identifier:
             try:
@@ -107,18 +107,18 @@ class Organisations(ImportMapper):
             owner = referenced_org.content_owner
             if owner and owner != self.globals['cordaid']:
                 raise NotOwnedOrganisationException(
-                        "Organisation {}, ID {}, is content owned by {}, ID {}. "
-                        "Can't edit the data.".format(
-                                referenced_org.name, referenced_org.pk,
-                                owner.name, owner.pk
-                        ))
+                    "Organisation {}, ID {}, is content owned by {}, ID {}. "
+                    "Can't edit the data.".format(
+                        referenced_org.name, referenced_org.pk,
+                        owner.name, owner.pk
+                    ))
 
         org_fields = {}
         org_fields['long_name'] = self.get_child_element_text(
-                self.parent_elem, 'name', 'long_name').strip()
+            self.parent_elem, 'name', 'long_name').strip()
         org_fields['name'] = org_fields['long_name'][:25]
         org_fields['new_organisation_type'] = int(self.get_child_element_text(
-                self.parent_elem, 'iati_organisation_type', 'new_organisation_type', 22))
+            self.parent_elem, 'iati_organisation_type', 'new_organisation_type', 22))
         org_fields['iati_org_id'] = self.get_child_element_text(
             self.parent_elem, 'iati_org_id', 'iati_org_id')
         org_fields['description'] = self.get_child_element_text(
@@ -136,8 +136,8 @@ class Organisations(ImportMapper):
             organisation.save()
             changes, created = None, True
             internal_id = InternalOrganisationID.objects.create(
-                    recording_org=self.globals['cordaid'], referenced_org=organisation,
-                    identifier=identifier)
+                recording_org=self.globals['cordaid'], referenced_org=organisation,
+                identifier=identifier)
 
         self.set_logo(organisation, identifier)
         return organisation, changes, created

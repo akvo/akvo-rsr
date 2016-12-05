@@ -149,7 +149,7 @@ def act_on_log_entry(sender, **kwargs):
     """
     CRITERIA = [
         {'app': 'rsr', 'model': 'project', 'action': ADDITION, 'call': create_benchmark_objects},
-        {'app': 'rsr', 'model': 'project', 'action': CHANGE,   'call': create_benchmark_objects},
+        {'app': 'rsr', 'model': 'project', 'action': CHANGE, 'call': create_benchmark_objects},
     ]
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         log_entry = kwargs['instance']

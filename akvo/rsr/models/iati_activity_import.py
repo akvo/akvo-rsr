@@ -50,7 +50,7 @@ class IatiActivityImport(TimestampsMixin):
 
     iati_import_job = models.ForeignKey('IatiImportJob', related_name='iati_activity_imports')
     project = models.ForeignKey(
-            'Project', verbose_name=_(u'project'), related_name='iati_project_imports', null=True)
+        'Project', verbose_name=_(u'project'), related_name='iati_project_imports', null=True)
     activity_xml = models.TextField(verbose_name=_('activity xml'))
     sha1_hexdigest = models.CharField(
         max_length=40, verbose_name=_(u'sha1 hexadecimal digest of the activity XML'), blank=True, )
@@ -65,7 +65,7 @@ class IatiActivityImport(TimestampsMixin):
 
     def __unicode__(self):
         return unicode(u'IATI activity import (ID: {}) in job {}'.format(
-                getattr(self, 'pk', ''), self.iati_import_job))
+            getattr(self, 'pk', ''), self.iati_import_job))
         # return unicode(u'IATI activity import (ID: {})'.format(getattr(self, 'pk', '')))
 
     class Meta:
@@ -101,7 +101,7 @@ class IatiActivityImport(TimestampsMixin):
         if self.project.is_published():
             return
 
-        if  self.activity.attrib.get('{{{}}}publish'.format(settings.AKVO_NS), '').lower() == 'false':
+        if self.activity.attrib.get('{{{}}}publish'.format(settings.AKVO_NS), '').lower() == 'false':
             return
 
         try:
@@ -154,14 +154,14 @@ class IatiActivityImport(TimestampsMixin):
         text = "IatiActivityImport.{}(): {}".format(caller, text)
 
         self._log_objects += [IatiImportLog(
-                iati_import_job=self.iati_import_job,
-                project=self.project,
-                iati_activity_import=self,
-                message_type=message_type,
-                tag=tag,
-                field=field,
-                text=text,
-                created_at=datetime.now(),
+            iati_import_job=self.iati_import_job,
+            project=self.project,
+            iati_activity_import=self,
+            message_type=message_type,
+            tag=tag,
+            field=field,
+            text=text,
+            created_at=datetime.now(),
         )]
 
     def set_reporting_org(self):
@@ -186,9 +186,9 @@ class IatiActivityImport(TimestampsMixin):
 
             if not organisation.can_create_projects:
                 self.add_log('reporting-org', 'reporting_org',
-                        'Reporting organisation, {}, ID: {}, not allowed to import projects in RSR.'.format(
-                            organisation.name, organisation.id
-                        ), LOG_ENTRY_TYPE.CRITICAL_ERROR)
+                             'Reporting organisation, {}, ID: {}, not allowed to import projects in RSR.'.format(
+                                 organisation.name, organisation.id
+                             ), LOG_ENTRY_TYPE.CRITICAL_ERROR)
                 return False
 
             try:
@@ -237,7 +237,7 @@ class IatiActivityImport(TimestampsMixin):
         )
         if created:
             self.create_log_entry(
-                    LOG_ENTRY_TYPE.ACTION_CREATE, u'IATI activity import, created project.')
+                LOG_ENTRY_TYPE.ACTION_CREATE, u'IATI activity import, created project.')
 
         return created
 
@@ -257,11 +257,11 @@ class IatiActivityImport(TimestampsMixin):
                 iati_import_job__iati_import=self.iati_import_job.iati_import,
             ).values_list('iati_import_job', flat=True)
             previous_job = IatiImportJob.objects.filter(
-                        iati_import=self.iati_import_job.iati_import
-                    ).exclude(
-                        pk=self.iati_import_job.pk
-                    ).exclude(
-                        pk__in=cancelled_jobs).latest()
+                iati_import=self.iati_import_job.iati_import
+            ).exclude(
+                pk=self.iati_import_job.pk
+            ).exclude(
+                pk__in=cancelled_jobs).latest()
         except IatiImportJob.DoesNotExist:
             previous_job = None
 
@@ -327,7 +327,7 @@ class IatiActivityImport(TimestampsMixin):
                                 tag='',
                                 field='',
                                 text="Exception in {}, error message: \n{}".format(
-                                        Klass.__name__, e.message,),
+                                    Klass.__name__, e.message,),
                                 created_at=datetime.now()
                             )]
                         if changes:

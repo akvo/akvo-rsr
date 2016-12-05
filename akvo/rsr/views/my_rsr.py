@@ -110,7 +110,7 @@ def my_updates(request):
     page, paginator, page_range = pagination(page, updates, 10)
 
     org_admin_view = True if request.user.get_admin_employment_orgs() or \
-                             request.user.is_admin or request.user.is_superuser else False
+        request.user.is_admin or request.user.is_superuser else False
 
     context = {
         'page': page,

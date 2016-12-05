@@ -67,7 +67,7 @@ def find_cordaid_business_units(business_units):
         internal_org, created = InternalOrganisationID.objects.get_or_create(
             recording_org=cordaid,
             referenced_org=organisation,
-            identifier= internal_id
+            identifier=internal_id
         )
         if cat_name:
             new_cat, created = Category.objects.get_or_create(name=cat_name)
@@ -103,7 +103,7 @@ def create_cats_and_benches(business_units):
                             pk=new_bench.id,
                             event=ACTION_BENCH_CREATE
                         )
-                    )
+                        )
                 else:
                     log(u"Found existing bench: {pk}, {label}",
                         dict(
@@ -111,7 +111,7 @@ def create_cats_and_benches(business_units):
                             pk=new_bench.id,
                             event=ACTION_BENCH_FOUND
                         )
-                    )
+                        )
                 try:
                     data['category'].benchmarknames.add(new_bench)
                 except:
@@ -139,7 +139,7 @@ def import_cordaid_benchmarks(csv_file):
         for line in indicators_reader:
             business_units.setdefault(
                 line[COL_BUSINESS_UNID_ID], dict(benchmarknames=[]))['benchmarknames'].append(line[COL_BENCHMARKNAME]
-            )
+                                                                                              )
         return business_units
 
 
@@ -165,7 +165,7 @@ def find_benchmarknames_and_BUs():
 def get_organisation_type(new_organisation_type):
     types = dict(zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
                      Organisation.NEW_TO_OLD_TYPES
-    ))
+                     ))
     return types[new_organisation_type]
 
 

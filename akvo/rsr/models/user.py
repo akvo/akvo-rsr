@@ -97,7 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')
     avatar = ImageField(_(u'avatar'), null=True, upload_to=image_path,
                         help_text=_(u'The avatar should be less than 500 kb in size.'),
-    )
+                        )
 
     objects = CustomUserManager()
 

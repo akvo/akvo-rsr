@@ -283,7 +283,7 @@ class IatiImportTestCase(TestCase):
         partial_import_xml_file.write(IATI_PARTIAL_IMPORT)
         partial_import_xml_file.flush()
         partial_import_job = IatiImportJob.objects.create(
-                iati_import=partial_import, iati_xml_file=File(partial_import_xml_file))
+            iati_import=partial_import, iati_xml_file=File(partial_import_xml_file))
         partial_import_job.run()
 
         project_partial_import = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
@@ -320,7 +320,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.recipient_regions.count(), 3)
 
         related_project_1 = project_v2.related_projects.get(
-                related_iati_id="AA-AAA-123456789-6789")
+            related_iati_id="AA-AAA-123456789-6789")
         self.assertIsInstance(related_project_1, RelatedProject)
         self.assertEqual(project_v2.sectors.count(), 3)
         self.assertEqual(project_v2.transactions.count(), 1)

@@ -27,8 +27,8 @@ def __dict_replace(s, d):
 def __escape(data, entities):
     # must do ampersand first
     data = data.replace("&", "&amp;")
-    data  = data.replace(">", "&gt;")
-    data  = data.replace("<", "&lt;")
+    data = data.replace(">", "&gt;")
+    data = data.replace("<", "&lt;")
     if entities:
         data = __dict_replace(data, entities)
     return data
@@ -85,8 +85,8 @@ class RSRSimplerXMLGenerator(XMLGenerator):
 class RSRMediaRssFeed(Rss201rev2Feed):
     def rss_attributes(self):
         attrs = super(RSRMediaRssFeed, self).rss_attributes()
-        attrs['xmlns:media']    = 'http://search.yahoo.com/mrss/'
-        attrs['xmlns:atom']     = 'http://www.w3.org/2005/Atom'
+        attrs['xmlns:media'] = 'http://search.yahoo.com/mrss/'
+        attrs['xmlns:atom'] = 'http://www.w3.org/2005/Atom'
         return attrs
 
     def add_item_elements(self, handler, item):

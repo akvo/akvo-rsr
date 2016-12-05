@@ -70,7 +70,7 @@ class Scope(ImportMapper):
         """
 
         project_scope = self.get_child_elem_attrib(
-                self.parent_elem, 'activity-scope', 'code', 'project_scope')
+            self.parent_elem, 'activity-scope', 'code', 'project_scope')
 
         return self.update_project_field('project_scope', project_scope)
 
@@ -103,7 +103,7 @@ class DefaultFlowType(ImportMapper):
         """
 
         default_flow_type = self.get_child_elem_attrib(
-                self.parent_elem, 'default-flow-type', 'code', 'default_flow_type')
+            self.parent_elem, 'default-flow-type', 'code', 'default_flow_type')
 
         return self.update_project_field('default_flow_type', default_flow_type)
 
@@ -120,7 +120,7 @@ class DefaultFinanceType(ImportMapper):
         """
 
         default_finance_type = self.get_child_elem_attrib(
-                self.parent_elem, 'default-finance-type', 'code', 'default_finance_type')
+            self.parent_elem, 'default-finance-type', 'code', 'default_finance_type')
 
         return self.update_project_field('default_finance_type', default_finance_type)
 
@@ -136,7 +136,7 @@ class DefaultAidType(ImportMapper):
         """
 
         default_aid_type = self.get_child_elem_attrib(
-                self.parent_elem, 'default-aid-type', 'code', 'default_aid_type')
+            self.parent_elem, 'default-aid-type', 'code', 'default_aid_type')
 
         return self.update_project_field('default_aid_type', default_aid_type)
 
@@ -153,7 +153,7 @@ class DefaultTiedStatus(ImportMapper):
         """
 
         default_tied_status = self.get_child_elem_attrib(
-                self.parent_elem, 'default-tied-status', 'code', 'default_tied_status')
+            self.parent_elem, 'default-tied-status', 'code', 'default_tied_status')
 
         return self.update_project_field('default_tied_status', default_tied_status)
 
@@ -169,7 +169,7 @@ class Status(ImportMapper):
         """
 
         iati_status = self.get_child_elem_attrib(
-                self.parent_elem, 'activity-status', 'code', 'status')
+            self.parent_elem, 'activity-status', 'code', 'status')
 
         if not iati_status:
             self.add_log('activity-status@code', 'iati_status', 'invalid status code')
@@ -183,7 +183,7 @@ class Conditions(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Conditions, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = ProjectCondition
 
     def do_import(self):
@@ -211,7 +211,7 @@ class Conditions(ImportMapper):
                 )
                 if created:
                     changes.append(u'added condition (id: {}): {}'.format(
-                            project_condition.pk, project_condition))
+                        project_condition.pk, project_condition))
                 imported_conditions.append(project_condition)
 
         changes += self.delete_objects(self.project.conditions, imported_conditions, 'condition')

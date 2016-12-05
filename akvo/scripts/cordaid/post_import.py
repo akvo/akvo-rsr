@@ -120,8 +120,8 @@ def fix_funding(budgets):
             old_budgets.delete()
             BudgetItem.objects.create(
                 project=project,
-                label = BudgetItemLabel.objects.get(pk=BudgetItemLabel.TOTAL_BUDGET_LABEL_ID),
-                amount = total_budget
+                label=BudgetItemLabel.objects.get(pk=BudgetItemLabel.TOTAL_BUDGET_LABEL_ID),
+                amount=total_budget
             )
             log(
                 u"Total budget for project {pk}: {extra}",
@@ -131,7 +131,7 @@ def fix_funding(budgets):
         except Exception, e:
             log(u"Error setting up funding partners for project {pk}\nException class: {extra}",
                 dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
-            )
+                )
             outsys("*")
     outsys('\n')
 
@@ -155,7 +155,7 @@ def set_publishing_status(publishing_statuses):
         except Exception, e:
             log(u"Error setting publishing status for project {internal_id}\nException class: {extra}",
                 dict(internal_id=internal_id, event=e.__class__, extra=e.message),
-            )
+                )
             outsys("*")
     outsys('\n')
 

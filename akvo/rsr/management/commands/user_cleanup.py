@@ -23,9 +23,9 @@ class Command(BaseCommand):
                     default=7,
                     help='Filter users who joined more than \'n\' days ago'),
         make_option('-d', '--delete',
-            action='store_true', dest='delete',
-            default=False,
-            help='Delete filtered users in addition to listing them'),
+                    action='store_true', dest='delete',
+                    default=False,
+                    help='Delete filtered users in addition to listing them'),
         make_option('-i', '--inactive',
                     action='store_true', dest='inactive',
                     default=False,
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     action='store_true', dest='no_employment',
                     default=False,
                     help='Filter users lacking employment'),
-        )
+    )
 
     def handle(self, *args, **options):
 
@@ -90,8 +90,8 @@ class Command(BaseCommand):
 
         if delete:
             if verbosity > 0: self.stdout.write('%s user(s) matched filter and were successfully removed.'
-                              % (len(set(list(chain(non_active, no_employment))))))
+                                                % (len(set(list(chain(non_active, no_employment))))))
 
         else:
             if verbosity > 0: self.stdout.write('%s user(s) matched filter, use \'-d\' flag to remove them.'
-                              % (len(set(list(chain(non_active, no_employment))))))
+                                                % (len(set(list(chain(non_active, no_employment))))))

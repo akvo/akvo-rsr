@@ -27,13 +27,13 @@ API_VERSION = 'v1'
 me = sys.modules[__name__]
 api_settings = dict(
     #UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/api_upload',
-    UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/cordaid_full',
-    PROJECT_IMAGES_SUBDIR = 'project_images',
-    LOGOS_SUBDIR = 'logos',
-    IATI_ACTIVITES_FILENAME = 'iati_export0.xml',
+    UPLOAD_ROOT_DIR='/Users/gabriel/Downloads/cordaid_full',
+    PROJECT_IMAGES_SUBDIR='project_images',
+    LOGOS_SUBDIR='logos',
+    IATI_ACTIVITES_FILENAME='iati_export0.xml',
     #ORGANISATIONS_FILENAME = 'organisations.xml',
-    ORGANISATIONS_FILENAME = 'cordaid_organisations.xml',
-    ORGANISATIONS_UPLOAD_LOG_FILENAME = 'organisations_upload_{datetime}.csv',
+    ORGANISATIONS_FILENAME='cordaid_organisations.xml',
+    ORGANISATIONS_UPLOAD_LOG_FILENAME='organisations_upload_{datetime}.csv',
 )
 
 # construct local variables for Cordaid supporting data
@@ -117,7 +117,7 @@ def post_an_org(org_element, user_cred):
     elif organisation.response.status_code != HTTP_201_CREATED:
         import pdb
         pdb.set_trace()
-        return False,  "**** Error creating organisation: {internal_org_id}", dict(
+        return False, "**** Error creating organisation: {internal_org_id}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_CREATE_ORG,
             extra=organisation.response.text
@@ -150,15 +150,15 @@ def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
     except Exception, e:
         return False, "{extra}", dict(
             pk,
-            event = ERROR_EXCEPTION,
-            extra = e.message,
+            event=ERROR_EXCEPTION,
+            extra=e.message,
         )
     if internal_org_id.response.status_code is HTTP_201_CREATED:
         import pdb
         pdb.set_trace()
         return True, "Created internal organisation ID: {identifier}", dict(
-            pk = internal_org_id.response.json()['identifier'],
-            event = ACTION_CREATE_IOI
+            pk=internal_org_id.response.json()['identifier'],
+            event=ACTION_CREATE_IOI
         )
 
 

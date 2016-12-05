@@ -30,7 +30,7 @@ def cleanup_images(queryset):
             if type(f).__name__ == 'ImageField':
                 model_field = getattr(obj, f.name)
                 if hasattr(model_field, 'file'):
-                    print "Temp saving:",  model_field.name
+                    print "Temp saving:", model_field.name
                     name = os.path.split(model_field.name)[1]
                     #save the func used for upload_to. model_field.field.generate_filename points
                     #to the model's  image_path() function, but the function isn't a true model method
@@ -67,7 +67,7 @@ def cleanup_images(queryset):
                         name = model_and_instance_based_filename(opts.object_name, obj.pk, f.name, model_field.name)
                     model_field.field.generate_filename = orig_image_path
                     model_field.save(name, model_field.file)
-                    print "Putting back:",  model_field.name
+                    print "Putting back:", model_field.name
 
 
 def cleanup():

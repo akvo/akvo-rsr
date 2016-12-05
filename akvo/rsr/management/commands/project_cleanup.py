@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     action='store_true', dest='delete',
                     default=False,
                     help='Delete filtered projects in addition to listing them'),
-        )
+    )
 
     def handle(self, *args, **options):
 

@@ -51,7 +51,7 @@ def check_activity_language(activity_element):
         # Return False if the number of shared attributes is different
         shared_keys = set(dict1.keys()) & set(dict2.keys())
         if not (len(shared_keys) == len(dict1.keys()) - dict1_extra and
-                         len(shared_keys) == len(dict2.keys()) - dict2_extra):
+                len(shared_keys) == len(dict2.keys()) - dict2_extra):
             return False
 
         # Return True if all attributes are similar
@@ -121,27 +121,27 @@ def post_an_activity(activity_element, user):
         )
     except Exception, e:
         return False, "{extra}", dict(
-            iati_id = iati_id,
-            event = ERROR_EXCEPTION,
-            extra = e.message,
+            iati_id=iati_id,
+            event=ERROR_EXCEPTION,
+            extra=e.message,
         )
     if project.response.text:
-        return False,  "**** Error creating iati-activity: {iati_id}", dict(
-            iati_id = iati_id,
-            event = ERROR_CREATE_ACTIVITY,
-            extra = project.response.text
+        return False, "**** Error creating iati-activity: {iati_id}", dict(
+            iati_id=iati_id,
+            event=ERROR_CREATE_ACTIVITY,
+            extra=project.response.text
         )
     elif project.response.status_code is HttpCreated.status_code:
         return True, "Created project for iati-activity: {iati_id}", dict(
-            iati_id = iati_id, event = ACTION_CREATE_PROJECT
+            iati_id=iati_id, event=ACTION_CREATE_PROJECT
         )
     else:
         return (
             False,
             "**** Error creating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
-                iati_id = iati_id,
-                event = ERROR_UPLOAD_ACTIVITY,
-                extra = project.response.status_code,
+                iati_id=iati_id,
+                event=ERROR_UPLOAD_ACTIVITY,
+                extra=project.response.status_code,
             )
         )
 
@@ -167,29 +167,29 @@ def put_an_activity(activity_element, pk, url_args):
         )
     except Exception, e:
         return False, "{extra}", dict(
-            iati_id = iati_id,
-            event = ERROR_EXCEPTION,
-            extra = e.message
+            iati_id=iati_id,
+            event=ERROR_EXCEPTION,
+            extra=e.message
         )
     if project.response.text:
         return False, "**** Error creating iati-activity: {iati_id}", dict(
-            iati_id = iati_id,
-            event = ERROR_UPDATE_ACTIVITY,
-            extra = project.response.text
+            iati_id=iati_id,
+            event=ERROR_UPDATE_ACTIVITY,
+            extra=project.response.text
         )
     elif project.response.status_code is HttpNoContent.status_code:
         return True, "Updated project for iati-activity: {iati_id} (Akvo pk: {pk})", dict(
-            iati_id = iati_id,
-            event = ACTION_UPDATE_PROJECT,
-            pk = pk
+            iati_id=iati_id,
+            event=ACTION_UPDATE_PROJECT,
+            pk=pk
         )
     else:
         return (
             False,
             "**** Error updating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
-                iati_id = iati_id,
-                event = ERROR_UPLOAD_ACTIVITY,
-                extra = project.response.status_code,
+                iati_id=iati_id,
+                event=ERROR_UPLOAD_ACTIVITY,
+                extra=project.response.status_code,
             )
         )
 
@@ -266,7 +266,7 @@ def get_project_count(user, **q_args):
     """
     url_args = user
     url_args.update(
-        extra_args = "&".join(
+        extra_args="&".join(
             ["{}={}".format(item[0], item[1]) for item in q_args.items()]
         )
     )
@@ -321,7 +321,7 @@ def upload_activities(argv):
                         )
                 else:
                     message = "Iati-activity {iati_id} has no participating-orgs, aborting"
-                    data = dict(iati_id = iati_id, event = ERROR_NO_ORGS,)
+                    data = dict(iati_id=iati_id, event=ERROR_NO_ORGS,)
                     log(message, data)
                     print(message.format(**data))
 

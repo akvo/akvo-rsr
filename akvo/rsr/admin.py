@@ -769,7 +769,7 @@ class TransactionInline(NestedStackedInline):
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency',  'value_date', 'provider_organisation',
+            'fields': ('currency', 'value_date', 'provider_organisation',
                        'provider_organisation_activity', 'receiver_organisation',
                        'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
                        'finance_type', 'flow_type', 'tied_status', 'recipient_country',
@@ -961,7 +961,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     search_fields = ('title', 'subtitle', 'project_plan_summary', 'iati_activity_id',)
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',
+    readonly_fields = ('budget', 'funds', 'funds_needed', 'created_at', 'last_modified_at',
                        'last_update')
 
     def __init__(self, model, admin_site):

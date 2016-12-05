@@ -90,7 +90,7 @@ class PublishingStatus(models.Model):
                         validation_errors.append(
                             ValidationError(_('All funding partners should have a funding amount.'),
                                             code='partners'
-                            )
+                                            )
                         )
                         break
 

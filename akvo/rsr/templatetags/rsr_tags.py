@@ -102,7 +102,7 @@ def partner_sites_funding_box(context, project):
         'request': context['request'],
         'domain_url': context['domain_url'],
         'akvoapp_root_url': context['akvoapp_root_url']
-        }
+    }
 
 
 @register.inclusion_tag('inclusion_tags/institutions_sponsor.html',
@@ -323,7 +323,7 @@ sort_directions = {
     'asc': {'icon': DEFAULT_SORT_UP, 'inverse': 'desc'},
     'desc': {'icon': DEFAULT_SORT_DOWN, 'inverse': 'asc'},
     '': {'icon': DEFAULT_SORT_DOWN, 'inverse': 'asc'},
-    }
+}
 
 
 class SortAnchorNode(template.Node):
