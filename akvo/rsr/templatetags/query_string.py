@@ -4,7 +4,6 @@
 
 # slightly modified django snippet 826, see http://www.djangosnippets.org/snippets/826/
 from django import template
-from django.utils.encoding import smart_unicode
 from django.utils.safestring import mark_safe
 #from lib.utils import string_to_list, string_to_dict, get_query_string
 

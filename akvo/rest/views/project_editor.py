@@ -8,7 +8,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import decimal
 import json
-import collections
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)

@@ -14,8 +14,6 @@ from django.conf import settings
 from django.conf.urls import (include, patterns, url)
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
 from django.conf.urls.i18n import i18n_patterns
 
 admin.autodiscover()

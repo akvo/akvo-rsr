@@ -138,7 +138,6 @@ def create_benchmark_objects(project):
     #     for benchmarkname in category.benchmarknames.all():
     #         benchmark, created = Benchmark.objects.get_or_create(project=project,
     # category=category, name=benchmarkname, defaults={'value': 0})
-    pass
 
 
 def act_on_log_entry(sender, **kwargs):

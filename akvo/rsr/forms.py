@@ -12,7 +12,6 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.sites.models import get_current_site
-from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
@@ -20,7 +19,10 @@ from registration.models import RegistrationProfile
 
 from urlparse import urlsplit, urlunsplit
 
-from .models import Country, Organisation, Project, ProjectUpdate, ProjectUpdateLocation
+from .models import Country
+from .models import Organisation
+from .models import ProjectUpdate
+from .models import ProjectUpdateLocation
 
 from akvo import settings
 

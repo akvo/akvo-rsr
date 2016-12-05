@@ -11,7 +11,7 @@ import logging, json
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.core.urlresolvers import (get_resolver, LocaleRegexURLResolver)
 from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite

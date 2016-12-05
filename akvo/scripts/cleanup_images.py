@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-import os, sys
-from syslog import syslog
+import os
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
-from os.path import basename, splitext
 from akvo.rsr.models import *
 from akvo.utils import model_and_instance_based_filename
 

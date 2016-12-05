@@ -6,7 +6,6 @@
 
 from django.contrib import admin
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 
 class TimestampsMixin(models.Model):

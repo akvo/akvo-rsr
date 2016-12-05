@@ -9,7 +9,7 @@ import ast
 from django.db.models import Q
 from django.core.exceptions import FieldError
 
-from rest_framework import filters, status
+from rest_framework import filters
 from rest_framework.exceptions import APIException
 
 

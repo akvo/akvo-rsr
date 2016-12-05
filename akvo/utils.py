@@ -9,31 +9,20 @@
 import hashlib
 import inspect
 import pytz
-import random
 import logging
 import zipfile
 
-from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 from os.path import splitext
-from urlparse import urljoin
-from workflows.models import State
-from workflows.utils import get_state
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
+from django.core.mail import get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponse
-from django.template import loader, Context
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext, get_language, activate
-
-from notification.models import (Notice, NoticeType, get_notification_language, should_send,
-                                 LanguageStoreNotAvailable, get_formatted_messages)
+from django.template import loader
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 

@@ -6,7 +6,6 @@
 
 from .....rsr.models.organisation import Organisation
 from .....rsr.models.partnership import Partnership
-from ... import akvo_ns
 from ..partnerships import Partnerships
 from .financials import BudgetItems
 
