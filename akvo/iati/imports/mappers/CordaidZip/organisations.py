@@ -89,7 +89,6 @@ class Organisations(ImportMapper):
         that way we need to create it before we can create the InternalOrganisationID object.
         """
 
-        CORDAID_ORG_ID = 273
         ioids = InternalOrganisationIDs(
                 self.iati_import_job, self.parent_elem, self.project, self.globals)
         identifier = ioids.get_child_element_text(ioids.parent_elem, 'org_id', 'identifier')

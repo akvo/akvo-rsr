@@ -58,7 +58,7 @@ class Descriptions(ImportMapper):
         if order:
             count = 0
             for description in self.parent_elem.findall("description"):
-                description_text = self.get_text(description)
+                self.get_text(description)
                 if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
                         and (not akvo_ns('type') in description.attrib.keys()):
                     count += 1

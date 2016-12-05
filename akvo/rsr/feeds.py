@@ -144,7 +144,7 @@ class UpdateFeed(Feed):
 
     def item_description(self, item):
         try:
-            size = item.photo.size
+            item.photo.size
             return '<![CDATA[<p><a href="%s"><img src="%s" alt="" /></a></p><p>%s</p>]]>' % (
                 item.get_absolute_url(),
                 item.photo.thumbnail.absolute_url,
@@ -166,7 +166,7 @@ class UpdateFeed(Feed):
         """return a dictionary to the feedgenerator for each item to be added to the feed.
         """
         try:
-            size = item.photo.size
+            item.photo.size
             photo = item.photo
             kwargs = {
                 'media:title': item.title,

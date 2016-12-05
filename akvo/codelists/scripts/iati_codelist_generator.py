@@ -64,10 +64,8 @@ def codelist_to_tuples(xml_string, codelist, version):
     tree = ElementTree.fromstring(xml_string)
 
     if version in ["1.01", "1.02", "1.03"]:
-        codelist_lookup = '*'
         codelist_tree = tree
     else:
-        codelist_lookup = 'codelist-items/codelist-item'
         codelist_tree = tree.find('codelist-items').findall('codelist-item')
 
     fields = []
