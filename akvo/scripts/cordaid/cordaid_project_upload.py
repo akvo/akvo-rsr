@@ -301,7 +301,7 @@ def upload_activities(argv):
                     elif iati_id:
                         ok, project = get_project_count(user, **dict(iati_activity_id=iati_id))
                     if not ok:
-                        continue #error msg already output
+                        continue  # error msg already output
                     project_count = project.response.json()['meta']['total_count']
                     if project_count == 0:
                         ok, message, data = post_an_activity(activities[i], user)

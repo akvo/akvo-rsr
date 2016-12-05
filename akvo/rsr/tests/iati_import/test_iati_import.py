@@ -253,7 +253,7 @@ class IatiImportTestCase(TestCase):
         legacy-data, location, participating-org, planned-disbursement, policy-marker,
         recipient-country, recipient-region, related-activity, result, sector and transaction
         """
-        #import a project
+        # import a project
         iati_v2_import = IatiImport.objects.create(label="Test IATI v2 import", user=self.user)
         iati_v2_xml_file = NamedTemporaryFile(delete=True)
         iati_v2_xml_file.write(IATI_V2_STRING)

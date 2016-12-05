@@ -169,7 +169,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return None
 
-    #methods that interact with the User model
+    # methods that interact with the User model
     def get_is_active(self):
         return self.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view

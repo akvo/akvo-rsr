@@ -7,7 +7,8 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import logging, json
+import logging
+import json
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q

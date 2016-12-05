@@ -61,7 +61,7 @@ class Base64ImageField(ImageField):
                 raise serializers.ValidationError(_(u"Please upload a valid image."))
 
             # Generate file name:
-            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            file_name = str(uuid.uuid4())[:12]  # 12 characters are more than enough.
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
             self.check_file_extension(file_extension)
@@ -135,7 +135,7 @@ class Base64ImageField(ImageField):
             return None
 
         if value:
-            default_width = '191' # width of update images on akvo.org/seeithappen
+            default_width = '191'  # width of update images on akvo.org/seeithappen
             try:
                 default_thumb = get_thumbnail(value, default_width, quality=99)
                 request = self.context['request']

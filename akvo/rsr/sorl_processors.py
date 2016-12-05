@@ -14,7 +14,7 @@ def scale_and_pad(im, requested_size, opts):
         x, y = [float(v) for v in im.size]
         xr, yr = [float(v) for v in requested_size]
 
-        #smallest enlargement that will make it touch the requested box
+        # smallest enlargement that will make it touch the requested box
         r = min(xr / x, yr / y)
 
         im = im.resize((int(x * r), int(y * r)), resample=Image.ANTIALIAS)

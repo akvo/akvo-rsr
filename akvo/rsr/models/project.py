@@ -896,7 +896,7 @@ class Project(TimestampsMixin, models.Model):
         )
 
     latest_update.allow_tags = True
-    #no go, results in duplicate projects entries in the admin change list
+    # no go, results in duplicate projects entries in the admin change list
     #latest_update.admin_order_field = 'project_updates__time'
 
     def show_status(self):
@@ -1036,7 +1036,7 @@ class Project(TimestampsMixin, models.Model):
             areas += [area]
         return areas
 
-    #shortcuts to linked orgs for a single project
+    # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
         """
         Return the partner organisations to the project.

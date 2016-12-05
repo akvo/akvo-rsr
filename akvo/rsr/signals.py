@@ -50,10 +50,10 @@ def create_organisation_account(sender, **kwargs):
         new_org = kwargs['instance']
         OrganisationAccount = get_model('rsr', 'OrganisationAccount')
         try:
-            #this should never work
+            # this should never work
             acc = OrganisationAccount.objects.get(organisation=new_org)
         except:
-            #and when it doesn't we do this
+            # and when it doesn't we do this
             new_acc = OrganisationAccount(organisation=new_org,
                                           account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
@@ -99,7 +99,7 @@ def change_name_of_file_on_change(sender, **kwargs):
             # extend this list of fields if needed to catch other uploads
             if isinstance(f, (ImageField, )):
                 img = getattr(instance, f.name)
-                #if a new image is uploaded it resides in a InMemoryUploadedFile
+                # if a new image is uploaded it resides in a InMemoryUploadedFile
                 if img:
                     try:
                         if isinstance(img.file, InMemoryUploadedFile):

@@ -57,7 +57,7 @@ def user_org(user_cred):
             url_args=user_cred
         )
         # find the organisation ID in the path string, e.g. "/api/v1/organisation/42/"
-        #non-intuitively split() returns an empty string first and last, thus [-2]
+        # non-intuitively split() returns an empty string first and last, thus [-2]
         return profile.response.json()['objects'][0]['organisation'].split('/')[-2]
     except Exception, e:
         print "{message}".format(message=e.message)
@@ -82,7 +82,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
                 'Authorization': 'Token {}'.format(user_cred['api_key'])
             },
         )
-        #TODO: check that we only get one object back
+        # TODO: check that we only get one object back
         org_id = ioi.response.json()[0]['referenced_org']
     except Exception, e:
         print "{message}".format(message=e.message)

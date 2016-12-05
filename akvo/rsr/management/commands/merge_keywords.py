@@ -26,7 +26,7 @@ class Command(BaseCommand):
             'ttc': False, 'ttc-c4c': False
         }
 
-        #setup a dict with all keyword objects
+        # setup a dict with all keyword objects
         keyword_objects = {}
         for key in mergers.keys():
             keyword_objects[key], _ = Keyword.objects.get_or_create(label=key)

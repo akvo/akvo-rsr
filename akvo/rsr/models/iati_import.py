@@ -96,7 +96,7 @@ class IatiImport(models.Model):
     WEEKLY = 5
     BI_WEEKLY = 6
     EVERY_FOUR_WEEKS = 7
-    EVERY_TWO_MINUTES = 8 # used for testing
+    EVERY_TWO_MINUTES = 8  # used for testing
     FREQUENCIES = (
         (HOURLY, _('hourly'),),
         (EVERY_SIX_HOURS, _('every six hours'),),
@@ -105,7 +105,7 @@ class IatiImport(models.Model):
         (WEEKLY, _('weekly'),),
         (BI_WEEKLY, _('bi-weekly'),),
         (EVERY_FOUR_WEEKS, _('every four weeks'),),
-        (EVERY_TWO_MINUTES, _('every two minutes'),), # used for testing
+        (EVERY_TWO_MINUTES, _('every two minutes'),),  # used for testing
     )
 
     label = models.CharField(max_length=50, verbose_name=_(u'label'), unique=True)
@@ -185,7 +185,7 @@ class IatiImport(models.Model):
         """
         debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
         time_adds = {
-            self.EVERY_TWO_MINUTES: timedelta(seconds=120), # used for testing
+            self.EVERY_TWO_MINUTES: timedelta(seconds=120),  # used for testing
             self.HOURLY: timedelta(hours=1),
             self.EVERY_SIX_HOURS: timedelta(hours=6),
             self.DAILY: timedelta(days=1),

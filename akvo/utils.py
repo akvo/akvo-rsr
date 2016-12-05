@@ -333,7 +333,7 @@ def file_from_zip_archive(zip, file_name):  # pragma: no cover
     :param file_name: name of the file to retrieve from the archive
     :return: the file or None
     """
-    zip = zipfile.ZipFile(zip, 'r') #TODO: in test
+    zip = zipfile.ZipFile(zip, 'r')  # TODO: in test
     try:
         return zip.open(file_name)
     except KeyError:

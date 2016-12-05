@@ -25,9 +25,9 @@ class AddParameters(Node):
             if value == '': value = self.vars[i + 1]
             params[key] = value
 
-        #return '%s?%s' % (req.path, params.urlencode())
+        # return '%s?%s' % (req.path, params.urlencode())
         if params:
-            #return ('?%s' % params.urlencode()).replace('&', '&amp;')
+            # return ('?%s' % params.urlencode()).replace('&', '&amp;')
 
             params = '?%s' % params.urlencode()
             return params.replace('&', '&amp;')

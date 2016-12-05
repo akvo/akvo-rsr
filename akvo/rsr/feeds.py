@@ -50,11 +50,11 @@ def escape(data, entities={}):
     start = 0
     bits = []
     for match in iterator:
-        #grab chunk before first match
+        # grab chunk before first match
         bit = data[start:match.span()[0]]
         bit = __escape(bit, entities)
         bits.append(bit)
-        #grab match
+        # grab match
         bit = data[match.span()[0]:match.span()[1]]
         bits.extend(bit)
         start = match.span()[1]
