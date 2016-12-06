@@ -16,7 +16,6 @@ from .filters import RSRGenericFilterBackend
 from .pagination import TastypieOffsetPagination
 
 
-
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
     """
     Base class to allow any safe methods ('GET', 'OPTIONS' and 'HEAD') without needing to

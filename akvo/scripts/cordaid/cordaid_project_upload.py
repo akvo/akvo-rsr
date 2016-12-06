@@ -74,7 +74,6 @@ def check_activity_language(activity_element):
 
         return False
 
-
     if XML_LANG in activity_element.attrib:
         lang = activity_element.attrib[XML_LANG].lower()
 
@@ -101,7 +100,6 @@ def check_activity_language(activity_element):
                             element.remove(child1)
 
     return activity_element
-
 
 
 def post_an_activity(activity_element, user):

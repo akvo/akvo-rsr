@@ -20,9 +20,11 @@ class AddParameters(Node):
 
         for i in range(0, len(self.vars), 2):
             key = self.vars[i].resolve(context)
-            if key == '': key = self.vars[i]
+            if key == '':
+                key = self.vars[i]
             value = self.vars[i + 1].resolve(context)
-            if value == '': value = self.vars[i + 1]
+            if value == '':
+                value = self.vars[i + 1]
             params[key] = value
 
         # return '%s?%s' % (req.path, params.urlencode())

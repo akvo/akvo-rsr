@@ -692,7 +692,6 @@ def project_editor_default_periods(request, project_pk=None):
         default_indicator.default_periods = False
         default_indicator.save()
 
-
     return Response(
         {
             'errors': errors,

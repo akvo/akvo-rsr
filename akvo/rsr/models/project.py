@@ -501,7 +501,6 @@ class Project(TimestampsMixin, models.Model):
         if not self.iati_activity_id:
             self.iati_activity_id = None
 
-
     @models.permalink
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
@@ -1011,7 +1010,6 @@ class Project(TimestampsMixin, models.Model):
             total_string += '%s %s, ' % ("{:,.0f}".format(totals[t]), t)
 
         return total_string[:-2]
-
 
     def focus_areas(self):
         from .focus_area import FocusArea

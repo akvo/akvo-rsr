@@ -187,7 +187,6 @@ class Conditions(ImportMapper):
         self.model = ProjectCondition
 
     def do_import(self):
-
         """
         Retrieve and store the conditions.
         The conditions will be extracted from the 'condition' elements in the 'conditions' element.

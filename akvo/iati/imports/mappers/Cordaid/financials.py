@@ -52,7 +52,6 @@ class BudgetItems(BudgetItems):
 
         return budget_item_data
 
-
     def do_import(self):
         """ Very custom handling of the budgets for Cordaid. We look for two budget tags, one with
             budget[@akvo:budget-from="Cordaid"], and one with budget[@akvo:budget-from="Others"].

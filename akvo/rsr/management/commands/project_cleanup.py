@@ -36,7 +36,8 @@ class Command(BaseCommand):
 
         # set filter date
         filter_date = timezone.now() - timedelta(days=num_days)
-        if verbosity > 1: self.stdout.write('Pruning date: {0}'.format(str(filter_date)))
+        if verbosity > 1:
+            self.stdout.write('Pruning date: {0}'.format(str(filter_date)))
 
         # filter empty projects
         if verbosity > 0:

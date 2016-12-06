@@ -36,8 +36,10 @@ def get_query_string(p, new_params=None, remove=None):
     """
     Add and remove query parameters. From `django.contrib.admin`.
     """
-    if new_params is None: new_params = {}
-    if remove is None: remove = []
+    if new_params is None:
+        new_params = {}
+    if remove is None:
+        remove = []
     for r in remove:
         for k in p.keys():
             if k.startswith(r):
@@ -66,7 +68,8 @@ def string_to_dict(string):
             string += ','
         for arg in string.split(','):
             arg = arg.strip()
-            if arg == '': continue
+            if arg == '':
+                continue
             kw, val = arg.split('=', 1)
             kwargs[kw] = val
     return kwargs
@@ -86,6 +89,7 @@ def string_to_list(string):
             string += ','
         for arg in string.split(','):
             arg = arg.strip()
-            if arg == '': continue
+            if arg == '':
+                continue
             args.append(arg)
     return args

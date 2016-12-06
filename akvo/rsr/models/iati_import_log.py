@@ -160,7 +160,6 @@ class IatiImportLog(models.Model):
     activity_admin_url.allow_tags = True
     activity_admin_url.short_description = "IATI activity import"
 
-
     def iati_import_job_admin_url(self):
         """ Returns a link to the admin change view of the IatiImportJob object associated with this
             log entry

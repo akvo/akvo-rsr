@@ -313,7 +313,6 @@ class CountryBudgetItems(ImportMapper):
         self.model = CountryBudgetItem
 
     def do_import(self):
-
         """
         Retrieve and store the country budget items.
         The country budget items will be extracted from the 'country-budget-items' element.
