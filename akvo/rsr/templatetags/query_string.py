@@ -5,7 +5,6 @@
 # slightly modified django snippet 826, see http://www.djangosnippets.org/snippets/826/
 from django import template
 from django.utils.safestring import mark_safe
-#from lib.utils import string_to_list, string_to_dict, get_query_string
 
 register = template.Library()
 
@@ -14,7 +13,7 @@ register = template.Library()
 def query_string(context, add=None, remove=None):
     """
     Allows the addition and removal of query string parameters.
-    
+
     _response.html is just {{ response }}
 
     Usage:
@@ -55,7 +54,7 @@ def get_query_string(p, new_params=None, remove=None):
 def string_to_dict(string):
     """
     Usage::
-    
+
         {{ url|thumbnail:"width=10,height=20" }}
         {{ url|thumbnail:"width=10" }}
         {{ url|thumbnail:"height=20" }}
@@ -78,7 +77,7 @@ def string_to_dict(string):
 def string_to_list(string):
     """
     Usage::
-    
+
         {{ url|thumbnail:"width,height" }}
     """
     args = []

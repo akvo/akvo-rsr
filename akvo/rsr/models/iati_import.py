@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import glob
+from inspect import currentframe, getframeinfo
+import logging
 import os
 
 from datetime import timedelta, datetime
@@ -17,6 +19,9 @@ from django.utils.translation import ugettext_lazy as _
 from akvo.utils import who_am_i, who_is_parent
 from .iati_import_job import IatiImportJob
 from .iati_import_log import LOG_ENTRY_TYPE
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_subpackages(module):
@@ -34,11 +39,6 @@ def custom_mappers():
     from ...iati.imports import mappers
     subs = sorted(get_subpackages(mappers))
     return [(sub, sub) for sub in subs]
-
-import logging
-from inspect import currentframe, getframeinfo
-
-logger = logging.getLogger(__name__)
 
 
 def debug_enter(func_or_meth, parent, line_no):

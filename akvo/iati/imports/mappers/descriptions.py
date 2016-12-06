@@ -59,7 +59,7 @@ class Descriptions(ImportMapper):
             count = 0
             for description in self.parent_elem.findall("description"):
                 self.get_text(description)
-                if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
                         and (not akvo_ns('type') in description.attrib.keys()):
                     count += 1
                     if count == order:
@@ -190,8 +190,8 @@ class CustomFields(ImportMapper):
             imported_fields.append(custom_field_obj)
 
         for custom_field in self.project.custom_fields.all():
-            if not custom_field in imported_fields:
-                if not custom_field.name in ['title', 'subtitle', 'project_plan_summary',
+            if custom_field not in imported_fields:
+                if custom_field.name not in ['title', 'subtitle', 'project_plan_summary',
                                              'goals_overview', 'background', 'current_status',
                                              'target_group']:
                     changes.append(u'deleted custom field (id: {}): {}'.format(

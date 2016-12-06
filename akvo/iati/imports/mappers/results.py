@@ -49,7 +49,7 @@ class Results(ImportMapper):
                 description=description
             )
             # Disregard double results
-            if not result_obj in imported_results:
+            if result_obj not in imported_results:
                 if created:
                     changes.append(u'added result (id: {}): {}'.format(result_obj.pk, result_obj))
                 imported_results.append(result_obj)
@@ -115,7 +115,7 @@ class Indicators(ImportMapper):
                 baseline_comment=baseline_comment
             )
             # Disregard double indicators
-            if not indicator_obj in imported_indicators:
+            if indicator_obj not in imported_indicators:
                 if created:
                     changes.append(u'added indicator (id: {}): {}'.format(
                         indicator_obj.pk, indicator_obj))
@@ -231,7 +231,7 @@ class IndicatorPeriods(ImportMapper):
                 actual_comment=actual_comment
             )
             # Disregard double periods
-            if not period_obj in imported_periods:
+            if period_obj not in imported_periods:
                 if created:
                     changes.append(u'added indicator period (id: {}): {}'.format(period_obj.pk,
                                                                                  period_obj))

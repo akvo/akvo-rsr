@@ -58,11 +58,11 @@ class ChartNode(Node):
         elif self.type in GChartWrapper.constants.TYPES:
             chart = GChartWrapper.GChart(self.type, args, **kwargs)
         else:
-            raise TypeError, 'Chart type %s not recognized' % self.type
+            raise TypeError('Chart type %s not recognized' % self.type)
         imgkwargs = {}
         for n in self.nodelist:
             rend = n.render(context)
-            if type(rend) == type([]):
+            if isinstance(rend, list):
                 if rend[0] == 'img':
                     for k, v in map(lambda x: x.split('='), rend[1:]):
                         imgkwargs[k] = v

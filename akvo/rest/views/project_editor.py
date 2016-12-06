@@ -304,7 +304,7 @@ def add_changes(changes, obj, field, field_name, orig_data):
     per related object, so we need to check if the object is already in the changes list and
     append the new changes to it.
     """
-    if not obj in [change[0] for change in changes]:
+    if obj not in [change[0] for change in changes]:
         # Object not yet in changes list
         changes.append([obj, [[field, field_name, orig_data]]])
     else:
@@ -459,7 +459,7 @@ def project_editor(request, pk=None):
                     # Add the new many to many object to the project
                     m2m_relation.add(m2m_object)
                     changes = add_changes(changes, m2m_object, field, key, obj_data)
-                    if not related_obj_id in rel_objects.keys():
+                    if related_obj_id not in rel_objects.keys():
                         rel_objects[related_obj_id] = obj_data
                 except Model.DoesNotExist as e:
                     errors = add_error(errors, str(e), key)
@@ -477,7 +477,7 @@ def project_editor(request, pk=None):
                 # New object, with potentially a new parent as well
                 parent_id = '_'.join(id_list[:-1])
 
-                if not 'new' in parent_id:
+                if 'new' not in parent_id:
                     # New object, but parent is already existing
                     parent_obj_id = id_list[-2]
 
@@ -707,7 +707,7 @@ def project_editor_upload_file(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
-    errors, changes, rel_objects, new_file_url = [], [], {}, ''
+    errors, changes, rel_objects = [], [], {}
     field_id = request.POST.copy()['field_id']
     upload_file = request.data['file']
 
@@ -783,7 +783,7 @@ def project_editor_add_validation(request, project_pk=None, validation_pk=None):
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
 
-    if not validation_set in project.validations.all():
+    if validation_set not in project.validations.all():
         project.validations.add(validation_set)
 
         change_message = u'%s %s.' % (_(u'Project editor, added: validation set'),

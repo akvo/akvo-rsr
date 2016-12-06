@@ -128,6 +128,5 @@ def main(request, project_id, update_id):
 def project_updates(request, project_id):
     """The list of updates for a single project."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#updates'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#updates'
     )

@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
-from akvo.rsr.models import *
+from akvo.rsr.models import Organisation, Project, ProjectUpdate
 from akvo.utils import model_and_instance_based_filename
 
 

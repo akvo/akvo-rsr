@@ -6,9 +6,6 @@
 
 
 import logging
-
-logger = logging.getLogger('akvo.rsr')
-
 import os
 from datetime import datetime
 
@@ -23,6 +20,8 @@ from django.db.models import get_model, Q
 from sorl.thumbnail import ImageField
 
 from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
+
+logger = logging.getLogger('akvo.rsr')
 
 
 def create_publishing_status(sender, **kwargs):
@@ -51,7 +50,7 @@ def create_organisation_account(sender, **kwargs):
         OrganisationAccount = get_model('rsr', 'OrganisationAccount')
         try:
             # this should never work
-            acc = OrganisationAccount.objects.get(organisation=new_org)
+            OrganisationAccount.objects.get(organisation=new_org)
         except:
             # and when it doesn't we do this
             new_acc = OrganisationAccount(organisation=new_org,
@@ -156,11 +155,10 @@ def act_on_log_entry(sender, **kwargs):
         content_type = ContentType.objects.get(pk=log_entry.content_type_id)
         for criterion in CRITERIA:
             if (
-                content_type.app_label == criterion['app']
-                and content_type.model == criterion['model']
-                and log_entry.action_flag == criterion['action']
+                content_type.app_label == criterion['app'] and
+                content_type.model == criterion['model'] and
+                log_entry.action_flag == criterion['action']
             ):
-                #user = User.objects.get(pk=log_entry.user_id)
                 object = content_type.get_object_for_this_type(pk=log_entry.object_id)
                 criterion['call'](object)
 

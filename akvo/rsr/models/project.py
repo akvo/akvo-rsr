@@ -509,8 +509,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate url is set, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_url and self.is_published() and self.funds_needed > 0 and not \
-                self.iati_status in Project.DONATE_DISABLED:
+        if self.donate_url and self.is_published() and self.funds_needed > 0 and \
+                self.iati_status not in Project.DONATE_DISABLED:
             return True
         return False
 
@@ -896,7 +896,7 @@ class Project(TimestampsMixin, models.Model):
 
     latest_update.allow_tags = True
     # no go, results in duplicate projects entries in the admin change list
-    #latest_update.admin_order_field = 'project_updates__time'
+    # latest_update.admin_order_field = 'project_updates__time'
 
     def show_status(self):
         "Show the current project status"
@@ -1295,7 +1295,7 @@ class Project(TimestampsMixin, models.Model):
         return [keyword.label for keyword in self.keywords.all()]
 
     ###################################
-    ####### RSR Impact projects #######
+    # RSR Impact projects #############
     ###################################
 
     def import_results(self):

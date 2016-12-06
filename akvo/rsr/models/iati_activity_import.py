@@ -225,7 +225,7 @@ class IatiActivityImport(TimestampsMixin):
         :return: Tuple; (Project instance, Boolean indicating whether the project was created)
         """
         iati_identifier_element = self.activity.find('iati-identifier')
-        if not iati_identifier_element is None and iati_identifier_element.text:
+        if iati_identifier_element is not None and iati_identifier_element.text:
             self.iati_identifier = iati_identifier_element.text
         else:
             self.add_log('iati-identifier', 'iati_identifier', 'identifier not found',

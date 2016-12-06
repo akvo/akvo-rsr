@@ -146,10 +146,10 @@ class BudgetItem(models.Model):
     def iati_status(self):
 
         if self.status:
-            ### DEBUG ###
+            # DEBUG ###
             import pdb
             pdb.set_trace()
-            ### DEBUG ###
+            # DEBUG ###
 
         return codelist_value(BudgetStatus, self, 'status')
 

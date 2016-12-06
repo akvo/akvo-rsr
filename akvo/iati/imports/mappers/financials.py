@@ -145,7 +145,7 @@ class Transactions(ImportMapper):
             )
 
             # Disregard double transactions
-            if not transaction_obj in imported_transactions:
+            if transaction_obj not in imported_transactions:
                 if created:
                     changes.append(u'added transaction (id: {}): {}'.format(
                         transaction_obj.pk, transaction_obj))

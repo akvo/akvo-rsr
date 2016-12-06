@@ -82,7 +82,7 @@ class DefaultLanguageMiddleware(object):
             return True
         except Resolver404:
             return False
-        except TypeError, e:
+        except TypeError:
             return False
         return False
 

@@ -302,7 +302,7 @@ def hidden_inputs_from_qs(parser, token):
     django-sorting. They can then be put into the form used by django-filter.
     """
     try:
-        tag_name, identifiers = token.split_contents()[0], token.split_contents()[1:]
+        identifiers = token.split_contents()[1:]
     except:
         raise template.TemplateSyntaxError("The %r tag requires at least one argument" % token.contents.split()[0])
 
@@ -392,7 +392,7 @@ def translated_anchor(parser, token):
     bits = [b.strip('"\'') for b in token.split_contents()]
 
     if len(bits) < 2:
-        raise TemplateSyntaxError, "anchor tag takes at least 1 argument"
+        raise TemplateSyntaxError("anchor tag takes at least 1 argument")
 
     field = bits[1].strip()
     title = field.capitalize()

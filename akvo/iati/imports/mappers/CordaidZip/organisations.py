@@ -135,9 +135,11 @@ class Organisations(ImportMapper):
             organisation = Organisation(**org_fields)
             organisation.save()
             changes, created = None, True
-            internal_id = InternalOrganisationID.objects.create(
-                recording_org=self.globals['cordaid'], referenced_org=organisation,
-                identifier=identifier)
+            InternalOrganisationID.objects.create(
+                recording_org=self.globals['cordaid'],
+                referenced_org=organisation,
+                identifier=identifier
+            )
 
         self.set_logo(organisation, identifier)
         return organisation, changes, created

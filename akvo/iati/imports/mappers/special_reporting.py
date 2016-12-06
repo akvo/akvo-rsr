@@ -174,7 +174,7 @@ class CrsAdds(ImportMapper):
                 imported_flags.append(other_flag_obj)
 
             for other_flag in crs_obj.other_flags.all():
-                if not other_flag in imported_flags:
+                if other_flag not in imported_flags:
                     changes.append(u'deleted CRS++ other flag (id: {})'.format(other_flag.pk))
                     other_flag.delete()
         else:
@@ -251,7 +251,7 @@ class FSSs(ImportMapper):
                 imported_forecasts.append(forecast_obj)
 
             for forecast in fss_obj.forecasts.all():
-                if not forecast in imported_forecasts:
+                if forecast not in imported_forecasts:
                     changes.append(u'deleted FSS forecast (id: {})'.format(forecast.pk))
                     forecast.delete()
         else:

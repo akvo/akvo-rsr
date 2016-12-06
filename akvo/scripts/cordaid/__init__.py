@@ -64,7 +64,6 @@ def outsys(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
 
-#base_log = dict(msg=[], error=[])
 log_bits = []
 
 
@@ -74,7 +73,7 @@ def log(text, data):
 
 def init_log(log_file=CORDAID_LOG_FILE):
     current_log_file = log_file.format(datetime=datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-    with open(current_log_file, "w") as f:
+    with open(current_log_file, "w"):
         pass
     return current_log_file
 

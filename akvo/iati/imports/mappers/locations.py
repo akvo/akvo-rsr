@@ -110,7 +110,7 @@ class Locations(ImportMapper):
             )
 
             # Disregard double locations
-            if not loc in imported_locations:
+            if loc not in imported_locations:
                 if created:
                     changes.append(u'added location (id: {}): {}'.format(loc.pk, loc))
                 imported_locations.append(loc)

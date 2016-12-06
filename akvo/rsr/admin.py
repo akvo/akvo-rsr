@@ -314,7 +314,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
-                if "_saveasnew" not in request.POST or not prefix in ['benchmarks',
+                if "_saveasnew" not in request.POST or prefix not in ['benchmarks',
                                                                       'rsr-location-content_type-object_id']:
                     # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
@@ -1020,7 +1020,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
-                if "_saveasnew" not in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
+                if "_saveasnew" not in request.POST or prefix not in ['benchmarks', 'rsr-location-content_type-object_id']:
                     # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
                     if prefixes[prefix] != 1 or not prefix:

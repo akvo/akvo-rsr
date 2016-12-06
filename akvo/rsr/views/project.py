@@ -341,24 +341,21 @@ def hierarchy(request, project_id):
 def report(request, project_id):
     """Show the full data report tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#report'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#report'
     )
 
 
 def partners(request, project_id):
     """Show the partners tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#partners'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#partners'
     )
 
 
 def finance(request, project_id):
     """Show finance tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#finance'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#finance'
     )
 
 ###############################################################################

@@ -3,7 +3,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # django snippet 840, see http://www.djangosnippets.org/snippets/840/
-#from django.utils.http import urlencode as django_urlencode
 from django.template import Library, Node, resolve_variable, TemplateSyntaxError
 
 
@@ -45,12 +44,12 @@ class AddParameters(Node):
 
 def addparam(parser, token):
     """
-    Add multiple parameters to current url 
+    Add multiple parameters to current url
 
     Usage:
         {% addparam name1 value1 name2 value2 %}
                                             or
-        {% addparam "name1" value1 "name2" value2 %}        
+        {% addparam "name1" value1 "name2" value2 %}
 
         variable can be use inplace of names and values
         example: {% addparam "view" message.id %}
@@ -59,10 +58,10 @@ def addparam(parser, token):
 
     bits = token.contents.split(' ')
     if len(bits) < 2:
-        raise TemplateSyntaxError, "'%s' tag requires atleast two arguments" % bits[0]
+        raise TemplateSyntaxError("'%s' tag requires atleast two arguments" % bits[0])
 
     if len(bits) % 2 != 1:
-        raise TemplateSyntaxError, "The arguments must be pairs"
+        raise TemplateSyntaxError("The arguments must be pairs")
 
     vars = [parser.compile_filter(bit) for bit in bits[1:]]
     return AddParameters(vars)

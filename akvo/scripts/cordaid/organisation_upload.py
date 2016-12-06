@@ -26,12 +26,10 @@ API_VERSION = 'v1'
 # get this module
 me = sys.modules[__name__]
 api_settings = dict(
-    #UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/api_upload',
     UPLOAD_ROOT_DIR='/Users/gabriel/Downloads/cordaid_full',
     PROJECT_IMAGES_SUBDIR='project_images',
     LOGOS_SUBDIR='logos',
     IATI_ACTIVITES_FILENAME='iati_export0.xml',
-    #ORGANISATIONS_FILENAME = 'organisations.xml',
     ORGANISATIONS_FILENAME='cordaid_organisations.xml',
     ORGANISATIONS_UPLOAD_LOG_FILENAME='organisations_upload_{datetime}.csv',
 )
@@ -93,7 +91,6 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
 def post_an_org(org_element, user_cred):
     internal_org_id = org_element.find('org_id').text
     try:
-        #iati_org_id = org_element.findall('iati_org_id')[0].text
         organisation = Requester(
             method='post',
             url_template="http://{domain}/rest/v1/organisation/",
@@ -168,7 +165,6 @@ def put_an_org(org_element, user_cred, pk):
     import pdb
     pdb.set_trace()
     try:
-        #iati_org_id = org_element.findall('iati_org_id')[0].text
         organisation = Requester(
             method='put',
             url_template="http://{domain}/rest/v1/organisation/{pk}/",

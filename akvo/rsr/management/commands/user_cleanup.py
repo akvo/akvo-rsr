@@ -68,14 +68,14 @@ class Command(BaseCommand):
         if prune_inactive:
             if verbosity > 0:
                 self.stdout.write('Filtering all non-activated user accounts older than %s days.'
-                                                % (num_days))
+                                  % (num_days))
             non_active = User.objects.exclude(date_joined__gt=filter_date).filter(is_active=False)\
                 .exclude(is_admin=True).exclude(is_superuser=True)
 
             for n, u in enumerate(non_active):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
-                                                    % (u.username, u.date_joined, n + 1, len(non_active)))
+                                      % (u.username, u.date_joined, n + 1, len(non_active)))
                 if delete:
                     u.delete()
 
@@ -89,16 +89,16 @@ class Command(BaseCommand):
             for n, u in enumerate(no_employment):
                 if verbosity > 1:
                     self.stdout.write('- %s (joined %s) [%s/%s]'
-                                                    % (u.username, u.date_joined, n + 1, len(no_employment)))
+                                      % (u.username, u.date_joined, n + 1, len(no_employment)))
                 if delete:
                     u.delete()
 
         if delete:
             if verbosity > 0:
                 self.stdout.write('%s user(s) matched filter and were successfully removed.'
-                                                % (len(set(list(chain(non_active, no_employment))))))
+                                  % (len(set(list(chain(non_active, no_employment))))))
 
         else:
             if verbosity > 0:
                 self.stdout.write('%s user(s) matched filter, use \'-d\' flag to remove them.'
-                                                % (len(set(list(chain(non_active, no_employment))))))
+                                  % (len(set(list(chain(non_active, no_employment))))))
