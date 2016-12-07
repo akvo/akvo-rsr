@@ -4705,16 +4705,16 @@ order by last_modified_at DESC limit 10]]></xml-property>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="last_edited_projects" id="259">
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">name</text-property>
-                    <text-property name="heading">name</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">title</text-property>
                     <text-property name="heading">title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subtitle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">subtitle</text-property>
+                    <text-property name="heading">subtitle</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">last_modified_at</property>
@@ -4723,17 +4723,28 @@ order by last_modified_at DESC limit 10]]></xml-property>
                     <text-property name="heading">last_modified_at</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">org_id</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">name</property>
+                        <property name="name">title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">title</property>
+                        <property name="name">subtitle</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -4747,15 +4758,15 @@ order by last_modified_at DESC limit 10]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">name</property>
-                    <property name="nativeName">name</property>
+                    <property name="name">title</property>
+                    <property name="nativeName">title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">title</property>
-                    <property name="nativeName">title</property>
+                    <property name="name">subtitle</property>
+                    <property name="nativeName">subtitle</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -4767,10 +4778,31 @@ order by last_modified_at DESC limit 10]]></xml-property>
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT rsr_organisation.name,rsr_project.title, rsr_project.last_modified_at
-FROM rsr_organisation, rsr_project
-where rsr_organisation.id=rsr_project.primary_organisation_id
+            <xml-property name="queryText"><![CDATA[SELECT rsr_project.title, rsr_project.subtitle, rsr_project.last_modified_at
+FROM rsr_project
+where ?=rsr_project.primary_organisation_id
 order by rsr_project.last_modified_at desc limit 10]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="longest_not_edited_project" id="282">
             <property name="nullsOrdering">nulls lowest</property>
@@ -5344,42 +5376,48 @@ AND  date_end_actual <= NOW()]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["last_modified_at"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
+                <structure>
+                    <property name="name">subtitle</property>
+                    <text-property name="displayName">subtitle</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
-            <column id="279"/>
             <column id="280"/>
+            <column id="320"/>
             <column id="281"/>
             <header>
                 <row id="261">
-                    <cell id="262">
-                        <label id="263">
-                            <property name="textAlign">left</property>
-                            <text-property name="text">name</text-property>
-                        </label>
-                    </cell>
                     <cell id="264">
                         <label id="265">
                             <property name="textAlign">left</property>
-                            <text-property name="text">title</text-property>
+                            <text-property name="text">Title</text-property>
+                        </label>
+                    </cell>
+                    <cell id="317">
+                        <label id="321">
+                            <property name="textAlign">left</property>
+                            <text-property name="text">Subtitle</text-property>
                         </label>
                     </cell>
                     <cell id="266">
                         <label id="267">
                             <property name="textAlign">left</property>
-                            <text-property name="text">last_modified_at</text-property>
+                            <text-property name="text">Last modified at</text-property>
                         </label>
                     </cell>
                 </row>
             </header>
             <detail>
                 <row id="268">
-                    <cell id="269">
-                        <data id="270">
-                            <property name="resultSetColumn">name</property>
-                        </data>
-                    </cell>
                     <cell id="271">
                         <data id="272">
                             <property name="resultSetColumn">title</property>
+                        </data>
+                    </cell>
+                    <cell id="318">
+                        <data id="322">
+                            <property name="resultSetColumn">subtitle</property>
                         </data>
                     </cell>
                     <cell id="273">
@@ -5391,8 +5429,8 @@ AND  date_end_actual <= NOW()]]></xml-property>
             </detail>
             <footer>
                 <row id="275">
-                    <cell id="276"/>
                     <cell id="277"/>
+                    <cell id="319"/>
                     <cell id="278"/>
                 </row>
             </footer>
