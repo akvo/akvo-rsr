@@ -8,7 +8,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="TheProjectId" id="225">
+        <scalar-parameter name="ID" id="225">
             <text-property name="helpText">Id number of the project</text-property>
             <text-property name="promptText">Project id</text-property>
             <property name="valueType">static</property>
@@ -1339,6 +1339,14 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
         <table id="299">
             <property name="width">11.125in</property>
             <property name="dataSet">Project_results_indicators_periods</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">projid</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">params["ID"].value</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">title</property>
