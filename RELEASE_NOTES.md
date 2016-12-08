@@ -1,3 +1,14 @@
+# Akvo RSR version 3.18.3 Vilnius (hot-fix)
+
+## Improvements
+
+### Add a management command to bulk unlock/lock periods by keyword
+
+To simplify locking and unlocking a whole bunch of indicator periods, a management
+command has been added to do this based on project keywords.
+
+GitHub issue: [#2449] (https://github.com/akvo/akvo-rsr/issues/2449)
+
 # Akvo RSR version 3.18.2 Vilnius (hot-fix)
 
 ## Improvements
