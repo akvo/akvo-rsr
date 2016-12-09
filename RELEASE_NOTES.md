@@ -13,6 +13,9 @@ GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
+[#2427] (https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
+'Results and indicators table' report as text, not numbers.
+
 ## Under the hood
 
 [#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
