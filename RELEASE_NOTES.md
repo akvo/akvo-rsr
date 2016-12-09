@@ -8,13 +8,6 @@ Group all the employments of a user together in the user management page.
 
 GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
-### Add a management command to bulk unlock/lock periods by keyword
-
-To simplify locking and unlocking a whole bunch of keywords, a management
-command has been added to do this based on project keywords.
-
-GitHub issue: [#2449] (https://github.com/akvo/akvo-rsr/issues/2449)
-
 ## Bug fixes
 
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
@@ -24,6 +17,17 @@ employments to the same organisation & group.
 
 [#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
 been upgraded to 3.2.5 from v2.3.13 which is quite old.
+
+# Akvo RSR version 3.18.3 Vilnius (hot-fix)
+
+## Improvements
+
+### Add a management command to bulk unlock/lock periods by keyword
+
+To simplify locking and unlocking a whole bunch of indicator periods, a management
+command has been added to do this based on project keywords.
+
+GitHub issue: [#2449] (https://github.com/akvo/akvo-rsr/issues/2449)
 
 # Akvo RSR version 3.18.2 Vilnius (hot-fix)
 
