@@ -799,7 +799,7 @@ function loadComponents() {
         },
 
         openFile: function() {
-            window.open(endpoints.base_url + '/media/' + this.props.exp.iati_file, '_blank');
+            window.open(this.props.exp.iati_file, '_blank');
         },
 
         setPublic: function() {
