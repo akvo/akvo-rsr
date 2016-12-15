@@ -532,7 +532,7 @@ def my_results_select(request):
 
 
 @login_required
-def my_results(request, project_id):
+def my_results(request, project_id, template='myrsr/my_results.html'):
     """
     My results section. Only accessible to M&E Managers, Admins and Project editors.
 
@@ -559,4 +559,4 @@ def my_results(request, project_id):
         'me_managers': me_managers.exists(),
     }
 
-    return render(request, 'myrsr/my_results.html', context)
+    return render(request, template, context)
