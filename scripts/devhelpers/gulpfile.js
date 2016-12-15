@@ -12,6 +12,28 @@ var plumber = require('gulp-plumber');
 var react = require('gulp-react');
 var sass = require('gulp-sass');
 
+var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
+var browserify = require('browserify');
+// var watchify = require('watchify');
+var babelify = require('babelify');
+
+var preset_react = require('babel-preset-react');
+var preset_es2015 = require('babel-preset-es2015');
+
+gulp.task('build-results', function() {
+    return browserify({
+        debug: true,
+        entries: '../../akvo/rsr/static/scripts-src/my-new-results.jsx',
+        transform: [
+            [babelify, {presets: [preset_react, preset_es2015]}]
+        ]
+    })
+    .bundle()
+    .pipe(source('my-new-results.js'))
+    .pipe(gulp.dest('../../akvo/rsr/static/scripts-src/'));
+});
+
+gulp.task('build', ['build-results']);
 
 gulp.task('lint', function() {
   return gulp.src('../../akvo/rsr/static/scripts-src/**/*.js')
