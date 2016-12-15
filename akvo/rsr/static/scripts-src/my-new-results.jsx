@@ -17,6 +17,7 @@ let csrftoken,
     projectIds,
     user;
 
+// TODO: replace this with a proper library for backend calls
 function apiCall(method, url, data, successCallback, retries) {
     var xmlHttp = new XMLHttpRequest();
     var maxRetries = 5;

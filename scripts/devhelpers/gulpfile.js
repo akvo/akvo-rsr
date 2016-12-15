@@ -20,6 +20,8 @@ var babelify = require('babelify');
 var preset_react = require('babel-preset-react');
 var preset_es2015 = require('babel-preset-es2015');
 
+// TODO: Split my-new-results.jsx into multiple files each with one React component plus a main
+// TODO: Set up watchify
 gulp.task('build-results', function() {
     return browserify({
         debug: true,
