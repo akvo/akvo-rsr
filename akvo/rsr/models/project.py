@@ -1348,6 +1348,9 @@ class Project(TimestampsMixin, models.Model):
         for period in indicator.periods.all():
             self.add_period(self_indicator, period)
 
+        for reference in indicator.references.all():
+            self.add_reference(self_indicator, reference)
+
     def add_period(self, indicator, period):
         get_model('rsr', 'IndicatorPeriod').objects.create(
             indicator=indicator,
@@ -1356,6 +1359,14 @@ class Project(TimestampsMixin, models.Model):
             target_value=period.target_value,
             target_comment=period.target_comment,
             actual_comment=period.actual_comment
+        )
+
+    def add_reference(self, indicator, reference):
+        get_model('rsr', 'IndicatorReference').objects.create(
+            indicator=indicator,
+            reference=reference.reference,
+            vocabulary=reference.vocabulary,
+            vocabulary_uri=reference.vocabulary_uri,
         )
 
     def has_results(self):
