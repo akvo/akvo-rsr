@@ -17,9 +17,8 @@ from akvo.rest.models import create_api_key
 from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, act_on_log_entry,
-    employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding
+    act_on_log_entry, employment_post_save, employment_pre_save,
+    update_project_budget, update_project_funding
 )
 
 from .benchmark import Benchmark, Benchmarkname
@@ -44,7 +43,6 @@ from .indicator import (Indicator, IndicatorPeriod, IndicatorPeriodData,
                         IndicatorPeriodDataComment, IndicatorReference,
                         IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension,
                         IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation)
-from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -62,7 +60,6 @@ from .organisation_document import (OrganisationDocument, OrganisationDocumentCa
                                     OrganisationDocumentCountry)
 from .partner_site import PartnerSite
 from .partnership import Partnership
-from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
 from .planned_disbursement import PlannedDisbursement
 from .policy_marker import PolicyMarker
 from .project import Project
@@ -115,7 +112,6 @@ __all__ = [
     'IndicatorPeriodTargetDimension',
     'IndicatorPeriodTargetLocation',
     'IndicatorReference',
-    'Invoice',
     'InternalOrganisationID',
     'Keyword',
     'LegacyData',
@@ -141,9 +137,6 @@ __all__ = [
     'OrganisationTotalExpenditure',
     'PartnerSite',
     'Partnership',
-    'PayPalGateway',
-    'MollieGateway',
-    'PaymentGatewaySelector',
     'PlannedDisbursement',
     'PolicyMarker',
     'Project',
@@ -168,7 +161,7 @@ __all__ = [
 
 # Permission rules
 import rules
-from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, 
+from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor,
                            is_org_user, is_self)
 
 rules.add_perm('rsr', rules.always_allow)
@@ -413,10 +406,6 @@ post_save.connect(employment_post_save, sender=Employment)
 post_save.connect(create_organisation_account, sender=Organisation)
 
 post_save.connect(create_publishing_status, sender=Project)
-post_save.connect(create_payment_gateway_selector, sender=Project)
-
-if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
-    post_save.connect(donation_completed, sender=Invoice)
 
 post_save.connect(change_name_of_file_on_create, sender=Organisation)
 post_save.connect(change_name_of_file_on_create, sender=Project)
@@ -428,11 +417,9 @@ pre_save.connect(change_name_of_file_on_change, sender=Project)
 pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
 
 post_save.connect(update_project_budget, sender=BudgetItem)
-post_save.connect(update_project_funding, sender=Invoice)
 post_save.connect(update_project_funding, sender=Partnership)
 
 post_delete.connect(update_project_budget, sender=BudgetItem)
-post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=User)

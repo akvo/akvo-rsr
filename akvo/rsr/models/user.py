@@ -4,20 +4,23 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import re
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
+import rules
 from sorl.thumbnail.fields import ImageField
-
 from tastypie.models import ApiKey
 
 from akvo.utils import rsr_image_path
 
 from .employment import Employment
 from .project_update import ProjectUpdate
+from .project import Project
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
@@ -304,7 +307,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.organisations.all().all_projects()
 
     def first_organisation(self):
-        all_orgs = self.organisations.all()
+        all_orgs = self.approved_organisations()
         if all_orgs:
             return all_orgs[0]
         else:
@@ -465,3 +468,99 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)
+
+    def get_project_editor_me_manager_employment_orgs(self):
+        """Return all organisations where user is a project editor or m&e manager."""
+
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name__in=['Project Editors', 'M&E Managers']
+        )
+        return employments.organisations()
+
+    def get_user_manager_employment_orgs(self):
+        """Return all organisations where user is a user manager."""
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name='User Managers'
+        )
+        return employments.organisations()
+
+    def admin_projects(self):
+        """Return all projects of orgs where user is an admin."""
+
+        orgs = self.get_admin_employment_orgs()
+        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+
+    def project_editor_me_manager_projects(self):
+        """Return all projects of orgs where user is project editor or m&e manager."""
+
+        orgs = self.get_project_editor_me_manager_employment_orgs()
+        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+
+    def user_manager_projects(self):
+        """Return all projects where user is a user manager."""
+
+        orgs = self.get_user_manager_employment_orgs()
+        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+
+    def get_permission_filter(self, permission, project_relation):
+        """Convert a rules permission predicate into a queryset filter using Q objects.
+
+        project_relation is the string for constructing a field lookup to the
+        corresponding Project of the queryset's model.
+
+        """
+
+        permission_predicate = rules.permissions.permissions.get(permission, None)
+        if permission_predicate is None:
+            return Q(pk=None)  # No such permission exists!
+
+        project_filter_name = '{}in'.format(project_relation or 'id__')
+        permission_expression = permission_predicate.name
+        permissions = {
+            'is_rsr_admin': Q() if self.is_authenticated() and self.is_admin else Q(pk=None),
+            'is_org_admin': Q(**{project_filter_name: self.admin_projects()}),
+            'is_org_project_editor': Q(
+                **{project_filter_name: self.project_editor_me_manager_projects()}
+            ),
+            'is_org_user_manager': (
+                Q(**{project_filter_name: self.user_manager_projects()}) & Q(user=self)
+            ),
+            'is_org_user': Q(**{project_filter_name: self.my_projects()}) & Q(user=self),
+        }
+        operators = {'|': Q.OR, '&': Q.AND}
+        return self.parse_permission_expression(permission_expression, permissions, operators)
+
+    @staticmethod
+    def parse_permission_expression(permission_expression, permissions, operators):
+        """Convert permission expression to a queryset filter using permissions mapping
+
+        NOTE: This function does no error checking and assumes that all the
+        expressions are valid, and all the operations in the expression are
+        binary and correctly parenthesized.  The expressions from the rules
+        library satisfy these assumptions and can be safely used as inputs to
+        this function.
+
+        """
+        # FIXME: This whole thing seems like a horrible hack, and should go
+        # away if the permissions system is reworked!
+        expression = re.sub('([()|&])', ' \\1 ', permission_expression).split()
+        expression_stack = []
+        for item in expression:
+            if item in permissions:
+                expression_stack.append(permissions[item])
+
+            elif item in operators:
+                expression_stack.append(operators[item])
+
+            elif item == ')':
+                first, op, second = expression_stack[-3:]
+                expression_stack = expression_stack[:-3]
+                expression_stack.append(first._combine(second, op))
+
+            elif item == '(':
+                continue
+
+            else:
+                raise RuntimeError('{} permission not supported'.format(item))
+
+        return expression_stack[0]

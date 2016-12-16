@@ -125,7 +125,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
               </p>
@@ -158,7 +158,7 @@
               {% if project.accepts_donations %}
               <br>
               <span class="donateButton">
-                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
               </span>
               {% endif %}
             </p>
@@ -229,11 +229,16 @@
     {# Translation strings #}
     <script type="application/json" id="typeahead-header-text">
     {
-        "projects_text": "{% trans 'Projects' %}",
-        "organisations_text": "{% trans 'Organisations' %}",
-        "locations_text": "{% trans 'Locations' %}",
-        "organisation_text": "{% trans 'organisation' %}",
-        "all_text": "{% trans 'All' %}"
+        "projects_text": "{% trans 'Projects'|escapejs %}",
+        "organisations_text": "{% trans 'Organisations'|escapejs %}",
+        "locations_text": "{% trans 'Locations'|escapejs %}",
+        "organisation_text": "{% trans 'organisation'|escapejs %}",
+        "all_text": "{% trans 'All'|escapejs %}",
+
+        "donate_heading": "{% trans 'Donate'|escapejs %}",
+        "donate_summary": "{% trans 'You will be sent to an external website that accepts donations for this project. To continue, click Donate.'|escapejs %}",
+        "donate_text": "{% trans 'Donate'|escapejs %}",
+        "donate_confirm_cancel_text": "{% trans 'Cancel'|escapejs %}"
     }
     </script>
 
@@ -254,12 +259,13 @@
     {# More link translations #}
     <script type="application/json" id="more-link-translations">
         {
-            "partner": "{% trans 'partner' %}",
-            "partners": "{% trans 'partners' %}"
+            "partner": "{% trans 'partner'|escapejs %}",
+            "partners": "{% trans 'partners'|escapejs %}"
         }
     </script>
 
   {% compressed_js 'project_directory' %}
   {% compressed_js 'project_directory_typeahead' %}
   {% compressed_js 'more_partners' %}
+  {% compressed_js 'donate_popup' %}
 {% endblock js %}

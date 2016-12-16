@@ -19,18 +19,18 @@ class ProjectLocationRawSerializer(BaseRSRSerializer):
 
 class ProjectLocationSerializer(ProjectLocationRawSerializer):
 
-    country_label = serializers.Field(source='country_label')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
-    exactness_label = serializers.Field(source='iati_exactness')
-    reach_label = serializers.Field(source='iati_reach')
-    class_label = serializers.Field(source='iati_class')
-    feature_designation_label = serializers.Field(source='iati_designation')
+    country_label = serializers.ReadOnlyField(source='iati_country_unicode')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
+    exactness_label = serializers.ReadOnlyField(source='iati_exactness_unicode')
+    reach_label = serializers.ReadOnlyField(source='iati_reach_unicode')
+    class_label = serializers.ReadOnlyField(source='iati_class_unicode')
+    feature_designation_label = serializers.ReadOnlyField(source='iati_designation_unicode')
 
 
 class AdministrativeLocationSerializer(BaseRSRSerializer):
 
-    location_unicode = serializers.Field(source='location')
-    vocabulary_label = serializers.Field(source='iati_vocabulary')
+    location_unicode = serializers.ReadOnlyField(source='location.__unicode__')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
 
     class Meta:
         model = AdministrativeLocation
@@ -38,7 +38,7 @@ class AdministrativeLocationSerializer(BaseRSRSerializer):
 
 class ProjectLocationExtraSerializer(ProjectLocationRawSerializer):
 
-    country = CountrySerializer(source='country')
+    country = CountrySerializer()
 
 
 class MapProjectSerializer(serializers.Serializer):
@@ -48,7 +48,7 @@ class MapProjectSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField()
     url = serializers.URLField(source='get_absolute_url')
-    current_image = Base64ImageField(required=False, allow_empty_file=True)
+    current_image = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
 
 class MapProjectLocationSerializer(serializers.Serializer):

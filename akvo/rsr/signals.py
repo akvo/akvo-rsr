@@ -22,7 +22,7 @@ from django.db.models import get_model, Q
 
 from sorl.thumbnail import ImageField
 
-from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
+from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
 
 
 def create_publishing_status(sender, **kwargs):
@@ -114,23 +114,6 @@ def change_name_of_file_on_change(sender, **kwargs):
                         pass
 
 
-def create_payment_gateway_selector(instance, created, **kwargs):
-    """Associates a newly created project with the default PayPal
-    and Mollie payment gateways
-    """
-    # kwargs['raw'] is True when we're running manage.py loaddata
-    if created and not kwargs.get('raw', False):
-        project = instance
-        gateway_selector = get_model('rsr', 'paymentgatewayselector').objects
-        gateway_selector.create(project=project)
-
-
-def donation_completed(instance, created, **kwargs):
-    invoice = instance
-    if not created and invoice.status == 3:
-        send_donation_confirmation_emails(invoice)
-
-
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
@@ -186,6 +169,9 @@ def act_on_log_entry(sender, **kwargs):
 def employment_pre_save(sender, **kwargs):
     """
     This signal intends to send a mail to the user when his/her account has been approved.
+
+    This signal also sets 'Users' Group for the employment if no group has been set
+
     A mail will be sent when:
 
     - A new employment is created with is_approved = True.
@@ -193,7 +179,12 @@ def employment_pre_save(sender, **kwargs):
     - An existing employment is updated from is_approved = False changed to True.
       * We assume this happens when an existing user has requested to join an organisation himself.
     """
+    # FIXME: The actual save may fail. Why are emails being sent pre_save?!
     employment = kwargs.get("instance", None)
+
+    # Set the group to 'Users' when no group has been specified
+    if not employment.group:
+        employment.group = Group.objects.get(name='Users')
 
     try:
         obj = sender.objects.get(pk=employment.pk)
@@ -235,67 +226,62 @@ def employment_post_save(sender, **kwargs):
     - Set User to is_staff (for admin access) when the employment is approved and the Group is set
       to 'Project Editors', 'User managers' or 'Admins', or when the user is a superuser or general
       admin.
-    - Set 'Users' Group for the employment if no group has been set
 
     If a new employment is created for an active user of which the employment is not approved yet:
     - Inform RSR support users, organisation admins and organisation user managers of the request
     """
     # Retrieve all user groups and the employment
-    users_group = Group.objects.get(name='Users')
     project_editors_group = Group.objects.get(name='Project Editors')
     user_managers_group = Group.objects.get(name='User Managers')
     admins_group = Group.objects.get(name='Admins')
     employment = kwargs.get("instance", None)
 
-    if employment:
-        user = employment.user
+    if not employment:
+        return
 
-        # Set user to staff when in a certain group
-        if (employment.group in [project_editors_group, user_managers_group, admins_group] and
-                employment.is_approved) or user.is_superuser or user.is_admin:
-            user.is_staff = True
-            user.save()
+    user = employment.user
 
-        # Set the group to 'Users' when no group has been specified
-        if not employment.group:
-            employment.group = users_group
-            employment.save()
+    # Set user to staff when in a certain group
+    if (employment.group in [project_editors_group, user_managers_group, admins_group] and
+            employment.is_approved) or user.is_superuser or user.is_admin:
+        user.is_staff = True
+        user.save()
 
-        # Send an 'Organisation request' mail when an employment has been newly created, the
-        # user is active and the employment has not been approved yet.
-        if kwargs['created'] and user.is_active and not employment.is_approved:
-            organisation = employment.organisation
+    # Send an 'Organisation request' mail when an employment has been newly created, the
+    # user is active and the employment has not been approved yet.
+    if kwargs['created'] and user.is_active and not employment.is_approved:
+        organisation = employment.organisation
 
-            # Retrieve all active support users
-            active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
+        # Retrieve all active support users
+        active_support_users = get_user_model().objects.filter(is_active=True, is_support=True)
 
-            # General (support) admins will always be informed
-            admin_users = active_support_users.filter(is_admin=True)
+        # General (support) admins will always be informed
+        admin_users = active_support_users.filter(is_admin=True)
 
-            # As well as organisation (+ content owners) User managers and Admins
-            employer_users = active_support_users.filter(
-                employers__organisation__in=organisation.content_owned_by(),
-                employers__group__in=[user_managers_group, admins_group]
-            )
+        # As well as organisation (+ content owners) User managers and Admins
+        employer_users = active_support_users.filter(
+            employers__organisation__in=organisation.content_owned_by(),
+            employers__group__in=[user_managers_group, admins_group]
+        )
 
-            notify = active_support_users.filter(
-                Q(pk__in=admin_users.values_list('pk', flat=True)) |
-                Q(pk__in=employer_users.values_list('pk', flat=True))
-            ).exclude(pk=user.pk).distinct()
+        notify = active_support_users.filter(
+            Q(pk__in=admin_users.values_list('pk', flat=True)) |
+            Q(pk__in=employer_users.values_list('pk', flat=True))
+        ).exclude(pk=user.pk).distinct()
 
-            rsr_send_mail_to_users(
-                notify,
-                subject='registration/user_organisation_request_subject.txt',
-                message='registration/user_organisation_request_message.txt',
-                subject_context={
-                    'user': user,
-                    'organisation': organisation
-                },
-                msg_context={
-                    'user': user,
-                    'organisation': organisation
-                },
-            )
+        rsr_send_mail_to_users(
+            notify,
+            subject='registration/user_organisation_request_subject.txt',
+            message='registration/user_organisation_request_message.txt',
+            subject_context={
+                'user': user,
+                'organisation': organisation
+            },
+            msg_context={
+                'user': user,
+                'organisation': organisation
+            },
+        )
 
 
 def update_project_budget(sender, **kwargs):
@@ -316,7 +302,7 @@ def update_project_budget(sender, **kwargs):
 
 def update_project_funding(sender, **kwargs):
     """
-    called when Invoice or Partnership objects are added/changed/deleted
+    called when Partnership objects are added/changed/deleted
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):

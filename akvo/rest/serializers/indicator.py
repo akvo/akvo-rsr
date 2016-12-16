@@ -13,10 +13,10 @@ from rest_framework import serializers
 
 class IndicatorSerializer(BaseRSRSerializer):
 
-    result_unicode = serializers.Field(source='result')
-    parent_indicator = serializers.Field(source='parent_indicator.pk')
-    measure_label = serializers.Field(source='iati_measure')
-    children_aggregate_percentage = serializers.Field(source='children_aggregate_percentage')
+    result_unicode = serializers.ReadOnlyField(source='result.__unicode__')
+    parent_indicator = serializers.ReadOnlyField(source='parent_indicator.pk')
+    measure_label = serializers.ReadOnlyField(source='iati_measure_unicode')
+    children_aggregate_percentage = serializers.ReadOnlyField()
 
     class Meta:
         model = Indicator
@@ -24,9 +24,9 @@ class IndicatorSerializer(BaseRSRSerializer):
 
 class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
-    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, allow_add_remove=True)
-    parent_indicator = serializers.Field(source='parent_indicator.pk')
-    children_aggregate_percentage = serializers.Field(source='children_aggregate_percentage')
+    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False)
+    parent_indicator = serializers.ReadOnlyField(source='parent_indicator.pk')
+    children_aggregate_percentage = serializers.ReadOnlyField()
 
     class Meta:
         model = Indicator

@@ -126,3 +126,4 @@ akvo/rsr/static/styles-src/*.map
 *.codekit
 
 *.scssc
+/akvo/rsr/fixtures/test_data.json

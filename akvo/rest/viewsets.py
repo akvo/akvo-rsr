@@ -16,6 +16,7 @@ from akvo.rest.models import TastyTokenAuthentication
 from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
+from .pagination import TastypieOffsetPagination
 
 import warnings
 
@@ -41,69 +42,12 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter, RSRGenericFilterBackend,)
     ordering_fields = '__all__'
 
-    def paginate_queryset(self, queryset, page_size=None):
+    def paginate_queryset(self, queryset):
+        """ Custom offset-based pagination for the Tastypie API emulation
         """
-        Paginate a queryset if required, either returning a page object,
-        or `None` if pagination is not configured for this view.
-        """
-        if '/rest/v1/' in self.request.path:
-            return super(BaseRSRViewSet, self).paginate_queryset(queryset, page_size)
-
-        deprecated_style = False
-        if page_size is not None:
-            warnings.warn('The `page_size` parameter to `paginate_queryset()` '
-                          'is deprecated. '
-                          'Note that the return style of this method is also '
-                          'changed, and will simply return a page object '
-                          'when called without a `page_size` argument.',
-                          DeprecationWarning, stacklevel=2)
-            deprecated_style = True
-        else:
-            # Determine the required page size.
-            # If pagination is not configured, simply return None.
-            page_size = self.get_paginate_by()
-            if not page_size:
-                return None
-
-        if not self.allow_empty:
-            warnings.warn(
-                'The `allow_empty` parameter is deprecated. '
-                'To use `allow_empty=False` style behavior, You should override '
-                '`get_queryset()` and explicitly raise a 404 on empty querysets.',
-                DeprecationWarning, stacklevel=2
-            )
-
-        paginator = self.paginator_class(queryset, page_size,
-                                         allow_empty_first_page=self.allow_empty)
-        offset_kwarg = self.kwargs.get('offset')
-        offset_query_param = self.request.QUERY_PARAMS.get('offset')
-
-        try:
-            offset = int(offset_kwarg or offset_query_param or 0)
-        except ValueError:
-            raise Http404(_("Offset cannot be converted to an int."))
-
-        page = int(offset / page_size) + 1
-
-        try:
-            page_number = paginator.validate_number(page)
-        except InvalidPage:
-            if page == 'last':
-                page_number = paginator.num_pages
-            else:
-                raise Http404(_("Page is not 'last', nor can it be converted to an int."))
-        try:
-            page = paginator.page(page_number)
-        except InvalidPage as exc:
-            error_format = _('Invalid page (%(page_number)s): %(message)s')
-            raise Http404(error_format % {
-                'page_number': page_number,
-                'message': str(exc)
-            })
-
-        if deprecated_style:
-            return (paginator, page, page.object_list, page.has_other_pages())
-        return page
+        if self.request and '/api/v1/' in self.request.path:
+            self.pagination_class = TastypieOffsetPagination
+        return super(BaseRSRViewSet, self).paginate_queryset(queryset)
 
     def get_queryset(self):
 
@@ -117,9 +61,9 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
             exclude_params = ['limit', 'format', 'page', 'offset', 'ordering', 'partner_type',
                               'sync_owner', 'reporting_org', ]
             filters = {}
-            for key in request.QUERY_PARAMS.keys():
+            for key in request.query_params.keys():
                 if key not in qs_params + exclude_params and not key.startswith('image_thumb_'):
-                    filters.update({key: request.QUERY_PARAMS.get(key)})
+                    filters.update({key: request.query_params.get(key)})
             return filters
 
         def get_lookups_from_filters(legacy_filters):
@@ -191,36 +135,34 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
         queryset = super(PublicProjectViewSet, self).get_queryset()
 
-        def projects_filter_for_non_privileged_users(user, queryset):
-            # Construct the public projects filter field lookup.
-            project_filter = self.project_relation + 'is_public'
-
-            # Filter the object list into two querysets;
-            # One where the related Projects are public and one where they are private
-            public_objects = queryset.filter(**{project_filter: True}).distinct()
-            private_objects = queryset.filter(**{project_filter: False}).distinct()
-
-            # In case of an anonymous user, only return the public objects
-            if user.is_anonymous():
-                queryset = public_objects
-
-            # Otherwise, check to which objects the user has (change) permission
-            elif private_objects:
-                permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
-                permitted_obj_pks = []
-
-                # Loop through all 'private' objects to see if the user has permission to change
-                # it. If so add its PK to the list of permitted objects.
-                for obj in private_objects:
-                    if user.has_perm(permission, obj):
-                        permitted_obj_pks.append(obj.pk)
-
-                queryset = public_objects | queryset.filter(pk__in=permitted_obj_pks).distinct()
-
-            return queryset
-
         # filter projects if user is "non-privileged"
         if user.is_anonymous() or not (user.is_superuser or user.is_admin):
-            queryset = projects_filter_for_non_privileged_users(user, queryset)
+            queryset = self.projects_filter_for_non_privileged_users(user, queryset, self.project_relation)
+
+        return queryset
+
+    @staticmethod
+    def projects_filter_for_non_privileged_users(user, queryset, project_relation):
+
+        if not user.is_anonymous() and (user.is_admin or user.is_superuser):
+            return queryset
+
+        # Construct the public projects filter field lookup.
+        project_filter = project_relation + 'is_public'
+
+        # Filter the object list into two querysets;
+        # One where the related Projects are public and one where they are private
+        public_objects = queryset.filter(**{project_filter: True}).distinct()
+        private_objects = queryset.filter(**{project_filter: False}).distinct()
+
+        # In case of an anonymous user, only return the public objects
+        if user.is_anonymous():
+            queryset = public_objects
+
+        # Otherwise, check to which objects the user has (change) permission
+        elif private_objects:
+            permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
+            filter_ = user.get_permission_filter(permission, project_relation)
+            queryset = public_objects | private_objects.filter(filter_).distinct()
 
         return queryset

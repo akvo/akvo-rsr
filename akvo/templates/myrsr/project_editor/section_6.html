@@ -17,7 +17,7 @@
                 <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
             </div>
             <form role="form">
-                {% include boolean_input with obj=project field='donate_button' %}
+                {% include text_input with obj=project field='donate_url' %}
 
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_budgetitem" }}">
                     <h5>{% trans 'Budget items' %}</h5>

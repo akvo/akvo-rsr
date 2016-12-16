@@ -85,6 +85,9 @@ class OrganisationDocument(models.Model):
     def iati_language(self):
         return codelist_value(Language, self, 'language')
 
+    def iati_language_unicode(self):
+        return str(self.iati_language())
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'organisation document')
@@ -118,6 +121,9 @@ class OrganisationDocumentCategory(models.Model):
     def iati_category(self):
         return codelist_value(DocumentCategory, self, 'category')
 
+    def iati_category_unicode(self):
+        return str(self.iati_category())
+
 
 class OrganisationDocumentCountry(models.Model):
     document = models.ForeignKey(OrganisationDocument, related_name='countries',
@@ -148,3 +154,6 @@ class OrganisationDocumentCountry(models.Model):
 
     def iati_country(self):
         return codelist_value(Country, self, 'country')
+
+    def iati_country_unicode(self):
+        return str(self.iati_country())

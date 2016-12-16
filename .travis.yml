@@ -1,5 +1,7 @@
 language: python
 
+cache: pip
+
 services:
   - postgresql
 
@@ -18,6 +20,7 @@ before_install:
 
 install:
   - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
+  - pip install -r scripts/deployment/pip/requirements/3_testing.txt
 
 before_script:
   - psql -c 'CREATE DATABASE travis_test;' -U postgres
@@ -27,6 +30,7 @@ before_script:
 script:
   - python manage.py collectstatic --noinput
   - coverage run manage.py test akvo
+  - SLOW_TESTS=1 coverage run -a manage.py test akvo.rsr.tests.rest.test_migration
   - coverage report -m
 
 after_success:
