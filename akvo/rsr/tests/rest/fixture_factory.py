@@ -242,7 +242,7 @@ class IndicatorPeriodFactory(DjangoModelFactory):
         model = 'rsr.IndicatorPeriod'
 
     indicator = factory.Iterator(Indicator.objects.all())
-    period_start = factory.fuzzy.FuzzyDate(datetime.date(2000, 1, 1))
+    period_start = factory.fuzzy.FuzzyDate(datetime.date(2000, 1, 1), datetime.date(2020, 1, 1))
     period_end = factory.LazyAttribute(lambda p: p.period_start + datetime.timedelta(90))
     locked = False
 
