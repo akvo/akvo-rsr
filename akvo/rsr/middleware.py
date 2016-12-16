@@ -112,11 +112,10 @@ class HostDispatchMiddleware(object):
     def process_request(self, request):
         """Route on request."""
         request.rsr_page = None
-        host = request.get_host()
-
-        # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
-        # Do nothing if called on "normal" RSR host.
         try:
+            # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
+            # Do nothing if called on "normal" RSR host.
+            host = request.get_host()
             if _is_rsr_host(host):
                 return None
         except DisallowedHost:
