@@ -4,16 +4,16 @@
 // < http://www.gnu.org/licenses/agpl.html >.
 
 
-const Collapse = require('../../../../scripts/devhelpers/node_modules/rc-collapse');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Collapse = require('rc-collapse');
 const Panel = Collapse.Panel;
-const React = require('../../../../scripts/devhelpers/node_modules/react');
-const ReactDOM = require('../../../../scripts/devhelpers/node_modules/react-dom');
 
 let csrftoken,
     endpoints,
     i18nResults,
     isPublic,
-    months,
+    i18nMonths,
     projectIds,
     user;
 
@@ -83,43 +83,13 @@ function getUserData() {
 class IndicatorPeriods extends React.Component {
 
     render() {
-        function getDateDescription(month) {
-            switch (month) {
-                case 0:
-                    return months.january;
-                case 1:
-                    return months.february;
-                case 2:
-                    return months.march;
-                case 3:
-                    return months.april;
-                case 4:
-                    return months.may;
-                case 5:
-                    return months.june;
-                case 6:
-                    return months.july;
-                case 7:
-                    return months.august;
-                case 8:
-                    return months.september;
-                case 9:
-                    return months.october;
-                case 10:
-                    return months.november;
-                case 11:
-                    return months.december;
-            }
-        }
-
         function displayDate(dateString) {
             // Display a dateString like "25 Jan 2016"
             if (dateString !== undefined && dateString !== null) {
                 var locale = "en-gb";
                 var date = new Date(dateString.split(".")[0].replace("/", /-/g));
                 var day = date.getUTCDate();
-                var month = getDateDescription(date.getUTCMonth());
-                //var month = date.toLocaleString(locale, { month: "short" });
+                var month = i18nMonths[date.getUTCMonth()];
                 var year = date.getUTCFullYear();
                 return day + " " + month + " " + year;
             }
@@ -211,13 +181,10 @@ class Results extends React.Component {
     }
 
     loadResults(projectId) {
-        // Load the results through the API, and update the state
-        var success = function(response) {
+        // Load the results through the API
+        const success = function(response) {
             // NOTE the coincidence that the "container field" in the API is named results :-p
             this._apiData.results = response.results;
-            // this.setState({
-            //     'results': response.results
-            // });
             this.loadIndicators(projectId);
         }.bind(this);
         apiCall('GET', endpoints.base_url + endpoints.results_of_project.replace('{project}',
@@ -225,12 +192,9 @@ class Results extends React.Component {
     }
 
     loadIndicators(projectId) {
-        // Load the indicators through the API, and update the state
-        var success = function(response) {
+        // Load the indicators through the API
+        const success = function(response) {
             this._apiData.indicators = response.results;
-            // this.setState({
-            //     indicators: response.results
-            // });
             this.loadPeriods(projectId);
         }.bind(this);
         apiCall('GET', endpoints.base_url + endpoints.indicators_of_project.replace('{project}',
@@ -238,39 +202,66 @@ class Results extends React.Component {
     }
 
     loadPeriods(projectId) {
-        // Load the periods through the API, and update the state
-        var thisApp = this;
-        var success = function(response) {
+        // Load the periods through the API
+        const success = function(response) {
             this._apiData.periods = response.results;
-            this.setState({
-                results: this.assembleData()
-            });
+            this.loadUpdatesAndComments(projectId);
         }.bind(this);
         apiCall('GET', endpoints.base_url + endpoints.periods_of_project.replace('{project}',
                 projectId), '', success);
     }
 
+    loadUpdatesAndComments(projectId) {
+        // Load the period data and comment
+        const success = function(response) {
+            this._apiData.updatesAndComments = response.results;
+            this.setState({
+                results: this.assembleData()
+            });
+        }.bind(this);
+        apiCall(
+            'GET', endpoints.base_url + endpoints.updates_and_comments_of_project.replace(
+                '{project}', projectId
+            ), '', success
+        );
+    }
+
+
+
     assembleData() {
         /*
         Construct a list of result objects based on the API call for Result, each of which holds a
         list of its associated indicators in the field "indicators", each of which hold a list of
-        indicator periods in the field "periods".
+        indicator periods in the field "periods" each of which holds a list of indicator period
+        data objects in the field updates.
+        Note that the "lowest" level in the call chain, loadUpdatesAndComments(), retrieves both
+        indicator period data ("updates") and comments nicely similarly to the rest of the data.
         All relations based on the relevant foreign keys linking the model objects.
-        TODO: this can be extended "downwards" with period updates and comments
         */
         // for each result
         return this._apiData.results.map(
-            // add field "results"
+            // add field "indicators"
             function(result) {
                 result.indicators = this._apiData.indicators
                     // for each indicator
                     .map(
                         function(indicator) {
-                            // filter periods based on indicator ID
+                            // add field "periods"
                             indicator.periods = this._apiData.periods
+                                // for each period
+                                .map(
+                                    function(period) {
+                                        // add field "updates"
+                                        period.updates = this._apiData.updatesAndComments
+                                            // populate period.updates filtered on period ID
+                                            .filter(update => update.period === period.id);
+                                        return period;
+                                    }.bind(this))
+                                // populate indicator.periods filtered on indicator ID
                                 .filter(period => period.indicator === indicator.id);
                             return indicator;
                         }.bind(this))
+                    // populate result.indicators filtered on result ID
                     .filter(indicator => indicator.result === result.id);
                 return result;
             }.bind(this)
@@ -304,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
     isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
-    months = JSON.parse(document.getElementById('months').innerHTML);
+    i18nMonths = JSON.parse(document.getElementById('i18nMonths').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
     if (!isPublic) {
