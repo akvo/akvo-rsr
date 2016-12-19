@@ -64,6 +64,12 @@ class HostHeaderTestCase(TestCase):
         resp = self.c.get('/')
         self.assertEqual(resp.status_code, 302)
 
+    def test_wildcard_host(self):
+        """When host is ''*.live.akvo-ops.org"""
+        self.c = Client(HTTP_HOST='*.live.akvo-ops.org')
+        resp = self.c.get('/')
+        self.assertEqual(resp.status_code, 302)
+
 
 class InValidStockRSRTestCase(TestCase):
 
