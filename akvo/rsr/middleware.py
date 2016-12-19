@@ -119,6 +119,7 @@ class HostDispatchMiddleware(object):
             if _is_rsr_host(host):
                 return None
         except DisallowedHost:
+            request.META['HTTP_HOST'] = settings.RSR_DOMAIN
             return redirect("http://{}".format(settings.RSR_DOMAIN))
 
         # Check if called on naked app domain - if so redirect

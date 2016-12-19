@@ -46,24 +46,23 @@ class HostHeaderTestCase(TestCase):
 
     """Testing boot traffic."""
 
-    def setUp(self):
-        """Setup."""
-        self.c = Client(HTTP_HOST='_')
-
     def test_underscore_host(self):
         """When host is '_'."""
+        self.c = Client(HTTP_HOST='_')
         resp = self.c.get('/')
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 302)
 
     def test_empy_host(self):
         """When host is ''."""
-        resp = self.c.get('')
-        self.assertEqual(resp.status_code, 400)
+        self.c = Client(HTTP_HOST='')
+        resp = self.c.get('/')
+        self.assertEqual(resp.status_code, 302)
 
     def test_oddchar_host(self):
         """When host is ''."""
-        resp = self.c.get('$')
-        self.assertEqual(resp.status_code, 400)
+        self.c = Client(HTTP_HOST='$')
+        resp = self.c.get('/')
+        self.assertEqual(resp.status_code, 302)
 
 
 class InValidStockRSRTestCase(TestCase):
