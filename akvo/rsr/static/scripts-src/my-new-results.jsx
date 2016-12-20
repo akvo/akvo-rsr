@@ -79,8 +79,38 @@ function getUserData() {
     apiCall('GET', endpoints.base_url + endpoints.user, '', success);
 }
 
+class Updates extends React.Component {
 
-class IndicatorPeriods extends React.Component {
+    render() {
+        function renderPanel(update, i) {
+            const organisation = update.user_details.approved_organisations[0].name;
+            const userName = update.user_details.first_name +" "+ update.user_details.last_name;
+            const data = update.data;
+            const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
+            return (
+                <Panel header={headerText} key={i}>
+                    <div>
+                        {update.data}
+                    </div>
+                </Panel>
+            )
+        }
+        const updates = this.props.updates;
+        if (updates !== undefined && updates.length > 0) {
+            return (
+                <Collapse>
+                    {updates.map((update, i) => renderPanel(update, i))}
+                </Collapse>
+            );
+        } else {
+            return (
+                <p>No updates</p>
+            );
+        }
+    }
+}
+
+class Periods extends React.Component {
 
     render() {
         function displayDate(dateString) {
@@ -100,9 +130,7 @@ class IndicatorPeriods extends React.Component {
             var periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
             return (
                 <Panel header={"Period: " + periodDate} key={i}>
-                    <div className="period-td">
-                        {periodDate}
-                    </div>
+                    <Updates updates={period.updates}/>
                 </Panel>
             )
         }
@@ -142,7 +170,7 @@ class Indicators extends React.Component {
                             <span>{indicator.baseline_value}</span>
                         </div>
                     </div>
-                    <IndicatorPeriods periods={indicator.periods}/>
+                    <Periods periods={indicator.periods}/>
                 </Panel>
             )
         }
