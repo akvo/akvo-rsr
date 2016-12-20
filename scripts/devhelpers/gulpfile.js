@@ -17,6 +17,7 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var babelify = require('babelify');
 var notify = require('gulp-notify');
+var gutil = require('gulp-util');
 
 var preset_react = require('babel-preset-react');
 var preset_es2015 = require('babel-preset-es2015');
@@ -69,6 +70,7 @@ function bundle() {
 
     return b
         .bundle()
+        .on('error', gutil.log)
         .pipe(source('my-new-results.js'))
         .pipe(gulp.dest('../../akvo/rsr/static/scripts-src/'))
         .pipe(notify(function () {
