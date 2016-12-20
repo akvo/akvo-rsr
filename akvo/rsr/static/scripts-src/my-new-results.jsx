@@ -79,118 +79,116 @@ function getUserData() {
     apiCall('GET', endpoints.base_url + endpoints.user, '', success);
 }
 
-class Updates extends React.Component {
 
+class Level extends React.Component {
     render() {
-        function renderPanel(update, i) {
-            const organisation = update.user_details.approved_organisations[0].name;
-            const userName = update.user_details.first_name +" "+ update.user_details.last_name;
-            const data = update.data;
-            const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
-            return (
-                <Panel header={headerText} key={i}>
-                    <div>
-                        {update.data}
-                    </div>
-                </Panel>
-            )
-        }
-        const updates = this.props.updates;
-        if (updates !== undefined && updates.length > 0) {
+        const items = this.props.items;
+        if (items !== undefined && items.length > 0) {
             return (
                 <Collapse>
-                    {updates.map((update, i) => renderPanel(update, i))}
+                    {items.map((item, i) => this.renderPanel(item, i))}
                 </Collapse>
             );
         } else {
             return (
-                <p>No updates</p>
+                <p>No items</p>
             );
         }
     }
 }
 
-class Periods extends React.Component {
 
-    render() {
+class Comments extends Level {
+
+    renderPanel(comment, i) {
+        return (
+            <Panel header={comment.comment} key={i}>
+                <div>By: {comment.user_details.first_name}</div>
+            </Panel>
+        )
+    }
+}
+
+
+class Updates extends Level {
+    renderPanel(update, i) {
+        const organisation = update.user_details.approved_organisations[0].name;
+        const userName = update.user_details.first_name +" "+ update.user_details.last_name;
+        const data = update.data;
+        const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
+        return (
+            <Panel header={headerText} key={i}>
+                <div>{update.data}</div>
+                <div>
+                    <Comments items={update.comments}/>
+                </div>
+            </Panel>
+        )
+    }
+}
+
+
+class Periods extends Level {
+    renderPanel(period, i) {
         function displayDate(dateString) {
             // Display a dateString like "25 Jan 2016"
             if (dateString !== undefined && dateString !== null) {
-                var locale = "en-gb";
-                var date = new Date(dateString.split(".")[0].replace("/", /-/g));
-                var day = date.getUTCDate();
-                var month = i18nMonths[date.getUTCMonth()];
-                var year = date.getUTCFullYear();
+                const locale = "en-gb";
+                const date = new Date(dateString.split(".")[0].replace("/", /-/g));
+                const day = date.getUTCDate();
+                const month = i18nMonths[date.getUTCMonth()];
+                const year = date.getUTCFullYear();
                 return day + " " + month + " " + year;
             }
             return i18nResults.unknown_date;
         }
 
-        function renderPanel(period, i) {
-            var periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
-            return (
-                <Panel header={"Period: " + periodDate} key={i}>
-                    <Updates updates={period.updates}/>
-                </Panel>
-            )
-        }
-        const periods = this.props.periods;
-        if (periods !== undefined && periods.length > 0) {
-            return (
-                <Collapse>
-                    {periods.map((period, i) => renderPanel(period, i))}
-                </Collapse>
-            );
-        } else {
-            return (
-                <p>No periods</p>
-            );
-        }
+        const periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
+        return (
+            <Panel header={"Period: " + periodDate} key={i}>
+                <Updates items={period.updates}/>
+            </Panel>
+        )
     }
 }
 
-class Indicators extends React.Component {
-    render() {
-        let periods = function (indicator) {
-            return this.props.periods.filter(period => period.indicator === indicator.id);
-        }.bind(this);
 
-        function renderPanel(indicator, i) {
-            const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
-            return (
-                <Panel header={"Indicator: " + title} key={i}>
-                    {title}
-                    <div className="baseline">
-                        <div className="baseline-year">
-                            {i18nResults.baseline_year}
-                            <span>{indicator.baseline_year}</span>
-                        </div>
-                        <div className="baseline-value">
-                            {i18nResults.baseline_value}
-                            <span>{indicator.baseline_value}</span>
-                        </div>
+class Indicators extends Level {
+    renderPanel(indicator, i) {
+        const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+        return (
+            <Panel header={"Indicator: " + title} key={i}>
+                {title}
+                <div className="baseline">
+                    <div className="baseline-year">
+                        {i18nResults.baseline_year}
+                        <span>{indicator.baseline_year}</span>
                     </div>
-                    <Periods periods={indicator.periods}/>
-                </Panel>
-            )
-        }
-        const indicators = this.props.indicators;
-        if (indicators !== undefined && indicators.length > 0) {
-            return (
-                <Collapse>
-                    {indicators.map((indicator, i) => renderPanel(indicator, i))}
-                </Collapse>
-            );
-        } else {
-            return (
-                <p>No indicators</p>
-            );
-        }
+                    <div className="baseline-value">
+                        {i18nResults.baseline_value}
+                        <span>{indicator.baseline_value}</span>
+                    </div>
+                </div>
+                <Periods items={indicator.periods}/>
+            </Panel>
+        )
     }
 }
 
 
-class Results extends React.Component {
+class Results extends Level {
+
+    renderPanel(result, i) {
+        return (
+            <Panel header={"Result: " + result.title} key={i}>
+                <Indicators items={result.indicators}/>
+            </Panel>
+        )
+    }
+}
+
+
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -254,14 +252,12 @@ class Results extends React.Component {
         );
     }
 
-
-
     assembleData() {
         /*
         Construct a list of result objects based on the API call for Result, each of which holds a
         list of its associated indicators in the field "indicators", each of which hold a list of
         indicator periods in the field "periods" each of which holds a list of indicator period
-        data objects in the field updates.
+        data objects in the field "updates".
         Note that the "lowest" level in the call chain, loadUpdatesAndComments(), retrieves both
         indicator period data ("updates") and comments nicely similarly to the rest of the data.
         All relations based on the relevant foreign keys linking the model objects.
@@ -298,25 +294,21 @@ class Results extends React.Component {
 
     render() {
         const results = this.state.results;
-        if (results.length > 0) {
+        if (results !== undefined && results.length > 0) {
             return (
                 <Collapse>
-                    {results.map((result, i) =>
-                        <Panel header={"Result: " + result.title} key={i}>
-                            <Indicators indicators={result.indicators}/>
-                        </Panel>)}
+                    <Results items={this.state.results}/>
                 </Collapse>
             );
         } else {
             return (
-                <span>Loading...</span>
+                <p>Loading...</p>
             );
         }
     }
 }
 
-
-ReactDOM.render(<Results/>, document.getElementById('new-results-framework'));
+ReactDOM.render(<App/>, document.getElementById('new-results-framework'));
 
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
