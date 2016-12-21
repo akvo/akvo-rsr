@@ -89,8 +89,11 @@ def update_details(request, pk=None):
 @authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def request_organisation(request, pk=None):
 
-    if 'group' not in request.data:
-        request.data['group'] = ''
+    # Add missing keys to request.data to simplify code and getting working
+    # with DRF-3 Serializer
+    for key in ('group', 'country', 'job_title'):
+        if key not in request.data:
+            request.data[key] = ''
 
     # Get the user, or return an error if the user does not exist
     try:
