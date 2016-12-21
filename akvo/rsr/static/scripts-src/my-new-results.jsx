@@ -10,9 +10,10 @@ const Collapse = require('rc-collapse');
 const Panel = Collapse.Panel;
 
 let csrftoken,
-    endpoints,
     i18nResults,
     isPublic,
+    endpointData,
+    endpointURL,
     i18nMonths,
     projectIds,
     user;
@@ -70,13 +71,13 @@ function apiCall(method, url, data, successCallback, retries) {
     xmlHttp.send(data);
 }
 
-function getUserData() {
+function getUserData(id) {
     // Get the user data from the API and stores it in the global user variable
     var success = function(response) {
         user = response;
         userIsAdmin();
     };
-    apiCall('GET', endpoints.base_url + endpoints.user, '', success);
+    apiCall('GET', endpointURL(id).user, '', success);
 }
 
 
@@ -195,61 +196,79 @@ class App extends React.Component {
             results: []
         };
         projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
-        endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
         this._apiData = {};
     }
 
     componentDidMount() {
+        // set up callback URL templates
+        endpointData = JSON.parse(document.getElementById('endpoint-data').innerHTML);
+        endpointURL = function (id) {
+            // Function that returns an object with callback URLs, including optional ID
+            // Usage: endpointURL(17).result -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
+            const host = "http://" + endpointData.host;
+            return {
+                "result": `${host}/rest/v1/result/${id}/?format=json`,
+                "results_of_project": `${host}/rest/v1/result/?format=json&project=${id}`,
+                "indicators_of_project": `${host}/rest/v1/indicator/?format=json&result__project=${id}`,
+                "periods_of_project": `${host}/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
+                "updates_and_comments_of_project": `${host}/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=${id}`,
+                "period_framework": `${host}/rest/v1/indicator_period_framework/${id}/?format=json`,
+                "update_and_comments": `${host}/rest/v1/indicator_period_data_framework/${id}/?format=json`,
+                "updates_and_comments": `${host}/rest/v1/indicator_period_data_framework/?format=json`,
+                "comments": `${host}/rest/v1/indicator_period_data_comment/?format=json`,
+                "user": `${host}/rest/v1/user/${id}/?format=json`,
+                "partnerships": `${host}/rest/v1/partnership/?format=json&project=${id}`,
+                "file_upload": `${host}/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
+            };
+        }
+
+        if (!isPublic) {
+            getUserData(endpointData.userId);
+        }
+
         // Once the component is mounted, load the results through the API
-        const project_id = projectIds.project_id;
         //TODO: this "chained" way of loading the API data kinda terrible and should be replaced
-        this.loadResults(project_id);
+        const projectId = projectIds.project_id;
+        this.loadResults(projectId);
     }
 
     loadResults(projectId) {
         // Load the results through the API
-        const success = function(response) {
+        let success = function(response) {
             // NOTE the coincidence that the "container field" in the API is named results :-p
             this._apiData.results = response.results;
             this.loadIndicators(projectId);
         }.bind(this);
-        apiCall('GET', endpoints.base_url + endpoints.results_of_project.replace('{project}',
-                projectId), '', success);
+        apiCall('GET', endpointURL(projectId).results_of_project, '', success);
     }
 
     loadIndicators(projectId) {
         // Load the indicators through the API
-        const success = function(response) {
+        let success = function(response) {
             this._apiData.indicators = response.results;
             this.loadPeriods(projectId);
         }.bind(this);
-        apiCall('GET', endpoints.base_url + endpoints.indicators_of_project.replace('{project}',
-                projectId), '', success);
+        apiCall('GET', endpointURL(projectId).indicators_of_project, '', success);
     }
 
     loadPeriods(projectId) {
         // Load the periods through the API
-        const success = function(response) {
+        let success = function(response) {
             this._apiData.periods = response.results;
             this.loadUpdatesAndComments(projectId);
         }.bind(this);
-        apiCall('GET', endpoints.base_url + endpoints.periods_of_project.replace('{project}',
-                projectId), '', success);
+        apiCall('GET', endpointURL(projectId).periods_of_project, '', success);
     }
 
     loadUpdatesAndComments(projectId) {
         // Load the period data and comment
-        const success = function(response) {
+        let success = function(response) {
             this._apiData.updatesAndComments = response.results;
             this.setState({
                 results: this.assembleData()
             });
         }.bind(this);
-        apiCall(
-            'GET', endpoints.base_url + endpoints.updates_and_comments_of_project.replace(
-                '{project}', projectId
-            ), '', success
-        );
+        apiCall('GET', endpointURL(projectId).updates_and_comments_of_project, '', success);
     }
 
     assembleData() {
@@ -308,19 +327,17 @@ class App extends React.Component {
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('new-results-framework'));
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
     isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
-    endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
     i18nMonths = JSON.parse(document.getElementById('i18nMonths').innerHTML);
     projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
-    if (!isPublic) {
-        getUserData();
-    }
+    ReactDOM.render(<App/>, document.getElementById('new-results-framework'));
 
     // Check if React is loaded
     // if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof smoothScroll !== 'undefined') {

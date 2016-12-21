@@ -35,21 +35,11 @@
     </script>
 
     {# Initial data endpoints #}
-    <script type="application/json" id="data-endpoints">
+    <script type="application/json" id="endpoint-data">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
-            "result": "/rest/v1/result/{result}/?format=json",
-            "results_of_project": "/rest/v1/result/?format=json&project={project}",
-            "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={project}",
-            "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
-            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
-            "period_framework": "/rest/v1/indicator_period_framework/{period}/?format=json",
-            "update_and_comments": "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-            "updates_and_comments": "/rest/v1/indicator_period_data_framework/?format=json",
-            "comments": "/rest/v1/indicator_period_data_comment/?format=json",
-            "user": "/rest/v1/user/{{ user.pk }}/?format=json",
-            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
-            "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
+            "host": "{{ request.META.HTTP_HOST }}",
+            "projectId": {{ project.pk }},
+            "userId": {{ user.pk }}
         }
     </script>
 
