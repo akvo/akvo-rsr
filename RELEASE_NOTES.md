@@ -10,6 +10,9 @@ GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
 ## Bug fixes
 
+[#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
+button for project summary, when it ends with a list.
+
 [#2479](https://github.com/akvo/akvo-rsr/issues/2479) Prompt user to use a
 different browser if GeoLocation API is only allowed on secure origins by the
 browser.
