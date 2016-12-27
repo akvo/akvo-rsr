@@ -10,6 +10,10 @@ GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
 ## Bug fixes
 
+[#2479](https://github.com/akvo/akvo-rsr/issues/2479) Prompt user to use a
+different browser if GeoLocation API is only allowed on secure origins by the
+browser.
+
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 

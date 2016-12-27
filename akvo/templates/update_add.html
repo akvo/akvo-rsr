@@ -77,11 +77,19 @@
   $( "#id_latitude").val(0);
   $( "#id_longitude").val(0);
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(storePosition);
+    navigator.geolocation.getCurrentPosition(storePosition, geolocationDisabled);
   }
   function storePosition(position) {
     $( "#id_latitude").val(position.coords.latitude);
     $( "#id_longitude").val(position.coords.longitude);
+  }
+  function geolocationDisabled(failure) {
+      if(failure.message.indexOf("Only secure origins are allowed") == 0) {
+          // Secure Origin issue.
+          alert("Your browser doesn't support getting location on non-https"
+                + " sites. If you want your location to be shared, please use"
+                + " another browser");
+      }
   }
 
 $('#id_photo').bind('change', function() {
