@@ -10,7 +10,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 
 from akvo.rsr.models import (Project, PublishingStatus, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, User, RelatedProject)
+                             IndicatorPeriodData, IndicatorReference, User, RelatedProject)
 
 from django.test import TestCase
 
@@ -72,6 +72,11 @@ class ResultsFrameworkTestCase(TestCase):
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
+        self.reference = IndicatorReference.objects.create(
+            indicator=indicator,
+            reference='ABC',
+            vocabulary='1',
+        )
 
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
@@ -87,6 +92,10 @@ class ResultsFrameworkTestCase(TestCase):
             indicator__result__project=self.child_project).first()
         self.assertEqual(child_period.indicator.result.parent_result, self.period.indicator.result)
         self.assertEqual(child_period.parent_period(), self.period)
+        child_reference = child_period.indicator.references.first()
+        self.assertEqual(child_reference.reference, self.reference.reference)
+        self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
+        self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
 
     def test_update(self):
         """

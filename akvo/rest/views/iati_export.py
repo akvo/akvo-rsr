@@ -13,7 +13,7 @@ from akvo.rsr.models import IatiActivityExport, IatiExport
 class IatiExportViewSet(BaseRSRViewSet):
     """
     """
-    queryset = IatiExport.objects.all()
+    queryset = IatiExport.objects.all().select_related('user')
     serializer_class = IatiExportSerializer
 
 

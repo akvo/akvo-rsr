@@ -12,7 +12,7 @@ from rest_framework import serializers
 
 class IndicatorReferenceSerializer(BaseRSRSerializer):
 
-    indicator_unicode = serializers.Field(source='indicator')
+    indicator_unicode = serializers.ReadOnlyField(source='indicator.__unicode__')
 
     class Meta:
         model = IndicatorReference

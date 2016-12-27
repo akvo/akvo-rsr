@@ -1,3 +1,33 @@
+# Currently in develop
+
+## Improvements
+
+### Cluster all the employments of a user
+
+Group all the employments of a user together in the user management page.
+
+GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
+
+## Bug fixes
+
+[#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
+button for project summary, when it ends with a list.
+
+[#2479](https://github.com/akvo/akvo-rsr/issues/2479) Prompt user to use a
+different browser if GeoLocation API is only allowed on secure origins by the
+browser.
+
+[#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
+employments to the same organisation & group.
+
+[#2427] (https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
+'Results and indicators table' report as text, not numbers.
+
+## Under the hood
+
+[#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
+been upgraded to 3.2.5 from v2.3.13 which is quite old.
+
 # Akvo RSR version 3.18.3 Vilnius (hot-fix)
 
 ## Improvements
@@ -25,6 +55,9 @@ wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
 
 [#2442](https://github.com/akvo/akvo-rsr/issues/2442) Custom mapper to import Result data only, using the IATI import,
 without over-writing the content of an existing project.
+
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
 
 # Akvo RSR version 3.18 Vilnius
 

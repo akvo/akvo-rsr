@@ -246,10 +246,11 @@ class IatiImportTestCase(TestCase):
 
     def test_partial_iati_import(self):
         """
-        Test an IATI import that ignores elements with the akvo:import attribute set to falsey
-        values, i.e. "false", "no", "f" or "0"
-        budget, contact-info, humanitarian-scope, legacy-data,
-        location, participating-org, planned-disbursement, policy-marker,
+        Test an IATI import that ignores certain elements
+
+        Ignore the data if the akvo:import attribute set to falsey values, i.e. "false", "no", "f"
+        or "0". Elements that support this are: budget, contact-info, humanitarian-scope,
+        legacy-data, location, participating-org, planned-disbursement, policy-marker,
         recipient-country, recipient-region, related-activity, result, sector and transaction
         """
         #import a project

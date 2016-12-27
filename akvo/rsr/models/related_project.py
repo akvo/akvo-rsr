@@ -44,6 +44,9 @@ class RelatedProject(models.Model):
     def iati_relation(self):
         return codelist_value(RelatedActivityType, self, 'relation')
 
+    def iati_relation_unicode(self):
+        return str(self.iati_relation())
+
     def related_project_show_link(self):
         if self.related_project:
             return u'<a href="{0}">{1}</a>'.format(self.related_project.get_absolute_url(),

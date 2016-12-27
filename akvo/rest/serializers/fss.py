@@ -20,7 +20,7 @@ class FssSerializer(BaseRSRSerializer):
 
 class FssForecastSerializer(BaseRSRSerializer):
 
-    currency_label = serializers.Field(source='iati_currency')
+    currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
 
     class Meta:
         model = FssForecast

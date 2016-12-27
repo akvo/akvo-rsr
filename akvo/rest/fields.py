@@ -47,7 +47,8 @@ class Base64ImageField(ImageField):
         'jpg',
         'png',
     )
-    def from_native(self, base64_data):
+
+    def to_internal_value(self, base64_data):
         if base64_data is None:
             data = base64_data
         # Check if this is a base64 string
@@ -71,9 +72,9 @@ class Base64ImageField(ImageField):
             self.check_file_extension(file_extension)
             data.seek(0)
 
-        return super(Base64ImageField, self).from_native(data)
+        return super(Base64ImageField, self).to_internal_value(data)
 
-    def to_native(self, value):
+    def to_representation(self, value):
         """
         :param value: A Base64ImageField object
         :return: a path to a thumbnail with a predetermined size, the default thumb

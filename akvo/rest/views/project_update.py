@@ -33,23 +33,23 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        created_at__gt = validate_date(self.request.QUERY_PARAMS.get('created_at__gt', None))
+        created_at__gt = validate_date(self.request.query_params.get('created_at__gt', None))
         if created_at__gt is not None:
             self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
-        created_at__lt = validate_date(self.request.QUERY_PARAMS.get('created_at__lt', None))
+        created_at__lt = validate_date(self.request.query_params.get('created_at__lt', None))
         if created_at__lt is not None:
             self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
-        last_modified_at__gt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__gt', None))
+        last_modified_at__gt = validate_date(self.request.query_params.get('last_modified_at__gt', None))
         if last_modified_at__gt is not None:
             self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
-        last_modified_at__lt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__lt', None))
+        last_modified_at__lt = validate_date(self.request.query_params.get('last_modified_at__lt', None))
         if last_modified_at__lt is not None:
             self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
-        project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
+        project__partners = self.request.query_params.get('project__partners', None)
         if project__partners:
             self.queryset = self.queryset.filter(project__partners=project__partners)
-        user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
+        user__organisations = self.request.query_params.get('user__organisations', None)
         if user__organisations:
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
         return super(ProjectUpdateViewSet, self).get_queryset()
@@ -90,23 +90,23 @@ class ProjectUpdateExtraViewSet(PublicProjectViewSet):
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
-        created_at__gt = validate_date(self.request.QUERY_PARAMS.get('created_at__gt', None))
+        created_at__gt = validate_date(self.request.query_params.get('created_at__gt', None))
         if created_at__gt is not None:
             self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
-        created_at__lt = validate_date(self.request.QUERY_PARAMS.get('created_at__lt', None))
+        created_at__lt = validate_date(self.request.query_params.get('created_at__lt', None))
         if created_at__lt is not None:
             self.queryset = self.queryset.filter(created_at__lt=created_at__lt)
-        last_modified_at__gt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__gt', None))
+        last_modified_at__gt = validate_date(self.request.query_params.get('last_modified_at__gt', None))
         if last_modified_at__gt is not None:
             self.queryset = self.queryset.filter(last_modified_at__gt=last_modified_at__gt)
-        last_modified_at__lt = validate_date(self.request.QUERY_PARAMS.get('last_modified_at__lt', None))
+        last_modified_at__lt = validate_date(self.request.query_params.get('last_modified_at__lt', None))
         if last_modified_at__lt is not None:
             self.queryset = self.queryset.filter(last_modified_at__lt=last_modified_at__lt)
         # Get updates per organisation
-        project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
+        project__partners = self.request.query_params.get('project__partners', None)
         if project__partners:
             self.queryset = self.queryset.filter(project__partners=project__partners)
-        user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
+        user__organisations = self.request.query_params.get('user__organisations', None)
         if user__organisations:
             self.queryset = self.queryset.filter(user__organisations=user__organisations)
         return super(ProjectUpdateExtraViewSet, self).get_queryset()
@@ -139,14 +139,12 @@ def validate_date(date):
 @permission_classes((IsAuthenticated, ))
 def upload_indicator_update_photo(request, pk=None):
     update = ProjectUpdate.objects.get(pk=pk)
-    user = request.user
 
     # TODO: permissions
 
-    files = request.FILES
-
-    if 'photo' in files.keys():
-        update.photo = files['photo']
+    data = request.data
+    if 'photo' in data.keys():
+        update.photo = data['photo']
         update.save(update_fields=['photo'])
 
     return Response(ProjectUpdateExtraSerializer(update).data)

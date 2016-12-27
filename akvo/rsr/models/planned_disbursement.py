@@ -85,8 +85,14 @@ class PlannedDisbursement(models.Model):
         else:
             return codelist_value(Currency, self.project, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
+
+    def iati_type_unicode(self):
+        return str(self.iati_type())
 
     def clean(self):
         # Don't allow a start date before an end date

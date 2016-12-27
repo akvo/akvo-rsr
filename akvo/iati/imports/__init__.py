@@ -117,11 +117,13 @@ class ImportMapper(object):
 
     def skip_importing(self, tag_name):
         """
-        Check if this type of data is to be ignored for the, import meaning that any existing data
-        remains unchanged. Note that even if only one tag of a kind has akvo:import="false" all data
-        of that type is ignored.
+        Check if this type of data is to be ignored for the import.
+
+        Any existing data remains unchanged. Note that even if only one tag of a kind has
+        akvo:import="false" all data of that type is ignored.
         :param tag_name: Name of the "top level" tag we're checking
-        :return: True if eny of the checked tags has the akvo:import attr set to a falsy value
+        :return: True if any of the checked tags has the akvo:import attr set to a value in
+            FALSE_VALUES
         """
         for tag in self.parent_elem.findall(tag_name):
             import_attr = self.get_attrib(tag, akvo_ns('import'), 'no_field', None)

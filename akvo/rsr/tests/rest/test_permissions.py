@@ -354,9 +354,8 @@ class PermissionFilteringTestCase(TestCase):
         }
 
         # one administrative location per project
-        # FIXME: change_* permissions weirdness, different from ProjectLocation permissions!
         model_map[M.AdministrativeLocation] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 4, 6, 4),
             'project_relation': 'location__location_target__'
         }
 
