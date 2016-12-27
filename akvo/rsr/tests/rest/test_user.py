@@ -31,7 +31,7 @@ class UserTestCase(TransactionTestCase):
         self.user = self._create_user('abc@example.com', self.user_password)
         self.c.login(username=self.user.username, password=self.user_password)
 
-    def test_request_organisation_once(self):
+    def test_request_organisation_simple(self):
         # Given
         data = {'organisation': self.org.id}
         pk = self.user.id
@@ -46,9 +46,24 @@ class UserTestCase(TransactionTestCase):
         employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
         self.assertEqual(employment.group.name, 'Users')
 
+    def test_request_organisation_once(self):
+        # Given
+        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
+        pk = self.user.id
+
+        # When
+        response = self.c.post(
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
+        self.assertEqual(employment.group.name, 'Users')
+
     def test_request_organisation_twice(self):
         # Given
-        data = {'organisation': self.org.id}
+        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
         pk = self.user.id
         self.c.post('/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data)
 

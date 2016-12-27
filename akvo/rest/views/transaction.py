@@ -13,7 +13,9 @@ from ..viewsets import PublicProjectViewSet
 class TransactionViewSet(PublicProjectViewSet):
     """Transaction resource."""
 
-    queryset = Transaction.objects.all()
+    queryset = Transaction.objects.all().select_related(
+        'project', 'provider_organisation', 'receiver_organisation'
+    )
     serializer_class = TransactionSerializer
 
 

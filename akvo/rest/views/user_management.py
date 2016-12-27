@@ -33,7 +33,7 @@ def invite_user(request):
     """
     Invite a new user to RSR.
 
-    :param request; request.DATA is a JSON string containing email, organisation and group data
+    :param request; request.data is a JSON string containing email, organisation and group data
     """
     def valid_email(email_address):
         try:
@@ -47,7 +47,7 @@ def invite_user(request):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     # Check if all information is present, and if the organisation and group exist
-    data, missing_data = request.DATA.get('user_data'), []
+    data, missing_data = request.data.get('user_data'), []
     if not data:
         return Response({'missing_data': missing_data.append(['email', 'organisation', 'group'])},
                         status=status.HTTP_400_BAD_REQUEST)

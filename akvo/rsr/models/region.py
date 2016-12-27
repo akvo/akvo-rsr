@@ -72,8 +72,14 @@ class RecipientRegion(models.Model):
     def iati_region(self):
         return codelist_value(Region, self, 'region')
 
+    def iati_region_unicode(self):
+        return str(self.iati_region())
+
     def iati_vocabulary(self):
         return codelist_value(RegionVocabulary, self, 'region_vocabulary')
+
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'
