@@ -6,6 +6,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+const update = require('immutability-helper');
 const Collapse = require('rc-collapse');
 const Panel = Collapse.Panel;
 
@@ -17,6 +18,26 @@ let csrftoken,
     i18nMonths,
     projectIds,
     user;
+
+// from http://stackoverflow.com/questions/7306669/
+Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
+
+/* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+csrftoken = getCookie('csrftoken');
 
 // TODO: replace this with a proper library for backend calls
 function apiCall(method, url, data, successCallback, retries) {
@@ -75,16 +96,24 @@ function getUserData(id) {
     // Get the user data from the API and stores it in the global user variable
     var success = function(response) {
         user = response;
-        userIsAdmin();
+        // userIsAdmin();
     };
     apiCall('GET', endpointURL(id).user, '', success);
 }
 
+function titleCase(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 class Level extends React.Component {
     render() {
         const items = this.props.items;
-        if (items !== undefined && items.length > 0) {
+        if (this.props.models[this.state.model] === undefined || items === undefined) {
+            console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
+            return (
+                <p>Loading...</p>
+            );
+        } else if (items.length > 0) {
             return (
                 <Collapse>
                     {items.map((item, i) => this.renderPanel(item, i))}
@@ -100,6 +129,10 @@ class Level extends React.Component {
 
 
 class Comments extends Level {
+    constructor(props) {
+        super(props);
+        this.state = {model: "comments"};
+    }
 
     renderPanel(comment, i) {
         return (
@@ -112,6 +145,15 @@ class Comments extends Level {
 
 
 class Updates extends Level {
+    constructor(props) {
+        super(props);
+        this.state = {model: "updates"};
+    }
+
+    componentWillMount() {
+        this.props.callbacks.loadModel('comments');
+    }
+
     renderPanel(update, i) {
         const organisation = update.user_details.approved_organisations[0].name;
         const userName = update.user_details.first_name +" "+ update.user_details.last_name;
@@ -121,7 +163,10 @@ class Updates extends Level {
             <Panel header={headerText} key={i}>
                 <div>{update.data}</div>
                 <div>
-                    <Comments items={update.comments}/>
+                    <Comments
+                        items={update.comments}
+                        models={this.props.models}
+                        callbacks={this.props.callbacks}/>
                 </div>
             </Panel>
         )
@@ -129,7 +174,53 @@ class Updates extends Level {
 }
 
 
+class PeriodLockToggle extends React.Component {
+    constructor (props) {
+        super(props);
+        this.lockToggle = this.lockToggle.bind(this);
+    }
+    static basePeriodSave(periodId, data, callback) {
+        // Base function for saving a period with a data Object.
+        const url = endpointURL(periodId).period_framework;
+        let success = function(response) {
+            const period = response;
+            const indicatorId = period.indicator;
+            this.props.savePeriodToIndicator(period, indicatorId);
+
+            // Call the callback, if not undefined.
+            if (callback !== undefined) {
+                callback();
+            }
+        }.bind(this);
+        apiCall('PATCH', url, JSON.stringify(data), success);
+    }
+
+    lockToggle(e) {
+        PeriodLockToggle.basePeriodSave(
+                this.props.period.id, {locked: !this.props.period.locked});
+        e.stopPropagation();
+    }
+
+    render() {
+        return (
+            <a
+                onClick={this.lockToggle}
+                className={'btn btn-sm btn-default'}
+                style={{float: 'right', margin: '0.3em 0.5em'}}>
+                    <i className={'fa fa-lock'}/>
+                    {this.props.period.locked ? 'Unlock period' : 'Lock period'}
+            </a>
+        )
+    }
+}
+
+
 class Periods extends Level {
+    constructor(props) {
+        super(props);
+        this.state = {model: "periods"};
+    }
+
     renderPanel(period, i) {
         function displayDate(dateString) {
             // Display a dateString like "25 Jan 2016"
@@ -145,16 +236,32 @@ class Periods extends Level {
         }
 
         const periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
+        const header = (
+            <span>
+                <span>Period: {periodDate}</span>
+                <PeriodLockToggle period={period}/>
+            </span>
+        );
         return (
-            <Panel header={"Period: " + periodDate} key={i}>
-                <Updates items={period.updates}/>
+            <Panel header={header} key={i}>
+                <Updates items={period.updates}
+                         models={this.props.models}
+                         callbacks={this.props.callbacks}/>
             </Panel>
         )
+    }
+    componentWillMount() {
+        this.props.callbacks.loadModel('updates');
     }
 }
 
 
 class Indicators extends Level {
+    constructor(props) {
+        super(props);
+        this.state = {model: "indicators"};
+    }
+
     renderPanel(indicator, i) {
         const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
         return (
@@ -170,19 +277,32 @@ class Indicators extends Level {
                         <span>{indicator.baseline_value}</span>
                     </div>
                 </div>
-                <Periods items={indicator.periods}/>
+                <Periods items={indicator.periods}
+                         models={this.props.models}
+                         callbacks={this.props.callbacks}/>
             </Panel>
         )
+    }
+
+    componentWillMount() {
+        this.props.callbacks.loadModel('periods');
     }
 }
 
 
 class Results extends Level {
+    constructor(props) {
+        super(props);
+        this.state = {model: "results"};
+    }
 
     renderPanel(result, i) {
         return (
             <Panel header={"Result: " + result.title} key={i}>
-                <Indicators items={result.indicators}/>
+                <Indicators
+                    items={result.indicators}
+                    models={this.props.models}
+                    callbacks={this.props.callbacks}/>
             </Panel>
         )
     }
@@ -192,11 +312,18 @@ class Results extends Level {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            results: []
-        };
         projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
-        this._apiData = {};
+        this.state = {
+            models: {
+                results: undefined,
+                indicators: undefined,
+                periods: undefined,
+                updates: undefined,
+                comments: undefined
+            },
+            resultsDataTree: [],
+            projectId: projectIds.project_id
+        };
     }
 
     componentDidMount() {
@@ -208,14 +335,14 @@ class App extends React.Component {
             const host = "http://" + endpointData.host;
             return {
                 "result": `${host}/rest/v1/result/${id}/?format=json`,
-                "results_of_project": `${host}/rest/v1/result/?format=json&project=${id}`,
-                "indicators_of_project": `${host}/rest/v1/indicator/?format=json&result__project=${id}`,
-                "periods_of_project": `${host}/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
-                "updates_and_comments_of_project": `${host}/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=${id}`,
+                "results": `${host}/rest/v1/result/?format=json&project=${id}`,
+                "indicators": `${host}/rest/v1/indicator/?format=json&result__project=${id}`,
+                "periods": `${host}/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
+                "updates": `${host}/rest/v1/indicator_period_data/?format=json&period__indicator__result__project=${id}`,
+                "comments": `${host}/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project=${id}`,
                 "period_framework": `${host}/rest/v1/indicator_period_framework/${id}/?format=json`,
                 "update_and_comments": `${host}/rest/v1/indicator_period_data_framework/${id}/?format=json`,
                 "updates_and_comments": `${host}/rest/v1/indicator_period_data_framework/?format=json`,
-                "comments": `${host}/rest/v1/indicator_period_data_comment/?format=json`,
                 "user": `${host}/rest/v1/user/${id}/?format=json`,
                 "partnerships": `${host}/rest/v1/partnership/?format=json&project=${id}`,
                 "file_upload": `${host}/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
@@ -228,50 +355,110 @@ class App extends React.Component {
 
         // Once the component is mounted, load the results through the API
         //TODO: this "chained" way of loading the API data kinda terrible and should be replaced
-        const projectId = projectIds.project_id;
-        this.loadResults(projectId);
+        this.loadModel('results');
+        this.loadModel('indicators');
+        // this.loadResults();
+        // this.loadIndicators();
+        // this.loadPeriods(projectId);
+        // this.loadUpdatesAndComments(projectId);
     }
 
-    loadResults(projectId) {
+    loadModel(model) {
         // Load the results through the API
-        let success = function(response) {
-            // NOTE the coincidence that the "container field" in the API is named results :-p
-            this._apiData.results = response.results;
-            this.loadIndicators(projectId);
-        }.bind(this);
-        apiCall('GET', endpointURL(projectId).results_of_project, '', success);
+        if (this.state.models[model] === undefined) {
+            let success = function(response) {
+                const indexedModel = `indexed${titleCase(model)}`;
+                this.setState(
+                    // NOTE the coincidence that the "container field" in the API is named results :-p
+                    {
+                        models: update(this.state.models, {$merge: {[model]: response.results}}),
+                        [indexedModel]: this.indexModel(response.results)
+                    },
+                    function() {
+                        this.setState({resultsDataTree: this.assembleDataTree()});
+                    }
+                )
+            }.bind(this);
+            apiCall('GET', endpointURL(this.state.projectId)[model], '', success);
+        }
     }
 
-    loadIndicators(projectId) {
-        // Load the indicators through the API
-        let success = function(response) {
-            this._apiData.indicators = response.results;
-            this.loadPeriods(projectId);
-        }.bind(this);
-        apiCall('GET', endpointURL(projectId).indicators_of_project, '', success);
+    // loadResults() {
+    //     // Load the results through the API
+    //     if (Object.keys(this.state.results).length === 0) {
+    //         let success = function(response) {
+    //             // NOTE the coincidence that the "container field" in the API is named results :-p
+    //             this.setState(
+    //                 {results: this.indexModel(response.results)},
+    //                 function() {
+    //                     this.setState({resultsDataTree: this.assembleDataTree()});
+    //                 })}.bind(this);
+    //         apiCall('GET', endpointURL(this.state.projectId).results_of_project, '', success);
+    //     }
+    // }
+    //
+    // loadIndicators() {
+    //     // Load the indicators through the API
+    //     if (Object.keys(this.state.indicators).length === 0) {
+    //         let success = function(response) {
+    //             this.setState(
+    //                 {indicators: this.indexModel(response.results)},
+    //                 function() {
+    //                     this.setState({resultsDataTree: this.assembleDataTree()});
+    //                 }
+    //             )
+    //         }.bind(this);
+    //         apiCall('GET', endpointURL(this.state.projectId).indicators_of_project, '', success);
+    //     }
+    // }
+    //
+    // loadPeriods() {
+    //     // Load the periods through the API
+    //     if (Object.keys(this.state.periods).length === 0) {
+    //         let success = function(response) {
+    //             this.setState(
+    //                 {periods: this.indexModel(response.results)},
+    //                 function() {
+    //                     this.setState({resultsDataTree: this.assembleDataTree()});
+    //                 }
+    //             )
+    //         }.bind(this);
+    //         apiCall('GET', endpointURL(this.state.projectId).periods_of_project, '', success);
+    //     }
+    // }
+    //
+    // loadUpdatesAndComments() {
+    //     // Load the period data and comment
+    //     if (Object.keys(this.state.updates).length === 0) {
+    //         let success = function(response) {
+    //             this.setState(
+    //                 {updates: this.indexModel(response.results)},
+    //                 function() {
+    //                     this.setState({resultsDataTree: this.assembleDataTree()});
+    //                 }
+    //             );
+    //         }.bind(this);
+    //         apiCall(
+    //             'GET', endpointURL(this.state.projectId).updates_and_comments_of_project, '', success
+    //         );
+    //     }
+    // }
+
+    indexModel(data) {
+        return data.reduce(
+            function(acc, obj) {
+                const id = obj['id'];
+                let indexedObj = {};
+                indexedObj[id] = obj;
+                return Object.assign(acc, indexedObj)
+            },
+            {}
+        )
     }
 
-    loadPeriods(projectId) {
-        // Load the periods through the API
-        let success = function(response) {
-            this._apiData.periods = response.results;
-            this.loadUpdatesAndComments(projectId);
-        }.bind(this);
-        apiCall('GET', endpointURL(projectId).periods_of_project, '', success);
-    }
 
-    loadUpdatesAndComments(projectId) {
-        // Load the period data and comment
-        let success = function(response) {
-            this._apiData.updatesAndComments = response.results;
-            this.setState({
-                results: this.assembleData()
-            });
-        }.bind(this);
-        apiCall('GET', endpointURL(projectId).updates_and_comments_of_project, '', success);
-    }
 
-    assembleData() {
+    assembleDataTree() {
         /*
         Construct a list of result objects based on the API call for Result, each of which holds a
         list of its associated indicators in the field "indicators", each of which hold a list of
@@ -281,47 +468,83 @@ class App extends React.Component {
         indicator period data ("updates") and comments nicely similarly to the rest of the data.
         All relations based on the relevant foreign keys linking the model objects.
         */
-        // for each result
-        return this._apiData.results.map(
-            // add field "indicators"
-            function(result) {
-                result.indicators = this._apiData.indicators
-                    // for each indicator
-                    .map(
-                        function(indicator) {
-                            // add field "periods"
-                            indicator.periods = this._apiData.periods
-                                // for each period
-                                .map(
-                                    function(period) {
-                                        // add field "updates"
-                                        period.updates = this._apiData.updatesAndComments
-                                            // populate period.updates filtered on period ID
-                                            .filter(update => update.period === period.id);
-                                        return period;
-                                    }.bind(this))
-                                // populate indicator.periods filtered on indicator ID
-                                .filter(period => period.indicator === indicator.id);
-                            return indicator;
-                        }.bind(this))
-                    // populate result.indicators filtered on result ID
-                    .filter(indicator => indicator.result === result.id);
-                return result;
-            }.bind(this)
-        );
+        function filterChildren(parents, field_names, children) {
+            if (parents !== undefined) {
+                return parents.map(
+                    function (parent) {
+                        if (children !== undefined) {
+                            parent[field_names.children] = children.filter(
+                                child => child[field_names.parent] === parent.id
+                            );
+                        }
+                        return parent;
+                    }
+                );
+            } else {
+                return undefined;
+            }
+        }
+
+        const models = this.state.models;
+        const updates = filterChildren(models.updates, {parent: "data", children: "comments"}, models.comments);
+        const periods = filterChildren(models.periods, {parent: "period", children: "updates"}, updates);
+        const indicators = filterChildren(models.indicators, {parent: "indicator", children: "periods"},  periods);
+        const results = filterChildren(models.results, {parent: "result", children: "indicators"}, indicators);
+        return results;
+
+        // if (models.results !== undefined) {
+        //     return models.results.map(
+        //         // add field "indicators"
+        //         function(result) {
+        //             if (models.indicators !== undefined) {
+        //                 result.indicators = models.indicators
+        //                 // for each indicator
+        //                     .map(
+        //                         function (indicator) {
+        //                            if (models.periods !== undefined) {
+        //                                // add field "periods"
+        //                                indicator.periods = models.periods
+        //                                // for each period
+        //                                    .map(
+        //                                        function (period) {
+        //                                            // add field "updates"
+        //                                            if (models.updates !== undefined) {
+        //                                                period.updates = models.updates
+        //                                                // populate period.updates filtered on period ID
+        //                                                    .filter(update => update.period === period.id);
+        //                                                return period;
+        //                                            }
+        //                                        }.bind(this))
+        //                                    // populate indicator.periods filtered on indicator ID
+        //                                    .filter(period => period.indicator === indicator.id);
+        //                                return indicator;
+        //                            }
+        //                         }.bind(this))
+        //                     // populate result.indicators filtered on result ID
+        //                     .filter(indicator => indicator.result === result.id);
+        //                 return result;
+        //             }
+        //         }.bind(this)
+        //     );
+        // }
     }
 
     render() {
-        const results = this.state.results;
-        if (results !== undefined && results.length > 0) {
+        const tree = this.state.resultsDataTree;
+        const callbacks = {
+            loadModel: this.loadModel.bind(this)
+        };
+        if (this.state.models.results === undefined) {
             return (
-                <Collapse>
-                    <Results items={this.state.results}/>
-                </Collapse>
+                <p>Loading...</p>
+            );
+        } else if (tree.length > 0) {
+            return (
+                <Results items={tree} callbacks={callbacks} models={this.state.models}/>
             );
         } else {
             return (
-                <p>Loading...</p>
+                <p>No items</p>
             );
         }
     }

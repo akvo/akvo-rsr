@@ -32,7 +32,8 @@ var vendors = {
     packages: [
         'react',
         'react-dom',
-        'rc-collapse'
+        'rc-collapse',
+        'immutability-helper'
     ],
     dest: '../../akvo/rsr/static/scripts-src/'
 };
@@ -62,6 +63,7 @@ var opts = Object.assign(watchify.args, options);
 var b = watchify(browserify(opts));
 
 function bundle() {
+    // based loosely on http://christianalfoni.github.io/javascript/2014/10/30/react-js-workflow-part2.html
     var start = new Date();
     console.log('Building result');
     vendors.packages.forEach(function(vendor) {
