@@ -22,6 +22,13 @@ let csrftoken,
 // from http://stackoverflow.com/questions/7306669/
 Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
 
+function deIndex(obj) {
+    if (obj !== undefined) {
+        return Object.values(obj);
+    }
+    return undefined;
+}
+
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
     var cookieValue = null;
@@ -178,14 +185,14 @@ class PeriodLockToggle extends React.Component {
     constructor (props) {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
+        this.state = {locking: false};
     }
-    static basePeriodSave(periodId, data, callback) {
+
+    basePeriodSave(periodId, data, callback) {
         // Base function for saving a period with a data Object.
         const url = endpointURL(periodId).period_framework;
-        let success = function(response) {
-            const period = response;
-            const indicatorId = period.indicator;
-            this.props.savePeriodToIndicator(period, indicatorId);
+        const success = function(response) {
+            this.props.callbacks.updateModel("periods", response);
 
             // Call the callback, if not undefined.
             if (callback !== undefined) {
@@ -195,20 +202,40 @@ class PeriodLockToggle extends React.Component {
         apiCall('PATCH', url, JSON.stringify(data), success);
     }
 
+    lockingToggle(locking) {
+        this.setState({locking: locking});
+    }
+
+    notLocking() {
+        this.lockingToggle(false);
+    }
+
     lockToggle(e) {
-        PeriodLockToggle.basePeriodSave(
-                this.props.period.id, {locked: !this.props.period.locked});
+        if (!this.state.locking) {
+            this.lockingToggle(true);
+            this.basePeriodSave(this.props.period.id, {locked: !this.props.period.locked}, this.notLocking.bind(this));
+        }
         e.stopPropagation();
     }
 
     render() {
+        let icon, label;
+        if (this.state.locking) {
+            icon = <i className="fa fa-spin fa-spinner" />;
+            label = "Loading";
+        } else if (this.props.period.locked) {
+            icon = <i className={'fa fa-lock'}/>;
+            label = "Unlock period";
+        } else {
+            icon = <i className="fa fa-unlock-alt" />;
+            label = "Lock period";
+        }
         return (
-            <a
-                onClick={this.lockToggle}
-                className={'btn btn-sm btn-default'}
-                style={{float: 'right', margin: '0.3em 0.5em'}}>
-                    <i className={'fa fa-lock'}/>
-                    {this.props.period.locked ? 'Unlock period' : 'Lock period'}
+            <a onClick={this.lockToggle}
+               className={'btn btn-sm btn-default'}
+               style={{float: 'right', margin: '0.3em 0.5em'}}>
+                {icon}
+                {label}
             </a>
         )
     }
@@ -239,7 +266,7 @@ class Periods extends Level {
         const header = (
             <span>
                 <span>Period: {periodDate}</span>
-                <PeriodLockToggle period={period}/>
+                <PeriodLockToggle period={period} callbacks={this.props.callbacks}/>
             </span>
         );
         return (
@@ -357,23 +384,17 @@ class App extends React.Component {
         //TODO: this "chained" way of loading the API data kinda terrible and should be replaced
         this.loadModel('results');
         this.loadModel('indicators');
-        // this.loadResults();
-        // this.loadIndicators();
-        // this.loadPeriods(projectId);
-        // this.loadUpdatesAndComments(projectId);
     }
 
     loadModel(model) {
-        // Load the results through the API
+        // Load a model from the API
         if (this.state.models[model] === undefined) {
             let success = function(response) {
-                const indexedModel = `indexed${titleCase(model)}`;
                 this.setState(
-                    // NOTE the coincidence that the "container field" in the API is named results :-p
-                    {
-                        models: update(this.state.models, {$merge: {[model]: response.results}}),
-                        [indexedModel]: this.indexModel(response.results)
-                    },
+                    {models: update(
+                        this.state.models,
+                        {$merge: {[model]: this.indexModel(response.results)}}
+                    )},
                     function() {
                         this.setState({resultsDataTree: this.assembleDataTree()});
                     }
@@ -383,66 +404,18 @@ class App extends React.Component {
         }
     }
 
-    // loadResults() {
-    //     // Load the results through the API
-    //     if (Object.keys(this.state.results).length === 0) {
-    //         let success = function(response) {
-    //             // NOTE the coincidence that the "container field" in the API is named results :-p
-    //             this.setState(
-    //                 {results: this.indexModel(response.results)},
-    //                 function() {
-    //                     this.setState({resultsDataTree: this.assembleDataTree()});
-    //                 })}.bind(this);
-    //         apiCall('GET', endpointURL(this.state.projectId).results_of_project, '', success);
-    //     }
-    // }
-    //
-    // loadIndicators() {
-    //     // Load the indicators through the API
-    //     if (Object.keys(this.state.indicators).length === 0) {
-    //         let success = function(response) {
-    //             this.setState(
-    //                 {indicators: this.indexModel(response.results)},
-    //                 function() {
-    //                     this.setState({resultsDataTree: this.assembleDataTree()});
-    //                 }
-    //             )
-    //         }.bind(this);
-    //         apiCall('GET', endpointURL(this.state.projectId).indicators_of_project, '', success);
-    //     }
-    // }
-    //
-    // loadPeriods() {
-    //     // Load the periods through the API
-    //     if (Object.keys(this.state.periods).length === 0) {
-    //         let success = function(response) {
-    //             this.setState(
-    //                 {periods: this.indexModel(response.results)},
-    //                 function() {
-    //                     this.setState({resultsDataTree: this.assembleDataTree()});
-    //                 }
-    //             )
-    //         }.bind(this);
-    //         apiCall('GET', endpointURL(this.state.projectId).periods_of_project, '', success);
-    //     }
-    // }
-    //
-    // loadUpdatesAndComments() {
-    //     // Load the period data and comment
-    //     if (Object.keys(this.state.updates).length === 0) {
-    //         let success = function(response) {
-    //             this.setState(
-    //                 {updates: this.indexModel(response.results)},
-    //                 function() {
-    //                     this.setState({resultsDataTree: this.assembleDataTree()});
-    //                 }
-    //             );
-    //         }.bind(this);
-    //         apiCall(
-    //             'GET', endpointURL(this.state.projectId).updates_and_comments_of_project, '', success
-    //         );
-    //     }
-    // }
+    updateModel(model, data) {
+        const id = data.id;
+        this.setState(
+            {models: update(
+                this.state.models,
+                {$merge: {[model]: {[id]: data}}}
+            )},
+            function() {
+                this.setState({resultsDataTree: this.assembleDataTree()});
+            }
+        )
+    }
 
     indexModel(data) {
         return data.reduce(
@@ -455,7 +428,6 @@ class App extends React.Component {
             {}
         )
     }
-
 
 
     assembleDataTree() {
@@ -486,53 +458,33 @@ class App extends React.Component {
         }
 
         const models = this.state.models;
-        const updates = filterChildren(models.updates, {parent: "data", children: "comments"}, models.comments);
-        const periods = filterChildren(models.periods, {parent: "period", children: "updates"}, updates);
-        const indicators = filterChildren(models.indicators, {parent: "indicator", children: "periods"},  periods);
-        const results = filterChildren(models.results, {parent: "result", children: "indicators"}, indicators);
+        const updates = filterChildren(
+            deIndex(models.updates),
+            {parent: "data", children: "comments"},
+            deIndex(models.comments)
+        );
+        const periods = filterChildren(
+            deIndex(models.periods),
+            {parent: "period", children: "updates"},
+            updates);
+        const indicators = filterChildren(
+            deIndex(models.indicators),
+            {parent: "indicator", children: "periods"},
+            periods
+        );
+        const results = filterChildren(
+            deIndex(models.results),
+            {parent: "result", children: "indicators"},
+            indicators
+        );
         return results;
-
-        // if (models.results !== undefined) {
-        //     return models.results.map(
-        //         // add field "indicators"
-        //         function(result) {
-        //             if (models.indicators !== undefined) {
-        //                 result.indicators = models.indicators
-        //                 // for each indicator
-        //                     .map(
-        //                         function (indicator) {
-        //                            if (models.periods !== undefined) {
-        //                                // add field "periods"
-        //                                indicator.periods = models.periods
-        //                                // for each period
-        //                                    .map(
-        //                                        function (period) {
-        //                                            // add field "updates"
-        //                                            if (models.updates !== undefined) {
-        //                                                period.updates = models.updates
-        //                                                // populate period.updates filtered on period ID
-        //                                                    .filter(update => update.period === period.id);
-        //                                                return period;
-        //                                            }
-        //                                        }.bind(this))
-        //                                    // populate indicator.periods filtered on indicator ID
-        //                                    .filter(period => period.indicator === indicator.id);
-        //                                return indicator;
-        //                            }
-        //                         }.bind(this))
-        //                     // populate result.indicators filtered on result ID
-        //                     .filter(indicator => indicator.result === result.id);
-        //                 return result;
-        //             }
-        //         }.bind(this)
-        //     );
-        // }
     }
 
     render() {
         const tree = this.state.resultsDataTree;
         const callbacks = {
-            loadModel: this.loadModel.bind(this)
+            loadModel: this.loadModel.bind(this),
+            updateModel: this.updateModel.bind(this)
         };
         if (this.state.models.results === undefined) {
             return (
