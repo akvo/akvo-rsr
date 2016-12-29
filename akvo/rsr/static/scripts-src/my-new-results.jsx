@@ -4,11 +4,17 @@
 // < http://www.gnu.org/licenses/agpl.html >.
 
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const update = require('immutability-helper');
-const Collapse = require('rc-collapse');
-const Panel = Collapse.Panel;
+// const React = require('react');
+// const ReactDOM = require('react-dom');
+// const update = require('immutability-helper');
+// const Collapse = require('rc-collapse');
+// const Panel = Collapse.Panel;
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import update  from 'immutability-helper';
+import Collapse, {Panel} from 'rc-collapse';
+import fetch from 'isomorphic-fetch';
 
 let csrftoken,
     i18nResults,
@@ -99,13 +105,51 @@ function apiCall(method, url, data, successCallback, retries) {
     xmlHttp.send(data);
 }
 
+
+function APICall(method, url, data, callback, retries) {
+    function modify(method, url, data){
+        return fetch(url, {
+            credentials: 'same-origin',
+            method: method,
+            headers: {'Content-Type': 'application/json', "X-CSRFToken": csrftoken},
+            body: JSON.stringify(data),
+        })
+    }
+
+    function call() {
+        switch (method) {
+            case "GET":
+                return () => fetch(url, {
+                    credentials: 'same-origin',
+                    method: 'GET',
+                    headers: {'Content-Type': 'application/json'},
+                });
+
+            case "POST":
+                return () => modify('POST', url, data);
+
+            case "PUT":
+                return () => modify('PUT', url, data);
+
+            case "PATCH":
+                return () => modify('PATCH', url, data);
+
+            case "DELETE":
+                return () => fetch(url, {
+                    credentials: 'same-origin',
+                    method: 'DELETE'
+                });
+        }
+    }
+    call()().then((response) => response.json()).then(callback);
+}
+
 function getUserData(id) {
     // Get the user data from the API and stores it in the global user variable
-    var success = function(response) {
+    function success(response) {
         user = response;
-        // userIsAdmin();
     };
-    apiCall('GET', endpointURL(id).user, '', success);
+    APICall('GET', endpointURL(id).user, '', success);
 }
 
 function titleCase(s) {
@@ -191,15 +235,15 @@ class PeriodLockToggle extends React.Component {
     basePeriodSave(periodId, data, callback) {
         // Base function for saving a period with a data Object.
         const url = endpointURL(periodId).period_framework;
-        const success = function(response) {
-            this.props.callbacks.updateModel("periods", response);
+        function success(data) {
+            this.props.callbacks.updateModel("periods", data);
 
             // Call the callback, if not undefined.
             if (callback !== undefined) {
                 callback();
             }
-        }.bind(this);
-        apiCall('PATCH', url, JSON.stringify(data), success);
+        };
+        APICall('PATCH', url, data, success.bind(this));
     }
 
     lockingToggle(locking) {

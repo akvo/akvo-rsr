@@ -33,7 +33,9 @@ var vendors = {
         'react',
         'react-dom',
         'rc-collapse',
-        'immutability-helper'
+        'immutability-helper',
+        'isomorphic-fetch',
+        'es6-promise'
     ],
     dest: '../../akvo/rsr/static/scripts-src/'
 };
