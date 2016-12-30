@@ -52,59 +52,6 @@ function getCookie(name) {
 }
 csrftoken = getCookie('csrftoken');
 
-// TODO: replace this with a proper library for backend calls
-function apiCall(method, url, data, successCallback, retries) {
-    var xmlHttp = new XMLHttpRequest();
-    var maxRetries = 5;
-
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
-            if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
-                if (method === 'GET' && response.next !== undefined) {
-                    if (response.next !== null) {
-                        var success = function(newResponse) {
-                            var oldResults = response.results;
-                            response.results = oldResults.concat(newResponse.results);
-                            return successCallback(response);
-                        };
-                        apiCall(method, response.next, data, success);
-                    } else {
-                        return successCallback(response);
-                    }
-                } else {
-                    return successCallback(response);
-                }
-            } else {
-                var message = i18nResults.general_error + ': ';
-                for (var key in response) {
-                    if (response.hasOwnProperty(key)) {
-                         message += response[key] + '. ';
-                    }
-                }
-                showGeneralError(message);
-                return false;
-            }
-        }
-    };
-
-    xmlHttp.onerror = function () {
-        if (retries === undefined) {
-            return apiCall(method, url, data, successCallback, 2);
-        } else if (retries <= maxRetries) {
-            return apiCall(method, url, data, successCallback, retries + 1);
-        } else {
-            showGeneralError(i18nResults.connection_error);
-            return false;
-        }
-    };
-
-    xmlHttp.open(method, url, true);
-    xmlHttp.setRequestHeader("X-CSRFToken", csrftoken);
-    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttp.send(data);
-}
-
 
 function APICall(method, url, data, callback, retries) {
     function modify(method, url, data){
@@ -116,32 +63,39 @@ function APICall(method, url, data, callback, retries) {
         })
     }
 
-    function call() {
-        switch (method) {
-            case "GET":
-                return () => fetch(url, {
-                    credentials: 'same-origin',
-                    method: 'GET',
-                    headers: {'Content-Type': 'application/json'},
-                });
+    let handler;
+    switch (method) {
+        case "GET":
+            handler = () => fetch(url, {
+                credentials: 'same-origin',
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            });
+            break;
 
-            case "POST":
-                return () => modify('POST', url, data);
+        case "POST":
+            handler = () => modify('POST', url, data);
+            break;
 
-            case "PUT":
-                return () => modify('PUT', url, data);
+        case "PUT":
+            handler = () => modify('PUT', url, data);
+            break;
 
-            case "PATCH":
-                return () => modify('PATCH', url, data);
+        case "PATCH":
+            handler = () => modify('PATCH', url, data);
+            break;
 
-            case "DELETE":
-                return () => fetch(url, {
-                    credentials: 'same-origin',
-                    method: 'DELETE'
-                });
-        }
+        case "DELETE":
+            handler = () => fetch(url, {
+                credentials: 'same-origin',
+                method: 'DELETE'
+            });
+            break;
     }
-    call()().then((response) => response.json()).then(callback);
+    handler()
+        //TODO: error handling? See https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
+        .then((response) => response.json())
+        .then(callback);
 }
 
 function getUserData(id) {
@@ -242,7 +196,7 @@ class PeriodLockToggle extends React.Component {
             if (callback !== undefined) {
                 callback();
             }
-        };
+        }
         APICall('PATCH', url, data, success.bind(this));
     }
 
@@ -444,21 +398,22 @@ class App extends React.Component {
                     }
                 )
             }.bind(this);
-            apiCall('GET', endpointURL(this.state.projectId)[model], '', success);
+            APICall('GET', endpointURL(this.state.projectId)[model], '', success);
         }
     }
 
     updateModel(model, data) {
         const id = data.id;
+        const newState = update(
+            this.state.models,
+            {[model]: {$merge: {[id]: data}}}
+        );
         this.setState(
-            {models: update(
-                this.state.models,
-                {$merge: {[model]: {[id]: data}}}
-            )},
+            {models: newState},
             function() {
                 this.setState({resultsDataTree: this.assembleDataTree()});
             }
-        )
+        );
     }
 
     indexModel(data) {
