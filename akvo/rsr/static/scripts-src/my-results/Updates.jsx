@@ -53,3 +53,9 @@ export default class Updates extends Level {
         )
     }
 }
+
+Updates.propTypes = {
+    items: PropTypes.array,
+    models: PropTypes.object,
+    callbacks: PropTypes.object
+};

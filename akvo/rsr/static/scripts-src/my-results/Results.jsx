@@ -29,3 +29,9 @@ export default class Results extends Level {
         )
     }
 }
+
+Results.propTypes = {
+    items: PropTypes.array,
+    models: PropTypes.object,
+    callbacks: PropTypes.object
+};

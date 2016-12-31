@@ -74,6 +74,11 @@ class PeriodLockToggle extends React.Component {
     }
 }
 
+PeriodLockToggle.propTypes = {
+    period: PropTypes.object,
+    callbacks: PropTypes.object
+};
+
 
 export default class Periods extends Level {
     constructor(props) {
@@ -105,3 +110,9 @@ export default class Periods extends Level {
         this.props.callbacks.loadModel('updates');
     }
 }
+
+Periods.propTypes = {
+    items: PropTypes.array,
+    models: PropTypes.object,
+    callbacks: PropTypes.object
+};

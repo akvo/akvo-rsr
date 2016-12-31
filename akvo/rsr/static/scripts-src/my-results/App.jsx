@@ -16,7 +16,6 @@ import {APICall, endpoints} from './utils.js';
 
 let i18nResults,
     isPublic,
-    endpointData,
     i18nMonths,
     projectIds;
 

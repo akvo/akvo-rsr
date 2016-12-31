@@ -42,3 +42,9 @@ export default class Indicators extends Level {
         this.props.callbacks.loadModel('periods');
     }
 }
+
+Indicators.propTypes = {
+    items: PropTypes.array,
+    models: PropTypes.object,
+    callbacks: PropTypes.object
+};

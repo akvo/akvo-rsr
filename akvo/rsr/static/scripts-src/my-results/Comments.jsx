@@ -25,3 +25,9 @@ export default class Comments extends Level {
         )
     }
 }
+
+Comments.propTypes = {
+    items: PropTypes.array,
+    models: PropTypes.object,
+    callbacks: PropTypes.object
+};
