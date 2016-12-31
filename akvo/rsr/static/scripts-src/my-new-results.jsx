@@ -105,7 +105,7 @@ function titleCase(s) {
 
 function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
-    if (dateString !== undefined && dateString !== null) {
+    if (dateString) {
         const locale = "en-gb";
         const date = new Date(dateString.split(".")[0].replace("/", /-/g));
         const day = date.getUTCDate();
@@ -119,7 +119,7 @@ function displayDate(dateString) {
 class Level extends React.Component {
     render() {
         const items = this.props.items;
-        if (this.props.models[this.state.model] === undefined || items === undefined) {
+        if (! this.props.models[this.state.model] || ! items) {
             console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
             return (
                 <p>Loading...</p>
@@ -210,7 +210,7 @@ class PeriodLockToggle extends React.Component {
             this.props.callbacks.updateModel("periods", data);
 
             // Call the callback, if not undefined.
-            if (callback !== undefined) {
+            if (callback) {
                 callback();
             }
         }
@@ -394,7 +394,7 @@ class App extends React.Component {
 
     loadModel(model) {
         // Load a model from the API. After loading rebuild the data tree.
-        if (this.state.models[model] === undefined) {
+        if (! this.state.models[model]) {
             let success = function(response) {
                 this.setState(
                     {models: update(
@@ -466,20 +466,16 @@ class App extends React.Component {
                 the fields linking the two levels of objects.
                 children: list of all child objects.
              */
-            if (parents !== undefined) {
-                return parents.map(
-                    function (parent) {
-                        if (children !== undefined) {
-                            parent[fieldNames.children] = children.filter(
-                                child => child[fieldNames.parent] === parent.id
-                            );
-                        }
-                        return parent;
+            return parents && parents.map(
+                function (parent) {
+                    if (children) {
+                        parent[fieldNames.children] = children.filter(
+                            child => child[fieldNames.parent] === parent.id
+                        );
                     }
-                );
-            } else {
-                return undefined;
-            }
+                    return parent;
+                }
+            );
         }
 
         function annotatePeriods(periods) {
@@ -489,23 +485,21 @@ class App extends React.Component {
             update.period_actual_value but we can't use that since we want to be able to
             (re)-calculate on data changes.
              */
-            if (periods !== undefined) {
-                return periods.map(
-                    function(period) {
-                        if (period.updates !== undefined) {
-                            let actual_value = 0;
-                            period.updates = period.updates.map(
-                                function(update) {
-                                    update['actual_value'] = parseInt(update.data) + actual_value;
-                                    actual_value = update.actual_value;
-                                    return update;
-                                }
-                            )
-                        }
-                        return period;
+            return periods && periods.map(
+                function(period) {
+                    if (period.updates !== undefined) {
+                        let actual_value = 0;
+                        period.updates = period.updates.map(
+                            function(update) {
+                                update['actual_value'] = parseInt(update.data) + actual_value;
+                                actual_value = update.actual_value;
+                                return update;
+                            }
+                        )
                     }
-                )
-            }
+                    return period;
+                }
+            )
         }
 
         function deIndex(obj) {
