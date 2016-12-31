@@ -87,21 +87,20 @@ export function APICall(method, url, data, callback, retries) {
 }
 
 
-export function endpoints(id) {
-    // Function that returns an object with callback URLs, including optional ID
-    // Usage: endpointURL(17).result -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
-    return {
-        "result": `/rest/v1/result/${id}/?format=json`,
-        "results": `/rest/v1/result/?format=json&project=${id}`,
-        "indicators": `/rest/v1/indicator/?format=json&result__project=${id}`,
-        "periods": `/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
-        "updates": `/rest/v1/indicator_period_data/?format=json&period__indicator__result__project=${id}`,
-        "comments": `/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project=${id}`,
-        "period_framework": `/rest/v1/indicator_period_framework/${id}/?format=json`,
-        "update_and_comments": `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
-        "updates_and_comments": `/rest/v1/indicator_period_data_framework/?format=json`,
-        "user": `/rest/v1/user/${id}/?format=json`,
-        "partnerships": `/rest/v1/partnership/?format=json&project=${id}`,
-        "file_upload": `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
-    };
-}
+// Object holds callback URL functions as values, most of them called with an id parameter
+// Usage: endpointURL(17).result -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
+export const endpoints = {
+        "result": (id) => `/rest/v1/result/${id}/?format=json`,
+        "results": (id) => `/rest/v1/result/?format=json&project=${id}`,
+        "indicators": (id) => `/rest/v1/indicator/?format=json&result__project=${id}`,
+        "periods": (id) => `/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
+        "updates": (id) => `/rest/v1/indicator_period_data/?format=json&period__indicator__result__project=${id}`,
+        "comments": (id) => `/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project=${id}`,
+        "period_framework": (id) => `/rest/v1/indicator_period_framework/${id}/?format=json`,
+        "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
+        "updates_and_comments": () => `/rest/v1/indicator_period_data_framework/?format=json`,
+        "user": (id) => `/rest/v1/user/${id}/?format=json`,
+        "partnerships": (id) => `/rest/v1/partnership/?format=json&project=${id}`,
+        "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
+};
+

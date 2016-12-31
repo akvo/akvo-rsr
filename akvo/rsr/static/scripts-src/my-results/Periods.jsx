@@ -23,7 +23,7 @@ class PeriodLockToggle extends React.Component {
 
     basePeriodSave(periodId, data, callback) {
         // Base function for saving a period with a data Object.
-        const url = endpoints(periodId).period_framework;
+        const url = endpoints.period_framework(periodId);
         function success(data) {
             this.props.callbacks.updateModel("periods", data);
 

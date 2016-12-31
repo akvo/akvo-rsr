@@ -62,7 +62,7 @@ class App extends React.Component {
                     }
                 )
             }.bind(this);
-            APICall('GET', endpoints(this.state.projectId)[model], '', success);
+            APICall('GET', endpoints[model](this.state.projectId), '', success);
         }
     }
 
