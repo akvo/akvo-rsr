@@ -28,13 +28,6 @@ let csrftoken,
 // from http://stackoverflow.com/questions/7306669/
 Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
 
-function deIndex(obj) {
-    if (obj !== undefined) {
-        return Object.values(obj);
-    }
-    return undefined;
-}
-
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
     var cookieValue = null;
@@ -110,6 +103,19 @@ function titleCase(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function displayDate(dateString) {
+    // Display a dateString like "25 Jan 2016"
+    if (dateString !== undefined && dateString !== null) {
+        const locale = "en-gb";
+        const date = new Date(dateString.split(".")[0].replace("/", /-/g));
+        const day = date.getUTCDate();
+        const month = i18nMonths[date.getUTCMonth()];
+        const year = date.getUTCFullYear();
+        return day + " " + month + " " + year;
+    }
+    return i18nResults.unknown_date;
+}
+
 class Level extends React.Component {
     render() {
         const items = this.props.items;
@@ -166,7 +172,18 @@ class Updates extends Level {
         const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
         return (
             <Panel header={headerText} key={i}>
-                <div>{update.data}</div>
+                <div>
+
+                    When: {displayDate(update.created_at)} |
+                    By: {userName} |
+                    Org: {update.user_details.approved_organisations[0].name} |
+                    Status: {update.status} <br/>
+                    Update value: {update.data} | {/*
+                        NOTE: we use update.actual_value, a value calculated in App.annotate(), not
+                        update.period_actual_value from the backend
+                    */}
+                    Actual total for this period (including this update): {update.actual_value}
+                </div>
                 <div>
                     <Comments
                         items={update.comments}
@@ -247,23 +264,14 @@ class Periods extends Level {
     }
 
     renderPanel(period, i) {
-        function displayDate(dateString) {
-            // Display a dateString like "25 Jan 2016"
-            if (dateString !== undefined && dateString !== null) {
-                const locale = "en-gb";
-                const date = new Date(dateString.split(".")[0].replace("/", /-/g));
-                const day = date.getUTCDate();
-                const month = i18nMonths[date.getUTCMonth()];
-                const year = date.getUTCFullYear();
-                return day + " " + month + " " + year;
-            }
-            return i18nResults.unknown_date;
-        }
-
         const periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
         const header = (
             <span>
-                <span>Period: {periodDate}</span>
+                <span>
+                    Period: {periodDate} |
+                    Target value: {period.target_value} |
+                    Actual value: {period.actual_value}
+                </span>
                 <PeriodLockToggle period={period} callbacks={this.props.callbacks}/>
             </span>
         );
@@ -372,7 +380,7 @@ class App extends React.Component {
                 "partnerships": `${host}/rest/v1/partnership/?format=json&project=${id}`,
                 "file_upload": `${host}/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
             };
-        }
+        };
 
         if (!isPublic) {
             getUserData(endpointData.userId);
@@ -385,7 +393,7 @@ class App extends React.Component {
     }
 
     loadModel(model) {
-        // Load a model from the API
+        // Load a model from the API. After loading rebuild the data tree.
         if (this.state.models[model] === undefined) {
             let success = function(response) {
                 this.setState(
@@ -403,6 +411,10 @@ class App extends React.Component {
     }
 
     updateModel(model, data) {
+        /*
+        Update a model instance. Uses the indexed model objects and the immutability-helper update
+         function (https://facebook.github.io/react/docs/update.html)
+         */
         const id = data.id;
         const newState = update(
             this.state.models,
@@ -417,6 +429,11 @@ class App extends React.Component {
     }
 
     indexModel(data) {
+        /*
+        Create an indexed version of a model by creating a list of objects, one for each model
+        instance where the object key is the id of the instance and the value is the full instance.
+        This construct is used to be able to easily update individual instances.
+         */
         return data.reduce(
             function(acc, obj) {
                 const id = obj['id'];
@@ -433,19 +450,28 @@ class App extends React.Component {
         /*
         Construct a list of result objects based on the API call for Result, each of which holds a
         list of its associated indicators in the field "indicators", each of which hold a list of
-        indicator periods in the field "periods" each of which holds a list of indicator period
-        data objects in the field "updates".
-        Note that the "lowest" level in the call chain, loadUpdatesAndComments(), retrieves both
-        indicator period data ("updates") and comments nicely similarly to the rest of the data.
-        All relations based on the relevant foreign keys linking the model objects.
+        indicator periods in the field "periods" and on down via "updates" and "comments".
+        This data structure is used to populate the whole tree of components each level passing the
+        child list as the prop "items"
         */
-        function filterChildren(parents, field_names, children) {
+
+        function filterChildren(parents, fieldNames, children) {
+            /*
+            Helper function that links two levels in the data tree. The linking is based on the
+            foreign key field to the parent of the child being the same as the current parent object
+            Params:
+                parents: list of parent objects. Each parent object is assigned a new field that
+                         holds the list of associated children
+                fieldNames: object with two fields, "parent" and "children" that hold the name of
+                the fields linking the two levels of objects.
+                children: list of all child objects.
+             */
             if (parents !== undefined) {
                 return parents.map(
                     function (parent) {
                         if (children !== undefined) {
-                            parent[field_names.children] = children.filter(
-                                child => child[field_names.parent] === parent.id
+                            parent[fieldNames.children] = children.filter(
+                                child => child[fieldNames.parent] === parent.id
                             );
                         }
                         return parent;
@@ -456,21 +482,58 @@ class App extends React.Component {
             }
         }
 
+        function annotatePeriods(periods) {
+            /*
+            Add the field "actual_value" to each period update, which is the sum of all update
+            values up to this point in time. Note that this field exists in the dataset as
+            update.period_actual_value but we can't use that since we want to be able to
+            (re)-calculate on data changes.
+             */
+            if (periods !== undefined) {
+                return periods.map(
+                    function(period) {
+                        if (period.updates !== undefined) {
+                            let actual_value = 0;
+                            period.updates = period.updates.map(
+                                function(update) {
+                                    update['actual_value'] = parseInt(update.data) + actual_value;
+                                    actual_value = update.actual_value;
+                                    return update;
+                                }
+                            )
+                        }
+                        return period;
+                    }
+                )
+            }
+        }
+
+        function deIndex(obj) {
+            if (obj !== undefined) {
+                return Object.values(obj);
+            }
+            return undefined;
+        }
+
         const models = this.state.models;
         const updates = filterChildren(
             deIndex(models.updates),
             {parent: "data", children: "comments"},
             deIndex(models.comments)
         );
+
         const periods = filterChildren(
             deIndex(models.periods),
             {parent: "period", children: "updates"},
             updates);
+        const annotated_periods = annotatePeriods(periods);
+
         const indicators = filterChildren(
             deIndex(models.indicators),
             {parent: "indicator", children: "periods"},
-            periods
+            annotated_periods
         );
+
         const results = filterChildren(
             deIndex(models.results),
             {parent: "result", children: "indicators"},
