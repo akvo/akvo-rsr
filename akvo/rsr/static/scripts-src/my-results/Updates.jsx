@@ -33,7 +33,7 @@ export default class Updates extends Level {
             <Panel header={headerText} key={i}>
                 <div>
 
-                    When: {displayDate(update.created_at)} |
+                    When: {displayDate(update.created_at, this.props.i18n.months)} |
                     By: {userName} |
                     Org: {update.user_details.approved_organisations[0].name} |
                     Status: {update.status} <br/>
@@ -57,5 +57,6 @@ export default class Updates extends Level {
 Updates.propTypes = {
     items: PropTypes.array,
     models: PropTypes.object,
-    callbacks: PropTypes.object
+    callbacks: PropTypes.object.isRequired,
+    i18n: PropTypes.object.isRequired
 };

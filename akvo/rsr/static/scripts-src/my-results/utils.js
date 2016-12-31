@@ -9,7 +9,7 @@
 import fetch from 'isomorphic-fetch';
 
 
-export function displayDate(dateString) {
+export function displayDate(dateString, i18nMonths) {
     // Display a dateString like "25 Jan 2016"
     if (dateString) {
         const locale = "en-gb";

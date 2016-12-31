@@ -20,20 +20,23 @@ export default class Indicators extends Level {
 
     renderPanel(indicator, i) {
         const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+        const strings = this.props.i18n.strings;
         return (
             <Panel header={"Indicator: " + title} key={i}>
                 {title}
                 <div className="baseline">
                     <div className="baseline-year">
-                        Baseline year: {indicator.baseline_year}
+                        {strings.baseline_year}: {indicator.baseline_year}
                     </div>
                     <div className="baseline-value">
-                        Baseline value: {indicator.baseline_value}
+                        {strings.baseline_value}: {indicator.baseline_value}
                     </div>
                 </div>
-                <Periods items={indicator.periods}
-                         models={this.props.models}
-                         callbacks={this.props.callbacks}/>
+                <Periods
+                    items={indicator.periods}
+                    models={this.props.models}
+                    callbacks={this.props.callbacks}
+                    i18n={this.props.i18n}/>
             </Panel>
         )
     }
@@ -46,5 +49,6 @@ export default class Indicators extends Level {
 Indicators.propTypes = {
     items: PropTypes.array,
     models: PropTypes.object,
-    callbacks: PropTypes.object
+    callbacks: PropTypes.object.isRequired,
+    i18n: PropTypes.object.isRequired
 };

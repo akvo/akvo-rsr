@@ -14,11 +14,6 @@ import {Panel} from 'rc-collapse';
 import Results from './Results.jsx';
 import {APICall, endpoints} from './utils.js';
 
-let i18nResults,
-    isPublic,
-    i18nMonths,
-    projectIds;
-
 // from http://stackoverflow.com/questions/7306669/
 Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
 
@@ -26,7 +21,11 @@ Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
 class App extends React.Component {
     constructor(props) {
         super(props);
-        projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
+        const isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
+        const strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
+        const months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
+        const projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
+
         this.state = {
             models: {
                 results: undefined,
@@ -36,7 +35,8 @@ class App extends React.Component {
                 comments: undefined
             },
             resultsDataTree: [],
-            projectId: projectIds.project_id
+            project: {id: projectIds.project_id},
+            i18n: {strings: strings, months: months}
         };
     }
 
@@ -61,7 +61,7 @@ class App extends React.Component {
                     }
                 )
             }.bind(this);
-            APICall('GET', endpoints[model](this.state.projectId), '', success);
+            APICall('GET', endpoints[model](this.state.project.id), '', success);
         }
     }
 
@@ -199,7 +199,11 @@ class App extends React.Component {
             );
         } else if (tree.length > 0) {
             return (
-                <Results items={tree} callbacks={callbacks} models={this.state.models}/>
+                <Results
+                    items={tree}
+                    models={this.state.models}
+                    callbacks={callbacks}
+                    i18n={this.state.i18n}/>
             );
         } else {
             return (
@@ -211,11 +215,5 @@ class App extends React.Component {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Retrieve data endpoints, translations and project IDs
-    isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
-    i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
-    i18nMonths = JSON.parse(document.getElementById('i18nMonths').innerHTML);
-    projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
-
     ReactDOM.render(<App/>, document.getElementById('new-results-framework'));
 });

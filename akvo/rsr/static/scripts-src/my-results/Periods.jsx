@@ -87,7 +87,10 @@ export default class Periods extends Level {
     }
 
     renderPanel(period, i) {
-        const periodDate = displayDate(period.period_start) + ' - ' + displayDate(period.period_end);
+        const months = this.props.i18n.months;
+        const periodStart = displayDate(period.period_start, months);
+        const periodEnd = displayDate(period.period_end, months);
+        const periodDate = `${periodStart} - ${periodEnd}`;
         const header = (
             <span>
                 <span>
@@ -102,7 +105,8 @@ export default class Periods extends Level {
             <Panel header={header} key={i}>
                 <Updates items={period.updates}
                          models={this.props.models}
-                         callbacks={this.props.callbacks}/>
+                         callbacks={this.props.callbacks}
+                         i18n={this.props.i18n}/>
             </Panel>
         )
     }
@@ -114,5 +118,6 @@ export default class Periods extends Level {
 Periods.propTypes = {
     items: PropTypes.array,
     models: PropTypes.object,
-    callbacks: PropTypes.object
+    callbacks: PropTypes.object.isRequired,
+    i18n: PropTypes.object.isRequired
 };

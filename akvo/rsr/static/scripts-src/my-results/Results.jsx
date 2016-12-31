@@ -24,7 +24,8 @@ export default class Results extends Level {
                 <Indicators
                     items={result.indicators}
                     models={this.props.models}
-                    callbacks={this.props.callbacks}/>
+                    callbacks={this.props.callbacks}
+                    i18n={this.props.i18n}/>
             </Panel>
         )
     }
@@ -33,5 +34,6 @@ export default class Results extends Level {
 Results.propTypes = {
     items: PropTypes.array,
     models: PropTypes.object,
-    callbacks: PropTypes.object
+    callbacks: PropTypes.object.isRequired,
+    i18n: PropTypes.object.isRequired
 };
