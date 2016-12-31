@@ -52,10 +52,16 @@ gulp.task('vendors', function () {
 });
 
 /* my-new-result bundling */
-
+// TODO: migrate to webpack?!? I don't understand how imports work in browserify :-p
 var options = {
     debug: development,
-    entries: '../../akvo/rsr/static/scripts-src/my-new-results.jsx',
+    entries: [
+        '../../akvo/rsr/static/scripts-src/my-results/App.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Level.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Comments.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Updates.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/utils.js'
+    ],
     transform: [
         [babelify, {presets: [preset_react, preset_es2015]}]
     ]
