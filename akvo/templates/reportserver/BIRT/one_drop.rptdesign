@@ -17405,6 +17405,20 @@ And description = 'Self-funding Expenditure']]></xml-property>
             <property name="fontSize">14pt</property>
             <property name="color">#0B80C7</property>
         </style>
+        <style name="H2" id="936">
+            <property name="backgroundColor">#C9CEEB</property>
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">18pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="color">#FFFFFF</property>
+        </style>
+        <style name="H1" id="937">
+            <property name="backgroundColor">#23325B</property>
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">18pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="color">#FFFFFF</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="TwoColumnPage" id="351">
@@ -17476,7 +17490,7 @@ And description = 'Self-funding Expenditure']]></xml-property>
     </page-setup>
     <body>
         <label name="themesection_summary" id="347">
-            <property name="style">Sectionheader</property>
+            <property name="style">H1</property>
             <property name="backgroundColor">#24335A</property>
             <property name="fontFamily">"Arial"</property>
             <property name="color">#FFFFFF</property>
@@ -17488,15 +17502,14 @@ And description = 'Self-funding Expenditure']]></xml-property>
             <property name="paddingRight">1px</property>
             <property name="textAlign">center</property>
             <property name="display">block</property>
-            <property name="masterPage">TwoColumnPage</property>
             <property name="pageBreakBefore">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Summary"</expression>
             </structure>
-            <text-property name="text">FINAL REPORT TEMPLATE </text-property>
+            <text-property name="text">INITIATIVE LAZOS DE AGUA</text-property>
         </label>
         <label name="themesection_summary2" id="927">
-            <property name="style">Sectionheader</property>
+            <property name="style">H2</property>
             <property name="backgroundColor">#C9CEEB</property>
             <property name="fontFamily">"Arial"</property>
             <property name="color">#FFFFFF</property>
@@ -17507,7 +17520,6 @@ And description = 'Self-funding Expenditure']]></xml-property>
             <property name="paddingRight">1px</property>
             <property name="textAlign">center</property>
             <property name="display">block</property>
-            <property name="masterPage">TwoColumnPage</property>
             <property name="pageBreakBefore">avoid</property>
             <structure name="toc">
                 <expression name="expressionValue" type="javascript">"Summary"</expression>
@@ -17531,17 +17543,18 @@ And description = 'Self-funding Expenditure']]></xml-property>
             <property name="imageName">Picture1.png</property>
         </image>
         <label name="themesection_summary1" id="926">
-            <property name="style">Sectionheader</property>
+            <property name="style">H2</property>
             <property name="backgroundColor">#C9CEEB</property>
             <property name="fontFamily">"Arial"</property>
+            <property name="fontWeight">bold</property>
             <property name="color">#FFFFFF</property>
+            <property name="marginTop">20px</property>
             <property name="paddingTop">5px</property>
             <property name="paddingLeft">5px</property>
             <property name="paddingBottom">5px</property>
             <property name="paddingRight">1px</property>
             <property name="textAlign">center</property>
             <property name="display">block</property>
-            <property name="masterPage">TwoColumnPage</property>
             <property name="pageBreakAfter">always</property>
             <property name="pageBreakBefore">avoid</property>
             <structure name="toc">
