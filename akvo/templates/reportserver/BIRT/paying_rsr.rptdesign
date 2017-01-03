@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -26,7 +26,7 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
             <property name="odaUser">rsr_readonly</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">TGFhdCBtZSB6aWVuIQ==</encrypted-property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1278,7 +1278,7 @@ order by id DESC]]></xml-property>
     </page-setup>
     <body>
         <table id="64">
-            <property name="fontFamily">cursive</property>
+            <property name="fontFamily">"Arial"</property>
             <property name="textAlign">left</property>
             <property name="dataSet"># project paid</property>
             <list-property name="boundDataColumns">
@@ -1299,6 +1299,13 @@ order by id DESC]]></xml-property>
                     <text-property name="displayName">projects</text-property>
                     <expression name="expression" type="javascript">dataSetRow["projects"]</expression>
                     <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="sort">
+                <structure>
+                    <expression name="key" type="javascript">row["name"]</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
                 </structure>
             </list-property>
             <column id="83"/>
