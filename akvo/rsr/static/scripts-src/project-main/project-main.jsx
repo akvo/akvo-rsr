@@ -355,11 +355,13 @@ function readMoreOnClicks() {
         };
     }
 
-    var summaryReadMore = document.getElementById('summary-truncated').querySelector('.read-more');
-    var summaryReadLess = document.getElementById('summary-full').querySelector('.read-less');
+    var summaryTruncated = document.getElementById('summary-truncated');
+    var summaryFull = document.getElementById('summary-full');
+    var summaryReadMore = summaryTruncated.querySelector('.read-more');
+    var summaryReadLess = summaryFull.querySelector('.read-less');
     if (summaryReadMore !== null && summaryReadLess !== null) {
-        summaryReadMore.onclick = setReadMore(summaryReadLess.parentNode, summaryReadMore.parentNode);
-        summaryReadLess.onclick = setReadMore(summaryReadMore.parentNode, summaryReadLess.parentNode);
+        summaryReadMore.onclick = setReadMore(summaryFull, summaryTruncated);
+        summaryReadLess.onclick = setReadMore(summaryTruncated, summaryFull);
     }
 }
 

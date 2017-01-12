@@ -20,5 +20,5 @@ class ResultsViewSet(PublicProjectViewSet):
 class ResultsFrameworkViewSet(PublicProjectViewSet):
     """Results framework resource."""
 
-    queryset = Result.objects.prefetch_related('indicators')
+    queryset = Result.objects.select_related('project').prefetch_related('indicators')
     serializer_class = ResultsFrameworkSerializer

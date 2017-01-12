@@ -9,8 +9,11 @@ from django.utils.xmlutils import SimplerXMLGenerator
 
 from six import string_types
 
-from rest_framework.compat import StringIO, smart_text
-from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer, XMLRenderer
+from django.utils.six import StringIO
+from django.utils.encoding import smart_text
+
+from rest_framework.renderers import BaseRenderer, BrowsableAPIRenderer, JSONRenderer
+from rest_framework_xml.renderers import XMLRenderer
 
 
 def _rename_fields(results):

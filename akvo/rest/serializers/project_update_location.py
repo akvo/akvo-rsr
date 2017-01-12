@@ -27,7 +27,7 @@ class ProjectUpdateLocationNestedSerializer(ProjectUpdateLocationSerializer):
 class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
 
     # Limit update data to its PK, this is needed because of Meta.depth = 2
-    location_target = serializers.Field(source='location_target.pk')
+    location_target = serializers.ReadOnlyField(source='location_target.pk')
 
     class Meta(ProjectUpdateLocationSerializer.Meta):
         depth = 2
@@ -40,7 +40,7 @@ class MapProjectUpdateSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField()
     url = serializers.URLField(source='get_absolute_url')
-    photo = Base64ImageField(required=False, allow_empty_file=True)
+    photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     video = serializers.CharField(required=False)
 
 

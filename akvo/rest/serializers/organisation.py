@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from rest_framework import serializers
+
 from akvo.rsr.models import Organisation
 
 from ..fields import Base64ImageField
@@ -22,28 +24,22 @@ from .rsr_serializer import BaseRSRSerializer
 
 class OrganisationSerializer(BaseRSRSerializer):
 
-    total_budgets = OrganisationTotalBudgetSerializer(
-        source='total_budgets', many=True, required=False, allow_add_remove=True
-    )
+    total_budgets = OrganisationTotalBudgetSerializer(read_only=True, many=True, required=False)
     recipient_org_budgets = OrganisationRecipientOrgBudgetSerializer(
-        source='recipient_org_budgets', many=True, required=False, allow_add_remove=True
+        read_only=True, many=True, required=False
     )
     region_budgets = OrganisationRegionBudgetSerializer(
-        source='recipient_region_budgets', many=True, required=False, allow_add_remove=True
+        source='recipient_region_budgets', read_only=True, many=True, required=False
     )
     country_budgets = OrganisationCountryBudgetSerializer(
-        source='recipient_country_budgets', many=True, required=False, allow_add_remove=True
+        source='recipient_country_budgets', read_only=True, many=True, required=False
     )
     total_expenditures = OrganisationTotalExpenditureSerializer(
-        source='total_expenditures', many=True, required=False, allow_add_remove=True
+        read_only=True, many=True, required=False
     )
-    documents = OrganisationDocumentSerializer(
-        source='documents', many=True, required=False, allow_add_remove=True
-    )
-    locations = OrganisationLocationSerializer(
-        source='locations', many=True, required=False, allow_add_remove=True
-    )
-    logo = Base64ImageField(required=False, allow_empty_file=True)
+    documents = OrganisationDocumentSerializer(read_only=True, many=True, required=False)
+    locations = OrganisationLocationSerializer(read_only=True, many=True, required=False)
+    logo = Base64ImageField(read_only=True, required=False, allow_empty_file=True, allow_null=True)
 
     class Meta:
         model = Organisation

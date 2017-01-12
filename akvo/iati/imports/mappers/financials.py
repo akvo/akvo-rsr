@@ -44,6 +44,10 @@ class Transactions(ImportMapper):
         imported_transactions = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('transaction'):
+            return changes
+
         for transaction in self.parent_elem.findall('transaction'):
 
             reference = self.get_attrib(transaction, 'ref', 'reference')
@@ -221,6 +225,10 @@ class BudgetItems(ImportMapper):
         imported_budgets = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('budget'):
+            return changes
+
         activity = self.parent_elem
         all_budget_count = len(activity.findall("budget"))
         original_budgets_count = len(activity.findall("budget[@type='1']"))
@@ -382,6 +390,10 @@ class PlannedDisbursements(ImportMapper):
         """
         imported_pds = []
         changes = []
+
+        # Check if import should ignore this kind of data
+        if self.skip_importing('planned-disbursement'):
+            return changes
 
         for planned_disbursement in self.parent_elem.findall('planned-disbursement'):
 

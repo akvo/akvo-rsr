@@ -63,6 +63,9 @@ class OrganisationFinanceBasic(models.Model):
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
 
 class OrganisationBudget(OrganisationFinanceBasic):
     status = ValidXMLCharField(
@@ -77,6 +80,9 @@ class OrganisationBudget(OrganisationFinanceBasic):
 
     def iati_status(self):
         return codelist_value(BudgetStatus, self, 'status')
+
+    def iati_status_unicode(self):
+        return str(self.iati_status())
 
 
 class OrganisationTotalBudget(OrganisationBudget):
@@ -137,8 +143,14 @@ class OrganisationRegionBudget(OrganisationBudget):
     def iati_region(self):
         return codelist_value(Region, self, 'region')
 
+    def iati_region_unicode(self):
+        return str(self.iati_region())
+
     def iati_region_vocabulary(self):
         return codelist_value(RegionVocabulary, self, 'region_vocabulary')
+
+    def iati_region_vocabulary_unicode(self):
+        return str(self.iati_region_vocabulary())
 
 
 class OrganisationCountryBudget(OrganisationBudget):
@@ -161,6 +173,9 @@ class OrganisationCountryBudget(OrganisationBudget):
 
     def iati_country(self):
         return codelist_value(Country, self, 'country')
+
+    def iati_country_unicode(self):
+        return str(self.iati_country())
 
 
 class OrganisationTotalExpenditure(OrganisationFinanceBasic):
@@ -209,6 +224,9 @@ class LineBasic(models.Model):
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
+
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
 
 
 class OrganisationTotalBudgetLine(LineBasic):

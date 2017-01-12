@@ -125,8 +125,7 @@ function createModal(){
                                     value: this.state.passwordField,
                                     onChange: this.handleChange,
                                     className: 'form-control'
-                                },
-                                this.state.passwordField
+                                }
                             )
                         ),
                         errorNode,
