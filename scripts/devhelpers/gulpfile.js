@@ -57,8 +57,11 @@ var options = {
     debug: development,
     entries: [
         '../../akvo/rsr/static/scripts-src/my-results/App.jsx',
-        '../../akvo/rsr/static/scripts-src/my-results/Level.jsx',
         '../../akvo/rsr/static/scripts-src/my-results/Comments.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Indicators.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Level.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Periods.jsx',
+        '../../akvo/rsr/static/scripts-src/my-results/Results.jsx',
         '../../akvo/rsr/static/scripts-src/my-results/Updates.jsx',
         '../../akvo/rsr/static/scripts-src/my-results/utils.js'
     ],
