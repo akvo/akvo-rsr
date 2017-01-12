@@ -442,6 +442,7 @@ from rsr_result
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 where rsr_result.project_id = ?
+and rsr_indicatorperiod.period_start::date > '2015-12-31'
 order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -3634,7 +3635,7 @@ select ? as number, 'D' as name
             <property name="borderTopWidth">1pt</property>
         </style>
         <style name="Sectionheader" id="265">
-            <property name="fontFamily">sans-serif</property>
+            <property name="fontFamily">"Arial"</property>
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bolder</property>
             <property name="color">#D87E26</property>
@@ -3684,11 +3685,12 @@ select ? as number, 'D' as name
     </page-setup>
     <body>
         <text-data id="110">
+            <property name="fontFamily">"Arial Black"</property>
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bold</property>
-            <property name="color">#586978</property>
+            <property name="color">#5D7785</property>
             <property name="paddingTop">8pt</property>
-            <property name="paddingLeft">8pt</property>
+            <property name="paddingLeft">16pt</property>
             <property name="paddingBottom">8pt</property>
             <property name="paddingRight">8pt</property>
             <property name="dataSet">Project</property>
@@ -3709,6 +3711,7 @@ reportContext.setGlobalVariable("show_bars",true);
         </text-data>
         <grid id="299">
             <property name="marginLeft">8pt</property>
+            <property name="display">none</property>
             <property name="width">3.7083333333333335in</property>
             <property name="dataSet">Project</property>
             <list-property name="boundDataColumns">
@@ -4026,7 +4029,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             </row>
         </grid>
         <grid id="123">
-            <property name="backgroundColor">#EDEFE1</property>
+            <property name="backgroundColor">#F0EFE3</property>
             <property name="marginTop">8pt</property>
             <property name="marginLeft">0pt</property>
             <property name="marginBottom">0pt</property>
@@ -4042,11 +4045,12 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <property name="verticalAlign">middle</property>
                     <label id="132">
                         <property name="style">Sectionheader</property>
+                        <property name="fontFamily">"Arial"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginTop">0pt</property>
-                        <property name="paddingTop">8pt</property>
-                        <property name="paddingLeft">8pt</property>
+                        <property name="paddingTop">16pt</property>
+                        <property name="paddingLeft">16pt</property>
                         <property name="paddingBottom">8pt</property>
                         <property name="paddingRight">8pt</property>
                         <structure name="toc">
@@ -4059,9 +4063,10 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <property name="verticalAlign">middle</property>
                     <label id="133">
                         <property name="style">Sectionheader</property>
+                        <property name="fontFamily">"Arial"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="paddingTop">8pt</property>
+                        <property name="paddingTop">16pt</property>
                         <property name="paddingLeft">8pt</property>
                         <property name="paddingBottom">8pt</property>
                         <property name="paddingRight">8pt</property>
@@ -4074,12 +4079,14 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <property name="colSpan">1</property>
                     <property name="rowSpan">3</property>
                     <text-data id="134">
+                        <property name="fontFamily">"Arial"</property>
                         <property name="fontSize">12pt</property>
                         <property name="marginTop">0pt</property>
-                        <property name="paddingTop">8pt</property>
-                        <property name="paddingLeft">8pt</property>
-                        <property name="paddingBottom">8pt</property>
+                        <property name="paddingTop">4pt</property>
+                        <property name="paddingLeft">16pt</property>
+                        <property name="paddingBottom">32pt</property>
                         <property name="paddingRight">8pt</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">Project</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -4113,9 +4120,11 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                             <row id="173">
                                 <cell id="174">
                                     <data id="179">
+                                        <property name="fontFamily">"Arial"</property>
                                         <property name="fontSize">14pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="paddingTop">1pt</property>
+                                        <property name="color">black</property>
+                                        <property name="paddingTop">4pt</property>
                                         <property name="paddingLeft">8pt</property>
                                         <property name="paddingBottom">1pt</property>
                                         <property name="paddingRight">8pt</property>
@@ -4134,9 +4143,8 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginLeft">0pt</property>
-                        <property name="paddingTop">8pt</property>
+                        <property name="paddingTop">0pt</property>
                         <property name="paddingLeft">8pt</property>
-                        <property name="paddingBottom">8pt</property>
                         <property name="paddingRight">8pt</property>
                         <text-property name="text">Location</text-property>
                     </label>
@@ -4146,6 +4154,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <cell id="256">
                     <property name="verticalAlign">top</property>
                     <text-data id="152">
+                        <property name="fontFamily">"Arial"</property>
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginTop">0pt</property>
@@ -4176,6 +4185,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             </row>
         </grid>
         <table name="parent_table" id="240">
+            <property name="display">none</property>
             <property name="dataSet">Parent_projects</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -4243,6 +4253,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
             </footer>
         </table>
         <table name="child_table" id="228">
+            <property name="display">none</property>
             <property name="dataSet">Child_projects</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -4511,10 +4522,11 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <text-data id="159">
+                                <property name="fontFamily">"Arial"</property>
                                 <property name="fontSize">14pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#6D8FAF</property>
-                                <property name="paddingTop">8pt</property>
+                                <property name="paddingTop">0pt</property>
                                 <property name="paddingLeft">0pt</property>
                                 <property name="paddingBottom">1pt</property>
                                 <property name="paddingRight">8pt</property>
@@ -4576,6 +4588,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="paddingBottom">4pt</property>
                             <property name="paddingRight">0pt</property>
                             <grid id="192">
+                                <property name="backgroundColor">white</property>
                                 <property name="width">7.875in</property>
                                 <column id="277">
                                     <property name="width">1.4479166666666667in</property>
@@ -4590,20 +4603,22 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="width">1.6458333333333333in</property>
                                 </column>
                                 <row id="279">
-                                    <property name="backgroundColor">silver</property>
+                                    <property name="backgroundColor">#F3F6F9</property>
                                     <cell id="280">
                                         <property name="paddingTop">0pt</property>
                                         <property name="paddingLeft">0pt</property>
                                         <property name="paddingBottom">4pt</property>
                                         <property name="paddingRight">0pt</property>
                                         <text-data id="213">
-                                            <property name="backgroundColor">gray</property>
+                                            <property name="backgroundColor">#D0DEE7</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="color">white</property>
+                                            <property name="paddingTop">8pt</property>
                                             <property name="paddingLeft">8pt</property>
-                                            <property name="paddingRight">8pt</property>
-                                            <property name="display">inline</property>
+                                            <property name="paddingBottom">8pt</property>
+                                            <property name="paddingRight">0pt</property>
+                                            <property name="display">block</property>
                                             <expression name="valueExpr">"INDICATOR " + b++</expression>
                                             <property name="contentType">html</property>
                                         </text-data>
@@ -4611,11 +4626,15 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <cell id="281">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
+                                        <property name="paddingBottom">20pt</property>
                                         <text-data id="278">
                                             <property name="fontSize">12pt</property>
                                             <property name="color">#000000</property>
+                                            <property name="paddingTop">8pt</property>
                                             <property name="paddingLeft">8pt</property>
-                                            <property name="display">inline</property>
+                                            <property name="paddingBottom">8pt</property>
+                                            <property name="paddingRight">8pt</property>
+                                            <property name="display">block</property>
                                             <expression name="valueExpr">row["indicator_title"]</expression>
                                             <property name="contentType">html</property>
                                         </text-data>
@@ -4703,7 +4722,7 @@ reportContext.getGlobalVariable('debug')</expression>
             </group>
             <detail>
                 <row id="27">
-                    <property name="backgroundColor">#F0F0F0</property>
+                    <property name="backgroundColor">white</property>
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
