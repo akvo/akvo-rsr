@@ -132,7 +132,7 @@ class App extends React.Component {
             );
         }
 
-        function annotatePeriods(periods) {
+        function annotateUpdates(periods) {
             /*
             Add the field "actual_value" to each period update, which is the sum of all update
             values up to this point in time. Note that this field exists in the dataset as
@@ -171,7 +171,7 @@ class App extends React.Component {
             deIndex(models.periods),
             {parent: "period", children: "updates"},
             updates);
-        const annotated_periods = annotatePeriods(periods);
+        const annotated_periods = annotateUpdates(periods);
 
         const indicators = filterChildren(
             deIndex(models.indicators),
@@ -201,7 +201,6 @@ class App extends React.Component {
             return (
                 <Results
                     items={tree}
-                    models={this.state.models}
                     callbacks={callbacks}
                     i18n={this.state.i18n}/>
             );
