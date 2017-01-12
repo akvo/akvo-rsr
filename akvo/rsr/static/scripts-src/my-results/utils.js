@@ -88,7 +88,7 @@ export function APICall(method, url, data, callback, retries) {
 
 
 // Object holds callback URL functions as values, most of them called with an id parameter
-// Usage: endpointURL(17).result -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
+// Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
 export const endpoints = {
         "result": (id) => `/rest/v1/result/${id}/?format=json`,
         "results": (id) => `/rest/v1/result/?format=json&project=${id}`,
@@ -96,7 +96,7 @@ export const endpoints = {
         "periods": (id) => `/rest/v1/indicator_period/?format=json&indicator__result__project=${id}`,
         "updates": (id) => `/rest/v1/indicator_period_data/?format=json&period__indicator__result__project=${id}`,
         "comments": (id) => `/rest/v1/indicator_period_data_comment/?format=json&data__period__indicator__result__project=${id}`,
-        "period_framework": (id) => `/rest/v1/indicator_period_framework/${id}/?format=json`,
+        "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
         "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
         "updates_and_comments": () => `/rest/v1/indicator_period_data_framework/?format=json`,
         "user": (id) => `/rest/v1/user/${id}/?format=json`,
@@ -104,3 +104,14 @@ export const endpoints = {
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
+export function displayNumber(numberString) {
+    // Add commas to numbers of 1000 or higher.
+    if (numberString !== undefined && numberString !== null) {
+        var locale = "en-gb";
+        var float = parseFloat(numberString);
+        if (!isNaN(float)) {
+            return float.toLocaleString(locale);
+        }
+    }
+    return numberString;
+}
