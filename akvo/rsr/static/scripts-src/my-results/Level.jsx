@@ -11,7 +11,7 @@ import Collapse, {Panel} from 'rc-collapse';
 export default class Level extends React.Component {
     render() {
         const items = this.props.items;
-        if (! this.props.models[this.state.model] || ! items) {
+        if (! items) {
             console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
             return (
                 <p>Loading...</p>

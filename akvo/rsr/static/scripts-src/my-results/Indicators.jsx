@@ -34,7 +34,6 @@ export default class Indicators extends Level {
                 </div>
                 <Periods
                     items={indicator.periods}
-                    models={this.props.models}
                     callbacks={this.props.callbacks}
                     i18n={this.props.i18n}/>
             </Panel>
@@ -48,7 +47,6 @@ export default class Indicators extends Level {
 
 Indicators.propTypes = {
     items: PropTypes.array,
-    models: PropTypes.object,
     callbacks: PropTypes.object.isRequired,
     i18n: PropTypes.object.isRequired
 };
