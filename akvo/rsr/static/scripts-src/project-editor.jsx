@@ -1431,7 +1431,7 @@ function togglePartner(selectNode) {
         }
 
         checkPartnerships();
-        markMandatoryFields();
+        markMandatoryFields(parent);
     };
 }
 
@@ -2164,7 +2164,7 @@ function setSectionChangeListener(section) {
                 continue;
             }
 
-            listener = getChangeListener(section, this);
+            listener = getChangeListener(section, el);
             el.addEventListener('change', listener);
         }
     }
@@ -2178,7 +2178,7 @@ function getChangeListener(section, el) {
         setSectionCompletionPercentage(currentSection);
         elAddClass(el, 'has-listener');
         setPageCompletionPercentage();
-        markMandatoryFields();
+        markMandatoryFields(findAncestorByClass(el, 'parent')||section);
     };
 }
 
