@@ -4116,18 +4116,13 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                         <property name="paddingRight">8pt</property>
                         <text-property name="text">Location</text-property>
                     </label>
-                </cell>
-            </row>
-            <row id="254">
-                <cell id="256">
-                    <property name="verticalAlign">top</property>
                     <text-data id="152">
                         <property name="fontFamily">"Arial"</property>
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginTop">0pt</property>
                         <property name="marginLeft">0pt</property>
-                        <property name="paddingTop">0pt</property>
+                        <property name="paddingTop">8pt</property>
                         <property name="paddingLeft">8pt</property>
                         <property name="paddingBottom">8pt</property>
                         <property name="paddingRight">8pt</property>
@@ -4149,6 +4144,11 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                         <expression name="valueExpr">(row ["city"] ? row ["city"] +  ", " : "") + (row["countryname"] ? row["countryname"] : "")</expression>
                         <property name="contentType">html</property>
                     </text-data>
+                </cell>
+            </row>
+            <row id="254">
+                <cell id="256">
+                    <property name="verticalAlign">top</property>
                 </cell>
             </row>
         </grid>
@@ -4345,9 +4345,10 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 </structure>
                 <structure>
                     <property name="name">baseline_year</property>
-                    <text-property name="displayName">baseline_year</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["baseline_year"]</expression>
-                    <property name="dataType">integer</property>
+                    <text-property name="displayName">baseline_value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">baseline_comment</property>
@@ -4583,9 +4584,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="color">white</property>
-                                            <property name="paddingTop">8pt</property>
+                                            <property name="paddingTop">5pt</property>
                                             <property name="paddingLeft">8pt</property>
-                                            <property name="paddingBottom">8pt</property>
+                                            <property name="paddingBottom">5pt</property>
                                             <property name="paddingRight">0pt</property>
                                             <property name="display">block</property>
                                             <expression name="valueExpr">"INDICATOR " + b++</expression>
@@ -4600,9 +4601,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <property name="fontFamily">"Helvetica Neue"</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="color">#000000</property>
-                                            <property name="paddingTop">8pt</property>
+                                            <property name="paddingTop">5pt</property>
                                             <property name="paddingLeft">8pt</property>
-                                            <property name="paddingBottom">8pt</property>
+                                            <property name="paddingBottom">3pt</property>
                                             <property name="paddingRight">8pt</property>
                                             <property name="display">block</property>
                                             <expression name="valueExpr">row["indicator_title"]</expression>
@@ -4735,6 +4736,34 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="paddingBottom">12pt</property>
                             <property name="textAlign">center</property>
                             <property name="display">block</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">50</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">84</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">0</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">49</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">85</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
                             <expression name="valueExpr" type="javascript">(row["progress_pct"] != null)&#13;
 ?&#13;
  row["progress_pct"] + "%"&#13;
@@ -5505,6 +5534,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="fontFamily">"Helvetica Neue"</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">normal</property>
+                            <property name="marginBottom">8pt</property>
                             <property name="paddingTop">8pt</property>
                             <property name="paddingLeft">14pt</property>
                             <property name="paddingBottom">8pt</property>
@@ -5515,23 +5545,23 @@ Math.min(row["progress_pct"],100)&#13;
                                     <simple-property-list name="value1">
                                         <value type="javascript">0.0</value>
                                     </simple-property-list>
-                                    <expression name="value2" type="javascript">33.0</expression>
+                                    <expression name="value2" type="javascript">49</expression>
                                     <property name="style">progress_low</property>
                                 </structure>
                                 <structure>
                                     <property name="operator">between</property>
                                     <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                     <simple-property-list name="value1">
-                                        <value type="javascript">33</value>
+                                        <value type="javascript">50</value>
                                     </simple-property-list>
-                                    <expression name="value2" type="javascript">66</expression>
+                                    <expression name="value2" type="javascript">84</expression>
                                     <property name="style">progress_middle</property>
                                 </structure>
                                 <structure>
                                     <property name="operator">ge</property>
                                     <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                     <simple-property-list name="value1">
-                                        <value type="javascript">66</value>
+                                        <value type="javascript">85</value>
                                     </simple-property-list>
                                     <property name="style">progress_high</property>
                                 </structure>
