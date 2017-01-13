@@ -15,6 +15,18 @@
             <property name="name">rowFetchSize</property>
             <property name="id">298</property>
         </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">71</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">71</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">71</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/grouped_listing.gif</property>
@@ -61,52 +73,8 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
-            <property name="odaUser">rsr</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YnlwMGNndE1SQU13Y2JubzIxY3hWYm14cFM0TkxSaThuQkNScklNZQ==</encrypted-property>
-        </oda-data-source>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR readonly" id="122">
-            <list-property name="privateDriverProperties">
-                <ex-property>
-                    <name>metadataBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledMetadataBidiFormatStr</name>
-                </ex-property>
-                <ex-property>
-                    <name>contentBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledContentBidiFormatStr</name>
-                </ex-property>
-            </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
             <property name="odaUser">rsr_readonly</property>
             <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
-        </oda-data-source>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR" id="212">
-            <list-property name="privateDriverProperties">
-                <ex-property>
-                    <name>metadataBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledMetadataBidiFormatStr</name>
-                </ex-property>
-                <ex-property>
-                    <name>contentBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledContentBidiFormatStr</name>
-                </ex-property>
-            </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://psql:5432/rsrreports</property>
-            <property name="odaUser">rsr</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YnlwMGNndE1SQU13Y2JubzIxY3hWYm14cFM0TkxSaThuQkNScklNZQ==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -4583,6 +4551,7 @@ reportContext.getGlobalVariable('debug')</expression>
                         <cell id="269">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
+                            <property name="backgroundColor">white</property>
                             <property name="paddingTop">0pt</property>
                             <property name="paddingLeft">0pt</property>
                             <property name="paddingBottom">4pt</property>
@@ -4628,6 +4597,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="rowSpan">1</property>
                                         <property name="paddingBottom">20pt</property>
                                         <text-data id="278">
+                                            <property name="fontFamily">"Helvetica Neue"</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="color">#000000</property>
                                             <property name="paddingTop">8pt</property>
@@ -4648,6 +4618,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <property name="color">#000000</property>
                                             <property name="paddingLeft">8pt</property>
                                             <property name="paddingBottom">8pt</property>
+                                            <property name="display">none</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
@@ -4663,29 +4634,41 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <row id="202">
                                     <cell id="276"/>
                                     <cell id="203">
-                                        <label id="186">
+                                        <label id="169">
+                                            <property name="fontFamily">"Helvetica Neue"</property>
+                                            <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
-                                            <property name="textAlign">center</property>
-                                            <text-property name="text">Period</text-property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="paddingLeft">10pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">ACTUAL</text-property>
                                         </label>
                                     </cell>
                                     <cell id="204">
                                         <property name="color">#F0F0F0</property>
-                                        <label id="169">
+                                        <label id="188">
+                                            <property name="fontFamily">"Helvetica Neue"</property>
+                                            <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
-                                            <property name="color">black</property>
-                                            <property name="textAlign">center</property>
-                                            <text-property name="text">Actual</text-property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">TARGET</text-property>
                                         </label>
                                     </cell>
                                     <cell id="205">
-                                        <label id="188">
+                                        <label id="186">
+                                            <property name="fontFamily">"Helvetica Neue"</property>
+                                            <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
-                                            <property name="textAlign">center</property>
-                                            <text-property name="text">Target</text-property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">BASELINE</text-property>
                                         </label>
                                     </cell>
                                 </row>
@@ -4704,7 +4687,6 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="paddingBottom">8pt</property>
                             <property name="paddingRight">0pt</property>
                             <label id="211">
-                                <property name="backgroundColor">silver</property>
                                 <property name="paddingTop">0pt</property>
                                 <property name="paddingLeft">8pt</property>
                                 <property name="pageBreakBefore">avoid</property>
@@ -4723,6 +4705,7 @@ reportContext.getGlobalVariable('debug')</expression>
             <detail>
                 <row id="27">
                     <property name="backgroundColor">white</property>
+                    <property name="verticalAlign">top</property>
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
@@ -4737,21 +4720,22 @@ reportContext.getGlobalVariable('debug')</expression>
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
                         <text-data name="percentage" id="215">
-                            <property name="fontFamily">sans-serif</property>
-                            <property name="fontSize">8pt</property>
+                            <property name="fontFamily">"Helvetica Neue"</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">normal</property>
+                            <property name="color">#34B573</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="marginTop">0pt</property>
                             <property name="marginLeft">0pt</property>
-                            <property name="marginBottom">-35pt</property>
-                            <property name="paddingTop">12pt</property>
+                            <property name="marginBottom">-47pt</property>
+                            <property name="paddingTop">20pt</property>
                             <property name="paddingBottom">12pt</property>
                             <property name="textAlign">center</property>
                             <property name="display">block</property>
-                            <expression name="valueExpr">(row["progress_pct"] != null)&#13;
+                            <expression name="valueExpr" type="javascript">(row["progress_pct"] != null)&#13;
 ?&#13;
  row["progress_pct"] + "%"&#13;
  :&#13;
@@ -5313,9 +5297,9 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="marginTop">0pt</property>
-                            <property name="marginBottom">0pt</property>
-                            <property name="height">38pt</property>
-                            <property name="width">38pt</property>
+                            <property name="marginBottom">8pt</property>
+                            <property name="height">60pt</property>
+                            <property name="width">60pt</property>
                             <property name="dataSet">Four_rows</property>
                             <list-property name="visibility">
                                 <structure>
@@ -5382,25 +5366,17 @@ Math.min(row["progress_pct"],100)&#13;
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">8pt</property>
                         <property name="verticalAlign">middle</property>
-                        <text-data id="214">
-                            <property name="fontSize">12pt</property>
-                            <property name="textAlign">center</property>
-                            <expression name="valueExpr">x = row["period_start"]; y = row["period_end"]; (x || y) ? (x ? Formatter.format(x, "d-MMM-yyyy") : "") + " -- " + (y ? Formatter.format(y , "d-MMM-yyyy") : "") : ""</expression>
-                            <property name="contentType">html</property>
-                        </text-data>
-                    </cell>
-                    <cell id="163">
-                        <property name="verticalAlign">middle</property>
                         <data id="106">
+                            <property name="fontFamily">"Helvetica Neue"</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
                             <property name="marginBottom">4pt</property>
-                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingLeft">16pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Unformatted</property>
                             </structure>
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -5410,16 +5386,17 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="resultSetColumn">actual_value</property>
                         </data>
                         <data id="292">
+                            <property name="fontFamily">"Helvetica Neue"</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
                             <property name="marginBottom">4pt</property>
-                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingLeft">16pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Currency</property>
                                 <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
                             </structure>
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <list-property name="highlightRules">
                                 <structure>
                                     <property name="operator">between</property>
@@ -5457,15 +5434,16 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="resultSetColumn">actual_value_number</property>
                         </data>
                     </cell>
-                    <cell id="30">
+                    <cell id="163">
                         <property name="verticalAlign">middle</property>
                         <data id="108">
+                            <property name="fontFamily">"Helvetica Neue"</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
                             <property name="marginBottom">4pt</property>
                             <property name="paddingLeft">1pt</property>
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -5475,6 +5453,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="resultSetColumn">target_value</property>
                         </data>
                         <data id="296">
+                            <property name="fontFamily">"Helvetica Neue"</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
@@ -5484,7 +5463,7 @@ Math.min(row["progress_pct"],100)&#13;
                                 <property name="category">Currency</property>
                                 <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
                             </structure>
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -5492,6 +5471,16 @@ Math.min(row["progress_pct"],100)&#13;
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">target_value_number</property>
+                        </data>
+                    </cell>
+                    <cell id="30">
+                        <property name="verticalAlign">middle</property>
+                        <data id="322">
+                            <property name="fontFamily">"Helvetica Neue"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
+                            <property name="resultSetColumn">baseline_year</property>
                         </data>
                     </cell>
                 </row>
@@ -5513,8 +5502,12 @@ Math.min(row["progress_pct"],100)&#13;
                         <property name="paddingRight">8pt</property>
                         <text-data id="223">
                             <property name="style">progress_high</property>
-                            <property name="fontSize">10pt</property>
+                            <property name="fontFamily">"Helvetica Neue"</property>
+                            <property name="fontSize">12pt</property>
                             <property name="fontWeight">normal</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">14pt</property>
+                            <property name="paddingBottom">8pt</property>
                             <list-property name="highlightRules">
                                 <structure>
                                     <property name="operator">between</property>
