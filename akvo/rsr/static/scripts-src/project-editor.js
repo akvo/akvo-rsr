@@ -1010,13 +1010,17 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     selectorTypeahead.appendChild(label);
     selectorTypeahead.appendChild(help);
     elAddClass(selectorClass, 'has-typeahead');
+}
 
+function updateSectionState(section) {
+    // FIXME: Not all functions called here update just the section state --
+    // some of them update the state everywhere in the page!
     updateAllHelpIcons();
-    markMandatoryFields();
-    setHiddenFields();
+    markMandatoryFields(section);
+    setHiddenFields(section);
     checkPartnerships();
     setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListener();
+    setSectionChangeListener(section);
     setPageCompletionPercentage();
 }
 
@@ -1929,12 +1933,14 @@ function shouldBeHidden(el) {
     return validationSets.length === hideAccordingToValidationSet.length;
 }
 
-function setHiddenFields() {
+function setHiddenFields(parent) {
     /* Hide fields based on the selected validation sets. */
+
+    parent = parent || document;
 
     // Check per field if it should be hidden or not
     for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var allElements = document.querySelectorAll(INPUT_ELEMENTS[i]);
+        var allElements = parent.querySelectorAll(INPUT_ELEMENTS[i]);
         for (var j = 0; j < allElements.length; j++) {
             var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
             if (formGroupNode !== null) {
@@ -1948,7 +1954,7 @@ function setHiddenFields() {
     }
 
     // Also check the related objects if they should be hidden or not
-    var relatedObjectContainers = document.querySelectorAll('.related-object-container');
+    var relatedObjectContainers = parent.querySelectorAll('.related-object-container');
     for (var k = 0; k < relatedObjectContainers.length; k++) {
         var relatedObjectContainer = relatedObjectContainers[k];
         if (!shouldBeHidden(relatedObjectContainer)) {
@@ -1959,6 +1965,8 @@ function setHiddenFields() {
     }
 
     // Finally, even check the sections if they should be hidden or not
+    // FIXME: If called with a section, this may not be required, but leaving
+    // this as it is, for now.
     var sections = document.querySelectorAll('.myPanel');
     for (var l = 0; l < sections.length; l++) {
         var section = sections[l];
@@ -2224,11 +2232,13 @@ function markMandatoryField(element) {
     }
 }
 
-function markMandatoryFields() {
+function markMandatoryFields(parent) {
     /* Mark mandatory fields with an asterisk */
 
+    parent = parent || document;
+
     // Clear any existing markers
-    var existingMarkers = document.querySelectorAll('.mandatory:not(.in-org-modal)');
+    var existingMarkers = parent.querySelectorAll('.mandatory:not(.in-org-modal)');
     for (var i = 0; i < existingMarkers.length; i++) {
         existingMarkers[i].parentNode.removeChild(existingMarkers[i]);
     }
@@ -2237,7 +2247,7 @@ function markMandatoryFields() {
     var validationSets = getValidationSets();
     for (var j = 0; j < validationSets.length; j++) {
         var mandatoryIndicator = '.mandatory-' + validationSets[j];
-        var elementsToMark = document.querySelectorAll(mandatoryIndicator);
+        var elementsToMark = parent.querySelectorAll(mandatoryIndicator);
         for (var k = 0; k < elementsToMark.length; k++) {
             if (!elementsToMark[k].hasAttribute("disabled") &&
                 !findAncestorByClass(elementsToMark[k], 'always-hidden') &&
@@ -2925,6 +2935,7 @@ function toggleSection(node) {
             if (infoIcon.className.indexOf('hidden') > -1) {
                 infoIcon.className = infoIcon.className.replace('hidden', '');
             }
+            updateSectionState(div);
         } else {
             formBlock.className += ' hidden';
             infoIcon.className += ' hidden';
