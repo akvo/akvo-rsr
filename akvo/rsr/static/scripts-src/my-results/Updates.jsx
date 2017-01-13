@@ -218,18 +218,19 @@ const Attachments = () => {
 };
 
 
-const UpdateFormButtons = ({i18n, callbacks}) => {
+const UpdateFormButtons = ({i18n, callbacks, newUpdate}) => {
     i18n = i18n.strings;
     return (
         <div className="menuAction">
+        {!newUpdate ?
             <div role="presentation" className="removeUpdate">
                 <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{i18n.delete}</a>
             </div>
+        : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
                     <a onClick={callbacks.formToggle} className="btn btn-link btn-xs">{i18n.cancel}</a>
                 </li>
-
                 <li role="presentation" className="saveUpdate">
                     <a onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
                 </li>
@@ -333,6 +334,7 @@ class UpdateForm extends React.Component {
                     <Attachments/>
                     <UpdateFormButtons
                         i18n={this.props.i18n}
+                        newUpdate={this.state.new}
                         callbacks={
                             {
                                 formToggle: this.props.formToggle,
