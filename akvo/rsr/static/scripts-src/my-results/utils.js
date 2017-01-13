@@ -76,14 +76,22 @@ export function APICall(method, url, data, callback, retries) {
         case "DELETE":
             handler = () => fetch(url, {
                 credentials: 'same-origin',
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": getCookie('csrftoken')
+                }
             });
             break;
     }
     handler()
         //TODO: error handling? See https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
-        .then((response) => response.json())
-        .then(callback);
+        .then(function(response) {
+            if (response.status != 204)
+                return response.json();
+            else
+                return response;
+        }).then(callback);
 }
 
 
