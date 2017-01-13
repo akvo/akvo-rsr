@@ -65,16 +65,22 @@ class App extends React.Component {
         }
     }
 
-    updateModel(model, data) {
+    updateModel(model, data, del=false) {
         /*
         Update a model instance. Uses the indexed model objects and the immutability-helper update
          function (https://facebook.github.io/react/docs/update.html)
          */
+        let newState;
         const id = data.id;
-        const newState = update(
-            this.state.models,
-            {[model]: {$merge: {[id]: data}}}
-        );
+        if (del) {
+            // Since we shouldn't edit the state object directly we have to make a (shallow) copy
+            // and delete from the copy. TODO: think hard if this can lead to trouble...
+            const newModel = Object.assign({}, this.state.models[model]);
+            delete newModel[id];
+            newState = update(this.state.models, {[model]: {$set: newModel}});
+        } else {
+            newState = update(this.state.models, {[model]: {$merge: {[id]: data}}});
+        }
         this.setState(
             {models: newState},
             function() {
@@ -157,9 +163,11 @@ class App extends React.Component {
         }
 
         function deIndex(obj) {
+            // Turn the indexed model back to a list of model object
             return obj && Object.values(obj);
         }
 
+        // Build the tree of models from the lowest level (Comment) and up to Result
         const models = this.state.models;
         const updates = filterChildren(
             deIndex(models.updates),

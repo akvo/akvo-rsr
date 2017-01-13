@@ -223,7 +223,7 @@ const UpdateFormButtons = ({i18n, callbacks}) => {
     return (
         <div className="menuAction">
             <div role="presentation" className="removeUpdate">
-                <a className="btn btn-default btn-xs">{i18n.delete}</a>
+                <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{i18n.delete}</a>
             </div>
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
@@ -260,6 +260,7 @@ class UpdateForm extends React.Component {
             this.state = {new: true, text: "", data: 0, period: this.props.period.id};
         }
         this.saveUpdate = this.saveUpdate.bind(this);
+        this.deleteUpdate = this.deleteUpdate.bind(this);
     }
 
     setUpdateData(e) {
@@ -288,6 +289,16 @@ class UpdateForm extends React.Component {
         //    "{"text":"More stuff!","data":"5","relative_data":true,"status":"A"}"
         //http://rsr.localdev.akvo.org/rest/v1/indicator_period_data_framework/528/?format=json
         }
+    }
+
+    deleteUpdate() {
+        const data = {id: this.props.update.id};
+        let success = function() {
+            this.props.formToggle();
+            this.props.callbacks.updateModel("updates", data, true);
+        };
+
+        APICall('DELETE', endpoints.update_and_comments(data.id), null, success.bind(this));
     }
 
     previousActualValue() {
@@ -324,7 +335,11 @@ class UpdateForm extends React.Component {
                     <UpdateFormButtons
                         i18n={this.props.i18n}
                         callbacks={
-                            {formToggle: this.props.formToggle, saveUpdate: this.saveUpdate}
+                            {
+                                formToggle: this.props.formToggle,
+                                saveUpdate: this.saveUpdate,
+                                deleteUpdate: this.deleteUpdate
+                            }
                         }/>
                 </div>
             </div>
