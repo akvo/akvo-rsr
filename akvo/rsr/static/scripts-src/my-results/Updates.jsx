@@ -89,13 +89,13 @@ export class Updates extends Level {
         this.props.callbacks.loadModel('comments');
     }
 
-    renderPanel(update, i) {
+    renderPanel(update) {
         const organisation = update.user_details.approved_organisations[0].name;
         const userName = update.user_details.first_name +" "+ update.user_details.last_name;
         const data = update.data;
         const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
         return (
-            <Panel header={headerText} key={i}>
+            <Panel header={headerText} key={update.id}>
                 <Update i18n={this.props.i18n}
                         callbacks={this.props.callbacks}
                         period={this.props.period}
@@ -264,6 +264,7 @@ class UpdateForm extends React.Component {
     }
 
     setUpdateData(e) {
+        // Update the form field widgets
         const field = e.target.id;
         this.setState({[field]: e.target.value});
     }
@@ -286,8 +287,6 @@ class UpdateForm extends React.Component {
         } else {
             APICall('PATCH', endpoints.update_and_comments(this.props.update.id),
                     update, success.bind(this));
-        //    "{"text":"More stuff!","data":"5","relative_data":true,"status":"A"}"
-        //http://rsr.localdev.akvo.org/rest/v1/indicator_period_data_framework/528/?format=json
         }
     }
 

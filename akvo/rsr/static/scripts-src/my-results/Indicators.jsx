@@ -18,11 +18,11 @@ export default class Indicators extends Level {
         this.state = {model: "indicators"};
     }
 
-    renderPanel(indicator, i) {
+    renderPanel(indicator) {
         const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
         const strings = this.props.i18n.strings;
         return (
-            <Panel header={"Indicator: " + title} key={i}>
+            <Panel header={"Indicator: " + title} key={indicator.id}>
                 {title}
                 <div className="baseline">
                     <div className="baseline-year">

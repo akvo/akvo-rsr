@@ -19,7 +19,7 @@ export default class Level extends React.Component {
         } else if (items.length > 0) {
             return (
                 <Collapse>
-                    {items.map((item, i) => this.renderPanel(item, i))}
+                    {items.map((item) => this.renderPanel(item))}
                 </Collapse>
             );
         } else {

@@ -17,9 +17,9 @@ export default class Comments extends Level {
         this.state = {model: "comments"};
     }
 
-    renderPanel(comment, i) {
+    renderPanel(comment) {
         return (
-            <Panel header={comment.comment} key={i}>
+            <Panel header={comment.comment} key={comment.id}>
                 <div>By: {comment.user_details.first_name}</div>
             </Panel>
         )

@@ -18,9 +18,9 @@ export default class Results extends Level {
         this.state = {model: "results"};
     }
 
-    renderPanel(result, i) {
+    renderPanel(result) {
         return (
-            <Panel header={"Result: " + result.title} key={i}>
+            <Panel header={"Result: " + result.title} key={result.id}>
                 <Indicators
                     items={result.indicators}
                     callbacks={this.props.callbacks}
