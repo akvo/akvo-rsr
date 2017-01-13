@@ -113,7 +113,6 @@ export default class Periods extends Level {
                 <Updates
                          i18n={this.props.i18n}
                          callbacks={this.props.callbacks}
-                         period={period}
                          items={period.updates}/>
             </Panel>
         )

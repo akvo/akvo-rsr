@@ -74,7 +74,6 @@ class Update extends React.Component {
 Update.propTypes = {
     i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
-    period: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired
 };
 
@@ -98,7 +97,6 @@ export class Updates extends Level {
             <Panel header={headerText} key={update.id}>
                 <Update i18n={this.props.i18n}
                         callbacks={this.props.callbacks}
-                        period={this.props.period}
                         update={update}/>
                 <div>
                     <Comments
@@ -113,7 +111,6 @@ export class Updates extends Level {
 Updates.propTypes = {
     i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
-    period: PropTypes.object.isRequired,
     items: PropTypes.array,
 };
 
@@ -158,6 +155,7 @@ const ActualValueInput = ({i18n, formData, updatedActualValue, setUpdateData}) =
 
 ActualValueInput.propTypes = {
     i18n: PropTypes.object.isRequired,
+    formData: PropTypes.object,
     updatedActualValue: PropTypes.string,
     setUpdateData: PropTypes.func.isRequired
 };
@@ -182,7 +180,9 @@ const ActualValueDescription = ({i18n, formData, setUpdateData}) => {
 };
 
 ActualValueDescription.propTypes = {
-    i18n: PropTypes.object.isRequired
+    i18n: PropTypes.object.isRequired,
+    formData: PropTypes.object,
+    setUpdateData: PropTypes.func.isRequired
 };
 
 
@@ -245,7 +245,8 @@ const UpdateFormButtons = ({i18n, callbacks, newUpdate}) => {
 
 UpdateFormButtons.propTypes = {
     i18n: PropTypes.object.isRequired,
-    callbacks: PropTypes.object.isRequired
+    callbacks: PropTypes.object.isRequired,
+    newUpdate: PropTypes.bool.isRequired
 };
 
 
@@ -352,6 +353,8 @@ UpdateForm.propTypes = {
     i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     formToggle: PropTypes.func.isRequired,
+    // TODO: one of period and update has to be supplied. This is a clunky way of indicating a new
+    // or exisitng udpdate. A better way should be found.
     period: PropTypes.object,
     update: PropTypes.object
 };
