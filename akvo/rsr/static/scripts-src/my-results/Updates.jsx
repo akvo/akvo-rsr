@@ -11,17 +11,17 @@ import {Panel} from 'rc-collapse';
 import Level from './Level.jsx'
 import Comments from './Comments.jsx'
 
-import {APICall, endpoints, displayDate, displayNumber} from './utils.js';
+import {APICall, endpoints, displayDate, displayNumber, _} from './utils.js';
 
 
-const UpdateDisplay = ({i18n, update}) => {
+const UpdateDisplay = ({update}) => {
     const userName = update.user_details.first_name + " " + update.user_details.last_name;
     return (
         <div>
-            When: {displayDate(update.created_at, i18n.months)} |
+            When: {displayDate(update.created_at)} |
             By: {userName} |
             Org: {update.user_details.approved_organisations[0].name} |
-            Status: {update.status} <br/>
+            Status: {_('update_statuses')[update.status]} <br/>
             Update value: {update.data} | {/*
          NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
          not update.period_actual_value from the backend
@@ -32,7 +32,6 @@ const UpdateDisplay = ({i18n, update}) => {
 };
 
 UpdateDisplay.propTypes = {
-    i18n: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired
 };
 
@@ -55,24 +54,22 @@ class Update extends React.Component {
                     <a onClick={this.formToggle}
                        className={'btn btn-sm btn-default'}
                        style={{margin: '0.3em 0.5em'}}>
-                        {this.props.i18n.strings.edit_update}
+                        {_('edit_update')}
                     </a>
                 </div>
                 {this.state.formOpen ?
                     <UpdateForm
-                        i18n={this.props.i18n}
                         callbacks={this.props.callbacks}
                         update={this.props.update}
                         formToggle={this.formToggle}/>
                 :
-                    <UpdateDisplay i18n={this.props.i18n} update={this.props.update}/>}
+                    <UpdateDisplay update={this.props.update}/>}
             </div>
         )
     }
 }
 
 Update.propTypes = {
-    i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired
 };
@@ -91,13 +88,11 @@ export class Updates extends Level {
     renderPanel(update) {
         const organisation = update.user_details.approved_organisations[0].name;
         const userName = update.user_details.first_name +" "+ update.user_details.last_name;
-        const i18n = this.props.i18n;
-        const headerText = `Update: ${userName} at ${organisation}, Data: ${update.data} 
-                            Status: ${i18n.strings.update_statuses[update.status]}`;
+        const headerText = `Update: ${userName} at ${organisation}, Data: ${update.data}
+                            Status: ${_('update_statuses')[update.status]}`;
         return (
             <Panel header={headerText} key={update.id}>
-                <Update i18n={i18n}
-                        callbacks={this.props.callbacks}
+                <Update callbacks={this.props.callbacks}
                         update={update}/>
                 <div>
                     <Comments
@@ -110,39 +105,38 @@ export class Updates extends Level {
 }
 
 Updates.propTypes = {
-    i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     items: PropTypes.array,
 };
 
 
-const Header = ({i18n, status}) => {
+const Header = ({status}) => {
     return (
         <div className="col-xs-12">
             <div className="row update-entry-container-header">
-                Header
+                {`Status: ${status}`}
             </div>
         </div>
     )
 };
 
 
-const ActualValueInput = ({i18n, formData, updatedActualValue, setUpdateData}) => {
+const ActualValueInput = ({formData, updatedActualValue, setUpdateData}) => {
     return (
         <div className="row">
             <div className="col-xs-6">
-                <label htmlFor="actualValue">{i18n.add_to_actual_value}</label>
+                <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
                 <input className="form-control"
                        id="data"
                        value={formData.data}
                        onChange={setUpdateData}
-                       placeholder={i18n.input_placeholder} />
+                       placeholder={_('input_placeholder')} />
             </div>
             <div className="col-xs-6">
                 <div className="upActualValue">
                     <label>
                         <span className="update-actual-value-text">
-                            {i18n.total_value_after_update}:
+                            {_('total_value_after_update')}:
                         </span>
                     </label>
                     <div className="update-actual-value-data">
@@ -155,24 +149,23 @@ const ActualValueInput = ({i18n, formData, updatedActualValue, setUpdateData}) =
 };
 
 ActualValueInput.propTypes = {
-    i18n: PropTypes.object.isRequired,
     formData: PropTypes.object,
     updatedActualValue: PropTypes.string,
     setUpdateData: PropTypes.func.isRequired
 };
 
 
-const ActualValueDescription = ({i18n, formData, setUpdateData}) => {
+const ActualValueDescription = ({formData, setUpdateData}) => {
     return (
         <div className="row">
             <div className="col-xs-9 update-description">
                 <div>
-                    <label htmlFor="description">{i18n.actual_value_comment}</label>
+                    <label htmlFor="description">{_('actual_value_comment')}</label>
                     <textarea className="form-control"
                               id="text"
                               value={formData.text}
                               onChange={setUpdateData}
-                              placeholder={i18n.comment_placeholder}>
+                              placeholder={_('comment_placeholder')}>
                     </textarea>
                 </div>
             </div>
@@ -181,7 +174,6 @@ const ActualValueDescription = ({i18n, formData, setUpdateData}) => {
 };
 
 ActualValueDescription.propTypes = {
-    i18n: PropTypes.object.isRequired,
     formData: PropTypes.object,
     setUpdateData: PropTypes.func.isRequired
 };
@@ -219,24 +211,23 @@ const Attachments = () => {
 };
 
 
-const UpdateFormButtons = ({i18n, callbacks, newUpdate}) => {
-    i18n = i18n.strings;
+const UpdateFormButtons = ({callbacks, newUpdate}) => {
     return (
         <div className="menuAction">
         {!newUpdate ?
             <div role="presentation" className="removeUpdate">
-                <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{i18n.delete}</a>
+                <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{_('delete')}</a>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <a onClick={callbacks.formToggle} className="btn btn-link btn-xs">{i18n.cancel}</a>
+                    <a onClick={callbacks.formToggle} className="btn btn-link btn-xs">{_('cancel')}</a>
                 </li>
                 <li role="presentation" className="saveUpdate">
-                    <a onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{i18n.save}</a>
+                    <a onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
                 <li role="presentation" className="approveUpdate">
-                    <a className="btn btn-default btn-xs">{i18n.approve}</a>
+                    <a className="btn btn-default btn-xs">{_('approve')}</a>
                 </li>
                 <span></span>
             </ul>
@@ -245,7 +236,6 @@ const UpdateFormButtons = ({i18n, callbacks, newUpdate}) => {
 };
 
 UpdateFormButtons.propTypes = {
-    i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     newUpdate: PropTypes.bool.isRequired
 };
@@ -329,7 +319,6 @@ class UpdateForm extends React.Component {
     }
 
     render() {
-        const i18n = this.props.i18n.strings;
         const updateValue = parseFloat(this.state.data ? this.state.data : 0);
         const updatedActualValue = displayNumber(this.previousActualValue() + updateValue);
         return (
@@ -337,17 +326,14 @@ class UpdateForm extends React.Component {
                 <div className="row update-entry-container edit-in-progress">
                     <Header/>
                     <ActualValueInput
-                        i18n={i18n}
                         setUpdateData={this.setUpdateData.bind(this)}
                         formData={this.state}
                         updatedActualValue={updatedActualValue}/>
                     <ActualValueDescription
-                        i18n={i18n}
                         setUpdateData={this.setUpdateData.bind(this)}
                         formData={this.state}/>
                     <Attachments/>
                     <UpdateFormButtons
-                        i18n={this.props.i18n}
                         newUpdate={this.state.new}
                         callbacks={
                             {
@@ -363,7 +349,6 @@ class UpdateForm extends React.Component {
 }
 
 UpdateForm.propTypes = {
-    i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     formToggle: PropTypes.func.isRequired,
     // TODO: one of period and update has to be supplied. This is a clunky way of indicating a new
@@ -389,7 +374,6 @@ export class NewUpdateForm extends React.Component {
         if (this.state.formOpen) {
             //TODO: can formToggle be merged into callbacks?
             form = <UpdateForm
-                i18n={this.props.i18n}
                 callbacks={this.props.callbacks}
                 period={this.props.period}
                 formToggle={this.formToggle}/>;
@@ -403,7 +387,7 @@ export class NewUpdateForm extends React.Component {
                        className={'btn btn-sm btn-default'}
                        style={{margin: '0.3em 0.5em'}}>
                         <i className='fa fa-plus' />
-                        {this.props.i18n.strings.new_update}
+                        {_('new_update')}
                     </a>
                 </div>
                 {form}
@@ -413,7 +397,6 @@ export class NewUpdateForm extends React.Component {
 }
 
 NewUpdateForm.propTypes = {
-    i18n: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
     period: PropTypes.object
 };

@@ -9,13 +9,18 @@
 import fetch from 'isomorphic-fetch';
 
 
-export function displayDate(dateString, i18nMonths) {
+let months;
+
+export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
+    if (!months) {
+        months = months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
+    }
     if (dateString) {
         const locale = "en-gb";
         const date = new Date(dateString.split(".")[0].replace("/", /-/g));
         const day = date.getUTCDate();
-        const month = i18nMonths[date.getUTCMonth()];
+        const month = months[date.getUTCMonth()];
         const year = date.getUTCFullYear();
         return day + " " + month + " " + year;
     }
@@ -122,4 +127,14 @@ export function displayNumber(numberString) {
         }
     }
     return numberString;
+}
+
+let strings;
+
+// Translation a la python. Let's hope we never need lodash...
+export function _(s) {
+    if (!strings) {
+        strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
+    }
+    return strings[s];
 }

@@ -8,8 +8,10 @@
 import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 
-import Level from './Level.jsx'
-import Periods from './Periods.jsx'
+import Level from './Level.jsx';
+import Periods from './Periods.jsx';
+
+import {_}from './utils';
 
 
 export default class Indicators extends Level {
@@ -20,22 +22,20 @@ export default class Indicators extends Level {
 
     renderPanel(indicator) {
         const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
-        const strings = this.props.i18n.strings;
         return (
             <Panel header={"Indicator: " + title} key={indicator.id}>
                 {title}
                 <div className="baseline">
                     <div className="baseline-year">
-                        {strings.baseline_year}: {indicator.baseline_year}
+                        {_('baseline_year')}: {indicator.baseline_year}
                     </div>
                     <div className="baseline-value">
-                        {strings.baseline_value}: {indicator.baseline_value}
+                        {_('baseline_value')}: {indicator.baseline_value}
                     </div>
                 </div>
                 <Periods
                     items={indicator.periods}
-                    callbacks={this.props.callbacks}
-                    i18n={this.props.i18n}/>
+                    callbacks={this.props.callbacks}/>
             </Panel>
         )
     }
@@ -48,5 +48,4 @@ export default class Indicators extends Level {
 Indicators.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
-    i18n: PropTypes.object.isRequired
 };

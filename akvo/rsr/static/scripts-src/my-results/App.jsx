@@ -23,7 +23,6 @@ class App extends React.Component {
         super(props);
         const isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
         const strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
-        const months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
         const projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
 
         this.state = {
@@ -35,8 +34,7 @@ class App extends React.Component {
                 comments: undefined
             },
             resultsDataTree: [],
-            project: {id: projectIds.project_id},
-            i18n: {strings: strings, months: months}
+            project: {id: projectIds.project_id}
         };
     }
 
@@ -209,8 +207,7 @@ class App extends React.Component {
             return (
                 <Results
                     items={tree}
-                    callbacks={callbacks}
-                    i18n={this.state.i18n}/>
+                    callbacks={callbacks}/>
             );
         } else {
             return (
