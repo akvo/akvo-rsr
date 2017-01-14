@@ -91,11 +91,12 @@ export class Updates extends Level {
     renderPanel(update) {
         const organisation = update.user_details.approved_organisations[0].name;
         const userName = update.user_details.first_name +" "+ update.user_details.last_name;
-        const data = update.data;
-        const headerText = `Update: ${userName} at ${organisation}, data: ${data}`;
+        const i18n = this.props.i18n;
+        const headerText = `Update: ${userName} at ${organisation}, Data: ${update.data} 
+                            Status: ${i18n.strings.update_statuses[update.status]}`;
         return (
             <Panel header={headerText} key={update.id}>
-                <Update i18n={this.props.i18n}
+                <Update i18n={i18n}
                         callbacks={this.props.callbacks}
                         update={update}/>
                 <div>
@@ -115,7 +116,7 @@ Updates.propTypes = {
 };
 
 
-const Header = () => {
+const Header = ({i18n, status}) => {
     return (
         <div className="col-xs-12">
             <div className="row update-entry-container-header">
@@ -249,6 +250,12 @@ UpdateFormButtons.propTypes = {
     newUpdate: PropTypes.bool.isRequired
 };
 
+// From rsr.models.indicator.IndicatorPeriodData
+const STATUS_NEW_CODE = 'N',
+      STATUS_DRAFT_CODE = 'D',
+      STATUS_PENDING_CODE = 'P',
+      STATUS_REVISION_CODE = 'R',
+      STATUS_APPROVED_CODE = 'A';
 
 class UpdateForm extends React.Component {
 
@@ -271,7 +278,7 @@ class UpdateForm extends React.Component {
         this.setState({[field]: e.target.value});
     }
 
-    saveUpdate() {
+    saveUpdate(approve=false) {
         //NOTE: period_actual_value is needed for server side calculations to be correct
         const update = {
             'period': this.state.period,
@@ -280,6 +287,11 @@ class UpdateForm extends React.Component {
             'text': this.state.text.trim(),
             'data': this.state.data.trim()
         };
+        if (approve) {
+            update.push({'status': STATUS_APPROVED_CODE});
+        } else {
+            update.push({'status': STATUS_DRAFT_CODE});
+        }
         let success = function(data) {
             this.props.formToggle();
             this.props.callbacks.updateModel("updates", data);
@@ -287,6 +299,7 @@ class UpdateForm extends React.Component {
         if (this.state.new) {
             APICall('POST', endpoints.updates_and_comments(), update, success.bind(this));
         } else {
+            update.push({'status': STATUS_DRAFT_CODE});
             APICall('PATCH', endpoints.update_and_comments(this.props.update.id),
                     update, success.bind(this));
         }
