@@ -35,6 +35,7 @@ var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var responses = {};
 responses[projectsAPIUrl] = null;
 responses[orgsAPIUrl] = null;
+var update_section_states_timer;
 
 // LOCAL STORAGE
 var MAX_LOCALSTORAGE_DAYS = 30;
@@ -1015,6 +1016,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 function updateSectionState(section) {
     // FIXME: Not all functions called here update just the section state --
     // some of them update the state everywhere in the page!
+
+    // Check if the section was already updated, and return if so
+    if (elHasClass(section, 'section-state-updated')) {
+        return;
+    }
+
     updateAllHelpIcons();
     markMandatoryFields(section);
     setHiddenFields(section);
@@ -1022,6 +1029,16 @@ function updateSectionState(section) {
     setAllSectionsCompletionPercentage();
     setSectionChangeListener(section);
     setPageCompletionPercentage();
+
+    // Mark section as updated
+    elAddClass(section, 'section-state-updated')
+
+}
+
+function updateAllSectionState(){
+    document.querySelectorAll('.myPanel').forEach(function(section){
+        updateSectionState(section);
+    });
 }
 
 function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
@@ -1120,6 +1137,10 @@ function processResponse(response, selector, childClass, valueId, label, help, f
     };
 
     buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption, inputType);
+
+    // Clear all old timers to update the section states and setup a new one in a second.
+    clearTimeout(update_section_states_timer);
+    update_section_states_timer = setTimeout(updateAllSectionState, 1000);
 }
 
 function getCallback(selector, childClass, valueId, label, help, filterOption, inputType) {
