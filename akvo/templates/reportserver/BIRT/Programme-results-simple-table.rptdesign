@@ -5,6 +5,7 @@
     <property name="units">in</property>
     <property name="iconFile">/templates/grouped_listing.gif</property>
     <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.groupedlisting</property>
+    <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
@@ -7182,6 +7183,9 @@ where primary_organisation_id = '3394']]></xml-property>
             </list-property>
             <detail>
                 <table id="750">
+                    <property name="pageBreakAfter">avoid</property>
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">avoid</property>
                     <property name="dataSet">Project_results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
@@ -7313,6 +7317,7 @@ where primary_organisation_id = '3394']]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
+                    <property name="pageBreakInterval">40000000</property>
                     <column id="854"/>
                     <column id="855"/>
                     <column id="856"/>
@@ -7339,62 +7344,62 @@ where primary_organisation_id = '3394']]></xml-property>
                             <property name="textAlign">left</property>
                             <cell id="752">
                                 <label id="753">
-                                    <text-property name="text">title</text-property>
+                                    <text-property name="text">Project title</text-property>
                                 </label>
                             </cell>
                             <cell id="754">
                                 <label id="755">
-                                    <text-property name="text">result_title</text-property>
+                                    <text-property name="text">Result title</text-property>
                                 </label>
                             </cell>
                             <cell id="756">
                                 <label id="757">
-                                    <text-property name="text">type</text-property>
+                                    <text-property name="text">Type</text-property>
                                 </label>
                             </cell>
                             <cell id="758">
                                 <label id="759">
-                                    <text-property name="text">result_description</text-property>
+                                    <text-property name="text">Result description</text-property>
                                 </label>
                             </cell>
                             <cell id="760">
                                 <label id="761">
-                                    <text-property name="text">aggregation_status</text-property>
+                                    <text-property name="text">Aggregation status</text-property>
                                 </label>
                             </cell>
                             <cell id="762">
                                 <label id="763">
-                                    <text-property name="text">indicator_title</text-property>
+                                    <text-property name="text">Indicator title</text-property>
                                 </label>
                             </cell>
                             <cell id="764">
                                 <label id="765">
-                                    <text-property name="text">measure</text-property>
+                                    <text-property name="text">Measure</text-property>
                                 </label>
                             </cell>
                             <cell id="766">
                                 <label id="767">
-                                    <text-property name="text">indicator_description</text-property>
+                                    <text-property name="text">Indicator description</text-property>
                                 </label>
                             </cell>
                             <cell id="768">
                                 <label id="769">
-                                    <text-property name="text">ascending</text-property>
+                                    <text-property name="text">Ascending</text-property>
                                 </label>
                             </cell>
                             <cell id="770">
                                 <label id="771">
-                                    <text-property name="text">baseline_year</text-property>
+                                    <text-property name="text">Baseline year</text-property>
                                 </label>
                             </cell>
                             <cell id="772">
                                 <label id="773">
-                                    <text-property name="text">baseline_value</text-property>
+                                    <text-property name="text">Baseline value</text-property>
                                 </label>
                             </cell>
                             <cell id="774">
                                 <label id="775">
-                                    <text-property name="text">baseline_comment</text-property>
+                                    <text-property name="text">Baseline comment</text-property>
                                 </label>
                             </cell>
                             <cell id="776">
@@ -7404,37 +7409,37 @@ where primary_organisation_id = '3394']]></xml-property>
                             </cell>
                             <cell id="778">
                                 <label id="779">
-                                    <text-property name="text">period_start</text-property>
+                                    <text-property name="text">Period start</text-property>
                                 </label>
                             </cell>
                             <cell id="780">
                                 <label id="781">
-                                    <text-property name="text">period_end</text-property>
+                                    <text-property name="text">Period end</text-property>
                                 </label>
                             </cell>
                             <cell id="782">
                                 <label id="783">
-                                    <text-property name="text">target_value</text-property>
+                                    <text-property name="text">Target value</text-property>
                                 </label>
                             </cell>
                             <cell id="784">
                                 <label id="785">
-                                    <text-property name="text">target_comment</text-property>
+                                    <text-property name="text">Target comment</text-property>
                                 </label>
                             </cell>
                             <cell id="786">
                                 <label id="787">
-                                    <text-property name="text">actual_value</text-property>
+                                    <text-property name="text">Actual value</text-property>
                                 </label>
                             </cell>
                             <cell id="788">
                                 <label id="789">
-                                    <text-property name="text">actual_comment</text-property>
+                                    <text-property name="text">Actual comment</text-property>
                                 </label>
                             </cell>
                             <cell id="790">
                                 <label id="791">
-                                    <text-property name="text">type_name</text-property>
+                                    <text-property name="text">Type name</text-property>
                                 </label>
                             </cell>
                         </row>
