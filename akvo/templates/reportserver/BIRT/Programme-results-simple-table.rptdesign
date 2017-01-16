@@ -6776,7 +6776,7 @@ where (rsr_relatedproject.project_id = ?) ]]></xml-property>
                         <row id="438">
                             <cell id="439">
                                 <label id="440">
-                                    <text-property name="text">title</text-property>
+                                    <text-property name="text">Title</text-property>
                                 </label>
                             </cell>
                             <cell id="441">
