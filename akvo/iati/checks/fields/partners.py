@@ -19,7 +19,7 @@ def partners(project):
     all_checks_passed = True
     valid_partner = False
 
-    for partnership in project.partnerships.all():
+    for partnership in project.partnerships.prefetch_related('organisation').all():
 
         if partnership.organisation:
             org = partnership.organisation
