@@ -107,6 +107,12 @@
                     <text-property name="heading">title</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">iati_activity_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">iati_activity_id</text-property>
+                    <text-property name="heading">iati_activity_id</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">result_title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">result_title</text-property>
@@ -255,106 +261,111 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">result_title</property>
+                        <property name="name">iati_activity_id</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">result_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">result_pk</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">type</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">result_description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">aggregation_status</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">indicator_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">indicator_pk</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">measure</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">indicator_description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">ascending</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">baseline_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">baseline_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">baseline_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">indicatorperiod_pk</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">period_start</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">period_end</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">target_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">target_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">actual_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">22</property>
                         <property name="name">actual_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">23</property>
                         <property name="name">type_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -371,153 +382,162 @@
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">iati_activity_id</property>
+                    <property name="nativeName">iati_activity_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
                     <property name="name">result_title</property>
                     <property name="nativeName">result_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                     <property name="name">result_pk</property>
                     <property name="nativeName">result_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="name">type</property>
                     <property name="nativeName">type</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">result_description</property>
                     <property name="nativeName">result_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">aggregation_status</property>
                     <property name="nativeName">aggregation_status</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">indicator_title</property>
                     <property name="nativeName">indicator_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">indicator_pk</property>
                     <property name="nativeName">indicator_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">measure</property>
                     <property name="nativeName">measure</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">indicator_description</property>
                     <property name="nativeName">indicator_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">ascending</property>
                     <property name="nativeName">ascending</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">baseline_year</property>
                     <property name="nativeName">baseline_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">baseline_value</property>
                     <property name="nativeName">baseline_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">baseline_comment</property>
                     <property name="nativeName">baseline_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">indicatorperiod_pk</property>
                     <property name="nativeName">indicatorperiod_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">period_start</property>
                     <property name="nativeName">period_start</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">period_end</property>
                     <property name="nativeName">period_end</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">19</property>
                     <property name="name">target_value</property>
                     <property name="nativeName">target_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">20</property>
                     <property name="name">target_comment</property>
                     <property name="nativeName">target_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">21</property>
                     <property name="name">actual_value</property>
                     <property name="nativeName">actual_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">22</property>
                     <property name="name">actual_comment</property>
                     <property name="nativeName">actual_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">23</property>
                     <property name="name">type_name</property>
                     <property name="nativeName">type_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select rsr_project.title,
+            <xml-property name="queryText"><![CDATA[select 
+ rsr_project.title,
+ rsr_project.iati_activity_id,
  rsr_result.title as result_title,
  rsr_result.id as result_pk,
  rsr_result.type,
@@ -7316,11 +7336,25 @@ where primary_organisation_id = '3394']]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">iati_activity_id</property>
+                            <text-property name="displayName">iati_activity_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <property name="pageBreakInterval">40000000</property>
                     <column id="854"/>
+                    <column id="875">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="882">
+                        <property name="repeat">1</property>
+                    </column>
                     <column id="855"/>
-                    <column id="856"/>
+                    <column id="873">
+                        <property name="repeat">1</property>
+                    </column>
                     <column id="857"/>
                     <column id="858"/>
                     <column id="859"/>
@@ -7337,14 +7371,23 @@ where primary_organisation_id = '3394']]></xml-property>
                     <column id="870"/>
                     <column id="871"/>
                     <column id="872"/>
-                    <column id="873"/>
                     <header>
                         <row id="751">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
                             <cell id="752">
                                 <label id="753">
+                                    <text-property name="text">IATI ID</text-property>
+                                </label>
+                            </cell>
+                            <cell id="876">
+                                <label id="877">
                                     <text-property name="text">Project title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="883">
+                                <label id="884">
+                                    <text-property name="text">Type name</text-property>
                                 </label>
                             </cell>
                             <cell id="754">
@@ -7352,9 +7395,9 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <text-property name="text">Result title</text-property>
                                 </label>
                             </cell>
-                            <cell id="756">
-                                <label id="757">
-                                    <text-property name="text">Type</text-property>
+                            <cell id="790">
+                                <label id="791">
+                                    <text-property name="text">Type name</text-property>
                                 </label>
                             </cell>
                             <cell id="758">
@@ -7437,18 +7480,23 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <text-property name="text">Actual comment</text-property>
                                 </label>
                             </cell>
-                            <cell id="790">
-                                <label id="791">
-                                    <text-property name="text">Type name</text-property>
-                                </label>
-                            </cell>
                         </row>
                     </header>
                     <detail>
                         <row id="792">
                             <cell id="793">
-                                <data id="794">
+                                <data id="881">
+                                    <property name="resultSetColumn">iati_activity_id</property>
+                                </data>
+                            </cell>
+                            <cell id="878">
+                                <data id="888">
                                     <property name="resultSetColumn">title</property>
+                                </data>
+                            </cell>
+                            <cell id="885">
+                                <data id="886">
+                                    <property name="resultSetColumn">type_name</property>
                                 </data>
                             </cell>
                             <cell id="795">
@@ -7456,9 +7504,9 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <property name="resultSetColumn">result_title</property>
                                 </data>
                             </cell>
-                            <cell id="797">
-                                <data id="798">
-                                    <property name="resultSetColumn">type</property>
+                            <cell id="831">
+                                <data id="832">
+                                    <property name="resultSetColumn">type_name</property>
                                 </data>
                             </cell>
                             <cell id="799">
@@ -7541,18 +7589,15 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <property name="resultSetColumn">actual_comment</property>
                                 </data>
                             </cell>
-                            <cell id="831">
-                                <data id="832">
-                                    <property name="resultSetColumn">type_name</property>
-                                </data>
-                            </cell>
                         </row>
                     </detail>
                     <footer>
                         <row id="833">
                             <cell id="834"/>
+                            <cell id="880"/>
+                            <cell id="887"/>
                             <cell id="835"/>
-                            <cell id="836"/>
+                            <cell id="853"/>
                             <cell id="837"/>
                             <cell id="838"/>
                             <cell id="839"/>
@@ -7569,7 +7614,6 @@ where primary_organisation_id = '3394']]></xml-property>
                             <cell id="850"/>
                             <cell id="851"/>
                             <cell id="852"/>
-                            <cell id="853"/>
                         </row>
                     </footer>
                 </table>
