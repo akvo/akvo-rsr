@@ -75,12 +75,7 @@ Update.propTypes = {
 };
 
 
-export class Updates extends Level {
-    constructor(props) {
-        super(props);
-        this.state = {model: "updates"};
-    }
-
+export class Updates extends React.Component {
     componentWillMount() {
         this.props.callbacks.loadModel('comments');
     }
@@ -102,6 +97,27 @@ export class Updates extends Level {
             </Panel>
         )
     }
+
+    render() {
+        const items = this.props.items;
+        if (!items) {
+            console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
+            return (
+                <p>Loading...</p>
+            );
+        } else if (items.length > 0) {
+            return (
+                <Collapse onChange={this.props.callbacks.onChange} activeKey={this.props.activeKey}>
+                    {items.map((item) => this.renderPanel(item))}
+                </Collapse>
+            )
+        } else {
+            return (
+                <p>No items</p>
+            );
+        }
+    }
+
 }
 
 Updates.propTypes = {

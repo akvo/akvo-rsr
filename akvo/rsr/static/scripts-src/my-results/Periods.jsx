@@ -83,7 +83,7 @@ const periodActualValue = (period) => {
         "";
 };
 
-export default class Periods extends Level {
+export default class Periods extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: "periods"};
@@ -115,8 +115,10 @@ export default class Periods extends Level {
         )
     }
 
-    componentWillMount() {
-        this.props.callbacks.loadModel('updates');
+    render() {
+        return (
+            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+        );
     }
 }
 

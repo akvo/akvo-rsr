@@ -24,6 +24,12 @@ export default class Comments extends Level {
             </Panel>
         )
     }
+
+    render() {
+        return (
+            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+        );
+    }
 }
 
 Comments.propTypes = {

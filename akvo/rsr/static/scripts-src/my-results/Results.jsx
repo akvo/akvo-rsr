@@ -12,7 +12,7 @@ import Level from './Level.jsx'
 import Indicators from './Indicators.jsx'
 
 
-export default class Results extends Level {
+export default class Results extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: "results"};
@@ -26,6 +26,12 @@ export default class Results extends Level {
                     callbacks={this.props.callbacks}/>
             </Panel>
         )
+    }
+
+    render() {
+        return (
+            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+        );
     }
 }
 

@@ -14,10 +14,14 @@ import Periods from './Periods.jsx';
 import {_}from './utils';
 
 
-export default class Indicators extends Level {
+export default class Indicators extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: "indicators"};
+    }
+
+    componentWillMount() {
+        this.props.callbacks.loadModel('periods');
     }
 
     renderPanel(indicator) {
@@ -40,8 +44,10 @@ export default class Indicators extends Level {
         )
     }
 
-    componentWillMount() {
-        this.props.callbacks.loadModel('periods');
+    render() {
+        return (
+            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+        );
     }
 }
 
