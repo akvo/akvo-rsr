@@ -4743,6 +4743,7 @@ reportContext.setGlobalVariable("show_bars",true);
                         <structure>
                             <property name="name">progress_pct</property>
                             <text-property name="displayName">progress_pct</text-property>
+<<<<<<< Updated upstream
                             <expression name="expression" type="javascript">(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
 ?&#13;
  ( row["baseline_value"] ?&#13;
@@ -4750,6 +4751,31 @@ reportContext.setGlobalVariable("show_bars",true);
  : Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
  )&#13;
  :&#13;
+=======
+                            <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "available" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "operational" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not yet available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
+?&#13;
+( row["baseline_value"] ?&#13;
+Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
+: Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
+)&#13;
+:&#13;
+>>>>>>> Stashed changes
 null</expression>
                             <property name="dataType">integer</property>
                             <property name="allowExport">true</property>
@@ -5811,16 +5837,26 @@ Math.min(row["progress_pct"],100)&#13;
                                             <property name="operator">between</property>
                                             <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                             <simple-property-list name="value1">
+<<<<<<< Updated upstream
                                                 <value type="javascript">33</value>
                                             </simple-property-list>
                                             <expression name="value2" type="javascript">66</expression>
+=======
+                                                <value type="javascript">50</value>
+                                            </simple-property-list>
+                                            <expression name="value2" type="javascript">84</expression>
+>>>>>>> Stashed changes
                                             <property name="style">progress_middle</property>
                                         </structure>
                                         <structure>
                                             <property name="operator">ge</property>
                                             <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                             <simple-property-list name="value1">
+<<<<<<< Updated upstream
                                                 <value type="javascript">66</value>
+=======
+                                                <value type="javascript">85</value>
+>>>>>>> Stashed changes
                                             </simple-property-list>
                                             <property name="style">progress_high</property>
                                         </structure>
@@ -5905,7 +5941,11 @@ Math.min(row["progress_pct"],100)&#13;
                                     <property name="fontFamily">"Helvetica Neue"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">normal</property>
+<<<<<<< Updated upstream
                                     <property name="color">#000000</property>
+=======
+                                    <property name="color">black</property>
+>>>>>>> Stashed changes
                                     <property name="marginBottom">8pt</property>
                                     <property name="paddingTop">8pt</property>
                                     <property name="paddingLeft">14pt</property>
@@ -5913,9 +5953,13 @@ Math.min(row["progress_pct"],100)&#13;
                                     <list-property name="highlightRules">
                                         <structure>
                                             <property name="operator">between</property>
+<<<<<<< Updated upstream
                                             <expression name="testExpr" type="javascript">Finance.percent(row["baseline_value"] ?
   Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))
  : Math.round(row["actual_value_number"] * 100 / row["target_value_number"]));</expression>
+=======
+                                            <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+>>>>>>> Stashed changes
                                             <simple-property-list name="value1">
                                                 <value type="javascript">0.0</value>
                                             </simple-property-list>
@@ -5924,9 +5968,13 @@ Math.min(row["progress_pct"],100)&#13;
                                         </structure>
                                         <structure>
                                             <property name="operator">between</property>
+<<<<<<< Updated upstream
                                             <expression name="testExpr" type="javascript">Finance.percent(row["baseline_value"] ?
   Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))
  : Math.round(row["actual_value_number"] * 100 / row["target_value_number"]));row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))</expression>
+=======
+                                            <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+>>>>>>> Stashed changes
                                             <simple-property-list name="value1">
                                                 <value type="javascript">50</value>
                                             </simple-property-list>
@@ -5935,9 +5983,13 @@ Math.min(row["progress_pct"],100)&#13;
                                         </structure>
                                         <structure>
                                             <property name="operator">ge</property>
+<<<<<<< Updated upstream
                                             <expression name="testExpr" type="javascript">Finance.percent(row["baseline_value"] ?
   Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))
  : Math.round(row["actual_value_number"] * 100 / row["target_value_number"]));</expression>
+=======
+                                            <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+>>>>>>> Stashed changes
                                             <simple-property-list name="value1">
                                                 <value type="javascript">85</value>
                                             </simple-property-list>
