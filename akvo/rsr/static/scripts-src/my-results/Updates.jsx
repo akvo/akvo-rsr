@@ -6,12 +6,12 @@
  */
 
 import React, { PropTypes } from 'react';
-import {Panel} from 'rc-collapse';
+import Collapse, {Panel} from 'rc-collapse';
+import update  from 'immutability-helper';
 
-import Level from './Level.jsx'
 import Comments from './Comments.jsx'
 
-import {APICall, endpoints, displayDate, displayNumber, _} from './utils.js';
+import {APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate} from './utils.js';
 
 
 const UpdateDisplay = ({update}) => {
@@ -40,7 +40,7 @@ class Update extends React.Component {
     constructor (props) {
         super(props);
         this.formToggle = this.formToggle.bind(this);
-        this.state = {formOpen: false};
+        this.state = {formOpen: isNewUpdate(props.update)};
     }
 
     formToggle() {
@@ -87,8 +87,9 @@ export class Updates extends React.Component {
                             Status: ${_('update_statuses')[update.status]}`;
         return (
             <Panel header={headerText} key={update.id}>
-                <Update callbacks={this.props.callbacks}
-                        update={update}/>
+                <Update
+                    callbacks={this.props.callbacks}
+                    update={update}/>
                 <div>
                     <Comments
                         items={update.comments}
@@ -126,26 +127,26 @@ Updates.propTypes = {
 };
 
 
-const Header = ({status}) => {
+const Header = ({update}) => {
     return (
         <div className="col-xs-12">
             <div className="row update-entry-container-header">
-                {`Status: ${status}`}
+                Status: {_('update_statuses')[update.status]}
             </div>
         </div>
     )
 };
 
 
-const ActualValueInput = ({formData, updatedActualValue, setUpdateData}) => {
+const ActualValueInput = ({update, updatedActualValue, onChange}) => {
     return (
         <div className="row">
             <div className="col-xs-6">
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
                 <input className="form-control"
                        id="data"
-                       value={formData.data}
-                       onChange={setUpdateData}
+                       value={update.data}
+                       onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
             <div className="col-xs-6">
@@ -165,13 +166,13 @@ const ActualValueInput = ({formData, updatedActualValue, setUpdateData}) => {
 };
 
 ActualValueInput.propTypes = {
-    formData: PropTypes.object,
+    update: PropTypes.object,
     updatedActualValue: PropTypes.string,
-    setUpdateData: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired
 };
 
 
-const ActualValueDescription = ({formData, setUpdateData}) => {
+const ActualValueDescription = ({update, onChange}) => {
     return (
         <div className="row">
             <div className="col-xs-9 update-description">
@@ -179,8 +180,8 @@ const ActualValueDescription = ({formData, setUpdateData}) => {
                     <label htmlFor="description">{_('actual_value_comment')}</label>
                     <textarea className="form-control"
                               id="text"
-                              value={formData.text}
-                              onChange={setUpdateData}
+                              value={update.text}
+                              onChange={onChange}
                               placeholder={_('comment_placeholder')}>
                     </textarea>
                 </div>
@@ -190,8 +191,8 @@ const ActualValueDescription = ({formData, setUpdateData}) => {
 };
 
 ActualValueDescription.propTypes = {
-    formData: PropTypes.object,
-    setUpdateData: PropTypes.func.isRequired
+    update: PropTypes.object,
+    onChange: PropTypes.func.isRequired
 };
 
 
@@ -227,23 +228,23 @@ const Attachments = () => {
 };
 
 
-const UpdateFormButtons = ({callbacks, newUpdate}) => {
+const UpdateFormButtons = ({update, callbacks}) => {
     return (
         <div className="menuAction">
-        {!newUpdate ?
+        {!isNewUpdate(update) ?
             <div role="presentation" className="removeUpdate">
                 <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{_('delete')}</a>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <a onClick={callbacks.formToggle} className="btn btn-link btn-xs">{_('cancel')}</a>
+                    <a onClick={callbacks.onCancel} className="btn btn-link btn-xs">{_('cancel')}</a>
                 </li>
                 <li role="presentation" className="saveUpdate">
-                    <a onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('save')}</a>
+                    <a id="save" onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
                 <li role="presentation" className="approveUpdate">
-                    <a className="btn btn-default btn-xs">{_('approve')}</a>
+                    <a id="approve" onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('approve')}</a>
                 </li>
                 <span></span>
             </ul>
@@ -252,8 +253,7 @@ const UpdateFormButtons = ({callbacks, newUpdate}) => {
 };
 
 UpdateFormButtons.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    newUpdate: PropTypes.bool.isRequired
+    callbacks: PropTypes.object.isRequired
 };
 
 // From rsr.models.indicator.IndicatorPeriodData
@@ -263,51 +263,56 @@ const STATUS_NEW_CODE = 'N',
       STATUS_REVISION_CODE = 'R',
       STATUS_APPROVED_CODE = 'A';
 
+const pruneForPATCH = (update) => {
+    // Only include the listed fields when PATCHing an update
+    // currently the list mimics the old MyResults data
+    const fields = ['data', 'text', 'relative_data', 'status'];
+    return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
+};
+
 class UpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
-        const update = this.props.update;
-        if (update) {
-            // create state from existing update, NOTE: "new" denotes if this is a new update or not
-            this.state = {new: false, text: update.text, data: update.data, period: update.period};
-        } else {
-            this.state = {new: true, text: "", data: 0, period: this.props.period.id};
-        }
+        // Save original update
+        this.state = {update: Object.assign({}, this.props.update)};
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onCancel = this.onCancel.bind(this);
     }
 
-    setUpdateData(e) {
-        // Update the form field widgets
+    onChange(e) {
+        // When the form field widgets change, modify the model data in App.state[model]
         const field = e.target.id;
-        this.setState({[field]: e.target.value});
+        this.props.callbacks.updateModel(
+            'updates', update(this.props.update, {$merge: {[field]: e.target.value}}));
     }
 
-    saveUpdate(approve=false) {
-        //NOTE: period_actual_value is needed for server side calculations to be correct
-        const update = {
-            'period': this.state.period,
-            'period_actual_value': this.previousActualValue(),
-            'user': 1,
-            'text': this.state.text.trim(),
-            'data': this.state.data.trim()
-        };
-        if (approve) {
-            update.push({'status': STATUS_APPROVED_CODE});
+    onCancel() {
+        this.props.formToggle();
+        this.props.callbacks.updateModel('updates', this.state.update);
+    }
+
+    saveUpdate(e) {
+        let update = Object.assign({}, this.props.update);
+        if (e.target.id == 'approve') {
+            update.status = STATUS_APPROVED_CODE;
         } else {
-            update.push({'status': STATUS_DRAFT_CODE});
+            update.status = STATUS_DRAFT_CODE;
         }
         let success = function(data) {
             this.props.formToggle();
+            // Always save the instance using data coming from the backend
+            // TODO: look at having a replaceModel method?
+            this.props.callbacks.deleteFromModel("updates", update.id);
             this.props.callbacks.updateModel("updates", data);
         };
-        if (this.state.new) {
+        if (isNewUpdate(update)) {
             APICall('POST', endpoints.updates_and_comments(), update, success.bind(this));
         } else {
-            update.push({'status': STATUS_DRAFT_CODE});
-            APICall('PATCH', endpoints.update_and_comments(this.props.update.id),
-                    update, success.bind(this));
+            APICall('PATCH', endpoints.update_and_comments(update.id),
+                    pruneForPATCH(update), success.bind(this));
         }
     }
 
@@ -323,7 +328,7 @@ class UpdateForm extends React.Component {
 
     previousActualValue() {
         if (this.props.update) {
-            return this.props.update.actual_value - this.props.update.data
+            return this.props.update.actual_value - this.props.update.data;
         } else {
             const updates = this.props.period.updates;
             if (updates && updates.length > 0) {
@@ -335,27 +340,27 @@ class UpdateForm extends React.Component {
     }
 
     render() {
-        const updateValue = parseFloat(this.state.data ? this.state.data : 0);
+        const updateValue = parseFloat(this.props.update.data ? this.props.update.data : 0);
         const updatedActualValue = displayNumber(this.previousActualValue() + updateValue);
         return (
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
-                    <Header/>
+                    <Header update={this.props.update}/>
                     <ActualValueInput
-                        setUpdateData={this.setUpdateData.bind(this)}
-                        formData={this.state}
+                        onChange={this.onChange}
+                        update={this.props.update}
                         updatedActualValue={updatedActualValue}/>
                     <ActualValueDescription
-                        setUpdateData={this.setUpdateData.bind(this)}
-                        formData={this.state}/>
+                        onChange={this.onChange}
+                        update={this.props.update}/>
                     <Attachments/>
                     <UpdateFormButtons
-                        newUpdate={this.state.new}
+                        update={this.props.update}
                         callbacks={
                             {
-                                formToggle: this.props.formToggle,
                                 saveUpdate: this.saveUpdate,
-                                deleteUpdate: this.deleteUpdate
+                                deleteUpdate: this.deleteUpdate,
+                                onCancel: this.onCancel
                             }
                         }/>
                 </div>
@@ -367,52 +372,52 @@ class UpdateForm extends React.Component {
 UpdateForm.propTypes = {
     callbacks: PropTypes.object.isRequired,
     formToggle: PropTypes.func.isRequired,
-    // TODO: one of period and update has to be supplied. This is a clunky way of indicating a new
-    // or exisitng udpdate. A better way should be found.
-    period: PropTypes.object,
-    update: PropTypes.object
+    update: PropTypes.object.isRequired,
+    period: PropTypes.object
 };
 
+let newUpdateID = 1;
 
-export class NewUpdateForm extends React.Component {
+export class NewUpdateButton extends React.Component {
     constructor (props) {
         super(props);
-        this.formToggle = this.formToggle.bind(this);
-        this.state = {formOpen: false};
+        this.newUpdate = this.newUpdate.bind(this);
     }
 
-    formToggle() {
-        this.setState({formOpen: !this.state.formOpen});
+    newUpdate() {
+        const user = this.props.callbacks.currentUser();
+        const id = `new-${newUpdateID}`;
+        const data = {
+            id: id,
+            period: this.props.period.id,
+            user_details: user,
+            user: user.id,
+            data: 0,
+            text: '',
+            relative_data: true,
+            status: STATUS_DRAFT_CODE
+        };
+        this.props.callbacks.openNewForm(id, data);
+        newUpdateID += 1;
     }
 
     render() {
-        let form;
-        if (this.state.formOpen) {
-            //TODO: can formToggle be merged into callbacks?
-            form = <UpdateForm
-                callbacks={this.props.callbacks}
-                period={this.props.period}
-                formToggle={this.formToggle}/>;
-        } else {
-            form = "";
-        }
         return (
             <div>
                 <div>
-                    <a onClick={this.formToggle}
+                    <a onClick={this.newUpdate}
                        className={'btn btn-sm btn-default'}
                        style={{margin: '0.3em 0.5em'}}>
                         <i className='fa fa-plus' />
                         {_('new_update')}
                     </a>
                 </div>
-                {form}
             </div>
         )
     }
 }
 
-NewUpdateForm.propTypes = {
+NewUpdateButton.propTypes = {
     callbacks: PropTypes.object.isRequired,
     period: PropTypes.object
 };

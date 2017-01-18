@@ -6,8 +6,10 @@
  */
 import React, {PropTypes} from "react";
 import {Panel} from "rc-collapse";
+import update  from 'immutability-helper';
+
 import Level from "./Level.jsx";
-import {Updates, NewUpdateForm} from "./Updates.jsx";
+import {Updates, NewUpdateButton} from "./Updates.jsx";
 import {displayDate, APICall, endpoints} from "./utils.js";
 
 
@@ -86,7 +88,30 @@ const periodActualValue = (period) => {
 export default class Periods extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {model: "periods"};
+        this.state = {
+            model: "periods",
+            activeKey: [] // Keep track of open update panels
+        };
+        this.onChange = this.onChange.bind(this);
+        this.openNewForm = this.openNewForm.bind(this);
+    }
+
+    componentWillMount() {
+        this.props.callbacks.loadModel('updates');
+    }
+
+    onChange(activeKey) {
+        // Keep track of open panels
+        this.setState({activeKey});
+    }
+
+    openNewForm(newKey, data) {
+        // Add the key for a new update to the list of open panels
+        this.setState(
+            {activeKey: update(this.state.activeKey, {$push: [newKey]})},
+            // Only when the activeKey state is committed do we update the updates model
+            this.props.callbacks.updateModel('updates', data)
+        );
     }
 
     renderPanel(period) {
@@ -103,14 +128,17 @@ export default class Periods extends React.Component {
                 <PeriodLockToggle period={period} callbacks={this.props.callbacks}/>
             </span>
         );
+        const updateCallbacks = update(this.props.callbacks, {$merge: {onChange: this.onChange}});
+        const buttonCallbacks = update(this.props.callbacks, {$merge: {openNewForm: this.openNewForm}});
         return (
             <Panel header={header} key={period.id}>
-                <NewUpdateForm
-                    callbacks={this.props.callbacks}
-                    period={period}/>
                 <Updates
-                         callbacks={this.props.callbacks}
-                         items={period.updates}/>
+                    callbacks={updateCallbacks}
+                    items={period.updates}
+                    activeKey={this.state.activeKey}/>
+                <NewUpdateButton
+                    callbacks={buttonCallbacks}
+                    period={period}/>
             </Panel>
         )
     }
