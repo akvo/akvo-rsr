@@ -23,19 +23,28 @@ class App extends React.Component {
         super(props);
         const isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
         const strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
+        const userID = JSON.parse(document.getElementById('endpoint-data').innerHTML).userID;
         const projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
-
         this.state = {
             models: {
                 results: undefined,
                 indicators: undefined,
                 periods: undefined,
                 updates: undefined,
-                comments: undefined
+                comments: undefined,
+                user: undefined
             },
             resultsDataTree: [],
             project: {id: projectIds.project_id}
         };
+        const success = function(data) {
+            // maintain compatibility with existing updates JSON
+            data.approved_organisations = [data.organisation];
+            this.setState({models: update(this.state.models, {$merge: {user: data}})});
+        };
+        // Get info on the current user. Used when posting data, e.g. updates
+        // TODO: This might not be the best place to load user data
+        APICall('GET', endpoints.user(userID), '', success.bind(this));
     }
 
     componentDidMount() {
@@ -63,22 +72,33 @@ class App extends React.Component {
         }
     }
 
-    updateModel(model, data, del=false) {
+    updateModel(model, data) {
         /*
         Update a model instance. Uses the indexed model objects and the immutability-helper update
          function (https://facebook.github.io/react/docs/update.html)
          */
         let newState;
         const id = data.id;
-        if (del) {
-            // Since we shouldn't edit the state object directly we have to make a (shallow) copy
-            // and delete from the copy. TODO: think hard if this can lead to trouble...
-            const newModel = Object.assign({}, this.state.models[model]);
-            delete newModel[id];
-            newState = update(this.state.models, {[model]: {$set: newModel}});
-        } else {
-            newState = update(this.state.models, {[model]: {$merge: {[id]: data}}});
-        }
+        newState = update(this.state.models, {[model]: {$merge: {[id]: data}}});
+        this.setState(
+            {models: newState},
+            function() {
+                this.setState({resultsDataTree: this.assembleDataTree()});
+            }
+        );
+    }
+
+    deleteFromModel(model, id) {
+        /*
+        Update a model instance. Uses the indexed model objects and the immutability-helper update
+         function (https://facebook.github.io/react/docs/update.html)
+         */
+        let newState;
+        // Since we shouldn't edit the state object directly we have to make a (shallow) copy
+        // and delete from the copy. TODO: think hard if this can lead to trouble...
+        const newModel = Object.assign({}, this.state.models[model]);
+        delete newModel[id];
+        newState = update(this.state.models, {[model]: {$set: newModel}});
         this.setState(
             {models: newState},
             function() {
@@ -102,6 +122,11 @@ class App extends React.Component {
             },
             {}
         )
+    }
+
+    currentUser() {
+        //TODO: if loading of user data fails we have a problem...
+        return this.state.models.user;
     }
 
     assembleDataTree() {
@@ -197,7 +222,9 @@ class App extends React.Component {
         const tree = this.state.resultsDataTree;
         const callbacks = {
             loadModel: this.loadModel.bind(this),
-            updateModel: this.updateModel.bind(this)
+            updateModel: this.updateModel.bind(this),
+            deleteFromModel: this.deleteFromModel.bind(this),
+            currentUser: this.currentUser.bind(this)
         };
         if (! this.state.models.results) {
             return (
