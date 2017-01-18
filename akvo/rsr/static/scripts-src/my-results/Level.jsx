@@ -11,7 +11,7 @@ import Collapse, {Panel} from 'rc-collapse';
 export default class Level extends React.Component {
     render() {
         const items = this.props.items;
-        if (! items) {
+        if (!items) {
             console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
             return (
                 <p>Loading...</p>
@@ -19,7 +19,7 @@ export default class Level extends React.Component {
         } else if (items.length > 0) {
             return (
                 <Collapse>
-                    {items.map((item) => this.renderPanel(item))}
+                    {items.map((item) => this.props.renderPanel(item))}
                 </Collapse>
             );
         } else {
@@ -29,3 +29,8 @@ export default class Level extends React.Component {
         }
     }
 }
+
+Results.propTypes = {
+    items: PropTypes.array,
+    renderPanel: PropTypes.func.isRequired
+};
