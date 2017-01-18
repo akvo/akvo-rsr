@@ -14,7 +14,7 @@ let months;
 export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
     if (!months) {
-        months = months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
+        months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
     }
     if (dateString) {
         const locale = "en-gb";
@@ -126,7 +126,7 @@ export function displayNumber(numberString) {
             return float.toLocaleString(locale);
         }
     }
-    return numberString;
+    return '';
 }
 
 let strings;
@@ -138,3 +138,5 @@ export function _(s) {
     }
     return strings[s];
 }
+
+export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
