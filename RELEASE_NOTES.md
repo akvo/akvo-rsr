@@ -31,6 +31,15 @@ employments to the same organisation & group.
 [#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
 been upgraded to 3.2.5 from v2.3.13 which is quite old.
 
+# Akvo RSR version 3.18.4 Vilnius (hot-fix)
+
+## Bug fixes
+
+[#2496](https://github.com/akvo/akvo-rsr/issues/2403) Fix 504 (Gateway Timeout
+errors) when opening the project editor for big projects by speeding up
+fetching field validation rules and prefetching more attributes related to the
+results when querying for the project being edited.
+
 # Akvo RSR version 3.18.3 Vilnius (hot-fix)
 
 ## Improvements
