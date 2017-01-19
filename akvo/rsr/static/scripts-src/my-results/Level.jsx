@@ -30,7 +30,7 @@ export default class Level extends React.Component {
     }
 }
 
-Results.propTypes = {
+Level.propTypes = {
     items: PropTypes.array,
     renderPanel: PropTypes.func.isRequired
 };
