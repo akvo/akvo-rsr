@@ -1,4 +1,4 @@
-# Currently in develop
+# Akvo RSR version 3.20 Bogotá
 
 ## Improvements
 
@@ -9,6 +9,22 @@ Group all the employments of a user together in the user management page.
 GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
 ## Bug fixes
+
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
+
+[#2484](https://github.com/akvo/akvo-rsr/issues/2484) Import
+IndicatorReferences also when Results are imported to a child project.
+
+[#2482](https://github.com/akvo/akvo-rsr/issues/2482) Fix bug with organisation
+admin not being able to delete an AdministrativeLocation.
+
+[#2457](https://github.com/akvo/akvo-rsr/issues/2457) Fix the Results type
+column in the Results and Indicators table report to show the type string
+instead of the type's id.
+
+[#2456](https://github.com/akvo/akvo-rsr/issues/2456) Fix sorting of the
+results and indicators in the Results and Indicators Overview report.
 
 [#2494](https://github.com/akvo/akvo-rsr/issues/2494) Fix (potential) timeouts
 on authentication from Up app for some users.
@@ -67,9 +83,6 @@ wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
 
 [#2442](https://github.com/akvo/akvo-rsr/issues/2442) Custom mapper to import Result data only, using the IATI import,
 without over-writing the content of an existing project.
-
-[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
-organisation is always an organisation where user has an approved employment.
 
 # Akvo RSR version 3.18 Vilnius
 
