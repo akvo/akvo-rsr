@@ -52,7 +52,7 @@ def indicator_upload_file(request, pk=None):
     :param pk; The primary key of an IndicatorPeriodData instance.
     """
     update = IndicatorPeriodData.objects.get(pk=pk)
-    upload_file = request.FILES['file']
+    upload_file = request.data['file']
 
     # Permissions
     user = getattr(request, 'user', None)

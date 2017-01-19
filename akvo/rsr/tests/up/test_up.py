@@ -6,16 +6,19 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Employment, Organisation, Partnership, Project, ProjectUpdate
+import base64
+import json
+from os.path import abspath, dirname, join
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import Client, TestCase
-
-import json
-
 from lxml import etree
+
+from akvo.rsr.models import Employment, Organisation, Partnership, Project, ProjectUpdate
+
+HERE = dirname(abspath(__file__))
 
 
 class RsrUpTest(TestCase):
@@ -78,7 +81,7 @@ class RsrUpTest(TestCase):
         - Test whether there is a published project available.
         """
         response = self.c.post('/auth/token/?format=json',
-                          {'username': 'TestUser', 'password': 'TestPassword'})
+                               {'username': 'TestUser', 'password': 'TestPassword'})
         self.assertEqual(response.status_code, 200)
 
         contents = json.loads(response.content)
@@ -131,3 +134,47 @@ class RsrUpTest(TestCase):
         # Retrieve countries
         country_response = self.c.get('/rest/v1/country/', {'format': 'json', 'limit': '50'})
         self.assertEqual(country_response.status_code, 200)
+
+    def test_post_update(self):
+        """Test that posting an update works from the app
+
+        - Also, tests that photo_caption, photo_credit, etc. can be left empty
+          when posting an update.
+
+        """
+
+        user = get_user_model().objects.get(username='TestUser')
+        self.c.login(username='TestUser', password='TestPassword')
+
+        XML_TEMPLATE = """\
+        <root>
+        <update_method>M</update_method>
+        <project>{project}</project>"
+        <photo_location>E</photo_location>
+        <uuid>xxxx-yyyy-zzzz</uuid>
+        <user>{user}</user>
+        <title>{title}</title>
+        <user_agent>Android 6.0</user_agent>
+        <text>{text}</text>
+        <photo>{photo}</photo>
+        <photo_caption></photo_caption>
+        <photo_credit></photo_credit>
+        <video>{video}</video>
+        <video_caption></video_caption>
+        <video_credit></video_credit>
+        </root>
+        """
+        photo = open(join(HERE, '../../static/images/default-org-logo.jpg')).read()
+        data = XML_TEMPLATE.format(
+            project=self.project.pk,
+            user=user.id,
+            title="Title update",
+            text="this is a text message",
+            photo=base64.standard_b64encode(photo),
+            video='https://vimeo.com/2341212',
+        )
+        response = self.c.post('/rest/v1/project_update/',
+                               data,
+                               content_type='application/xml')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ProjectUpdate.objects.count(), 2)

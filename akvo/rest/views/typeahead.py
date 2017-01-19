@@ -31,7 +31,7 @@ def rejig(queryset, serializer):
 @api_view(['GET'])
 def typeahead_country(request):
     iati_version = Version.objects.get(code=settings.IATI_VERSION)
-    countries = Country.objects.filter(version=iati_version).values('code', 'name')
+    countries = Country.objects.filter(version=iati_version)
     return Response(
         rejig(countries, TypeaheadCountrySerializer(countries, many=True))
     )
@@ -39,7 +39,7 @@ def typeahead_country(request):
 
 @api_view(['GET'])
 def typeahead_organisation(request):
-    organisations = Organisation.objects.all().values('id', 'name', 'long_name')
+    organisations = Organisation.objects.all()
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
@@ -51,7 +51,6 @@ def typeahead_user_organisations(request):
     user = request.user
     is_admin = user.is_active and (user.is_superuser or user.is_admin)
     organisations = user.approved_organisations() if not is_admin else Organisation.objects.all()
-    organisations = organisations.values('id', 'name', 'long_name')
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
@@ -60,7 +59,7 @@ def typeahead_user_organisations(request):
 
 @api_view(['GET'])
 def typeahead_project(request):
-    projects = Project.objects.all().exclude(title='').values('id', 'title')
+    projects = Project.objects.all().exclude(title='')
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
@@ -74,7 +73,7 @@ def typeahead_user_projects(request):
         projects = Project.objects.all()
     else:
         projects = user.approved_organisations().all_projects()
-    projects = projects.exclude(title='').values('id', 'title')
+    projects = projects.exclude(title='')
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
@@ -85,7 +84,7 @@ def typeahead_impact_projects(request):
     user = request.user
     projects = Project.objects.all() if user.is_admin or user.is_superuser else user.my_projects()
     projects = projects.published().filter(is_impact_project=True).order_by('title')
-    projects = projects.values('id', 'title')
+
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
@@ -94,7 +93,6 @@ def typeahead_impact_projects(request):
 @api_view(['GET'])
 def typeahead_projectupdate(request):
     updates = ProjectUpdate.objects.all()
-    updates = updates.values('id', 'project', 'title')
     return Response(
         rejig(updates, TypeaheadProjectUpdateSerializer(updates, many=True))
     )

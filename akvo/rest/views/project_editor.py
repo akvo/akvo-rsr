@@ -653,9 +653,10 @@ def project_editor_default_periods(request, project_pk=None):
 
     errors = []
 
+    # FIXME: We are doing a get using indicator_id, cannot have default as False
     indicator_id = request.POST.get('indicator_id', False)
-    copy = json.loads(request.POST.get('copy', False))
-    set_default = json.loads(request.POST.get('set_default', False))
+    copy = json.loads(request.POST.get('copy', 'false'))
+    set_default = json.loads(request.POST.get('set_default', 'false'))
 
     default_indicator = Indicator.objects.get(id=indicator_id)
 
@@ -706,7 +707,7 @@ def project_editor_upload_file(request, pk=None):
 
     errors, changes, rel_objects, new_file_url = [], [], {}, ''
     field_id = request.POST.copy()['field_id']
-    upload_file = request.FILES['file']
+    upload_file = request.data['file']
 
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
@@ -863,12 +864,12 @@ def project_editor_organisation_logo(request, pk=None):
     if not user.has_perm('rsr.change_organisation', org):
         return HttpResponseForbidden()
 
-    files = request.FILES
+    data = request.data
     errors, changes, rel_objects = [], [], {}
 
-    if 'logo' in files.keys():
+    if 'logo' in data.keys():
         changes, errors, rel_objects = update_object(
-            Organisation, pk, 'logo', files['logo'], '', '', changes, errors,
+            Organisation, pk, 'logo', data['logo'], '', '', changes, errors,
             rel_objects, 'rsr_organisation.' + str(pk)
         )
 

@@ -131,14 +131,30 @@ class BudgetItem(models.Model):
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
 
+    def iati_type_unicode(self):
+        return str(self.iati_type())
+
     def iati_currency(self):
         if self.currency:
             return codelist_value(Currency, self, 'currency')
         else:
             return codelist_value(Currency, self.project, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
     def iati_status(self):
+
+        if self.status:
+            ### DEBUG ###
+            import pdb
+            pdb.set_trace()
+            ### DEBUG ###
+
         return codelist_value(BudgetStatus, self, 'status')
+
+    def iati_status_unicode(self):
+        return str(self.iati_status())
 
     class Meta:
         app_label = 'rsr'
@@ -172,6 +188,9 @@ class CountryBudgetItem(models.Model):
 
     def iati_code(self):
         return codelist_value(BudgetIdentifier, self, 'code')
+
+    def iati_code_unicode(self):
+        return str(self.iati_code())
 
     class Meta:
         app_label = 'rsr'

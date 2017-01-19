@@ -1,3 +1,52 @@
+# Akvo RSR version 3.20 Bogotá
+
+## Improvements
+
+### Cluster all the employments of a user
+
+Group all the employments of a user together in the user management page.
+
+GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
+
+## Bug fixes
+
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
+
+[#2484](https://github.com/akvo/akvo-rsr/issues/2484) Import
+IndicatorReferences also when Results are imported to a child project.
+
+[#2482](https://github.com/akvo/akvo-rsr/issues/2482) Fix bug with organisation
+admin not being able to delete an AdministrativeLocation.
+
+[#2457](https://github.com/akvo/akvo-rsr/issues/2457) Fix the Results type
+column in the Results and Indicators table report to show the type string
+instead of the type's id.
+
+[#2456](https://github.com/akvo/akvo-rsr/issues/2456) Fix sorting of the
+results and indicators in the Results and Indicators Overview report.
+
+[#2494](https://github.com/akvo/akvo-rsr/issues/2494) Fix (potential) timeouts
+on authentication from Up app for some users.
+
+[#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
+button for project summary, when it ends with a list.
+
+[#2479](https://github.com/akvo/akvo-rsr/issues/2479) Prompt user to use a
+different browser if GeoLocation API is only allowed on secure origins by the
+browser.
+
+[#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
+employments to the same organisation & group.
+
+[#2427](https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
+'Results and indicators table' report as text, not numbers.
+
+## Under the hood
+
+[#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
+been upgraded to 3.2.5 from v2.3.13 which is quite old.
+
 # Akvo RSR version 3.18.4 Vilnius (hot-fix)
 
 ## Bug fixes

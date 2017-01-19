@@ -230,6 +230,10 @@ rules.add_perm('rsr.add_projectlocation', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)

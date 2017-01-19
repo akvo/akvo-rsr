@@ -125,6 +125,9 @@ class Result(models.Model):
     def iati_type(self):
         return codelist_value(ResultType, self, 'type')
 
+    def iati_type_unicode(self):
+        return str(self.iati_type())
+
     def has_info(self):
         if self.title or self.type or self.aggregation_status or self.description:
             return True

@@ -333,6 +333,9 @@ class Organisation(TimestampsMixin, models.Model):
         return dict(ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
             self.new_organisation_type else ""
 
+    def iati_org_type_unicode(self):
+        return str(self.iati_org_type())
+
     def partnersites(self):
         "returns the partnersites belonging to the organisation in a PartnerSite queryset"
         return PartnerSite.objects.filter(organisation=self)
@@ -454,6 +457,9 @@ class Organisation(TimestampsMixin, models.Model):
             if export.is_public and export.status == 3 and export.iati_file:
                 return export.iati_file
         return None
+
+    def iati_file_unicode(self):
+        return str(self.iati_file())
 
     # New API
 

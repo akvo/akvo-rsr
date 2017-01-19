@@ -33,8 +33,8 @@ class ProjectViewSet(PublicProjectViewSet):
         reporting org partnership.
         """
 
-        sync_owner = self.request.QUERY_PARAMS.get('sync_owner', None)
-        reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
+        sync_owner = self.request.query_params.get('sync_owner', None)
+        reporting_org = self.request.query_params.get('reporting_org', None)
 
         reporting_org = reporting_org or sync_owner
         if reporting_org:
@@ -69,7 +69,7 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
         Allow custom filter for sync_owner, since this field has been replaced by the
         reporting org partnership.
         """
-        reporting_org = self.request.QUERY_PARAMS.get('reporting_org', None)
+        reporting_org = self.request.query_params.get('reporting_org', None)
         if reporting_org:
             self.queryset = self.queryset.filter(
                 partnerships__iati_organisation_role=101,

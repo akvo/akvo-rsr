@@ -37,16 +37,12 @@ class UserRawSerializer(BaseRSRSerializer):
 
 class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
-    organisation = OrganisationExtraSerializer(source='first_organisation', required=False)
-    organisations = OrganisationExtraSerializer(
-        source='organisations', many=True, required=False, allow_add_remove=True
-    )
-    approved_employments = EmploymentSerializer(
-        source='approved_employments', many=True, required=False
-    )
+    organisation = OrganisationExtraSerializer(source='first_organisation', required=False,)
+    organisations = OrganisationExtraSerializer(many=True, required=False,)
+    approved_employments = EmploymentSerializer(many=True, required=False,)
     # Legacy fields to support Tastypie API emulation
-    legacy_org = serializers.SerializerMethodField('get_legacy_org')
-    username = serializers.SerializerMethodField('get_username')
+    legacy_org = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -66,7 +62,6 @@ class UserSerializer(BaseRSRSerializer):
             'approved_employments',
             'legacy_org',
         )
-        exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
@@ -108,33 +103,26 @@ class UserPasswordSerializer(serializers.Serializer):
         help_text='New Password (confirmation)',
     )
 
-    def validate_old_password(self, attrs, source):
+    def validate_old_password(self, value):
         """Check for current password"""
-        if not self.object.check_password(attrs.get("old_password")):
+        if not self.instance.check_password(value):
             raise serializers.ValidationError(_(u'Old password is not correct.'))
+        return value
 
-        return attrs
-
-    def validate_new_password2(self, attrs, source):
+    def validate(self, data):
         """Check if password1 and password2 match"""
-        password_confirmation = attrs[source]
-        password = attrs['new_password1']
-
-        if password_confirmation != password:
+        if data['new_password1'] != data['new_password2']:
             raise serializers.ValidationError(_(u'Passwords do not match.'))
+        return data
 
-        return attrs
-
-    def restore_object(self, attrs, instance=None):
-        """Not needed, changing passwords happens in UserViewSet."""
-        return attrs
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data.get('new_password2', instance.password))
+        return instance
 
 
 class UserDetailsSerializer(BaseRSRSerializer):
 
-    approved_organisations = OrganisationBasicSerializer(
-        source='approved_organisations', many=True, required=False, allow_add_remove=True
-    )
+    approved_organisations = OrganisationBasicSerializer(many=True, required=False)
 
     class Meta:
         model = get_user_model()
@@ -144,7 +132,6 @@ class UserDetailsSerializer(BaseRSRSerializer):
             'last_name',
             'approved_organisations',
         )
-        exclude = ('absolute_url',)
 
     def __init__(self, *args, **kwargs):
         """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().

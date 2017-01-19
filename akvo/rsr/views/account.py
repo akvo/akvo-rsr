@@ -270,7 +270,8 @@ def api_key_json_response(user, orgs):
 
     # Editable projects
     perm = 'rsr.change_project'
-    response_data["allow_edit_projects"] = [p.id for p in projects if user.has_perm(perm, p)]
+    perm_filter = user.get_permission_filter(perm, '')
+    response_data["allow_edit_projects"] = list(projects.filter(perm_filter).values_list('id', flat=True))
 
     return json.dumps(response_data)
 

@@ -21,9 +21,9 @@ class ProjectContactRawSerializer(BaseRSRSerializer):
 
 class ProjectContactRawDeepSerializer(ProjectContactRawSerializer):
 
-    country = CountrySerializer(source='country')
+    country = CountrySerializer()
 
 
 class ProjectContactSerializer(ProjectContactRawSerializer):
 
-    type_label = serializers.Field(source='iati_type')
+    type_label = serializers.ReadOnlyField(source='iati_type_unicode')

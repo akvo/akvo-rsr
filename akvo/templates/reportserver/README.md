@@ -8,7 +8,7 @@ The RSR projects used as test cases were #2849 and its parent project #2081.
 
 
 ## Deployment to reportserver
-The report has one parameter, TheProjectId, which is created on the RS as a Dataset parameter, key=TheProjectId, BIRT, query="select id from rsr_project order by id desc"
+The reports have one parameter, ID, which is created on the RS as a Dataset parameter, key=ID, BIRT, query="select id from rsr_project order by id desc"
 
 
 
@@ -23,7 +23,7 @@ location /report/project {
         rewrite ^/en/reports/(.*)/(.*)$ /reportserver/reportserver/httpauthexport?key=$1&user=user1&password=unicorns&p_ID=$2 break;
 }
 ```
-The URL will then become something like
+The URL will then be rewritten to something like
 ``` https://rsr.akvo.org/en/reports/project_results/2849?format=pdf ```
 where format can be one of [WORD, PDF, HTML, PNG, EXCEL].
 

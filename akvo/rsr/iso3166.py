@@ -466,6 +466,7 @@ COUNTRY_CONTINENTS = {
     u'si': u'eu',
     u'sj': u'eu',
     u'sk': u'eu',
+    u'sx': u'na',
     u'sl': u'af',
     u'sm': u'eu',
     u'sn': u'af',

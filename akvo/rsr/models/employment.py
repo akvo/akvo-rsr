@@ -75,6 +75,9 @@ class Employment(models.Model):
     def iati_country(self):
         return codelist_value(codelist_models.Country, self, 'country')
 
+    def iati_country_unicode(self):
+        return str(self.iati_country())
+
     def approve(self, approved_by):
         """
         Approve an Employment. Will also be logged in the Employment admin history.

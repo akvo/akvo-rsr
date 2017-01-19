@@ -5,18 +5,6 @@
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
-            <property name="id">71</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">71</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">71</property>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
             <property name="id">298</property>
         </structure>
         <structure>
@@ -138,6 +126,12 @@
                     <text-property name="heading">result_pk</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">result_order</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">result_order</text-property>
+                    <text-property name="heading">result_order</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">indicator_title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">indicator_title</text-property>
@@ -166,6 +160,12 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">baseline_value</text-property>
                     <text-property name="heading">baseline_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_order</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indicator_order</text-property>
+                    <text-property name="heading">indicator_order</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">indicatorperiod_pk</property>
@@ -237,61 +237,71 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">result_order</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">indicator_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">indicator_pk</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">baseline_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">baseline_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">baseline_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">indicatorperiod_pk</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
                         <property name="position">9</property>
-                        <property name="name">actual_value</property>
+                        <property name="name">indicator_order</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">actual_comment</property>
-                        <property name="dataType">string</property>
+                        <property name="name">indicatorperiod_pk</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">target_value</property>
+                        <property name="name">actual_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">target_comment</property>
+                        <property name="name">actual_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
+                        <property name="name">target_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">target_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
                         <property name="name">period_start</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">16</property>
                         <property name="name">period_end</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -315,83 +325,97 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">result_order</property>
+                    <property name="nativeName">result_order</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">5</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">indicator_title</property>
                     <property name="nativeName">indicator_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="name">indicator_pk</property>
                     <property name="nativeName">indicator_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">baseline_year</property>
                     <property name="nativeName">baseline_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">baseline_comment</property>
                     <property name="nativeName">baseline_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">baseline_value</property>
                     <property name="nativeName">baseline_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
+                    <property name="name">indicator_order</property>
+                    <property name="nativeName">indicator_order</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">5</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">indicatorperiod_pk</property>
                     <property name="nativeName">indicatorperiod_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">11</property>
                     <property name="name">actual_value</property>
                     <property name="nativeName">actual_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">12</property>
                     <property name="name">actual_comment</property>
                     <property name="nativeName">actual_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">13</property>
                     <property name="name">target_value</property>
                     <property name="nativeName">target_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">14</property>
                     <property name="name">target_comment</property>
                     <property name="nativeName">target_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">15</property>
                     <property name="name">period_start</property>
                     <property name="nativeName">period_start</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">16</property>
                     <property name="name">period_end</property>
                     <property name="nativeName">period_end</property>
                     <property name="dataType">date</property>
@@ -400,11 +424,13 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select rsr_result.title,
  rsr_result.id as result_pk,
+ rsr_result.order as result_order,
  rsr_indicator.title as indicator_title,
  rsr_indicator.id as indicator_pk,
  rsr_indicator.baseline_year,
  rsr_indicator.baseline_comment,
  rsr_indicator.baseline_value,
+ rsr_indicator.order as indicator_order,
  rsr_indicatorperiod.id as indicatorperiod_pk,
  rsr_indicatorperiod.actual_value,
  rsr_indicatorperiod.actual_comment,
@@ -416,7 +442,7 @@ from rsr_result
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 where rsr_result.project_id = ?
-order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
+order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -4377,6 +4403,34 @@ null</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">result_sort</property>
+                    <text-property name="displayName">result_sort</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["result_order"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">indicator_sort</property>
+                    <text-property name="displayName">indicator_sort</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["indicator_order"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">result_pk</property>
+                    <text-property name="displayName">result_pk</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">indicator_pk</property>
+                    <text-property name="displayName">indicator_pk</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
@@ -4434,11 +4488,23 @@ reportContext.getGlobalVariable('debug')</expression>
                 </row>
             </header>
             <group id="18">
-                <property name="groupName">NewTableGroup1</property>
-                <expression name="keyExpr" type="javascript">row["title"]</expression>
+                <property name="groupName">ResultTableGroup</property>
+                <expression name="keyExpr" type="javascript">row["result_pk"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["title"]</expression>
                 </structure>
+                <list-property name="sort">
+                    <structure>
+                        <expression name="key" type="javascript">row["result_sort"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                    <structure>
+                        <expression name="key" type="javascript">row["result_pk"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                </list-property>
                 <header>
                     <row id="19">
                         <cell id="268">
@@ -4475,12 +4541,24 @@ reportContext.getGlobalVariable('debug')</expression>
                 </footer>
             </group>
             <group id="74">
-                <property name="groupName">NewTableGroup2</property>
-                <expression name="keyExpr" type="javascript">row["indicator_title"]</expression>
+                <property name="groupName">IndicatorTableGroup</property>
+                <expression name="keyExpr" type="javascript">row["indicator_pk"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["indicator_title"]</expression>
                 </structure>
                 <property name="hideDetail">false</property>
+                <list-property name="sort">
+                    <structure>
+                        <expression name="key" type="javascript">row["indicator_sort"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                    <structure>
+                        <expression name="key" type="javascript">row["indicator_pk"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                </list-property>
                 <header>
                     <row id="75">
                         <property name="backgroundColor">#F0F0F0</property>

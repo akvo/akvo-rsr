@@ -23,12 +23,8 @@ class OrganisationDocumentCountrySerializer(BaseRSRSerializer):
 
 class OrganisationDocumentSerializer(BaseRSRSerializer):
 
-    categories = OrganisationDocumentCategorySerializer(
-        source='categories', many=True, required=False, allow_add_remove=True
-    )
-    countries = OrganisationDocumentCountrySerializer(
-        source='countries', many=True, required=False, allow_add_remove=True
-    )
+    categories = OrganisationDocumentCategorySerializer(many=True, required=False)
+    countries = OrganisationDocumentCountrySerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationDocument
