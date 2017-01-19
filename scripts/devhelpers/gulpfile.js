@@ -63,7 +63,8 @@ var options = {
         '../../akvo/rsr/static/scripts-src/my-results/Periods.jsx',
         '../../akvo/rsr/static/scripts-src/my-results/Results.jsx',
         '../../akvo/rsr/static/scripts-src/my-results/Updates.jsx',
-        '../../akvo/rsr/static/scripts-src/my-results/utils.js'
+        '../../akvo/rsr/static/scripts-src/my-results/utils.js',
+        '../../akvo/rsr/static/scripts-src/my-results/const.js'
     ],
     transform: [
         [babelify, {presets: [preset_react, preset_es2015]}]

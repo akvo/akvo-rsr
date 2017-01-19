@@ -9,9 +9,10 @@ import React, { PropTypes } from 'react';
 import Collapse, {Panel} from 'rc-collapse';
 import update  from 'immutability-helper';
 
-import Comments from './Comments.jsx'
+import Comments from './Comments.jsx';
 
 import {APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate} from './utils.js';
+import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES} from './const.js';
 
 
 const UpdateDisplay = ({update}) => {
@@ -256,12 +257,6 @@ UpdateFormButtons.propTypes = {
     callbacks: PropTypes.object.isRequired
 };
 
-// From rsr.models.indicator.IndicatorPeriodData
-const STATUS_NEW_CODE = 'N',
-      STATUS_DRAFT_CODE = 'D',
-      STATUS_PENDING_CODE = 'P',
-      STATUS_REVISION_CODE = 'R',
-      STATUS_APPROVED_CODE = 'A';
 
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
@@ -270,12 +265,19 @@ const pruneForPATCH = (update) => {
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
+const pruneForPOST = (update) => {
+    // Only include the listed fields when POSTing an update
+    let updateForPOST = Object.assign({}, update);
+    delete updateForPOST['user_details'];
+    return updateForPOST;
+};
+
 class UpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
         // Save original update
-        this.state = {update: Object.assign({}, this.props.update)};
+        this.state = {originalUpdate: Object.assign({}, this.props.update)};
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -286,16 +288,22 @@ class UpdateForm extends React.Component {
         // When the form field widgets change, modify the model data in App.state[model]
         const field = e.target.id;
         this.props.callbacks.updateModel(
-            'updates', update(this.props.update, {$merge: {[field]: e.target.value}}));
+            OBJECTS_UPDATES, update(this.props.update, {$merge: {[field]: e.target.value}}));
     }
 
     onCancel() {
         this.props.formToggle();
-        this.props.callbacks.updateModel('updates', this.state.update);
+        const update = this.state.originalUpdate;
+        if (isNewUpdate(update)) {
+            this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
+        } else {
+            this.props.callbacks.updateModel(OBJECTS_UPDATES, update);
+        }
     }
 
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
+        // All changes to an update revert it to draft unless it is explicitly approved while saving
         if (e.target.id == 'approve') {
             update.status = STATUS_APPROVED_CODE;
         } else {
@@ -305,11 +313,12 @@ class UpdateForm extends React.Component {
             this.props.formToggle();
             // Always save the instance using data coming from the backend
             // TODO: look at having a replaceModel method?
-            this.props.callbacks.deleteFromModel("updates", update.id);
-            this.props.callbacks.updateModel("updates", data);
+            this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
+            this.props.callbacks.updateModel(OBJECTS_UPDATES, data);
         };
         if (isNewUpdate(update)) {
-            APICall('POST', endpoints.updates_and_comments(), update, success.bind(this));
+            APICall('POST', endpoints.updates_and_comments(),
+                    pruneForPOST(update), success.bind(this));
         } else {
             APICall('PATCH', endpoints.update_and_comments(update.id),
                     pruneForPATCH(update), success.bind(this));
@@ -320,7 +329,7 @@ class UpdateForm extends React.Component {
         const data = {id: this.props.update.id};
         let success = function() {
             this.props.formToggle();
-            this.props.callbacks.updateModel("updates", data, true);
+            this.props.callbacks.updateModel(OBJECTS_UPDATES, data, true);
         };
 
         APICall('DELETE', endpoints.update_and_comments(data.id), null, success.bind(this));
@@ -356,13 +365,10 @@ class UpdateForm extends React.Component {
                     <Attachments/>
                     <UpdateFormButtons
                         update={this.props.update}
-                        callbacks={
-                            {
-                                saveUpdate: this.saveUpdate,
-                                deleteUpdate: this.deleteUpdate,
-                                onCancel: this.onCancel
-                            }
-                        }/>
+                        callbacks={{
+                            saveUpdate: this.saveUpdate,
+                            deleteUpdate: this.deleteUpdate,
+                            onCancel: this.onCancel}}/>
                 </div>
             </div>
         )
