@@ -10,6 +10,9 @@ GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
 ## Bug fixes
 
+[#2494](https://github.com/akvo/akvo-rsr/issues/2494) Fix (potential) timeouts
+on authentication from Up app for some users.
+
 [#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
 button for project summary, when it ends with a list.
 
@@ -20,7 +23,7 @@ browser.
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
-[#2427] (https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
+[#2427](https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
 'Results and indicators table' report as text, not numbers.
 
 ## Under the hood
