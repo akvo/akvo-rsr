@@ -1,3 +1,10 @@
+# Currently in develop
+
+## Bug fixes
+
+[#2516](https://github.com/akvo/akvo-rsr/issues/2516) ProjectCustomFields with
+unicode data can cause UnicodeEncodeErrors.
+
 # Akvo RSR version 3.20 Bogotá
 
 ## Improvements

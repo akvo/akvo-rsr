@@ -74,7 +74,7 @@ class ProjectCustomField(models.Model):
     )
 
     def __unicode__(self):
-        return u'%s' % str(self.value)
+        return u'%s' % self.value
 
 
 class OrganisationCustomField(models.Model):
