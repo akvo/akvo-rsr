@@ -51,7 +51,7 @@ class RecipientCountry(models.Model):
         'Project', verbose_name=_(u'project'), related_name='recipient_countries'
     )
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2,choices=codelist_choices(COUNTRY, show_code=False),
+        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'The country that benefits from the project.')
     )
     percentage = models.DecimalField(
@@ -85,7 +85,7 @@ class RecipientCountry(models.Model):
         return codelist_value(codelist_models.Country, self, 'country')
 
     def iati_country_unicode(self):
-        return str(self.iati_country())
+        return unicode(self.iati_country())
 
     class Meta:
         app_label = 'rsr'
