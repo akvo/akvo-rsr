@@ -2,6 +2,9 @@
 
 ## Bug fixes
 
+[#2516](https://github.com/akvo/akvo-rsr/issues/2516) ProjectCustomFields with
+unicode data can cause UnicodeEncodeErrors.
+
 [#2514](https://github.com/akvo/akvo-rsr/issues/2514) API call for fetching
 recipient country fails if the country has unicode characters in it's name.
 
