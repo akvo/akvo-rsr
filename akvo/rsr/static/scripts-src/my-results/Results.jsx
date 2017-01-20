@@ -8,11 +8,13 @@
 import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 
-import Level from './Level.jsx'
-import Indicators from './Indicators.jsx'
+import Level from './Level.jsx';
+import Indicators from './Indicators.jsx';
+
+import {levelToggle} from './utils.js';
 
 
-export default class Results extends React.Component {
+class ResultsBase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: "results"};
@@ -30,12 +32,16 @@ export default class Results extends React.Component {
 
     render() {
         return (
-            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
         );
     }
 }
 
-Results.propTypes = {
+ResultsBase.propTypes = {
     items: PropTypes.array,
-    callbacks: PropTypes.object.isRequired
+    callbacks: PropTypes.object.isRequired,
+    activeKey: PropTypes.array,
+    onChange: PropTypes.func
 };
+
+export default levelToggle(ResultsBase);

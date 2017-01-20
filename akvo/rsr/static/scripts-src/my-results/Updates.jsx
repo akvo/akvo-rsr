@@ -6,12 +6,15 @@
  */
 
 import React, { PropTypes } from 'react';
-import Collapse, {Panel} from 'rc-collapse';
+import {Panel} from 'rc-collapse';
 import update  from 'immutability-helper';
 
+import Level from "./Level.jsx";
 import Comments from './Comments.jsx';
 
-import {APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate} from './utils.js';
+import {
+    APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate, levelToggle
+} from './utils.js';
 import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES} from './const.js';
 
 
@@ -76,7 +79,12 @@ Update.propTypes = {
 };
 
 
-export class Updates extends React.Component {
+class UpdatesBase extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {model: "updates"}
+    }
+
     componentWillMount() {
         this.props.callbacks.loadModel('comments');
     }
@@ -89,8 +97,8 @@ export class Updates extends React.Component {
         return (
             <Panel header={headerText} key={update.id}>
                 <Update
-                    callbacks={this.props.callbacks}
-                    update={update}/>
+                    update={update}
+                    callbacks={this.props.callbacks}/>
                 <div>
                     <Comments
                         items={update.comments}
@@ -101,32 +109,26 @@ export class Updates extends React.Component {
     }
 
     render() {
-        const items = this.props.items;
-        if (!items) {
-            console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
-            return (
-                <p>Loading...</p>
-            );
-        } else if (items.length > 0) {
-            return (
-                <Collapse onChange={this.props.callbacks.onChange} activeKey={this.props.activeKey}>
-                    {items.map((item) => this.renderPanel(item))}
-                </Collapse>
-            )
-        } else {
-            return (
-                <p>No items</p>
-            );
-        }
+        // Combine activeKey with state.newKeys to create a new activeKey
+        // Note that the order of the props in the call to Level is important as the local activeKey
+        // overwrites props.activeKey
+        const activeKey = update(this.props.activeKey, {$push: this.props.newKeys});
+        return (
+            <Level
+                {...this.props}
+                renderPanel={this.renderPanel.bind(this)}
+                activeKey={activeKey}/>
+        );
     }
 
 }
 
-Updates.propTypes = {
+UpdatesBase.propTypes = {
     callbacks: PropTypes.object.isRequired,
     items: PropTypes.array,
 };
 
+export const Updates = levelToggle(UpdatesBase);
 
 const Header = ({update}) => {
     return (

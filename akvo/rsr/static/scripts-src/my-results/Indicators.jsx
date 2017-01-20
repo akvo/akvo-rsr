@@ -11,10 +11,10 @@ import {Panel} from 'rc-collapse';
 import Level from './Level.jsx';
 import Periods from './Periods.jsx';
 
-import {_}from './utils';
+import {_, levelToggle}from './utils';
 
 
-export default class Indicators extends React.Component {
+export class IndicatorsBase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: "indicators"};
@@ -46,12 +46,14 @@ export default class Indicators extends React.Component {
 
     render() {
         return (
-            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
         );
     }
 }
 
-Indicators.propTypes = {
+IndicatorsBase.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
 };
+
+export default levelToggle(IndicatorsBase);

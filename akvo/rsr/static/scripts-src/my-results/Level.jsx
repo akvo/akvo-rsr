@@ -18,7 +18,7 @@ export default class Level extends React.Component {
             );
         } else if (items.length > 0) {
             return (
-                <Collapse>
+                <Collapse activeKey={this.props.activeKey} onChange={this.props.onChange}>
                     {items.map((item) => this.props.renderPanel(item))}
                 </Collapse>
             );
@@ -32,5 +32,8 @@ export default class Level extends React.Component {
 
 Level.propTypes = {
     items: PropTypes.array,
-    renderPanel: PropTypes.func.isRequired
+    renderPanel: PropTypes.func.isRequired,
+    callbacks: PropTypes.object,
+    activeKey: PropTypes.array,
+    onChange: PropTypes.func
 };

@@ -10,8 +10,9 @@ import {Panel} from 'rc-collapse';
 
 import Level from './Level.jsx'
 
+import {levelToggle} from './utils.js';
 
-export default class Comments extends Level {
+export class CommentsBase extends Level {
     constructor(props) {
         super(props);
         this.state = {model: "comments"};
@@ -27,12 +28,14 @@ export default class Comments extends Level {
 
     render() {
         return (
-            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
         );
     }
 }
 
-Comments.propTypes = {
+CommentsBase.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object
 };
+
+export default levelToggle(CommentsBase);

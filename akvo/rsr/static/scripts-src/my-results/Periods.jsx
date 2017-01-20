@@ -10,7 +10,7 @@ import update  from 'immutability-helper';
 
 import Level from "./Level.jsx";
 import {Updates, NewUpdateButton} from "./Updates.jsx";
-import {displayDate, APICall, endpoints} from "./utils.js";
+import {displayDate, APICall, endpoints, levelToggle} from "./utils.js";
 
 
 class PeriodLockToggle extends React.Component {
@@ -85,14 +85,13 @@ const periodActualValue = (period) => {
         "";
 };
 
-export default class Periods extends React.Component {
+export class PeriodsBase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             model: "periods",
-            activeKey: [] // Keep track of open update panels
+            newKeys: [] // Keep track of keys for new updates, used to open the UpdateForm
         };
-        this.onChange = this.onChange.bind(this);
         this.openNewForm = this.openNewForm.bind(this);
     }
 
@@ -100,15 +99,10 @@ export default class Periods extends React.Component {
         this.props.callbacks.loadModel('updates');
     }
 
-    onChange(activeKey) {
-        // Keep track of open panels
-        this.setState({activeKey});
-    }
-
     openNewForm(newKey, data) {
         // Add the key for a new update to the list of open panels
         this.setState(
-            {activeKey: update(this.state.activeKey, {$push: [newKey]})},
+            {newKeys: update(this.state.newKeys, {$push: [newKey]})},
             // Only when the activeKey state is committed do we update the updates model
             this.props.callbacks.updateModel('updates', data)
         );
@@ -133,9 +127,9 @@ export default class Periods extends React.Component {
         return (
             <Panel header={header} key={period.id}>
                 <Updates
-                    callbacks={updateCallbacks}
                     items={period.updates}
-                    activeKey={this.state.activeKey}/>
+                    callbacks={updateCallbacks}
+                    newKeys={this.state.newKeys}/>
                 <NewUpdateButton
                     callbacks={buttonCallbacks}
                     period={period}/>
@@ -145,12 +139,14 @@ export default class Periods extends React.Component {
 
     render() {
         return (
-            <Level items={this.props.items} renderPanel={this.renderPanel.bind(this)}/>
+            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
         );
     }
 }
 
-Periods.propTypes = {
+PeriodsBase.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
 };
+
+export default levelToggle(PeriodsBase);

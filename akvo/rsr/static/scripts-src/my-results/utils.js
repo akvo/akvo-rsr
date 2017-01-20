@@ -140,3 +140,48 @@ export function _(s) {
 }
 
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
+
+export function levelToggle(WrappedComponent) {
+
+    return class extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {activeKey: [], isOpen: false};
+            this.onChange = this.onChange.bind(this);
+            this.toggleLevel = this.toggleLevel.bind(this);
+        }
+
+        onChange(activeKey) {
+            // Keep track of open panels
+            this.setState({activeKey});
+        }
+
+        toggleLevel() {
+            const isOpen = this.state.isOpen;
+            if (isOpen) {
+                this.setState({activeKey: [], isOpen: !isOpen});
+            } else {
+                this.setState({
+                    activeKey: this.props.items.map((item) => item.id.toString()),
+                    isOpen: !isOpen
+                });
+            }
+        }
+
+        render() {
+            return (
+                <div>
+                    <a onClick={this.toggleLevel}
+                        className={'btn btn-sm btn-default'}
+                        style={{margin: '0.3em 0.5em'}}>
+                        +
+                    </a>
+                    <WrappedComponent
+                        activeKey={this.state.activeKey}
+                        onChange={this.onChange}
+                        {...this.props}/>
+                </div>
+            )
+        }
+    }
+}
