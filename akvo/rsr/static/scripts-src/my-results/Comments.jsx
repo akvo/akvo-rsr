@@ -11,11 +11,12 @@ import {Panel} from 'rc-collapse';
 import Level from './Level.jsx'
 
 import {levelToggle} from './utils.js';
+import {OBJECTS_COMMENTS} from './const.js';
 
 export class CommentsBase extends Level {
     constructor(props) {
         super(props);
-        this.state = {model: "comments"};
+        this.state = {model: OBJECTS_COMMENTS};
     }
 
     renderPanel(comment) {

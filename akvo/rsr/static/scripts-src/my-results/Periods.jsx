@@ -10,7 +10,9 @@ import update  from 'immutability-helper';
 
 import Level from "./Level.jsx";
 import {Updates, NewUpdateButton} from "./Updates.jsx";
+
 import {displayDate, APICall, endpoints, levelToggle} from "./utils.js";
+import {OBJECTS_PERIODS, OBJECTS_UPDATES} from './const.js';
 
 
 class PeriodLockToggle extends React.Component {
@@ -24,7 +26,7 @@ class PeriodLockToggle extends React.Component {
         // Base function for saving a period with a data Object.
         const url = endpoints.period(periodId);
         function success(data) {
-            this.props.callbacks.updateModel("periods", data);
+            this.props.callbacks.updateModel(OBJECTS_PERIODS, data);
 
             // Call the callback, if not undefined.
             if (callback) {
@@ -89,14 +91,14 @@ export class PeriodsBase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            model: "periods",
+            model: OBJECTS_PERIODS,
             newKeys: [] // Keep track of keys for new updates, used to open the UpdateForm
         };
         this.openNewForm = this.openNewForm.bind(this);
     }
 
     componentWillMount() {
-        this.props.callbacks.loadModel('updates');
+        this.props.callbacks.loadModel(OBJECTS_UPDATES);
     }
 
     openNewForm(newKey, data) {
@@ -104,7 +106,7 @@ export class PeriodsBase extends React.Component {
         this.setState(
             {newKeys: update(this.state.newKeys, {$push: [newKey]})},
             // Only when the activeKey state is committed do we update the updates model
-            this.props.callbacks.updateModel('updates', data)
+            this.props.callbacks.updateModel(OBJECTS_UPDATES, data)
         );
     }
 

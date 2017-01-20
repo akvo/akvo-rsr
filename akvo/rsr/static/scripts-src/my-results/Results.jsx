@@ -12,12 +12,13 @@ import Level from './Level.jsx';
 import Indicators from './Indicators.jsx';
 
 import {levelToggle} from './utils.js';
+import {OBJECTS_RESULTS} from './const.js';
 
 
 class ResultsBase extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {model: "results"};
+        this.state = {model: OBJECTS_RESULTS};
     }
 
     renderPanel(result) {

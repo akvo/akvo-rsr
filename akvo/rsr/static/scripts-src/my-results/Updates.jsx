@@ -15,7 +15,7 @@ import Comments from './Comments.jsx';
 import {
     APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate, levelToggle
 } from './utils.js';
-import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES} from './const.js';
+import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES, OBJECTS_COMMENTS} from './const.js';
 
 
 const UpdateDisplay = ({update}) => {
@@ -82,11 +82,11 @@ Update.propTypes = {
 class UpdatesBase extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {model: "updates"}
+        this.state = {model: OBJECTS_UPDATES}
     }
 
     componentWillMount() {
-        this.props.callbacks.loadModel('comments');
+        this.props.callbacks.loadModel(OBJECTS_COMMENTS);
     }
 
     renderPanel(update) {

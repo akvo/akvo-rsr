@@ -12,12 +12,14 @@ import Level from './Level.jsx';
 import Periods from './Periods.jsx';
 
 import {_, levelToggle}from './utils';
+import {OBJECTS_INDICATORS} from './const.js';
+
 
 
 export class IndicatorsBase extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {model: "indicators"};
+        this.state = {model: OBJECTS_INDICATORS};
     }
 
     componentWillMount() {

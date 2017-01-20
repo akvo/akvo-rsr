@@ -12,7 +12,11 @@ import update  from 'immutability-helper';
 import {Panel} from 'rc-collapse';
 
 import Results from './Results.jsx';
+
 import {APICall, endpoints} from './utils.js';
+import {
+    OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
+} from './const.js';
 
 // from http://stackoverflow.com/questions/7306669/
 Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
@@ -50,8 +54,8 @@ class App extends React.Component {
     componentDidMount() {
         // Once the component is mounted, load the results through the API
         //TODO: this "chained" way of loading the API data kinda terrible and should be replaced
-        this.loadModel('results');
-        this.loadModel('indicators');
+        this.loadModel(OBJECTS_RESULTS);
+        this.loadModel(OBJECTS_INDICATORS);
     }
 
     loadModel(model) {
@@ -194,25 +198,25 @@ class App extends React.Component {
         const models = this.state.models;
         const updates = filterChildren(
             deIndex(models.updates),
-            {parent: "data", children: "comments"},
+            {parent: "data", children: OBJECTS_COMMENTS},
             deIndex(models.comments)
         );
 
         const periods = filterChildren(
             deIndex(models.periods),
-            {parent: "period", children: "updates"},
+            {parent: "period", children: OBJECTS_UPDATES},
             updates);
         const annotated_periods = annotateUpdates(periods);
 
         const indicators = filterChildren(
             deIndex(models.indicators),
-            {parent: "indicator", children: "periods"},
+            {parent: "indicator", children: OBJECTS_PERIODS},
             annotated_periods
         );
 
         const results = filterChildren(
             deIndex(models.results),
-            {parent: "result", children: "indicators"},
+            {parent: "result", children: OBJECTS_INDICATORS},
             indicators
         );
         return results;
