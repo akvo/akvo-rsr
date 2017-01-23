@@ -23,6 +23,7 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, C
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
+from django.db import transaction
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
@@ -583,6 +584,7 @@ def project_editor(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
+@transaction.atomic
 def project_editor_reorder_items(request, project_pk=None):
     """API call to reorder results or indicators"""
 
@@ -602,8 +604,8 @@ def project_editor_reorder_items(request, project_pk=None):
         errors += ['Invalid item type']
 
     if not errors:
-        # assign order if it doesn't already exist
-        if item_list and not item_list[0].order:
+        # assign order if it doesn't already exist or is messed up
+        if item_list and set(item_list.values_list('order', flat=True)) != set(range(item_list.count())):
             for i, item in enumerate(item_list):
                 item.order = i
                 item.save()
