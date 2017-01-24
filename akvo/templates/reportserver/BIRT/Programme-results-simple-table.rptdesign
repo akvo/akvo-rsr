@@ -107,10 +107,40 @@
                     <text-property name="heading">title</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">subtitle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">subtitle</text-property>
+                    <text-property name="heading">subtitle</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">iati_activity_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iati_activity_id</text-property>
                     <text-property name="heading">iati_activity_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_planned</text-property>
+                    <text-property name="heading">date_start_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_planned</text-property>
+                    <text-property name="heading">date_end_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_actual</text-property>
+                    <text-property name="heading">date_start_actual</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_actual</text-property>
+                    <text-property name="heading">date_end_actual</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">result_title</property>
@@ -261,111 +291,136 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">iati_activity_id</property>
+                        <property name="name">subtitle</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">result_title</property>
+                        <property name="name">iati_activity_id</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">result_pk</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">date_start_planned</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">type</property>
-                        <property name="dataType">string</property>
+                        <property name="name">date_end_planned</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">result_description</property>
-                        <property name="dataType">string</property>
+                        <property name="name">date_start_actual</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">aggregation_status</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">date_end_actual</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">indicator_title</property>
+                        <property name="name">result_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">indicator_pk</property>
+                        <property name="name">result_pk</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">measure</property>
+                        <property name="name">type</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">indicator_description</property>
+                        <property name="name">result_description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">ascending</property>
+                        <property name="name">aggregation_status</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">baseline_year</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">baseline_value</property>
+                        <property name="name">indicator_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
+                        <property name="position">14</property>
+                        <property name="name">indicator_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
                         <property name="position">15</property>
-                        <property name="name">baseline_comment</property>
+                        <property name="name">measure</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
-                        <property name="name">indicatorperiod_pk</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">indicator_description</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">17</property>
-                        <property name="name">period_start</property>
-                        <property name="dataType">date</property>
+                        <property name="name">ascending</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">period_end</property>
-                        <property name="dataType">date</property>
+                        <property name="name">baseline_year</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">target_value</property>
+                        <property name="name">baseline_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">target_comment</property>
+                        <property name="name">baseline_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
+                        <property name="name">indicatorperiod_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">period_start</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">period_end</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">target_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">target_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
                         <property name="name">actual_value</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">27</property>
                         <property name="name">actual_comment</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">28</property>
                         <property name="name">type_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -382,153 +437,188 @@
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">subtitle</property>
+                    <property name="nativeName">subtitle</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
                     <property name="name">iati_activity_id</property>
                     <property name="nativeName">iati_activity_id</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
+                    <property name="name">date_start_planned</property>
+                    <property name="nativeName">date_start_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">date_end_planned</property>
+                    <property name="nativeName">date_end_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">date_start_actual</property>
+                    <property name="nativeName">date_start_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">date_end_actual</property>
+                    <property name="nativeName">date_end_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">result_title</property>
                     <property name="nativeName">result_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">9</property>
                     <property name="name">result_pk</property>
                     <property name="nativeName">result_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">10</property>
                     <property name="name">type</property>
                     <property name="nativeName">type</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">11</property>
                     <property name="name">result_description</property>
                     <property name="nativeName">result_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">12</property>
                     <property name="name">aggregation_status</property>
                     <property name="nativeName">aggregation_status</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">13</property>
                     <property name="name">indicator_title</property>
                     <property name="nativeName">indicator_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">14</property>
                     <property name="name">indicator_pk</property>
                     <property name="nativeName">indicator_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">15</property>
                     <property name="name">measure</property>
                     <property name="nativeName">measure</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">16</property>
                     <property name="name">indicator_description</property>
                     <property name="nativeName">indicator_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">17</property>
                     <property name="name">ascending</property>
                     <property name="nativeName">ascending</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">18</property>
                     <property name="name">baseline_year</property>
                     <property name="nativeName">baseline_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">19</property>
                     <property name="name">baseline_value</property>
                     <property name="nativeName">baseline_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">20</property>
                     <property name="name">baseline_comment</property>
                     <property name="nativeName">baseline_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">21</property>
                     <property name="name">indicatorperiod_pk</property>
                     <property name="nativeName">indicatorperiod_pk</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">22</property>
                     <property name="name">period_start</property>
                     <property name="nativeName">period_start</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">23</property>
                     <property name="name">period_end</property>
                     <property name="nativeName">period_end</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">24</property>
                     <property name="name">target_value</property>
                     <property name="nativeName">target_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">25</property>
                     <property name="name">target_comment</property>
                     <property name="nativeName">target_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">26</property>
                     <property name="name">actual_value</property>
                     <property name="nativeName">actual_value</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">27</property>
                     <property name="name">actual_comment</property>
                     <property name="nativeName">actual_comment</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">28</property>
                     <property name="name">type_name</property>
                     <property name="nativeName">type_name</property>
                     <property name="dataType">string</property>
@@ -537,7 +627,12 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
  rsr_project.title,
+ rsr_project.subtitle,
  rsr_project.iati_activity_id,
+ rsr_project.date_start_planned,
+ rsr_project.date_end_planned,
+ rsr_project.date_start_actual,
+ rsr_project.date_end_actual,
  rsr_result.title as result_title,
  rsr_result.id as result_pk,
  rsr_result.type,
@@ -558,6 +653,7 @@
  rsr_indicatorperiod.target_comment,
  rsr_indicatorperiod.actual_value,
  rsr_indicatorperiod.actual_comment,
+ rsr_recipientcountry.country,
  codelists_resulttype.name as type_name
 from rsr_project 
 left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
@@ -565,6 +661,7 @@ left join rsr_result on rsr_project.id=rsr_result.project_id
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
+left join rsr_recipientcountry on rsr_project.id = rsr_recipientcountry.project_id
 where rsr_project.id = ? and codelists_resulttype.version_id=6
 order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -7203,6 +7300,7 @@ where primary_organisation_id = '3394']]></xml-property>
             </list-property>
             <detail>
                 <table id="750">
+                    <property name="fontFamily">"Arial"</property>
                     <property name="pageBreakAfter">avoid</property>
                     <property name="pageBreakBefore">avoid</property>
                     <property name="pageBreakInside">avoid</property>
@@ -7342,13 +7440,47 @@ where primary_organisation_id = '3394']]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">subtitle</property>
+                            <text-property name="displayName">subtitle</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_planned</property>
+                            <text-property name="displayName">date_start_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_actual</property>
+                            <text-property name="displayName">date_start_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_planned</property>
+                            <text-property name="displayName">date_end_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_actual</property>
+                            <text-property name="displayName">date_end_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
                     </list-property>
+                    <property name="repeatHeader">false</property>
                     <property name="pageBreakInterval">40000000</property>
                     <column id="854"/>
                     <column id="875">
                         <property name="repeat">1</property>
                     </column>
                     <column id="882">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="889">
                         <property name="repeat">1</property>
                     </column>
                     <column id="855"/>
@@ -7371,6 +7503,10 @@ where primary_organisation_id = '3394']]></xml-property>
                     <column id="870"/>
                     <column id="871"/>
                     <column id="872"/>
+                    <column id="899"/>
+                    <column id="911"/>
+                    <column id="907"/>
+                    <column id="903"/>
                     <header>
                         <row id="751">
                             <property name="fontWeight">bold</property>
@@ -7387,6 +7523,11 @@ where primary_organisation_id = '3394']]></xml-property>
                             </cell>
                             <cell id="883">
                                 <label id="884">
+                                    <text-property name="text">Subtitle</text-property>
+                                </label>
+                            </cell>
+                            <cell id="890">
+                                <label id="891">
                                     <text-property name="text">Type name</text-property>
                                 </label>
                             </cell>
@@ -7480,6 +7621,26 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <text-property name="text">Actual comment</text-property>
                                 </label>
                             </cell>
+                            <cell id="896">
+                                <label id="914">
+                                    <text-property name="text">date_start_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="908">
+                                <label id="916">
+                                    <text-property name="text">date_start_actual</text-property>
+                                </label>
+                            </cell>
+                            <cell id="904">
+                                <label id="918">
+                                    <text-property name="text">date_end_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="900">
+                                <label id="920">
+                                    <text-property name="text">date_end_actual</text-property>
+                                </label>
+                            </cell>
                         </row>
                     </header>
                     <detail>
@@ -7495,7 +7656,12 @@ where primary_organisation_id = '3394']]></xml-property>
                                 </data>
                             </cell>
                             <cell id="885">
-                                <data id="886">
+                                <data id="895">
+                                    <property name="resultSetColumn">subtitle</property>
+                                </data>
+                            </cell>
+                            <cell id="892">
+                                <data id="893">
                                     <property name="resultSetColumn">type_name</property>
                                 </data>
                             </cell>
@@ -7589,6 +7755,26 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <property name="resultSetColumn">actual_comment</property>
                                 </data>
                             </cell>
+                            <cell id="897">
+                                <data id="915">
+                                    <property name="resultSetColumn">date_start_planned</property>
+                                </data>
+                            </cell>
+                            <cell id="909">
+                                <data id="917">
+                                    <property name="resultSetColumn">date_start_actual</property>
+                                </data>
+                            </cell>
+                            <cell id="905">
+                                <data id="919">
+                                    <property name="resultSetColumn">date_end_planned</property>
+                                </data>
+                            </cell>
+                            <cell id="901">
+                                <data id="921">
+                                    <property name="resultSetColumn">date_end_actual</property>
+                                </data>
+                            </cell>
                         </row>
                     </detail>
                     <footer>
@@ -7596,6 +7782,7 @@ where primary_organisation_id = '3394']]></xml-property>
                             <cell id="834"/>
                             <cell id="880"/>
                             <cell id="887"/>
+                            <cell id="894"/>
                             <cell id="835"/>
                             <cell id="853"/>
                             <cell id="837"/>
@@ -7614,6 +7801,10 @@ where primary_organisation_id = '3394']]></xml-property>
                             <cell id="850"/>
                             <cell id="851"/>
                             <cell id="852"/>
+                            <cell id="898"/>
+                            <cell id="910"/>
+                            <cell id="906"/>
+                            <cell id="902"/>
                         </row>
                     </footer>
                 </table>
