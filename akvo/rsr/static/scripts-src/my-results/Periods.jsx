@@ -8,10 +8,10 @@ import React, {PropTypes} from "react";
 import {Panel} from "rc-collapse";
 import update  from 'immutability-helper';
 
-import Level from "./Level.jsx";
+import {level} from "./Level.jsx";
 import {Updates, NewUpdateButton} from "./Updates.jsx";
 
-import {displayDate, APICall, endpoints, levelToggle} from "./utils.js";
+import {displayDate, APICall, endpoints} from "./utils.js";
 import {OBJECTS_PERIODS, OBJECTS_UPDATES} from './const.js';
 
 
@@ -80,6 +80,7 @@ PeriodLockToggle.propTypes = {
     callbacks: PropTypes.object
 };
 
+
 const periodActualValue = (period) => {
     return period.updates && period.updates.length > 0 ?
         period.updates[period.updates.length-1].actual_value
@@ -87,7 +88,29 @@ const periodActualValue = (period) => {
         "";
 };
 
-export class PeriodsBase extends React.Component {
+const PeriodHeader = ({item: period, callbacks}) => {
+    const periodStart = displayDate(period.period_start);
+    const periodEnd = displayDate(period.period_end);
+    const periodDate = `${periodStart} - ${periodEnd}`;
+    return (
+        <span>
+            <span>
+                Period: {periodDate} |
+                Target value: {period.target_value} |
+                Actual value: {periodActualValue(period)}
+            </span>
+            <PeriodLockToggle period={period} callbacks={callbacks}/>
+        </span>
+    )
+};
+
+PeriodHeader.propTypes = {
+    item: PropTypes.object,
+    callbacks: PropTypes.object.isRequired,
+};
+
+
+export class Period extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -110,24 +133,12 @@ export class PeriodsBase extends React.Component {
         );
     }
 
-    renderPanel(period) {
-        const periodStart = displayDate(period.period_start);
-        const periodEnd = displayDate(period.period_end);
-        const periodDate = `${periodStart} - ${periodEnd}`;
-        const header = (
-            <span>
-                <span>
-                    Period: {periodDate} |
-                    Target value: {period.target_value} |
-                    Actual value: {periodActualValue(period)}
-                </span>
-                <PeriodLockToggle period={period} callbacks={this.props.callbacks}/>
-            </span>
-        );
+    render() {
+        const period = this.props.item;
         const updateCallbacks = update(this.props.callbacks, {$merge: {onChange: this.onChange}});
         const buttonCallbacks = update(this.props.callbacks, {$merge: {openNewForm: this.openNewForm}});
         return (
-            <Panel header={header} key={period.id}>
+            <div>
                 <Updates
                     items={period.updates}
                     callbacks={updateCallbacks}
@@ -135,20 +146,14 @@ export class PeriodsBase extends React.Component {
                 <NewUpdateButton
                     callbacks={buttonCallbacks}
                     period={period}/>
-            </Panel>
-        )
-    }
-
-    render() {
-        return (
-            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
+            </div>
         );
     }
 }
 
-PeriodsBase.propTypes = {
+Period.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
 };
 
-export default levelToggle(PeriodsBase);
+export default level(PeriodHeader, Period);

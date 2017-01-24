@@ -8,15 +8,50 @@
 import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 
-import Level from './Level.jsx';
+import {level} from './Level.jsx';
 import Periods from './Periods.jsx';
 
-import {_, levelToggle}from './utils';
+import {_}from './utils';
 import {OBJECTS_INDICATORS} from './const.js';
 
 
+const IndicatorHeader = ({item: indicator}) => {
+    const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+    return (
+        <span>
+            {"Indicator: " + title}
+        </span>
+    )
+};
 
-export class IndicatorsBase extends React.Component {
+IndicatorHeader.propTypes = {
+    item: PropTypes.object
+};
+
+
+const IndicatorContent = ({indicator}) => {
+    const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+    return (
+        <div>
+            {title}
+            <div className="baseline">
+                <div className="baseline-year">
+                    {_('baseline_year')}: {indicator.baseline_year}
+                </div>
+                <div className="baseline-value">
+                    {_('baseline_value')}: {indicator.baseline_value}
+                </div>
+            </div>
+        </div>
+    )
+};
+
+IndicatorContent.propTypes = {
+    indicator: PropTypes.object
+};
+
+
+class Indicator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: OBJECTS_INDICATORS};
@@ -26,36 +61,22 @@ export class IndicatorsBase extends React.Component {
         this.props.callbacks.loadModel('periods');
     }
 
-    renderPanel(indicator) {
-        const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+    render() {
+        const indicator = this.props.item;
         return (
-            <Panel header={"Indicator: " + title} key={indicator.id}>
-                {title}
-                <div className="baseline">
-                    <div className="baseline-year">
-                        {_('baseline_year')}: {indicator.baseline_year}
-                    </div>
-                    <div className="baseline-value">
-                        {_('baseline_value')}: {indicator.baseline_value}
-                    </div>
-                </div>
+            <div>
+                <IndicatorContent indicator={indicator}/>
                 <Periods
                     items={indicator.periods}
                     callbacks={this.props.callbacks}/>
-            </Panel>
-        )
-    }
-
-    render() {
-        return (
-            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
+            </div>
         );
     }
 }
 
-IndicatorsBase.propTypes = {
+Indicator.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
 };
 
-export default levelToggle(IndicatorsBase);
+export default level(IndicatorHeader, Indicator);

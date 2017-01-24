@@ -5,7 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
+import React, { PropTypes } from 'react';
 import fetch from 'isomorphic-fetch';
 
 
@@ -141,6 +141,23 @@ export function _(s) {
 
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
 
+
+const ToggleButton = ({onClick, label}) => {
+    return (
+        <a onClick={onClick}
+            className={'btn btn-sm btn-default'}
+            style={{margin: '0.3em 0.5em'}}>
+            {label}
+        </a>
+    )
+};
+
+ToggleButton.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired
+};
+
+
 export function levelToggle(WrappedComponent) {
 
     return class extends React.Component {
@@ -171,11 +188,7 @@ export function levelToggle(WrappedComponent) {
         render() {
             return (
                 <div>
-                    <a onClick={this.toggleLevel}
-                        className={'btn btn-sm btn-default'}
-                        style={{margin: '0.3em 0.5em'}}>
-                        +
-                    </a>
+                    <ToggleButton onClick={this.toggleLevel} label="+"/>
                     <WrappedComponent
                         activeKey={this.state.activeKey}
                         onChange={this.onChange}
