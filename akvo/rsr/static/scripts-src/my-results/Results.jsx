@@ -8,41 +8,46 @@
 import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 
-import Level from './Level.jsx';
 import Indicators from './Indicators.jsx';
 
-import {levelToggle} from './utils.js';
+import {level} from './Level.jsx';
 import {OBJECTS_RESULTS} from './const.js';
 
 
-class ResultsBase extends React.Component {
+const ResultHeader = ({item: result}) => {
+    return (
+        <span>
+            {"Result: " + result.title}
+        </span>
+    )
+};
+
+ResultHeader.propTypes = {
+    item: PropTypes.object
+};
+
+
+class Result extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: OBJECTS_RESULTS};
     }
 
-    renderPanel(result) {
+    render() {
+        const result = this.props.item;
         return (
-            <Panel header={"Result: " + result.title} key={result.id}>
+            <div>
                 <Indicators
                     items={result.indicators}
                     callbacks={this.props.callbacks}/>
-            </Panel>
-        )
-    }
-
-    render() {
-        return (
-            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
+            </div>
         );
     }
 }
 
-ResultsBase.propTypes = {
+Result.propTypes = {
     items: PropTypes.array,
     callbacks: PropTypes.object.isRequired,
-    activeKey: PropTypes.array,
-    onChange: PropTypes.func
 };
 
-export default levelToggle(ResultsBase);
+export default level(ResultHeader, Result);

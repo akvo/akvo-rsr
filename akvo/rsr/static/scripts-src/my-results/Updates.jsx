@@ -9,13 +9,13 @@ import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 import update  from 'immutability-helper';
 
-import Level from "./Level.jsx";
+import {level} from "./Level.jsx";
 import Comments from './Comments.jsx';
 
 import {
-    APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate, levelToggle
-} from './utils.js';
-import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES, OBJECTS_COMMENTS} from './const.js';
+    APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate} from './utils.js';
+import {
+    STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES, OBJECTS_COMMENTS} from './const.js';
 
 
 const UpdateDisplay = ({update}) => {
@@ -79,6 +79,22 @@ Update.propTypes = {
 };
 
 
+const UpdateHeader = ({item: update}) => {
+    const organisation = update.user_details.approved_organisations[0].name;
+    const userName = update.user_details.first_name +" "+ update.user_details.last_name;
+    return (
+        <span>
+            Update: {userName} at {organisation},
+            Data: {update.data} Status: {_('update_statuses')[update.status]}
+        </span>
+    )
+};
+
+UpdateHeader.propTypes = {
+    item: PropTypes.object
+};
+
+
 class UpdatesBase extends React.Component {
     constructor(props) {
         super(props);
@@ -89,35 +105,18 @@ class UpdatesBase extends React.Component {
         this.props.callbacks.loadModel(OBJECTS_COMMENTS);
     }
 
-    renderPanel(update) {
-        const organisation = update.user_details.approved_organisations[0].name;
-        const userName = update.user_details.first_name +" "+ update.user_details.last_name;
-        const headerText = `Update: ${userName} at ${organisation}, Data: ${update.data}
-                            Status: ${_('update_statuses')[update.status]}`;
+    render() {
+        const update = this.props.item;
         return (
-            <Panel header={headerText} key={update.id}>
+            <div>
                 <Update
                     update={update}
                     callbacks={this.props.callbacks}/>
                 <div>
                     <Comments
-                        items={update.comments}
-                        callbacks={this.props.callbacks}/>
+                        items={update.comments}/>
                 </div>
-            </Panel>
-        )
-    }
-
-    render() {
-        // Combine activeKey with state.newKeys to create a new activeKey
-        // Note that the order of the props in the call to Level is important as the local activeKey
-        // overwrites props.activeKey
-        const activeKey = update(this.props.activeKey, {$push: this.props.newKeys});
-        return (
-            <Level
-                {...this.props}
-                renderPanel={this.renderPanel.bind(this)}
-                activeKey={activeKey}/>
+            </div>
         );
     }
 
@@ -128,7 +127,8 @@ UpdatesBase.propTypes = {
     items: PropTypes.array,
 };
 
-export const Updates = levelToggle(UpdatesBase);
+export const Updates = level(UpdateHeader, UpdatesBase);
+
 
 const Header = ({update}) => {
     return (

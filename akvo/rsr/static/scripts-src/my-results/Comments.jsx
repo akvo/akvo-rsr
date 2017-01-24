@@ -8,35 +8,36 @@
 import React, { PropTypes } from 'react';
 import {Panel} from 'rc-collapse';
 
-import Level from './Level.jsx'
+import {level} from './Level.jsx'
 
 import {levelToggle} from './utils.js';
 import {OBJECTS_COMMENTS} from './const.js';
 
-export class CommentsBase extends Level {
+const CommentHeader = ({item: comment}) => {
+    return (
+        <span>
+            {"Comment: " + comment.comment}
+        </span>
+    )
+};
+
+
+class Comment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {model: OBJECTS_COMMENTS};
     }
 
-    renderPanel(comment) {
-        return (
-            <Panel header={comment.comment} key={comment.id}>
-                <div>By: {comment.user_details.first_name}</div>
-            </Panel>
-        )
-    }
-
     render() {
+        const comment = this.props.item;
         return (
-            <Level renderPanel={this.renderPanel.bind(this)} {...this.props}/>
+            <div>By: {comment.user_details.first_name}</div>
         );
     }
 }
 
-CommentsBase.propTypes = {
-    items: PropTypes.array,
-    callbacks: PropTypes.object
+Comment.propTypes = {
+    items: PropTypes.array
 };
 
-export default levelToggle(CommentsBase);
+export default level(CommentHeader, Comment);
