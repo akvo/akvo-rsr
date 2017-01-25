@@ -7298,6 +7298,383 @@ where primary_organisation_id = '3394']]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
+            <header>
+                <table id="968">
+                    <property name="fontFamily">"Arial"</property>
+                    <property name="pageBreakAfter">avoid</property>
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="dataSet">Project_results_indicators_periods</property>
+                    <list-property name="paramBindings">
+                        <structure>
+                            <property name="paramName">projid</property>
+                            <simple-property-list name="expression">
+                                <value type="javascript">row["id"]</value>
+                            </simple-property-list>
+                        </structure>
+                    </list-property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">title</property>
+                            <text-property name="displayName">title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_title</property>
+                            <text-property name="displayName">result_title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type</property>
+                            <text-property name="displayName">type</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_description</property>
+                            <text-property name="displayName">result_description</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_description"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">aggregation_status</property>
+                            <text-property name="displayName">aggregation_status</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["aggregation_status"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_title</property>
+                            <text-property name="displayName">indicator_title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">measure</property>
+                            <text-property name="displayName">measure</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["measure"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_description</property>
+                            <text-property name="displayName">indicator_description</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_description"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">ascending</property>
+                            <text-property name="displayName">ascending</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["ascending"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_year</property>
+                            <text-property name="displayName">baseline_year</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_year"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_value</property>
+                            <text-property name="displayName">baseline_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_comment</property>
+                            <text-property name="displayName">baseline_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicatorperiod_pk</property>
+                            <text-property name="displayName">indicatorperiod_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicatorperiod_pk"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">period_start</property>
+                            <text-property name="displayName">period_start</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">period_end</property>
+                            <text-property name="displayName">period_end</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["period_end"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">target_value</property>
+                            <text-property name="displayName">target_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["target_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">target_comment</property>
+                            <text-property name="displayName">target_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["target_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">actual_value</property>
+                            <text-property name="displayName">actual_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["actual_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">actual_comment</property>
+                            <text-property name="displayName">actual_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["actual_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type_name</property>
+                            <text-property name="displayName">type_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">iati_activity_id</property>
+                            <text-property name="displayName">iati_activity_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">subtitle</property>
+                            <text-property name="displayName">subtitle</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_planned</property>
+                            <text-property name="displayName">date_start_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_actual</property>
+                            <text-property name="displayName">date_start_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_planned</property>
+                            <text-property name="displayName">date_end_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_actual</property>
+                            <text-property name="displayName">date_end_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                    </list-property>
+                    <property name="repeatHeader">false</property>
+                    <property name="pageBreakInterval">40000000</property>
+                    <column id="1102"/>
+                    <column id="1103">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="1104">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="1105">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="1106"/>
+                    <column id="1107">
+                        <property name="repeat">1</property>
+                    </column>
+                    <column id="1108"/>
+                    <column id="1109"/>
+                    <column id="1110"/>
+                    <column id="1111"/>
+                    <column id="1112"/>
+                    <column id="1113"/>
+                    <column id="1114"/>
+                    <column id="1115"/>
+                    <column id="1116"/>
+                    <column id="1117"/>
+                    <column id="1118"/>
+                    <column id="1119"/>
+                    <column id="1120"/>
+                    <column id="1121"/>
+                    <column id="1122"/>
+                    <column id="1123"/>
+                    <column id="1124"/>
+                    <column id="1125"/>
+                    <column id="1126"/>
+                    <column id="1127"/>
+                    <header>
+                        <row id="969">
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
+                            <cell id="970">
+                                <label id="971">
+                                    <text-property name="text">IATI ID</text-property>
+                                </label>
+                            </cell>
+                            <cell id="972">
+                                <label id="973">
+                                    <text-property name="text">Project title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="974">
+                                <label id="975">
+                                    <text-property name="text">Subtitle</text-property>
+                                </label>
+                            </cell>
+                            <cell id="976">
+                                <label id="977">
+                                    <text-property name="text">Type name</text-property>
+                                </label>
+                            </cell>
+                            <cell id="978">
+                                <label id="979">
+                                    <text-property name="text">Result title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="980">
+                                <label id="981">
+                                    <text-property name="text">Type name</text-property>
+                                </label>
+                            </cell>
+                            <cell id="982">
+                                <label id="983">
+                                    <text-property name="text">Result description</text-property>
+                                </label>
+                            </cell>
+                            <cell id="984">
+                                <label id="985">
+                                    <text-property name="text">Aggregation status</text-property>
+                                </label>
+                            </cell>
+                            <cell id="986">
+                                <label id="987">
+                                    <text-property name="text">Indicator title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="988">
+                                <label id="989">
+                                    <text-property name="text">Measure</text-property>
+                                </label>
+                            </cell>
+                            <cell id="990">
+                                <label id="991">
+                                    <text-property name="text">Indicator description</text-property>
+                                </label>
+                            </cell>
+                            <cell id="992">
+                                <label id="993">
+                                    <text-property name="text">Ascending</text-property>
+                                </label>
+                            </cell>
+                            <cell id="994">
+                                <label id="995">
+                                    <text-property name="text">Baseline year</text-property>
+                                </label>
+                            </cell>
+                            <cell id="996">
+                                <label id="997">
+                                    <text-property name="text">Baseline value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="998">
+                                <label id="999">
+                                    <text-property name="text">Baseline comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1000">
+                                <label id="1001">
+                                    <text-property name="text">indicatorperiod_pk</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1002">
+                                <label id="1003">
+                                    <text-property name="text">Period start</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1004">
+                                <label id="1005">
+                                    <text-property name="text">Period end</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1006">
+                                <label id="1007">
+                                    <text-property name="text">Target value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1008">
+                                <label id="1009">
+                                    <text-property name="text">Target comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1010">
+                                <label id="1011">
+                                    <text-property name="text">Actual value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1012">
+                                <label id="1013">
+                                    <text-property name="text">Actual comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1014">
+                                <label id="1015">
+                                    <text-property name="text">date_start_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1016">
+                                <label id="1017">
+                                    <text-property name="text">date_start_actual</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1018">
+                                <label id="1019">
+                                    <text-property name="text">date_end_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1020">
+                                <label id="1021">
+                                    <text-property name="text">date_end_actual</text-property>
+                                </label>
+                            </cell>
+                        </row>
+                    </header>
+                    <footer>
+                        <row id="1075">
+                            <cell id="1076"/>
+                            <cell id="1077"/>
+                            <cell id="1078"/>
+                            <cell id="1079"/>
+                            <cell id="1080"/>
+                            <cell id="1081"/>
+                            <cell id="1082"/>
+                            <cell id="1083"/>
+                            <cell id="1084"/>
+                            <cell id="1085"/>
+                            <cell id="1086"/>
+                            <cell id="1087"/>
+                            <cell id="1088"/>
+                            <cell id="1089"/>
+                            <cell id="1090"/>
+                            <cell id="1091"/>
+                            <cell id="1092"/>
+                            <cell id="1093"/>
+                            <cell id="1094"/>
+                            <cell id="1095"/>
+                            <cell id="1096"/>
+                            <cell id="1097"/>
+                            <cell id="1098"/>
+                            <cell id="1099"/>
+                            <cell id="1100"/>
+                            <cell id="1101"/>
+                        </row>
+                    </footer>
+                </table>
+            </header>
             <detail>
                 <table id="750">
                     <property name="fontFamily">"Arial"</property>
@@ -7507,142 +7884,6 @@ where primary_organisation_id = '3394']]></xml-property>
                     <column id="911"/>
                     <column id="907"/>
                     <column id="903"/>
-                    <header>
-                        <row id="751">
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <cell id="752">
-                                <label id="753">
-                                    <text-property name="text">IATI ID</text-property>
-                                </label>
-                            </cell>
-                            <cell id="876">
-                                <label id="877">
-                                    <text-property name="text">Project title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="883">
-                                <label id="884">
-                                    <text-property name="text">Subtitle</text-property>
-                                </label>
-                            </cell>
-                            <cell id="890">
-                                <label id="891">
-                                    <text-property name="text">Type name</text-property>
-                                </label>
-                            </cell>
-                            <cell id="754">
-                                <label id="755">
-                                    <text-property name="text">Result title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="790">
-                                <label id="791">
-                                    <text-property name="text">Type name</text-property>
-                                </label>
-                            </cell>
-                            <cell id="758">
-                                <label id="759">
-                                    <text-property name="text">Result description</text-property>
-                                </label>
-                            </cell>
-                            <cell id="760">
-                                <label id="761">
-                                    <text-property name="text">Aggregation status</text-property>
-                                </label>
-                            </cell>
-                            <cell id="762">
-                                <label id="763">
-                                    <text-property name="text">Indicator title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="764">
-                                <label id="765">
-                                    <text-property name="text">Measure</text-property>
-                                </label>
-                            </cell>
-                            <cell id="766">
-                                <label id="767">
-                                    <text-property name="text">Indicator description</text-property>
-                                </label>
-                            </cell>
-                            <cell id="768">
-                                <label id="769">
-                                    <text-property name="text">Ascending</text-property>
-                                </label>
-                            </cell>
-                            <cell id="770">
-                                <label id="771">
-                                    <text-property name="text">Baseline year</text-property>
-                                </label>
-                            </cell>
-                            <cell id="772">
-                                <label id="773">
-                                    <text-property name="text">Baseline value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="774">
-                                <label id="775">
-                                    <text-property name="text">Baseline comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="776">
-                                <label id="777">
-                                    <text-property name="text">indicatorperiod_pk</text-property>
-                                </label>
-                            </cell>
-                            <cell id="778">
-                                <label id="779">
-                                    <text-property name="text">Period start</text-property>
-                                </label>
-                            </cell>
-                            <cell id="780">
-                                <label id="781">
-                                    <text-property name="text">Period end</text-property>
-                                </label>
-                            </cell>
-                            <cell id="782">
-                                <label id="783">
-                                    <text-property name="text">Target value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="784">
-                                <label id="785">
-                                    <text-property name="text">Target comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="786">
-                                <label id="787">
-                                    <text-property name="text">Actual value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="788">
-                                <label id="789">
-                                    <text-property name="text">Actual comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="896">
-                                <label id="914">
-                                    <text-property name="text">date_start_planned</text-property>
-                                </label>
-                            </cell>
-                            <cell id="908">
-                                <label id="916">
-                                    <text-property name="text">date_start_actual</text-property>
-                                </label>
-                            </cell>
-                            <cell id="904">
-                                <label id="918">
-                                    <text-property name="text">date_end_planned</text-property>
-                                </label>
-                            </cell>
-                            <cell id="900">
-                                <label id="920">
-                                    <text-property name="text">date_end_actual</text-property>
-                                </label>
-                            </cell>
-                        </row>
-                    </header>
                     <detail>
                         <row id="792">
                             <cell id="793">
