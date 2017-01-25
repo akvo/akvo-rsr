@@ -81,6 +81,7 @@ from .project_update_location import (ProjectUpdateLocationSerializer,
 from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer, RecipientCountryRawSerializer
 from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
+from .report import ReportSerializer, ReportFormatSerializer
 from .related_project import RelatedProjectSerializer, RelatedProjectRawSerializer
 from .result import ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer
 from .sector import SectorSerializer, SectorRawSerializer
@@ -188,6 +189,8 @@ __all__ = [
     'RecipientRegionRawSerializer',
     'RelatedProjectSerializer',
     'RelatedProjectRawSerializer',
+    'ReportSerializer',
+    'ReportFormatSerializer',
     'ResultSerializer',
     'ResultRawSerializer',
     'ResultsFrameworkSerializer',

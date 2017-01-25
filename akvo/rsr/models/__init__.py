@@ -72,6 +72,7 @@ from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
 from .related_project import RelatedProject
+from .report import Report, ReportFormat
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
@@ -152,6 +153,8 @@ __all__ = [
     'PublishingStatus',
     'RecipientRegion',
     'RelatedProject',
+    'Report',
+    'ReportFormat',
     'Result',
     'Sector',
     'Transaction',
