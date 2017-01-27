@@ -52,13 +52,30 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        // Once the component is mounted, load the results through the API
-        //TODO: this "chained" way of loading the API data kinda terrible and should be replaced
-        this.loadModel(OBJECTS_RESULTS);
-        this.loadModel(OBJECTS_INDICATORS);
+        // Chain loading of all models
+        // TODO: error handling
+        this.loadModel(
+            OBJECTS_RESULTS,
+            this.loadModel.bind(
+                this,
+                OBJECTS_INDICATORS,
+                this.loadModel.bind(
+                    this,
+                    OBJECTS_PERIODS,
+                    this.loadModel.bind(
+                        this,
+                        OBJECTS_UPDATES,
+                        this.loadModel.bind(
+                            this,
+                            OBJECTS_COMMENTS
+                        )
+                    )
+                )
+            )
+        )
     }
 
-    loadModel(model) {
+    loadModel(model, callback) {
         // Load a model from the API. After loading rebuild the data tree.
         if (! this.state.models[model]) {
             let success = function(response) {
@@ -69,6 +86,9 @@ class App extends React.Component {
                     )},
                     function() {
                         this.setState({resultsDataTree: this.assembleDataTree()});
+                        if (callback) {
+                            callback();
+                        }
                     }
                 )
             }.bind(this);
