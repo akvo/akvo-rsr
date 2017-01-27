@@ -57,9 +57,9 @@ class Indicator extends React.Component {
         this.state = {model: OBJECTS_INDICATORS};
     }
 
-    componentWillMount() {
-        this.props.callbacks.loadModel('periods');
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("Indicator.componentWillReceiveProps: nextProps.propagate: " + JSON.stringify(nextProps.propagate));
+    // }
 
     render() {
         const indicator = this.props.item;
@@ -68,7 +68,8 @@ class Indicator extends React.Component {
                 <IndicatorContent indicator={indicator}/>
                 <Periods
                     items={indicator.periods}
-                    callbacks={this.props.callbacks}/>
+                    callbacks={this.props.callbacks}
+                    propagate={this.props.propagate}/>
             </div>
         );
     }

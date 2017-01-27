@@ -28,6 +28,10 @@ class Comment extends React.Component {
         this.state = {model: OBJECTS_COMMENTS};
     }
 
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("Comments.componentWillReceiveProps: nextProps.propagate: " + JSON.stringify(nextProps.propagate));
+    // }
+
     render() {
         const comment = this.props.item;
         return (

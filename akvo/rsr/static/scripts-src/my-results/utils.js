@@ -11,6 +11,15 @@ import fetch from 'isomorphic-fetch';
 
 let months;
 
+export function identicalArrays(array1, array2) {
+    // Compare two arrays and return true if they are identical, otherwise false
+    return (
+        (array1.length == array2.length) &&
+        array1.every((element, index) => (element === array2[index]))
+    )
+}
+
+
 export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
     if (!months) {

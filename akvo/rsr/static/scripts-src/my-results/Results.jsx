@@ -33,13 +33,18 @@ class Result extends React.Component {
         this.state = {model: OBJECTS_RESULTS};
     }
 
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("Result.componentWillReceiveProps: nextProps.propagate: " + JSON.stringify(nextProps.propagate));
+    // }
+
     render() {
         const result = this.props.item;
         return (
             <div>
                 <Indicators
                     items={result.indicators}
-                    callbacks={this.props.callbacks}/>
+                    callbacks={this.props.callbacks}
+                    propagate={this.props.propagate}/>
             </div>
         );
     }

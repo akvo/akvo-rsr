@@ -101,9 +101,9 @@ class UpdatesBase extends React.Component {
         this.state = {model: OBJECTS_UPDATES}
     }
 
-    componentWillMount() {
-        this.props.callbacks.loadModel(OBJECTS_COMMENTS);
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("Updates.componentWillReceiveProps: nextProps.propagate: " + JSON.stringify(nextProps.propagate));
+    // }
 
     render() {
         const update = this.props.item;
@@ -114,12 +114,12 @@ class UpdatesBase extends React.Component {
                     callbacks={this.props.callbacks}/>
                 <div>
                     <Comments
-                        items={update.comments}/>
+                        items={update.comments}
+                        propagate={this.props.propagate}/>
                 </div>
             </div>
         );
     }
-
 }
 
 UpdatesBase.propTypes = {

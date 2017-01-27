@@ -120,9 +120,9 @@ export class Period extends React.Component {
         this.openNewForm = this.openNewForm.bind(this);
     }
 
-    componentWillMount() {
-        this.props.callbacks.loadModel(OBJECTS_UPDATES);
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("Periods.componentWillReceiveProps: nextProps.propagate: " + JSON.stringify(nextProps.propagate));
+    // }
 
     openNewForm(newKey, data) {
         // Add the key for a new update to the list of open panels
@@ -142,7 +142,8 @@ export class Period extends React.Component {
                 <Updates
                     items={period.updates}
                     callbacks={updateCallbacks}
-                    newKeys={this.state.newKeys}/>
+                    newKeys={this.state.newKeys}
+                    propagate={this.props.propagate}/>
                 <NewUpdateButton
                     callbacks={buttonCallbacks}
                     period={period}/>
