@@ -10,8 +10,8 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="ID" id="225">
-            <text-property name="helpText">Id number of the project</text-property>
-            <text-property name="promptText">Project id</text-property>
+            <text-property name="helpText">Id number of the organisation (primary)</text-property>
+            <text-property name="promptText">Organisation ID</text-property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">integer</property>
@@ -268,16 +268,21 @@
                     <text-property name="displayName">type_name</text-property>
                     <text-property name="heading">type_name</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">rec_country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rec_country</text-property>
+                    <text-property name="heading">rec_country</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
-                    <property name="name">projid</property>
+                    <property name="name">param_1</property>
                     <property name="paramName">ID</property>
                     <property name="nativeName"></property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                     <property name="position">1</property>
-                    <expression name="defaultValue" type="javascript">2849</expression>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -422,6 +427,11 @@
                     <structure>
                         <property name="position">28</property>
                         <property name="name">type_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">rec_country</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -624,6 +634,13 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">rec_country</property>
+                    <property name="nativeName">rec_country</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
  rsr_project.title,
@@ -653,20 +670,39 @@
  rsr_indicatorperiod.target_comment,
  rsr_indicatorperiod.actual_value,
  rsr_indicatorperiod.actual_comment,
- rsr_recipientcountry.country,
- codelists_resulttype.name as type_name
+ codelists_resulttype.name as type_name,
+ (SELECT string_agg(rsr_recipientcountry.country, ', ')
+FROM rsr_recipientcountry
+WHERE rsr_recipientcountry.project_id = rsr_project.id
+GROUP BY rsr_recipientcountry.country) rec_country
 from rsr_project 
 left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
 left join rsr_result on rsr_project.id=rsr_result.project_id
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
-left join rsr_recipientcountry on rsr_project.id = rsr_recipientcountry.project_id
 where rsr_project.id = ? and codelists_resulttype.version_id=6
 order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -7202,6 +7238,110 @@ where rsr_project.primary_organisation_id = ?]]></xml-property>
 from rsr_project
 where primary_organisation_id = '3394']]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="test" id="1128">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">project_id</property>
+                    <text-property name="displayName">project_id</text-property>
+                    <text-property name="heading">project_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">string_agg</property>
+                    <text-property name="displayName">string_agg</text-property>
+                    <text-property name="heading">string_agg</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">project_id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">string_agg</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">RSR readonly</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">project_id</property>
+                    <property name="nativeName">project_id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">string_agg</property>
+                    <property name="nativeName">string_agg</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT rsr_recipientcountry.project_id, string_agg(rsr_recipientcountry.country, ', ')
+FROM rsr_recipientcountry
+GROUP BY rsr_recipientcountry.project_id;
+
+
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>project_id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>project_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>project_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>string_agg</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>string_agg</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>string_agg</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="38">
@@ -7305,14 +7445,6 @@ where primary_organisation_id = '3394']]></xml-property>
                     <property name="pageBreakBefore">avoid</property>
                     <property name="pageBreakInside">avoid</property>
                     <property name="dataSet">Project_results_indicators_periods</property>
-                    <list-property name="paramBindings">
-                        <structure>
-                            <property name="paramName">projid</property>
-                            <simple-property-list name="expression">
-                                <value type="javascript">row["id"]</value>
-                            </simple-property-list>
-                        </structure>
-                    </list-property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">title</property>
@@ -7507,6 +7639,7 @@ where primary_organisation_id = '3394']]></xml-property>
                     <column id="1125"/>
                     <column id="1126"/>
                     <column id="1127"/>
+                    <column id="1135"/>
                     <header>
                         <row id="969">
                             <property name="fontWeight">bold</property>
@@ -7641,6 +7774,11 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <text-property name="text">date_end_actual</text-property>
                                 </label>
                             </cell>
+                            <cell id="1133">
+                                <label id="1136">
+                                    <text-property name="text">Recipient country</text-property>
+                                </label>
+                            </cell>
                         </row>
                     </header>
                     <footer>
@@ -7671,6 +7809,7 @@ where primary_organisation_id = '3394']]></xml-property>
                             <cell id="1099"/>
                             <cell id="1100"/>
                             <cell id="1101"/>
+                            <cell id="1134"/>
                         </row>
                     </footer>
                 </table>
@@ -7684,7 +7823,7 @@ where primary_organisation_id = '3394']]></xml-property>
                     <property name="dataSet">Project_results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
-                            <property name="paramName">projid</property>
+                            <property name="paramName">param_1</property>
                             <simple-property-list name="expression">
                                 <value type="javascript">row["id"]</value>
                             </simple-property-list>
@@ -7847,6 +7986,12 @@ where primary_organisation_id = '3394']]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
                             <property name="dataType">date</property>
                         </structure>
+                        <structure>
+                            <property name="name">rec_country</property>
+                            <text-property name="displayName">rec_country</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["rec_country"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <property name="repeatHeader">false</property>
                     <property name="pageBreakInterval">40000000</property>
@@ -7884,6 +8029,7 @@ where primary_organisation_id = '3394']]></xml-property>
                     <column id="911"/>
                     <column id="907"/>
                     <column id="903"/>
+                    <column id="1131"/>
                     <detail>
                         <row id="792">
                             <cell id="793">
@@ -8016,6 +8162,11 @@ where primary_organisation_id = '3394']]></xml-property>
                                     <property name="resultSetColumn">date_end_actual</property>
                                 </data>
                             </cell>
+                            <cell id="1129">
+                                <data id="1132">
+                                    <property name="resultSetColumn">rec_country</property>
+                                </data>
+                            </cell>
                         </row>
                     </detail>
                     <footer>
@@ -8046,6 +8197,7 @@ where primary_organisation_id = '3394']]></xml-property>
                             <cell id="910"/>
                             <cell id="906"/>
                             <cell id="902"/>
+                            <cell id="1130"/>
                         </row>
                     </footer>
                 </table>
