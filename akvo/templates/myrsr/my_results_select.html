@@ -14,7 +14,7 @@
     {# Initial data endpoints #}
     <script type="application/json" id="data-endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "impact_projects": "{% url 'impact_projects_typeahead' %}"
         }
     </script>

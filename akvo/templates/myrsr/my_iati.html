@@ -137,7 +137,7 @@
     {# Initial data endpoints #}
     <script type="application/json" id="endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "organisation": "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
             "iati_exports": "/rest/v1/iati_export/?format=json&reporting_organisation={{ selected_org.id }}",
             "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json",
