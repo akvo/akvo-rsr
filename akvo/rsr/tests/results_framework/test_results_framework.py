@@ -280,3 +280,18 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2.save()
         self.assertEqual(child_2_period.actual_value, "20")
         self.assertEqual(parent_indicator.periods.first().actual_value, "25")
+
+    def test_import_state_after_change(self):
+        # Given
+        self.assertEqual(1, self.period.child_periods().count())
+        child_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.child_project
+        ).first()
+
+        # When
+        self.period.period_start = datetime.date.today() + datetime.timedelta(days=-10)
+        self.period.save()
+
+        # Then
+        self.assertEqual(1, self.period.child_periods().count())
+        self.assertEqual(child_period.period_start, self.period.period_start)
