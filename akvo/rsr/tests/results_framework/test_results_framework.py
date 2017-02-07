@@ -91,7 +91,7 @@ class ResultsFrameworkTestCase(TestCase):
         child_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.child_project).first()
         self.assertEqual(child_period.indicator.result.parent_result, self.period.indicator.result)
-        self.assertEqual(child_period.parent_period(), self.period)
+        self.assertEqual(child_period.parent_period, self.period)
         child_reference = child_period.indicator.references.first()
         self.assertEqual(child_reference.reference, self.reference.reference)
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
@@ -283,7 +283,7 @@ class ResultsFrameworkTestCase(TestCase):
 
     def test_import_state_after_change(self):
         # Given
-        self.assertEqual(1, self.period.child_periods().count())
+        self.assertEqual(1, self.period.child_periods.count())
         child_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.child_project
         ).first()
@@ -293,11 +293,18 @@ class ResultsFrameworkTestCase(TestCase):
         self.period.save()
 
         # Then
-        self.assertEqual(1, self.period.child_periods().count())
+        self.assertEqual(1, self.period.child_periods.count())
+        # We have to re-fetch the child here otherwise period_start will be stale (at least that's what I think happens
+        child_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.child_project
+        ).first()
         self.assertEqual(child_period.period_start, self.period.period_start)
 
     def test_delete_recreate_child_indicator_period_link_to_parent(self):
         # Given
+        parent_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.parent_project
+        ).first()
         child_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.child_project
         ).first()
@@ -307,11 +314,12 @@ class ResultsFrameworkTestCase(TestCase):
         child_period.delete()
         IndicatorPeriod.objects.create(
             indicator=child_indicator,
+            parent_period=parent_period,
             period_start=self.period.period_start,
             period_end=self.period.period_end,
         )
 
         # Then
-        self.assertEqual(1, self.period.child_periods().count())
-        child_period = self.period.child_periods().first()
+        self.assertEqual(1, self.period.child_periods.count())
+        child_period = self.period.child_periods.all().first()
         self.assertEqual(child_period.period_start, self.period.period_start)
