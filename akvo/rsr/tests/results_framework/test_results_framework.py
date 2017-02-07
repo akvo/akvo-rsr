@@ -295,3 +295,23 @@ class ResultsFrameworkTestCase(TestCase):
         # Then
         self.assertEqual(1, self.period.child_periods().count())
         self.assertEqual(child_period.period_start, self.period.period_start)
+
+    def test_delete_recreate_child_indicator_period_link_to_parent(self):
+        # Given
+        child_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.child_project
+        ).first()
+        child_indicator = child_period.indicator
+
+        # When
+        child_period.delete()
+        IndicatorPeriod.objects.create(
+            indicator=child_indicator,
+            period_start=self.period.period_start,
+            period_end=self.period.period_end,
+        )
+
+        # Then
+        self.assertEqual(1, self.period.child_periods().count())
+        child_period = self.period.child_periods().first()
+        self.assertEqual(child_period.period_start, self.period.period_start)
