@@ -113,7 +113,7 @@ class Command(BaseCommand):
                 pprint_period_lineage(parent_period)
 
             if verbosity > 1:
-                self.stdout.write('{} indicator made parent of {}'.format(parent_id, child_id))
+                self.stdout.write('{} period made parent of {}'.format(parent_id, child_id))
 
         if indicators:
             fixed_indicators = ', '.join(str(id_) for id_, _ in indicators)
