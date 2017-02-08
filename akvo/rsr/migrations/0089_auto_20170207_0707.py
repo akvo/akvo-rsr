@@ -41,6 +41,8 @@ def fix_broken_child_indicator_periods(apps, schema_editor):
                 period.period_start = parent_period.period_start
                 period.period_end = parent_period.period_end
                 period.save()
+                # Fix additional missing data by saving the parent
+                parent_period.save()
 
             else:
                 print 'Orphaned Period'
