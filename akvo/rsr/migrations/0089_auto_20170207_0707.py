@@ -43,6 +43,11 @@ def fix_broken_child_indicator_periods(apps, schema_editor):
                 period.save()
                 # Fix additional missing data by saving the parent
                 parent_period.save()
+                print 'Fixed period'
+                pprint_period_lineage(period)
+                if period.indicator.periods.count() != parent_period.indicator.periods.count():
+                    print 'No. of periods mismatch with parent :: '
+                    pprint_period_lineage(parent_period)
 
             else:
                 print 'Orphaned Period'
@@ -56,17 +61,14 @@ def fix_broken_child_indicator_periods(apps, schema_editor):
 
 
 def pprint_period_lineage(period):
-    print 'Period Id: {}'.format(period.id)
-    print 'Period: {} --> {} ({} / {})'.format(
-        period.period_start, period.period_end, period.actual_value, period.target_value
+    indicator = period.indicator
+    result = indicator.result
+    project = result.project
+    print u'{} > {} > {} > {}--{}'.format(
+        project.title, result.title, indicator.title, period.period_start, period.period_end
     )
-    print 'Indicator Id: {}'.format(period.indicator.id)
-    print 'Indicator: {}'.format(period.indicator.title)
-    print 'Result Id: {}'.format(period.indicator.result.id)
-    print 'Result: {}'.format(period.indicator.result.title)
-    print 'Project Id: {}'.format(period.indicator.result.project.id)
-    print 'Parent Project Id: {}'.format(period.indicator.result.parent_result.project.id)
-    print '#' * 20
+    print u'{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id)
+    print u'#' * 20
 
 
 class Migration(migrations.Migration):
