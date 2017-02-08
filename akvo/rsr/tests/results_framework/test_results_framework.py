@@ -294,10 +294,8 @@ class ResultsFrameworkTestCase(TestCase):
 
         # Then
         self.assertEqual(1, self.period.child_periods.count())
-        # We have to re-fetch the child here otherwise period_start will be stale (at least that's what I think happens
-        child_period = IndicatorPeriod.objects.filter(
-            indicator__result__project=self.child_project
-        ).first()
+        # Re-fetch the child here otherwise period_start will be stale
+        child_period = self.period.child_periods.first()
         self.assertEqual(child_period.period_start, self.period.period_start)
 
     def test_delete_recreate_child_indicator_period_link_to_parent(self):
@@ -321,5 +319,6 @@ class ResultsFrameworkTestCase(TestCase):
 
         # Then
         self.assertEqual(1, self.period.child_periods.count())
-        child_period = self.period.child_periods.all().first()
+        # Re-fetch the child here otherwise period_start will be stale
+        child_period = self.period.child_periods.first()
         self.assertEqual(child_period.period_start, self.period.period_start)
