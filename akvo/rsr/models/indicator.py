@@ -79,14 +79,6 @@ class Indicator(models.Model):
         """Update the values of child indicators, if a parent indicator is updated."""
         # Update the values for an existing indicator
         if self.pk:
-            # orig_indicator = Indicator.objects.get(pk=self.pk)
-            # child_indicators = Indicator.objects.filter(
-            #     result__in=self.result.child_results.all(),
-            #     title=orig_indicator.title,
-            #     measure=orig_indicator.measure,
-            #     ascending=orig_indicator.ascending
-            # )
-
             for child_indicator in self.child_indicators.all():
                 # Always copy title, measure and ascending. They should be the same as the parent.
                 child_indicator.title = self.title
@@ -170,38 +162,11 @@ class Indicator(models.Model):
         """
         return True if self.result.parent_result else False
 
-    # def parent_indicator(self):
-    #     """
-    #     Returns the parent indicator or None.
-    #     """
-    #     if self.is_child_indicator():
-    #         matching_indicators = Indicator.objects.filter(
-    #             result=self.result.parent_result,
-    #             title=self.title,
-    #             measure=self.measure,
-    #             ascending=self.ascending
-    #         )
-    #         if matching_indicators:
-    #             return matching_indicators.first()
-    #     return None
-
     def is_parent_indicator(self):
         """
         Indicates whether this indicator has children.
         """
         return self.child_indicators.count() > 0
-
-    # def child_indicators(self):
-    #     """
-    #     Returns the child indicators of this indicator.
-    #     """
-    #     child_results = self.result.child_results.all()
-    #     return Indicator.objects.filter(
-    #         result__in=child_results,
-    #         title=self.title,
-    #         measure=self.measure,
-    #         ascending=self.ascending
-    #     )
 
     @property
     def last_updated(self):
@@ -400,14 +365,6 @@ class IndicatorPeriod(models.Model):
                 self.indicator.result.project.aggregate_to_parent:
             self.parent_period.recalculate_period()
 
-    def delete(self, *args, **kwargs):
-
-        # Delete the child periods as well
-        for child_period in self.child_periods.all():
-            child_period.delete()
-
-        super(IndicatorPeriod, self).delete(*args, **kwargs)
-
     def clean(self):
         validation_errors = {}
 
@@ -563,21 +520,6 @@ class IndicatorPeriod(models.Model):
         Indicates whether this result is linked to a parent result.
         """
         return True if self.indicator.result.parent_result else False
-
-    # def parent_period(self):
-    #     """
-    #     Returns the parent indicator period, in case this period is a child period.
-    #     """
-    #     if self.is_child_period():
-    #         matching_periods = IndicatorPeriod.objects.filter(
-    #             indicator__result=self.indicator.result.parent_result,
-    #             indicator__title=self.indicator.title,
-    #             period_start=self.period_start,
-    #             period_end=self.period_end
-    #         )
-    #         if matching_periods.exists():
-    #             return matching_periods.first()
-    #     return None
 
     def is_parent_period(self):
         """
