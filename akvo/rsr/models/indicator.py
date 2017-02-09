@@ -158,9 +158,9 @@ class Indicator(models.Model):
 
     def is_child_indicator(self):
         """
-        Indicates whether this indicator is linked to a parent result.
+        Indicates whether this indicator is linked to a parent indicator.
         """
-        return True if self.result.parent_result else False
+        return bool(self.parent_indicator)
 
     def is_parent_indicator(self):
         """
@@ -517,9 +517,9 @@ class IndicatorPeriod(models.Model):
 
     def is_child_period(self):
         """
-        Indicates whether this result is linked to a parent result.
+        Indicates whether this period is linked to a parent period
         """
-        return True if self.indicator.result.parent_result else False
+        return bool(self.parent_period)
 
     def is_parent_period(self):
         """
