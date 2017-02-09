@@ -84,10 +84,8 @@ class Command(BaseCommand):
         for child_id, parent_id in indicators:
             child_indicator = Indicator.objects.get(id=child_id)
             parent_indicator = Indicator.objects.get(id=parent_id)
-            assert (
-                child_indicator.result.parent_result == parent_indicator.result,
-                '{} cannot be a parent of {}'.format(parent_id, child_id)
-            )
+            assertion_message = '{} cannot be a parent of {}'.format(parent_id, child_id)
+            assert child_indicator.result.parent_result == parent_indicator.result, assertion_message
             child_indicator.parent_indicator = parent_indicator
             child_indicator.save()
             # Any additional missing data is taken care of by saving the parent.
@@ -99,10 +97,10 @@ class Command(BaseCommand):
         for child_id, parent_id in periods:
             child_period = IndicatorPeriod.objects.get(id=child_id)
             parent_period = IndicatorPeriod.objects.get(id=parent_id)
-            assert (
-                child_period.indicator.result.parent_result == parent_period.indicator.result,
-                '{} cannot be a parent of {}'.format(parent_id, child_id)
-            )
+            child_result = child_period.indicator.result
+            parent_result = parent_period.indicator.result
+            assertion_message = '{} cannot be a parent of {}'.format(parent_id, child_id)
+            assert child_result.parent_result == parent_result, assertion_message
             child_period.parent_period = parent_period
             child_period.save()
             # Any additional missing data is taken care of by saving the parent.
