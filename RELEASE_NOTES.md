@@ -1,11 +1,3 @@
-# Akvo RSR version 3.20.2 Bogotá (hot-fix)
-
-## Bug fixes
-
-[#2528](https://github.com/akvo/akvo-rsr/issues/2528) Fix bug with some editing
-actions in the Results Framework of parent projects making some indicator
-periods of child projects orphaned.
-
 # Akvo RSR version 3.20.1 Bogotá (hot-fix)
 
 ## Bug fixes
