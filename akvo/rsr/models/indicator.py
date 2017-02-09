@@ -400,6 +400,7 @@ class IndicatorPeriod(models.Model):
             validation_errors['period_end'] = u'%s' % _(u'Period start cannot be at a later time '
                                                         u'than period end.')
 
+        # TODO: add validation that prevents creating a period for a child indicator
         if validation_errors:
             raise ValidationError(validation_errors)
 

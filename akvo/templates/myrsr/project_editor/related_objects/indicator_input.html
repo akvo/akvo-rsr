@@ -68,11 +68,13 @@
                         {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
                     {% endfor %}
                 {% endwith %}
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+                {%  if not indicator.is_child_indicator %}
+                    <div class="row form-group">
+                        <div class="col-md-12 text-center add-object-link">
+                            <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
