@@ -12,7 +12,11 @@ def indicator_links(apps, schema_editor):
     Indicator = apps.get_model('rsr', 'Indicator')
     IndicatorPeriod = apps.get_model('rsr', 'IndicatorPeriod')
 
-    for result in Result.objects.all():
+    parent_results = Result.objects.annotate(
+        children=models.Count('child_results')
+    ).exclude(children=0)
+
+    for result in parent_results:
         child_results = result.child_results.all()
         # Find all indicators for the current Result
         parent_indicators = Indicator.objects.filter(result=result)
@@ -52,5 +56,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(indicator_links),
+        migrations.RunPython(indicator_links, reverse_code=lambda x, y: None),
     ]
