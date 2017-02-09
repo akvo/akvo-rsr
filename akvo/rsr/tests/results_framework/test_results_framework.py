@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import datetime
+import unittest
 
 from akvo.rsr.models import (Project, PublishingStatus, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, IndicatorReference, User, RelatedProject)
@@ -322,3 +323,72 @@ class ResultsFrameworkTestCase(TestCase):
         # Re-fetch the child here otherwise period_start will be stale
         child_period = self.period.child_periods.first()
         self.assertEqual(child_period.period_start, self.period.period_start)
+
+    def test_should_permit_creating_child_only_indicators(self):
+        # Given
+        child_result = Result.objects.get(project=self.child_project)
+        title = 'Child only indicator'
+        measure = '1'
+        ascending = True
+        indicator = Indicator.objects.create(
+            result=child_result, title='', measure=measure, ascending=ascending
+        )
+        # When
+        # # When creating new indicators, clean is called during update & that
+        # is when validation errors seem to be occuring.
+        indicator.title = title
+        indicator.clean()
+        indicator.save()
+
+        # Then
+        self.assertEqual(child_result.indicators.count(), 2)
+        new_indicator = Indicator.objects.get(title=title, result=child_result)
+        self.assertEqual(new_indicator.title, title)
+        self.assertEqual(new_indicator.measure, measure)
+        self.assertEqual(new_indicator.ascending, ascending)
+
+    def test_should_permit_creating_periods_on_child_only_indicators(self):
+        # Given
+        child_result = Result.objects.get(project=self.child_project)
+        title = 'Child only indicator'
+        measure = '1'
+        ascending = True
+        indicator = Indicator.objects.create(
+            result=child_result, title=title, measure=measure, ascending=ascending
+        )
+        period_start = datetime.date.today()
+        period_end = datetime.date.today() + datetime.timedelta(days=10)
+        period = IndicatorPeriod.objects.create(indicator=indicator, period_end=period_end)
+
+        # When
+        # # When creating new periods, clean is called during update & that
+        # is when validation errors seem to be occuring.
+        period.period_start = period_start
+        period.clean()
+        period.save()
+
+        # Then
+        self.assertEqual(indicator.periods.count(), 1)
+        period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertEqual(period.period_start, period_start)
+        self.assertEqual(period.period_end, period_end)
+
+    @unittest.skip('See TODO in IndicatorPeriod.clean')
+    def test_prevent_creating_new_periods_on_child_indicators(self):
+        # Given
+        child_result = Result.objects.get(project=self.child_project)
+        child_indicator = child_result.indicators.first()
+        period_start = datetime.date.today()
+        period_end = datetime.date.today() + datetime.timedelta(days=10)
+        period = IndicatorPeriod.objects.create(indicator=child_indicator, period_end=period_end)
+
+        # When
+
+        # FIXME: This period shouldn't get created - some kind of validation
+        # error should occur!
+        period.period_start = period_start
+        period.clean()
+        period.save()
+
+        # Then
+        self.assertEqual(child_indicator.periods.count(), 1)
