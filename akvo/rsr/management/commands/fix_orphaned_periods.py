@@ -50,9 +50,9 @@ def pprint_period_lineage(period):
     project = result.project
     print u'{} > {} > {} > {}--{}'.format(
         project.title, result.title, indicator.title, period.period_start, period.period_end
-    )
-    print u'{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id)
-    print u'#' * 20
+    ).encode('utf8')
+    print '{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id)
+    print '#' * 20
 
 
 class Command(BaseCommand):
