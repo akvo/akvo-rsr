@@ -476,8 +476,8 @@ class Project(TimestampsMixin, models.Model):
             # Update aggregation to parent
             if self.aggregate_to_parent != orig_aggregate_to_parent:
                 for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
-                    if period.parent_period():
-                        period.parent_period().recalculate_period()
+                    if period.parent_period:
+                        period.parent_period.recalculate_period()
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -1321,21 +1321,22 @@ class Project(TimestampsMixin, models.Model):
         return import_success, 'Results imported'
 
     def add_result(self, result):
-        self_result = get_model('rsr', 'Result').objects.create(
+        child_result = get_model('rsr', 'Result').objects.create(
             project=self,
+            parent_result=result,
             title=result.title,
             type=result.type,
             aggregation_status=result.aggregation_status,
             description=result.description,
-            parent_result=result
         )
 
         for indicator in result.indicators.all():
-            self.add_indicator(self_result, indicator)
+            self.add_indicator(child_result, indicator)
 
     def add_indicator(self, result, indicator):
-        self_indicator = get_model('rsr', 'Indicator').objects.create(
+        child_indicator = get_model('rsr', 'Indicator').objects.create(
             result=result,
+            parent_indicator=indicator,
             title=indicator.title,
             measure=indicator.measure,
             ascending=indicator.ascending,
@@ -1346,14 +1347,15 @@ class Project(TimestampsMixin, models.Model):
         )
 
         for period in indicator.periods.all():
-            self.add_period(self_indicator, period)
+            self.add_period(child_indicator, period)
 
         for reference in indicator.references.all():
-            self.add_reference(self_indicator, reference)
+            self.add_reference(child_indicator, reference)
 
     def add_period(self, indicator, period):
         get_model('rsr', 'IndicatorPeriod').objects.create(
             indicator=indicator,
+            parent_period=period,
             period_start=period.period_start,
             period_end=period.period_end,
             target_value=period.target_value,
@@ -1403,7 +1405,7 @@ class Project(TimestampsMixin, models.Model):
             for indicator in result.indicators.all():
                 if indicator.is_child_indicator():
                     for period in indicator.periods.all():
-                        parent = period.parent_period()
+                        parent = period.parent_period
                         if parent and period.actual_value:
                             if indicator.measure == '2':
                                 self.update_parents(parent, parent.child_periods_average(), 1)
@@ -1421,7 +1423,7 @@ class Project(TimestampsMixin, models.Model):
                     Decimal(update_period.actual_value) + sign * Decimal(difference))
             update_period.save()
 
-            parent_period = update_period.parent_period()
+            parent_period = update_period.parent_period
             if parent_period and parent_period.indicator.result.project.aggregate_children:
                 if update_period.indicator.measure == '2':
                     self.update_parents(parent_period, parent_period.child_periods_average(), 1)
