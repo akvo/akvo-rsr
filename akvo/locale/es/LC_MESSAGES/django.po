@@ -10791,15 +10791,15 @@ msgstr "Conmutar navegació"
 
 #: templates/navigation/header.html:33
 msgid "All projects"
-msgstr "Todos los proyectos"
+msgstr "Proyectos"
 
 #: templates/navigation/header.html:39
 msgid "All updates"
-msgstr "Todas las actualizaciones "
+msgstr "Actualizaciones "
 
 #: templates/navigation/header.html:45
 msgid "All organisations"
-msgstr "Todas las organizaciones"
+msgstr "Organizaciones"
 
 #: templates/navigation/header.html:60 templates/registration/register.html:9
 #: templates/registration/register.html:20
