@@ -8,6 +8,22 @@ unicode data can cause UnicodeEncodeErrors.
 [#2514](https://github.com/akvo/akvo-rsr/issues/2514) API call for fetching
 recipient country fails if the country has unicode characters in it's name.
 
+# Akvo RSR version 3.20.2 Bogotá (hot-fix)
+
+## Bug fixes
+
+[#2528](https://github.com/akvo/akvo-rsr/issues/2528) Fix bug with some editing
+actions in the Results Framework of parent projects making some indicator
+periods of child projects orphaned.
+
+# Akvo RSR version 3.20.1 Bogotá (hot-fix)
+
+## Bug fixes
+
+[#2507](https://github.com/akvo/akvo-rsr/issues/2507) Fix bug in pagination of
+PublicProjectViewSet and it's subclasses, which caused an indicator to be
+missing from the Results page.
+
 # Akvo RSR version 3.20 Bogotá
 
 ## Improvements

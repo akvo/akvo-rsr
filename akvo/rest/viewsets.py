@@ -139,13 +139,13 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if user.is_anonymous() or not (user.is_superuser or user.is_admin):
             queryset = self.projects_filter_for_non_privileged_users(user, queryset, self.project_relation)
 
-        return queryset
+        return queryset.distinct()
 
     @staticmethod
     def projects_filter_for_non_privileged_users(user, queryset, project_relation):
 
         if not user.is_anonymous() and (user.is_admin or user.is_superuser):
-            return queryset
+            return queryset.distinct()
 
         # Construct the public projects filter field lookup.
         project_filter = project_relation + 'is_public'
@@ -165,4 +165,4 @@ class PublicProjectViewSet(BaseRSRViewSet):
             filter_ = user.get_permission_filter(permission, project_relation)
             queryset = public_objects | private_objects.filter(filter_).distinct()
 
-        return queryset
+        return queryset.distinct()
