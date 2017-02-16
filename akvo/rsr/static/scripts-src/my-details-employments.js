@@ -295,9 +295,9 @@ function buildEmploymentsApp() {
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE) {
                     thisForm.setState({loading: false});
-                    var response = JSON.parse(xmlHttp.responseText);
                     if (xmlHttp.status == 200){
                         thisForm.setState({loading: false, showError: false, errorText: ''});
+                        var response = JSON.parse(xmlHttp.responseText);
                         thisForm.handleAddEmployment(response);
                         return false;
                     } else if (xmlHttp.status == 409) {

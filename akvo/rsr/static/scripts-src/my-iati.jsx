@@ -40,7 +40,13 @@ function apiCall(method, url, data, followPages, successCallback, retries) {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
+            var response;
+            try {
+                response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
+            }
+            catch (e) {
+                response = {"error": xmlHttp.statusText}
+            }
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {
                     if (response.next !== null && followPages) {
@@ -69,7 +75,7 @@ function apiCall(method, url, data, followPages, successCallback, retries) {
                     }
                 }
             } else {
-                // var message = i18nResults.general_error + ': ';
+                // TODO: Use a translated string
                 var message = 'general error: ';
                 for (var key in response) {
                     if (response.hasOwnProperty(key)) {
@@ -182,7 +188,7 @@ function loadComponents() {
         switchAction: function() {
             this.props.switchProject(this.props.project.id);
         },
-        
+
         inLastExport: function() {
             if (this.props.lastExport.length > 0) {
                 var lastExportProjects = this.props.lastExport[0].projects;
@@ -192,7 +198,7 @@ function loadComponents() {
             }
             return false;
         },
-        
+
         statusLabel: function() {
             switch (this.props.project.iati_status) {
                 case '1':
@@ -439,7 +445,7 @@ function loadComponents() {
 
             this.setState({selectedProjects: newSelection});
         },
-        
+
         createExport: function() {
             var url = endpoints.new_iati_export,
                 data = JSON.stringify({
@@ -928,7 +934,7 @@ function loadComponents() {
             );
         }
     });
-    
+
     var ExportsOverview = React.createClass({
         getInitialState: function() {
             return {
@@ -1035,7 +1041,7 @@ function loadComponents() {
             }
             return null;
         },
-        
+
         pendingOrInProgress: function() {
             // Check to see whether there is at least one export pending or in progress.
             if (!this.state.initializing) {
@@ -1043,7 +1049,7 @@ function loadComponents() {
                     var exp = this.state.exports.results[i];
                     if (exp.status < 3) {
                         return true;
-                    } 
+                    }
                 }
                 return false;
             } else {
@@ -1052,7 +1058,7 @@ function loadComponents() {
         },
 
         setPublic: function(exportId) {
-            // Basically what we do is to set this export to public first, and then set all 
+            // Basically what we do is to set this export to public first, and then set all
             // newer exports to private. This automatically makes this export the public export.
             var thisApp = this,
                 exportUrl = endpoints.base_url + endpoints.iati_export,
@@ -1097,7 +1103,7 @@ function loadComponents() {
             this.setState({actionInProgress: true});
             apiCall('PATCH', exportUrl.replace('{iati_export}', exportId), publicData, true, exportUpdated);
         },
-        
+
         renderRefreshing: function() {
             if (this.state.refreshing) {
                 return (
