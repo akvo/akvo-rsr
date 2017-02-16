@@ -137,18 +137,18 @@ function initReact() {
                     }
 
                     // Check selected radio button
-                    var formatContainer = document.querySelector('#format-' + format.key);
+                    var formatContainer = document.querySelector('#format-' + format.name);
                     var formatInput = formatContainer.querySelector('.format-radio');
                     formatInput.checked = true;
 
                     // Set format
-                    thisFormatsList.handleClick(format.key);
+                    thisFormatsList.handleClick(format.name);
                 }
 
                 function formatNeeded() {
                     var report = thisFormatsList.props.report;
                     for (var i = 0; i < report.formats.length; i++) {
-                        if (report.formats[i] === format.key) {
+                        if (report.formats[i].name === format.name) {
                             return true;
                         }
                     }
@@ -163,24 +163,24 @@ function initReact() {
                 }
 
                 if (formatNeeded()) {
-                    var formatId = 'format-' + format.key;
+                    var formatId = 'format-' + format.name;
                     var formatIcon = 'fa fa-' + format.icon;
                     return (
-                        <div className="col-sm-4" id={formatId} key={format.key}>
+                        <div className="col-sm-4" id={formatId} key={format.name}>
                             <div className="input-group" onClick={handleClick}>
                             <span className="input-group-addon">
                                 {radioInput}
                             </span>
                                 <div className="form-control">
                                     <i className={formatIcon}/>&nbsp;&nbsp;
-                                    <strong>{format.displayName}</strong>
+                                    <strong>{format.display_name}</strong>
                                 </div>
                             </div>
                         </div>
                     );
                 } else {
                     return (
-                        <span key={format.key} />
+                        <span key={format.name} />
                     );
                 }
             });
@@ -413,13 +413,13 @@ function initReact() {
                 thisReportsDropdown = this;
             if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
                 reportsData = this.props.reportOptions.map(function (report) {
-                    if (report.key === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
+                    if (report.name === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
                         return (
                             <span />
                         );
                     } else {
                         return (
-                            <li key={report.key}>
+                            <li key={report.name}>
                                 {React.createElement(ReportOption, {
                                     report: report,
                                     selectReport: thisReportsDropdown.selectReport

@@ -2,6 +2,9 @@
 
 ## Bug fixes
 
+[#2338](https://github.com/akvo/akvo-rsr/issues/2338) Add report types and
+report formats to the database to make it easier to add new report types.
+
 [#2516](https://github.com/akvo/akvo-rsr/issues/2516) ProjectCustomFields with
 unicode data can cause UnicodeEncodeErrors.
 

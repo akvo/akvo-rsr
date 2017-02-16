@@ -7,7 +7,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.reports import FORMATS, REPORTS
+from akvo.rsr.models import Report, ReportFormat
+from ..serializers import ReportSerializer, ReportFormatSerializer
 
 
 @api_view(['GET'])
@@ -15,9 +16,10 @@ def reports(request):
     """
     A view for displaying all report information, sorted by title.
     """
+    # FIXME: Use a viewset instead?
     return Response({
-        'count': len(REPORTS),
-        'results': sorted(REPORTS, key=lambda k: k['title'])
+        'count': Report.objects.all().count(),
+        'results': [ReportSerializer(r).data for r in Report.objects.all().order_by('title')],
     })
 
 
@@ -27,6 +29,6 @@ def report_formats(request):
     A view for displaying all report format information.
     """
     return Response({
-        'count': len(FORMATS),
-        'results': FORMATS
+        'count': ReportFormat.objects.all().count(),
+        'results': [ReportFormatSerializer(f).data for f in ReportFormat.objects.all()],
     })
