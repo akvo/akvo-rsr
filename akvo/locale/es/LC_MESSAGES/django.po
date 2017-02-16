@@ -9,6 +9,7 @@
 # iop <isabel.ordonez@gmail.com>, 2011-2012
 # Kasper Brandt, 2015
 # Marten Schoonman <mjl.schoonman@gmail.com>, 2016
+# Puneeth Chaganti <punchagan@gmail.com>, 2017
 # Roverts <laura@akvo.org>, 2015
 # Thomas Bjelkeman-Pettersson <thomas@bjelkeman.com>, 2011
 msgid ""
@@ -16,8 +17,8 @@ msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-06 12:12+0200\n"
-"PO-Revision-Date: 2017-02-09 22:55+0000\n"
-"Last-Translator: Ethel Mendez <ethel@akvo.org>\n"
+"PO-Revision-Date: 2017-02-16 11:38+0000\n"
+"Last-Translator: Puneeth Chaganti <punchagan@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/akvo-foundation/akvo-rsr/language/es_CL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -456,7 +457,7 @@ msgstr "precisiones geográficas"
 #: codelists/models/humanitarian_scope_type.py:23
 #: rsr/models/humanitarian_scope.py:29
 msgid "humanitarian scope type"
-msgstr "Tipo de alcance humanitario "
+msgstr "tipo de alcance humanitario "
 
 #: codelists/models/humanitarian_scope_type.py:24
 msgid "humanitarian scope types"
@@ -3723,7 +3724,7 @@ msgstr "Ingrese la descripción para el renglón de presupuesto \"otro\""
 
 #: rsr/models/budget_item.py:51
 msgid "budget item value"
-msgstr "Valor del renglón del prespuesto"
+msgstr "valor del renglón del prespuesto"
 
 #: rsr/models/budget_item.py:52
 msgid ""
@@ -3741,7 +3742,7 @@ msgstr "Indique si este es el presupuesto original o  modificado del proyecto."
 
 #: rsr/models/budget_item.py:62
 msgid "budget item period start"
-msgstr "Inicio del período de categoría de presupuesto"
+msgstr "inicio del período de categoría de presupuesto"
 
 #: rsr/models/budget_item.py:63 rsr/models/organisation_budget.py:34
 msgid "Enter the start date (DD/MM/YYYY) for the budget period."
@@ -3749,7 +3750,7 @@ msgstr "Ingrese la fecha de inicio (DD/MM/AAAA) del período de presupuesto"
 
 #: rsr/models/budget_item.py:66
 msgid "budget item period end"
-msgstr "Fin del período de categoría de presupuesto"
+msgstr "fin del período de categoría de presupuesto"
 
 #: rsr/models/budget_item.py:67 rsr/models/organisation_budget.py:38
 msgid "Enter the end date (DD/MM/YYYY) for the budget period."
@@ -3757,7 +3758,7 @@ msgstr "Ingrese la fecha de finalización (DD/MM/AAAA) del período de presupues
 
 #: rsr/models/budget_item.py:70
 msgid "budget item value date"
-msgstr "Fecha del valor de esta categoría de presupuesto "
+msgstr "fecha del valor de esta categoría de presupuesto "
 
 #: rsr/models/budget_item.py:71 rsr/models/organisation_budget.py:29
 #: rsr/models/organisation_budget.py:187
@@ -3808,11 +3809,11 @@ msgstr "Esta categoría codifica la alineación de actividades con las clasifica
 
 #: rsr/models/budget_item.py:160
 msgid "country budget item description"
-msgstr "Descripción de categorías del presupuesto de país "
+msgstr "descripción de categorías del presupuesto de país "
 
 #: rsr/models/budget_item.py:163
 msgid "country budget item percentage"
-msgstr "Porcentaje de categoría del presupuesto nacional"
+msgstr "porcentaje de categoría del presupuesto nacional"
 
 #: rsr/models/budget_item.py:165
 msgid ""
@@ -3926,7 +3927,7 @@ msgstr "Segunda tasa de interés. Si el préstamo AOD tiene una tasa de interés
 
 #: rsr/models/crs_add.py:40
 msgid "loan terms repayment type"
-msgstr "Latitud no especificada "
+msgstr ""
 
 #: rsr/models/crs_add.py:42
 msgid ""
@@ -4353,7 +4354,7 @@ msgstr "(100 caracteres)"
 
 #: rsr/models/humanitarian_scope.py:21
 msgid "humanitarian scope code"
-msgstr "Código de alcance humanitario"
+msgstr "código de alcance humanitario"
 
 #: rsr/models/humanitarian_scope.py:22
 msgid ""
@@ -4520,7 +4521,7 @@ msgstr "proyectos"
 
 #: rsr/models/iati_export.py:40 templates/organisation_main.html:93
 msgid "IATI file"
-msgstr "Archivo IITA"
+msgstr "Archivo IATI"
 
 #: rsr/models/iati_export.py:41 templates/myrsr/my_iati.html:104
 msgid "public"
@@ -4854,7 +4855,7 @@ msgstr "referencia de indicador"
 
 #: rsr/models/indicator.py:226
 msgid "indicator references"
-msgstr "ieferencias de indicador"
+msgstr "referencias de indicador"
 
 #: rsr/models/indicator.py:237
 msgid "locked"
@@ -4902,7 +4903,7 @@ msgstr "Registro del resultado de este período. "
 
 #: rsr/models/indicator.py:259
 msgid "actual value comment"
-msgstr "Comentario sobre resultado real "
+msgstr "comentario sobre resultado real "
 
 #: rsr/models/indicator.py:260
 msgid ""
@@ -5026,21 +5027,21 @@ msgstr "El período del indicador desde estar desbloqueado para poder añadir da
 
 #: rsr/models/indicator.py:676
 msgid "Not allowed to change approved data updates"
-msgstr ""
+msgstr "No se permite cambiar actualizaciones de datos que han sido aprobados. "
 
 #: rsr/models/indicator.py:683
 msgid ""
 "The actual value of the period has changed (from {} to {}), please save the "
 "update first before approving it"
-msgstr ""
+msgstr "El valor actual del período ha cambiado (de {} a {}). Por favor grabe la actualización antes de aprobarla. "
 
 #: rsr/models/indicator.py:690
 msgid "Not allowed to change indicator period in a data update"
-msgstr ""
+msgstr "No se permite cambiar el período del indicador en la actualización de datos. "
 
 #: rsr/models/indicator.py:701
 msgid "It is not possible to delete an approved data update"
-msgstr ""
+msgstr "No es posible borrar una actualización datos que ha sido aprobada."
 
 #: rsr/models/indicator.py:755 rsr/models/project_comment.py:19
 msgid "comment"
@@ -5048,80 +5049,80 @@ msgstr "comentario"
 
 #: rsr/models/indicator.py:759
 msgid "indicator period data comment"
-msgstr ""
+msgstr "comentario sobre el dato del período del indicador."
 
 #: rsr/models/indicator.py:760
 msgid "indicator period data comments"
-msgstr ""
+msgstr "comentarios sobre el dato del período del indicador"
 
 #: rsr/models/indicator.py:768
 msgid ""
 "A location of the target of this indicator period. The location must be the "
 "reference of an existing location of the current project."
-msgstr ""
+msgstr "Ubicación de la meta de este período. La ubicación debe hacer referencia a una ubicación del proyecto actual. "
 
 #: rsr/models/indicator.py:773
 msgid "indicator period target location"
-msgstr ""
+msgstr "ubicación meta del período del indicador "
 
 #: rsr/models/indicator.py:774
 msgid "indicator period target locations"
-msgstr ""
+msgstr "ubicaciones meta del período del indicador"
 
 #: rsr/models/indicator.py:785
 msgid ""
 "A location of the actual of this indicator period. The location must be the "
 "reference of an existing location of the current project."
-msgstr ""
+msgstr "Ubicación del valor actual de este período del indicador. La ubicación debe referir a una ubicación del proyecto actual.  "
 
 #: rsr/models/indicator.py:790
 msgid "indicator period actual location"
-msgstr ""
+msgstr "ubicación actual del período del indicador "
 
 #: rsr/models/indicator.py:791
 msgid "indicator period actual locations"
-msgstr ""
+msgstr "ubicaciones actuales del período del indicador"
 
 #: rsr/models/indicator.py:801 rsr/models/indicator.py:821
 msgid "dimension name"
-msgstr ""
+msgstr "nombre de la dimension "
 
 #: rsr/models/indicator.py:802
 msgid ""
 "The name of a category being disaggregated in this target value of the "
 "indicator period (e.g. \"Age\")."
-msgstr ""
+msgstr "El nombre de una categoría de desagregación de la meta del período del indicador (Ej: Edad). "
 
 #: rsr/models/indicator.py:805 rsr/models/indicator.py:825
 msgid "dimension value"
-msgstr ""
+msgstr "valor de dimensión"
 
 #: rsr/models/indicator.py:806 rsr/models/indicator.py:826
 msgid ""
 "The value that is being being disaggregated (e.g. \"Older than 60 years\")."
-msgstr ""
+msgstr "El valor que será desagregado (ej: \"Mayor de 60 años\"). "
 
 #: rsr/models/indicator.py:810
 msgid "indicator period target dimension"
-msgstr ""
+msgstr "dimensión de la meta de período del indicador "
 
 #: rsr/models/indicator.py:811
 msgid "indicator period target dimensions"
-msgstr ""
+msgstr "dimensiones de la meta del período del indicador"
 
 #: rsr/models/indicator.py:822
 msgid ""
 "The name of a category being disaggregated in this actual value of the "
 "indicator period (e.g. \"Age\")."
-msgstr ""
+msgstr "Categoría de desagregación del valor actual en el período del indicador (ej: \"Edad\")"
 
 #: rsr/models/indicator.py:830
 msgid "indicator period actual dimension"
-msgstr ""
+msgstr "dimensión actual del período del indicador"
 
 #: rsr/models/indicator.py:831
 msgid "indicator period actual dimensions"
-msgstr ""
+msgstr "dimensiones actuales del período del indicador "
 
 #: rsr/models/internal_organisation_id.py:17
 msgid "recording organisation"
@@ -5161,7 +5162,7 @@ msgid ""
 "shown on the project page, but not on Akvo Pages.<br/>The logo should be "
 "about 1 MB in size, and should preferably be 75x75 pixels and in PNG or JPG "
 "format."
-msgstr ""
+msgstr "Agregue la palabra clave de su logo aquí. Solo puede agregar un logo. El logo se mostrará en la página del proyecto pero no en páginas de Akvo. <br/>El logo debe ser: alrededor de 1MB, de preferencia 75x75 pixeles y en formato PNG o JPG. "
 
 #: rsr/models/keyword.py:41 rsr/models/project.py:249
 msgid "keyword"
@@ -5190,7 +5191,7 @@ msgstr ""
 #: rsr/models/legacy_data.py:35 rsr/models/planned_disbursement.py:66
 #: rsr/models/transaction.py:149
 msgid "No value specified"
-msgstr ""
+msgstr "Valor no especificado"
 
 #: rsr/models/legacy_data.py:39 rsr/models/legacy_data.py:40
 msgid "legacy data"
@@ -5210,25 +5211,25 @@ msgstr "tipo"
 
 #: rsr/models/link.py:24
 msgid "link url"
-msgstr ""
+msgstr "enlace url"
 
 #: rsr/models/link.py:25
 msgid ""
 "Enter the link to an external website you wish to redirect to from your "
 "project page. The URL should start with 'http://' or 'https://'."
-msgstr ""
+msgstr "Agregue el enlace a una página web externa a la que desee referir desde su página de proyecto. La dirección debe iniciar con 'http://' or 'https://'."
 
 #: rsr/models/link.py:29
 msgid "link caption"
-msgstr ""
+msgstr "subtítulo de enlace "
 
 #: rsr/models/link.py:29
 msgid "Enter a name for the link."
-msgstr ""
+msgstr "Agregue un nombre para el enlace "
 
 #: rsr/models/link.py:41
 msgid "No link specified"
-msgstr ""
+msgstr "Enlace no especificado"
 
 #: rsr/models/link.py:48
 msgid "link"
@@ -5244,7 +5245,7 @@ msgstr "latitud"
 
 #: rsr/models/location.py:24 rsr/models/location.py:28
 msgid "Use a period to denote decimals."
-msgstr ""
+msgstr "Utilice un punto para decimales. "
 
 #: rsr/models/location.py:27
 msgid "longitude"
@@ -5272,7 +5273,7 @@ msgstr "código postal"
 
 #: rsr/models/location.py:69
 msgid "The country in which the organisation is located."
-msgstr ""
+msgstr "El país donde se ubica la organización. "
 
 #: rsr/models/location.py:84 rsr/models/organisation_budget.py:191
 msgid "reference"
@@ -5298,18 +5299,18 @@ msgstr ""
 
 #: rsr/models/location.py:103
 msgid "The human-readable name for the location."
-msgstr ""
+msgstr "El nombre de la ubicación legible por humanos. "
 
 #: rsr/models/location.py:106
 msgid "location description"
-msgstr ""
+msgstr "descripción de la ubicación "
 
 #: rsr/models/location.py:107
 msgid ""
 "This provides free text space for providing an additional description, if "
 "needed, of the actual target of the activity. A description that qualifies "
 "the location, not the activity."
-msgstr ""
+msgstr "Brinda espacio de texto libre para añadir, si fuese necesario, una descripción de la meta actual de la actividad.  Una descripción que describa la ubicación, no la actividad.   "
 
 #: rsr/models/location.py:112
 msgid "activity description"
@@ -5321,11 +5322,11 @@ msgid ""
 " should not duplicate information provided in the main activity description,"
 " and should typically be used to distinguish between activities at multiple "
 "locations within a single iati-activity record."
-msgstr ""
+msgstr "Una descripción que describa la actividad que se desarrolla en la ubicación. Esto no debe duplicar la información brindada en la descripción principal de la actividad y debe ser utilizado para distinguir entre actividades en distintas ubicaciones dentro del mismo registro de IATI. "
 
 #: rsr/models/location.py:119
 msgid "location precision"
-msgstr ""
+msgstr "presión de ubicación"
 
 #: rsr/models/location.py:121
 msgid ""
@@ -5342,7 +5343,7 @@ msgstr "alcance"
 msgid ""
 "Does this location describe where the activity takes place or where the "
 "intended beneficiaries reside?"
-msgstr ""
+msgstr "¿Esta ubicación identifica el lugar donde se desarrolla la actividad o donde residen los beneficiarios? "
 
 #: rsr/models/location.py:131
 msgid "class"
@@ -5371,7 +5372,7 @@ msgstr ""
 
 #: rsr/models/location.py:151
 msgid "The country or countries that benefit(s) from the activity."
-msgstr ""
+msgstr "El país o países que se beneficia(n) de la actividad. "
 
 #: rsr/models/location.py:157
 #: templates/myrsr/project_editor/project_editor.html:187
@@ -5400,7 +5401,7 @@ msgid ""
 "Coded identification of national and sub-national divisions according to "
 "recognised administrative boundary repositories. Multiple levels may be "
 "reported."
-msgstr ""
+msgstr "Codificación de divisiones nacionales y sub-nacionales de acuerdo a repositorios de divisiones administrativas reconocidos. Se puede reportar varios niveles. "
 
 #: rsr/models/location.py:195
 msgid "administrative vocabulary"
@@ -5411,7 +5412,7 @@ msgid ""
 "For reference: <a "
 "href=\"http://iatistandard.org/202/codelists/GeographicVocabulary/\" "
 "target=\"_blank\">http://iatistandard.org/202/codelists/GeographicVocabulary/</a>."
-msgstr ""
+msgstr "Para referencia: <a href=\"http://iatistandard.org/202/codelists/GeographicVocabulary/\" target=\"_blank\">http://iatistandard.org/202/codelists/GeographicVocabulary/</a>."
 
 #: rsr/models/location.py:202
 msgid "administrative level"
@@ -5463,7 +5464,7 @@ msgstr "Idioma principal de la organización"
 msgid ""
 "The default currency for this organisation. Used in all financial aspects of"
 " the organisation."
-msgstr ""
+msgstr "La moneda utilizada por la organización. Utilizada en todos los aspectos financieros de la organización. "
 
 #: rsr/models/organisation.py:102
 msgid "IATI organisation type"
@@ -5540,7 +5541,7 @@ msgstr "Describa su organización."
 msgid ""
 "Partner editors of this organisation can create new projects, and publish "
 "projects it is a partner of."
-msgstr ""
+msgstr "Los socios editores de esta organización pueden crear nuevos proyectos y publicar proyectos de los cuales son socios.  "
 
 #: rsr/models/organisation.py:167
 msgid ""
@@ -5641,23 +5642,23 @@ msgstr "Valor o moneda no especificada"
 
 #: rsr/models/organisation_budget.py:89
 msgid "organisation total budget"
-msgstr "Presupuesto total de la organización "
+msgstr "presupuesto total de la organización "
 
 #: rsr/models/organisation_budget.py:90
 msgid "organisation total budgets"
-msgstr "Presupuestos totales de la organización"
+msgstr "presupuestos totales de la organización"
 
 #: rsr/models/organisation_budget.py:98
 msgid "recipient organisation"
-msgstr ""
+msgstr "organización receptora "
 
 #: rsr/models/organisation_budget.py:104
 msgid "recipient organisation budget"
-msgstr ""
+msgstr "presupuesto de organización receptora "
 
 #: rsr/models/organisation_budget.py:105
 msgid "recipient organisation budgets"
-msgstr ""
+msgstr "presupuestos de organización receptora "
 
 #: rsr/models/organisation_budget.py:113 rsr/models/region.py:24
 #: rsr/models/region.py:80
@@ -5666,13 +5667,13 @@ msgstr "región del receptor"
 
 #: rsr/models/organisation_budget.py:114
 msgid "This identifies the region which concerns the organisation budget."
-msgstr ""
+msgstr "Esto identifica la región relacionada al presupuesto de la organización. "
 
 #: rsr/models/organisation_budget.py:119
 msgid ""
 "The vocabulary from which the region code is drawn. If it is not present 1 –"
 " 'OECD DAC' is assumed."
-msgstr ""
+msgstr "El vocabulario de donde proviene el código de la región. Si no se presenta se asume que es 1 – 'OECD DAC'. "
 
 #: rsr/models/organisation_budget.py:123 rsr/models/policy_marker.py:49
 msgid "vocabulary URI"
@@ -5685,46 +5686,46 @@ msgstr "Ingrese una corta descripción. Opcional. "
 
 #: rsr/models/organisation_budget.py:134
 msgid "organisation recipient region budget"
-msgstr ""
+msgstr "presupuesto regional de organización receptora "
 
 #: rsr/models/organisation_budget.py:135
 msgid "organisation recipient region budgets"
-msgstr ""
+msgstr "presupuestos regionales de organización receptora "
 
 #: rsr/models/organisation_budget.py:150
 msgid "This identifies the country which concerns the organisation budget."
-msgstr ""
+msgstr "Esto identifica el país relacionado al presupuesto de la organización. "
 
 #: rsr/models/organisation_budget.py:159
 msgid "organisation recipient country budget"
-msgstr ""
+msgstr "presupuesto nacional de organización receptora"
 
 #: rsr/models/organisation_budget.py:160
 msgid "organisation recipient country budgets"
-msgstr ""
+msgstr "presupuestos nacionales de organización receptora"
 
 #: rsr/models/organisation_budget.py:173
 msgid "organisation total expenditure"
-msgstr ""
+msgstr "total de gastos de la organización "
 
 #: rsr/models/organisation_budget.py:174
 msgid "organisation total expenditures"
-msgstr ""
+msgstr "gastos totales de la organización"
 
 #: rsr/models/organisation_budget.py:183
 msgid ""
 "Enter the amount of this specific line. Use a period to denote decimals."
-msgstr ""
+msgstr "Ingrese el monto de ésta línea en específico. Use un punto para decimales. "
 
 #: rsr/models/organisation_budget.py:192
 msgid ""
 "An internal reference that describes the line in the reporting "
 "organisation's own system"
-msgstr ""
+msgstr "Una referencia interna para describir cómo se utiliza esta línea en el sistema de organización que reporta. "
 
 #: rsr/models/organisation_budget.py:197
 msgid "The description for this line."
-msgstr ""
+msgstr "La descripción para esta línea. "
 
 #: rsr/models/organisation_budget.py:216 rsr/models/organisation_budget.py:227
 #: rsr/models/organisation_budget.py:239 rsr/models/organisation_budget.py:251
@@ -5741,43 +5742,43 @@ msgstr "total de líneas presupuestarias"
 
 #: rsr/models/organisation_budget.py:233
 msgid "recipient organisation budget line"
-msgstr ""
+msgstr "línea presupuestaria de la organización receptora"
 
 #: rsr/models/organisation_budget.py:234
 msgid "recipient organisation budget lines"
-msgstr ""
+msgstr "líneas presupuestarias de la organización receptora"
 
 #: rsr/models/organisation_budget.py:245
 msgid "region budget line"
-msgstr ""
+msgstr "línea presupuestaria de la región "
 
 #: rsr/models/organisation_budget.py:246
 msgid "region budget lines"
-msgstr ""
+msgstr "líneas presupuestarias de la región"
 
 #: rsr/models/organisation_budget.py:257
 msgid "country budget line"
-msgstr ""
+msgstr "línea presupuestaria de la región "
 
 #: rsr/models/organisation_budget.py:258
 msgid "country budget lines"
-msgstr ""
+msgstr "líneas presupuestarias de la región "
 
 #: rsr/models/organisation_budget.py:263
 msgid "organisation expenditure"
-msgstr ""
+msgstr "gastos de la organización "
 
 #: rsr/models/organisation_budget.py:269
 msgid "expense line"
-msgstr ""
+msgstr "línea de gasto "
 
 #: rsr/models/organisation_budget.py:270
 msgid "expense lines"
-msgstr ""
+msgstr "líneas de gastos"
 
 #: rsr/models/organisation_document.py:28 rsr/models/project_document.py:26
 msgid "document url"
-msgstr ""
+msgstr "url del documento "
 
 #: rsr/models/organisation_document.py:29 rsr/models/project_document.py:27
 msgid ""
@@ -5841,7 +5842,7 @@ msgstr "fecha del documento "
 msgid ""
 "Enter the date (DD/MM/YYYY) to be used for the production or publishing date"
 " of the relevant document to identify the specific document version."
-msgstr ""
+msgstr "Indique la fecha (DD/MM/AAAA) de producción o publicación del documento que se utilizará para identificar su versión. "
 
 #: rsr/models/organisation_document.py:68 rsr/models/project_document.py:72
 msgid ""
@@ -5876,7 +5877,7 @@ msgstr "Identifica el país relacionado al documento de la organización. "
 
 #: rsr/models/organisation_document.py:136
 msgid "document country"
-msgstr "Documento del país"
+msgstr "documento del país"
 
 #: rsr/models/organisation_document.py:137
 msgid "document countries"
@@ -5961,7 +5962,7 @@ msgstr "<p>Un icono favorito (archivo .ico) es la imagen de 16x16 píxeles que s
 
 #: rsr/models/partner_site.py:93
 msgid "Show keyword logos on project pages"
-msgstr ""
+msgstr "Mostrar logos de palabras clave en páginas del proyecto"
 
 #: rsr/models/partner_site.py:96
 msgid "about box text"
@@ -6080,7 +6081,7 @@ msgstr "Socio responsable "
 
 #: rsr/models/partnership.py:31 rsr/models/partnership.py:51
 msgid "Extending partner"
-msgstr ""
+msgstr "Socio de extención"
 
 #: rsr/models/partnership.py:54
 #: templates/myrsr/project_editor/project_editor.html:154
@@ -6114,7 +6115,7 @@ msgid ""
 "budget and direction of a project on behalf of the funding "
 "organisation<br/>- Reporting organisation: an organisation that will report "
 "this project in an IATI file"
-msgstr ""
+msgstr "Selecciones el rol de la organización en el proyecto:<br/>- Organización financiadora: gobierno u organización que brinda fondos al proyecto<br/>-Organización ejecutora: organización involucrada en desarrollar las actividades or intervenciones<br/>-Organización responsable: organización encargada de supervisión general del proyecto y de sus resultados<br/>- Organización de extensión: organización que maneja el presupuesto y dirección del proyecto en nombre de la organización financiadora<br/>- Organización que reporta: la organización que reporta sobre el proyecto en un archivo de IATI"
 
 #: rsr/models/partnership.py:113
 msgid "secondary reporter"
@@ -6134,7 +6135,7 @@ msgstr "importe de financiación"
 msgid ""
 "It’s only possible to indicate a funding amount for funding partners. Use a "
 "period to denote decimals."
-msgstr ""
+msgstr "Solo se puede incluir montos de financiamiento para organizaciones financiadoras. Utilice un punto para decimales. "
 
 #: rsr/models/partnership.py:125
 msgid "partner type extra"
@@ -6183,15 +6184,15 @@ msgstr "socios del proyecto"
 
 #: rsr/models/partnership.py:183
 msgid "Organisation name not specified"
-msgstr ""
+msgstr "Nombre de organización no especificado "
 
 #: rsr/models/partnership.py:185
 msgid "Organisation not specified"
-msgstr ""
+msgstr "Organización no especificada"
 
 #: rsr/models/partnership.py:202
 msgid "Project can only have one reporting organisation"
-msgstr ""
+msgstr "El proyecto solo puede tener una organización que reporte"
 
 #: rsr/models/payment_gateway.py:17
 msgid "Use a short, descriptive name."
@@ -6221,22 +6222,22 @@ msgstr "Configuración del portal de pagos del proyecto"
 
 #: rsr/models/planned_disbursement.py:22
 msgid "planned disbursement value"
-msgstr ""
+msgstr "valor de desembolso planificado "
 
 #: rsr/models/planned_disbursement.py:23
 msgid ""
 "This should only be used to report specific planned cash transfers. Use a "
 "period to denote decimals."
-msgstr ""
+msgstr "Solo debe usarse para reportar transferencias de efectivo planificadas en especifico. Use un punto para decimales.  "
 
 #: rsr/models/planned_disbursement.py:26
 msgid "planned disbursement value date"
-msgstr ""
+msgstr "fecha de desembolso planificado "
 
 #: rsr/models/planned_disbursement.py:27
 msgid ""
 "Enter the specific date (DD/MM/YYYY) for the planned disbursement value."
-msgstr ""
+msgstr "Agregue la fecha específica (DD/MM/AAAA) para el valor del desembolso planificado. "
 
 #: rsr/models/planned_disbursement.py:30
 msgid "updated"
@@ -6244,7 +6245,7 @@ msgstr "actualizado"
 
 #: rsr/models/planned_disbursement.py:32
 msgid "planned disbursement period start"
-msgstr ""
+msgstr "fecha de inicio de desembolso planificado"
 
 #: rsr/models/planned_disbursement.py:33
 msgid ""
@@ -6254,15 +6255,15 @@ msgstr ""
 
 #: rsr/models/planned_disbursement.py:36
 msgid "planned disbursement period end"
-msgstr ""
+msgstr "fin planificado del período de desembolso "
 
 #: rsr/models/planned_disbursement.py:37
 msgid "Enter the end date (DD/MM/YYYY) for the disbursement period."
-msgstr ""
+msgstr "Ingrese la fecha de finalización (DD/MM/AAAA) para el período de desembolso. "
 
 #: rsr/models/planned_disbursement.py:38
 msgid "planned disbursement type"
-msgstr ""
+msgstr "tipo de desembolso planificado"
 
 #: rsr/models/planned_disbursement.py:41 rsr/models/transaction.py:92
 msgid "provider organisation"
@@ -6328,11 +6329,11 @@ msgstr ""
 
 #: rsr/models/policy_marker.py:53
 msgid "policy marker description"
-msgstr ""
+msgstr "descripción de legislador/a"
 
 #: rsr/models/policy_marker.py:62
 msgid "Policy marker not specified"
-msgstr ""
+msgstr "Legislador/a no especificado"
 
 #: rsr/models/project.py:67
 msgid "Core Activity"
@@ -6407,7 +6408,7 @@ msgid ""
 "open pending financial sign off or M&E<br/>5) Cancelled: the project has "
 "been cancelled<br/>6) Suspended: the project has been temporarily suspended "
 "or the reporting partner no longer uses RSR."
-msgstr ""
+msgstr "Hay seis estatus de proyectos diferentes: <br>- 1)En diseño/identificación: se está planificando el proyecto<br>- 2)Ejecución: se están desarrollando las actividades del proyecto<br>- 3)Finalización: el proyecto ha terminado o se ha hecho el último desembolso<br>- 4)Post-finalización: el proyecto ya finalizó o se ha hecho el último desembolso pero continúa abierto por falta de cierre financiero o de M&E<br>- 5)Cancelado: el proyecto se canceló<br>- 6)Suspendido: el proyecto se suspendió temporalmente o el socio que reporta ya no utiliza RSR. "
 
 #: rsr/models/project.py:150 templates/project_directory.html:257
 #: templates/project_main.html:224 templates/project_main.html.py:291
@@ -6425,7 +6426,7 @@ msgid ""
 "explain:<br>- Why the project is being carried out;<br>- Where it is taking "
 "place;<br>- Who will benefit and/or participate;<br>- What it specifically "
 "hopes to accomplish;<br>- How those specific goals will be reached"
-msgstr ""
+msgstr "Añada un resumen corto. Trate de mantenerlo menor a 400 caracteres para que pueda visualizarse correctamente en la página del proyecto. El resumen debe explicar:<br>- ¿Por qué se esta desarrollando el proyecto? <br>-¿Dónde se esta realizando?<br>- ¿Quiénes se beneficiarán y/o participarán? <br>- ¿Qué busca alcanzar en especifico? <br>- ¿Cómo se alcanzarán esas metas?  "
 
 #: rsr/models/project.py:167
 msgid ""
@@ -6433,7 +6434,7 @@ msgid ""
 "you can add them via RSR updates when your project is published. A photo "
 "album will feature on the project page. The photo should not be larger than "
 "2 MB in size, and should preferably be in JPG format."
-msgstr ""
+msgstr "Agregue su fotografía aquí. Puede agregar solo una fotografía. Si tiene mas de una, puede agregarlas a través de actualizaciones RSR cuando se haya publicado el proyecto. El album completo de fotografías se mostrará en la página del proyecto. La fotografía no puede ser de mas de 2MB de tamaño y de preferencia debe ser en formato JPG.  "
 
 #: rsr/models/project.py:173 rsr/models/project_update.py:54
 msgid "photo caption"
@@ -6460,7 +6461,7 @@ msgid ""
 "Provide a brief description of the overall project goals. For links and "
 "styling of the text, <a href=\"https://github.com/adam-p/markdown-here/wiki"
 "/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a> is supported."
-msgstr ""
+msgstr "Brinde una descripción de los objetivos generales del proyecto. Para incluir enlaces o estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\"> "
 
 #: rsr/models/project.py:188
 msgid "baseline situation"
@@ -6471,7 +6472,7 @@ msgid ""
 "Describe the situation at the start of the project. For links and styling of"
 " the text, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-"
 "Cheatsheet\" target=\"_blank\">Markdown</a> is supported."
-msgstr ""
+msgstr "Describa la situación al inicio del proyecto. Para incluir enlaces o estilizar texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">"
 
 #: rsr/models/project.py:194
 msgid "project plan"
@@ -6483,7 +6484,7 @@ msgid ""
 " who and when. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr ""
+msgstr "Información detallada sobre la ejecución del proyecto: qué, cómo, quién y cómo. Para incluir enlaces y estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">   "
 
 #: rsr/models/project.py:201
 msgid "sustainability"
@@ -6498,7 +6499,7 @@ msgid ""
 "impact and social integration. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr ""
+msgstr "Describa como asegurará la sostenibilidad del proyecto después de 10 años de su finalización. Piense en el contexto institucional, fortalecimiento de capacidades, plan de recuperación de costos, productos utilizados, viabilidad arreglos de operación y mantenimiento, anticipación de impactos ambientales e integración social. Para incluir enlaces y estilizar texto, visitar <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">"
 
 #: rsr/models/project.py:211
 msgid "background"
@@ -6511,7 +6512,7 @@ msgid ""
 " already taken place or are underway. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr ""
+msgstr "Esto debe describir el contexto geográfico, político, ambiental, social y/o cultural en el que se desarrolla el proyecto al igual que actividades relacionadas que ya se han desarrollado o están en camino. Para incluir enlaces y  estilizar el texto, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">. "
 
 #: rsr/models/project.py:219
 msgid "target group"
@@ -6527,11 +6528,11 @@ msgstr ""
 
 #: rsr/models/project.py:228
 msgid "is rsr impact project"
-msgstr ""
+msgstr "es proyecto de rsr impacto"
 
 #: rsr/models/project.py:229
 msgid "Determines whether the results framework is active for this project."
-msgstr ""
+msgstr "Determina si el marco de resultados del proyecto está activo. "
 
 #: rsr/models/project.py:234
 msgid "is public project"
@@ -6539,11 +6540,11 @@ msgstr "proyecto es público"
 
 #: rsr/models/project.py:235
 msgid "Determines whether this project is a public project."
-msgstr ""
+msgstr "Determina si este proyecto es público. "
 
 #: rsr/models/project.py:241
 msgid "Enter the language used when entering the details for this project."
-msgstr ""
+msgstr "Indique el idioma que se utilizará para agregar detalles de este proyecto. "
 
 #: rsr/models/project.py:244 rsr/models/project_comment.py:24
 msgid "project comments"
@@ -6553,7 +6554,7 @@ msgstr "comentarios al projecto"
 msgid ""
 "The project comments are only for internal use and will not be displayed "
 "anywhere on the project page."
-msgstr ""
+msgstr "Los comentarios del proyecto son únicamente para uso interno y no se mostrarán en ningún lugar de la página del proyecto. "
 
 #: rsr/models/project.py:250
 msgid "Choose a keyword to link to this project."
@@ -6618,7 +6619,7 @@ msgid ""
 "code]-[Chamber of Commerce number]-[organisation’s internal project code]. "
 "For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more "
 "information see"
-msgstr ""
+msgstr "Es un identificar único global para esta actividad. Es un requisito del estándar de IATI. El código consiste en: [código de país]-[número de Cámara de Comercio]-[código de proyecto interno de la organización]. Por ejemplo, para organizaciones holandesas este puede ser NL-KVK-31156201-TZ1234. Para mas información ver"
 
 #: rsr/models/project.py:301
 msgid "hierarchy"
@@ -6628,7 +6629,7 @@ msgstr "jerarquía"
 msgid ""
 "If you are reporting multiple levels of projects in RSR, you can specify "
 "whether this is a core, sub, or lower sub activity here."
-msgstr ""
+msgstr "Si está reportando varios niveles de proyectos en RSR, aquí puede especificar si se trata de una actividad clave, sub o sub baja. "
 
 #: rsr/models/project.py:306
 msgid "project scope"
@@ -6730,11 +6731,11 @@ msgstr "proyecto humanitario"
 msgid ""
 "Determines whether this project relates entirely or partially to "
 "humanitarian aid."
-msgstr ""
+msgstr "Indica si este proyecto se relaciona completa o parcialmente a ayuda humanitaria."
 
 #: rsr/models/project.py:373
 msgid "validations"
-msgstr ""
+msgstr "validaciones"
 
 #: rsr/models/project.py:378
 msgid "project budget"
@@ -6743,11 +6744,11 @@ msgstr "presupuesto del proyecto"
 #: rsr/models/project.py:438 rsr/models/project.py:440
 msgid ""
 "Start date (planned) cannot be at a later time than end date (planned)."
-msgstr ""
+msgstr "La fecha de inicio (planificada) no puede ser después de la fecha de finalización (planificada)."
 
 #: rsr/models/project.py:446 rsr/models/project.py:448
 msgid "Start date (actual) cannot be at a later time than end date (actual)."
-msgstr ""
+msgstr "La fecha de inicio (actual) no puede ser después de la fecha de finalización (actual). "
 
 #: rsr/models/project.py:892
 msgid "No update yet"
@@ -6767,7 +6768,7 @@ msgid ""
 "terms and conditions that apply to all activities should not be reported "
 "here, but in either iati-organisation/document-link or iati-activity-"
 "document-link."
-msgstr ""
+msgstr "El texto de alguna condición especifica al proyecto. Términos y condiciones organizacionales que apliquen a todas las actividades no deben ser reportadas aquí. Deben reportarse en en el iati-organización/documento-enalce o en el iati-actividad-documento-enlace. "
 
 #: rsr/models/project_condition.py:29
 msgid ""
@@ -6777,11 +6778,11 @@ msgid ""
 "outputs or outcomes to be achieved by the recipient<br/>3 - Fiduciary: The "
 "condition attached requires use of certain public financial management or "
 "public accountability measures by the recipient"
-msgstr ""
+msgstr "Tipo de condición - ej.: política, desempeño. <br/>1 - Política: La condición adjunta requiere la implementación de una política específica por el receptor<br/>2 - Desempeño: La condición adjunta requiere que el receptor alcance ciertos productos o efectos<br/>3. Fiduciario: La condición adjunta requiere que el receptor utilice ciertas medidas de gerencia financiera o contabilidad pública.  "
 
 #: rsr/models/project_condition.py:39
 msgid "No condition specified"
-msgstr ""
+msgstr "Condición no especificada"
 
 #: rsr/models/project_condition.py:47
 msgid "conditions"
@@ -6789,7 +6790,7 @@ msgstr "condiciones"
 
 #: rsr/models/project_contact.py:22
 msgid "What types of enquiries this contact person is best-placed to handle."
-msgstr ""
+msgstr "El tipo de preguntas que puede responder esta persona de contacto. "
 
 #: rsr/models/project_contact.py:25
 msgid "contact name"
@@ -6861,7 +6862,7 @@ msgid ""
 "press the 'Add another document' link.<br>These documents will be stored on "
 "the RSR server and will be publicly available for users to download and view"
 " to gain further insight in the project activities."
-msgstr ""
+msgstr "Puede adjuntar un documento a su proyecto. Para adjuntar varios documentos presione el enlace \"Agregar otro documento.\"<br>Estos documentos se guardarán en el servidor de RSR y estarán disponible para que otros usuarios puedan verlos o descargarlos.  "
 
 #: rsr/models/project_document.py:40
 msgid ""
@@ -6891,7 +6892,7 @@ msgstr "categorías del documento del proyecto "
 
 #: rsr/models/project_editor_validation.py:26
 msgid "Untitled validation set"
-msgstr ""
+msgstr "Set de validación sin título"
 
 #: rsr/models/project_editor_validation.py:30
 msgid "project editor validation set"
@@ -6915,7 +6916,7 @@ msgstr "Solo lectura"
 
 #: rsr/models/project_editor_validation.py:65
 msgid "validation set"
-msgstr "vet de validación"
+msgstr "set de validación"
 
 #: rsr/models/project_editor_validation.py:67
 msgid "validation"
@@ -7024,7 +7025,7 @@ msgstr "El proyecto debe tener un sub-título. "
 
 #: rsr/models/publishing_status.py:52
 msgid "Project needs to have non-suspended status."
-msgstr ""
+msgstr "El proyecto debe tener estatus de no-suspendido. "
 
 #: rsr/models/publishing_status.py:59
 msgid ""
@@ -7071,7 +7072,7 @@ msgstr "El proyecto debe tener al menos un ítem presupuestario. "
 
 #: rsr/models/publishing_status.py:136
 msgid "Project needs to have at least one budget item with an amount."
-msgstr ""
+msgstr "El proyecto debe tener al menos un ítem de presupuesto con monto. "
 
 #: rsr/models/publishing_status.py:143
 msgid "Project needs to have at least one sector."
@@ -7079,7 +7080,7 @@ msgstr "Se debe identificar al menos un sector para le proyecto.  "
 
 #: rsr/models/publishing_status.py:150
 msgid "All sectors need to have a sector code and vocabulary."
-msgstr ""
+msgstr "Todos los sectores deben tener un código de sector y vocabulario. "
 
 #: rsr/models/publishing_status.py:160
 msgid "publishing status"
@@ -7117,7 +7118,7 @@ msgstr ""
 
 #: rsr/models/region.py:46
 msgid "recipient region percentage"
-msgstr ""
+msgstr "porcentaje de la región receptora"
 
 #: rsr/models/region.py:48
 #, python-format
@@ -7130,11 +7131,11 @@ msgstr ""
 
 #: rsr/models/region.py:54
 msgid "recipient region description"
-msgstr ""
+msgstr "descripción de la región receptora"
 
 #: rsr/models/region.py:65
 msgid "No region specified"
-msgstr ""
+msgstr "Región no especificada"
 
 #: rsr/models/region.py:81
 msgid "recipient regions"
@@ -7142,13 +7143,13 @@ msgstr "regiones del receptor"
 
 #: rsr/models/related_project.py:24
 msgid "related project iati identifier"
-msgstr ""
+msgstr "identificador de iati del proyecto relacionado"
 
 #: rsr/models/related_project.py:25
 msgid ""
 "In case you know the IATI identifier of a project that does not exist in "
 "RSR, you can point out the IATI identifier here."
-msgstr ""
+msgstr "En caso que conozca el identificador de IATI de un proyecto que no existe en RSR, puede incluir el identificador de IATI aquí. "
 
 #: rsr/models/related_project.py:29
 msgid "relation"
@@ -7165,7 +7166,7 @@ msgid ""
 "funded: a project that receives funding from more than one "
 "organisation.<br/>5 - Third party: a report by another organisation on the "
 "same project that you are reporting on."
-msgstr ""
+msgstr "La relación entre dos proyectos vinculados. Hay cinco tipos de relaciones:<br/>1 -  Padre: el proyecto que está creando es un sub-componente del proyecto que ha seleccionado. <br/>2 - Hijo: El proyecto que ha seleccionado es un sub-componente del proyecto que está creando.<br/>3 - Hermano: el proyecto que ha seleccionado y el proyecto que está creando en este momento son sub-componente de un proyecto padre.<br/> 4 - Co-financiado: un proyecto que recibe financiamiento de mas de una organización.<br/>5 - Tercera parte: Un reporte del proyecto sobre el cual usted está reportando hecho por otra organización. "
 
 #: rsr/models/related_project.py:55
 msgid "related project"
@@ -7201,7 +7202,7 @@ msgid ""
 " population) that can be attributed to the project outputs and outcomes. E.g"
 " improved health, increased political participation of women.<br/>9 - Other:"
 " Another type of result, not specified above."
-msgstr ""
+msgstr "Seleccione si el resultado es un producto, efecto o impacto.<br/>1 - Producto: Resultado directo de las actividades del proyecto. Ej: número de libros producidos, talleres realizados, personas capacitadas, letrinas construidas.<br/>2 - Efecto: Los cambios o beneficios que resultan de las actividades del programa y los productos que genera. Ej: conocimientos fortalecidos, comportamientos cambiados.<br/>3 - Impacto: resultados a largo plazo del programa (en la población) que pueden ser atribuidos a los productos y efectos del proyecto. Ej: mejoras en salud, educación, participación política.<br/>9 - Otro: Otro tipo de resultado no especificado anteriormente.  "
 
 #: rsr/models/result.py:40
 msgid "aggregation status"
@@ -7209,23 +7210,23 @@ msgstr "estado de agregación"
 
 #: rsr/models/result.py:41
 msgid "Indicate whether the data in the result set can be accumulated."
-msgstr ""
+msgstr "Indique si los datos en los resultados puede ser agregado. "
 
 #: rsr/models/result.py:44
 msgid "result description"
-msgstr ""
+msgstr "descripción del resultado"
 
 #: rsr/models/result.py:45
 msgid "You can provide further information of the result here."
-msgstr ""
+msgstr "Aquí puede brindar mas información sobre el resultado."
 
 #: rsr/models/result.py:48
 msgid "The parent result of this result."
-msgstr ""
+msgstr "El resultado padre de este resultado. "
 
 #: rsr/models/result.py:52
 msgid "No result title"
-msgstr ""
+msgstr "Sin nombre del resultado "
 
 #: rsr/models/result.py:58
 #, python-format
@@ -7236,25 +7237,25 @@ msgstr ""
 msgid ""
 "It is not possible to update the project of this result, because it is "
 "linked to a parent result."
-msgstr ""
+msgstr "No es posible actualizar el proyecto de este resultado debido a que está vinculado a un resultado del proyecto padre o programa. "
 
 #: rsr/models/result.py:90
 msgid ""
 "It is not possible to update the title of this result, because it is linked "
 "to a parent result."
-msgstr ""
+msgstr "No es posible actualizar el título de este resultado debido a que está vinculado al resultado del proyecto padre o programa. "
 
 #: rsr/models/result.py:94
 msgid ""
 "It is not possible to update the type of this result, because it is linked "
 "to a parent result."
-msgstr ""
+msgstr "No se puede actualizar el tipo de resultado debido a que está vinculado al resultado del proyecto padre o programa. "
 
 #: rsr/models/result.py:98
 msgid ""
 "It is not possible to update the aggregation status of this result, because "
 "it is linked to a parent result."
-msgstr ""
+msgstr "No es posible actualizar el estatus de agregación de este resultado debido a que está vinculado a un resultado del proyecto padre o programa.  "
 
 #: rsr/models/result.py:135
 msgid "results"
@@ -7276,7 +7277,7 @@ msgstr ""
 
 #: rsr/models/sector.py:31
 msgid "sector description"
-msgstr ""
+msgstr "descripción del sector"
 
 #: rsr/models/sector.py:37
 msgid ""
@@ -7302,15 +7303,15 @@ msgstr ""
 
 #: rsr/models/sector.py:74
 msgid "No sector code specified"
-msgstr ""
+msgstr "Código de sector no especificado"
 
 #: rsr/models/transaction.py:26
 msgid "transaction reference"
-msgstr ""
+msgstr "referencia de transacción"
 
 #: rsr/models/transaction.py:27
 msgid "Enter a reference for the transaction (eg. transaction number)."
-msgstr ""
+msgstr "Ingrese una referencia para la transacción (ej: número de transacción) "
 
 #: rsr/models/transaction.py:30
 msgid "transaction aid type"
@@ -7321,19 +7322,19 @@ msgid ""
 "Enter the type of aid being supplied. For reference, please visit: <a "
 "href=\"http://iatistandard.org/202/codelists/AidType/\" "
 "target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>."
-msgstr ""
+msgstr "Ingrese el tipo de ayuda que se está brindando. Para referencia, visite: <a href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>."
 
 #: rsr/models/transaction.py:36
 msgid "transaction description"
-msgstr ""
+msgstr "descripción de transacción"
 
 #: rsr/models/transaction.py:37
 msgid "Enter additional information for the transaction, if necessary."
-msgstr ""
+msgstr "Ingrese información adicional de la transacción si fuese necesario. "
 
 #: rsr/models/transaction.py:40
 msgid "transaction disbursement channel"
-msgstr ""
+msgstr "canal de desembolso de transacción"
 
 #: rsr/models/transaction.py:42
 msgid ""
@@ -7390,36 +7391,36 @@ msgstr "Introduzca la fecha de referencia financiera en la que se realizó/reali
 msgid ""
 "Select the type of the transaction (e.g. commitment, disbursement, "
 "expenditure)."
-msgstr ""
+msgstr "Seleccione el tipo de transacción (ej: comprometido, desembolso, gasto). "
 
 #: rsr/models/transaction.py:80
 msgid "transaction value"
-msgstr ""
+msgstr "valor de transacción"
 
 #: rsr/models/transaction.py:81
 msgid "Enter the transaction amount. Use a period to denote decimals."
-msgstr ""
+msgstr "Ingrese la cantidad de la transacción. Use un punto para decimales. "
 
 #: rsr/models/transaction.py:84
 msgid "transaction value date"
-msgstr ""
+msgstr "fecha del valor de la transacción"
 
 #: rsr/models/transaction.py:85
 msgid ""
 "The date to be used for determining the exchange rate for currency "
 "conversions of the transaction."
-msgstr ""
+msgstr "La fecha que se utilizará para definir la tasa de cambio utilizada en la transacción. "
 
 #: rsr/models/transaction.py:107
 msgid ""
 "The internal identifier used by the receiver organisation for its activity "
 "that receives the funds from this transaction (not to be confused with the "
 "IATI identifier for the target activity)."
-msgstr ""
+msgstr "El identificador interno de la organización receptora que identifica la actividad para la cual se envían los fondos (no se confunda con el identificador IATI para la actividad meta).   "
 
 #: rsr/models/transaction.py:112
 msgid "transaction recipient country"
-msgstr ""
+msgstr "país receptor de transacción"
 
 #: rsr/models/transaction.py:114
 msgid ""
@@ -7427,11 +7428,11 @@ msgid ""
 "one country per transaction. For reference, please visit: <a "
 "href=\"http://iatistandard.org/202/codelists/Country/\" "
 "target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>."
-msgstr ""
+msgstr "Ingrese el país que se beneficiará de esta transacción. Solo puede ser un país por transacción. Para referencia, visite: <a href=\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>."
 
 #: rsr/models/transaction.py:120
 msgid "transaction recipient region"
-msgstr ""
+msgstr "región receptora de transacción "
 
 #: rsr/models/transaction.py:122
 msgid ""
@@ -7441,17 +7442,17 @@ msgid ""
 "reference, please visit: <a "
 "href=\"http://iatistandard.org/202/codelists/Region/\" "
 "target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>."
-msgstr ""
+msgstr "Ingrese la región geopolítica supranacional (agrupación de países en una región geográfica o administrativa - ej: Africa sub-Sahariana, Delta del Mekong) que se beneficiará de esta transacción. Para referencia visite: <a href=\"http://iatistandard.org/202/codelists/Region/\" target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>."
 
 #: rsr/models/transaction.py:137
 msgid "humanitarian transaction"
-msgstr ""
+msgstr "transacción humanitaria"
 
 #: rsr/models/transaction.py:137
 msgid ""
 "Determines whether this transaction relates entirely or partially to "
 "humanitarian aid."
-msgstr ""
+msgstr "Determina si esta transacción se relaciona entera o parcialmente a ayuda humanitaria. "
 
 #: rsr/models/transaction.py:206 rsr/models/transaction.py:212
 msgid "transaction"
@@ -7476,11 +7477,11 @@ msgstr ""
 
 #: rsr/models/transaction.py:222
 msgid "transaction sector description"
-msgstr ""
+msgstr "descripción del sector de la transacción"
 
 #: rsr/models/transaction.py:224
 msgid "transaction sector vocabulary"
-msgstr ""
+msgstr "vocabulario del sector de la transacción "
 
 #: rsr/models/transaction.py:226
 msgid ""
@@ -7582,7 +7583,7 @@ msgstr "administrador de la organizació"
 
 #: rsr/templatetags/rsr_tags.py:32
 msgid "No partner role"
-msgstr ""
+msgstr "Sin rol del socio"
 
 #: templates/403.html:4
 msgid "Forbidden (403)"
@@ -7614,7 +7615,7 @@ msgstr ""
 
 #: templates/404.html:15
 msgid "You might want to try our home page, or the menu bar above."
-msgstr ""
+msgstr "Intenta nuestra página de inicio o el menú de navegación."
 
 #: templates/500.html:4
 msgid "Something went wrong with our servers (500)"
@@ -7701,7 +7702,7 @@ msgstr "\n            Viendo %(start_index)s - %(end_index)s de %(paginator_coun
 
 #: templates/organisation_directory.html:87
 msgid "No countries specified"
-msgstr ""
+msgstr "Países no especificados"
 
 #: templates/organisation_directory.html:95
 msgid "updates"
@@ -7732,7 +7733,7 @@ msgstr "Proyectos en RSR"
 #: templates/partials/widgets/project_status.html:5
 #: templates/widgets/project_list.html:70
 msgid "Pipeline/identification"
-msgstr ""
+msgstr "En diseño/identificación"
 
 #: templates/organisation_main.html:136
 #: templates/partials/widgets/project_status.html:9
@@ -8245,7 +8246,7 @@ msgstr "Enviar para aprobación "
 
 #: templates/project_main.html:197 templates/myrsr/my_results.html:137
 msgid "Return for revision"
-msgstr "Enviar para revisión "
+msgstr "Devolver para revisión "
 
 #: templates/project_main.html:198 templates/myrsr/my_results.html:138
 #: templates/myrsr/user_management.html:75
@@ -8393,7 +8394,7 @@ msgstr "Ítems del presupuesto"
 #: templates/project_main.html:255
 #: templates/myrsr/project_editor/section_6.html:49
 msgid "Country budget items"
-msgstr ""
+msgstr "Ítems de presupuesto de país"
 
 #: templates/project_main.html:256
 #: templates/myrsr/project_editor/section_6.html:66
@@ -8403,7 +8404,7 @@ msgstr "Transacciones"
 #: templates/project_main.html:257
 #: templates/myrsr/project_editor/related_objects/transaction_input.html:73
 msgid "Transaction sectors"
-msgstr ""
+msgstr "Sectores de transacciones"
 
 #: templates/project_main.html:258
 #: templates/myrsr/project_editor/section_6.html:82
@@ -8443,21 +8444,21 @@ msgstr "Dimensiones meta del período del indicador"
 #: templates/project_main.html:269
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:108
 msgid "Indicator period actual locations"
-msgstr ""
+msgstr "Ubicaciones actuales del período del indicador"
 
 #: templates/project_main.html:270
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:89
 msgid "Indicator period target locations"
-msgstr ""
+msgstr "Ubicaciones meta del período del indicador"
 
 #: templates/project_main.html:272
 #: templates/myrsr/project_editor/section_8.html:38
 msgid "Policy markers"
-msgstr ""
+msgstr "Legislador/a"
 
 #: templates/project_main.html:273
 msgid "Humanitarian scopes"
-msgstr ""
+msgstr "Alcances humanitarios"
 
 #: templates/project_main.html:274
 msgid "Conditions"
@@ -8728,7 +8729,7 @@ msgid ""
 "\n"
 "                        You posted this update at %(update_time)s.\n"
 "                    "
-msgstr ""
+msgstr "\nPublicó esta actualización a las %(update_time)s."
 
 #: templates/update_add.html:37
 msgid "Add update"
@@ -9032,7 +9033,7 @@ msgid ""
 "\n"
 "          To fully fund this project a donation of %(full_donation)s %(currency)s is needed.\n"
 "        "
-msgstr ""
+msgstr "\nPara financiar este proyecto completamente se necesita una donación de %(full_donation)s %(currency)s."
 
 #: templates/donate/donate_step2.html:16
 msgid "This amount includes the transaction fee applied by PayPal."
@@ -9428,15 +9429,15 @@ msgstr ""
 
 #: templates/myrsr/my_iati.html:44
 msgid "The latest activity file of"
-msgstr ""
+msgstr "El último archivo de actividad de"
 
 #: templates/myrsr/my_iati.html:45
 msgid "The organisation file of"
-msgstr ""
+msgstr "El archivo de organización de"
 
 #: templates/myrsr/my_iati.html:47
 msgid "Show latest activity file on the organisation page of"
-msgstr ""
+msgstr "Mostrar el ultimo archivo de actividad en la página organizacional de "
 
 #: templates/myrsr/my_iati.html:76
 msgid "loading"
@@ -9464,11 +9465,11 @@ msgstr "último"
 
 #: templates/myrsr/my_iati.html:82
 msgid "view latest file"
-msgstr "Ver último archivo"
+msgstr "ver último archivo"
 
 #: templates/myrsr/my_iati.html:83
 msgid "view file"
-msgstr "Ver archivo"
+msgstr "ver archivo"
 
 #: templates/myrsr/my_iati.html:84
 msgid "set as latest file"
@@ -9480,7 +9481,7 @@ msgstr "creado por"
 
 #: templates/myrsr/my_iati.html:86
 msgid "created at"
-msgstr ""
+msgstr "creada a"
 
 #: templates/myrsr/my_iati.html:87
 msgid "IATI version"
@@ -9500,7 +9501,7 @@ msgstr "procesado"
 
 #: templates/myrsr/my_iati.html:92
 msgid "no IATI file"
-msgstr ""
+msgstr "sin archivo IATI"
 
 #: templates/myrsr/my_iati.html:93
 msgid "Your organisation does not report any projects yet."
@@ -9554,15 +9555,15 @@ msgstr "Realizar controles"
 
 #: templates/myrsr/my_iati.html:110
 msgid "Performing checks"
-msgstr ""
+msgstr "Revisando"
 
 #: templates/myrsr/my_iati.html:111
 msgid "Checks not performed yet"
-msgstr ""
+msgstr "No se ha revisado aún"
 
 #: templates/myrsr/my_iati.html:113
 msgid "warnings"
-msgstr ""
+msgstr "advertencias"
 
 #: templates/myrsr/my_iati.html:115
 msgid "errors"
@@ -9578,7 +9579,7 @@ msgstr "esconder todos"
 
 #: templates/myrsr/my_iati.html:118
 msgid "all checks completed successfully"
-msgstr ""
+msgstr "todas las revisiones completadas exitosamente"
 
 #: templates/myrsr/my_iati.html:121
 msgid "yes"
@@ -9610,7 +9611,7 @@ msgstr "seleccionar"
 
 #: templates/myrsr/my_iati.html:128
 msgid "deselect"
-msgstr ""
+msgstr "desmarcar"
 
 #: templates/myrsr/my_iati.html:129
 msgid "all"
@@ -9626,7 +9627,7 @@ msgstr "sin estatus"
 
 #: templates/myrsr/my_iati.html:132
 msgid "pipeline/identification"
-msgstr ""
+msgstr "en diseño/identificación "
 
 #: templates/myrsr/my_iati.html:133
 msgid "implementation"
@@ -9668,7 +9669,7 @@ msgid ""
 "        organisation.\n"
 "        Once your request is approved, you will see the projects of this organisation on this page.\n"
 "      "
-msgstr ""
+msgstr "\nVaya a la página <a href=\"%(my_details_url)s\">Mis detalles</a> para solicitar sumarse a una organización. \nCuando se apruebe su solicitud podrá ver los proyectos de la organización en esta página. "
 
 #: templates/myrsr/my_projects.html:42
 msgid "Type"
@@ -9725,14 +9726,14 @@ msgid ""
 "\n"
 "            Viewing %(start_index)s - %(end_index)s of %(paginator_count)s projects\n"
 "          "
-msgstr ""
+msgstr "\nViendo %(start_index)s - %(end_index)s de %(paginator_count)s proyectos"
 
 #: templates/myrsr/my_projects.html:111
 #, python-format
 msgid ""
 "Your search - %(q_search)s - did not match any\n"
 "            projects."
-msgstr ""
+msgstr "Su búsqueda - %(q_search)s - no generó resultados de proyectos. "
 
 #: templates/myrsr/my_projects.html:118
 #, python-format
@@ -9742,7 +9743,7 @@ msgid ""
 "            Go to the <a href=\"%(my_details_url)s\">My details</a> page to see your\n"
 "            organisation(s).\n"
 "          "
-msgstr ""
+msgstr "\nLa organización(es) a las que se ha sumado aún no tienen proyectos. Visite la página <a href=\"%(my_details_url)s\">Mis detalles</a> para ver su organización(es). "
 
 #: templates/myrsr/my_projects.html:137
 msgid "General connection error, please check your internet connection"
@@ -9754,7 +9755,7 @@ msgstr "No pudo añadir"
 
 #: templates/myrsr/my_projects.html:141
 msgid "project log"
-msgstr ""
+msgstr "registro de proyecto"
 
 #: templates/myrsr/my_projects.html:142
 msgid "custom fields"
@@ -9833,7 +9834,7 @@ msgstr "Editar proyecto"
 msgid ""
 "This is not an RSR Impact project, it is not possible to place updates on "
 "this project."
-msgstr ""
+msgstr "Este no es un proyecto de RSR de impacto. No se puede añadir actualizaciones a este proyecto. "
 
 #: templates/myrsr/my_results.html:15
 msgid "This project has no results."
@@ -9874,7 +9875,7 @@ msgid ""
 "You are not able to fill in results data for any projects yet, only for a "
 "small selection of projects this new feature has been enabled. Soon, this "
 "will be available for all projects."
-msgstr ""
+msgstr "Aún no puede llenar datos de resultados para este proyecto debido a que ésta funcionalidad solo se ha habilitado para un número selecto de proyectos. Dentro de poco se habilitará para todos los proyectos.  "
 
 #: templates/myrsr/my_results_select.html:34
 msgid "Select a project by typing the project name or ID"
@@ -9928,11 +9929,11 @@ msgstr "Actualización no ha sido encontrada. Trate volver a cargar la página. 
 
 #: templates/myrsr/my_updates.html:92
 msgid "Connection error, check your internet connection."
-msgstr "Error de conectividad. Favor revise su conexión de internet. "
+msgstr "Error de conectividad, favor revise su conexión de internet. "
 
 #: templates/myrsr/my_updates.html:93
 msgid " error, please contact support using the help button to the right."
-msgstr "Error. Favor contacte al equipo de apoyo utilizando el botón de ayuda de la derecha. "
+msgstr "error, favor contacte al equipo de apoyo utilizando el botón de ayuda de la derecha. "
 
 #: templates/myrsr/myrsr_base.html:24 templates/myrsr/user_management.html:9
 msgid "User management"
@@ -9952,12 +9953,12 @@ msgid ""
 "\n"
 "                        Viewing %(start_index)s - %(end_index)s of %(paginator_count)s users\n"
 "                    "
-msgstr ""
+msgstr "\nViendo  %(start_index)s - %(end_index)s de %(paginator_count)s usuarios"
 
 #: templates/myrsr/user_management.html:43
 #, python-format
 msgid "Your search - %(q_search)s - did not match any users."
-msgstr ""
+msgstr "Su búsqueda - %(q_search)s - no generó resultados de usuarios. "
 
 #: templates/myrsr/user_management.html:45
 msgid "No users that you can manage."
@@ -10012,7 +10013,7 @@ msgid ""
 "on the green +. Each user will receive an email with an activation link that"
 " is valid for 7 days, and you will be notified when a user has activated his"
 " or her account."
-msgstr ""
+msgstr "Invite a usuarios a su organización (es) indicando el email, organización y rol de la persona a quien desea invitar. Puede invitar a varios usuarios dando un click al signo verde de +. Cada usuario recibirá un email con un enlace de activación válido por 7 días. Usted recibirá una notificación cuando el usuario active su cuenta. "
 
 #: templates/myrsr/user_management.html:87
 msgid "Role"
@@ -10055,13 +10056,13 @@ msgid ""
 "project’s story by entering complete information. After a project is "
 "published you can keep it up to date by adding project updates with text, "
 "photos and videos."
-msgstr ""
+msgstr "Su página de proyecto RSR muestra información sobre lo que está sucediendo, dónde, quién está involucrado y las fuentes de financiamiento. Comparta la historia de su proyecto ingresando todos los detalles. Después de publicar un proyecto puede mantenerlo al día añadiendo actualizaciones de texto, fotografías y videos. "
 
 #: templates/myrsr/project_editor/project_editor.html:33
 msgid ""
 "Before you start, please review all the project fields so you know which "
 "information belongs where in the RSR project form."
-msgstr ""
+msgstr "Antes de iniciar, revise todos los campos para familiarizarse con los datos requeridos en el formato de proyecto de RSR. "
 
 #: templates/myrsr/project_editor/project_editor.html:34
 msgid ""
@@ -10069,7 +10070,7 @@ msgid ""
 "edit and publish the project once all mandatory fields are filled out and "
 "the progress bar on top of the page is green. Changes that are made to a "
 "published project, will be visible online immediately after saving."
-msgstr ""
+msgstr "Editores de RSR pueden editar la información del proyecto. Administradores de RSR pueden editar y publicar proyectos cuando los campos requeridos estén completos y la barra de avance al inicio de la página esté en verde. Cambios realizados en proyectos publicados serán visibles en línea únicamente después de grabar los cambios. "
 
 #: templates/myrsr/project_editor/project_editor.html:135
 msgid "Saving"
@@ -10154,21 +10155,21 @@ msgstr "para solicitar que se añada a la base de datos."
 
 #: templates/myrsr/project_editor/project_editor.html:157
 msgid "Provider organisation"
-msgstr ""
+msgstr "Organización proveedora "
 
 #: templates/myrsr/project_editor/project_editor.html:158
 msgid ""
 "For incoming funds, this is the organisation from which the funds "
 "originated. It will default to the reporting organisation."
-msgstr ""
+msgstr "Para fondos entrantes, esta es la organización dónde se generan los fondos. Por defecto mostrará la organización que reporta. "
 
 #: templates/myrsr/project_editor/project_editor.html:159
 msgid "Recipient organisation"
-msgstr ""
+msgstr "Organización receptora"
 
 #: templates/myrsr/project_editor/project_editor.html:160
 msgid "The organisation that receives the incoming funds."
-msgstr ""
+msgstr "La organización que recibe los fondos entrantes. "
 
 #: templates/myrsr/project_editor/project_editor.html:161
 msgid "Add new organisation"
@@ -10324,7 +10325,7 @@ msgid ""
 "Indicate whether this is a private project. Private projects do not appear "
 "in any public lists, and can only be viewed in MyRSR if a user has "
 "permissions to edit the project. Only available for superusers."
-msgstr ""
+msgstr "Indique si este proyecto es privado. Los proyectos privados no aparecen en listas públicas y solo pueden ser vistos en MiRSR si el usuario tiene permiso para editar el proyecto. "
 
 #: templates/myrsr/project_editor/project_editor_options.html:30
 msgid "Validation sets"
@@ -10335,7 +10336,7 @@ msgid ""
 "It is possible to add or remove validation sets to your project. This "
 "determines which fields will be mandatory and which fields will be hidden. "
 "Only admins of partners with an RSR contract are able to edit this."
-msgstr ""
+msgstr "Puede añadir o quitar sets de validación para su proyecto. Esto determinará los campos que serán obligatorios y los que se ocultarán. Sólo usuarios con funciones administrativas de organizaciones que tienen contrato de RSR pueden editarlos.  "
 
 #: templates/myrsr/project_editor/project_editor_progress.html:7
 #: templates/myrsr/project_editor/project_editor_progress.html:35
@@ -10344,13 +10345,13 @@ msgstr "Avance del proyecto "
 
 #: templates/myrsr/project_editor/project_editor_progress.html:12
 msgid "Legend"
-msgstr ""
+msgstr "Leyenda"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:15
 #: templates/myrsr/project_editor/project_editor_progress.html:20
 #: templates/myrsr/project_editor/project_editor_progress.html:25
 msgid "legend"
-msgstr ""
+msgstr "leyenda"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:16
 msgid "No mandatory fields completed"
@@ -10398,7 +10399,7 @@ msgstr "Comentarios y palabras clave del proyecto "
 msgid ""
 "Fill in comments regarding the project. These are only for internal use and "
 "will not be displayed anywhere on the project page."
-msgstr ""
+msgstr "Ingrese comentarios sobre el proyecto. Solo se utilizarán de manera interna y no se mostrarán en ningún lugar de la página del proyecto. "
 
 #: templates/myrsr/project_editor/section_10.html:33
 msgid "Add another keyword"
@@ -10429,7 +10430,7 @@ msgid ""
 "In this section you can provide contact information of involved project "
 "partners. You can add multiple contacts. Be aware that this information will"
 " be public, so avoid giving personal contact details."
-msgstr ""
+msgstr "En esta sección puede brindar información de contacto de socios del proyecto. Puede incluir varias personas de contacto. Tome en consideración que esta información será pública. Evite brindar datos personales.   "
 
 #: templates/myrsr/project_editor/section_2.html:27
 msgid "Add another contact"
@@ -10441,7 +10442,7 @@ msgid ""
 " in the project and their various roles. If the organisation is not "
 "currently featured in RSR, please contact support@akvo.org to request to add"
 " it to the database."
-msgstr ""
+msgstr "En esta sección puede incluir información sobre todas las organizaciones involucradas en el proyecto y sus roles. Si la organización no está incluida en el listado de organizaciones de RSR, por favor envíe una solicitud al email support@akvo.org para que se incluya la organización a la base de datos.  "
 
 #: templates/myrsr/project_editor/section_3.html:20
 msgid "Participating organisations"
@@ -10452,7 +10453,7 @@ msgid ""
 "Select an organisation that is playing a role in the project. If an "
 "organisation is not currently featured in RSR, please use the \"Add a new "
 "organisation\" button to add a new organisation to the database."
-msgstr ""
+msgstr "Seleccione una organización que tiene un rol en el proyecto. Si la organización no es parte de RSR por favor haga un click en \"Añadir nueva organización\" para sumar una organización a la base de datos.  "
 
 #: templates/myrsr/project_editor/section_3.html:30
 msgid "Add another participating organisation"
@@ -10478,7 +10479,7 @@ msgid ""
 "Outcome results occur when users use outputs, for example when people "
 "portray different behaviour because of the training they took part in. "
 "Impact is a broader result such as empowered citizens."
-msgstr ""
+msgstr "En la sección de resultados e indicadores puede definir los resultados que piensa alcanzar y la manera en la que los medirá para monitorear y evaluar el proyecto. Hay tres tipos de resultados principales. Los productos son usualmente muy prácticos. Por ejemplo, organizar un tipo particular de capacitación. Los efectos ocurren cuando los beneficiarios utilizan los productos, por ejemplo cuando las personas exhiben comportamientos diferentes debido a la capacitación que recibieron. Impacto es un resultado mas amplio, como ciudadanos empoderados.  "
 
 #: templates/myrsr/project_editor/section_5.html:17
 msgid ""
@@ -10490,7 +10491,7 @@ msgid ""
 " progress information against set targets for monitoring and evaluation "
 "purposes. Sometimes baseline values are used to measure against (e.g. "
 "average income level at project start)."
-msgstr ""
+msgstr "Los indicadores nos ayudan a medir avances conforme a distintos tipos de resultados. Los indicadores de productos usualmente son fácil de identificar (ej: 9 capacitaciones), mas difíciles de definir para efectos (ej: número de personas que exhiben ciertos comportamientos) y aún mas difíciles (o casi imposible) para impacto. Puede establecer un valor meta (ej: 9 capacitaciones) y luego añadir el valor actual (ej: 8 capacitaciones realizadas). Esto brinda información de avance en relación a metas para fines de monitoreo y evaluación. A veces se utilizan líneas de base para medir los avances (ej: promedio de ingresos al inicio del proyecto).    "
 
 #: templates/myrsr/project_editor/section_5.html:18
 msgid ""
@@ -10500,93 +10501,93 @@ msgid ""
 "don’t add a period for an indicator, it is assumed that the indicator (and "
 "the target and actual values) applies to the full project period. A full "
 "example:"
-msgstr ""
+msgstr "Finalmente, los indicadores pueden separarse por período lo que es particularmente útil para medir avances en proyectos largos. Por ejemplo, puede establecer una meta de tres capacitaciones por año para un proyecto de 3 años. Cuando no añade un período para un indicador, se asume que el indicador (y los valores de la meta y el valor actual) aplican a todo el período. Un ejemplo completo: "
 
 #: templates/myrsr/project_editor/section_5.html:19
 msgid "Result: \"Organise training sessions for staff\""
-msgstr ""
+msgstr "Resultado: \"Sesiones de capacitación para el personal organizadas\""
 
 #: templates/myrsr/project_editor/section_5.html:20
 msgid "Indicator: \"Training sessions organised\""
-msgstr ""
+msgstr "Indicador: \"Sesiones de capacitación organizadas\""
 
 #: templates/myrsr/project_editor/section_5.html:21
 msgid "Indicator period: \"01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)\""
-msgstr ""
+msgstr "Período del indicador: \"01-01-2015 - 31-12-2015 (Meta: 10 / Actual: 5)\""
 
 #: templates/myrsr/project_editor/section_5.html:27
 msgid "Import results"
-msgstr ""
+msgstr "Importar resultados"
 
 #: templates/myrsr/project_editor/section_5.html:31
 msgid "Import the results framework of the parent project"
-msgstr ""
+msgstr "Importar el marco de resultados del programa "
 
 #: templates/myrsr/project_editor/section_5.html:47
 msgid "Add another result"
-msgstr ""
+msgstr "Agregar otro resultado"
 
 #: templates/myrsr/project_editor/section_5.html:54
 msgid "Project conditions"
-msgstr ""
+msgstr "Condiciones del proyecto"
 
 #: templates/myrsr/project_editor/section_5.html:63
 msgid "Add another condition"
-msgstr ""
+msgstr "Agregue otra condición"
 
 #: templates/myrsr/project_editor/section_6.html:25
 #: templates/myrsr/project_editor/section_6.html:27
 msgid "The total value of all budget items is:"
-msgstr ""
+msgstr "El valor total de todos los ítems del proyecto es: "
 
 #: templates/myrsr/project_editor/section_6.html:42
 msgid "Add another budget item"
-msgstr ""
+msgstr "Agregue otro ítem de presupuesto"
 
 #: templates/myrsr/project_editor/section_6.html:59
 msgid "Add another country budget item"
-msgstr ""
+msgstr "Agregue otro ítem de presupuesto de proyecto "
 
 #: templates/myrsr/project_editor/section_6.html:75
 msgid "Add another transaction"
-msgstr ""
+msgstr "Agregue otra transacción"
 
 #: templates/myrsr/project_editor/section_6.html:91
 msgid "Add another planned disbursement"
-msgstr ""
+msgstr "Agregue otro desembolso planificado"
 
 #: templates/myrsr/project_editor/section_7.html:6
 #: templates/myrsr/project_editor/section_7.html:23
 msgid "Project locations"
-msgstr ""
+msgstr "Ubicaciones del proyecto"
 
 #: templates/myrsr/project_editor/section_7.html:16
 msgid ""
 "The scope of the project refers to the geographical area within which the "
 "project is active."
-msgstr ""
+msgstr "El alcance del proyecto se refiere al área geográfica en el que se desarrolla el mismo. "
 
 #: templates/myrsr/project_editor/section_7.html:17
 msgid ""
 "Also add the physical locations where the project is being carried out. "
 "These will appear on the map on your project page. Use the link to"
-msgstr ""
+msgstr "También agregue la ubicación física donde el proyecto se está desarrollando. Estos aparecerán en un mapa en la página de su proyecto. Utilice el enlace para "
 
 #: templates/myrsr/project_editor/section_7.html:32
 msgid "Add another project location"
-msgstr ""
+msgstr "Agregue otra ubicación del proyecto "
 
 #: templates/myrsr/project_editor/section_7.html:48
 msgid "Add another recipient country"
-msgstr ""
+msgstr "Agregue otro país receptor"
 
 #: templates/myrsr/project_editor/section_7.html:64
 msgid "Add another recipient region"
-msgstr ""
+msgstr "Agregue otra región receptora"
 
 #: templates/myrsr/project_editor/section_8.html:6
 msgid "Project focus"
-msgstr ""
+msgstr "Enfoque del proyecto"
 
 #: templates/myrsr/project_editor/section_8.html:16
 msgid ""
@@ -10595,7 +10596,7 @@ msgid ""
 "with other similar projects to help make the most out of the project "
 "resources. Generally accepted codes are used to help determine these "
 "sectors:"
-msgstr ""
+msgstr "El enfoque del proyecto define a grandes rasgos las actividades del proyecto. Esto ayuda a que el proyecto pueda agruparse por categorías como sector con otros proyectos y puedan optimizarse recursos. Se utilizan códigos generalmente aceptados para determinar estos sectores:     "
 
 #: templates/myrsr/project_editor/section_8.html:17
 msgid "DAC-3 sector codes which are more general. For reference see:"
@@ -10607,52 +10608,52 @@ msgstr ""
 
 #: templates/myrsr/project_editor/section_8.html:31
 msgid "Add another sector"
-msgstr ""
+msgstr "Agregue otro sector"
 
 #: templates/myrsr/project_editor/section_8.html:47
 msgid "Add another policy marker"
-msgstr ""
+msgstr "Agregue otro legislador/a"
 
 #: templates/myrsr/project_editor/section_8.html:56
 msgid "Humanitarian scope"
-msgstr ""
+msgstr "Alcance humanitario"
 
 #: templates/myrsr/project_editor/section_8.html:65
 msgid "Add another humanitarian scope"
-msgstr ""
+msgstr "Agregue otro alcance humanitario "
 
 #: templates/myrsr/project_editor/section_9.html:6
 msgid "Links and documents"
-msgstr ""
+msgstr "Enlaces y documentos"
 
 #: templates/myrsr/project_editor/section_9.html:16
 msgid ""
 "You can add any additional supporting documents to your project or links to "
 "external websites here."
-msgstr ""
+msgstr "Aquí puede incluir documentos adicionales de apoyo a su proyecto o enlaces a su página web pública. "
 
 #: templates/myrsr/project_editor/section_9.html:17
 msgid ""
 "This could be in the form of annual reports, baseline surveys, contextual "
 "information or any other report that can help users understand more about "
 "the project’s activities."
-msgstr ""
+msgstr "Puede ser reportes anuales, encuestas de línea de base, información de contexto o cualquier otro reporte que ayude a usuarios a entender mejor las actividades del proyecto. "
 
 #: templates/myrsr/project_editor/section_9.html:18
 msgid "Note that the size of documents should be smaller than 5 MB."
-msgstr ""
+msgstr "El tamaño de los documentos debe ser inferior a 5MB. "
 
 #: templates/myrsr/project_editor/section_9.html:32
 msgid "Add another link"
-msgstr ""
+msgstr "Agregue otro enlace"
 
 #: templates/myrsr/project_editor/section_9.html:40
 msgid "Document links"
-msgstr ""
+msgstr "Enlaces a documentos"
 
 #: templates/myrsr/project_editor/section_9.html:49
 msgid "Add another document"
-msgstr ""
+msgstr "Agregue otro documento"
 
 #: templates/myrsr/project_editor/related_objects/crs_add_input.html:76
 msgid "Add another CRS++ other flag"
@@ -10660,7 +10661,7 @@ msgstr ""
 
 #: templates/myrsr/project_editor/related_objects/document_input.html:17
 msgid "I would like to upload a document (max 5 MB)"
-msgstr ""
+msgstr "Deseo subir un documento (max 5 MB)"
 
 #: templates/myrsr/project_editor/related_objects/document_input.html:21
 msgid ""
@@ -10670,15 +10671,15 @@ msgid ""
 " further insight into your project activities. Only use this function when "
 "your document is not already available online. To upload multiple documents,"
 " click \"Add another document\"."
-msgstr ""
+msgstr "Puede subir un documento a su proyecto. Por favor no adjunte documentos de mas de 5MB. Estos documentos se grabarán en el servidor de RSR y estarán disponible al público para que otros usuarios los descarguen o vean. Utilice esta opción únicamente si su documento no está en línea aún. Para subir varios documentos, haga click en \"Agregar otro documento\".   "
 
 #: templates/myrsr/project_editor/related_objects/document_input.html:44
 msgid "Project document categories"
-msgstr ""
+msgstr "Categorías de documentos de proyecto"
 
 #: templates/myrsr/project_editor/related_objects/document_input.html:55
 msgid "Add another project document category"
-msgstr ""
+msgstr "Agregue otra categoría de documento de proyecto "
 
 #: templates/myrsr/project_editor/related_objects/fss_input.html:30
 msgid "Add another FSS forecast"
@@ -10686,41 +10687,41 @@ msgstr ""
 
 #: templates/myrsr/project_editor/related_objects/indicator_input.html:39
 msgid "Add indicator reference"
-msgstr ""
+msgstr "Agregue referencia de indicador"
 
 #: templates/myrsr/project_editor/related_objects/indicator_input.html:67
 msgid "Add another indicator period"
-msgstr ""
+msgstr "Agregue otro período de indicador"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:32
 msgid ""
 "It is not possible to edit the actual value when indicator data has been "
 "filled in through the My results section. "
-msgstr ""
+msgstr "No es posible editar el valor actual cuando los datos del indicador han sido completados a través de la sección Mis Resultados. "
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:33
 msgid "Go to the"
-msgstr ""
+msgstr "Ir al"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:33
 msgid "section to update this value."
-msgstr ""
+msgstr "sección para actualizar este valor. "
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:60
 msgid "Add indicator period target dimension"
-msgstr ""
+msgstr "Agregue dimensione de la meta del período del indicador"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:79
 msgid "Add indicator period actual dimension"
-msgstr ""
+msgstr "Agregue dimension actual del período del indicador"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:100
 msgid "Add indicator period target location"
-msgstr ""
+msgstr "Agregue ubicación meta del período del indicador"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:119
 msgid "Add indicator period actual location"
-msgstr ""
+msgstr "Agregue ubicación actual del período del indicador "
 
 #: templates/myrsr/project_editor/related_objects/location_input.html:77
 msgid "Add another administrative"
@@ -10735,7 +10736,7 @@ msgid ""
 "Check this box if you would like to indicate a related project that is not "
 "present in RSR. Instead, you will be able to fill in the IATI activity ID of"
 " the project."
-msgstr ""
+msgstr "Marque esta opción si desea indicar que hay un proyecto relacionado que no está en la base de datos de RSR. Podrá llenar el ID de la actividad IATI del proyecto. "
 
 #: templates/myrsr/project_editor/related_objects/result_input.html:43
 msgid "Add another indicator"
@@ -11047,7 +11048,7 @@ msgid ""
 "\n"
 "                                            This project has %(parents_count)s parent projects, %(children_count)s child projects and %(siblings_count)s sibling projects\n"
 "                                        "
-msgstr ""
+msgstr "\nEste proyecto tiene %(parents_count)s proyectos padre, %(children_count)s proyectos hijo y %(siblings_count)s proyectos hermanos "
 
 #: templates/project_main_tabs/summary.html:81
 msgid "View full hierarchy"
@@ -11219,7 +11220,7 @@ msgid ""
 "        Akvo.org\n"
 "    </p>\n"
 "    "
-msgstr ""
+msgstr "\n<h1>Invitación para utilizar Akvo RSR</h1>\n\n<p>Estimado Señor(a),</p>\n\n<p>%(user_name)s le ha invitado a utilizar Akvo RSR relacionado a la organización: %(org_name)s.</p>\n\n<p>Por favor siga el siguiente enlace para atcivar su cuenta y empezar a utilizar Akvo RSR:</p>\n<h3><a href=\"http://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/%(employment_pk)s/%(token_date)s/%(token)s/\">Click here to activate your account</a></h3>\n<p>Si cree que ha recibido este mensaje por error, no necesita hacer algo; no recibirá mas mensaje nuestros y la cuenta se vencerá automáticamente en %(expiration_days)s días.</p>\n<p>\nMuchas gracias,<br/>\n\nAkvo.org\n\n</p>"
 
 #: templates/registration/invited_user_message.txt:3
 #, python-format
@@ -11259,7 +11260,7 @@ msgid ""
 "              Akvo.org\n"
 "          </p>\n"
 "      "
-msgstr ""
+msgstr "\n<p>Estimado %(inviting_user_name)s,</p>\n\n<p>%(invited_user_name)s aceptó su invitación de usar Akvo RSR y activó su cuenta con los siguientes detalles: </p>\n<ul>\n\n<li>Email: %(invited_user_email)s</li>\n\n<li>Nombre: %(invited_user_first_name)s</li>\n\n<li>Apellido: %(invited_user_last_name)s</li>\n\n<li>Organización: %(org_name)s</li>\n\n</ul>\n\n<p>\n\n\nMuchas gracias,<br/>\n\nAkvo.org\n\n</p>"
 
 #: templates/registration/inviting_user_notification_message.txt:3
 #, python-format
@@ -11276,7 +11277,7 @@ msgid ""
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr ""
+msgstr "\nEstimado %(inviting_user_name)s,\n\n%(invited_user_name)s aceptó su invitación de utilizar Akvo RSR y activó su cuenta con los siguientes detalles: \n\n- Email: %(invited_user_email)s\n- Nombre: %(invited_user_first_name)s\n- Apellido: %(invited_user_last_name)s\n- Organización: %(org_name)s\n\nMuchas gracias,\nAkvo.org\n"
 
 #: templates/registration/inviting_user_notification_subject.txt:1
 msgid "has accepted your invitation"
@@ -11386,7 +11387,7 @@ msgstr "Estimado/a Sr. o Sra. "
 #: templates/results_framework/approve_update_message.html:23
 #: templates/results_framework/approve_update_message.txt:6
 msgid "has placed a data update with the following details"
-msgstr "Presentó una actualización de datos con los siguientes detalles"
+msgstr "presentó una actualización de datos con los siguientes detalles"
 
 #: templates/results_framework/approve_update_message.html:26
 #: templates/results_framework/approve_update_message.txt:9
