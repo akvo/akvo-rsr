@@ -8,6 +8,9 @@ unicode data can cause UnicodeEncodeErrors.
 [#2514](https://github.com/akvo/akvo-rsr/issues/2514) API call for fetching
 recipient country fails if the country has unicode characters in it's name.
 
+[#2511](https://github.com/akvo/akvo-rsr/issues/2511) Fix 504 (Gateway Timeout
+errors) on the Results framework page.
+
 # Akvo RSR version 3.20.2 Bogotá (hot-fix)
 
 ## Bug fixes
@@ -77,7 +80,7 @@ been upgraded to 3.2.5 from v2.3.13 which is quite old.
 
 ## Bug fixes
 
-[#2496](https://github.com/akvo/akvo-rsr/issues/2403) Fix 504 (Gateway Timeout
+[#2496](https://github.com/akvo/akvo-rsr/issues/2496) Fix 504 (Gateway Timeout
 errors) when opening the project editor for big projects by speeding up
 fetching field validation rules and prefetching more attributes related to the
 results when querying for the project being edited.
