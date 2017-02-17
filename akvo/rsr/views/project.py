@@ -112,7 +112,8 @@ def directory(request):
     page.object_list = page.object_list.prefetch_related(
         'publishingstatus',
         'recipient_countries',
-        'sectors'
+        'sectors',
+        'budget_items',
     ).select_related(
         'primary_organisation',
         'last_update'
