@@ -1,3 +1,38 @@
+# Akvo RSR version 3.21 Wellington
+
+## Improvements
+
+[#2338](https://github.com/akvo/akvo-rsr/issues/2338) Add report types and
+report formats to the database to make it easier to add new report types.
+
+[#2536](https://github.com/akvo/akvo-rsr/issues/2536) Improve translation
+coverage for the Spanish version of the site.
+
+## Bug fixes
+
+[#2516](https://github.com/akvo/akvo-rsr/issues/2516) ProjectCustomFields with
+unicode data can cause UnicodeEncodeErrors.
+
+[#2514](https://github.com/akvo/akvo-rsr/issues/2514) API call for fetching
+recipient country fails if the country has unicode characters in it's name.
+
+[#2511](https://github.com/akvo/akvo-rsr/issues/2511) Fix 504 (Gateway Timeout
+errors) on the Results framework page.
+
+[#2534](https://github.com/akvo/akvo-rsr/issues/2534) Improve handling of
+non-JSON responses at multiple places in the site's javascript, to show users
+better error messages in case of 50x errors.
+
+[#2519](https://github.com/akvo/akvo-rsr/issues/2519) Make code for re-ordering
+results and indicators more robust and prevent `MultipleObjectsReturned` or
+`DoesNotExist` errors.
+
+[#2514](https://github.com/akvo/akvo-rsr/issues/2514) Fix problems with unicode
+country names.
+
+[#2516](https://github.com/akvo/akvo-rsr/issues/2516) Fix problems with unicode
+values in ProjectCustomFields.
+
 # Akvo RSR version 3.20.2 Bogotá (hot-fix)
 
 ## Bug fixes
@@ -67,7 +102,7 @@ been upgraded to 3.2.5 from v2.3.13 which is quite old.
 
 ## Bug fixes
 
-[#2496](https://github.com/akvo/akvo-rsr/issues/2403) Fix 504 (Gateway Timeout
+[#2496](https://github.com/akvo/akvo-rsr/issues/2496) Fix 504 (Gateway Timeout
 errors) when opening the project editor for big projects by speeding up
 fetching field validation rules and prefetching more attributes related to the
 results when querying for the project being edited.

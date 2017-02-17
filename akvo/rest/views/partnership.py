@@ -14,7 +14,7 @@ from ..viewsets import PublicProjectViewSet
 class PartnershipViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Partnership.objects.all()
+    queryset = Partnership.objects.select_related('organisation', 'project').all()
     serializer_class = PartnershipSerializer
 
     def get_queryset(self):

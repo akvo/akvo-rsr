@@ -3059,7 +3059,11 @@ function getImportResults(importButton) {
 
         request.onload = function() {
             var response, divNode;
-            response = JSON.parse(request.responseText);
+            try {
+                response = JSON.parse(request.responseText);
+            } catch (e) {
+                response = {code: 0};
+            }
             divNode = document.createElement('div');
 
             if (response.code === 1) {
