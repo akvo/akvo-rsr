@@ -95,7 +95,8 @@ def directory(request):
 
     # Build page
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, sorted_projects, 10)
+    limit = request.GET.get('limit', settings.PROJECT_DIRECTORY_DEFAULT_SIZE)
+    page, paginator, page_range = pagination(page, sorted_projects, limit)
 
     # Get the current org filter for typeahead
     org_filter = request.GET.get('organisation', '')
