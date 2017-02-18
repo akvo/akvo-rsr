@@ -53,7 +53,13 @@ function apiCall(method, url, data, successCallback, retries) {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-            var response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
+            var response;
+            try {
+                response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
+            } catch (e) {
+                response = {"error": xmlHttp.statusText || e};
+            }
+
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {
                     if (response.next !== null) {
@@ -503,7 +509,7 @@ function initReact() {
                 // In the 'MyRSR' view, show the status and add the status class that belongs to
                 // the status.
                 var statusClass = "update-status";
-                
+
                 switch (this.props.update.status) {
                     case 'P':
                         statusClass += " pending";
@@ -517,7 +523,7 @@ function initReact() {
                     default:
                         break;
                 }
-                
+
                 headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
                     React.DOM.span( {className:statusClass},  " ", this.props.update.status_display)
                 );

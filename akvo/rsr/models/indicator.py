@@ -26,6 +26,8 @@ from sorl.thumbnail.fields import ImageField
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
+    parent_indicator = models.ForeignKey('self', blank=True, null=True, default=None,
+                               verbose_name=_(u'parent indicator'), related_name='child_indicators')
     title = ValidXMLCharField(
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
@@ -77,29 +79,18 @@ class Indicator(models.Model):
         """Update the values of child indicators, if a parent indicator is updated."""
         # Update the values for an existing indicator
         if self.pk:
-            orig_indicator = Indicator.objects.get(pk=self.pk)
-            child_indicators = Indicator.objects.filter(
-                result__in=self.result.child_results.all(),
-                title=orig_indicator.title,
-                measure=orig_indicator.measure,
-                ascending=orig_indicator.ascending
-            )
-
-            for child_indicator in child_indicators:
+            for child_indicator in self.child_indicators.all():
                 # Always copy title, measure and ascending. They should be the same as the parent.
                 child_indicator.title = self.title
                 child_indicator.measure = self.measure
                 child_indicator.ascending = self.ascending
 
                 # Only copy the description and baseline if the child has none (e.g. new)
-                if not child_indicator.description and self.description:
-                    child_indicator.description = self.description
-                if not child_indicator.baseline_year and self.baseline_year:
-                    child_indicator.baseline_year = self.baseline_year
-                if not child_indicator.baseline_value and self.baseline_value:
-                    child_indicator.baseline_value = self.baseline_value
-                if not child_indicator.baseline_comment and self.baseline_comment:
-                    child_indicator.baseline_comment = self.baseline_comment
+                fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
+                for field in fields:
+                    parent_field_value = getattr(self, field)
+                    if not getattr(child_indicator, field) and parent_field_value:
+                        setattr(child_indicator, field, parent_field_value)
 
                 child_indicator.save()
 
@@ -167,42 +158,15 @@ class Indicator(models.Model):
 
     def is_child_indicator(self):
         """
-        Indicates whether this indicator is linked to a parent result.
+        Indicates whether this indicator is linked to a parent indicator.
         """
-        return True if self.result.parent_result else False
-
-    def parent_indicator(self):
-        """
-        Returns the parent indicator or None.
-        """
-        if self.is_child_indicator():
-            matching_indicators = Indicator.objects.filter(
-                result=self.result.parent_result,
-                title=self.title,
-                measure=self.measure,
-                ascending=self.ascending
-            )
-            if matching_indicators:
-                return matching_indicators.first()
-        return None
+        return bool(self.parent_indicator)
 
     def is_parent_indicator(self):
         """
         Indicates whether this indicator has children.
         """
-        return True if self.child_indicators() else False
-
-    def child_indicators(self):
-        """
-        Returns the child indicators of this indicator.
-        """
-        child_results = self.result.child_results.all()
-        return Indicator.objects.filter(
-            result__in=child_results,
-            title=self.title,
-            measure=self.measure,
-            ascending=self.ascending
-        )
+        return self.child_indicators.count() > 0
 
     @property
     def last_updated(self):
@@ -229,7 +193,7 @@ class Indicator(models.Model):
         """
         if self.measure == '2' and self.is_parent_indicator() and \
                 self.result.project.aggregate_children and \
-                any([ind.result.project.aggregate_to_parent for ind in self.child_indicators()]):
+                any([ind.result.project.aggregate_to_parent for ind in self.child_indicators.all()]):
             return True
         return False
 
@@ -305,6 +269,9 @@ class IndicatorReference(models.Model):
 
 class IndicatorPeriod(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')
+    parent_period = models.ForeignKey('self', blank=True, null=True, default=None,
+                                      verbose_name=_(u'parent indicator period'),
+                                      related_name='child_periods')
     locked = models.BooleanField(_(u'locked'), default=True, db_index=True)
     period_start = models.DateField(
         _(u'period start'), null=True, blank=True,
@@ -362,7 +329,7 @@ class IndicatorPeriod(models.Model):
         # When the general information of a parent period is updated, this information should also
         # be reflected in the child periods.
         if self.pk:
-            for child_period in self.child_periods():
+            for child_period in self.child_periods.all():
                 # Always copy period start and end. They should be the same as the parent.
                 child_period.period_start = self.period_start
                 child_period.period_end = self.period_end
@@ -386,7 +353,7 @@ class IndicatorPeriod(models.Model):
         # In case the period is new and the period's indicator does have child indicators, the (new)
         # period should also be copied to the child indicator.
         else:
-            for child_indicator in self.indicator.child_indicators():
+            for child_indicator in self.indicator.child_indicators.all():
                 child_indicator.result.project.add_period(child_indicator, self)
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
@@ -394,17 +361,9 @@ class IndicatorPeriod(models.Model):
         # If the actual value has changed, the period has a parent period and aggregations are on,
         # then the the parent should be updated as well
         if actual_value_changed and self.is_child_period() and \
-                self.parent_period().indicator.result.project.aggregate_children and \
+                self.parent_period.indicator.result.project.aggregate_children and \
                 self.indicator.result.project.aggregate_to_parent:
-            self.parent_period().recalculate_period()
-
-    def delete(self, *args, **kwargs):
-
-        # Delete the child periods as well
-        for child_period in self.child_periods():
-            child_period.delete()
-
-        super(IndicatorPeriod, self).delete(*args, **kwargs)
+            self.parent_period.recalculate_period()
 
     def clean(self):
         validation_errors = {}
@@ -441,6 +400,7 @@ class IndicatorPeriod(models.Model):
             validation_errors['period_end'] = u'%s' % _(u'Period start cannot be at a later time '
                                                         u'than period end.')
 
+        # TODO: add validation that prevents creating a period for a child indicator
         if validation_errors:
             raise ValidationError(validation_errors)
 
@@ -558,52 +518,31 @@ class IndicatorPeriod(models.Model):
 
     def is_child_period(self):
         """
-        Indicates whether this result is linked to a parent result.
+        Indicates whether this period is linked to a parent period
         """
-        return True if self.indicator.result.parent_result else False
-
-    def parent_period(self):
-        """
-        Returns the parent indicator period, in case this period is a child period.
-        """
-        if self.is_child_period():
-            matching_periods = IndicatorPeriod.objects.filter(
-                indicator__result=self.indicator.result.parent_result,
-                indicator__title=self.indicator.title,
-                period_start=self.period_start,
-                period_end=self.period_end
-            )
-            if matching_periods.exists():
-                return matching_periods.first()
-        return None
+        return bool(self.parent_period)
 
     def is_parent_period(self):
         """
         Indicates whether this result has child periods linked to it.
         """
-        return True if self.child_periods() else False
+        return self.child_periods.count() > 0
 
-    def child_periods(self, has_data=False):
+    def child_periods_with_data(self):
         """
-        Returns the child indicator periods, in case this period is a parent period.
-
-        :param has_data; Only count the children with numeric data. False by default.
+        Returns the child indicator periods with numeric data
         """
-        child_results = self.indicator.result.child_results.all()
-        children = IndicatorPeriod.objects.filter(
-            indicator__result__in=child_results,
-            indicator__title=self.indicator.title,
-            period_start=self.period_start,
-            period_end=self.period_end
-        )
-        if has_data:
-            for child in children:
-                try:
-                    Decimal(child.actual_value)
-                except (InvalidOperation, TypeError):
-                    children = children.exclude(pk=child.pk)
-        return children
+        children_with_data = []
+        for child in self.child_periods.all():
+            try:
+                Decimal(child.actual_value)
+                children_with_data += [child.pk]
+            except (InvalidOperation, TypeError):
+                pass
+        return self.child_periods.filter(pk__in=children_with_data)
 
+    # TODO: refactor child_periods_sum() and child_periods_average() and child_periods_with_data(),
+    # they use each other in very inefficient ways I think
     def child_periods_sum(self, include_self=False):
         """
         Returns the sum of child indicator periods.
@@ -615,7 +554,7 @@ class IndicatorPeriod(models.Model):
         period_sum = 0
 
         # Loop through the child periods and sum up all the values
-        for period in self.child_periods():
+        for period in self.child_periods.all():
             if period.indicator.result.project.aggregate_to_parent and period.actual_value:
                 try:
                     period_sum += Decimal(period.actual_value)
@@ -637,7 +576,7 @@ class IndicatorPeriod(models.Model):
         :return String of the average
         """
         if self.indicator.result.project.aggregate_children:
-            child_periods = self.child_periods(has_data=True)
+            child_periods = self.child_periods_with_data()
             for child in child_periods:
                 if not (child.indicator.result.project.aggregate_to_parent and child.actual_value):
                     child_periods = child_periods.exclude(pk=child.pk)
@@ -786,6 +725,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                                related_name='data')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)
     relative_data = models.BooleanField(_(u'relative data'), default=True)
+    # TODO: rename to update of period_update; we're using the term Indicator update in the UI
     data = ValidXMLCharField(_(u'data'), max_length=300)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,

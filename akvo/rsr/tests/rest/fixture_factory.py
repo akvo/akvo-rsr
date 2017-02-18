@@ -11,6 +11,7 @@ import datetime
 import random
 
 from django.conf import settings
+from django.db import transaction
 from django.contrib.auth.models import Group
 import factory
 from factory.django import DjangoModelFactory
@@ -404,6 +405,25 @@ class OrganisationCustomFieldFactory(CustomFieldFactory):
     organisation = factory.Iterator(Organisation.objects.all())
 
 
+class ReportFormatFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.ReportFormat'
+
+    name = factory.Iterator(['pdf', 'excel', 'word', 'html'])
+    display_name = factory.LazyAttribute(lambda f: f.name.capitalize())
+
+
+class ReportFactory(DjangoModelFactory):
+
+    class Meta:
+        model = 'rsr.Report'
+
+    name = factory.Sequence(lambda x: 'report-{}'.format(x))
+    url = factory.Iterator(['/x/{project}?format={format}', '/x/{organisation}?format={format}'])
+
+
+@transaction.atomic()
 def populate_test_data(seed=42):
     """Populate the DB for tests using the factories defined."""
 
@@ -460,6 +480,10 @@ def populate_test_data(seed=42):
 
     ProjectEditorValidationSetFactory.create_batch(2)
     ProjectEditorValidationFactory.create_batch(20)
+
+    ReportFormatFactory.create_batch(4)
+    ReportFactory.create_batch(4)
+
     # FIXME: Enforce this!
     verify_model_instances()
 

@@ -313,3 +313,15 @@ def update_project_funding(sender, **kwargs):
             # this happens when a project is deleted, and thus any invoices linked to it go the
             # same way.
             pass
+
+
+def update_project_editor_validation_cache(sender, **kwargs):
+    """Called when ProjectEditorValidation objects are added/changed/deleted."""
+
+    # kwargs['raw'] is True when we're running manage.py loaddata
+    if kwargs.get('raw', False):
+        return
+
+    # Import here to avoid problems with circular imports
+    from akvo.rsr.templatetags.project_editor import invalidate_validation_cache
+    invalidate_validation_cache()

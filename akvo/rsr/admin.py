@@ -1472,3 +1472,15 @@ class IndicatorPeriodDataAdmin(admin.ModelAdmin):
     inlines = (IndicatorPeriodDataCommentInline, )
 
 admin.site.register(get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)
+
+
+class ReportAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'Report')
+
+admin.site.register(get_model('rsr', 'Report'), ReportAdmin)
+
+
+class ReportFormatAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'ReportFormat')
+
+admin.site.register(get_model('rsr', 'Reportformat'), ReportFormatAdmin)

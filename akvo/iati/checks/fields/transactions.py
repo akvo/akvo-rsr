@@ -19,7 +19,11 @@ def transactions(project):
     checks = []
     all_checks_passed = True
 
-    for transaction in project.transactions.all():
+    prefetch_attributes = (
+        'receiver_organisation',
+        'provider_organisation',
+    )
+    for transaction in project.transactions.prefetch_related(*prefetch_attributes).all():
         if not transaction.transaction_type:
             all_checks_passed = False
             checks.append((u'error', u'transaction (id: %s) has no type' % str(transaction.pk)))

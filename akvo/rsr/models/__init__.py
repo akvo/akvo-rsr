@@ -18,7 +18,7 @@ from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     act_on_log_entry, employment_post_save, employment_pre_save,
-    update_project_budget, update_project_funding
+    update_project_budget, update_project_funding, update_project_editor_validation_cache
 )
 
 from .benchmark import Benchmark, Benchmarkname
@@ -72,6 +72,7 @@ from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
 from .related_project import RelatedProject
+from .report import Report, ReportFormat
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
@@ -152,6 +153,8 @@ __all__ = [
     'PublishingStatus',
     'RecipientRegion',
     'RelatedProject',
+    'Report',
+    'ReportFormat',
     'Result',
     'Sector',
     'Transaction',
@@ -427,3 +430,5 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=User)
+
+post_save.connect(update_project_editor_validation_cache, sender=ProjectEditorValidation)

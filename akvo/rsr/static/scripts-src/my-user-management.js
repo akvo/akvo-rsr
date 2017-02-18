@@ -202,7 +202,6 @@ function initReact() {
 
                 request.onload = function() {
                     var status = request.status;
-                    var response = JSON.parse(request.responseText);
 
                     if (status === 201) {
                         // Remove row
@@ -218,7 +217,7 @@ function initReact() {
                         }, 3000);
                     } else if (status === 400) {
                         // Missing data
-                        var missingData = response.missing_data;
+                        var missingData = JSON.parse(request.responseText).missing_data;
                         for (var i = 0; i < missingData.length; i++) {
                             var fields = row.querySelectorAll('td');
                             var field = missingData[i];
@@ -580,7 +579,12 @@ function initReact() {
                         error: function (xhr, status, err) {
                             setGroupName(old_title);
                             loading(false);
-                            var json_response = JSON.parse(xhr.responseText);
+                            var json_response;
+                            try {
+                                json_response = JSON.parse(xhr.responseText);
+                            } catch (e) {
+                                json_response = {"error": xhr.statusText || e};
+                            }
                             if (json_response.error == 'Employment already exists.') {
                                 thisEmployment.setState({error:true});
                             }

@@ -1,5 +1,37 @@
 # Currently in develop
 
+## Bug fixes
+
+[#2338](https://github.com/akvo/akvo-rsr/issues/2338) Add report types and
+report formats to the database to make it easier to add new report types.
+
+[#2516](https://github.com/akvo/akvo-rsr/issues/2516) ProjectCustomFields with
+unicode data can cause UnicodeEncodeErrors.
+
+[#2514](https://github.com/akvo/akvo-rsr/issues/2514) API call for fetching
+recipient country fails if the country has unicode characters in it's name.
+
+[#2511](https://github.com/akvo/akvo-rsr/issues/2511) Fix 504 (Gateway Timeout
+errors) on the Results framework page.
+
+# Akvo RSR version 3.20.2 Bogotá (hot-fix)
+
+## Bug fixes
+
+[#2528](https://github.com/akvo/akvo-rsr/issues/2528) Fix bug with some editing
+actions in the Results Framework of parent projects making some indicator
+periods of child projects orphaned.
+
+# Akvo RSR version 3.20.1 Bogotá (hot-fix)
+
+## Bug fixes
+
+[#2507](https://github.com/akvo/akvo-rsr/issues/2507) Fix bug in pagination of
+PublicProjectViewSet and it's subclasses, which caused an indicator to be
+missing from the Results page.
+
+# Akvo RSR version 3.20 Bogotá
+
 ## Improvements
 
 ### Cluster all the employments of a user
@@ -9,6 +41,25 @@ Group all the employments of a user together in the user management page.
 GitHub issue: [#2430](https://github.com/akvo/akvo-rsr/issues/2430)
 
 ## Bug fixes
+
+[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
+organisation is always an organisation where user has an approved employment.
+
+[#2484](https://github.com/akvo/akvo-rsr/issues/2484) Import
+IndicatorReferences also when Results are imported to a child project.
+
+[#2482](https://github.com/akvo/akvo-rsr/issues/2482) Fix bug with organisation
+admin not being able to delete an AdministrativeLocation.
+
+[#2457](https://github.com/akvo/akvo-rsr/issues/2457) Fix the Results type
+column in the Results and Indicators table report to show the type string
+instead of the type's id.
+
+[#2456](https://github.com/akvo/akvo-rsr/issues/2456) Fix sorting of the
+results and indicators in the Results and Indicators Overview report.
+
+[#2494](https://github.com/akvo/akvo-rsr/issues/2494) Fix (potential) timeouts
+on authentication from Up app for some users.
 
 [#2403](https://github.com/akvo/akvo-rsr/issues/2403) Fix the 'Read more'
 button for project summary, when it ends with a list.
@@ -20,13 +71,22 @@ browser.
 [#2374](https://github.com/akvo/akvo-rsr/issues/2374) Prevent duplicate
 employments to the same organisation & group.
 
-[#2427] (https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
+[#2427](https://github.com/akvo/akvo-rsr/issues/2427) Show Results type in
 'Results and indicators table' report as text, not numbers.
 
 ## Under the hood
 
 [#2298](https://github.com/akvo/akvo-rsr/issues/2298) Django REST Framework has
 been upgraded to 3.2.5 from v2.3.13 which is quite old.
+
+# Akvo RSR version 3.18.4 Vilnius (hot-fix)
+
+## Bug fixes
+
+[#2496](https://github.com/akvo/akvo-rsr/issues/2496) Fix 504 (Gateway Timeout
+errors) when opening the project editor for big projects by speeding up
+fetching field validation rules and prefetching more attributes related to the
+results when querying for the project being edited.
 
 # Akvo RSR version 3.18.3 Vilnius (hot-fix)
 
@@ -55,9 +115,6 @@ wiki page](https://github.com/akvo/akvo-rsr/wiki/IATI-Import-mapping).
 
 [#2442](https://github.com/akvo/akvo-rsr/issues/2442) Custom mapper to import Result data only, using the IATI import,
 without over-writing the content of an existing project.
-
-[#2381] (https://github.com/akvo/akvo-rsr/issues/2381) Ensure that the legacy
-organisation is always an organisation where user has an approved employment.
 
 # Akvo RSR version 3.18 Vilnius
 
