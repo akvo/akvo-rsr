@@ -66,10 +66,9 @@ const UPDATE_MODEL_START = "UPDATE_MODEL_START",
     UPDATE_MODEL_FULFILLED = "UPDATE_MODEL_FULFILLED",
     UPDATE_MODEL_REJECTED = "UPDATE_MODEL_REJECTED";
 
-export function updateModelToBackend(model, url, data, collapseId) {
+export function updateModelToBackend(model, url, data, collapseId, callback) {
     return store.dispatch((dispatch) => {
-        dispatch({type: UPDATE_MODEL_START, payload: {model: 'periods'}});
-        // const url = endpoints[model](data.id);
+        dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
         const options = {
             credentials: 'same-origin',
             method: 'PATCH',
@@ -82,14 +81,18 @@ export function updateModelToBackend(model, url, data, collapseId) {
         fetch(url, options)
             .then(response => response.json())
             .then((data) => {
-                const object = data.results;
                 dispatch({
                     type: UPDATE_MODEL_FULFILLED,
-                    payload: {model, object, collapseId}
+                    payload: {model: model, object: data, collapseId}
                 });
             })
+            .then(() => {
+                if (callback) {
+                    callback();
+                }
+            })
             .catch((error) => {
-                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'periods', error: error}});
+                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
             })
     });
 }

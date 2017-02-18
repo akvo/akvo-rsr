@@ -5,20 +5,12 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import { KEY_SET_ACTIVE, KEY_ADD_NEW } from "../reducers/collapseReducer"
+import { KEY_SET_ACTIVE } from "../reducers/collapseReducer"
 
 
 export function onChange(collapseId, activeKey) {
     return {
         type: KEY_SET_ACTIVE,
         payload: {collapseId, activeKey}
-    }
-}
-
-
-export function addKey(collapseId, key) {
-    return {
-        type: KEY_ADD_NEW,
-        payload: {collapseId, key}
     }
 }

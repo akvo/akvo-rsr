@@ -9,11 +9,13 @@
 import { PropTypes } from 'react'
 
 
-export const ToggleButton = ({onClick, label}) => {
+export const ToggleButton = ({onClick, label, style, icon}) => {
+    const buttonStyle = Object.assign({margin: '0.3em 0.5em'}, style ? style : {});
     return (
         <a onClick={onClick}
             className={'btn btn-sm btn-default'}
-            style={{margin: '0.3em 0.5em'}}>
+            style={buttonStyle}>
+            {icon}
             {label}
         </a>
     )

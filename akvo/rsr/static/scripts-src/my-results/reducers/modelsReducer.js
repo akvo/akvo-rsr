@@ -9,9 +9,6 @@ import { normalize, schema } from 'normalizr';
 import update  from 'immutability-helper';
 
 export const
-    KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
-    KEY_CLOSE = "KEY_CLOSE",
-
     FETCH_MODEL_START = "FETCH_MODEL_START",
     FETCH_MODEL_FULFILLED = "FETCH_MODEL_FULFILLED",
     FETCH_MODEL_REJECTED = "FETCH_MODEL_REJECTED",

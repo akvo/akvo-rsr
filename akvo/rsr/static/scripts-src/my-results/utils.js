@@ -12,8 +12,6 @@ import store from "./store"
 import { MODELS_LIST, PARENT_FIELD } from "./const"
 
 
-let months;
-
 export function identicalArrays(array1, array2) {
     // Compare two arrays and return true if they are identical, otherwise false
     try {
@@ -26,8 +24,12 @@ export function identicalArrays(array1, array2) {
     }
 }
 
+
+// global holding the month's translation strings
+let months;
 export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
+    // read from the DOM once
     if (!months) {
         months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
     }
@@ -133,6 +135,7 @@ export const endpoints = {
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
+
 export function displayNumber(numberString) {
     // Add commas to numbers of 1000 or higher.
     if (numberString !== undefined && numberString !== null) {
@@ -149,29 +152,15 @@ export function displayNumber(numberString) {
 // Translation a la python. Let's hope we never need lodash...
 let strings;
 export function _(s) {
+    // load once from the DOM
     if (!strings) {
         strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
     }
     return strings[s];
 }
 
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
-
-
-const ToggleButton = ({onClick, label}) => {
-    return (
-        <a onClick={onClick}
-            className={'btn btn-sm btn-default'}
-            style={{margin: '0.3em 0.5em'}}>
-            {label}
-        </a>
-    )
-};
-
-ToggleButton.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
-};
 
 
 export const findChildren = (parentId, childModel, parentField) => {
@@ -191,13 +180,8 @@ export const findChildren = (parentId, childModel, parentField) => {
 };
 
 
-export const userId = (props) => {
-    // Assumes props.user exists and holds only one user
-    return props.user.ids[0];
-};
-
-
 export function idsToActiveKey(ids) {
+    // Return the IDs as an array of strings, used as activeKey
     return ids.map(id => id.toString());
 }
 
@@ -242,6 +226,7 @@ function tree(model, parentId) {
 
 
 function flatten(arr) {
+    // Flatten an array of arrays
     return arr.reduce(
         (acc, val) => acc.concat(
             Array.isArray(val) ? flatten(val) : val),
@@ -251,7 +236,8 @@ function flatten(arr) {
 
 
 function keysList(node, close) {
-    // "disassemble" the tree representation of the data from tree() and return a list of objects
+    // "Disassemble" the tree representation of the data from tree() and return a list of objects.
+    // Each object holds the collapseID of the corresponding Collapse and its activeKey
     const key = {
         collapseId: collapseId(node.model, node.id),
         activeKey: close ? [] : idsToActiveKey(node.children.map(child => child.id.toString()))
@@ -274,9 +260,12 @@ export function toggleTree(model, id, close) {
 
 
 export function createToggleKeys(parentId, model, activeKey) {
+    // get all child nodes
     const childIds = findChildren(
         parentId, model, PARENT_FIELD[model]).ids;
+    // determine if we should open or close
     const fullyOpenKey = idsToActiveKey(childIds);
     const close = identicalArrays(fullyOpenKey, activeKey);
+    // construct the array of Collapse activeKeys for the sub-tree
     return toggleTree(model, parentId, close);
 }

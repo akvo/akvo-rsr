@@ -10,6 +10,8 @@ import { connect } from "react-redux"
 import update  from 'immutability-helper';
 
 import { onChange } from "../actions/collapse-actions"
+import { updateModelToBackend } from "../actions/model-actions"
+
 import {
     displayDate, APICall, endpoints, findChildren, createToggleKey, collapseId, createToggleKeys
 } from "../utils.js";
@@ -23,34 +25,24 @@ class PeriodLockToggle extends React.Component {
     constructor (props) {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
+        this.updatePeriodLock = this.updatePeriodLock.bind(this);
         this.state = {locking: false};
     }
 
-    basePeriodSave(periodId, data, callback) {
-        // Base function for saving a period with a data Object.
+    updatePeriodLock(periodId, data, callback) {
         const url = endpoints.period(periodId);
-        function success(data) {
-            this.props.callbacks.updateModel(OBJECTS_PERIODS, data);
-
-            if (callback) {
-                callback();
-            }
-        }
-        APICall('PATCH', url, data, success.bind(this));
+        updateModelToBackend(OBJECTS_PERIODS, url, data, this.props.collapseId, callback)
     }
 
     lockingToggle(locking) {
         this.setState({locking: locking});
     }
 
-    notLocking() {
-        this.lockingToggle(false);
-    }
-
     lockToggle(e) {
+        const period = this.props.period;
         if (!this.state.locking) {
             this.lockingToggle(true);
-            this.basePeriodSave(this.props.period.id, {locked: !this.props.period.locked}, this.notLocking.bind(this));
+            this.updatePeriodLock(period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false));
         }
         e.stopPropagation();
     }
@@ -68,12 +60,11 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <a onClick={this.lockToggle}
-               className={'btn btn-sm btn-default'}
-               style={{float: 'right', margin: '0.3em 0.5em'}}>
-                {icon}
-                {label}
-            </a>
+            <ToggleButton
+                onClick={this.lockToggle}
+                style={{float: 'right'}}
+                label={label}
+                icon={icon}/>
         )
     }
 }
