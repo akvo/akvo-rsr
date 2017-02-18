@@ -1,10 +1,10 @@
 {% extends "widgets/base.html" %}
 {% load i18n rsr_filters rsr_tags rsr_widgets rsr_utils %}
-{% load compressed %}
+{% load pipeline %}
 
 {% block style %}
 {{block.super}}
-{% compressed_css 'widget_project_narrow' %}
+{% stylesheet 'widget_project_narrow' %}
 {% endblock style %}
 
 {% block body %}
