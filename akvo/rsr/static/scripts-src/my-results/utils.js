@@ -158,6 +158,22 @@ export function _(s) {
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
 
 
+const ToggleButton = ({onClick, label}) => {
+    return (
+        <a onClick={onClick}
+            className={'btn btn-sm btn-default'}
+            style={{margin: '0.3em 0.5em'}}>
+            {label}
+        </a>
+    )
+};
+
+ToggleButton.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired
+};
+
+
 export const findChildren = (parentId, childModel, parentField) => {
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
