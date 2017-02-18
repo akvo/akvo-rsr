@@ -14,9 +14,26 @@ export const
     STATUS_APPROVED_CODE = 'A',
 
 
+    OBJECTS_APP = 'app',
     OBJECTS_RESULTS = 'results',
     OBJECTS_INDICATORS = 'indicators',
     OBJECTS_PERIODS = 'periods',
     OBJECTS_UPDATES = 'updates',
     OBJECTS_COMMENTS = 'comments',
-    OBJECTS_USERS = 'users';
+    OBJECTS_USERS = 'users',
+
+    // List of the models used in the accordion, in hierarchy order
+    MODELS_LIST = [
+        OBJECTS_APP, OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
+    ],
+
+    // Lookup of the parent FK field name on a model
+    PARENT_FIELD = {
+        [OBJECTS_RESULTS]: null,
+        [OBJECTS_INDICATORS]: 'result',
+        [OBJECTS_PERIODS]: 'indicator',
+        [OBJECTS_UPDATES]: 'period',
+        [OBJECTS_COMMENTS]: 'data'
+    }
+;
+
