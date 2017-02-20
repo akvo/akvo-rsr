@@ -165,7 +165,7 @@ export default class Periods extends React.Component {
             );
         } else if (periods.length > 0) {
             return (
-                <div>
+                <div className={OBJECTS_PERIODS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>

@@ -64,7 +64,7 @@ export default class Comments extends React.Component {
             );
         } else if (comments.length > 0) {
             return (
-                <div>
+                <div className={OBJECTS_COMMENTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(comments)}

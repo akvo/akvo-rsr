@@ -156,7 +156,7 @@ export default class Updates extends React.Component {
             );
         } else if (updates.length > 0) {
             return (
-                <div>
+                <div className={OBJECTS_UPDATES}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>

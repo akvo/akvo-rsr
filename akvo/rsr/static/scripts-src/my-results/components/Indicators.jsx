@@ -103,7 +103,7 @@ export default class Indicators extends React.Component {
             );
         } else if (indicators.length > 0) {
             return (
-                <div>
+                <div className={OBJECTS_INDICATORS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>

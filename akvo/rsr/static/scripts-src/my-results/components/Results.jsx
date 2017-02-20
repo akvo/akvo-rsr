@@ -15,6 +15,7 @@ import { _, findChildren, createToggleKey, collapseId, cascadeIds, createToggleK
 import { OBJECTS_RESULTS } from '../const.js';
 
 import Indicators from './Indicators';
+import { ToggleButton } from "./common"
 
 
 const ResultHeader = ({result}) => {
@@ -27,22 +28,6 @@ const ResultHeader = ({result}) => {
 
 ResultHeader.propTypes = {
     item: PropTypes.object
-};
-
-
-const ToggleButton = ({onClick, label}) => {
-    return (
-        <a onClick={onClick}
-            className={'btn btn-sm btn-default'}
-            style={{margin: '0.3em 0.5em'}}>
-            {label}
-        </a>
-    )
-};
-
-ToggleButton.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
 };
 
 
@@ -98,7 +83,7 @@ export default class Results extends React.Component {
             );
         } else if (results.length > 0) {
             return (
-                <div>
+                <div className={OBJECTS_RESULTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>

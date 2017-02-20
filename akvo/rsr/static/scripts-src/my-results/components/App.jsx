@@ -11,27 +11,27 @@ import { connect } from "react-redux"
 
 import { fetchModel, fetchUser } from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
-
+import { OBJECTS_PERIODS, PARENT_FIELD } from "../const"
 
 import Results from "./Results"
+import { ToggleButton } from "./common"
 
 
 const dataFromElement = (elementName) => {
     return JSON.parse(document.getElementById(elementName).innerHTML)
 };
 
-const testCallback = (stuff) => {
-    console.log(stuff);
-};
 
 @connect((store) => {
     return {
         page: store.page,
+        models: store.models
     }
 })
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+        this.showLocked = this.showLocked.bind(this);
     }
 
     componentDidMount() {
@@ -51,9 +51,23 @@ export default class App extends React.Component {
         fetchModel('comments', projectId);
     }
 
+    parentOf(model, id) {
+        return this.props.models[model].objects[id][PARENT_FIELD[model]]
+    }
+
+    showLocked() {
+        this.props.models[OBJECTS_PERIODS].ids.map((id) => {
+            console.log("Parent ID:", this.parentOf(OBJECTS_PERIODS, id))
+        })
+    }
+
     render() {
+        const style = {float: 'right'};
         return (
-            <Results parentId="results"/>
+            <div>
+                {/*<ToggleButton onClick={this.showLocked} label="Show locked" style={style}/>*/}
+                <Results parentId="results"/>
+            </div>
         );
     }
 }
