@@ -5,14 +5,31 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
+import React, { PropTypes } from 'react';
 import fetch from 'isomorphic-fetch';
 
+import store from "./store"
+import { MODELS_LIST, PARENT_FIELD } from "./const"
 
+
+export function identicalArrays(array1, array2) {
+    // Compare two arrays and return true if they are identical, otherwise false
+    try {
+        return (
+            (array1.length == array2.length) &&
+            array1.every((element, index) => (element === array2[index]))
+        )
+    } catch(e) {
+        return false;
+    }
+}
+
+
+// global holding the month's translation strings
 let months;
-
 export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
+    // read from the DOM once
     if (!months) {
         months = JSON.parse(document.getElementById('i18nMonths').innerHTML);
     }
@@ -89,6 +106,7 @@ export function APICall(method, url, data, callback, retries) {
             });
             break;
     }
+    return handler;
     handler()
         //TODO: error handling? See https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
         .then(function(response) {
@@ -117,6 +135,7 @@ export const endpoints = {
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
+
 export function displayNumber(numberString) {
     // Add commas to numbers of 1000 or higher.
     if (numberString !== undefined && numberString !== null) {
@@ -129,59 +148,124 @@ export function displayNumber(numberString) {
     return '';
 }
 
-let strings;
 
 // Translation a la python. Let's hope we never need lodash...
+let strings;
 export function _(s) {
+    // load once from the DOM
     if (!strings) {
         strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
     }
     return strings[s];
 }
 
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
 
-export function levelToggle(WrappedComponent) {
 
-    return class extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {activeKey: [], isOpen: false};
-            this.onChange = this.onChange.bind(this);
-            this.toggleLevel = this.toggleLevel.bind(this);
-        }
-
-        onChange(activeKey) {
-            // Keep track of open panels
-            this.setState({activeKey});
-        }
-
-        toggleLevel() {
-            const isOpen = this.state.isOpen;
-            if (isOpen) {
-                this.setState({activeKey: [], isOpen: !isOpen});
-            } else {
-                this.setState({
-                    activeKey: this.props.items.map((item) => item.id.toString()),
-                    isOpen: !isOpen
-                });
-            }
-        }
-
-        render() {
-            return (
-                <div>
-                    <a onClick={this.toggleLevel}
-                        className={'btn btn-sm btn-default'}
-                        style={{margin: '0.3em 0.5em'}}>
-                        +
-                    </a>
-                    <WrappedComponent
-                        activeKey={this.state.activeKey}
-                        onChange={this.onChange}
-                        {...this.props}/>
-                </div>
-            )
-        }
+export const findChildren = (parentId, childModel, parentField) => {
+    // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
+    // Return object with array of filtered ids and array of corresponding filtered objects
+    const model = store.getState().models[childModel];
+    if (model && model.ids) {
+        const { ids, objects } = model;
+        const filteredIds = ids.filter(
+            // if parentField is undefined return all ids (This applies to Result)
+            id => parentField ? objects[id][parentField] === parentId : true
+        );
+        const filteredObjects = filteredIds.map(id => objects[id]);
+        return {ids: filteredIds, [childModel]: filteredObjects}
     }
+    return {ids: [], [childModel]: undefined};
+};
+
+
+export function idsToActiveKey(ids) {
+    // Return the IDs as an array of strings, used as activeKey
+    return ids.map(id => id.toString());
+}
+
+
+export function createToggleKey(ids, activeKey) {
+    // Create an activeKey array for a Collapse element with either all panels open or none
+    // uses the IDs of the panels derived from the relevant model IDs
+    const allOpen = (ids.length > 0) && idsToActiveKey(ids);
+    // If allOpen is identical to activeKey, all panels are already open and we close them
+    return identicalArrays(activeKey, allOpen) ? [] : allOpen;
+}
+
+
+export function collapseId(model, id) {
+    // The collapseId is created from the model name and the ID of the parent object of the Collapse
+    return `${model}-${id}`;
+}
+
+
+function childModelName(model) {
+    try {
+        return MODELS_LIST[MODELS_LIST.indexOf(model) +1];
+    } catch(e) {
+        return undefined;
+    }
+}
+
+
+function tree(model, parentId) {
+    // Construct a tree representation of the subtree of data with object model[parentId] as root
+    const ids = findChildren(parentId, model, PARENT_FIELD[model]).ids;
+    const childModel = childModelName(model);
+    const children = ids.map((cId) => {
+        return tree(childModel, cId)
+    });
+    if (children.length > 0) {
+        return {id: parentId, model: model, children: children}
+    } else {
+        return {id: parentId}
+    }
+}
+
+
+function flatten(arr) {
+    // Flatten an array of arrays
+    return arr.reduce(
+        (acc, val) => acc.concat(
+            Array.isArray(val) ? flatten(val) : val),
+        []
+    );
+}
+
+
+function keysList(node, close) {
+    // "Disassemble" the tree representation of the data from tree() and return a list of objects.
+    // Each object holds the collapseID of the corresponding Collapse and its activeKey
+    const key = {
+        collapseId: collapseId(node.model, node.id),
+        activeKey: close ? [] : idsToActiveKey(node.children.map(child => child.id.toString()))
+    };
+    const children = node.children.filter((child) =>
+        child.model !== undefined
+    );
+    const childKeys = children.map((node) =>
+        keysList(node, close)
+    );
+    return flatten([key].concat(childKeys));
+
+}
+
+
+export function toggleTree(model, id, close) {
+    const fullTree = tree(model, id);
+    return keysList(fullTree, close);
+}
+
+
+export function createToggleKeys(parentId, model, activeKey) {
+    // get all child nodes
+    const childIds = findChildren(
+        parentId, model, PARENT_FIELD[model]).ids;
+    // determine if we should open or close
+    const fullyOpenKey = idsToActiveKey(childIds);
+    const close = identicalArrays(fullyOpenKey, activeKey);
+    // construct the array of Collapse activeKeys for the sub-tree
+    return toggleTree(model, parentId, close);
 }

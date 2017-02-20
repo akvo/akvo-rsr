@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n compressed %}
+{% load i18n pipeline %}
 
 {% block title %}{% trans 'MyRSR' %} - {% trans 'My results' %}{% endblock %}
 
@@ -30,5 +30,5 @@
         }
     </script>
 
-    {% compressed_js 'my_results_select' %}
+    {% javascript 'my_results_select' %}
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends "widgets/base.html" %}
 {% load i18n rsr_filters rsr_tags rsr_widgets addparam rsr_utils %}
 
-{% load compressed %}
+{% load pipeline %}
 
 {% block style %}
 {{block.super}}
-{% compressed_css 'widget_project_list' %}
+{% stylesheet 'widget_project_list' %}
 {% endblock style %}
 {% block body %}
 <section id="container" class="projectList {{style}} rsrWidget floats-in">

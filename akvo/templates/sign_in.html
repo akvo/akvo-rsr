@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n bootstrap3 compressed %}
+{% load i18n bootstrap3 pipeline %}
 
 {% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
 
@@ -44,5 +44,5 @@
         }
     </script>
 
-    {% compressed_js 'password_reset' %}
+    {% javascript 'password_reset' %}
 {% endblock %}

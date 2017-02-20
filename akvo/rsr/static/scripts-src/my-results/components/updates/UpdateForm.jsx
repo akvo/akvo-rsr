@@ -5,130 +5,25 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react';
-import {Panel} from 'rc-collapse';
-import update  from 'immutability-helper';
 
-import Level from "./Level.jsx";
-import Comments from './Comments.jsx';
+import React, { PropTypes } from "react";
+import Collapse, { Panel } from "rc-collapse";
+import { connect } from "react-redux"
+import update from 'immutability-helper';
+
+import { onChange, addKey } from "../../actions/collapse-actions"
+import {
+    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend, deleteUpdateFromBackend
+} from "../../actions/model-actions"
+import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
 
 import {
-    APICall, endpoints, displayDate, displayNumber, _, currentUser, isNewUpdate, levelToggle
-} from './utils.js';
-import {STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES} from './const.js';
+    endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId
+} from '../../utils.js';
 
+import {
+    STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES, OBJECTS_COMMENTS } from '../../const.js';
 
-const UpdateDisplay = ({update}) => {
-    const userName = update.user_details.first_name + " " + update.user_details.last_name;
-    return (
-        <div>
-            When: {displayDate(update.created_at)} |
-            By: {userName} |
-            Org: {update.user_details.approved_organisations[0].name} |
-            Status: {_('update_statuses')[update.status]} <br/>
-            Update value: {update.data} | {/*
-         NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
-         not update.period_actual_value from the backend
-         */}
-            Actual total for this period (including this update): {update.actual_value}
-        </div>
-    )
-};
-
-UpdateDisplay.propTypes = {
-    update: PropTypes.object.isRequired
-};
-
-
-class Update extends React.Component {
-    constructor (props) {
-        super(props);
-        this.formToggle = this.formToggle.bind(this);
-        this.state = {formOpen: isNewUpdate(props.update)};
-    }
-
-    formToggle() {
-        this.setState({formOpen: !this.state.formOpen});
-    }
-
-    render() {
-        return(
-            <div>
-                <div>
-                    <a onClick={this.formToggle}
-                       className={'btn btn-sm btn-default'}
-                       style={{margin: '0.3em 0.5em'}}>
-                        {_('edit_update')}
-                    </a>
-                </div>
-                {this.state.formOpen ?
-                    <UpdateForm
-                        callbacks={this.props.callbacks}
-                        update={this.props.update}
-                        formToggle={this.formToggle}/>
-                :
-                    <UpdateDisplay update={this.props.update}/>}
-            </div>
-        )
-    }
-}
-
-Update.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    update: PropTypes.object.isRequired
-};
-
-
-class UpdatesBase extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {model: "updates"}
-    }
-
-    componentWillMount() {
-        this.props.callbacks.loadModel('comments');
-    }
-
-    renderPanel(update) {
-        const organisation = update.user_details.approved_organisations[0].name;
-        const userName = update.user_details.first_name +" "+ update.user_details.last_name;
-        const headerText = `Update: ${userName} at ${organisation}, Data: ${update.data}
-                            Status: ${_('update_statuses')[update.status]}`;
-        return (
-            <Panel header={headerText} key={update.id}>
-                <Update
-                    update={update}
-                    callbacks={this.props.callbacks}/>
-                <div>
-                    <Comments
-                        items={update.comments}
-                        callbacks={this.props.callbacks}/>
-                </div>
-            </Panel>
-        )
-    }
-
-    render() {
-        // Combine activeKey with state.newKeys to create a new activeKey
-        // Note that the order of the props in the call to Level is important as the local activeKey
-        // overwrites props.activeKey
-        const activeKey = update(this.props.activeKey, {$push: this.props.newKeys});
-        return (
-            <Level
-                {...this.props}
-                renderPanel={this.renderPanel.bind(this)}
-                activeKey={activeKey}/>
-        );
-    }
-
-}
-
-UpdatesBase.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    items: PropTypes.array,
-};
-
-export const Updates = levelToggle(UpdatesBase);
 
 const Header = ({update}) => {
     return (
@@ -268,13 +163,14 @@ const pruneForPATCH = (update) => {
 };
 
 const pruneForPOST = (update) => {
-    // Only include the listed fields when POSTing an update
+    // Delete the listed fields when POSTing an update
     let updateForPOST = Object.assign({}, update);
     delete updateForPOST['user_details'];
+    delete updateForPOST['meta'];
     return updateForPOST;
 };
 
-class UpdateForm extends React.Component {
+export default class UpdateForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -287,20 +183,21 @@ class UpdateForm extends React.Component {
     }
 
     onChange(e) {
-        // When the form field widgets change, modify the model data in App.state[model]
+        // When the form field widgets change, modify the object in store['updates']
         const field = e.target.id;
-        this.props.callbacks.updateModel(
-            OBJECTS_UPDATES, update(this.props.update, {$merge: {[field]: e.target.value}}));
+        const changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+        updateModel('updates', changedUpdate);
     }
 
     onCancel() {
         this.props.formToggle();
-        const update = this.state.originalUpdate;
-        if (isNewUpdate(update)) {
-            this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
+        const originalUpdate = this.state.originalUpdate;
+        if (isNewUpdate(originalUpdate)) {
+            deleteFromModel(OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
         } else {
-            this.props.callbacks.updateModel(OBJECTS_UPDATES, update);
+            updateModel(OBJECTS_UPDATES, originalUpdate);
         }
+        updateFromClose(originalUpdate.id);
     }
 
     saveUpdate(e) {
@@ -311,30 +208,35 @@ class UpdateForm extends React.Component {
         } else {
             update.status = STATUS_DRAFT_CODE;
         }
-        let success = function(data) {
-            this.props.formToggle();
-            // Always save the instance using data coming from the backend
-            // TODO: look at having a replaceModel method?
-            this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
-            this.props.callbacks.updateModel(OBJECTS_UPDATES, data);
-        };
+        // let success = function(data) {
+        //     this.props.formToggle();
+        //     // Always save the instance using data coming from the backend
+        //     // TODO: look at having a replaceModel method?
+        //     this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
+        //     this.props.callbacks.updateModel(OBJECTS_UPDATES, data);
+        // };
+        // close form if all went well
+        const callback = updateFormClose.bind(null, update.id);
         if (isNewUpdate(update)) {
-            APICall('POST', endpoints.updates_and_comments(),
-                    pruneForPOST(update), success.bind(this));
+            saveUpdateToBackend(endpoints.updates_and_comments(), pruneForPOST(update),
+                                this.props.collapseId, callback);
         } else {
-            APICall('PATCH', endpoints.update_and_comments(update.id),
-                    pruneForPATCH(update), success.bind(this));
+            updateUpdateToBackend(endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                                  this.props.collapseId, callback);
         }
     }
 
     deleteUpdate() {
-        const data = {id: this.props.update.id};
-        let success = function() {
-            this.props.formToggle();
-            this.props.callbacks.updateModel(OBJECTS_UPDATES, data, true);
-        };
+        // const data = {id: this.props.update.id};
+        // let success = function() {
+        //     this.props.formToggle();
+        //     this.props.callbacks.updateModel(OBJECTS_UPDATES, data, true);
+        // };
+        //
+        // APICall('DELETE', endpoints.update_and_comments(data.id), null, success.bind(this));
+        const url = endpoints.update_and_comments(this.props.update.id);
 
-        APICall('DELETE', endpoints.update_and_comments(data.id), null, success.bind(this));
+        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId);
     }
 
     previousActualValue() {
@@ -389,23 +291,32 @@ let newUpdateID = 1;
 export class NewUpdateButton extends React.Component {
     constructor (props) {
         super(props);
+        this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
         this.newUpdate = this.newUpdate.bind(this);
     }
 
+    activeKey() {
+        return this.props.keys[this.state.collapseId];
+    }
+
     newUpdate() {
-        const user = this.props.callbacks.currentUser();
         const id = `new-${newUpdateID}`;
-        const data = {
+        let { user, period } = this.props;
+        user = user.objects[user.ids[0]];
+        const update = {
             id: id,
-            period: this.props.period.id,
+            period: period.id,
             user_details: user,
             user: user.id,
             data: 0,
             text: '',
             relative_data: true,
-            status: STATUS_DRAFT_CODE
+            status: STATUS_DRAFT_CODE,
+            // Keep track of the open/closed state of the form
         };
-        this.props.callbacks.openNewForm(id, data);
+        //TODO: promise based solution where addKey is called on completion of updateModel?
+        updateModel('updates', update, this.state.collapseId);
+        updateFormOpen(update.id);
         newUpdateID += 1;
     }
 
@@ -426,6 +337,6 @@ export class NewUpdateButton extends React.Component {
 }
 
 NewUpdateButton.propTypes = {
-    callbacks: PropTypes.object.isRequired,
+    callbacks: PropTypes.object,
     period: PropTypes.object
 };

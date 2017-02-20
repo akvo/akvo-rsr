@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n rsr_utils rules compressed %}
+{% load i18n rsr_utils rules pipeline %}
 {% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 {% block myrsr_main %}
       <div class="col-sm-6"><h3>{% trans "My projects" %}</h3>
@@ -144,5 +144,5 @@
         }
     </script>
 
-    {% compressed_js 'my_projects' %}
+    {% javascript 'my_projects' %}
 {% endblock %}

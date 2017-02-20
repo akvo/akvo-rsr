@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load compressed i18n bootstrap3 %}
+{% load pipeline i18n bootstrap3 %}
 
 {% block title %}{% trans 'MyRSR - My IATI' %}{% endblock title %}
 
@@ -173,5 +173,5 @@
         }
     </script>
 
-    {% compressed_js 'my_iati' %}
+    {% javascript 'my_iati' %}
 {% endblock js %}

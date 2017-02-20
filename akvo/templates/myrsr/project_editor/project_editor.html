@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils compressed rules humanize project_editor %}
+{% load i18n bootstrap3 rsr_utils pipeline rules humanize project_editor %}
 {% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
 {% block myrsr_main %}
     <!--[if lte IE 9]>
@@ -61,7 +61,7 @@
     {{ block.super }}
 
     {# React CSS #}
-    {% compressed_css 'react_datepicker_style' %}
+    {% stylesheet 'react_datepicker_style' %}
 
     {% with project_id_string=project.pk|stringformat:"s" text_input="myrsr/project_editor/fields/text_input.html" textarea_input="myrsr/project_editor/fields/textarea_input.html" choice_input="myrsr/project_editor/fields/choice_input.html" boolean_input="myrsr/project_editor/fields/boolean_input.html" date_input="myrsr/project_editor/fields/date_input.html" typeahead_input="myrsr/project_editor/fields/typeahead_input.html" currency_input="myrsr/project_editor/fields/currency_input.html" percentage_input="myrsr/project_editor/fields/percentage_input.html" file_input="myrsr/project_editor/fields/file_input.html" manytomany_input="myrsr/project_editor/fields/manytomany_input.html" %}
         {# Section 1 #}
@@ -203,5 +203,5 @@
         [{% for country in countries %}{"pk": "{{ country.code }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
-    {% compressed_js 'project_editor' %}
+    {% javascript 'project_editor' %}
 {% endblock %}

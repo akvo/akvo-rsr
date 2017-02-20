@@ -1,9 +1,9 @@
 {% extends "admin/change_form.html" %}
-{% load admin_modify compressed i18n %}
+{% load admin_modify pipeline i18n %}
 
 {% block extrastyle %}
   {{block.super}}
-  {% compressed_css 'admin_style' %}
+  {% stylesheet 'admin_style' %}
   <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 {% endblock %}
 

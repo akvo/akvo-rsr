@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 compressed humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -264,8 +264,8 @@
         }
     </script>
 
-  {% compressed_js 'project_directory' %}
-  {% compressed_js 'project_directory_typeahead' %}
-  {% compressed_js 'more_partners' %}
-  {% compressed_js 'donate_popup' %}
+  {% javascript 'project_directory' %}
+  {% javascript 'project_directory_typeahead' %}
+  {% javascript 'more_partners' %}
+  {% javascript 'donate_popup' %}
 {% endblock js %}

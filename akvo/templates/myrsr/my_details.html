@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load bootstrap3 compressed i18n rsr_utils %}
+{% load bootstrap3 pipeline i18n rsr_utils %}
 
 {% block title %}{% trans 'MyRSR - My details' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
@@ -132,6 +132,6 @@
       }
     </script>
 
-    {% compressed_js 'my_change_password' %}
-    {% compressed_js 'my_details' %}
+    {% javascript 'my_change_password' %}
+    {% javascript 'my_details' %}
 {% endblock js %}
