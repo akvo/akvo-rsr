@@ -13,8 +13,11 @@ from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
-from django.contrib.auth import get_permission_codename, get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from django.contrib.auth.forms import (
+    UserChangeForm as DjangoUserChangeForm, UserCreationForm as DjangoUserCreationForm
+)
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.db.models import get_model
@@ -1106,6 +1109,29 @@ class ApiKeyInline(admin.StackedInline):
         return False
 
 
+class UserCreationForm(DjangoUserCreationForm):
+
+    username = forms.RegexField(
+        label=_("Username"), max_length=254,
+        regex=r'^[\w.@+-]+$',
+        help_text=_("Required. 254 characters or fewer. Letters, digits and "
+                    "@/./+/-/_ only."),
+        error_messages={
+            'invalid': _("This value may contain only letters, numbers and "
+                         "@/./+/-/_ characters.")})
+
+
+class UserChangeForm(DjangoUserChangeForm):
+
+    username = forms.RegexField(
+        label=_("Username"), max_length=254, regex=r"^[\w.@+-]+$",
+        help_text=_("Required. 254 characters or fewer. Letters, digits and "
+                    "@/./+/-/_ only."),
+        error_messages={
+            'invalid': _("This value may contain only letters, numbers and "
+                         "@/./+/-/_ characters.")})
+
+
 class UserAdmin(DjangoUserAdmin):
     model = get_model('rsr', 'user')
     fieldsets = (
@@ -1130,6 +1156,9 @@ class UserAdmin(DjangoUserAdmin):
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
+
+    form = UserChangeForm
+    add_form = UserCreationForm
 
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
