@@ -110,7 +110,8 @@ UpdateHeader.propTypes = {
 @connect((store) => {
     return {
         updates: store.models['updates'],
-        keys: store.keys
+        keys: store.keys,
+        ui: store.ui
     }
 })
 export default class Updates extends React.Component {
@@ -158,7 +159,7 @@ export default class Updates extends React.Component {
             return (
                 <div className={OBJECTS_UPDATES}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++"/>
+                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(updates)}
                     </Collapse>

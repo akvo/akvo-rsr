@@ -11,6 +11,8 @@ import { connect } from "react-redux"
 
 import { fetchModel, fetchUser } from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
+import { activateToggleAll } from "../actions/ui-actions"
+
 import { OBJECTS_PERIODS, PARENT_FIELD } from "../const"
 
 import Results from "./Results"
@@ -44,11 +46,11 @@ export default class App extends React.Component {
         fetchUser(userId);
 
         const projectId = project.project_id;
-        fetchModel('results', projectId);
-        fetchModel('indicators', projectId);
-        fetchModel('periods', projectId);
-        fetchModel('updates', projectId);
-        fetchModel('comments', projectId);
+        fetchModel('results', projectId, activateToggleAll);
+        fetchModel('indicators', projectId, activateToggleAll);
+        fetchModel('periods', projectId, activateToggleAll);
+        fetchModel('updates', projectId, activateToggleAll);
+        fetchModel('comments', projectId, activateToggleAll);
     }
 
     parentOf(model, id) {

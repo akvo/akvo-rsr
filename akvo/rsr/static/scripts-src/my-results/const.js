@@ -24,7 +24,7 @@ export const
 
     // List of the models used in the accordion, in hierarchy order
     MODELS_LIST = [
-        OBJECTS_APP, OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
+        OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
     ],
 
     // Lookup of the parent FK field name on a model

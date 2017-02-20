@@ -8,10 +8,13 @@
 export const
     UPDATE_FORM_TOGGLE = "UPDATE_FORM_TOGGLE",
     UPDATE_FORM_OPEN = "UPDATE_FORM_OPEN",
-    UPDATE_FORM_CLOSE = "UPDATE_FORM_CLOSE";
+    UPDATE_FORM_CLOSE = "UPDATE_FORM_CLOSE",
+    ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED";
 
+// Controls the toggleAll buttons
+const uiState = {allFetched: false};
 
-export default function uiReducer(state={}, action) {
+export default function uiReducer(state=uiState, action) {
     switch(action.type) {
 
         case UPDATE_FORM_TOGGLE: {
@@ -30,6 +33,11 @@ export default function uiReducer(state={}, action) {
         case UPDATE_FORM_CLOSE: {
             const {id} = action.payload;
             state = {...state, [id]: false};
+            break;
+        }
+
+        case ALL_MODELS_FETCHED: {
+            state = {...state, allFetched: true};
             break;
         }
     }

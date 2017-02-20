@@ -15,7 +15,7 @@ import {
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
-export function fetchModel(model, id) {
+export function fetchModel(model, id, callback) {
     return store.dispatch((dispatch) => {
         dispatch({type: FETCH_MODEL_START, payload: {model: model}});
         const url = endpoints[model](id);
@@ -28,13 +28,18 @@ export function fetchModel(model, id) {
             .then(response => response.json())
             .then((data) => {
                 dispatch({type: FETCH_MODEL_FULFILLED, payload: {model: model, data: data.results}});
-                return "FOO";
+            })
+            .then(() => {
+                if (callback) {
+                    callback();
+                }
             })
             .catch((error) => {
                 dispatch({type: FETCH_MODEL_REJECTED, payload: {model: model, error: error}});
             })
     });
 }
+
 
 export function fetchUser(id) {
     const model = 'user';
@@ -97,6 +102,7 @@ export function updateModelToBackend(model, url, data, collapseId, callback) {
     });
 }
 
+
 export function saveUpdateToBackend(url, data, collapseId, callback) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
@@ -132,6 +138,7 @@ export function saveUpdateToBackend(url, data, collapseId, callback) {
     });
 }
 
+
 export function updateUpdateToBackend(url, data, collapseId, callback) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
@@ -163,6 +170,7 @@ export function updateUpdateToBackend(url, data, collapseId, callback) {
     });
 }
 
+
 export function deleteUpdateFromBackend(url, data, collapseId, callback) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
@@ -192,6 +200,7 @@ export function deleteUpdateFromBackend(url, data, collapseId, callback) {
             })
     });
 }
+
 
 // TODO: maybe extract into an actions file of their own since they trigger both the collapse and
 // the models reducers

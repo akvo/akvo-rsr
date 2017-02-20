@@ -106,7 +106,8 @@ PeriodHeader.propTypes = {
     return {
         periods: store.models['periods'],
         keys: store.keys,
-        user: store.models['user']
+        user: store.models['user'],
+        ui: store.ui
     }
 })
 export default class Periods extends React.Component {
@@ -167,7 +168,7 @@ export default class Periods extends React.Component {
             return (
                 <div className={OBJECTS_PERIODS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++"/>
+                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periods)}
                     </Collapse>

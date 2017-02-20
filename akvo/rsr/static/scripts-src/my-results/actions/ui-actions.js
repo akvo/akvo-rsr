@@ -8,8 +8,11 @@
 
 import store from "../store"
 
-import { UPDATE_FORM_TOGGLE, UPDATE_FORM_OPEN, UPDATE_FORM_CLOSE } from "../reducers/uiReducer"
+import {
+    UPDATE_FORM_TOGGLE, UPDATE_FORM_OPEN, UPDATE_FORM_CLOSE, ALL_MODELS_FETCHED
+} from "../reducers/uiReducer"
 
+import { MODELS_LIST } from "../const"
 
 export function updateFormToggle(id) {
     store.dispatch({
@@ -30,4 +33,15 @@ export function updateFormClose(id) {
         type: UPDATE_FORM_CLOSE,
         payload: {id: `updateForm-${id}`}
     });
+}
+
+export function activateToggleAll() {
+    // Have we fetched all models?
+    const allFetched = MODELS_LIST.every((model) => store.getState().models[model].fetched);
+    if (allFetched) {
+        store.dispatch({
+            type: ALL_MODELS_FETCHED,
+            payload: true
+        });
+    }
 }
