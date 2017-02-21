@@ -27,8 +27,10 @@ from sorl.thumbnail.fields import ImageField
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
-    parent_indicator = models.ForeignKey('self', blank=True, null=True, default=None,
-                               verbose_name=_(u'parent indicator'), related_name='child_indicators')
+    parent_indicator = models.ForeignKey(
+        'self', blank=True, null=True, default=None,
+        verbose_name=_(u'parent indicator'), related_name='child_indicators'
+    )
     title = ValidXMLCharField(
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
