@@ -130,10 +130,13 @@ class ValidAkvoPageTestCase(TestCase):
         """Setup."""
         valid_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
         self.c = Client(HTTP_HOST=valid_host)
-        o1 = Organisation(name='p1', long_name='Partner1')
-        o1.save()
-        ps1 = PartnerSite(organisation=o1, hostname='partner1', cname='projects.partner1.org')
-        ps1.save()
+        o1 = Organisation.objects.create(name='p1', long_name='Partner1')
+        PartnerSite.objects.create(
+            organisation=o1,
+            hostname='partner1',
+            cname='projects.partner1.org',
+            piwik_id=0,
+        )
         iati_version = Version(code=settings.IATI_VERSION)
         iati_version.save()
 
@@ -159,10 +162,13 @@ class ValidCnameAkvoPageTestCase(TestCase):
         # valid_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
         self.cname = "projects.partner1.org"
         self.c = Client(HTTP_HOST=self.cname)
-        o1 = Organisation(name='p1', long_name='Partner1')
-        o1.save()
-        ps1 = PartnerSite(organisation=o1, hostname='partner1', cname=self.cname)
-        ps1.save()
+        o1 = Organisation.objects.create(name='p1', long_name='Partner1')
+        PartnerSite.objects.create(
+            organisation=o1,
+            hostname='partner1',
+            cname=self.cname,
+            piwik_id=0,
+        )
         iati_version = Version(code=settings.IATI_VERSION)
         iati_version.save()
 
