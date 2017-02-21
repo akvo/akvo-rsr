@@ -6461,7 +6461,7 @@ msgid ""
 "Provide a brief description of the overall project goals. For links and "
 "styling of the text, <a href=\"https://github.com/adam-p/markdown-here/wiki"
 "/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a> is supported."
-msgstr "Brinde una descripción de los objetivos generales del proyecto. Para incluir enlaces o estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\"> "
+msgstr "Brinde una descripción de los objetivos generales del proyecto. Para incluir enlaces o estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>."
 
 #: rsr/models/project.py:188
 msgid "baseline situation"
@@ -6472,7 +6472,7 @@ msgid ""
 "Describe the situation at the start of the project. For links and styling of"
 " the text, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-"
 "Cheatsheet\" target=\"_blank\">Markdown</a> is supported."
-msgstr "Describa la situación al inicio del proyecto. Para incluir enlaces o estilizar texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">"
+msgstr "Describa la situación al inicio del proyecto. Para incluir enlaces o estilizar texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>."
 
 #: rsr/models/project.py:194
 msgid "project plan"
@@ -6484,7 +6484,7 @@ msgid ""
 " who and when. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr "Información detallada sobre la ejecución del proyecto: qué, cómo, quién y cómo. Para incluir enlaces y estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">   "
+msgstr "Información detallada sobre la ejecución del proyecto: qué, cómo, quién y cómo. Para incluir enlaces y estilizar el texto visite, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>."
 
 #: rsr/models/project.py:201
 msgid "sustainability"
@@ -6499,7 +6499,7 @@ msgid ""
 "impact and social integration. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr "Describa como asegurará la sostenibilidad del proyecto después de 10 años de su finalización. Piense en el contexto institucional, fortalecimiento de capacidades, plan de recuperación de costos, productos utilizados, viabilidad arreglos de operación y mantenimiento, anticipación de impactos ambientales e integración social. Para incluir enlaces y estilizar texto, visitar <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">"
+msgstr "Describa como asegurará la sostenibilidad del proyecto después de 10 años de su finalización. Piense en el contexto institucional, fortalecimiento de capacidades, plan de recuperación de costos, productos utilizados, viabilidad arreglos de operación y mantenimiento, anticipación de impactos ambientales e integración social. Para incluir enlaces y estilizar texto, visitar <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>."
 
 #: rsr/models/project.py:211
 msgid "background"
@@ -6512,7 +6512,7 @@ msgid ""
 " already taken place or are underway. For links and styling of the text, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a> is supported."
-msgstr "Esto debe describir el contexto geográfico, político, ambiental, social y/o cultural en el que se desarrolla el proyecto al igual que actividades relacionadas que ya se han desarrollado o están en camino. Para incluir enlaces y  estilizar el texto, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">. "
+msgstr "Esto debe describir el contexto geográfico, político, ambiental, social y/o cultural en el que se desarrolla el proyecto al igual que actividades relacionadas que ya se han desarrollado o están en camino. Para incluir enlaces y  estilizar el texto, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>."
 
 #: rsr/models/project.py:219
 msgid "target group"
