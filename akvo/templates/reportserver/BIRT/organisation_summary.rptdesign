@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -2933,6 +2933,7 @@ from rsr_organisation]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Count projects" id="222">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">project_count</property>
@@ -2945,6 +2946,18 @@ from rsr_organisation]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">update_count</text-property>
                     <text-property name="heading">update_count</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -2982,10 +2995,33 @@ from rsr_organisation]]></xml-property>
   count (distinct rsr_project.id) as project_count,
   count (distinct rsr_projectupdate.id) as update_count
 from
-  rsr_project left join rsr_projectupdate on rsr_project.id = rsr_projectupdate.project_id]]></xml-property>
+  rsr_project 
+ left join rsr_projectupdate on rsr_project.id = rsr_projectupdate.project_id
+ left join rsr_organisation on rsr_organisation.id = rsr_project.primary_organisation_id
+ where rsr_project.primary_organisation_id =? 
+ and rsr_project.is_public = 'TRUE' 
+ 
+  ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -5276,6 +5312,21 @@ AND  date_end_actual <= NOW()]]></xml-property>
         <grid id="303">
             <property name="marginTop">14pt</property>
             <property name="width">7.947916666666667in</property>
+            <property name="dataSet">Count projects</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">project_count</property>
+                    <text-property name="displayName">project_count</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_count"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">update_count</property>
+                    <text-property name="displayName">update_count</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["update_count"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
             <column id="304">
                 <property name="width">2.4375in</property>
             </column>
@@ -5358,12 +5409,6 @@ AND  date_end_actual <= NOW()]]></xml-property>
         <table id="260">
             <property name="dataSet">last_edited_projects</property>
             <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">name</property>
-                    <text-property name="displayName">name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
                 <structure>
                     <property name="name">title</property>
                     <text-property name="displayName">title</text-property>
