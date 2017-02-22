@@ -5,7 +5,9 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+// TODO: several of these constants should be derived from the RSR settings
 export const
+    API_LIMIT = 100,
     // From rsr.models.indicator.IndicatorPeriodData
     STATUS_NEW_CODE = 'N',
     STATUS_DRAFT_CODE = 'D',
