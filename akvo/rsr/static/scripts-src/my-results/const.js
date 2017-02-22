@@ -5,7 +5,9 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+// TODO: several of these constants should be derived from the RSR settings
 export const
+    API_LIMIT = 100,
     // From rsr.models.indicator.IndicatorPeriodData
     STATUS_NEW_CODE = 'N',
     STATUS_DRAFT_CODE = 'D',
@@ -24,7 +26,7 @@ export const
 
     // List of the models used in the accordion, in hierarchy order
     MODELS_LIST = [
-        OBJECTS_APP, OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
+        OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
     ],
 
     // Lookup of the parent FK field name on a model

@@ -42,7 +42,12 @@ const set = (arr) => {
 };
 
 const initialModels = {
-    results: {}, indicators: {}, periods: {}, updates: {}, comments: {}, user: {}
+    results: {fetched: false},
+    indicators: {fetched: false},
+    periods: {fetched: false},
+    updates: {fetched: false},
+    comments: {fetched: false},
+    user: {fetched: false}
 };
 
 export default function modelsReducer(state=initialModels, action) {
@@ -51,7 +56,10 @@ export default function modelsReducer(state=initialModels, action) {
         // FETCH_ actions fetch data from the backend and do the initial population of the data
         case FETCH_MODEL_START: {
             const model = action.payload.model;
-            state = {...state, [model]: {changing: true, changed: false, objects: null, ids: null}};
+            state = {
+                ...state,
+                [model]: {fetched: false, changing: true, changed: false, objects: null, ids: null}
+            };
             break;
         }
 
@@ -59,6 +67,7 @@ export default function modelsReducer(state=initialModels, action) {
             const model = action.payload.model;
             const normalized = normalizedObjects(action.payload.data);
             state = {...state, [model]: {
+                fetched: true,
                 changing: false,
                 changed: true,
                 objects: normalized.entities.items,
@@ -70,6 +79,7 @@ export default function modelsReducer(state=initialModels, action) {
         case FETCH_MODEL_REJECTED: {
             const model = action.payload.model;
             state = {...state, [model]: {
+                fetched: false,
                 changing: false,
                 changed: false,
                 objects: null,

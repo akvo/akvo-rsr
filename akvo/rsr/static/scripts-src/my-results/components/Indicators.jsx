@@ -55,7 +55,8 @@ IndicatorContent.propTypes = {
 @connect((store) => {
     return {
         indicators: store.models['indicators'],
-        keys: store.keys
+        keys: store.keys,
+        ui: store.ui
     }
 })
 export default class Indicators extends React.Component {
@@ -105,7 +106,7 @@ export default class Indicators extends React.Component {
             return (
                 <div className={OBJECTS_INDICATORS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++"/>
+                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(indicators)}
                     </Collapse>

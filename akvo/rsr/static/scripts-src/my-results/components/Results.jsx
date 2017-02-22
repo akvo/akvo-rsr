@@ -34,7 +34,8 @@ ResultHeader.propTypes = {
 @connect((store) => {
     return {
         results: store.models['results'],
-        keys: store.keys
+        keys: store.keys,
+        ui: store.ui
     }
 })
 export default class Results extends React.Component {
@@ -85,7 +86,7 @@ export default class Results extends React.Component {
             return (
                 <div className={OBJECTS_RESULTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++"/>
+                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(results)}
                     </Collapse>
