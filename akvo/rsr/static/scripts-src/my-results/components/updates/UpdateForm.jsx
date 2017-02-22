@@ -22,7 +22,8 @@ import {
 } from '../../utils.js';
 
 import {
-    STATUS_DRAFT_CODE, STATUS_APPROVED_CODE, OBJECTS_UPDATES, OBJECTS_COMMENTS } from '../../const.js';
+    UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
+} from '../../const.js';
 
 
 const Header = ({update}) => {
@@ -204,18 +205,11 @@ export default class UpdateForm extends React.Component {
         let update = Object.assign({}, this.props.update);
         // All changes to an update revert it to draft unless it is explicitly approved while saving
         if (e.target.id == 'approve') {
-            update.status = STATUS_APPROVED_CODE;
+            update.status = UPDATE_STATUS_APPROVED;
         } else {
-            update.status = STATUS_DRAFT_CODE;
+            update.status = UPDATE_STATUS_DRAFT;
         }
-        // let success = function(data) {
-        //     this.props.formToggle();
-        //     // Always save the instance using data coming from the backend
-        //     // TODO: look at having a replaceModel method?
-        //     this.props.callbacks.deleteFromModel(OBJECTS_UPDATES, update.id);
-        //     this.props.callbacks.updateModel(OBJECTS_UPDATES, data);
-        // };
-        // close form if all went well
+
         const callback = updateFormClose.bind(null, update.id);
         if (isNewUpdate(update)) {
             saveUpdateToBackend(endpoints.updates_and_comments(), pruneForPOST(update),
@@ -227,15 +221,7 @@ export default class UpdateForm extends React.Component {
     }
 
     deleteUpdate() {
-        // const data = {id: this.props.update.id};
-        // let success = function() {
-        //     this.props.formToggle();
-        //     this.props.callbacks.updateModel(OBJECTS_UPDATES, data, true);
-        // };
-        //
-        // APICall('DELETE', endpoints.update_and_comments(data.id), null, success.bind(this));
         const url = endpoints.update_and_comments(this.props.update.id);
-
         deleteUpdateFromBackend(url, this.props.update, this.props.collapseId);
     }
 
@@ -311,7 +297,7 @@ export class NewUpdateButton extends React.Component {
             data: 0,
             text: '',
             relative_data: true,
-            status: STATUS_DRAFT_CODE,
+            status: UPDATE_STATUS_NEW,
             // Keep track of the open/closed state of the form
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?

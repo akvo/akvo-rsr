@@ -9,11 +9,11 @@
 export const
     API_LIMIT = 100,
     // From rsr.models.indicator.IndicatorPeriodData
-    STATUS_NEW_CODE = 'N',
-    STATUS_DRAFT_CODE = 'D',
-    STATUS_PENDING_CODE = 'P',
-    STATUS_REVISION_CODE = 'R',
-    STATUS_APPROVED_CODE = 'A',
+    UPDATE_STATUS_NEW = 'N',
+    UPDATE_STATUS_DRAFT = 'D',
+    UPDATE_STATUS_PENDING = 'P',
+    UPDATE_STATUS_REVISION = 'R',
+    UPDATE_STATUS_APPROVED = 'A',
 
 
     OBJECTS_APP = 'app',
