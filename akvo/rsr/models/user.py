@@ -97,7 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')
     avatar = ImageField(_(u'avatar'), null=True, upload_to=image_path,
                         help_text=_(u'The avatar should be less than 500 kb in size.'),
-    )
+                        )
 
     objects = CustomUserManager()
 
@@ -169,7 +169,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return None
 
-    #methods that interact with the User model
+    # methods that interact with the User model
     def get_is_active(self):
         return self.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view
@@ -348,7 +348,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email])
-        pass
 
     @property
     def user(self):

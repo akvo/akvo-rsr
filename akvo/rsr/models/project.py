@@ -5,7 +5,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import math
 
 from decimal import Decimal, InvalidOperation
 
@@ -19,7 +18,7 @@ from django.db.models.signals import post_save, post_delete
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 
 from django_counter.models import ViewCounter
@@ -502,7 +501,6 @@ class Project(TimestampsMixin, models.Model):
         if not self.iati_activity_id:
             self.iati_activity_id = None
 
-
     @models.permalink
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
@@ -511,8 +509,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate url is set, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_url and self.is_published() and self.funds_needed > 0 and not \
-                self.iati_status in Project.DONATE_DISABLED:
+        if self.donate_url and self.is_published() and self.funds_needed > 0 and \
+                self.iati_status not in Project.DONATE_DISABLED:
             return True
         return False
 
@@ -897,8 +895,8 @@ class Project(TimestampsMixin, models.Model):
         )
 
     latest_update.allow_tags = True
-    #no go, results in duplicate projects entries in the admin change list
-    #latest_update.admin_order_field = 'project_updates__time'
+    # no go, results in duplicate projects entries in the admin change list
+    # latest_update.admin_order_field = 'project_updates__time'
 
     def show_status(self):
         "Show the current project status"
@@ -1013,7 +1011,6 @@ class Project(TimestampsMixin, models.Model):
 
         return total_string[:-2]
 
-
     def focus_areas(self):
         from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
@@ -1037,7 +1034,7 @@ class Project(TimestampsMixin, models.Model):
             areas += [area]
         return areas
 
-    #shortcuts to linked orgs for a single project
+    # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
         """
         Return the partner organisations to the project.
@@ -1298,7 +1295,7 @@ class Project(TimestampsMixin, models.Model):
         return [keyword.label for keyword in self.keywords.all()]
 
     ###################################
-    ####### RSR Impact projects #######
+    # RSR Impact projects #############
     ###################################
 
     def import_results(self):

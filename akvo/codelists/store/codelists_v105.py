@@ -4202,4 +4202,3 @@ AID_TYPE_CATEGORY = (
     (u'G', u'Administrative costs not included elsewhere', u''),
     (u'H', u'Other in-donor expenditures', u'Groups a number of contributions that do not give rise to a cross-border flow.')
 )
-

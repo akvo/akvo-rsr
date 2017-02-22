@@ -61,11 +61,11 @@ class Partnerships(ImportMapper):
             iati_activity_id = self.get_attrib(partnership, 'activity-id', 'iati_activity_id')
 
             funding_amount = self.get_attrib(
-                    partnership, akvo_ns('funding-amount'), 'funding_amount', None)
+                partnership, akvo_ns('funding-amount'), 'funding_amount', None)
             if funding_amount:
                 funding_amount_present = True
                 funding_amount = self.cast_to_decimal(
-                        funding_amount, 'participating-org', 'funding_amount')
+                    funding_amount, 'participating-org', 'funding_amount')
 
             if not (organisation and organisation_role):
                 self.add_log('participating-org', 'participating_org',
@@ -81,12 +81,12 @@ class Partnerships(ImportMapper):
             )
             if created:
                 changes.append(u'added partnership (id: {}): {}'.format(
-                        partnership_obj.pk, partnership_obj))
+                    partnership_obj.pk, partnership_obj))
             imported_partnerships.append(partnership_obj)
 
         changes += self.delete_objects(
-                self.project.partnerships.filter(iati_organisation_role__lt=100),
-                imported_partnerships, 'partnership')
+            self.project.partnerships.filter(iati_organisation_role__lt=100),
+            imported_partnerships, 'partnership')
 
         if not funding_amount_present:
             funding_partners = self.project.partnerships.filter(iati_organisation_role=1)
@@ -99,6 +99,6 @@ class Partnerships(ImportMapper):
                         funding_partner.funding_amount = average_budget
                         funding_partner.save()
                         changes.append(
-                                u'updated funding amount for partnership (id: {}): {}'.format(
-                                    funding_partner.pk, funding_partner))
+                            u'updated funding amount for partnership (id: {}): {}'.format(
+                                funding_partner.pk, funding_partner))
         return changes

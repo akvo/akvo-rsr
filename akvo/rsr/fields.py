@@ -21,7 +21,7 @@ class NullCharField(models.CharField):
 
     def to_python(self, value):
         if isinstance(value, models.CharField):
-            return value 
+            return value
         if value is None:
             return ''
         return value

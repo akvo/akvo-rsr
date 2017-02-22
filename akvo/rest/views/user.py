@@ -11,14 +11,17 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view
+from rest_framework.decorators import authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
 from akvo.rest.models import TastyTokenAuthentication
-from ...rsr.models import Country, Employment, Organisation
+from ...rsr.models import Employment
+from ...rsr.models import Organisation
 from ..viewsets import BaseRSRViewSet
-from ..serializers import EmploymentSerializer, OrganisationSerializer, CountrySerializer
+from ..serializers import EmploymentSerializer
+from ..serializers import OrganisationSerializer
 from ..serializers import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 
 

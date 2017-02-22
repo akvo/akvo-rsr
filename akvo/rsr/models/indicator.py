@@ -8,14 +8,15 @@ from akvo.codelists.models import IndicatorMeasure, IndicatorVocabulary
 from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOCABULARY
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_send_mail
+from akvo.utils import codelist_choices
+from akvo.utils import codelist_value
+from akvo.utils import rsr_image_path
 from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.conf import settings
-from django.contrib.auth.models import Group
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
@@ -26,8 +27,10 @@ from sorl.thumbnail.fields import ImageField
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
-    parent_indicator = models.ForeignKey('self', blank=True, null=True, default=None,
-                               verbose_name=_(u'parent indicator'), related_name='child_indicators')
+    parent_indicator = models.ForeignKey(
+        'self', blank=True, null=True, default=None,
+        verbose_name=_(u'parent indicator'), related_name='child_indicators'
+    )
     title = ValidXMLCharField(
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '

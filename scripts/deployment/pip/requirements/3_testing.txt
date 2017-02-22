@@ -17,3 +17,6 @@ factory-boy==2.7.0
 fake-factory==0.7.2
 ipaddress==1.0.17
 six==1.10.0
+
+# Modules for linting
+flake8==3.0.4

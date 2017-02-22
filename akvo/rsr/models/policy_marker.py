@@ -84,6 +84,7 @@ class PolicyMarker(models.Model):
         verbose_name = _(u'policy marker')
         verbose_name_plural = _(u'policy markers')
 
+
 @receiver(post_save, sender=PolicyMarker)
 def update_pm_vocabulary(sender, **kwargs):
     "Updates the vocabulary if not specified."

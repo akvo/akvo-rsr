@@ -7,11 +7,12 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import logging, json
+import logging
+import json
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
-from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.core.urlresolvers import (get_resolver, LocaleRegexURLResolver)
 from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
@@ -81,7 +82,7 @@ class DefaultLanguageMiddleware(object):
             return True
         except Resolver404:
             return False
-        except TypeError, e:
+        except TypeError:
             return False
         return False
 

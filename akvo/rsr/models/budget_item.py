@@ -108,7 +108,7 @@ class BudgetItem(models.Model):
                 {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
                                            u'end.'),
                  'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.')}
+                                         u'end.')}
             )
 
     def get_label(self):
@@ -146,10 +146,10 @@ class BudgetItem(models.Model):
     def iati_status(self):
 
         if self.status:
-            ### DEBUG ###
+            # DEBUG ###
             import pdb
             pdb.set_trace()
-            ### DEBUG ###
+            # DEBUG ###
 
         return codelist_value(BudgetStatus, self, 'status')
 

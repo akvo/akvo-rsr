@@ -101,7 +101,7 @@ class PlannedDisbursement(models.Model):
                 {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
                                            u'end.'),
                  'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
-                                           u'end.')}
+                                         u'end.')}
             )
 
     class Meta:

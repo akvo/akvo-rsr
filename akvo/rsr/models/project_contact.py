@@ -18,7 +18,7 @@ from akvo.utils import codelist_choices, codelist_value
 class ProjectContact(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='contacts')
     type = ValidXMLCharField(
-        _(u'contact type'), blank=True, max_length=1,choices=codelist_choices(CONTACT_TYPE),
+        _(u'contact type'), blank=True, max_length=1, choices=codelist_choices(CONTACT_TYPE),
         help_text=_(u'What types of enquiries this contact person is best-placed to handle.')
     )
     person_name = ValidXMLCharField(

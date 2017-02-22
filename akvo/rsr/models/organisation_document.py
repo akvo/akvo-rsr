@@ -71,7 +71,7 @@ class OrganisationDocument(models.Model):
 
         # Check for non-unicode characters
         if self.document:
-            self.document.name = self.document.name.encode('ascii','ignore')
+            self.document.name = self.document.name.encode('ascii', 'ignore')
 
     def show_link(self):
         title = self.title if self.title else u'%s' % _(u'Untitled document')

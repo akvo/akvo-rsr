@@ -314,7 +314,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
-                if "_saveasnew" not in request.POST or not prefix in ['benchmarks',
+                if "_saveasnew" not in request.POST or prefix not in ['benchmarks',
                                                                       'rsr-location-content_type-object_id']:
                     # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
@@ -769,7 +769,7 @@ class TransactionInline(NestedStackedInline):
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency',  'value_date', 'provider_organisation',
+            'fields': ('currency', 'value_date', 'provider_organisation',
                        'provider_organisation_activity', 'receiver_organisation',
                        'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
                        'finance_type', 'flow_type', 'tied_status', 'recipient_country',
@@ -961,7 +961,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     search_fields = ('title', 'subtitle', 'project_plan_summary', 'iati_activity_id',)
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',
+    readonly_fields = ('budget', 'funds', 'funds_needed', 'created_at', 'last_modified_at',
                        'last_update')
 
     def __init__(self, model, admin_site):
@@ -1020,7 +1020,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
-                if "_saveasnew" not in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
+                if "_saveasnew" not in request.POST or prefix not in ['benchmarks', 'rsr-location-content_type-object_id']:
                     # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
                     if prefixes[prefix] != 1 or not prefix:

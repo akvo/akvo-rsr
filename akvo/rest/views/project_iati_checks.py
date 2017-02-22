@@ -8,6 +8,7 @@ class ProjectIatiCheckView(APIView):
     """
     List the result of IATI checks of a Project.
     """
+
     def get_object(self, pk):
         try:
             return Project.objects.get(pk=pk)

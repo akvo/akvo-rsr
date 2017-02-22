@@ -34,12 +34,15 @@ def string_to_date(value):
         return value
 
 # http://stackoverflow.com/questions/250357/smart-truncate-in-python
+
+
 @register.filter("smart_truncate")
 def smart_truncate(content, length=100, suffix='...'):
     if len(content) <= length:
         return content
     else:
-        return content[:length].rsplit(' ', 1)[0]+suffix
+        return content[:length].rsplit(' ', 1)[0] + suffix
+
 
 @register.filter
 def round(value, decimal_places=DECIMAL_PLACES):
@@ -52,8 +55,9 @@ def round(value, decimal_places=DECIMAL_PLACES):
         return decimal_result
     else:
         decimal_result = value.quantize(Decimal(10), ROUND_HALF_UP)
-        return 0 if decimal_result <=0 else decimal_result
+        return 0 if decimal_result <= 0 else decimal_result
 round.is_safe = True
+
 
 @register.filter
 def countries_list(obj):
@@ -61,11 +65,13 @@ def countries_list(obj):
     currently works for Project and Organisation """
     return obj.locations.values_list('country__name', flat=True)
 
+
 @register.filter
 def continents_list(obj):
     """return a list of the continents of all locations of an object"
     currently works for Project and Organisation """
     return obj.locations.values_list('country__continent', flat=True)
+
 
 @register.filter
 def rsr_sorted_set(iterable):

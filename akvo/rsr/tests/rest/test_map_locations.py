@@ -9,8 +9,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.conf import settings
 from django.test import Client, TestCase
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
-from akvo.rsr.models import Country, Project, ProjectLocation, User
+from django.contrib.auth.models import Group
+from akvo.rsr.models import User
 
 
 class ProjectMapLocationTest(TestCase):

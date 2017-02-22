@@ -26,10 +26,10 @@ class Command(BaseCommand):
         for project in Project.objects.all().prefetch_related('partners').select_related('sync_owner)'):
             if not project.partners.filter(Q(can_create_projects=True) | Q(name__icontains='akvo')):
                 self.stdout.write(u'{},"{}",{},"{}"'.format(
-                        project.pk,
-                        project.title,
-                        project.sync_owner.pk if project.sync_owner else "",
-                        project.sync_owner.name if project.sync_owner else "",
-                        ))
+                    project.pk,
+                    project.title,
+                    project.sync_owner.pk if project.sync_owner else "",
+                    project.sync_owner.name if project.sync_owner else "",
+                ))
 
         self.stdout.write("\nDone!")
