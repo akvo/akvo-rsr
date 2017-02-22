@@ -9,7 +9,7 @@ import ast
 from django.db.models import Q
 from django.core.exceptions import FieldError
 
-from rest_framework import filters, status
+from rest_framework import filters
 from rest_framework.exceptions import APIException
 
 
@@ -60,7 +60,7 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
             if args_or_kwargs:
                 # filter and exclude are called with a dict kwarg, the _related methods with a list
                 try:
-                    if param in ['filter', 'exclude',]:
+                    if param in ['filter', 'exclude', ]:
                         queryset = getattr(queryset, param)(**args_or_kwargs)
                     else:
                         queryset = getattr(queryset, param)(*args_or_kwargs)

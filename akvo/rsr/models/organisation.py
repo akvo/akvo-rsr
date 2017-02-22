@@ -72,8 +72,8 @@ class Organisation(TimestampsMixin, models.Model):
         """ utility that maps the IATI organisation types to the old Akvo organisation types
         """
         types = dict(zip([int(type) for type, name in ORGANISATION_TYPE[1:]],
-            cls.NEW_TO_OLD_TYPES
-        ))
+                         cls.NEW_TO_OLD_TYPES
+                         ))
         return types[iati_type]
 
     name = ValidXMLCharField(
@@ -115,7 +115,7 @@ class Organisation(TimestampsMixin, models.Model):
     logo = ImageField(_(u'logo'), blank=True, upload_to=image_path,
                       help_text=_(u'Logos should be approximately 360x270 pixels '
                                   u'(approx. 100-200kB in size) on a white background.')
-    )
+                      )
     url = models.URLField(
         blank=True,
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
@@ -207,11 +207,11 @@ class Organisation(TimestampsMixin, models.Model):
 
         if name and names.exists():
             validation_errors['name'] = u'{}: {}'.format(
-                    _('An Organisation with this name already exists'), name)
+                _('An Organisation with this name already exists'), name)
         elif not name:
             # This prevents organisation names with only spaces
             validation_errors['name'] = _(u'Organisation name may not be blank')
-        
+
         if long_name and long_names.exists():
             validation_errors['long_name'] = u'{}: {}'.format(
                 _('An Organisation with this long name already exists'), long_name)

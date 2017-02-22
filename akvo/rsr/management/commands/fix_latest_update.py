@@ -12,6 +12,7 @@ from django.db.models import Prefetch
 
 from ...models import Project, ProjectUpdate
 
+
 class Command(BaseCommand):
     help = "Set Project.last_update field. Fixes potential errors due to a bug"
 
@@ -21,9 +22,9 @@ class Command(BaseCommand):
         This fixes a bug that was introduced when updates could be deleted.
         """
         sys.stdout.write(u"Fix latest update for projects"
-            "\n+ means latest update added"
-            "\n. means no change"
-            "\n! means project has no updates\n\n")
+                         "\n+ means latest update added"
+                         "\n. means no change"
+                         "\n! means project has no updates\n\n")
         for project in Project.objects.all().prefetch_related(
             Prefetch(
                 "project_updates",

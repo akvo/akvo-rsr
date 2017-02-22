@@ -19,7 +19,7 @@ class InternalOrganisationID(models.Model):
     referenced_org = models.ForeignKey(
         'Organisation', verbose_name=_(u'referenced organisation'), related_name='reference_ids'
     )
-    #TODO: add index
+    # TODO: add index
     identifier = ValidXMLCharField(
         max_length=200, verbose_name=_(u'internal ID of referenced organisation'),
     )

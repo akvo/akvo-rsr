@@ -1666,4 +1666,3 @@ VOCABULARY = (
     (u'RO', u'Reporting Organisation (i.e. maintained by the organisation referred to in the <reporting-org> element.'),
     (u'WB', u'World Bank')
 )
-

@@ -29,7 +29,7 @@ class CurrentImage(ImportMapper):
 
         photo_id = self.get_attrib(self.parent_elem, akvo_ns('photo-id'), 'current_image')
         current_image = file_from_zip_archive(
-                self.iati_import_job.iati_xml_file, "out_proj/{}.jpg".format(photo_id))
+            self.iati_import_job.iati_xml_file, "out_proj/{}.jpg".format(photo_id))
         if current_image:
             tmp_file = NamedTemporaryFile()
             for line in current_image.readlines():
@@ -43,18 +43,18 @@ class CurrentImage(ImportMapper):
             new_file = File(tmp_file)
             if not same_data(old_file, new_file):
                 filename = model_and_instance_based_filename(
-                        'Project', self.project.pk, 'current_image', 'image.jpg')
+                    'Project', self.project.pk, 'current_image', 'image.jpg')
                 new_file.seek(0)
                 self.project.current_image.save(filename, new_file)
                 changes += ['current_image']
 
         current_image_caption = self.get_attrib(
-                self.parent_elem, akvo_ns('image-caption'), 'current_image_caption')
+            self.parent_elem, akvo_ns('image-caption'), 'current_image_caption')
         if current_image_caption:
             changes += self.update_project_field('current_image_caption', current_image_caption)
 
         current_image_credit = self.get_attrib(
-                self.parent_elem, akvo_ns('photo-credit'), 'current_image_credit')
+            self.parent_elem, akvo_ns('photo-credit'), 'current_image_credit')
         if current_image_credit:
             changes += self.update_project_field('current_image_credit', current_image_credit)
 

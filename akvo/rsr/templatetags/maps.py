@@ -52,8 +52,7 @@ def avatar(item, geometry='60x60', quality=99):
         elif isinstance(item, ProjectUpdate):
             url = get_thumbnail(item.photo, geometry,
                                 crop='center', quality=quality).url
-    except Exception, e:
-        # logger.warning(e)
+    except Exception:
         pass
 
     return url
@@ -97,8 +96,7 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
                  'icon': icon,
                  'pk': str(item.pk),
                  'text': text})
-        except Exception, e:
-            # logger.warning(e)
+        except Exception:
             pass
 
     return {
@@ -145,8 +143,7 @@ def get_location(item):
                 'icon': icon,
                 'pk': str(item.pk),
                 'text': text}
-    except Exception, e:
-        # logger.warning(e)
+    except Exception:
         return []
 
 
@@ -322,7 +319,7 @@ def global_project_map(width, height, dynamic='dynamic'):
                 thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
-                              [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
+                              [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
         except:
             pass
 
@@ -385,7 +382,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
             thumbnail = organisation.logo.url
             locations.append([location.latitude,
                               location.longitude,
-                              [str(organisation.pk),organisation.name.encode('utf8'), thumbnail, 'organisation']])
+                              [str(organisation.pk), organisation.name.encode('utf8'), thumbnail, 'organisation']])
         except:
             pass
 

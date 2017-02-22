@@ -18,18 +18,18 @@ assert CHANGE == 2, 'django.contrib.admin.models.CHANGE is not equal to 2 any mo
 assert DELETION == 3, 'django.contrib.admin.models.DELETION is not equal to 3 any more. Chaos awaits'
 
 IatiImportLogCollector = namedtuple('IatiImportLogCollector',
-    [
-        'iati_import_job',
-        'project',
-        'activity',
-        'message_type',
-        'tag',
-        'model',
-        'field',
-        'text',
-        'created_at',
-    ]
-)
+                                    [
+                                        'iati_import_job',
+                                        'project',
+                                        'activity',
+                                        'message_type',
+                                        'tag',
+                                        'model',
+                                        'field',
+                                        'text',
+                                        'created_at',
+                                    ]
+                                    )
 
 LogEntryType = namedtuple(
     'LogEntryType',
@@ -109,11 +109,11 @@ class IatiImportLog(models.Model):
     iati_activity_import = models.ForeignKey('IatiActivityImport', verbose_name=_(u'activity'),
                                              blank=True, null=True,)
     message_type = models.PositiveSmallIntegerField(
-            verbose_name=_(u'type of message'), choices=MESSAGE_TYPE_CODES,
-            default=LOG_ENTRY_TYPE.CRITICAL_ERROR)
+        verbose_name=_(u'type of message'), choices=MESSAGE_TYPE_CODES,
+        default=LOG_ENTRY_TYPE.CRITICAL_ERROR)
     tag = ValidXMLCharField(_(u'xml tag'), max_length=100, default='',)
     model = ValidXMLCharField(_(u'model'), max_length=255, default='',)
-    field = ValidXMLCharField(_(u'field'), max_length=100,  default='',)
+    field = ValidXMLCharField(_(u'field'), max_length=100, default='',)
     text = ValidXMLTextField(_(u'text'))
     created_at = models.DateTimeField(db_index=True, editable=False)
 
@@ -160,7 +160,6 @@ class IatiImportLog(models.Model):
     activity_admin_url.allow_tags = True
     activity_admin_url.short_description = "IATI activity import"
 
-
     def iati_import_job_admin_url(self):
         """ Returns a link to the admin change view of the IatiImportJob object associated with this
             log entry
@@ -172,4 +171,3 @@ class IatiImportLog(models.Model):
 
     iati_import_job_admin_url.allow_tags = True
     iati_import_job_admin_url.short_description = "IATI import job"
-

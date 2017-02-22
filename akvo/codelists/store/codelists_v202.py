@@ -4613,4 +4613,3 @@ CONTACT_TYPE = (
     (u'3', u'Financial Management', u'Financial Management'),
     (u'4', u'Communications', u'Communications')
 )
-
