@@ -9,6 +9,7 @@ import React, { PropTypes } from 'react';
 import fetch from 'isomorphic-fetch';
 
 import { onChange } from "actions/collapse-actions"
+import { KEYS_RESET } from "reducers/collapseReducer"
 
 import store from "./store"
 import { MODELS_LIST, PARENT_FIELD, OBJECTS_RESULTS, API_LIMIT } from "./const"
@@ -314,9 +315,9 @@ function lineageKeys(model, id) {
     )
 }
 
-export function openNodes(model, ids) {
+export function openNodes(model, ids, reset) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
-    // and all required parents
+    // and all required parents. If the reset boolean is true then first reset the whole tree.
 
     // get lineages of all objects based on model and ids
     const lineages = ids.map((id) => lineageKeys(model, id));
@@ -330,6 +331,9 @@ export function openNodes(model, ids) {
         },
         {}
     );
+    if (reset) {
+        store.dispatch({type: KEYS_RESET});
+    }
     Object.keys(mergedKeys).map((key) => {
         store.dispatch(onChange(key, idsToActiveKey(mergedKeys[key])));
     });

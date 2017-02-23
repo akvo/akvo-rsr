@@ -11,7 +11,8 @@ import { UPDATE_MODEL_FULFILLED, DELETE_FROM_MODEL } from "../reducers/modelsRed
 
 
 export const
-    KEY_SET_ACTIVE = "KEY_SET_ACTIVE";
+    KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
+    KEYS_RESET = "KEYS_RESET";
 
 export default function collapseReducer(keys={}, action) {
     // Reducer for managing the Collapse.activeKey states
@@ -21,6 +22,12 @@ export default function collapseReducer(keys={}, action) {
             // Set the model to current activeKey list
             const {collapseId, activeKey} = action.payload;
             keys = {...keys, [collapseId]: activeKey};
+            break;
+        }
+
+        case KEYS_RESET: {
+            // Reset the tree
+            keys = {};
             break;
         }
 

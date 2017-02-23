@@ -68,19 +68,19 @@ export default class App extends React.Component {
             updates.objects[id].status == UPDATE_STATUS_DRAFT
         );
         draftUpdates.map((id) => updateFormOpen(id));
-        openNodes(OBJECTS_UPDATES, draftUpdates);
+        openNodes(OBJECTS_UPDATES, draftUpdates, true);
     }
 
     showLocked() {
         const periods = this.props.models[OBJECTS_PERIODS];
         const locked = periods.ids.filter((id) => periods.objects[id].locked);
-        openNodes(OBJECTS_PERIODS, locked);
+        openNodes(OBJECTS_PERIODS, locked, true);
     }
 
     showUnlocked() {
         const periods = this.props.models[OBJECTS_PERIODS];
         const locked = periods.ids.filter((id) => !periods.objects[id].locked);
-        openNodes(OBJECTS_PERIODS, locked);
+        openNodes(OBJECTS_PERIODS, locked, true);
     }
 
     render() {
