@@ -29,7 +29,8 @@ const dataFromElement = (elementName) => {
 @connect((store) => {
     return {
         page: store.page,
-        models: store.models
+        models: store.models,
+        ui: store.ui,
     }
 })
 export default class App extends React.Component {
@@ -63,7 +64,9 @@ export default class App extends React.Component {
 
     showDraft() {
         const updates = this.props.models[OBJECTS_UPDATES];
-        const draftUpdates = updates.ids.filter((id) => updates.objects[id].status == UPDATE_STATUS_DRAFT);
+        const draftUpdates = updates.ids.filter((id) =>
+            updates.objects[id].status == UPDATE_STATUS_DRAFT
+        );
         draftUpdates.map((id) => updateFormOpen(id));
         openNodes(OBJECTS_UPDATES, draftUpdates);
     }
@@ -84,9 +87,9 @@ export default class App extends React.Component {
         const style = {float: 'right'};
         return (
             <div>
-                <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style}/>
-                <ToggleButton onClick={this.showLocked} label="Show locked" style={style}/>
-                <ToggleButton onClick={this.showDraft} label="Show draft updates" style={style}/>
+                <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style} disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.showLocked} label="Show locked" style={style} disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.showDraft} label="Show draft updates" style={style} disabled={!this.props.ui.allFetched}/>
                 <Results parentId="results"/>
             </div>
         );
