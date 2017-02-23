@@ -19,7 +19,7 @@ import {
     displayDate, _, currentUser, findChildren, createToggleKey, collapseId, createToggleKeys
 } from '../../utils.js';
 
-import { OBJECTS_UPDATES } from '../../const.js';
+import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED } from '../../const.js';
 
 import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
@@ -65,13 +65,10 @@ class Update extends React.Component {
     render() {
         return(
             <div>
-                <div>
-                    <a onClick={this.formToggle}
-                       className={'btn btn-sm btn-default'}
-                       style={{margin: '0.3em 0.5em'}}>
-                        {_('edit_update')}
-                    </a>
-                </div>
+                <ToggleButton
+                    onClick={this.formToggle}
+                    className={'btn btn-sm btn-default'}
+                    label={_('edit_update')}/>
                 {this.props.ui[`updateForm-${this.props.update.id}`] ?
                     <UpdateForm
                         callbacks={this.props.callbacks}
@@ -139,12 +136,22 @@ export default class Updates extends React.Component {
     }
 
     renderPanels(updates) {
+        let actualValue = 0;
         return (updates.map(
-            (update) =>
-                <Panel header={<UpdateHeader update={update}/>} key={update.id}>
-                    <Update update={update} collapseId={this.state.collapseId}/>
-                    <Comments parentId={update.id}/>
-                </Panel>
+            (update) => {
+                // Calculate running total of numeric updates data
+                const data = parseInt(update.data);
+                if (update.status == UPDATE_STATUS_APPROVED && data !== NaN) {
+                    actualValue += data;
+                }
+                update.actual_value = actualValue;
+                return (
+                    <Panel header={<UpdateHeader update={update}/>} key={update.id}>
+                        <Update update={update} collapseId={this.state.collapseId}/>
+                        <Comments parentId={update.id}/>
+                    </Panel>
+                )
+            }
         ))
     }
 
@@ -159,7 +166,8 @@ export default class Updates extends React.Component {
             return (
                 <div className={OBJECTS_UPDATES}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
+                    <ToggleButton onClick={this.toggleAll} label="++"
+                                  disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(updates)}
                     </Collapse>

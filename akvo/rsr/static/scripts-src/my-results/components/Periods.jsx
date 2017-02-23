@@ -15,7 +15,7 @@ import { updateModelToBackend } from "../actions/model-actions"
 import {
     displayDate, APICall, endpoints, findChildren, createToggleKey, collapseId, createToggleKeys
 } from "../utils.js";
-import { OBJECTS_PERIODS, OBJECTS_UPDATES } from '../const.js';
+import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_APPROVED } from '../const.js';
 
 import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
@@ -42,7 +42,9 @@ class PeriodLockToggle extends React.Component {
         const period = this.props.period;
         if (!this.state.locking) {
             this.lockingToggle(true);
-            this.updatePeriodLock(period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false));
+            this.updatePeriodLock(
+                period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false)
+            );
         }
         e.stopPropagation();
     }
@@ -82,7 +84,7 @@ const periodActualValue = (period) => {
         "";
 };
 
-const PeriodHeader = ({period}) => {
+const PeriodHeader = ({period, actualValue}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
@@ -91,7 +93,7 @@ const PeriodHeader = ({period}) => {
             <span>
                 Period: {periodDate} |
                 Target value: {period.target_value} |
-                Actual value: {periodActualValue(period)}
+                Actual value: {actualValue}
             </span>
             <PeriodLockToggle period={period} />
         </span>
@@ -100,6 +102,13 @@ const PeriodHeader = ({period}) => {
 
 PeriodHeader.propTypes = {
     item: PropTypes.object,
+};
+
+
+const objectsArrayToLookup = (arr, index) => {
+    return arr.reduce((lookup, obj) =>
+        Object.assign(lookup, {[obj[index]]: obj}),
+        {})
 };
 
 @connect((store) => {
@@ -148,12 +157,32 @@ export default class Periods extends React.Component {
     renderPanels(periods) {
         const callbacks = {openNewForm: this.openNewForm};
         return (periods.map(
-            (period) =>
-                <Panel header={<PeriodHeader period={period}/>} key={period.id}>
-                    <Updates parentId={period.id}/>
-                    <NewUpdateButton
+            (period) => {
+                const { ids, updates } = findChildren(period.id, 'updates', 'period');
+                // Calculate actual value for the period
+                const lookupUpdates = objectsArrayToLookup(updates, 'id');
+                const actualValue = ids && ids.filter(
+                    (id) => lookupUpdates[id].status == UPDATE_STATUS_APPROVED
+                ).reduce(
+                    // Actual value is calculated by adding all approved updates with numerical data
+                    (sum, id) => {
+                        const data = parseInt(lookupUpdates[id].data);
+                        if (data !== NaN) {
+                            return sum + data;
+                        }
+                        return sum;
+                    }, 0
+                );
+                return (
+                    <Panel
+                        header={<PeriodHeader period={period} actualValue={actualValue}/>}
+                        key={period.id}>
+                        <Updates parentId={period.id}/>
+                        <NewUpdateButton
                             period={period} user={this.props.user} dispatch={this.props.dispatch}/>
-                </Panel>
+                    </Panel>
+                )
+            }
         ))
     }
 
@@ -168,7 +197,8 @@ export default class Periods extends React.Component {
             return (
                 <div className={OBJECTS_PERIODS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
+                    <ToggleButton onClick={this.toggleAll} label="++"
+                                  disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periods)}
                     </Collapse>
