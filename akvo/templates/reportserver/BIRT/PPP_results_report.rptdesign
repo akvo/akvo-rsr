@@ -4245,73 +4245,10 @@ select ? as number, 'B' as name
 union all
 select ? as number, 'C' as name
 union all
-select ? as number, 'D' as name
-]]></xml-property>
+select ? as number, 'D' as name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>3</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>4</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -4377,7 +4314,7 @@ select ? as number, 'D' as name
             <property name="borderTopWidth">1pt</property>
         </style>
         <style name="Sectionheader" id="265">
-            <property name="fontFamily">"Arial"</property>
+            <property name="fontFamily">"Century Gothic"</property>
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bolder</property>
             <property name="color">#D87E26</property>
@@ -4402,6 +4339,10 @@ select ? as number, 'D' as name
         </style>
         <style name="progress_high" id="297">
             <property name="color">#34B573</property>
+        </style>
+        <style name="Paragraph" id="486">
+            <property name="fontFamily">"Tahoma"</property>
+            <property name="fontSize">11pt</property>
         </style>
     </styles>
     <page-setup>
@@ -4442,7 +4383,7 @@ select ? as number, 'D' as name
                     <property name="paddingTop">0pt</property>
                     <property name="verticalAlign">middle</property>
                     <text id="462">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Century Gothic"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#4D4D4D</property>
@@ -4454,7 +4395,7 @@ select ? as number, 'D' as name
                         <text-property name="content"><![CDATA[DGIS - Akvo PPP (2014-2017)]]></text-property>
                     </text>
                     <text id="463">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Century Gothic"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#DE7172</property>
@@ -4464,8 +4405,8 @@ select ? as number, 'D' as name
                         <text-property name="content"><![CDATA[Final report]]></text-property>
                     </text>
                     <text id="468">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="color">#DE7172</property>
                         <property name="paddingTop">8pt</property>
                         <property name="paddingLeft">16pt</property>
@@ -4477,7 +4418,7 @@ select ? as number, 'D' as name
                     <property name="paddingTop">0pt</property>
                     <property name="verticalAlign">middle</property>
                     <text id="466">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#6894B1</property>
@@ -4487,15 +4428,15 @@ select ? as number, 'D' as name
                         <text-property name="content"><![CDATA[Contacts:]]></text-property>
                     </text>
                     <text id="465">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="paddingTop">8pt</property>
                         <property name="contentType">auto</property>
                         <text-property name="content"><![CDATA[Account holder DGIS: Kees Oude Lenferink
 Account holder Akvo: Jeroen van der Sommen]]></text-property>
                     </text>
                     <text id="464">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#6894B1</property>
@@ -4504,8 +4445,8 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                         <text-property name="content"><![CDATA[Total budget:]]></text-property>
                     </text>
                     <text id="467">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="marginBottom">8pt</property>
                         <property name="paddingTop">8pt</property>
                         <property name="contentType">auto</property>
@@ -4518,7 +4459,7 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                     <property name="verticalAlign">middle</property>
                     <label id="353">
                         <property name="style">Sectionheader</property>
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Century Gothic"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginTop">0pt</property>
@@ -4536,7 +4477,7 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                     <property name="verticalAlign">middle</property>
                     <label id="355">
                         <property name="style">Sectionheader</property>
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Century Gothic"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="paddingTop">16pt</property>
@@ -4552,8 +4493,8 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="439">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="paddingTop">4pt</property>
                         <property name="paddingLeft">16pt</property>
                         <property name="paddingBottom">32pt</property>
@@ -4570,7 +4511,7 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                         <property name="imageName">Screenshot 2017-01-18 17.36.58.png</property>
                     </image>
                     <text id="469">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">8pt</property>
                         <property name="fontStyle">italic</property>
                         <property name="color">#333333</property>
@@ -4587,7 +4528,7 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                 <cell id="471">
                     <label id="473">
                         <property name="style">Sectionheader</property>
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Century Gothic"</property>
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginTop">0pt</property>
@@ -4601,7 +4542,7 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                         <text-property name="text">Executive summary</text-property>
                     </label>
                     <text id="476">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#6894B1</property>
@@ -4610,8 +4551,9 @@ Account holder Akvo: Jeroen van der Sommen]]></text-property>
                         <text-property name="content"><![CDATA[Highlights]]></text-property>
                     </text>
                     <text id="477">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="style">Paragraph</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="paddingTop">4pt</property>
                         <property name="paddingLeft">16pt</property>
                         <property name="paddingBottom">0pt</property>
@@ -4633,7 +4575,7 @@ In Africa, we are implementing nation-wide WASH mapping exercises in Benin and N
                 </cell>
                 <cell id="472">
                     <text id="475">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#6894B1</property>
@@ -4642,8 +4584,9 @@ In Africa, we are implementing nation-wide WASH mapping exercises in Benin and N
                         <text-property name="content"><![CDATA[Variations from plan]]></text-property>
                     </text>
                     <text id="483">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="style">Paragraph</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="paddingTop">4pt</property>
                         <property name="paddingLeft">1pt</property>
                         <property name="paddingBottom">0pt</property>
@@ -4655,7 +4598,7 @@ Some of our 2014 activities re ect our efforts to explore the wider context of w
 ]]></text-property>
                     </text>
                     <text id="484">
-                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontFamily">"Tahoma"</property>
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#6894B1</property>
@@ -4664,8 +4607,9 @@ Some of our 2014 activities re ect our efforts to explore the wider context of w
                         <text-property name="content"><![CDATA[Financial overview]]></text-property>
                     </text>
                     <text id="485">
-                        <property name="fontFamily">"Arial"</property>
-                        <property name="fontSize">12pt</property>
+                        <property name="style">Paragraph</property>
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontSize">11pt</property>
                         <property name="paddingTop">4pt</property>
                         <property name="paddingLeft">1pt</property>
                         <property name="paddingBottom">0pt</property>
@@ -4748,7 +4692,7 @@ reportContext.setGlobalVariable("show_bars",true);
                             <property name="verticalAlign">middle</property>
                             <label id="132">
                                 <property name="style">Sectionheader</property>
-                                <property name="fontFamily">"Arial"</property>
+                                <property name="fontFamily">"Century Gothic"</property>
                                 <property name="fontSize">18pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="marginTop">0pt</property>
@@ -4766,7 +4710,7 @@ reportContext.setGlobalVariable("show_bars",true);
                             <property name="verticalAlign">middle</property>
                             <label id="133">
                                 <property name="style">Sectionheader</property>
-                                <property name="fontFamily">"Arial"</property>
+                                <property name="fontFamily">"Century Gothic"</property>
                                 <property name="fontSize">18pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="paddingTop">16pt</property>
@@ -4782,8 +4726,9 @@ reportContext.setGlobalVariable("show_bars",true);
                             <property name="colSpan">1</property>
                             <property name="rowSpan">3</property>
                             <text-data id="134">
-                                <property name="fontFamily">"Arial"</property>
-                                <property name="fontSize">12pt</property>
+                                <property name="style">Paragraph</property>
+                                <property name="fontFamily">"Tahoma"</property>
+                                <property name="fontSize">11pt</property>
                                 <property name="marginTop">0pt</property>
                                 <property name="paddingTop">4pt</property>
                                 <property name="paddingLeft">16pt</property>
@@ -4839,8 +4784,8 @@ reportContext.setGlobalVariable("show_bars",true);
                                     <row id="173">
                                         <cell id="174">
                                             <data id="179">
-                                                <property name="fontFamily">"Arial"</property>
-                                                <property name="fontSize">14pt</property>
+                                                <property name="fontFamily">"Tahoma"</property>
+                                                <property name="fontSize">13pt</property>
                                                 <property name="fontWeight">bold</property>
                                                 <property name="color">black</property>
                                                 <property name="paddingTop">4pt</property>
@@ -4868,8 +4813,8 @@ reportContext.setGlobalVariable("show_bars",true);
                                 <text-property name="text">Location</text-property>
                             </label>
                             <text-data id="152">
-                                <property name="fontFamily">"Arial"</property>
-                                <property name="fontSize">14pt</property>
+                                <property name="fontFamily">"Tahoma"</property>
+                                <property name="fontSize">13pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="marginTop">0pt</property>
                                 <property name="marginLeft">0pt</property>
@@ -5061,6 +5006,7 @@ null</expression>
                     </list-property>
                     <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
+                    <property name="repeatHeader">false</property>
                     <property name="pageBreakInterval">50</property>
                     <column id="275">
                         <property name="width">1.2708333333333333in</property>
@@ -5138,7 +5084,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="colSpan">4</property>
                                     <property name="rowSpan">1</property>
                                     <text-data id="159">
-                                        <property name="fontFamily">"Arial"</property>
+                                        <property name="fontFamily">"Tahoma"</property>
                                         <property name="fontSize">14pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#6D8FAF</property>
@@ -5228,6 +5174,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                                 <property name="paddingRight">0pt</property>
                                                 <text-data id="213">
                                                     <property name="backgroundColor">#D0DEE7</property>
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontSize">12pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="color">white</property>
@@ -5245,7 +5192,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                                 <property name="rowSpan">1</property>
                                                 <property name="paddingBottom">20pt</property>
                                                 <text-data id="278">
-                                                    <property name="fontFamily">"Arial"</property>
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontSize">12pt</property>
                                                     <property name="color">#000000</property>
                                                     <property name="paddingTop">5pt</property>
@@ -5283,7 +5230,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <cell id="276"/>
                                             <cell id="203">
                                                 <label id="169">
-                                                    <property name="fontFamily">"Arial"</property>
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontSize">12pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
@@ -5297,7 +5244,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <cell id="204">
                                                 <property name="color">#F0F0F0</property>
                                                 <label id="188">
-                                                    <property name="fontFamily">"Arial"</property>
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontSize">12pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
@@ -5309,7 +5256,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             </cell>
                                             <cell id="205">
                                                 <label id="186">
-                                                    <property name="fontFamily">"Arial"</property>
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontSize">12pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
@@ -5368,7 +5315,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="textAlign">center</property>
                                 <property name="verticalAlign">middle</property>
                                 <text-data name="percentage" id="215">
-                                    <property name="fontFamily">"Arial"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="color">#34B573</property>
@@ -5397,7 +5344,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <property name="operator">between</property>
                                             <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                             <simple-property-list name="value1">
-                                                <value type="javascript">0</value>
+                                                <value type="javascript">-1</value>
                                             </simple-property-list>
                                             <expression name="value2" type="javascript">49</expression>
                                             <property name="style">progress_low</property>
@@ -5987,7 +5934,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">(row["progress_pct"] &lt; 33)&#13;
+                                                <value type="javascript">(row["progress_pct"] &lt; 49)&#13;
 ?&#13;
 Math.max(row["progress_pct"],0)&#13;
 :&#13;
@@ -5997,7 +5944,7 @@ Math.max(row["progress_pct"],0)&#13;
                                         <structure>
                                             <property name="paramName">param_2</property>
                                             <simple-property-list name="expression">
-                                                <value>(row["progress_pct"] >= 33 &amp;&amp; row["progress_pct"] &lt; 67)&#13;
+                                                <value type="javascript">(row["progress_pct"] >= 49 &amp;&amp; row["progress_pct"] &lt; 84)&#13;
 ?&#13;
 row["progress_pct"]&#13;
 :&#13;
@@ -6007,7 +5954,7 @@ row["progress_pct"]&#13;
                                         <structure>
                                             <property name="paramName">param_3</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">(row["progress_pct"] >= 67)&#13;
+                                                <value type="javascript">(row["progress_pct"] >= 84)&#13;
 ?&#13;
 Math.min(row["progress_pct"],100)&#13;
 :&#13;
@@ -6043,7 +5990,7 @@ Math.min(row["progress_pct"],100)&#13;
                                 <property name="paddingRight">8pt</property>
                                 <property name="verticalAlign">middle</property>
                                 <data id="106">
-                                    <property name="fontFamily">"Helvetica Neue"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="marginTop">4pt</property>
@@ -6062,7 +6009,7 @@ Math.min(row["progress_pct"],100)&#13;
                                     <property name="resultSetColumn">actual_value</property>
                                 </data>
                                 <data id="292">
-                                    <property name="fontFamily">"Arial"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="marginTop">4pt</property>
@@ -6113,7 +6060,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <cell id="163">
                                 <property name="verticalAlign">middle</property>
                                 <data id="108">
-                                    <property name="fontFamily">"Helvetica Neue"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="marginTop">4pt</property>
@@ -6129,7 +6076,7 @@ Math.min(row["progress_pct"],100)&#13;
                                     <property name="resultSetColumn">target_value</property>
                                 </data>
                                 <data id="296">
-                                    <property name="fontFamily">"Arial"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="marginTop">4pt</property>
@@ -6152,7 +6099,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <cell id="30">
                                 <property name="verticalAlign">middle</property>
                                 <data id="322">
-                                    <property name="fontFamily">"Arial"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="textAlign">left</property>
@@ -6178,7 +6125,7 @@ Math.min(row["progress_pct"],100)&#13;
                                 <property name="paddingRight">8pt</property>
                                 <text-data id="223">
                                     <property name="style">progress_high</property>
-                                    <property name="fontFamily">"Arial"</property>
+                                    <property name="fontFamily">"Tahoma"</property>
                                     <property name="fontSize">12pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="color">black</property>
@@ -6191,7 +6138,7 @@ Math.min(row["progress_pct"],100)&#13;
                                             <property name="operator">between</property>
                                             <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
                                             <simple-property-list name="value1">
-                                                <value type="javascript">0</value>
+                                                <value type="javascript">-1</value>
                                             </simple-property-list>
                                             <expression name="value2" type="javascript">49</expression>
                                             <property name="style">progress_low</property>
