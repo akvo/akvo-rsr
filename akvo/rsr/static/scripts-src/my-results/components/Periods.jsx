@@ -42,7 +42,9 @@ class PeriodLockToggle extends React.Component {
         const period = this.props.period;
         if (!this.state.locking) {
             this.lockingToggle(true);
-            this.updatePeriodLock(period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false));
+            this.updatePeriodLock(
+                period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false)
+            );
         }
         e.stopPropagation();
     }
@@ -172,7 +174,9 @@ export default class Periods extends React.Component {
                     }, 0
                 );
                 return (
-                    <Panel header={<PeriodHeader period={period} actualValue={actualValue}/>} key={period.id}>
+                    <Panel
+                        header={<PeriodHeader period={period} actualValue={actualValue}/>}
+                        key={period.id}>
                         <Updates parentId={period.id}/>
                         <NewUpdateButton
                             period={period} user={this.props.user} dispatch={this.props.dispatch}/>
@@ -193,7 +197,8 @@ export default class Periods extends React.Component {
             return (
                 <div className={OBJECTS_PERIODS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++" disabled={!this.props.ui.allFetched}/>
+                    <ToggleButton onClick={this.toggleAll} label="++"
+                                  disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periods)}
                     </Collapse>

@@ -87,9 +87,12 @@ export default class App extends React.Component {
         const style = {float: 'right'};
         return (
             <div>
-                <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style} disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.showLocked} label="Show locked" style={style} disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.showDraft} label="Show draft updates" style={style} disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style}
+                              disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.showLocked} label="Show locked" style={style}
+                              disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.showDraft} label="Show draft updates" style={style}
+                              disabled={!this.props.ui.allFetched}/>
                 <Results parentId="results"/>
             </div>
         );

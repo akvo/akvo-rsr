@@ -132,18 +132,22 @@ const UpdateFormButtons = ({update, callbacks}) => {
         <div className="menuAction">
         {!isNewUpdate(update) ?
             <div role="presentation" className="removeUpdate">
-                <a onClick={callbacks.deleteUpdate} className="btn btn-default btn-xs">{_('delete')}</a>
+                <a onClick={callbacks.deleteUpdate}
+                   className="btn btn-default btn-xs">{_('delete')}</a>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <a onClick={callbacks.onCancel} className="btn btn-link btn-xs">{_('cancel')}</a>
+                    <a onClick={callbacks.onCancel}
+                       className="btn btn-link btn-xs">{_('cancel')}</a>
                 </li>
                 <li role="presentation" className="saveUpdate">
-                    <a id="save" onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('save')}</a>
+                    <a id="save" onClick={callbacks.saveUpdate}
+                       className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
                 <li role="presentation" className="approveUpdate">
-                    <a id="approve" onClick={callbacks.saveUpdate} className="btn btn-default btn-xs">{_('approve')}</a>
+                    <a id="approve" onClick={callbacks.saveUpdate}
+                       className="btn btn-default btn-xs">{_('approve')}</a>
                 </li>
                 <span></span>
             </ul>
@@ -245,13 +249,9 @@ export default class UpdateForm extends React.Component {
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
                     <Header update={this.props.update}/>
-                    <ActualValueInput
-                        onChange={this.onChange}
-                        update={this.props.update}
-                        updatedActualValue={updatedActualValue}/>
-                    <ActualValueDescription
-                        onChange={this.onChange}
-                        update={this.props.update}/>
+                    <ActualValueInput onChange={this.onChange} update={this.props.update}
+                                      updatedActualValue={updatedActualValue}/>
+                    <ActualValueDescription onChange={this.onChange} update={this.props.update}/>
                     <Attachments/>
                     <UpdateFormButtons
                         update={this.props.update}
