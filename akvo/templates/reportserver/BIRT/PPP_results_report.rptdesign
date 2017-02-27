@@ -4889,6 +4889,7 @@ For 2016-2017 this needs to be 90% or over to be marked green as being on track.
                                         <row id="714">
                                             <cell id="715">
                                                 <data id="728">
+                                                    <property name="fontWeight">bold</property>
                                                     <property name="resultSetColumn">project_title</property>
                                                 </data>
                                             </cell>
