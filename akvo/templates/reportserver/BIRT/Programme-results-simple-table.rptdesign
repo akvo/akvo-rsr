@@ -263,6 +263,12 @@
                     <text-property name="heading">actual_comment</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">country</text-property>
+                    <text-property name="heading">country</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">type_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">type_name</text-property>
@@ -271,13 +277,12 @@
             </list-property>
             <list-property name="parameters">
                 <structure>
-                    <property name="name">projid</property>
+                    <property name="name">param_1</property>
                     <property name="paramName">ID</property>
                     <property name="nativeName"></property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                     <property name="position">1</property>
-                    <expression name="defaultValue" type="javascript">2849</expression>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -421,6 +426,11 @@
                     </structure>
                     <structure>
                         <property name="position">28</property>
+                        <property name="name">country</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
                         <property name="name">type_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -619,6 +629,13 @@
                 </structure>
                 <structure>
                     <property name="position">28</property>
+                    <property name="name">country</property>
+                    <property name="nativeName">country</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
                     <property name="name">type_name</property>
                     <property name="nativeName">type_name</property>
                     <property name="dataType">string</property>
@@ -662,11 +679,28 @@ left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
 left join rsr_recipientcountry on rsr_project.id = rsr_recipientcountry.project_id
-where rsr_project.id = ? and codelists_resulttype.version_id=6
+where rsr_project.id =? and codelists_resulttype.version_id=6
 order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -7202,6 +7236,1733 @@ where rsr_project.primary_organisation_id = ?]]></xml-property>
 from rsr_project
 where primary_organisation_id = '3394']]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="partnership_selection" id="1128">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">organisation_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">organisation_id</text-property>
+                    <text-property name="heading">organisation_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">project_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">project_id</text-property>
+                    <text-property name="heading">project_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">funding_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">funding_amount</text-property>
+                    <text-property name="heading">funding_amount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_activity_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">iati_activity_id</text-property>
+                    <text-property name="heading">iati_activity_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">internal_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">internal_id</text-property>
+                    <text-property name="heading">internal_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_url</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">iati_url</text-property>
+                    <text-property name="heading">iati_url</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">partner_type_extra</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">partner_type_extra</text-property>
+                    <text-property name="heading">partner_type_extra</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">related_activity_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">related_activity_id</text-property>
+                    <text-property name="heading">related_activity_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_organisation_role</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">iati_organisation_role</text-property>
+                    <text-property name="heading">iati_organisation_role</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_secondary_reporter</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_secondary_reporter</text-property>
+                    <text-property name="heading">is_secondary_reporter</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">title</text-property>
+                    <text-property name="heading">title</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">organisation_id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">project_id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">funding_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">iati_activity_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">internal_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">iati_url</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">partner_type_extra</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">related_activity_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">iati_organisation_role</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">is_secondary_reporter</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">RSR readonly</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">organisation_id</property>
+                    <property name="nativeName">organisation_id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">project_id</property>
+                    <property name="nativeName">project_id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">funding_amount</property>
+                    <property name="nativeName">funding_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">iati_activity_id</property>
+                    <property name="nativeName">iati_activity_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">internal_id</property>
+                    <property name="nativeName">internal_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">iati_url</property>
+                    <property name="nativeName">iati_url</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">partner_type_extra</property>
+                    <property name="nativeName">partner_type_extra</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">related_activity_id</property>
+                    <property name="nativeName">related_activity_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">iati_organisation_role</property>
+                    <property name="nativeName">iati_organisation_role</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">5</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">is_secondary_reporter</property>
+                    <property name="nativeName">is_secondary_reporter</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">title</property>
+                    <property name="nativeName">title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select rsr_partnership.*, rsr_organisation.name, rsr_project.title
+from rsr_partnership
+left join rsr_organisation on rsr_partnership.organisation_id=rsr_organisation.id
+left join rsr_project on rsr_partnership.project_id=rsr_project.id
+where rsr_organisation.id=?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>organisation_id</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>organisation_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>organisation_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>project_id</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>project_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>project_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>funding_amount</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>14</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>funding_amount</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>funding_amount</design:label>
+            <design:formattingHints>
+              <design:displaySize>16</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>iati_activity_id</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>iati_activity_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>iati_activity_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>internal_id</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>75</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>internal_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>internal_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>75</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>iati_url</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>iati_url</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>iati_url</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>partner_type_extra</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>30</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>partner_type_extra</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>partner_type_extra</design:label>
+            <design:formattingHints>
+              <design:displaySize>30</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>related_activity_id</design:name>
+              <design:position>9</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>related_activity_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>related_activity_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>iati_organisation_role</design:name>
+              <design:position>10</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>5</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>iati_organisation_role</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>iati_organisation_role</design:label>
+            <design:formattingHints>
+              <design:displaySize>6</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>is_secondary_reporter</design:name>
+              <design:position>11</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>is_secondary_reporter</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>is_secondary_reporter</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Data Set1" id="1696">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">title</text-property>
+                    <text-property name="heading">title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subtitle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">subtitle</text-property>
+                    <text-property name="heading">subtitle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_activity_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">iati_activity_id</text-property>
+                    <text-property name="heading">iati_activity_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_planned</text-property>
+                    <text-property name="heading">date_start_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_planned</text-property>
+                    <text-property name="heading">date_end_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_actual</text-property>
+                    <text-property name="heading">date_start_actual</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_actual</text-property>
+                    <text-property name="heading">date_end_actual</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">result_title</text-property>
+                    <text-property name="heading">result_title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">result_pk</text-property>
+                    <text-property name="heading">result_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">type</text-property>
+                    <text-property name="heading">type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">result_description</text-property>
+                    <text-property name="heading">result_description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">aggregation_status</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">aggregation_status</text-property>
+                    <text-property name="heading">aggregation_status</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indicator_title</text-property>
+                    <text-property name="heading">indicator_title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indicator_pk</text-property>
+                    <text-property name="heading">indicator_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">measure</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">measure</text-property>
+                    <text-property name="heading">measure</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indicator_description</text-property>
+                    <text-property name="heading">indicator_description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ascending</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ascending</text-property>
+                    <text-property name="heading">ascending</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">baseline_year</text-property>
+                    <text-property name="heading">baseline_year</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">baseline_value</text-property>
+                    <text-property name="heading">baseline_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">baseline_comment</text-property>
+                    <text-property name="heading">baseline_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicatorperiod_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indicatorperiod_pk</text-property>
+                    <text-property name="heading">indicatorperiod_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period_start</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period_start</text-property>
+                    <text-property name="heading">period_start</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period_end</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period_end</text-property>
+                    <text-property name="heading">period_end</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">target_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">target_value</text-property>
+                    <text-property name="heading">target_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">target_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">target_comment</text-property>
+                    <text-property name="heading">target_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">actual_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">actual_value</text-property>
+                    <text-property name="heading">actual_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">actual_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">actual_comment</text-property>
+                    <text-property name="heading">actual_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">country</text-property>
+                    <text-property name="heading">country</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">type_name</text-property>
+                    <text-property name="heading">type_name</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ID</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">subtitle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">iati_activity_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">date_start_planned</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">date_end_planned</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">date_start_actual</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">date_end_actual</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">result_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">result_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">result_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">aggregation_status</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">indicator_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">indicator_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">measure</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">indicator_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">ascending</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">baseline_year</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">baseline_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">baseline_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">indicatorperiod_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">period_start</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">period_end</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">target_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">target_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">actual_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">actual_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">country</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">type_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">RSR readonly</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">title</property>
+                    <property name="nativeName">title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">subtitle</property>
+                    <property name="nativeName">subtitle</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">iati_activity_id</property>
+                    <property name="nativeName">iati_activity_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">date_start_planned</property>
+                    <property name="nativeName">date_start_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">date_end_planned</property>
+                    <property name="nativeName">date_end_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">date_start_actual</property>
+                    <property name="nativeName">date_start_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">date_end_actual</property>
+                    <property name="nativeName">date_end_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">result_title</property>
+                    <property name="nativeName">result_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">result_pk</property>
+                    <property name="nativeName">result_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">type</property>
+                    <property name="nativeName">type</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">result_description</property>
+                    <property name="nativeName">result_description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">aggregation_status</property>
+                    <property name="nativeName">aggregation_status</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">indicator_title</property>
+                    <property name="nativeName">indicator_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">indicator_pk</property>
+                    <property name="nativeName">indicator_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">measure</property>
+                    <property name="nativeName">measure</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">indicator_description</property>
+                    <property name="nativeName">indicator_description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">ascending</property>
+                    <property name="nativeName">ascending</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">baseline_year</property>
+                    <property name="nativeName">baseline_year</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">baseline_value</property>
+                    <property name="nativeName">baseline_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">baseline_comment</property>
+                    <property name="nativeName">baseline_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">indicatorperiod_pk</property>
+                    <property name="nativeName">indicatorperiod_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">period_start</property>
+                    <property name="nativeName">period_start</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">period_end</property>
+                    <property name="nativeName">period_end</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">target_value</property>
+                    <property name="nativeName">target_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">target_comment</property>
+                    <property name="nativeName">target_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">actual_value</property>
+                    <property name="nativeName">actual_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">actual_comment</property>
+                    <property name="nativeName">actual_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">country</property>
+                    <property name="nativeName">country</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">type_name</property>
+                    <property name="nativeName">type_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select 
+ rsr_project.title,
+ rsr_project.subtitle,
+ rsr_project.iati_activity_id,
+ rsr_project.date_start_planned,
+ rsr_project.date_end_planned,
+ rsr_project.date_start_actual,
+ rsr_project.date_end_actual,
+ rsr_result.title as result_title,
+ rsr_result.id as result_pk,
+ rsr_result.type,
+ rsr_result.description as result_description,
+ rsr_result.aggregation_status,
+ rsr_indicator.title as indicator_title,
+ rsr_indicator.id as indicator_pk,
+ rsr_indicator.measure,
+ rsr_indicator.description as indicator_description,
+ rsr_indicator.ascending,
+ rsr_indicator.baseline_year,
+ rsr_indicator.baseline_value,
+ rsr_indicator.baseline_comment,
+ rsr_indicatorperiod.id as indicatorperiod_pk,
+ rsr_indicatorperiod.period_start,
+ rsr_indicatorperiod.period_end,
+ rsr_indicatorperiod.target_value,
+ rsr_indicatorperiod.target_comment,
+ rsr_indicatorperiod.actual_value,
+ rsr_indicatorperiod.actual_comment,
+ rsr_recipientcountry.country,
+ codelists_resulttype.name as type_name
+from rsr_project 
+left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
+left join rsr_result on rsr_project.id=rsr_result.project_id
+left join rsr_indicator on result_id=rsr_result.id
+left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
+left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
+left join rsr_recipientcountry on rsr_project.id = rsr_recipientcountry.project_id
+where rsr_project.id =? and codelists_resulttype.version_id=6
+order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>title</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>title</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>title</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>subtitle</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>subtitle</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>subtitle</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>iati_activity_id</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>iati_activity_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>iati_activity_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date_start_planned</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date_start_planned</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date_start_planned</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date_end_planned</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date_end_planned</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date_end_planned</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date_start_actual</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date_start_actual</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date_start_actual</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date_end_actual</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date_end_actual</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date_end_actual</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>result_title</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>500</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>result_title</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>result_title</design:label>
+            <design:formattingHints>
+              <design:displaySize>500</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>result_pk</design:name>
+              <design:position>9</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>result_pk</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>result_pk</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>type</design:name>
+              <design:position>10</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>type</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>type</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>result_description</design:name>
+              <design:position>11</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2000</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>result_description</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>result_description</design:label>
+            <design:formattingHints>
+              <design:displaySize>2000</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>aggregation_status</design:name>
+              <design:position>12</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>aggregation_status</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>aggregation_status</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>indicator_title</design:name>
+              <design:position>13</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>500</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>indicator_title</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>indicator_title</design:label>
+            <design:formattingHints>
+              <design:displaySize>500</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>indicator_pk</design:name>
+              <design:position>14</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>indicator_pk</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>indicator_pk</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>measure</design:name>
+              <design:position>15</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>measure</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>measure</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>indicator_description</design:name>
+              <design:position>16</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2000</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>indicator_description</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>indicator_description</design:label>
+            <design:formattingHints>
+              <design:displaySize>2000</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>ascending</design:name>
+              <design:position>17</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>ascending</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>ascending</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>baseline_year</design:name>
+              <design:position>18</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>baseline_year</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>baseline_year</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>baseline_value</design:name>
+              <design:position>19</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>50</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>baseline_value</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>baseline_value</design:label>
+            <design:formattingHints>
+              <design:displaySize>50</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>baseline_comment</design:name>
+              <design:position>20</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2000</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>baseline_comment</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>baseline_comment</design:label>
+            <design:formattingHints>
+              <design:displaySize>2000</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>indicatorperiod_pk</design:name>
+              <design:position>21</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>indicatorperiod_pk</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>indicatorperiod_pk</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>period_start</design:name>
+              <design:position>22</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>period_start</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>period_start</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>period_end</design:name>
+              <design:position>23</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>period_end</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>period_end</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>target_value</design:name>
+              <design:position>24</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>50</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>target_value</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>target_value</design:label>
+            <design:formattingHints>
+              <design:displaySize>50</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>target_comment</design:name>
+              <design:position>25</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2000</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>target_comment</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>target_comment</design:label>
+            <design:formattingHints>
+              <design:displaySize>2000</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>actual_value</design:name>
+              <design:position>26</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>50</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>actual_value</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>actual_value</design:label>
+            <design:formattingHints>
+              <design:displaySize>50</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>actual_comment</design:name>
+              <design:position>27</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2000</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>actual_comment</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>actual_comment</design:label>
+            <design:formattingHints>
+              <design:displaySize>2000</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>country</design:name>
+              <design:position>28</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>country</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>country</design:label>
+            <design:formattingHints>
+              <design:displaySize>2</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>type_name</design:name>
+              <design:position>29</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>300</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>type_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>type_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>300</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="38">
@@ -7288,31 +9049,21 @@ where primary_organisation_id = '3394']]></xml-property>
         </simple-master-page>
     </page-setup>
     <body>
-        <list id="436">
-            <property name="dataSet">Parent selection</property>
+        <list id="1344">
+            <property name="dataSet">partnership_selection</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">id</property>
-                    <text-property name="displayName">id</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="name">project_id</property>
+                    <text-property name="displayName">project_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_id"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
+            <property name="repeatHeader">false</property>
+            <property name="pageBreakInterval">0</property>
             <header>
-                <table id="968">
-                    <property name="fontFamily">"Arial"</property>
-                    <property name="pageBreakAfter">avoid</property>
-                    <property name="pageBreakBefore">avoid</property>
-                    <property name="pageBreakInside">avoid</property>
+                <table id="1542">
                     <property name="dataSet">Project_results_indicators_periods</property>
-                    <list-property name="paramBindings">
-                        <structure>
-                            <property name="paramName">projid</property>
-                            <simple-property-list name="expression">
-                                <value type="javascript">row["id"]</value>
-                            </simple-property-list>
-                        </structure>
-                    </list-property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">title</property>
@@ -7321,10 +9072,52 @@ where primary_organisation_id = '3394']]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
+                            <property name="name">subtitle</property>
+                            <text-property name="displayName">subtitle</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">iati_activity_id</property>
+                            <text-property name="displayName">iati_activity_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_planned</property>
+                            <text-property name="displayName">date_start_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_planned</property>
+                            <text-property name="displayName">date_end_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_actual</property>
+                            <text-property name="displayName">date_start_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_actual</property>
+                            <text-property name="displayName">date_end_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
                             <property name="name">result_title</property>
                             <text-property name="displayName">result_title</text-property>
                             <expression name="expression" type="javascript">dataSetRow["result_title"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_pk</property>
+                            <text-property name="displayName">result_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">type</property>
@@ -7349,6 +9142,12 @@ where primary_organisation_id = '3394']]></xml-property>
                             <text-property name="displayName">indicator_title</text-property>
                             <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_pk</property>
+                            <text-property name="displayName">indicator_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">measure</property>
@@ -7434,259 +9233,205 @@ where primary_organisation_id = '3394']]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
-                        <structure>
-                            <property name="name">iati_activity_id</property>
-                            <text-property name="displayName">iati_activity_id</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">subtitle</property>
-                            <text-property name="displayName">subtitle</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_planned</property>
-                            <text-property name="displayName">date_start_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_actual</property>
-                            <text-property name="displayName">date_start_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_planned</property>
-                            <text-property name="displayName">date_end_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_actual</property>
-                            <text-property name="displayName">date_end_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
                     </list-property>
                     <property name="repeatHeader">false</property>
-                    <property name="pageBreakInterval">40000000</property>
-                    <column id="1102"/>
-                    <column id="1103">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="1104">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="1105">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="1106"/>
-                    <column id="1107">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="1108"/>
-                    <column id="1109"/>
-                    <column id="1110"/>
-                    <column id="1111"/>
-                    <column id="1112"/>
-                    <column id="1113"/>
-                    <column id="1114"/>
-                    <column id="1115"/>
-                    <column id="1116"/>
-                    <column id="1117"/>
-                    <column id="1118"/>
-                    <column id="1119"/>
-                    <column id="1120"/>
-                    <column id="1121"/>
-                    <column id="1122"/>
-                    <column id="1123"/>
-                    <column id="1124"/>
-                    <column id="1125"/>
-                    <column id="1126"/>
-                    <column id="1127"/>
+                    <property name="pageBreakInterval">4000000</property>
+                    <column id="1671"/>
+                    <column id="1672"/>
+                    <column id="1673"/>
+                    <column id="1674"/>
+                    <column id="1675"/>
+                    <column id="1676"/>
+                    <column id="1677"/>
+                    <column id="1678"/>
+                    <column id="1679"/>
+                    <column id="1680"/>
+                    <column id="1681"/>
+                    <column id="1682"/>
+                    <column id="1683"/>
+                    <column id="1684"/>
+                    <column id="1685"/>
+                    <column id="1686"/>
+                    <column id="1687"/>
+                    <column id="1688"/>
+                    <column id="1689"/>
+                    <column id="1690"/>
+                    <column id="1691"/>
+                    <column id="1692"/>
+                    <column id="1693"/>
+                    <column id="1694"/>
+                    <column id="1695"/>
                     <header>
-                        <row id="969">
+                        <row id="1543">
+                            <property name="fontFamily">"Arial"</property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
-                            <cell id="970">
-                                <label id="971">
+                            <cell id="1544">
+                                <label id="1545">
                                     <text-property name="text">IATI ID</text-property>
                                 </label>
                             </cell>
-                            <cell id="972">
-                                <label id="973">
+                            <cell id="1546">
+                                <label id="1547">
                                     <text-property name="text">Project title</text-property>
                                 </label>
                             </cell>
-                            <cell id="974">
-                                <label id="975">
+                            <cell id="1548">
+                                <label id="1549">
                                     <text-property name="text">Subtitle</text-property>
                                 </label>
                             </cell>
-                            <cell id="976">
-                                <label id="977">
-                                    <text-property name="text">Type name</text-property>
-                                </label>
-                            </cell>
-                            <cell id="978">
-                                <label id="979">
+                            <cell id="1550">
+                                <label id="1551">
                                     <text-property name="text">Result title</text-property>
                                 </label>
                             </cell>
-                            <cell id="980">
-                                <label id="981">
-                                    <text-property name="text">Type name</text-property>
+                            <cell id="1552">
+                                <label id="1553">
+                                    <text-property name="text">Type </text-property>
                                 </label>
                             </cell>
-                            <cell id="982">
-                                <label id="983">
+                            <cell id="1554">
+                                <label id="1555">
                                     <text-property name="text">Result description</text-property>
                                 </label>
                             </cell>
-                            <cell id="984">
-                                <label id="985">
+                            <cell id="1556">
+                                <label id="1557">
                                     <text-property name="text">Aggregation status</text-property>
                                 </label>
                             </cell>
-                            <cell id="986">
-                                <label id="987">
+                            <cell id="1558">
+                                <label id="1559">
                                     <text-property name="text">Indicator title</text-property>
                                 </label>
                             </cell>
-                            <cell id="988">
-                                <label id="989">
+                            <cell id="1560">
+                                <label id="1561">
                                     <text-property name="text">Measure</text-property>
                                 </label>
                             </cell>
-                            <cell id="990">
-                                <label id="991">
+                            <cell id="1562">
+                                <label id="1563">
                                     <text-property name="text">Indicator description</text-property>
                                 </label>
                             </cell>
-                            <cell id="992">
-                                <label id="993">
+                            <cell id="1564">
+                                <label id="1565">
                                     <text-property name="text">Ascending</text-property>
                                 </label>
                             </cell>
-                            <cell id="994">
-                                <label id="995">
+                            <cell id="1566">
+                                <label id="1567">
                                     <text-property name="text">Baseline year</text-property>
                                 </label>
                             </cell>
-                            <cell id="996">
-                                <label id="997">
+                            <cell id="1568">
+                                <label id="1569">
                                     <text-property name="text">Baseline value</text-property>
                                 </label>
                             </cell>
-                            <cell id="998">
-                                <label id="999">
+                            <cell id="1570">
+                                <label id="1571">
                                     <text-property name="text">Baseline comment</text-property>
                                 </label>
                             </cell>
-                            <cell id="1000">
-                                <label id="1001">
-                                    <text-property name="text">indicatorperiod_pk</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1002">
-                                <label id="1003">
+                            <cell id="1572">
+                                <label id="1573">
                                     <text-property name="text">Period start</text-property>
                                 </label>
                             </cell>
-                            <cell id="1004">
-                                <label id="1005">
+                            <cell id="1574">
+                                <label id="1575">
                                     <text-property name="text">Period end</text-property>
                                 </label>
                             </cell>
-                            <cell id="1006">
-                                <label id="1007">
+                            <cell id="1576">
+                                <label id="1577">
                                     <text-property name="text">Target value</text-property>
                                 </label>
                             </cell>
-                            <cell id="1008">
-                                <label id="1009">
+                            <cell id="1578">
+                                <label id="1579">
                                     <text-property name="text">Target comment</text-property>
                                 </label>
                             </cell>
-                            <cell id="1010">
-                                <label id="1011">
+                            <cell id="1580">
+                                <label id="1581">
                                     <text-property name="text">Actual value</text-property>
                                 </label>
                             </cell>
-                            <cell id="1012">
-                                <label id="1013">
+                            <cell id="1582">
+                                <label id="1583">
                                     <text-property name="text">Actual comment</text-property>
                                 </label>
                             </cell>
-                            <cell id="1014">
-                                <label id="1015">
-                                    <text-property name="text">date_start_planned</text-property>
+                            <cell id="1584">
+                                <label id="1585">
+                                    <text-property name="text">Type name</text-property>
                                 </label>
                             </cell>
-                            <cell id="1016">
-                                <label id="1017">
-                                    <text-property name="text">date_start_actual</text-property>
+                            <cell id="1586">
+                                <label id="1587">
+                                    <text-property name="text">Date start planned</text-property>
                                 </label>
                             </cell>
-                            <cell id="1018">
-                                <label id="1019">
-                                    <text-property name="text">date_end_planned</text-property>
+                            <cell id="1588">
+                                <label id="1589">
+                                    <text-property name="text">Date end planned</text-property>
                                 </label>
                             </cell>
-                            <cell id="1020">
-                                <label id="1021">
-                                    <text-property name="text">date_end_actual</text-property>
+                            <cell id="1590">
+                                <label id="1591">
+                                    <text-property name="text">Date start actual</text-property>
+                                </label>
+                            </cell>
+                            <cell id="1592">
+                                <label id="1593">
+                                    <text-property name="text">Date end actual</text-property>
                                 </label>
                             </cell>
                         </row>
                     </header>
                     <footer>
-                        <row id="1075">
-                            <cell id="1076"/>
-                            <cell id="1077"/>
-                            <cell id="1078"/>
-                            <cell id="1079"/>
-                            <cell id="1080"/>
-                            <cell id="1081"/>
-                            <cell id="1082"/>
-                            <cell id="1083"/>
-                            <cell id="1084"/>
-                            <cell id="1085"/>
-                            <cell id="1086"/>
-                            <cell id="1087"/>
-                            <cell id="1088"/>
-                            <cell id="1089"/>
-                            <cell id="1090"/>
-                            <cell id="1091"/>
-                            <cell id="1092"/>
-                            <cell id="1093"/>
-                            <cell id="1094"/>
-                            <cell id="1095"/>
-                            <cell id="1096"/>
-                            <cell id="1097"/>
-                            <cell id="1098"/>
-                            <cell id="1099"/>
-                            <cell id="1100"/>
-                            <cell id="1101"/>
+                        <row id="1645">
+                            <cell id="1646"/>
+                            <cell id="1647"/>
+                            <cell id="1648"/>
+                            <cell id="1649"/>
+                            <cell id="1650"/>
+                            <cell id="1651"/>
+                            <cell id="1652"/>
+                            <cell id="1653"/>
+                            <cell id="1654"/>
+                            <cell id="1655"/>
+                            <cell id="1656"/>
+                            <cell id="1657"/>
+                            <cell id="1658"/>
+                            <cell id="1659"/>
+                            <cell id="1660"/>
+                            <cell id="1661"/>
+                            <cell id="1662"/>
+                            <cell id="1663"/>
+                            <cell id="1664"/>
+                            <cell id="1665"/>
+                            <cell id="1666"/>
+                            <cell id="1667"/>
+                            <cell id="1668"/>
+                            <cell id="1669"/>
+                            <cell id="1670"/>
                         </row>
                     </footer>
                 </table>
             </header>
             <detail>
-                <table id="750">
-                    <property name="fontFamily">"Arial"</property>
-                    <property name="pageBreakAfter">avoid</property>
-                    <property name="pageBreakBefore">avoid</property>
-                    <property name="pageBreakInside">avoid</property>
+                <table id="1345">
                     <property name="dataSet">Project_results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
-                            <property name="paramName">projid</property>
+                            <property name="paramName">param_1</property>
                             <simple-property-list name="expression">
-                                <value type="javascript">row["id"]</value>
+                                <value type="javascript">row["project_id"]</value>
                             </simple-property-list>
                         </structure>
                     </list-property>
@@ -7698,10 +9443,52 @@ where primary_organisation_id = '3394']]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
+                            <property name="name">subtitle</property>
+                            <text-property name="displayName">subtitle</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">iati_activity_id</property>
+                            <text-property name="displayName">iati_activity_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_planned</property>
+                            <text-property name="displayName">date_start_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_planned</property>
+                            <text-property name="displayName">date_end_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_actual</property>
+                            <text-property name="displayName">date_start_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_actual</property>
+                            <text-property name="displayName">date_end_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
                             <property name="name">result_title</property>
                             <text-property name="displayName">result_title</text-property>
                             <expression name="expression" type="javascript">dataSetRow["result_title"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_pk</property>
+                            <text-property name="displayName">result_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">type</property>
@@ -7726,6 +9513,12 @@ where primary_organisation_id = '3394']]></xml-property>
                             <text-property name="displayName">indicator_title</text-property>
                             <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_pk</property>
+                            <text-property name="displayName">indicator_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">measure</property>
@@ -7811,241 +9604,199 @@ where primary_organisation_id = '3394']]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
-                        <structure>
-                            <property name="name">iati_activity_id</property>
-                            <text-property name="displayName">iati_activity_id</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">subtitle</property>
-                            <text-property name="displayName">subtitle</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_planned</property>
-                            <text-property name="displayName">date_start_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_actual</property>
-                            <text-property name="displayName">date_start_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_planned</property>
-                            <text-property name="displayName">date_end_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_actual</property>
-                            <text-property name="displayName">date_end_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
                     </list-property>
                     <property name="repeatHeader">false</property>
-                    <property name="pageBreakInterval">40000000</property>
-                    <column id="854"/>
-                    <column id="875">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="882">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="889">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="855"/>
-                    <column id="873">
-                        <property name="repeat">1</property>
-                    </column>
-                    <column id="857"/>
-                    <column id="858"/>
-                    <column id="859"/>
-                    <column id="860"/>
-                    <column id="861"/>
-                    <column id="862"/>
-                    <column id="863"/>
-                    <column id="864"/>
-                    <column id="865"/>
-                    <column id="866"/>
-                    <column id="867"/>
-                    <column id="868"/>
-                    <column id="869"/>
-                    <column id="870"/>
-                    <column id="871"/>
-                    <column id="872"/>
-                    <column id="899"/>
-                    <column id="911"/>
-                    <column id="907"/>
-                    <column id="903"/>
+                    <property name="pageBreakInterval">0</property>
+                    <list-property name="sort">
+                        <structure>
+                            <expression name="key" type="javascript">row["iati_activity_id"]</expression>
+                            <property name="direction">desc</property>
+                            <property name="strength">-1</property>
+                        </structure>
+                    </list-property>
+                    <column id="1524"/>
+                    <column id="1489"/>
+                    <column id="1490"/>
+                    <column id="1496"/>
+                    <column id="1498"/>
+                    <column id="1499"/>
+                    <column id="1500"/>
+                    <column id="1501"/>
+                    <column id="1503"/>
+                    <column id="1504"/>
+                    <column id="1505"/>
+                    <column id="1506"/>
+                    <column id="1507"/>
+                    <column id="1508"/>
+                    <column id="1510"/>
+                    <column id="1511"/>
+                    <column id="1512"/>
+                    <column id="1513"/>
+                    <column id="1514"/>
+                    <column id="1515"/>
+                    <column id="1516"/>
+                    <column id="1540"/>
+                    <column id="1536"/>
+                    <column id="1532"/>
+                    <column id="1528"/>
                     <detail>
-                        <row id="792">
-                            <cell id="793">
-                                <data id="881">
+                        <row id="1403">
+                            <property name="fontFamily">"Arial"</property>
+                            <property name="textAlign">left</property>
+                            <cell id="1522">
+                                <data id="1409">
                                     <property name="resultSetColumn">iati_activity_id</property>
                                 </data>
                             </cell>
-                            <cell id="878">
-                                <data id="888">
+                            <cell id="1404">
+                                <data id="1405">
                                     <property name="resultSetColumn">title</property>
                                 </data>
                             </cell>
-                            <cell id="885">
-                                <data id="895">
+                            <cell id="1406">
+                                <data id="1407">
                                     <property name="resultSetColumn">subtitle</property>
                                 </data>
                             </cell>
-                            <cell id="892">
-                                <data id="893">
-                                    <property name="resultSetColumn">type_name</property>
-                                </data>
-                            </cell>
-                            <cell id="795">
-                                <data id="796">
+                            <cell id="1418">
+                                <data id="1419">
                                     <property name="resultSetColumn">result_title</property>
                                 </data>
                             </cell>
-                            <cell id="831">
-                                <data id="832">
-                                    <property name="resultSetColumn">type_name</property>
+                            <cell id="1422">
+                                <data id="1423">
+                                    <property name="resultSetColumn">type</property>
                                 </data>
                             </cell>
-                            <cell id="799">
-                                <data id="800">
+                            <cell id="1424">
+                                <data id="1425">
                                     <property name="resultSetColumn">result_description</property>
                                 </data>
                             </cell>
-                            <cell id="801">
-                                <data id="802">
+                            <cell id="1426">
+                                <data id="1427">
                                     <property name="resultSetColumn">aggregation_status</property>
                                 </data>
                             </cell>
-                            <cell id="803">
-                                <data id="804">
+                            <cell id="1428">
+                                <data id="1429">
                                     <property name="resultSetColumn">indicator_title</property>
                                 </data>
                             </cell>
-                            <cell id="805">
-                                <data id="806">
+                            <cell id="1432">
+                                <data id="1433">
                                     <property name="resultSetColumn">measure</property>
                                 </data>
                             </cell>
-                            <cell id="807">
-                                <data id="808">
+                            <cell id="1434">
+                                <data id="1435">
                                     <property name="resultSetColumn">indicator_description</property>
                                 </data>
                             </cell>
-                            <cell id="809">
-                                <data id="810">
+                            <cell id="1436">
+                                <data id="1437">
                                     <property name="resultSetColumn">ascending</property>
                                 </data>
                             </cell>
-                            <cell id="811">
-                                <data id="812">
+                            <cell id="1438">
+                                <data id="1439">
                                     <property name="resultSetColumn">baseline_year</property>
                                 </data>
                             </cell>
-                            <cell id="813">
-                                <data id="814">
+                            <cell id="1440">
+                                <data id="1441">
                                     <property name="resultSetColumn">baseline_value</property>
                                 </data>
                             </cell>
-                            <cell id="815">
-                                <data id="816">
+                            <cell id="1442">
+                                <data id="1443">
                                     <property name="resultSetColumn">baseline_comment</property>
                                 </data>
                             </cell>
-                            <cell id="817">
-                                <data id="818">
-                                    <property name="resultSetColumn">indicatorperiod_pk</property>
-                                </data>
-                            </cell>
-                            <cell id="819">
-                                <data id="820">
+                            <cell id="1446">
+                                <data id="1447">
                                     <property name="resultSetColumn">period_start</property>
                                 </data>
                             </cell>
-                            <cell id="821">
-                                <data id="822">
+                            <cell id="1448">
+                                <data id="1449">
                                     <property name="resultSetColumn">period_end</property>
                                 </data>
                             </cell>
-                            <cell id="823">
-                                <data id="824">
+                            <cell id="1450">
+                                <data id="1451">
                                     <property name="resultSetColumn">target_value</property>
                                 </data>
                             </cell>
-                            <cell id="825">
-                                <data id="826">
+                            <cell id="1452">
+                                <data id="1453">
                                     <property name="resultSetColumn">target_comment</property>
                                 </data>
                             </cell>
-                            <cell id="827">
-                                <data id="828">
+                            <cell id="1454">
+                                <data id="1455">
                                     <property name="resultSetColumn">actual_value</property>
                                 </data>
                             </cell>
-                            <cell id="829">
-                                <data id="830">
+                            <cell id="1456">
+                                <data id="1457">
                                     <property name="resultSetColumn">actual_comment</property>
                                 </data>
                             </cell>
-                            <cell id="897">
-                                <data id="915">
+                            <cell id="1458">
+                                <data id="1459">
+                                    <property name="resultSetColumn">type_name</property>
+                                </data>
+                            </cell>
+                            <cell id="1538">
+                                <data id="1411">
                                     <property name="resultSetColumn">date_start_planned</property>
                                 </data>
                             </cell>
-                            <cell id="909">
-                                <data id="917">
-                                    <property name="resultSetColumn">date_start_actual</property>
-                                </data>
-                            </cell>
-                            <cell id="905">
-                                <data id="919">
+                            <cell id="1534">
+                                <data id="1413">
                                     <property name="resultSetColumn">date_end_planned</property>
                                 </data>
                             </cell>
-                            <cell id="901">
-                                <data id="921">
+                            <cell id="1530">
+                                <data id="1415">
+                                    <property name="resultSetColumn">date_start_actual</property>
+                                </data>
+                            </cell>
+                            <cell id="1526">
+                                <data id="1417">
                                     <property name="resultSetColumn">date_end_actual</property>
                                 </data>
                             </cell>
                         </row>
                     </detail>
                     <footer>
-                        <row id="833">
-                            <cell id="834"/>
-                            <cell id="880"/>
-                            <cell id="887"/>
-                            <cell id="894"/>
-                            <cell id="835"/>
-                            <cell id="853"/>
-                            <cell id="837"/>
-                            <cell id="838"/>
-                            <cell id="839"/>
-                            <cell id="840"/>
-                            <cell id="841"/>
-                            <cell id="842"/>
-                            <cell id="843"/>
-                            <cell id="844"/>
-                            <cell id="845"/>
-                            <cell id="846"/>
-                            <cell id="847"/>
-                            <cell id="848"/>
-                            <cell id="849"/>
-                            <cell id="850"/>
-                            <cell id="851"/>
-                            <cell id="852"/>
-                            <cell id="898"/>
-                            <cell id="910"/>
-                            <cell id="906"/>
-                            <cell id="902"/>
+                        <row id="1460">
+                            <cell id="1523"/>
+                            <cell id="1461"/>
+                            <cell id="1462"/>
+                            <cell id="1468"/>
+                            <cell id="1470"/>
+                            <cell id="1471"/>
+                            <cell id="1472"/>
+                            <cell id="1473"/>
+                            <cell id="1475"/>
+                            <cell id="1476"/>
+                            <cell id="1477"/>
+                            <cell id="1478"/>
+                            <cell id="1479"/>
+                            <cell id="1480"/>
+                            <cell id="1482"/>
+                            <cell id="1483"/>
+                            <cell id="1484"/>
+                            <cell id="1485"/>
+                            <cell id="1486"/>
+                            <cell id="1487"/>
+                            <cell id="1488"/>
+                            <cell id="1539"/>
+                            <cell id="1535"/>
+                            <cell id="1531"/>
+                            <cell id="1527"/>
                         </row>
                     </footer>
                 </table>
