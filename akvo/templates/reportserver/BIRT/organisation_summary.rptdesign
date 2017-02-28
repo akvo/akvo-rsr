@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -1220,10 +1220,16 @@ where rsr_organisation.id=?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select rsr_project.title, rsr_project.subtitle
-from rsr_project
-where primary_organisation_id=?
-and(NOT ("rsr_project"."title" IS NULL) AND NOT ("rsr_project"."title" = '' ))]]></xml-property>
+            <xml-property name="queryText"><![CDATA[select distinct rsr_project.title, rsr_project.subtitle
+from
+ rsr_partnership
+ left join rsr_project on rsr_partnership.project_id = rsr_project.id 
+where
+ rsr_partnership.organisation_id = ? 
+ and (not (rsr_project.title IS NULL) and not (rsr_project.title = '' ))
+order by
+ rsr_project.title 
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2234,13 +2240,17 @@ from rsr_organisation]]></xml-property>
   count (distinct rsr_project.title) as project_count,
   count (distinct rsr_projectupdate.id) as update_count
 from
-  rsr_project 
+ rsr_partnership
+ left join rsr_project on rsr_partnership.project_id = rsr_project.id 
+ left join rsr_publishingstatus on rsr_publishingstatus.project_id = rsr_project.id 
  left join rsr_projectupdate on rsr_project.id = rsr_projectupdate.project_id
- left join rsr_organisation on rsr_organisation.id = rsr_project.primary_organisation_id
- where rsr_project.primary_organisation_id =? 
- and(NOT ("rsr_project"."title" IS NULL) AND NOT ("rsr_project"."title" = '' ))
- 
-  ]]></xml-property>
+ where
+   rsr_publishingstatus.status = 'published'
+ and 
+   rsr_partnership.organisation_id = ?
+ and
+  (NOT (rsr_project.title IS NULL) AND NOT (rsr_project.title = '' ))
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -4036,11 +4046,16 @@ order by last_modified_at DESC limit 10]]></xml-property>
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT rsr_project.title, rsr_project.subtitle, rsr_project.last_modified_at
-FROM rsr_project
-where ?=rsr_project.primary_organisation_id
-and (NOT ("rsr_project"."title" IS NULL) AND NOT ("rsr_project"."title" = '' ))
-order by rsr_project.last_modified_at desc limit 10]]></xml-property>
+            <xml-property name="queryText"><![CDATA[SELECT DISTINCT rsr_project.title, rsr_project.subtitle, rsr_project.last_modified_at
+FROM 
+rsr_partnership
+ left join rsr_project on rsr_partnership.project_id = rsr_project.id 
+where rsr_partnership.organisation_id = ? 
+ and(NOT (rsr_project.title IS NULL) AND NOT (rsr_project.title = '' ))
+order by rsr_project.last_modified_at desc limit 10
+
+ 
+]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="longest_not_edited_project" id="282">
             <property name="nullsOrdering">nulls lowest</property>
