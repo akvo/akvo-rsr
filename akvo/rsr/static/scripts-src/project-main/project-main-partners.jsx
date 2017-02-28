@@ -73,7 +73,7 @@ function renderPartnersTab() {
 
             if (logoUrl !== '') {
                 return (
-                    <img src={'/media/' + logoUrl} style={logoStyle} />
+                    <img src={logoUrl} style={logoStyle} />
                 );
             } else {
                 return (
