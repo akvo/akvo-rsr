@@ -1222,13 +1222,17 @@ where rsr_organisation.id=?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select distinct rsr_project.title, rsr_project.subtitle
 from
- rsr_partnership
- left join rsr_project on rsr_partnership.project_id = rsr_project.id 
+  rsr_partnership
+  left join rsr_project on rsr_partnership.project_id = rsr_project.id 
+  left join rsr_publishingstatus on rsr_publishingstatus.project_id = rsr_project.id 
 where
- rsr_partnership.organisation_id = ? 
- and (not (rsr_project.title IS NULL) and not (rsr_project.title = '' ))
+  rsr_publishingstatus.status = 'published'
+ and
+  rsr_partnership.organisation_id = ? 
+ and
+  (not (rsr_project.title IS NULL) and not (rsr_project.title = '' ))
 order by
- rsr_project.title 
+  rsr_project.title 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4048,10 +4052,14 @@ order by last_modified_at DESC limit 10]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT DISTINCT rsr_project.title, rsr_project.subtitle, rsr_project.last_modified_at
 FROM 
-rsr_partnership
+ rsr_partnership
  left join rsr_project on rsr_partnership.project_id = rsr_project.id 
-where rsr_partnership.organisation_id = ? 
- and(NOT (rsr_project.title IS NULL) AND NOT (rsr_project.title = '' ))
+ left join rsr_publishingstatus on rsr_publishingstatus.project_id = rsr_project.id 
+ left join rsr_projectupdate on rsr_project.id = rsr_projectupdate.project_id
+where
+   rsr_publishingstatus.status = 'published'
+ and rsr_partnership.organisation_id = ? 
+ and (NOT (rsr_project.title IS NULL) AND NOT (rsr_project.title = '' ))
 order by rsr_project.last_modified_at desc limit 10
 
  
