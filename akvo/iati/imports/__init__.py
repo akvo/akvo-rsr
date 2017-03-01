@@ -115,6 +115,22 @@ class ImportMapper(object):
     def do_import(self):
         raise NotImplementedError('do_import() must be overridden in the sub-class')
 
+    def skip_importing(self, tag_name):
+        """
+        Check if this type of data is to be ignored for the import.
+
+        Any existing data remains unchanged. Note that even if only one tag of a kind has
+        akvo:import="false" all data of that type is ignored.
+        :param tag_name: Name of the "top level" tag we're checking
+        :return: True if any of the checked tags has the akvo:import attr set to a value in
+            FALSE_VALUES
+        """
+        for tag in self.parent_elem.findall(tag_name):
+            import_attr = self.get_attrib(tag, akvo_ns('import'), 'no_field', None)
+            if import_attr and import_attr.lower() in FALSE_VALUES:
+                return True
+        return False
+
     def add_log(self, tag, field, error, message_type=LOG_ENTRY_TYPE.CRITICAL_ERROR):
         """
         Add a log entry in the IatiImportLog model. Because of the transactions we're in at this

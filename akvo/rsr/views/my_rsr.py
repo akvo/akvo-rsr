@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.db.models import Max
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
@@ -416,7 +417,7 @@ def user_management(request):
 
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
-        employments = Employment.objects.select_related().prefetch_related('group').order_by('-id')
+        employments = Employment.objects.select_related().prefetch_related('group')
         organisations = Organisation.objects.all()
         roles = Group.objects.filter(name__in=groups)
     else:
@@ -430,10 +431,10 @@ def user_management(request):
             content_owned_organisations()
         if org_admin:
             roles = Group.objects.filter(name__in=groups)
-            employments = organisations.employments().order_by('-id')
+            employments = organisations.employments()
         else:
             roles = Group.objects.filter(name__in=groups[:-1])
-            employments = organisations.employments().exclude(user=user).order_by('-id')
+            employments = organisations.employments().exclude(user=user)
 
     q = request.GET.get('q')
     if q:
@@ -444,6 +445,11 @@ def user_management(request):
                 employments.filter(user__last_name__icontains=q_item) | \
                 employments.filter(organisation__name__icontains=q_item) | \
                 employments.filter(organisation__long_name__icontains=q_item)
+
+    # Order employments in reverse chronological order, but also group
+    # employments by the user.
+    employments = employments.annotate(max_id=Max('user__employers__id'))
+    employments = employments.order_by('-max_id', '-id')
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')

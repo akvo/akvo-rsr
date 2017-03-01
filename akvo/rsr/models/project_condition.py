@@ -41,6 +41,9 @@ class ProjectCondition(models.Model):
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')
 
+    def iati_type_unicode(self):
+        return str(self.iati_type())
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'condition')

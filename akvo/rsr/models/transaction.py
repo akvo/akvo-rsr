@@ -170,32 +170,62 @@ class Transaction(models.Model):
         else:
             return codelist_name(Currency, self.project, 'currency')
 
+    def iati_currency_unicode(self):
+        return str(self.iati_currency())
+
     def iati_aid_type(self):
         return codelist_value(AidType, self, 'aid_type')
+
+    def iati_aid_type_unicode(self):
+        return str(self.iati_aid_type())
 
     def iati_finance_type(self):
         return codelist_value(FinanceType, self, 'finance_type')
 
+    def iati_finance_type_unicode(self):
+        return str(self.iati_finance_type())
+
     def iati_flow_type(self):
         return codelist_value(FlowType, self, 'flow_type')
+
+    def iati_flow_type_unicode(self):
+        return str(self.iati_flow_type())
 
     def iati_tied_status(self):
         return codelist_value(TiedStatus, self, 'tied_status')
 
+    def iati_tied_status_unicode(self):
+        return str(self.iati_tied_status())
+
     def iati_transaction_type(self):
         return codelist_value(TransactionType, self, 'transaction_type')
+
+    def iati_transaction_type_unicode(self):
+        return str(self.iati_transaction_type())
 
     def iati_disbursement_channel(self):
         return codelist_value(DisbursementChannel, self, 'disbursement_channel')
 
+    def iati_disbursement_channel_unicode(self):
+        return str(self.iati_disbursement_channel())
+
     def iati_recipient_country(self):
         return codelist_value(Country, self, 'recipient_country')
+
+    def iati_recipient_country_unicode(self):
+        return str(self.iati_recipient_country())
 
     def iati_recipient_region(self):
         return codelist_value(Region, self, 'recipient_region')
 
+    def iati_recipient_region_unicode(self):
+        return str(self.iati_recipient_region())
+
     def iati_recipient_region_vocabulary(self):
         return codelist_value(RegionVocabulary, self, 'recipient_region_vocabulary')
+
+    def iati_recipient_region_vocabulary_unicode(self):
+        return str(self.iati_recipient_region_vocabulary())
 
     class Meta:
         app_label = 'rsr'
@@ -247,8 +277,14 @@ class TransactionSector(models.Model):
         else:
             return self.code
 
+    def iati_sector_unicode(self):
+        return str(self.iati_sector())
+
     def iati_vocabulary(self):
         return codelist_value(SectorVocabulary, self, 'vocabulary')
+
+    def iati_vocabulary_unicode(self):
+        return str(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'

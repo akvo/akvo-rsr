@@ -1124,20 +1124,38 @@ class Project(TimestampsMixin, models.Model):
     def iati_project_scope(self):
         return codelist_value(ActivityScope, self, 'project_scope')
 
+    def iati_project_scope_unicode(self):
+        return str(self.iati_project_scope())
+
     def iati_collaboration_type(self):
         return codelist_value(CollaborationType, self, 'collaboration_type')
+
+    def iati_collaboration_type_unicode(self):
+        return str(self.iati_collaboration_type())
 
     def iati_default_flow_type(self):
         return codelist_value(FlowType, self, 'default_flow_type')
 
+    def iati_default_flow_type_unicode(self):
+        return str(self.iati_default_flow_type())
+
     def iati_default_finance_type(self):
         return codelist_value(FinanceType, self, 'default_finance_type')
+
+    def iati_default_finance_type_unicode(self):
+        return str(self.iati_default_finance_type())
 
     def iati_default_aid_type(self):
         return codelist_value(AidType, self, 'default_aid_type')
 
+    def iati_default_aid_type_unicode(self):
+        return str(self.iati_default_aid_type())
+
     def iati_default_tied_status(self):
         return codelist_value(TiedStatus, self, 'default_tied_status')
+
+    def iati_default_tied_status_unicode(self):
+        return str(self.iati_default_tied_status())
 
     def sector_categories_codes(self):
         from .sector import Sector
@@ -1257,11 +1275,20 @@ class Project(TimestampsMixin, models.Model):
     def iati_successes(self):
         return [check.description for check in self.iati_checks_status(1)]
 
+    def iati_successes_unicode(self):
+        return str(self.iati_successes())
+
     def iati_warnings(self):
         return [check.description for check in self.iati_checks_status(2)]
 
+    def iati_warnings_unicode(self):
+        return str(self.iati_warnings())
+
     def iati_errors(self):
         return [check.description for check in self.iati_checks_status(3)]
+
+    def iati_errors_unicode(self):
+        return str(self.iati_errors())
 
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""
@@ -1321,6 +1348,9 @@ class Project(TimestampsMixin, models.Model):
         for period in indicator.periods.all():
             self.add_period(self_indicator, period)
 
+        for reference in indicator.references.all():
+            self.add_reference(self_indicator, reference)
+
     def add_period(self, indicator, period):
         get_model('rsr', 'IndicatorPeriod').objects.create(
             indicator=indicator,
@@ -1329,6 +1359,14 @@ class Project(TimestampsMixin, models.Model):
             target_value=period.target_value,
             target_comment=period.target_comment,
             actual_comment=period.actual_comment
+        )
+
+    def add_reference(self, indicator, reference):
+        get_model('rsr', 'IndicatorReference').objects.create(
+            indicator=indicator,
+            reference=reference.reference,
+            vocabulary=reference.vocabulary,
+            vocabulary_uri=reference.vocabulary_uri,
         )
 
     def has_results(self):

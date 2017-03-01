@@ -32,6 +32,10 @@ class Locations(ImportMapper):
         imported_locations = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('location'):
+            return changes
+
         for location in self.parent_elem.findall('location'):
 
             reference = self.get_attrib(location, 'ref', 'reference')
@@ -184,6 +188,10 @@ class RecipientCountries(ImportMapper):
         imported_countries = []
         changes = []
 
+        # Check if import should ignore this kind of data
+        if self.skip_importing('recipient-country'):
+            return changes
+
         for country in self.parent_elem.findall('recipient-country'):
 
             text = self.get_element_text(country, 'text')
@@ -226,6 +234,10 @@ class RecipientRegions(ImportMapper):
         """
         imported_regions = []
         changes = []
+
+        # Check if import should ignore this kind of data
+        if self.skip_importing('recipient-region'):
+            return changes
 
         for region in self.parent_elem.findall('recipient-region'):
 

@@ -14,7 +14,8 @@ from ..viewsets import PublicProjectViewSet
 class BudgetItemViewSet(PublicProjectViewSet):
     """
     """
-    queryset = BudgetItem.objects.all()
+    # need to select_related project to keep call to BudgetItem.iati_currency_unicode() speedy
+    queryset = BudgetItem.objects.all().select_related('project')
     serializer_class = BudgetItemSerializer
 
 

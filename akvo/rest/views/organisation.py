@@ -5,10 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.conf import settings
+from django.utils import six
 
-from rest_framework.compat import etree, six
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import XMLParser, JSONParser
+from rest_framework.parsers import JSONParser
+from rest_framework_xml.parsers import XMLParser
+from rest_framework_xml.compat import etree
 
 from akvo.rsr.models import Organisation, Country
 

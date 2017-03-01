@@ -20,9 +20,7 @@ class OrganisationCountryBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationCountryBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationCountryBudgetLineSerializer(
-        source='budget_lines', many=True, required=False, allow_add_remove=True
-    )
+    budget_lines = OrganisationCountryBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationCountryBudget
@@ -36,9 +34,7 @@ class OrganisationRecipientOrgBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationRecipientOrgBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationRecipientOrgBudgetLineSerializer(
-        source='budget_lines', many=True, required=False, allow_add_remove=True
-    )
+    budget_lines = OrganisationRecipientOrgBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationRecipientOrgBudget
@@ -52,9 +48,7 @@ class OrganisationRegionBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationRegionBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationRegionBudgetLineSerializer(
-        source='budget_lines', many=True, required=False, allow_add_remove=True
-    )
+    budget_lines = OrganisationRegionBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationRegionBudget
@@ -68,9 +62,7 @@ class OrganisationTotalBudgetLineSerializer(BaseRSRSerializer):
 
 class OrganisationTotalBudgetSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationTotalBudgetLineSerializer(
-        source='budget_lines', many=True, required=False, allow_add_remove=True
-    )
+    budget_lines = OrganisationTotalBudgetLineSerializer(many=True, required=False)
 
     class Meta:
         model = OrganisationTotalBudget
@@ -84,9 +76,7 @@ class OrganisationExpenseLineSerializer(BaseRSRSerializer):
 
 class OrganisationTotalExpenditureSerializer(BaseRSRSerializer):
 
-    budget_lines = OrganisationExpenseLineSerializer(
-        source='expense_lines', many=True, required=False, allow_add_remove=True
-    )
+    budget_lines = OrganisationExpenseLineSerializer(source='expense_lines', many=True, required=False)
 
     class Meta:
         model = OrganisationTotalExpenditure
