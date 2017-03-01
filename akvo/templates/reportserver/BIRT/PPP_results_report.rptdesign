@@ -16319,5 +16319,61 @@ Math.min(row["progress_pct"],100)&#13;
                 SUVORK5CYII=
 </property>
         </structure>
+        <structure>
+            <property name="name">Traffic_green.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                iVBORw0KGgoAAAANSUhEUgAAADEAAAAPCAYAAABN7CfBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+                YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJ3SURBVEhLtZa/bhNBEMZn92zHF+MIaBBJg4SIhESFkKgQ
+                HQ2IGkRNQYvEA/ACqSkpqVFeIBJlSIFASEGhIkEpCOKS4H93u8y3mcvd2Wd71xK/xjOru/V9O7Mzo4wx
+                lkrY0YjMYEBmOJQVIqU1qWaTdBw7eybWkBkNeJ8em6ks8h4q4j3apFsxNpTVeo753c39bdr8sU3fjg9k
+                lehqfIkerd2hJ9fuUbfJ+wiFCGspOz2tfHwdUadDemlJvCo2S8n0/vBWmazUwAKi+CKpqCELVXaTA3q1
+                85Z+9n7LyiQXGm16c/cFra+sOv9cRJokZNPi5GYRcUQQlQomo/Qv/zFHYi5ThODDn33YoJO0LyvTKQtx
+                cTU9Dr2nAJDh+ax62lk/8RMAkHIcsXFef3rnJQDgOUQMnIngOxAKhOfYdMiiRuL5gZSzo+KDPx7t0c7R
+                d/H8QORwdzQusjWeJ1iifHdsGn4IwJTe2zr8IlYYW4efWURAGo2Tp1S5CgVRSr/dZF+sMFDJ5tTLOSwQ
+                wf+BVo36UufD+btz6r4P5bofCte6SMwwXNNT6syOWu43FKWLA7x9+bpYYayvrHEk0I0XiEa5T+gmN78F
+                oqFby2KR68So/aE85e7t/hldeO44UQKiK12bBehWRxw/NNJHF1mAdHp+44F4fmD8wCjivlxxSnnNRQwE
+                NLpd8QowE2mejXzAc7o9uQdO9SFHxAc89/LmY2dXBkCUTMxP08ouTj9a5hSQu1AHeobpn9TPTxIxNwTO
+                ALV/4+v72vkJKYeIQXDOxBQLIMYJyUso7g1PsSEpN97FMSepRv3gOA3XxX/tiYdLvEr3r9wSL4foH3/s
+                /NHkH+75AAAAAElFTkSuQmCC
+</property>
+        </structure>
+        <structure>
+            <property name="name">Traffic_yellow.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                iVBORw0KGgoAAAANSUhEUgAAADEAAAAPCAYAAABN7CfBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+                YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJ3SURBVEhLxZbPbtNAEMbH6/hP0iZNxSUCVeIYblyQOCLB
+                A5QnoA/AA/AEwAPwApQ79MiRYwWX3ODYC1IkhNqmNLFje818m3FjN3FimwM/ydrd0a613+7Mzlha65Ru
+                kSYJpfO5jBilyHIcsritgg4mND37SuH4h1iInP492h0+JeX3xLIZnaYUpwnFOhELb8NS5KoWt5ZYFhRE
+                pFFEyfU1pVqLpYhyXbJ3dnhV8Sd5zk/f0+8v71jIlViWKL9L+49f0J0nL8Wynlkyp2kckqaV8yU+Tmrb
+                LnVanlhyInQYGgHbwG3Y3S5Zti2WJeOTVzQZncionPb9R3Rw9EFGRa6iGQU6klE5jmVT3+UDZYx/wH2q
+                CAC4JTOXrzsPTr+KADA7+0a/Pr+W0RKcfhUBIGJX+xMHpm9EVBWQkcYxu8viBwAxADeqw/npMUUXP2W0
+                iAG4UR0wX6eaFE4Wm6oL3C/jcvRpbQxs4yInPOQbWBcD25iyEIVgboIJfnGpGb9ETQjG36XH7qHrHyTA
+                66Wo5CWqQnaDCbvTvwJ3aopCDmjMmhfqf8D5o5kIrMvW+oMHpq2LnUt8SGJNQOJTdTJxHqzL6D18Lr16
+                7A6fSY9F2M1EuMpZPLGq3TaGOuTXeHwTSGB18AbDgvgWJy8ksDpgjW9nIjzPfFVB6XH79gaHb01ZUQXM
+                Gxy+kdGSntPhDZWXNHkwr+v40hewsW1CsPGyeSjwDo6OzQlvwunflXmrcQT/3udSAie8CZsF7Lmdm3kr
+                VSzyhuYKFm1WCFqtlvmU71eKnwknv8vRR1NeZMDdEAN77EJVKtkgifibm/IiA+7msft4iIObIpToLzbK
+                9HBv1L7MAAAAAElFTkSuQmCC
+</property>
+        </structure>
+        <structure>
+            <property name="name">Traffic_red.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                iVBORw0KGgoAAAANSUhEUgAAADEAAAAPCAYAAABN7CfBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+                YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJiSURBVEhLxZa9UttAEMdXp09Lwc5MGKeFtFDzElDD21BQ
+                8QD0vAQ9PT1tIDOZFExmMji29X2X3fWdJSuyIqnJTyPr9izZ+u/u3a4lpVTQIHt7g8XTE5SrFdvefA7T
+                szOwo4jtPqgiA1Xm2gKwbBcsx9NWPzJZQI6nwbFs8PF3muyISF5e4Mf9Payen/XMLofn5zC/uuoUo4oU
+                ZLIEpUo9U8MSILwIz4meaCdF8csigVJJPVNh4RE5PoR4GrYi6MW/3d5CuV7zF/sIjo7gy81NqxCZLEDm
+                ibb2I9wARDDV1i6LPIakzLS1n8D2YOpunCHog9KnjwAieX2Fr9fX2qqQWdxLAEH3yXSTqnXo5fsIIOi+
+                pf4/FvH97q6XAAMJ+fX4qC0Ewy6zv1+qC75fVimnlILfPZ1gWJcpp5ygKOxbA138fHjQI/JsykKGIrPK
+                canMQeExlBg3EDFGAEHRMKieKdBE1XaetKzGQ8hxA+FIjGXrgBFRaCJHRMHAa2Isdhjq0f9FfDg91cPh
+                BMfHfLWEw9fBYN0wuFjIxiCwbojo5GSUR6mCG6xa4RmCqD3n2eMc4eNz7IpPFxc8MYTD2jPUTlBbMQQL
+                PW9h0TN4GE13YERtjCQVPRbxGVsJqsR9mV9eAkWwjvAPdtKjE2o/JjNtVBw4AbcVfZm5mwzath3U7FHR
+                o8avCxJAottQuE3K+L29bzKgAHvyESPX7vUCC+B7vm7tmwwkdOaFHD22m10siaBqXBdDa4bWADV/1NF2
+                wtU75kawXgdM+nDz94+IUfWOuQXJoag5ZJM+LoS2j79nIgbwBx9dD8OwFXfOAAAAAElFTkSuQmCC
+</property>
+        </structure>
     </list-property>
 </report>
