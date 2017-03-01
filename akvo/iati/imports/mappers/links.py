@@ -77,13 +77,13 @@ class CurrentImage(ImportMapper):
                                      'Error trying to fetch image: {}'.format(url))
 
                 current_image_caption = self.get_child_element_text(
-                        document_link_element, 'title', 'current_image_caption')
+                    document_link_element, 'title', 'current_image_caption')
                 if current_image_caption:
                     self.project.current_image_caption = current_image_caption
                     image_meta_changes.append('current_image_caption')
                 current_image_credit = self.get_attrib(
-                        document_link_element, akvo_ns('photo-credit'),
-                        'current_image_credit')
+                    document_link_element, akvo_ns('photo-credit'),
+                    'current_image_credit')
                 if current_image_credit:
                     self.project.current_image_credit = current_image_credit
                     image_meta_changes.append('current_image_credit')
@@ -98,7 +98,7 @@ class Links(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Links, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = Link
 
     def do_import(self):
@@ -137,7 +137,7 @@ class Links(ImportMapper):
             caption = self.get_child_element_text(doc_link, 'title', 'caption')
 
             link, created = Link.objects.get_or_create(
-                    project=self.project, url=url, caption=caption)
+                project=self.project, url=url, caption=caption)
             if created:
                 changes.append(u'added link (id: {}): {}'.format(link.pk, link))
             imported_links.append(link)
@@ -151,7 +151,7 @@ class Documents(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Documents, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = ProjectDocument
 
     def do_import(self):
@@ -182,16 +182,16 @@ class Documents(ImportMapper):
                 continue
 
             title, title_element = self.get_child_element_text(
-                    doc_link, 'title', 'title', return_element=True)
+                doc_link, 'title', 'title', return_element=True)
 
             title_language = ''
             if title:
                 if self.globals['version'][0] == '1':
                     title_language = self.get_child_elem_attrib(
-                            doc_link, 'title', xml_ns('lang'), 'title_language')
+                        doc_link, 'title', xml_ns('lang'), 'title_language')
                 elif self.globals['version'][0] == '2':
                     title_language = self.get_child_elem_attrib(
-                            title_element, 'narrative', xml_ns('lang'), 'title_language')
+                        title_element, 'narrative', xml_ns('lang'), 'title_language')
 
             language = self.get_child_elem_attrib(doc_link, 'language', 'code', 'language')
 
@@ -250,7 +250,7 @@ class DocumentCategories(ImportMapper):
             )
             if created:
                 changes.append(u'added document category (id: {}): {}'.format(
-                        category_obj.pk, category_obj))
+                    category_obj.pk, category_obj))
             imported_categories.append(category_obj)
 
         changes += self.delete_objects(self.related_obj.categories, imported_categories,

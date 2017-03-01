@@ -42,8 +42,8 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
     paginate_by = 100
     # TODO: shouldn't this be subject to private project filtering?
     queryset = ProjectLocation.objects.select_related('location_target', 'country').only(
-            'id', 'latitude', 'longitude',
-            'location_target__id', 'location_target__title',
-            'location_target__current_image',
-            'country'
+        'id', 'latitude', 'longitude',
+        'location_target__id', 'location_target__title',
+        'location_target__current_image',
+        'country'
     )

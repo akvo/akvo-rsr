@@ -13,7 +13,7 @@ from decimal import Decimal
 from lxml import etree
 from os.path import join, pardir, splitext
 
-project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir]*3)
+project_root = join(os.path.dirname(os.path.realpath(__file__)), *[pardir] * 3)
 sys.path.append(project_root)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -30,13 +30,14 @@ from akvo.scripts.cordaid import (
     CORDAID_ACTIVITIES_CSV_FILE, init_log, ACTION_BUDGET_SET, outsys,
     ACTION_PUBLISHING_SET)
 
+
 def import_images(image_dir, photos):
     outsys("\nRunning {}() ".format(who_am_i()))
     for image_name in os.listdir(image_dir):
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
-                internal_id=photos.get(
+                internal_id = photos.get(
                     photo_id, {'internal_project_id': None}
                 )['internal_project_id']
                 project = Project.objects.get(
@@ -69,6 +70,7 @@ def import_images(image_dir, photos):
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
                 )
                 outsys("*")
+
 
 def fix_funding(budgets):
     """
@@ -118,8 +120,8 @@ def fix_funding(budgets):
             old_budgets.delete()
             BudgetItem.objects.create(
                 project=project,
-                label = BudgetItemLabel.objects.get(pk=BudgetItemLabel.TOTAL_BUDGET_LABEL_ID),
-                amount = total_budget
+                label=BudgetItemLabel.objects.get(pk=BudgetItemLabel.TOTAL_BUDGET_LABEL_ID),
+                amount=total_budget
             )
             log(
                 u"Total budget for project {pk}: {extra}",
@@ -129,9 +131,10 @@ def fix_funding(budgets):
         except Exception, e:
             log(u"Error setting up funding partners for project {pk}\nException class: {extra}",
                 dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
-            )
+                )
             outsys("*")
     outsys('\n')
+
 
 def set_publishing_status(publishing_statuses):
     outsys("\nRunning {}() ".format(who_am_i()))
@@ -152,9 +155,10 @@ def set_publishing_status(publishing_statuses):
         except Exception, e:
             log(u"Error setting publishing status for project {internal_id}\nException class: {extra}",
                 dict(internal_id=internal_id, event=e.__class__, extra=e.message),
-            )
+                )
             outsys("*")
     outsys('\n')
+
 
 def get_post_process_data():
     """ Create a dictionary with photo IDs as keys:
@@ -184,8 +188,8 @@ def get_post_process_data():
                 image_caption=activity.get(AKVO_NS + 'image-caption', '').strip(),
                 image_credit=activity.get(AKVO_NS + 'photo-credit', '').strip(),
             )
-            cordaid_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Cordaid"]')
-            others_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Others"]')
+            cordaid_budget = activity.findall('budget[@' + AKVO_NS + 'budget-from="Cordaid"]')
+            others_budget = activity.findall('budget[@' + AKVO_NS + 'budget-from="Others"]')
             budgets.append(
                 dict(
                     internal_project_id=activity.get(AKVO_NS + 'internal-project-id'),

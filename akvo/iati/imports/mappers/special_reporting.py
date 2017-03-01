@@ -48,7 +48,7 @@ class LegacyDatas(ImportMapper):
             )
             if created:
                 changes.append(u'added legacy data (id: {}): {}'.format(
-                        legacy_obj.pk, legacy_obj))
+                    legacy_obj.pk, legacy_obj))
             imported_lds.append(legacy_obj)
 
         changes += self.delete_objects(self.project.legacy_data, imported_lds, 'legacy data')
@@ -78,21 +78,21 @@ class CrsAdds(ImportMapper):
             if loan_terms_element is not None:
 
                 loan_terms_rate1 = self.get_attrib(
-                        loan_terms_element, 'rate-1', 'loan_terms_rate1', None)
+                    loan_terms_element, 'rate-1', 'loan_terms_rate1', None)
                 loan_terms_rate2 = self.get_attrib(
-                        loan_terms_element, 'rate-2', 'loan_terms_rate2', None)
+                    loan_terms_element, 'rate-2', 'loan_terms_rate2', None)
                 repayment_type = self.get_child_elem_attrib(
-                        loan_terms_element, 'repayment-type', 'code', 'repayment_type')
+                    loan_terms_element, 'repayment-type', 'code', 'repayment_type')
                 repayment_plan = self.get_child_elem_attrib(
-                        loan_terms_element, 'repayment-plan', 'code', 'repayment_plan')
+                    loan_terms_element, 'repayment-plan', 'code', 'repayment_plan')
                 commitment_date = self.get_child_as_date(
-                        loan_terms_element, 'commitment-date', 'iso-date', 'commitment_date')
+                    loan_terms_element, 'commitment-date', 'iso-date', 'commitment_date')
                 repayment_first_date = self.get_child_as_date(
-                        loan_terms_element, 'repayment-first-date', 'iso-date',
-                        'repayment_first_date')
+                    loan_terms_element, 'repayment-first-date', 'iso-date',
+                    'repayment_first_date')
                 repayment_final_date = self.get_child_as_date(
-                        loan_terms_element, 'repayment-final-date', 'iso-date',
-                        'repayment_final_date')
+                    loan_terms_element, 'repayment-final-date', 'iso-date',
+                    'repayment_final_date')
 
             else:
                 loan_terms_rate1 = None
@@ -107,19 +107,19 @@ class CrsAdds(ImportMapper):
             if loan_status_element is not None:
 
                 loan_status_year = self.get_attrib_as_int(
-                        loan_status_element, 'year', 'loan_status_year', None)
+                    loan_status_element, 'year', 'loan_status_year', None)
                 loan_status_currency = self.get_attrib(
-                        loan_status_element, 'currency', 'loan_status_currency')
+                    loan_status_element, 'currency', 'loan_status_currency')
                 loan_status_value_date = self.get_date(
                     loan_status_element, 'value-date', 'loan_status_value_date')
                 interest_received = self.get_child_element_text_as_decimal(
-                        loan_status_element, 'interest-received', 'interest_received', None)
+                    loan_status_element, 'interest-received', 'interest_received', None)
                 principal_outstanding = self.get_child_element_text_as_decimal(
-                        loan_status_element, 'principal-outstanding', 'principal_outstanding', None)
+                    loan_status_element, 'principal-outstanding', 'principal_outstanding', None)
                 principal_arrears = self.get_child_element_text_as_decimal(
-                        loan_status_element, 'principal-arrears', 'principal_arrears', None)
+                    loan_status_element, 'principal-arrears', 'principal_arrears', None)
                 interest_arrears = self.get_child_element_text_as_decimal(
-                        loan_status_element, 'interest-arrears', 'interest_arrears', None)
+                    loan_status_element, 'interest-arrears', 'interest_arrears', None)
 
             else:
                 loan_status_year = None
@@ -150,7 +150,7 @@ class CrsAdds(ImportMapper):
                 channel_code=channel_code
             )
             crs_obj, created = CrsAdd.objects.update_or_create(
-                    project=self.project, defaults=defaults)
+                project=self.project, defaults=defaults)
             if created:
                 changes.append(u'added CRS++ (id: {})'.format(crs_obj.pk))
 
@@ -174,7 +174,7 @@ class CrsAdds(ImportMapper):
                 imported_flags.append(other_flag_obj)
 
             for other_flag in crs_obj.other_flags.all():
-                if not other_flag in imported_flags:
+                if other_flag not in imported_flags:
                     changes.append(u'deleted CRS++ other flag (id: {})'.format(other_flag.pk))
                     other_flag.delete()
         else:
@@ -214,7 +214,7 @@ class FSSs(ImportMapper):
             priority = self.to_boolean(priority)
 
             phaseout_year = self.get_attrib_as_int(
-                    fss_element, 'phaseout-year', 'phaseout_year', None)
+                fss_element, 'phaseout-year', 'phaseout_year', None)
 
             defaults = dict(
                 extraction_date=extraction_date,
@@ -251,7 +251,7 @@ class FSSs(ImportMapper):
                 imported_forecasts.append(forecast_obj)
 
             for forecast in fss_obj.forecasts.all():
-                if not forecast in imported_forecasts:
+                if forecast not in imported_forecasts:
                     changes.append(u'deleted FSS forecast (id: {})'.format(forecast.pk))
                     forecast.delete()
         else:

@@ -10,6 +10,7 @@ from akvo.rsr.models import Benchmarkname
 from ..serializers import BenchmarknameSerializer
 from ..viewsets import PublicProjectViewSet
 
+
 class BenchmarknameViewSet(PublicProjectViewSet):
     """
     """

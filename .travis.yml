@@ -32,6 +32,12 @@ script:
   - coverage run manage.py test akvo
   - SLOW_TESTS=1 coverage run -a manage.py test akvo.rsr.tests.rest.test_migration
   - coverage report -m
+  # We don't care about migrations; __init__.py can have unused imports
+  # wsgi.py and scripts/ are handled below
+  - flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py akvo/
+  # Need environ to be set before other imports, etc. So, ignore E402
+  - flake8 --ignore=E501,E402 akvo/scripts/
+  - flake8 --ignore=E501,E402 akvo/wsgi.py
 
 after_success:
   - coveralls

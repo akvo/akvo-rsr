@@ -8,7 +8,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import decimal
 import json
-import collections
 
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
@@ -23,6 +22,7 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, C
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
+from django.db import transaction
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
@@ -304,7 +304,7 @@ def add_changes(changes, obj, field, field_name, orig_data):
     per related object, so we need to check if the object is already in the changes list and
     append the new changes to it.
     """
-    if not obj in [change[0] for change in changes]:
+    if obj not in [change[0] for change in changes]:
         # Object not yet in changes list
         changes.append([obj, [[field, field_name, orig_data]]])
     else:
@@ -459,7 +459,7 @@ def project_editor(request, pk=None):
                     # Add the new many to many object to the project
                     m2m_relation.add(m2m_object)
                     changes = add_changes(changes, m2m_object, field, key, obj_data)
-                    if not related_obj_id in rel_objects.keys():
+                    if related_obj_id not in rel_objects.keys():
                         rel_objects[related_obj_id] = obj_data
                 except Model.DoesNotExist as e:
                     errors = add_error(errors, str(e), key)
@@ -477,7 +477,7 @@ def project_editor(request, pk=None):
                 # New object, with potentially a new parent as well
                 parent_id = '_'.join(id_list[:-1])
 
-                if not 'new' in parent_id:
+                if 'new' not in parent_id:
                     # New object, but parent is already existing
                     parent_obj_id = id_list[-2]
 
@@ -583,6 +583,7 @@ def project_editor(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
+@transaction.atomic
 def project_editor_reorder_items(request, project_pk=None):
     """API call to reorder results or indicators"""
 
@@ -602,8 +603,8 @@ def project_editor_reorder_items(request, project_pk=None):
         errors += ['Invalid item type']
 
     if not errors:
-        # assign order if it doesn't already exist
-        if item_list and not item_list[0].order:
+        # assign order if it doesn't already exist or is messed up
+        if item_list and set(item_list.values_list('order', flat=True)) != set(range(item_list.count())):
             for i, item in enumerate(item_list):
                 item.order = i
                 item.save()
@@ -621,7 +622,7 @@ def project_editor_reorder_items(request, project_pk=None):
             swap_id = item_swap.id
 
             if item_selected:
-                item_selected.order = item_original_order-1
+                item_selected.order = item_original_order - 1
                 item_selected.save()
 
         elif item_direction == 'down' and not item_original_order >= len(item_list) - 1:
@@ -645,6 +646,7 @@ def project_editor_reorder_items(request, project_pk=None):
             'swap_id': swap_id,
         }
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -690,12 +692,12 @@ def project_editor_default_periods(request, project_pk=None):
         default_indicator.default_periods = False
         default_indicator.save()
 
-
     return Response(
         {
             'errors': errors,
         }
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -705,7 +707,7 @@ def project_editor_upload_file(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
-    errors, changes, rel_objects, new_file_url = [], [], {}, ''
+    errors, changes, rel_objects = [], [], {}
     field_id = request.POST.copy()['field_id']
     upload_file = request.data['file']
 
@@ -781,7 +783,7 @@ def project_editor_add_validation(request, project_pk=None, validation_pk=None):
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
 
-    if not validation_set in project.validations.all():
+    if validation_set not in project.validations.all():
         project.validations.add(validation_set)
 
         change_message = u'%s %s.' % (_(u'Project editor, added: validation set'),

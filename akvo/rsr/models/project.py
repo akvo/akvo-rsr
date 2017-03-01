@@ -5,7 +5,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import math
 
 from decimal import Decimal, InvalidOperation
 
@@ -19,7 +18,7 @@ from django.db.models.signals import post_save, post_delete
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 
 from django_counter.models import ViewCounter
@@ -476,8 +475,8 @@ class Project(TimestampsMixin, models.Model):
             # Update aggregation to parent
             if self.aggregate_to_parent != orig_aggregate_to_parent:
                 for period in IndicatorPeriod.objects.filter(indicator__result__project_id=self.pk):
-                    if period.parent_period():
-                        period.parent_period().recalculate_period()
+                    if period.parent_period:
+                        period.parent_period.recalculate_period()
 
     def clean(self):
         # Don't allow a start date before an end date
@@ -502,7 +501,6 @@ class Project(TimestampsMixin, models.Model):
         if not self.iati_activity_id:
             self.iati_activity_id = None
 
-
     @models.permalink
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
@@ -511,8 +509,8 @@ class Project(TimestampsMixin, models.Model):
         """Returns True if a project accepts donations, otherwise False.
         A project accepts donations when the donate url is set, the project is published,
         the project needs funding and is not cancelled or archived."""
-        if self.donate_url and self.is_published() and self.funds_needed > 0 and not \
-                self.iati_status in Project.DONATE_DISABLED:
+        if self.donate_url and self.is_published() and self.funds_needed > 0 and \
+                self.iati_status not in Project.DONATE_DISABLED:
             return True
         return False
 
@@ -897,8 +895,8 @@ class Project(TimestampsMixin, models.Model):
         )
 
     latest_update.allow_tags = True
-    #no go, results in duplicate projects entries in the admin change list
-    #latest_update.admin_order_field = 'project_updates__time'
+    # no go, results in duplicate projects entries in the admin change list
+    # latest_update.admin_order_field = 'project_updates__time'
 
     def show_status(self):
         "Show the current project status"
@@ -1013,7 +1011,6 @@ class Project(TimestampsMixin, models.Model):
 
         return total_string[:-2]
 
-
     def focus_areas(self):
         from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
@@ -1037,7 +1034,7 @@ class Project(TimestampsMixin, models.Model):
             areas += [area]
         return areas
 
-    #shortcuts to linked orgs for a single project
+    # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
         """
         Return the partner organisations to the project.
@@ -1298,7 +1295,7 @@ class Project(TimestampsMixin, models.Model):
         return [keyword.label for keyword in self.keywords.all()]
 
     ###################################
-    ####### RSR Impact projects #######
+    # RSR Impact projects #############
     ###################################
 
     def import_results(self):
@@ -1321,21 +1318,22 @@ class Project(TimestampsMixin, models.Model):
         return import_success, 'Results imported'
 
     def add_result(self, result):
-        self_result = get_model('rsr', 'Result').objects.create(
+        child_result = get_model('rsr', 'Result').objects.create(
             project=self,
+            parent_result=result,
             title=result.title,
             type=result.type,
             aggregation_status=result.aggregation_status,
             description=result.description,
-            parent_result=result
         )
 
         for indicator in result.indicators.all():
-            self.add_indicator(self_result, indicator)
+            self.add_indicator(child_result, indicator)
 
     def add_indicator(self, result, indicator):
-        self_indicator = get_model('rsr', 'Indicator').objects.create(
+        child_indicator = get_model('rsr', 'Indicator').objects.create(
             result=result,
+            parent_indicator=indicator,
             title=indicator.title,
             measure=indicator.measure,
             ascending=indicator.ascending,
@@ -1346,14 +1344,15 @@ class Project(TimestampsMixin, models.Model):
         )
 
         for period in indicator.periods.all():
-            self.add_period(self_indicator, period)
+            self.add_period(child_indicator, period)
 
         for reference in indicator.references.all():
-            self.add_reference(self_indicator, reference)
+            self.add_reference(child_indicator, reference)
 
     def add_period(self, indicator, period):
         get_model('rsr', 'IndicatorPeriod').objects.create(
             indicator=indicator,
+            parent_period=period,
             period_start=period.period_start,
             period_end=period.period_end,
             target_value=period.target_value,
@@ -1403,7 +1402,7 @@ class Project(TimestampsMixin, models.Model):
             for indicator in result.indicators.all():
                 if indicator.is_child_indicator():
                     for period in indicator.periods.all():
-                        parent = period.parent_period()
+                        parent = period.parent_period
                         if parent and period.actual_value:
                             if indicator.measure == '2':
                                 self.update_parents(parent, parent.child_periods_average(), 1)
@@ -1421,7 +1420,7 @@ class Project(TimestampsMixin, models.Model):
                     Decimal(update_period.actual_value) + sign * Decimal(difference))
             update_period.save()
 
-            parent_period = update_period.parent_period()
+            parent_period = update_period.parent_period
             if parent_period and parent_period.indicator.result.project.aggregate_children:
                 if update_period.indicator.measure == '2':
                     self.update_parents(parent_period, parent_period.child_periods_average(), 1)

@@ -1,6 +1,6 @@
 {% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
 {% load url from future %}
-{% load compressed %}
+{% load pipeline %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -53,7 +53,7 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% compressed_css 'rsr_v3_style' %}
+    {% stylesheet 'rsr_v3_style' %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
@@ -98,8 +98,8 @@
     <script id="react-datepicker" src="{{ STATIC_URL }}lib/scripts/react-datepicker-0.27.0.js"></script>
 
     {# RSR default libraries #}
-    {% compressed_js 'rsr' %}
-    {% compressed_js 'rsr_lib' %}
+    {% javascript 'rsr' %}
+    {% javascript 'rsr_lib' %}
 
     {% block js %}{% endblock js %}
 

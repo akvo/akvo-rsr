@@ -11,10 +11,9 @@ from ..serializers import (IndicatorPeriodDataSerializer, IndicatorPeriodDataFra
                            IndicatorPeriodDataCommentSerializer)
 from ..viewsets import PublicProjectViewSet
 
-from django.http import HttpResponseForbidden
 
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
@@ -30,7 +29,13 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
 class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriodData.objects.all()
+    queryset = IndicatorPeriodData.objects.select_related(
+        'period',
+        'user'
+    ).prefetch_related(
+        'comments',
+        'comments__user'
+    ).all()
     serializer_class = IndicatorPeriodDataFrameworkSerializer
     project_relation = 'period__indicator__result__project__'
 

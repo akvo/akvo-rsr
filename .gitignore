@@ -29,6 +29,7 @@ dev-env
 venv
 scripts/dev-vm
 scripts/devhelpers/node_modules
+akvo/npm/node_modules
 vagrant/vagrant-ssh-conf.*
 
 

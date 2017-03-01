@@ -14,15 +14,13 @@ from django.conf import settings
 from django.conf.urls import (include, patterns, url)
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
 from django.conf.urls.i18n import i18n_patterns
 
 admin.autodiscover()
 
 ####################################################################################
-### Internationalisation URLs                                                    ###
-####################################################################################
+# Internationalisation URLs                                                    #
+################################################################################
 
 urlpatterns = i18n_patterns(
     '',
@@ -129,6 +127,10 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/results/(?P<project_id>\d+)/$',
         'akvo.rsr.views.my_rsr.my_results', name='my_results'),
 
+    url(r'^myrsr/new_results/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.my_results',
+        {"template": "myrsr/my_new_results.html"}, name='my_results'),
+
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 
@@ -136,9 +138,9 @@ urlpatterns = i18n_patterns(
     (r'^admin/', include(admin.site.urls)),
 )
 
-####################################################################################
-### Non-internationalisation URLs                                                ###
-####################################################################################
+################################################################################
+# Non-internationalisation URLs                                                #
+################################################################################
 
 urlpatterns += patterns(
     '',

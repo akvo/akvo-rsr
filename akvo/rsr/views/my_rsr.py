@@ -20,7 +20,8 @@ from django.shortcuts import get_object_or_404, render
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY,SECTOR
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
+from akvo.rsr.models import IndicatorPeriodData
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
@@ -109,7 +110,7 @@ def my_updates(request):
     page, paginator, page_range = pagination(page, updates, 10)
 
     org_admin_view = True if request.user.get_admin_employment_orgs() or \
-                             request.user.is_admin or request.user.is_superuser else False
+        request.user.is_admin or request.user.is_superuser else False
 
     context = {
         'page': page,
@@ -235,12 +236,19 @@ def project_editor(request, project_id):
         project = Project.objects.prefetch_related(
             'related_projects',
             'related_projects__project',
+            'related_projects__related_project',
             'contacts',
             'partnerships',
             'partnerships__organisation',
             'results',
             'results__indicators',
+            'results__indicators__references',
             'results__indicators__periods',
+            'results__indicators__periods__data',
+            'results__indicators__periods__actual_dimensions',
+            'results__indicators__periods__target_dimensions',
+            'results__indicators__periods__actual_locations',
+            'results__indicators__periods__target_locations',
             'conditions',
             'budget_items',
             'budget_items__label',
@@ -538,7 +546,7 @@ def my_results_select(request):
 
 
 @login_required
-def my_results(request, project_id):
+def my_results(request, project_id, template='myrsr/my_results.html'):
     """
     My results section. Only accessible to M&E Managers, Admins and Project editors.
 
@@ -552,6 +560,9 @@ def my_results(request, project_id):
             or not project.is_published():
         raise PermissionDenied
 
+    if not template == 'myrsr/my_results.html' and not user.is_superuser:
+        raise PermissionDenied
+
     me_managers_group = Group.objects.get(name='M&E Managers')
     admins_group = Group.objects.get(name='Admins')
     me_managers = project.publishing_orgs.employments().approved().\
@@ -563,6 +574,7 @@ def my_results(request, project_id):
         'child_projects_ids': [child_project.id for child_project in project.children()],
         'user': user,
         'me_managers': me_managers.exists(),
+        'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
     }
 
-    return render(request, 'myrsr/my_results.html', context)
+    return render(request, template, context)

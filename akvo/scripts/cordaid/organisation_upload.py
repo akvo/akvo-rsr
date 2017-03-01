@@ -17,7 +17,7 @@ import json
 import sys
 from lxml import etree
 
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED  
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
 from akvo.scripts.cordaid.requester import Requester
 
@@ -26,14 +26,12 @@ API_VERSION = 'v1'
 # get this module
 me = sys.modules[__name__]
 api_settings = dict(
-    #UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/api_upload',
-    UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/cordaid_full',
-    PROJECT_IMAGES_SUBDIR = 'project_images',
-    LOGOS_SUBDIR = 'logos',
-    IATI_ACTIVITES_FILENAME = 'iati_export0.xml',
-    #ORGANISATIONS_FILENAME = 'organisations.xml',
-    ORGANISATIONS_FILENAME = 'cordaid_organisations.xml',
-    ORGANISATIONS_UPLOAD_LOG_FILENAME = 'organisations_upload_{datetime}.csv',
+    UPLOAD_ROOT_DIR='/Users/gabriel/Downloads/cordaid_full',
+    PROJECT_IMAGES_SUBDIR='project_images',
+    LOGOS_SUBDIR='logos',
+    IATI_ACTIVITES_FILENAME='iati_export0.xml',
+    ORGANISATIONS_FILENAME='cordaid_organisations.xml',
+    ORGANISATIONS_UPLOAD_LOG_FILENAME='organisations_upload_{datetime}.csv',
 )
 
 # construct local variables for Cordaid supporting data
@@ -47,6 +45,7 @@ ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
     me.UPLOAD_ROOT_DIR, me.ORGANISATIONS_UPLOAD_LOG_FILENAME
 )
 
+
 def user_org(user_cred):
     try:
         profile = Requester(
@@ -56,11 +55,12 @@ def user_org(user_cred):
             url_args=user_cred
         )
         # find the organisation ID in the path string, e.g. "/api/v1/organisation/42/"
-        #non-intuitively split() returns an empty string first and last, thus [-2]
+        # non-intuitively split() returns an empty string first and last, thus [-2]
         return profile.response.json()['objects'][0]['organisation'].split('/')[-2]
     except Exception, e:
         print "{message}".format(message=e.message)
         return False, None
+
 
 def find_org(user_cred, reporting_org_id, internal_org_id):
     """
@@ -80,17 +80,17 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
                 'Authorization': 'Token {}'.format(user_cred['api_key'])
             },
         )
-        #TODO: check that we only get one object back
+        # TODO: check that we only get one object back
         org_id = ioi.response.json()[0]['referenced_org']
     except Exception, e:
         print "{message}".format(message=e.message)
         return False, None
     return True, org_id
 
+
 def post_an_org(org_element, user_cred):
     internal_org_id = org_element.find('org_id').text
     try:
-        #iati_org_id = org_element.findall('iati_org_id')[0].text
         organisation = Requester(
             method='post',
             url_template="http://{domain}/rest/v1/organisation/",
@@ -114,7 +114,7 @@ def post_an_org(org_element, user_cred):
     elif organisation.response.status_code != HTTP_201_CREATED:
         import pdb
         pdb.set_trace()
-        return False,  "**** Error creating organisation: {internal_org_id}", dict(
+        return False, "**** Error creating organisation: {internal_org_id}", dict(
             internal_org_id=internal_org_id,
             event=ERROR_CREATE_ORG,
             extra=organisation.response.text
@@ -128,6 +128,7 @@ def post_an_org(org_element, user_cred):
                 extra=organisation.response.status_code,
             )
         )
+
 
 def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
     try:
@@ -146,16 +147,17 @@ def post_an_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
     except Exception, e:
         return False, "{extra}", dict(
             pk,
-            event = ERROR_EXCEPTION,
-            extra = e.message,
+            event=ERROR_EXCEPTION,
+            extra=e.message,
         )
     if internal_org_id.response.status_code is HTTP_201_CREATED:
         import pdb
         pdb.set_trace()
         return True, "Created internal organisation ID: {identifier}", dict(
-            pk = internal_org_id.response.json()['identifier'],
-            event = ACTION_CREATE_IOI
+            pk=internal_org_id.response.json()['identifier'],
+            event=ACTION_CREATE_IOI
         )
+
 
 def put_an_org(org_element, user_cred, pk):
     internal_org_id = org_element.find('org_id').text
@@ -163,7 +165,6 @@ def put_an_org(org_element, user_cred, pk):
     import pdb
     pdb.set_trace()
     try:
-        #iati_org_id = org_element.findall('iati_org_id')[0].text
         organisation = Requester(
             method='put',
             url_template="http://{domain}/rest/v1/organisation/{pk}/",
@@ -192,6 +193,7 @@ def put_an_org(org_element, user_cred, pk):
             )
         )
 
+
 def usage(script_name):
     print(
         "\nUsage: %s <domain> <username> [options]\n\n"
@@ -204,6 +206,7 @@ def usage(script_name):
         "     -k KEY, --api_key=KEY\n"
         "       Supply the API key generated in your Akvo user profile\n"
         % script_name)
+
 
 def api_user(domain, username, password='', api_key=''):
     user = dict(domain=domain, username=username, api_version=API_VERSION,)
@@ -223,6 +226,7 @@ def api_user(domain, username, password='', api_key=''):
         return user
     else:
         raise Exception("Either password or API key must be supplied")
+
 
 def credentials_from_args(argv):
     try:
@@ -254,6 +258,7 @@ def credentials_from_args(argv):
         print "{message}".format(message=e.message)
         usage(argv[0])
         return None
+
 
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)

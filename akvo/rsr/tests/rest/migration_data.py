@@ -127,43 +127,34 @@ POST_URLS = [
     # akvo/rsr/static/scripts-src/project-editor.jsx
     ('/rest/v1/project/4/project_editor/?format=json',
      {'rsr_project.title.4': 'foo bar', 'content_type': None},
-     ('Project.objects.get(id=4).title',),
-    ),
+     ('Project.objects.get(id=4).title',),),
 
     ('/rest/v1/project/4/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
       'field_id': 'rsr_project.current_image.4',
-      'content_type': None,
-     },
-     ('Project.objects.get(id=4).current_image.path',),
-    ),
+      'content_type': None},
+     ('Project.objects.get(id=4).current_image.path',),),
 
     ('/rest/v1/project/4/reorder_items/?format=json',
      {'item_type': 'result', 'item_id': 2, 'item_direction': 'up', 'content_type': None},
-     ('Result.objects.count()',),
-    ),
+     ('Result.objects.count()',),),
 
     ('/rest/v1/project/4/reorder_items/?format=json&dedup_param=indicator',
      {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down', 'content_type': None},
-     ('Indicator.objects.count()',),
-    ),
+     ('Indicator.objects.count()',),),
 
     ('/rest/v1/project/4/default_periods/?format=json',
      {'indicator_id': '1', 'copy': 'true', 'set_default': 'true', 'content_type': None},
      ('Indicator.objects.count()',
-      'IndicatorPeriod.objects.count()'),
-    ),
+      'IndicatorPeriod.objects.count()'),),
 
     ('/rest/v1/project/4/import_results/?format=json',
-     {}, (),
-    ),
+     {}, (),),
 
     ('/rest/v1/organisation/2/add_logo/?format=json',
      {'logo': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
-      'content_type': None,
-     },
-     ('Organisation.objects.get(id=2).logo.path',),
-    ),
+      'content_type': None},
+     ('Organisation.objects.get(id=2).logo.path',),),
 
     ('/rest/v1/organisation_location/?format=json',
      {"latitude": 60,
@@ -172,12 +163,10 @@ POST_URLS = [
       "location_target": 1,
       "iati_country": "NL",
       "country": 3,
-      "postcode": "101010"
-     },
+      "postcode": "101010"},
      ('OrganisationLocation.objects.count()',
       'OrganisationLocation.objects.get(postcode="101010").latitude',
-      'OrganisationLocation.objects.get(postcode="101010").longitude'),
-    ),
+      'OrganisationLocation.objects.get(postcode="101010").longitude'),),
 
     ('/rest/v1/organisation/?format=json',
      {u'allow_edit': True,
@@ -194,8 +183,7 @@ POST_URLS = [
       u'public_iati_file': True,
       u'url': u'http://gooddeeds.example.com/'},
      ('Organisation.objects.count()',
-      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
-    ),
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=content_owner',
      {u'allow_edit': True,
@@ -212,8 +200,7 @@ POST_URLS = [
       u'public_iati_file': True,
       u'url': u'http://moregooddeeds.example.com/'},
      ('Organisation.objects.count()',
-      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
-    ),
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=no_content_owner',
      {u'allow_edit': True,
@@ -229,70 +216,57 @@ POST_URLS = [
       u'public_iati_file': True,
       u'url': u'http://moregooddeeds.example.com/'},
      ('Organisation.objects.count()',
-      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),
-    ),
+      'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=xml',
      ORGANISATION_XML.strip(),
-     ('Organisation.objects.count()',),
-    ),
+     ('Organisation.objects.count()',),),
 
     # akvo/rsr/static/scripts-src/my-user-management.js
     ('/rest/v1/invite_user/?format=json',
      {'user_data': '{"organisation": 1, "group": 2, "email": "abc@example.com"}'},
-     ('User.objects.count()',),
-    ),
+     ('User.objects.count()',),),
 
     ('/rest/v1/employment/14/approve/?format=json',
-     {}, ('Employment.objects.filter(is_approved=True).count()',)
-    ),
+     {}, ('Employment.objects.filter(is_approved=True).count()',)),
 
     ('/rest/v1/employment/14/set_group/2/?format=json',
-     {}, ('Employment.objects.filter(group_id=2).count()',)
-    ),
+     {}, ('Employment.objects.filter(group_id=2).count()',)),
 
     # # akvo/rsr/static/scripts-src/my-results.js
     ('/rest/v1/indicator_period_data/1/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
       'type': 'photo',
-      'content_type': None,
-     },
-     (),
-    ),
+      'content_type': None},
+     (),),
 
     ('/rest/v1/indicator_period_data_comment/?format=json',
      {"data": 4, "user": 1, "comment": "My awesome comment"},
-     ('IndicatorPeriodDataComment.objects.count()',),
-    ),
+     ('IndicatorPeriodDataComment.objects.count()',),),
 
     ('/rest/v1/indicator_period_data_framework/?format=json',
      {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "N"},
-     ('IndicatorPeriodData.objects.count()',),
-    ),
+     ('IndicatorPeriodData.objects.count()',),),
 
     # akvo/rsr/static/scripts-src/my-iati.js
     ('/rest/v1/iati_export/?format=json',
      {"reporting_organisation": 1, "user": 1, "version": "2", "projects": [4]},
-     ('IatiExport.objects.count()',),
-    ),
+     ('IatiExport.objects.count()',),),
 
     # akvo/scripts/cordaid/organisation_upload.py
     ('/rest/v1/internal_organisation_id/?format=json',
      {
-        "recording_org": 1,
-        "referenced_org": 1,
-        "identifier": "ABC"
-     },
-     ('InternalOrganisationID.objects.count()',),
-    ),
+         "recording_org": 1,
+         "referenced_org": 1,
+         "identifier": "ABC"},
+     ('InternalOrganisationID.objects.count()',),),
 
     # RSR UP urls ################
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitProjectUpdateService.java
     ('/rest/v1/project_update/?format=xml',
      PROJECT_UPDATE_XML.strip(),
-     (),
-    ),
+     (),),
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
     ('/rest/v1/user/1/request_organisation/?format=json',
@@ -314,8 +288,7 @@ POST_URLS = [
          'is_impact_project': True,
          'is_public': True,
          'currency': u'EUR',
-         'validations': [1],
-     },
+         'validations': [1]},
      ('Project.objects.count()',)),
 
     ('/rest/v1/project/4/add_validation/2/?format=json',
@@ -352,13 +325,12 @@ PATCH_URLS = [
 
     ('/rest/v1/indicator_period_framework/6/?format=json',
      {"locked": True},
-     ('IndicatorPeriod.objects.filter(locked=True).count()',),
-    ),
+     ('IndicatorPeriod.objects.filter(locked=True).count()',)),
 
     ('/rest/v1/indicator_period_framework/6/?format=json&unlock',
      {"locked": False},
-     ('IndicatorPeriod.objects.filter(locked=False).count()',),
-    )
+     ('IndicatorPeriod.objects.filter(locked=False).count()',),)
+
 
     # akvo/rsr/static/scripts-src/my-iati.js
     # "/rest/v1/iati_export/{iati_export}/?format=json",

@@ -69,15 +69,15 @@ def is_org_admin(user, obj):
                     pass
                 try:
                     if obj.period.indicator.result.project and \
-                            obj.period.indicator.result.project in employment.organisation.\
-                                    all_projects():
+                        obj.period.indicator.result.project in employment.organisation.\
+                            all_projects():
                         return True
                 except:
                     pass
                 try:
                     if obj.data.period.indicator.result.project and \
-                            obj.data.period.indicator.result.project in employment.organisation.\
-                                    all_projects():
+                        obj.data.period.indicator.result.project in employment.organisation.\
+                            all_projects():
                         return True
                 except:
                     pass
@@ -166,15 +166,15 @@ def is_org_project_editor(user, obj):
                     pass
                 try:
                     if obj.period.indicator.result.project and \
-                            obj.period.indicator.result.project in employment.organisation.\
-                                    all_projects():
+                        obj.period.indicator.result.project in employment.organisation.\
+                            all_projects():
                         return True
                 except:
                     pass
                 try:
                     if obj.data.period.indicator.result.project and \
-                            obj.data.period.indicator.result.project in employment.organisation.\
-                                    all_projects():
+                        obj.data.period.indicator.result.project in employment.organisation.\
+                            all_projects():
                         return True
                 except:
                     pass

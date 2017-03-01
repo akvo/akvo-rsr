@@ -25,10 +25,10 @@ class Command(BaseCommand):
                     action='store_true', dest='delete',
                     default=False,
                     help='Delete filtered projects in addition to listing them'),
-        )
+    )
 
     def handle(self, *args, **options):
-        
+
         # parse options
         verbosity = int(options['verbosity'])
         delete = bool(options['delete'])
@@ -36,7 +36,8 @@ class Command(BaseCommand):
 
         # set filter date
         filter_date = timezone.now() - timedelta(days=num_days)
-        if verbosity > 1: self.stdout.write('Pruning date: {0}'.format(str(filter_date)))
+        if verbosity > 1:
+            self.stdout.write('Pruning date: {0}'.format(str(filter_date)))
 
         # filter empty projects
         if verbosity > 0:

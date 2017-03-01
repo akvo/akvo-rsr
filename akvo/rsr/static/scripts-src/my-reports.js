@@ -137,18 +137,18 @@ function initReact() {
                     }
 
                     // Check selected radio button
-                    var formatContainer = document.querySelector('#format-' + format.key);
+                    var formatContainer = document.querySelector('#format-' + format.name);
                     var formatInput = formatContainer.querySelector('.format-radio');
                     formatInput.checked = true;
 
                     // Set format
-                    thisFormatsList.handleClick(format.key);
+                    thisFormatsList.handleClick(format.name);
                 }
 
                 function formatNeeded() {
                     var report = thisFormatsList.props.report;
                     for (var i = 0; i < report.formats.length; i++) {
-                        if (report.formats[i] === format.key) {
+                        if (report.formats[i].name === format.name) {
                             return true;
                         }
                     }
@@ -163,24 +163,24 @@ function initReact() {
                 }
 
                 if (formatNeeded()) {
-                    var formatId = 'format-' + format.key;
+                    var formatId = 'format-' + format.name;
                     var formatIcon = 'fa fa-' + format.icon;
                     return (
-                        React.DOM.div( {className:"col-sm-4", id:formatId, key:format.key}, 
+                        React.DOM.div( {className:"col-sm-4", id:formatId, key:format.name}, 
                             React.DOM.div( {className:"input-group", onClick:handleClick}, 
                             React.DOM.span( {className:"input-group-addon"}, 
                                 radioInput
                             ),
                                 React.DOM.div( {className:"form-control"}, 
                                     React.DOM.i( {className:formatIcon}),"  ",
-                                    React.DOM.strong(null, format.displayName)
+                                    React.DOM.strong(null, format.display_name)
                                 )
                             )
                         )
                     );
                 } else {
                     return (
-                        React.DOM.span( {key:format.key} )
+                        React.DOM.span( {key:format.name} )
                     );
                 }
             });
@@ -413,13 +413,13 @@ function initReact() {
                 thisReportsDropdown = this;
             if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
                 reportsData = this.props.reportOptions.map(function (report) {
-                    if (report.key === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
+                    if (report.name === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
                         return (
                             React.DOM.span(null )
                         );
                     } else {
                         return (
-                            React.DOM.li( {key:report.key}, 
+                            React.DOM.li( {key:report.name}, 
                                 React.createElement(ReportOption, {
                                     report: report,
                                     selectReport: thisReportsDropdown.selectReport

@@ -49,7 +49,6 @@ class AkvoOrganisationParser(XMLParser):
             primary = True
             return [dict(latitude=latitude, longitude=longitude, country=country, primary=primary)]
 
-        #id = find_text(tree, 'org_id')
         long_name = find_text(tree, 'name')
         name = long_name[:25]
         description = find_text(tree, 'description')

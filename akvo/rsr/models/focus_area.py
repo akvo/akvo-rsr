@@ -46,7 +46,7 @@ class FocusArea(models.Model):
                        upload_to=image_path,
                        help_text=_(u'The image that will appear on the focus area project '
                                    u'listing page.'),
-    )
+                       )
     link_to = models.URLField(
         _(u'accordion link'),
         max_length=200,

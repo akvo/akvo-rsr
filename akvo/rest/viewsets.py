@@ -7,9 +7,6 @@
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
-from django.core.paginator import InvalidPage
-from django.http import Http404
-from django.utils.translation import ugettext_lazy as _
 
 from akvo.rest.models import TastyTokenAuthentication
 
@@ -17,8 +14,6 @@ from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
 from .pagination import TastypieOffsetPagination
-
-import warnings
 
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
@@ -139,13 +134,13 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if user.is_anonymous() or not (user.is_superuser or user.is_admin):
             queryset = self.projects_filter_for_non_privileged_users(user, queryset, self.project_relation)
 
-        return queryset
+        return queryset.distinct()
 
     @staticmethod
     def projects_filter_for_non_privileged_users(user, queryset, project_relation):
 
         if not user.is_anonymous() and (user.is_admin or user.is_superuser):
-            return queryset
+            return queryset.distinct()
 
         # Construct the public projects filter field lookup.
         project_filter = project_relation + 'is_public'
@@ -165,4 +160,4 @@ class PublicProjectViewSet(BaseRSRViewSet):
             filter_ = user.get_permission_filter(permission, project_relation)
             queryset = public_objects | private_objects.filter(filter_).distinct()
 
-        return queryset
+        return queryset.distinct()

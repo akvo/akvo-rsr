@@ -4,12 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from .partnership import Partnership
 
@@ -94,7 +90,7 @@ class PublishingStatus(models.Model):
                         validation_errors.append(
                             ValidationError(_('All funding partners should have a funding amount.'),
                                             code='partners'
-                            )
+                                            )
                         )
                         break
 

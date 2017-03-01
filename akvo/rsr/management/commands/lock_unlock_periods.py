@@ -21,7 +21,7 @@ class Command(BaseCommand):
         make_option('-k', '--keyword',
                     action='store', dest='keyword',
                     help='Keyword to use for filtering Indicator Periods'),
-        )
+    )
 
     def handle(self, *args, **options):
 

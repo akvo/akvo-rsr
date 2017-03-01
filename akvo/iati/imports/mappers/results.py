@@ -49,7 +49,7 @@ class Results(ImportMapper):
                 description=description
             )
             # Disregard double results
-            if not result_obj in imported_results:
+            if result_obj not in imported_results:
                 if created:
                     changes.append(u'added result (id: {}): {}'.format(result_obj.pk, result_obj))
                 imported_results.append(result_obj)
@@ -95,10 +95,10 @@ class Indicators(ImportMapper):
             baseline_element = indicator.find('baseline')
             if baseline_element is not None:
                 baseline_year = self.get_attrib_as_int(
-                        baseline_element, 'year', 'baseline_year', None)
+                    baseline_element, 'year', 'baseline_year', None)
                 baseline_value = self.get_attrib(baseline_element, 'value', 'baseline_value')
                 baseline_comment = self.get_child_element_text(
-                        baseline_element, 'comment', 'baseline_comment')
+                    baseline_element, 'comment', 'baseline_comment')
             else:
                 baseline_year = None
                 baseline_value = ''
@@ -115,10 +115,10 @@ class Indicators(ImportMapper):
                 baseline_comment=baseline_comment
             )
             # Disregard double indicators
-            if not indicator_obj in imported_indicators:
+            if indicator_obj not in imported_indicators:
                 if created:
                     changes.append(u'added indicator (id: {}): {}'.format(
-                            indicator_obj.pk, indicator_obj))
+                        indicator_obj.pk, indicator_obj))
                 imported_indicators.append(indicator_obj)
 
                 # Process indicator references
@@ -135,7 +135,7 @@ class Indicators(ImportMapper):
                     changes.append(period_change)
 
         changes += self.delete_objects(
-                self.related_obj.indicators, imported_indicators, 'indicator')
+            self.related_obj.indicators, imported_indicators, 'indicator')
         return changes
 
 
@@ -162,7 +162,7 @@ class IndicatorReferences(ImportMapper):
             reference_code = self.get_attrib(reference, 'code', 'code')
             vocabulary = self.get_attrib(reference, 'vocabulary', 'vocabulary')
             vocabulary_uri = self.get_attrib(reference, 'indicator-uri', 'vocabulary_uri')
-            
+
             reference_obj, created = IndicatorReference.objects.get_or_create(
                 indicator=self.related_obj,
                 reference=reference_code,
@@ -170,7 +170,7 @@ class IndicatorReferences(ImportMapper):
                 vocabulary_uri=vocabulary_uri,
             )
             if created:
-                changes.append(u'added indicator reference (id: {}): {}'.format(reference_obj.pk, 
+                changes.append(u'added indicator reference (id: {}): {}'.format(reference_obj.pk,
                                                                                 reference_obj))
             imported_references.append(reference_obj)
 
@@ -200,7 +200,7 @@ class IndicatorPeriods(ImportMapper):
         for period in self.parent_elem.findall('period'):
 
             period_start = self.get_child_as_date(
-                    period, 'period-start', 'iso-date', 'period_start')
+                period, 'period-start', 'iso-date', 'period_start')
             period_end = self.get_child_as_date(period, 'period-end', 'iso-date', 'period_end')
 
             target_element = period.find('target')
@@ -231,7 +231,7 @@ class IndicatorPeriods(ImportMapper):
                 actual_comment=actual_comment
             )
             # Disregard double periods
-            if not period_obj in imported_periods:
+            if period_obj not in imported_periods:
                 if created:
                     changes.append(u'added indicator period (id: {}): {}'.format(period_obj.pk,
                                                                                  period_obj))
@@ -266,7 +266,7 @@ class IndicatorPeriods(ImportMapper):
                         changes.append(location_change)
 
         changes += self.delete_objects(
-                self.related_obj.periods, imported_periods, 'indicator period')
+            self.related_obj.periods, imported_periods, 'indicator period')
         return changes
 
 
@@ -344,7 +344,7 @@ class PeriodActualDimensions(ImportMapper):
 
     def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
         super(PeriodActualDimensions, self).__init__(iati_import_job, parent_elem, project, globals,
-                                                    related_obj)
+                                                     related_obj)
         self.model = IndicatorPeriodActualDimension
 
     def do_import(self):
@@ -381,7 +381,7 @@ class PeriodTargetDimensions(ImportMapper):
 
     def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
         super(PeriodTargetDimensions, self).__init__(iati_import_job, parent_elem, project, globals,
-                                                    related_obj)
+                                                     related_obj)
         self.model = IndicatorPeriodTargetDimension
 
     def do_import(self):
