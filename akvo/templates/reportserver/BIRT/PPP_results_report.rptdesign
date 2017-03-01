@@ -4739,6 +4739,18 @@ For 2016-2017 this needs to be 90% or over to be marked green as being on track.
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <header>
+                            <text-data id="740">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">true</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="valueExpr">var indind=0;</expression>
+                                <property name="contentType">html</property>
+                            </text-data>
+                        </header>
                         <detail>
                             <table id="673">
                                 <property name="width">7.645833333333333in</property>
@@ -4945,10 +4957,14 @@ null</expression>
                                     <header>
                                         <row id="714">
                                             <cell id="715">
-                                                <data id="728">
+                                                <text-data id="739">
                                                     <property name="fontWeight">bold</property>
-                                                    <property name="resultSetColumn">project_title</property>
-                                                </data>
+                                                    <expression name="valueExpr">row["project_title"].indexOf("PPP Phase 3 ") ==0 ?&#13;
+row["project_title"].slice(14)&#13;
+:&#13;
+row["project_title"]</expression>
+                                                    <property name="contentType">html</property>
+                                                </text-data>
                                             </cell>
                                             <cell id="716"/>
                                             <cell id="717"/>
@@ -4976,9 +4992,11 @@ null</expression>
                                     <header>
                                         <row id="700">
                                             <cell id="701">
-                                                <data id="730">
-                                                    <property name="resultSetColumn">title</property>
-                                                </data>
+                                                <text-data id="741">
+                                                    <property name="display">inline</property>
+                                                    <expression name="valueExpr">++indind + ". " + row["title"]</expression>
+                                                    <property name="contentType">html</property>
+                                                </text-data>
                                             </cell>
                                             <cell id="702"/>
                                             <cell id="703">
@@ -5061,6 +5079,12 @@ null</expression>
                                 </group>
                                 <detail>
                                     <row id="680">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">true</expression>
+                                            </structure>
+                                        </list-property>
                                         <cell id="681">
                                             <text-data id="737">
                                                 <expression name="valueExpr">" (Actual "+row["actual_value"] + " Target "+row["target_value"] + ")"</expression>
