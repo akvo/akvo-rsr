@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -4703,6 +4703,7 @@ For 2016-2017 this needs to be 90% or over to be marked green as being on track.
                     <image id="506">
                         <property name="marginTop">8pt</property>
                         <property name="marginLeft">14pt</property>
+                        <property name="pageBreakAfter">always</property>
                         <property name="height">2.5555555555555554in</property>
                         <property name="width">4.180555555555555in</property>
                         <property name="source">embed</property>
@@ -4739,20 +4740,11 @@ For 2016-2017 this needs to be 90% or over to be marked green as being on track.
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <property name="repeatHeader">false</property>
                         <header>
-                            <text-data id="740">
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">true</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="valueExpr">var indind=0;</expression>
-                                <property name="contentType">html</property>
-                            </text-data>
-                        </header>
-                        <detail>
-                            <table id="673">
+                            <table id="745">
+                                <property name="marginLeft">20pt</property>
+                                <property name="pageBreakBefore">auto</property>
                                 <property name="width">7.645833333333333in</property>
                                 <property name="dataSet">Results_indicators_periods</property>
                                 <list-property name="paramBindings">
@@ -4923,6 +4915,265 @@ null</expression>
                                         <property name="allowExport">true</property>
                                     </structure>
                                 </list-property>
+                                <property name="repeatHeader">false</property>
+                                <property name="pageBreakInterval">0</property>
+                                <column id="798">
+                                    <property name="width">3.4479166666666665in</property>
+                                </column>
+                                <column id="799">
+                                    <property name="width">0.5729166666666666in</property>
+                                </column>
+                                <column id="800">
+                                    <property name="width">0.5833333333333334in</property>
+                                </column>
+                                <column id="801">
+                                    <property name="width">1.5277777777777777in</property>
+                                </column>
+                                <column id="802">
+                                    <property name="width">1.5277777777777777in</property>
+                                </column>
+                                <header>
+                                    <row id="746">
+                                        <cell id="747"/>
+                                        <cell id="748"/>
+                                        <cell id="749">
+                                            <property name="colSpan">2</property>
+                                            <property name="rowSpan">1</property>
+                                            <text id="750">
+                                                <property name="fontFamily">"Tahoma"</property>
+                                                <property name="fontSize">12pt</property>
+                                                <property name="fontWeight">bold</property>
+                                                <property name="color">#6894B1</property>
+                                                <property name="paddingLeft">1pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="contentType">auto</property>
+                                                <text-property name="content"><![CDATA[Progress]]></text-property>
+                                            </text>
+                                        </cell>
+                                        <cell id="751">
+                                            <text id="752">
+                                                <property name="fontFamily">"Tahoma"</property>
+                                                <property name="fontSize">12pt</property>
+                                                <property name="fontWeight">bold</property>
+                                                <property name="color">#6894B1</property>
+                                                <property name="paddingLeft">1pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="contentType">auto</property>
+                                                <text-property name="content"><![CDATA[Page]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </header>
+                                <group id="753">
+                                    <property name="groupName">ProjectTitleGroup</property>
+                                    <expression name="keyExpr" type="javascript">row["project_title"]</expression>
+                                    <structure name="toc">
+                                        <expression name="expressionValue" type="javascript">row["project_title"]</expression>
+                                    </structure>
+                                    <property name="hideDetail">false</property>
+                                </group>
+                                <group id="766">
+                                    <property name="groupName">titleGrp</property>
+                                    <expression name="keyExpr" type="javascript">row["title"]</expression>
+                                    <structure name="toc">
+                                        <expression name="expressionValue" type="javascript">row["title"]</expression>
+                                    </structure>
+                                    <property name="hideDetail">false</property>
+                                </group>
+                            </table>
+                            <text-data id="740">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">true</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="valueExpr">var indind=0;</expression>
+                                <property name="contentType">html</property>
+                            </text-data>
+                        </header>
+                        <detail>
+                            <table id="673">
+                                <property name="borderBottomColor">#E6E6E6</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderTopColor">#E6E6E6</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginLeft">20pt</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="width">7.645833333333333in</property>
+                                <property name="dataSet">Results_indicators_periods</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">projid</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">row["id"]</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">title</property>
+                                        <text-property name="displayName">title</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">result_pk</property>
+                                        <text-property name="displayName">result_pk</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">result_order</property>
+                                        <text-property name="displayName">result_order</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["result_order"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">indicator_title</property>
+                                        <text-property name="displayName">indicator_title</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">indicator_pk</property>
+                                        <text-property name="displayName">indicator_pk</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">baseline_year</property>
+                                        <text-property name="displayName">baseline_year</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["baseline_year"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">baseline_comment</property>
+                                        <text-property name="displayName">baseline_comment</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">baseline_value</property>
+                                        <text-property name="displayName">baseline_value</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">indicator_order</property>
+                                        <text-property name="displayName">indicator_order</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["indicator_order"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">indicatorperiod_pk</property>
+                                        <text-property name="displayName">indicatorperiod_pk</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["indicatorperiod_pk"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">actual_value</property>
+                                        <text-property name="displayName">actual_value</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["actual_value"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">actual_comment</property>
+                                        <text-property name="displayName">actual_comment</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["actual_comment"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">target_value</property>
+                                        <text-property name="displayName">target_value</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["target_value"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">target_comment</property>
+                                        <text-property name="displayName">target_comment</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["target_comment"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">period_start</property>
+                                        <text-property name="displayName">period_start</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
+                                        <property name="dataType">date</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">period_end</property>
+                                        <text-property name="displayName">period_end</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["period_end"]</expression>
+                                        <property name="dataType">date</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">project_title</property>
+                                        <text-property name="displayName">project_title</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["project_title"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">progress_pct</property>
+                                        <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "available" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "operational" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not yet available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
+?&#13;
+(row["baseline_value"] ?&#13;
+Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
+: Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
+)&#13;
+:&#13;
+null</expression>
+                                        <property name="dataType">integer</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">actual_value_number</property>
+                                        <expression name="expression" type="javascript">dataSetRow["actual_value"] &amp;&amp; !isNaN(dataSetRow["actual_value"]) ? dataSetRow["actual_value"] : -1</expression>
+                                        <property name="dataType">integer</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">target_value_number</property>
+                                        <expression name="expression" type="javascript">dataSetRow["target_value"] &amp;&amp; !isNaN(dataSetRow["target_value"]) ? dataSetRow["target_value"] : -1</expression>
+                                        <property name="dataType">integer</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Average_Progress</property>
+                                        <property name="dataType">integer</property>
+                                        <simple-property-list name="aggregateOn">
+                                            <value>titleGrp</value>
+                                        </simple-property-list>
+                                        <property name="aggregateFunction">AVE</property>
+                                        <list-property name="arguments">
+                                            <structure>
+                                                <property name="name">Expression</property>
+                                                <expression name="value" type="javascript">row["progress_pct"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="repeatHeader">false</property>
+                                <property name="pageBreakInterval">0</property>
                                 <column id="692">
                                     <property name="width">3.4479166666666665in</property>
                                 </column>
@@ -4942,8 +5193,10 @@ null</expression>
                                     <row id="674">
                                         <cell id="675"/>
                                         <cell id="676"/>
-                                        <cell id="677"/>
-                                        <cell id="678"/>
+                                        <cell id="677">
+                                            <property name="colSpan">2</property>
+                                            <property name="rowSpan">1</property>
+                                        </cell>
                                         <cell id="679"/>
                                     </row>
                                 </header>
@@ -4958,7 +5211,11 @@ null</expression>
                                         <row id="714">
                                             <cell id="715">
                                                 <text-data id="739">
+                                                    <property name="fontFamily">"Tahoma"</property>
                                                     <property name="fontWeight">bold</property>
+                                                    <property name="marginTop">8pt</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingBottom">1pt</property>
                                                     <expression name="valueExpr">row["project_title"].indexOf("PPP Phase 3 ") ==0 ?&#13;
 row["project_title"].slice(14)&#13;
 :&#13;
@@ -4967,8 +5224,10 @@ row["project_title"]</expression>
                                                 </text-data>
                                             </cell>
                                             <cell id="716"/>
-                                            <cell id="717"/>
-                                            <cell id="718"/>
+                                            <cell id="717">
+                                                <property name="colSpan">2</property>
+                                                <property name="rowSpan">1</property>
+                                            </cell>
                                             <cell id="719"/>
                                         </row>
                                     </header>
@@ -4993,6 +5252,9 @@ row["project_title"]</expression>
                                         <row id="700">
                                             <cell id="701">
                                                 <text-data id="741">
+                                                    <property name="fontFamily">"Tahoma"</property>
+                                                    <property name="paddingTop">8pt</property>
+                                                    <property name="paddingBottom">8pt</property>
                                                     <property name="display">inline</property>
                                                     <expression name="valueExpr">++indind + ". " + row["title"]</expression>
                                                     <property name="contentType">html</property>
@@ -5001,6 +5263,9 @@ row["project_title"]</expression>
                                             <cell id="702"/>
                                             <cell id="703">
                                                 <text-data id="738">
+                                                    <property name="fontFamily">"Tahoma"</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingBottom">8pt</property>
                                                     <list-property name="highlightRules">
                                                         <structure>
                                                             <property name="operator">le</property>
@@ -5028,12 +5293,13 @@ row["project_title"]</expression>
                                                             <property name="style">progress_high</property>
                                                         </structure>
                                                     </list-property>
-                                                    <expression name="valueExpr">row["Average_Progress"]</expression>
+                                                    <expression name="valueExpr">row["Average_Progress"] + "%"</expression>
                                                     <property name="contentType">html</property>
                                                 </text-data>
                                             </cell>
                                             <cell id="704">
                                                 <image id="731">
+                                                    <property name="marginLeft">8pt</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
@@ -5044,6 +5310,7 @@ row["project_title"]</expression>
                                                     <property name="imageName">Traffic_green.png</property>
                                                 </image>
                                                 <image id="732">
+                                                    <property name="marginLeft">8pt</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
@@ -5054,6 +5321,7 @@ row["project_title"]</expression>
                                                     <property name="imageName">Traffic_yellow.png</property>
                                                 </image>
                                                 <image id="733">
+                                                    <property name="marginLeft">8pt</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
