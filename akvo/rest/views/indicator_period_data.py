@@ -47,6 +47,7 @@ class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     serializer_class = IndicatorPeriodDataCommentSerializer
     project_relation = 'data__period__indicator__result__project__'
 
+
 @api_view(['POST', 'DELETE'])
 def indicator_upload_file(request, pk=None):
     """
@@ -77,7 +78,7 @@ def indicator_upload_file(request, pk=None):
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    else: # POST
+    else:  # POST
         upload_file = request.data['file']
         try:
             file_type = request.POST.copy()['type']
