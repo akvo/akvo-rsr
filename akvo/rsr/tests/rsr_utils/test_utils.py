@@ -161,4 +161,4 @@ class GeneralUtilsTestCase(TestCase):
         ]
 
         for (lat, lon), country in LOCATIONS:
-            self.assertEqual(country, get_country(lat, lon))
+            self.assertEqual(country, get_country(lat, lon)[0])

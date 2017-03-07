@@ -27,7 +27,7 @@ import pytz
 import requests
 from shapely.geometry import shape, Point
 
-from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES, ISO_ALPHA3_ALPHA2_MAP
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -378,7 +378,7 @@ def download_file(url, path):
 
 
 def get_country(latitude, longitude):
-    """Return country given a latitude and longitude.
+    """Return (country_name, iso_code) given a latitude and longitude.
 
     NOTE: The GEOJSON_FILE is downloaded if it's not present.
 
@@ -393,13 +393,39 @@ def get_country(latitude, longitude):
 
         # Create country shape objects
         with open(GEOJSON_FILE) as f:
-            data = json.load(f)
+            data = fix_country_codes(json.load(f)['features'])
             COUNTRY_SHAPES = [
-                (shape(country_json['geometry']), country_json['properties'])
-                for country_json in data['features']
+                (shape(country_json['geometry']), country_json['name'], country_json['iso_code'])
+                for country_json in data
             ]
 
     p = Point(longitude, latitude)
-    for country_shape, properties in COUNTRY_SHAPES:
+    for country_shape, name, iso_code in COUNTRY_SHAPES:
         if country_shape.contains(p):
-            return properties['ADMIN']
+            return name, iso_code
+
+    return (None, None)
+
+
+def fix_country_codes(data):
+    """Fixes country codes in the geojson data to match the codelist."""
+
+    code_name_map = {code: u'{}'.format(name) for code, name in ISO_3166_COUNTRIES}
+    fixed_data = []
+
+    for country_json in data:
+        properties, geometry = country_json['properties'], country_json['geometry']
+        country_name, iso_a3 = properties['ADMIN'], properties['ISO_A3']
+        if iso_a3 == '-99':
+            continue
+
+        iso_code = ISO_ALPHA3_ALPHA2_MAP[iso_a3].lower()
+        country_json = {
+            'geometry': geometry,
+            'iso_code': iso_code,
+            'name': code_name_map.get(iso_code, country_name),
+        }
+
+        fixed_data.append(country_json)
+
+    return fixed_data
