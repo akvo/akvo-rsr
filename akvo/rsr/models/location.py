@@ -15,7 +15,7 @@ from akvo.codelists.store.codelists_v202 import (
     COUNTRY, GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS, GEOGRAPHIC_LOCATION_REACH,
     GEOGRAPHIC_VOCABULARY, LOCATION_TYPE
 )
-from akvo.utils import codelist_choices, codelist_value
+from akvo.utils import codelist_choices, codelist_value, get_country
 
 
 class BaseLocation(models.Model):
@@ -32,6 +32,7 @@ class BaseLocation(models.Model):
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True)
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True)
     postcode = ValidXMLCharField(_(u'postal code'), max_length=10, blank=True)
+    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'country'))
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
@@ -48,6 +49,21 @@ class BaseLocation(models.Model):
         location_target.save()
 
     def save(self, *args, **kwargs):
+        # Set a country based on the latitude and longitude if possible
+        if self.country is None and self.latitude is not None and self.longitude is not None:
+            try:
+                _, iso_code = get_country(float(self.latitude), float(self.longitude))
+            except ValueError:
+                iso_code = None
+
+            if iso_code is not None:
+                try:
+                    self.country = Country.objects.get(code__iexact=iso_code)
+                except Country.DoesNotExist:
+                    # FIXME: We have one too many country lists!
+                    # codelists.models.Country and rsr.models.Country.
+                    pass
+
         super(BaseLocation, self).save(*args, **kwargs)
 
         # Set location as primary location if it is the first location
@@ -68,9 +84,6 @@ class OrganisationLocation(BaseLocation):
         _(u'country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'The country in which the organisation is located.')
     )
-
-    # Country is a legacy field, replaced by the iati_country field
-    country = models.ForeignKey('Country', null=True, verbose_name=_(u'country'))
 
     def iati_country_value(self):
         return codelist_value(Country, self, 'iati_country')
@@ -148,12 +161,6 @@ class ProjectLocation(BaseLocation):
                     u'LocationType/</a>.')
     )
 
-    # Country is a legacy field, replaced by the RecipientCountry model
-    country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), null=True, blank=True,
-        help_text=_(u'The country or countries that benefit(s) from the activity.')
-    )
-
     def __unicode__(self):
         return u'{0}, {1}{2}'.format(
             u'{0}: {1}'.format(
@@ -200,6 +207,11 @@ class ProjectLocation(BaseLocation):
 
     def iati_designation_unicode(self):
         return str(self.iati_designation())
+
+# Over-riding fields doesn't work in Django < 1.10, and hence this hack.
+ProjectLocation._meta.get_field('country').help_text = _(
+    u'The country or countries that benefit(s) from the activity.'
+)
 
 
 class AdministrativeLocation(models.Model):
