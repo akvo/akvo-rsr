@@ -6,14 +6,13 @@
 
 # utility functions for RSR
 
+from datetime import datetime
 import hashlib
 import inspect
-import pytz
+import json
 import logging
+from os.path import abspath, dirname, exists, join, splitext
 import zipfile
-
-from datetime import datetime
-from os.path import splitext
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -24,12 +23,20 @@ from django.db.models import get_model
 from django.http import HttpResponse
 from django.template import loader
 from django.utils.text import slugify
+import pytz
+import requests
+from shapely.geometry import shape, Point
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
 logger = logging.getLogger('akvo.rsr')
 
 RSR_LIMITED_CHANGE = u'rsr_limited_change'
+DATA_DIR = join(dirname(abspath(__file__)), '..', 'data')
+GEOJSON_FILE = join(DATA_DIR, 'countries.geojson')
+# http://data.okfn.org/data/core/geo-countries#readme
+GEOJSON_URL = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson'
+COUNTRY_SHAPES = None
 
 
 class HttpResponseNoContent(HttpResponse):
@@ -358,3 +365,41 @@ def get_sha1_hash(s):
     hash = hashlib.sha1()
     hash.update(s)
     return hash.hexdigest()
+
+
+def download_file(url, path):
+    """Download the content at URL to the given PATH."""
+    r = requests.get(url, stream=True)
+    with open(path, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+    return path
+
+
+def get_country(latitude, longitude):
+    """Return country given a latitude and longitude.
+
+    NOTE: The GEOJSON_FILE is downloaded if it's not present.
+
+    """
+
+    global COUNTRY_SHAPES
+    if COUNTRY_SHAPES is None:
+
+        # Download country geojson if not present
+        if not exists(GEOJSON_FILE):
+            download_file(GEOJSON_URL, GEOJSON_FILE)
+
+        # Create country shape objects
+        with open(GEOJSON_FILE) as f:
+            data = json.load(f)
+            COUNTRY_SHAPES = [
+                (shape(country_json['geometry']), country_json['properties'])
+                for country_json in data['features']
+            ]
+
+    p = Point(longitude, latitude)
+    for country_shape, properties in COUNTRY_SHAPES:
+        if country_shape.contains(p):
+            return properties['ADMIN']
