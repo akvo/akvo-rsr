@@ -24,8 +24,11 @@ export const ToggleButton = ({onClick, label, style, disabled, icon}) => {
 };
 
 ToggleButton.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
+    onClick: PropTypes.func,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object,]),
+    style: PropTypes.object,
+    disabled: PropTypes.bool,
+    icon: PropTypes.oneOfType([PropTypes.string, PropTypes.object,]),
 };
 
 

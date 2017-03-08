@@ -7,20 +7,19 @@
 
 
 import React, { PropTypes } from "react";
-import Collapse, { Panel } from "rc-collapse";
+import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
 import { FileReaderInput } from '../common';
 
 import { onChange, addKey } from "../../actions/collapse-actions"
 import {
-    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend, deleteUpdateFromBackend
+    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend,
+    deleteUpdateFromBackend
 } from "../../actions/model-actions"
 import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
 
-import {
-    endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId, getCookie
-} from '../../utils.js';
+import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
 
 import {
     UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
@@ -35,6 +34,10 @@ const Header = ({update}) => {
             </div>
         </div>
     )
+};
+
+Header.propTypes = {
+    update: PropTypes.object.isRequired,
 };
 
 
@@ -66,9 +69,9 @@ const ActualValueInput = ({update, updatedActualValue, onChange}) => {
 };
 
 ActualValueInput.propTypes = {
-    update: PropTypes.object,
+    update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
 };
 
 
@@ -91,42 +94,17 @@ const ActualValueDescription = ({update, onChange}) => {
 };
 
 ActualValueDescription.propTypes = {
-    update: PropTypes.object,
-    onChange: PropTypes.func.isRequired
+    update: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 
-// const FileUpload = ({update, onChange}) => {
-//     let filename, removeFile;
-//     // Update with new file
-//     if (update._file) {
-//         filename = <div>{update._file.name}</div>
-//     // Existing, unmodified update
-//     } else if (update.file_url) {
-//         filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
-//     }
-//     if (filename) {
-//         removeFile = <a name="removeFile" style={{marginLeft: "0.5em"}} onClick={onChange}>
-//                          {_('remove_file')}
-//                      </a>
-//     }
-//     return (
-//         <div>
-//             <label className="imageUpload">
-//                 <input name="_file" type="file" onChange={onChange} />
-//                 <a>
-//                     <i className="fa fa-paperclip"/>
-//                     {_('attach_file')}
-//                 </a>
-//             </label>
-//             {removeFile}
-//             {filename}
-//         </div>
-//     )
-// };
-
-
 class FileUpload extends React.Component {
+    static propTypes = {
+        update: React.PropTypes.object.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        removeAttachment: React.PropTypes.func.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -173,44 +151,12 @@ class FileUpload extends React.Component {
 }
 
 
-// const ImageUpload = ({update, onChange}) => {
-//
-//     let imageName, removeImage;
-//     // Update with new photo
-//     if (update._photo) {
-//         imageName = <div>{update._photo.name}</div>
-//     // Existing, unmodified update
-//     } else if (update.photo_url) {
-//         imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
-//     }
-//     if (imageName) {
-//         removeImage =
-//             <div className="col-xs-3 update-photo">
-//                 <div className="image-container">
-//                     <a onClick={onChange}>
-//                         <img src={update._photo ? update._photo.img: update.photo_url}/>
-//                         <div id="removeImage" className="image-overlay text-center">
-//                             {_('remove_image')}
-//                         </div>
-//                     </a>
-//                 </div>
-//             </div>
-//     }
-//     return (
-//         <div>
-//             {removeImage}
-//             <label className="imageUpload">
-//                 <input id="_photo" type="file" accept="image/*" onChange={onChange} />
-//                 <a>
-//                     <i className="fa fa-camera"/>
-//                     {removeImage ? _('change_image') : _('add_image')}
-//                 </a>
-//             </label>
-//             {imageName}
-//         </div>
-//     )
-// }
 class ImageUpload extends React.Component {
+    static propTypes = {
+        update: React.PropTypes.object.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        removeAttachment: React.PropTypes.func.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -270,13 +216,21 @@ const Attachments = ({update, onChange, removeAttachment}) => {
     return (
         <div className="row">
             <div className="col-xs-6">
-                <ImageUpload update={update} onChange={onChange} removeAttachment={removeAttachment}/>
+                <ImageUpload update={update} onChange={onChange}
+                             removeAttachment={removeAttachment}/>
             </div>
             <div className="col-xs-6">
-                <FileUpload update={update} onChange={onChange} removeAttachment={removeAttachment}/>
+                <FileUpload update={update} onChange={onChange}
+                            removeAttachment={removeAttachment}/>
             </div>
         </div>
     )
+};
+
+Attachments.propTypes = {
+    update: React.PropTypes.object.isRequired,
+    onChange: React.PropTypes.func.isRequired,
+    removeAttachment: React.PropTypes.func.isRequired,
 };
 
 
@@ -309,7 +263,8 @@ const UpdateFormButtons = ({update, callbacks}) => {
 };
 
 UpdateFormButtons.propTypes = {
-    callbacks: PropTypes.object.isRequired
+    update: PropTypes.object.isRequired,
+    callbacks: PropTypes.object.isRequired,
 };
 
 
@@ -328,6 +283,12 @@ const pruneForPOST = (update) => {
 };
 
 export default class UpdateForm extends React.Component {
+
+    static propTypes = {
+        formToggle: PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        collapseId: PropTypes.string.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -500,7 +461,8 @@ export default class UpdateForm extends React.Component {
                     <ActualValueInput update={update} onChange={this.onChange}
                                       updatedActualValue={updatedActualValue}/>
                     <ActualValueDescription update={update}  onChange={this.onChange}/>
-                    <Attachments update={update} onChange={this.attachmentsChange} removeAttachment={this.removeAttachment}/>
+                    <Attachments update={update} onChange={this.attachmentsChange}
+                                 removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
                         update={update}
                         callbacks={{
@@ -513,16 +475,17 @@ export default class UpdateForm extends React.Component {
     }
 }
 
-UpdateForm.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    formToggle: PropTypes.func.isRequired,
-    update: PropTypes.object.isRequired,
-    period: PropTypes.object
-};
 
 let newUpdateID = 1;
 
 export class NewUpdateButton extends React.Component {
+
+    static propTypes = {
+        period: PropTypes.object.isRequired,
+        user: PropTypes.object.isRequired,
+        dispatch: PropTypes.func.isRequired,
+    };
+
     constructor (props) {
         super(props);
         this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
@@ -569,8 +532,3 @@ export class NewUpdateButton extends React.Component {
         )
     }
 }
-
-NewUpdateButton.propTypes = {
-    callbacks: PropTypes.object,
-    period: PropTypes.object
-};

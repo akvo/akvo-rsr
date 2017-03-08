@@ -101,7 +101,8 @@ const PeriodHeader = ({period, actualValue}) => {
 };
 
 PeriodHeader.propTypes = {
-    item: PropTypes.object,
+    period: PropTypes.object.isRequired,
+    actualValue: PropTypes.number,
 };
 
 
@@ -110,6 +111,7 @@ const objectsArrayToLookup = (arr, index) => {
         Object.assign(lookup, {[obj[index]]: obj}),
         {})
 };
+
 
 @connect((store) => {
     return {
@@ -120,6 +122,10 @@ const objectsArrayToLookup = (arr, index) => {
     }
 })
 export default class Periods extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -167,7 +173,8 @@ export default class Periods extends React.Component {
                     // Actual value is calculated by adding all approved updates with numerical data
                     (sum, id) => {
                         const data = parseInt(lookupUpdates[id].data);
-                        if (data !== NaN) {
+                        // If data is NaN then data !== data returns true!
+                        if (!(data !== data)) {
                             return sum + data;
                         }
                         return sum;
@@ -211,8 +218,3 @@ export default class Periods extends React.Component {
         }
     }
 }
-
-Periods.propTypes = {
-    items: PropTypes.array,
-    callbacks: PropTypes.object,
-};
