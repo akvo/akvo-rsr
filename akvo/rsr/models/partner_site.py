@@ -76,7 +76,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
-    piwik_id = models.PositiveIntegerField(_(u'Piwik analytics ID'), blank=True, null=True)
+    piwik_id = models.PositiveIntegerField(_(u'Piwik analytics ID'))
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(
         _(u'organisation banner logo'), blank=True, upload_to=custom_logo_path, help_text=_(

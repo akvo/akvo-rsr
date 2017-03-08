@@ -185,6 +185,7 @@ class PermissionFilteringTestCase(TestCase):
 
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
+                                         piwik_id=0,
                                          hostname='{}.org'.format(org_name))
 
     @classmethod
