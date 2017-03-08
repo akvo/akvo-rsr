@@ -1698,27 +1698,11 @@ order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorpe
 from rsr_projectupdate
 where rsr_projectupdate.project_id = ? 
 order by rsr_projectupdate.id desc
+limit 3
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -9498,6 +9482,18 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="leftMargin">50px</property>
             <property name="bottomMargin">50px</property>
             <property name="rightMargin">11.994444444444445mm</property>
+            <page-footer>
+                <text id="1945">
+                    <property name="fontFamily">"VAG Rounded Std"</property>
+                    <property name="fontWeight">bold</property>
+                    <property name="color">#00A54F</property>
+                    <property name="textAlign">right</property>
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<viewtime-value-of>
+pageNumber
+</viewtime-value-of>]]></text-property>
+                </text>
+            </page-footer>
         </simple-master-page>
         <simple-master-page name="Cover" id="1869">
             <property name="bottomMargin">0in</property>
@@ -10499,10 +10495,30 @@ markdown_html(row["value"])</expression>
                         <expression name="valueExpr">markdown_html(row["value"])</expression>
                         <property name="contentType">html</property>
                     </text-data>
+                    <label name="core_ind_label111111" id="1935">
+                        <property name="style">H1</property>
+                        <property name="backgroundColor">white</property>
+                        <property name="fontFamily">"VAG Rounded Std"</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="color">#00A54F</property>
+                        <property name="marginTop">8pt</property>
+                        <property name="paddingTop">1px</property>
+                        <property name="paddingLeft">1px</property>
+                        <property name="paddingBottom">1px</property>
+                        <property name="paddingRight">1px</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">avoid</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <structure name="toc">
+                            <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
+                        </structure>
+                        <text-property name="text">Stories from the field</text-property>
+                    </label>
                 </cell>
             </row>
         </grid>
-        <table id="1918">
+        <table name="Updates" id="1918">
             <property name="dataSet">Project_updates</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10517,6 +10533,13 @@ markdown_html(row["value"])</expression>
                     <expression name="expression" type="javascript">dataSetRow["created_at"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
+                <structure>
+                    <property name="name">text</property>
+                    <text-property name="displayName">text</text-property>
+                    <expression name="expression" type="javascript">markdown_html(dataSetRow["text"])</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="1925"/>
             <header>
@@ -10528,20 +10551,47 @@ markdown_html(row["value"])</expression>
                 <row id="1928">
                     <cell id="1929">
                         <data id="1927">
+                            <property name="fontFamily">"VAG Rounded Std"</property>
+                            <property name="fontSize">14pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
                 </row>
                 <row id="1921">
                     <cell id="1922">
-                        <data id="1931">
-                            <property name="resultSetColumn">created_at</property>
-                        </data>
+                        <text-data id="1938">
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <expression name="valueExpr">var now = new Date(row["created_at"]);
+Formatter.format(now, "dd-MM-yyyy");</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                    </cell>
+                </row>
+                <row id="1939">
+                    <cell id="1940">
+                        <text-data id="1944">
+                            <property name="style">P</property>
+                            <property name="dataSet">Custom field - Recommendations</property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">value</property>
+                                    <text-property name="displayName">value</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <expression name="valueExpr">markdown_html(row._outer["text"])</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
                     </cell>
                 </row>
                 <row id="1932">
                     <cell id="1933">
                         <image id="1934">
+                            <property name="marginBottom">8pt</property>
                             <property name="source">url</property>
                             <expression name="uri" type="constant">"http://rsr.akvo.org/media/"+row["current_image"]</expression>
                         </image>
