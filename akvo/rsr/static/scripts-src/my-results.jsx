@@ -13,7 +13,7 @@ var csrftoken,
     isPublic,
     months,
     projectIds,
-    user;
+    user = {};
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
