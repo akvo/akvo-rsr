@@ -50,19 +50,8 @@ class BaseLocation(models.Model):
 
     def save(self, *args, **kwargs):
         # Set a country based on the latitude and longitude if possible
-        if self.country is None and self.latitude is not None and self.longitude is not None:
-            try:
-                _, iso_code = get_country(float(self.latitude), float(self.longitude))
-            except ValueError:
-                iso_code = None
-
-            if iso_code is not None:
-                try:
-                    self.country = Country.objects.get(code__iexact=iso_code)
-                except Country.DoesNotExist:
-                    # FIXME: We have one too many country lists!
-                    # codelists.models.Country and rsr.models.Country.
-                    pass
+        if self.country is None:
+            self.country = self.get_country_from_lat_lon()
 
         super(BaseLocation, self).save(*args, **kwargs)
 
@@ -71,6 +60,22 @@ class BaseLocation(models.Model):
         if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
             location_target.primary_location = self
             location_target.save()
+
+    def get_country_from_lat_lon(self):
+        """Get the country based on the location's latitude and longitude."""
+
+        if self.latitude is None or self.longitude is None:
+            return None
+
+        try:
+            country, iso_code = get_country(float(self.latitude), float(self.longitude))
+        except ValueError:
+            iso_code = None
+
+        if iso_code is not None:
+            # FIXME: We have one too many country models!
+            Country = models.get_model('rsr', 'Country')
+            return Country.objects.filter(iso_code=iso_code).first()
 
     class Meta:
         app_label = 'rsr'
