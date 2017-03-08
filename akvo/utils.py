@@ -17,8 +17,8 @@ from os.path import splitext
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.mail import EmailMultiAlternatives
-from django.core.mail import get_connection
+from django.core.cache import cache
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import get_model
 from django.http import HttpResponse
@@ -293,13 +293,27 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     :return: String of the codelist instance
     """
     value = getattr(instance, field, None)
-    if value:
-        try:
-            objects = getattr(model, 'objects')
-            return objects.get(code=value, version__code=version)
-        except model.DoesNotExist:
-            return value
-    return ''
+    if not value:
+        return ''
+
+    key = u'{}-{}-{}'.format(model.__name__, value, version)
+    result = cache.get(key)
+    if result is not None:
+        return result
+
+    try:
+        objects = getattr(model, 'objects')
+        result = objects.get(code=value, version__code=version)
+
+    except model.DoesNotExist:
+        result = value
+
+    else:
+        # Update the cache only if the required data is in the DB!
+        cache.set(key, result)
+
+    finally:
+        return result
 
 
 def codelist_name(model, instance, field, version=settings.IATI_VERSION):
@@ -311,14 +325,9 @@ def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     :param version: String of version (optional)
     :return: String of the codelist instance
     """
-    value = getattr(instance, field, None)
-    if value:
-        try:
-            objects = getattr(model, 'objects')
-            return objects.get(code=value, version__code=version).name
-        except model.DoesNotExist:
-            return value
-    return ''
+
+    value = codelist_value(model, instance, field, version)
+    return value.name if hasattr(value, 'name') else value
 
 
 def check_auth_groups(group_names):
