@@ -24,12 +24,9 @@ django-rest-swagger==0.3.10
 -e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
 # Akvonaut apps
--e git://github.com/zzgvh/django-notification.git#egg=django_notification
--e git://github.com/zzgvh/django-permissions.git#egg=django_permissions
--e git://github.com/zzgvh/django-workflows.git#egg=django_workflows
+-e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
 
 # General requirements
-BeautifulSoup==3.2.1
 httplib2==0.9
 lxml==3.3.5
 defusedxml==0.4.1
@@ -78,7 +75,3 @@ django-nested-inline==0.3.6
 
 # Task scheduling
 django-crontab==0.6.0
-
-# Testing and code coverage libraries
-coveralls
-xmlunittest==0.3.2
