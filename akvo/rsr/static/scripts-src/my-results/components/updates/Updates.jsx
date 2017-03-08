@@ -141,7 +141,7 @@ export default class Updates extends React.Component {
             (update) => {
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
-                if (update.status == UPDATE_STATUS_APPROVED && data !== NaN) {
+                if (data && update.status == UPDATE_STATUS_APPROVED) {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
