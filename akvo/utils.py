@@ -9,31 +9,20 @@
 import hashlib
 import inspect
 import pytz
-import random
 import logging
 import zipfile
 
-from BeautifulSoup import BeautifulSoup
 from datetime import datetime
 from os.path import splitext
-from urlparse import urljoin
-from workflows.models import State
-from workflows.utils import get_state
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
+from django.core.cache import cache
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponse
-from django.template import loader, Context
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext, get_language, activate
-
-from notification.models import (Notice, NoticeType, get_notification_language, should_send,
-                                 LanguageStoreNotAvailable, get_formatted_messages)
+from django.template import loader
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
@@ -64,8 +53,8 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
 
 
 def send_mail_with_attachments(subject, message, from_email, recipient_list,
-              fail_silently=False, auth_user=None, auth_password=None,
-              connection=None, html_message=None, attachments=None):
+                               fail_silently=False, auth_user=None, auth_password=None,
+                               connection=None, html_message=None, attachments=None):
     """
     Extension of django.core.main.send_mail to allow the inclusion of attachments
 
@@ -112,7 +101,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     if undefined
     """
     subject_context = subject_context or {}
-    msg_context = msg_context  or {}
+    msg_context = msg_context or {}
     current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
 
     subject_context.update({'site': current_site})
@@ -249,11 +238,11 @@ def pagination(page, object_list, objects_per_page):
     if not len(page_range) < 10:
         if active > 4:
             page_range[1] = '...'
-            del page_range[2:active-2]
+            del page_range[2:active - 2]
         if (page_range[-1] - active) > 3:
             page_range[-2] = '...'
             active_index = page_range.index(active)
-            del page_range[active_index+2:-2]
+            del page_range[active_index + 2:-2]
 
     return page, paginator, page_range
 
@@ -304,13 +293,27 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     :return: String of the codelist instance
     """
     value = getattr(instance, field, None)
-    if value:
-        try:
-            objects = getattr(model, 'objects')
-            return objects.get(code=value, version__code=version)
-        except model.DoesNotExist:
-            return value
-    return ''
+    if not value:
+        return ''
+
+    key = u'{}-{}-{}'.format(model.__name__, value, version)
+    result = cache.get(key)
+    if result is not None:
+        return result
+
+    try:
+        objects = getattr(model, 'objects')
+        result = objects.get(code=value, version__code=version)
+
+    except model.DoesNotExist:
+        result = value
+
+    else:
+        # Update the cache only if the required data is in the DB!
+        cache.set(key, result)
+
+    finally:
+        return result
 
 
 def codelist_name(model, instance, field, version=settings.IATI_VERSION):
@@ -322,14 +325,9 @@ def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     :param version: String of version (optional)
     :return: String of the codelist instance
     """
-    value = getattr(instance, field, None)
-    if value:
-        try:
-            objects = getattr(model, 'objects')
-            return objects.get(code=value, version__code=version).name
-        except model.DoesNotExist:
-            return value
-    return ''
+
+    value = codelist_value(model, instance, field, version)
+    return value.name if hasattr(value, 'name') else value
 
 
 def check_auth_groups(group_names):
@@ -344,7 +342,7 @@ def file_from_zip_archive(zip, file_name):  # pragma: no cover
     :param file_name: name of the file to retrieve from the archive
     :return: the file or None
     """
-    zip = zipfile.ZipFile(zip, 'r') #TODO: in test
+    zip = zipfile.ZipFile(zip, 'r')  # TODO: in test
     try:
         return zip.open(file_name)
     except KeyError:

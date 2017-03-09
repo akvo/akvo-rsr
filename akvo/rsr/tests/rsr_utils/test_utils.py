@@ -18,7 +18,8 @@ from django.core import mail
 from django.http.request import QueryDict
 from django.test import TestCase
 
-import datetime, pytz
+import datetime
+import pytz
 
 
 class GeneralUtilsTestCase(TestCase):

@@ -35,10 +35,10 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     paginate_by = 100
     # TODO: shouldn't this be subject to private project filtering?
     queryset = ProjectUpdateLocation.objects.select_related(
-            'location_target',
-            'location_target__project'
-        ).only(
-            'id', 'latitude', 'longitude', 'location_target__id', 'location_target__project',
-            'location_target__title', 'location_target__photo', 'location_target__video'
-        )
+        'location_target',
+        'location_target__project'
+    ).only(
+        'id', 'latitude', 'longitude', 'location_target__id', 'location_target__project',
+        'location_target__title', 'location_target__photo', 'location_target__video'
+    )
     serializer_class = MapProjectUpdateLocationSerializer

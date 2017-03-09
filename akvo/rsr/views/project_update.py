@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 
-from ..filters import (build_choices, location_choices, ProjectUpdateFilter,
+from ..filters import (build_choices, ProjectUpdateFilter,
                        remove_empty_querydict_items)
 from ..models import ProjectUpdate, Project
 from ...utils import pagination, filter_query_string
@@ -128,6 +128,5 @@ def main(request, project_id, update_id):
 def project_updates(request, project_id):
     """The list of updates for a single project."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#updates'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#updates'
     )

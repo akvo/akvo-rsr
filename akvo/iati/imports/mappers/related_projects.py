@@ -55,5 +55,5 @@ class RelatedProjects(ImportMapper):
             imported_related_projects.append(rp)
 
         changes += self.delete_objects(
-                self.project.related_projects, imported_related_projects, 'related project')
+            self.project.related_projects, imported_related_projects, 'related project')
         return changes

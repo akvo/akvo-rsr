@@ -13,6 +13,7 @@ from akvo.rest.serializers import (TypeaheadCountrySerializer,
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
+from akvo.rsr.views.project import _project_directory_coll
 
 from django.conf import settings
 
@@ -59,7 +60,29 @@ def typeahead_user_organisations(request):
 
 @api_view(['GET'])
 def typeahead_project(request):
-    projects = Project.objects.all().exclude(title='')
+    """Return the typeaheads for projects.
+
+    Without any query parameters, it returns the info for all the projects in
+    the current context -- changes depending on whether we are on a partner
+    site, or the RSR site.
+
+    If a published query parameter is passed, only projects that have been
+    published are returned.
+
+    NOTE: The unauthenticated user gets information about all the projects when
+    using this API endpoint.  More permission checking will need to be added,
+    if the amount of data being returned is changed.
+
+    """
+    if request.GET.get('published', '0') == '0':
+        # Project editor - organization projects, all
+        page = request.rsr_page
+        projects = page.organisation.all_projects() if page else Project.objects.all()
+    else:
+        # Search bar - organization projects, published
+        projects = _project_directory_coll(request)
+
+    projects = projects.exclude(title='')
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )

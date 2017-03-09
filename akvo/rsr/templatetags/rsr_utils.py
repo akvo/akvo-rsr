@@ -14,6 +14,7 @@ from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organi
 
 register = template.Library()
 
+
 @register.inclusion_tag('rsr_utils/img.html', takes_context=True)
 def img(context, obj, width, height, alt):
     """Standard way to show image."""
@@ -65,6 +66,7 @@ def vid_img(context, obj, width, height, alt):
             'vid': vid,
             'geometry': geometry,
             'width': width}
+
 
 @register.filter
 def get_item(dictionary, key):

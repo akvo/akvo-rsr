@@ -9,4 +9,3 @@ class StatsClient(StandardStatsClient):
         port = settings.STATSD_PORT
         prefix = settings.STATSD_PREFIX
         StandardStatsClient.__init__(self, host, port, prefix)
-

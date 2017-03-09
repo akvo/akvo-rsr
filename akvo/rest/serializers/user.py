@@ -74,7 +74,7 @@ class UserSerializer(BaseRSRSerializer):
         del self.fields['absolute_url']
 
         # Remove the fields unless we're called via Tastypie URLs
-        request =  kwargs.get("context", {}).get("request", None)
+        request = kwargs.get("context", {}).get("request", None)
         if request and "/api/v1/" not in request.path:
             del self.fields['legacy_org']
             del self.fields['username']

@@ -24,4 +24,3 @@ class CountryBudgetItemViewSet(PublicProjectViewSet):
     """
     queryset = CountryBudgetItem.objects.all()
     serializer_class = CountryBudgetItemSerializer
-

@@ -113,8 +113,8 @@ class Employment(models.Model):
 
         return dict(
             id=self.pk,
-            organisation_full=model_to_dict(self.organisation, fields=['id', 'name', 'long_name',]),
-            user_full=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
+            organisation_full=model_to_dict(self.organisation, fields=['id', 'name', 'long_name', ]),
+            user_full=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email', ]),
             is_approved=self.is_approved,
             job_title=self.job_title,
             country_full=self.iati_country().name if self.country else '',

@@ -17,6 +17,7 @@ from ...models import Project, Partnership, Organisation
 FixProject = namedtuple('FixProject', ['project', 'reason', 'partners', 'sync_owner'])
 OKProject = namedtuple('OKProject', ['project', 'organisation'])
 
+
 class ReportingOrgMaker(object):
 
     NO_CANDIDATE = 'no candidate'
@@ -136,14 +137,14 @@ class ReportingOrgMaker(object):
 
     def print_fix_data(self, data, partner):
         self.stdout.write(
-                u'{},"{}",{},"{}","{}",{},"{}"'.format(
-                        data.project.id,
-                        data.project.title,
-                        partner.organisation.id,
-                        partner.organisation.name,
-                        data.reason,
-                        data.sync_owner.id if data.sync_owner else '',
-                        data.sync_owner.name if data.sync_owner else ''))
+            u'{},"{}",{},"{}","{}",{},"{}"'.format(
+                data.project.id,
+                data.project.title,
+                partner.organisation.id,
+                partner.organisation.name,
+                data.reason,
+                data.sync_owner.id if data.sync_owner else '',
+                data.sync_owner.name if data.sync_owner else ''))
 
     def output_ok_list(self):
         self.stdout.write(

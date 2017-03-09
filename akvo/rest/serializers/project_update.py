@@ -47,6 +47,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
         return update
 
+
 class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):
     """Deep serializer for project updates."""
 

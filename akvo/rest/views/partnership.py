@@ -32,5 +32,5 @@ class PartnershipMoreLinkViewSet(PublicProjectViewSet):
     Specific endpoint for the '+X partners' links in RSR. Contains the name, long name and logo of
     an organisation and the partnership role.
     """
-    queryset = Partnership.objects.all()
+    queryset = Partnership.objects.select_related('organisation', 'project').all()
     serializer_class = PartnershipBasicSerializer

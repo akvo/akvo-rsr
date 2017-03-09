@@ -43,9 +43,8 @@ function apiCall(method, url, data, followPages, successCallback, retries) {
             var response;
             try {
                 response = xmlHttp.responseText !== '' ? JSON.parse(xmlHttp.responseText) : '';
-            }
-            catch (e) {
-                response = {"error": xmlHttp.statusText}
+            } catch (e) {
+                response = {"error": xmlHttp.statusText || e};
             }
             if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                 if (method === 'GET' && response.next !== undefined) {

@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load bootstrap3 compressed i18n rules %}
+{% load bootstrap3 pipeline i18n rules %}
 
 {% block title %}{% trans 'MyRSR - User management' %}{% endblock %}
 
@@ -87,6 +87,6 @@
             }
         </script>
 
-        {% compressed_js 'my_user_management' %}
+        {% javascript 'my_user_management' %}
     {% endif %}
 {% endblock js %}

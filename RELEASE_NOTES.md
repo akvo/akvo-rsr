@@ -1,3 +1,10 @@
+# Currently in develop
+
+## Bug fixes
+
+[#1853](https://github.com/akvo/akvo-rsr/issues/1853) Don't show projects not
+related to an organisation when searching for projects in their Akvo page.
+
 # Akvo RSR version 3.21 Wellington
 
 ## Improvements

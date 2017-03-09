@@ -20,7 +20,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-import datetime, os, shutil
+import datetime
+import os
+import shutil
 from lxml import etree
 from xmlunittest import XmlTestMixin
 

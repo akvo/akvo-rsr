@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load compressed i18n %}
+{% load pipeline i18n %}
 
 {% block title %}{% trans 'MyRSR - My Results' %}{% endblock title %}
 
@@ -145,10 +145,11 @@
             "update_statuses": {{ update_statuses | safe }}
         }
     </script>
-
     {% if project.is_impact_project and project.results.all %}
-        {% compressed_js 'vendors' %}
-        {% compressed_js 'my_new_results' %}
+{#        {% javascript 'vendors' %}#}
+        {% javascript 'vendors.bundle' %}
+        {% javascript 'bundle' %}
+{#        {% javascript 'my_new_results' %}#}
     {% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.4/react.min.js"></script>
 {% endblock js %}

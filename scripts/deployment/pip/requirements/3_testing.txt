@@ -1,20 +1,19 @@
-# Requirements for building splinter
-lxml==2.3.6
-
-# Requirements for building lettuce
-fuzzywuzzy==0.1
-sure==1.0.6
-
 # Modules used for app testing
 nose==1.2.1
 mox==0.5.3
 py==1.4.12
 selenium==2.31.0
 splinter==0.4.8
-lettuce==0.2.15
 
 # factory boy and deps
 factory-boy==2.7.0
 fake-factory==0.7.2
 ipaddress==1.0.17
 six==1.10.0
+
+
+# Modules for linting
+flake8==3.0.4
+
+# django_perf_rec
+django_perf_rec==2.0.0

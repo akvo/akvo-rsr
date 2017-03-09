@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load compressed i18n %}
+{% load pipeline i18n %}
 
 {% block title %}{% trans "Hierarchy of" %} {{project.title}}{% endblock %}
 
@@ -58,5 +58,5 @@
 
 {% block js %}
     {{ block.super }}
-    {% compressed_js 'project_hierarchy' %}
+    {% javascript 'project_hierarchy' %}
 {% endblock js %}

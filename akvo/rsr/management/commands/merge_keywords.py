@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.core.management.base import BaseCommand
-from ...models import Project, Partnership, Keyword
+from ...models import Keyword
+from ...models import Project
 
 
 class Command(BaseCommand):
@@ -25,7 +26,7 @@ class Command(BaseCommand):
             'ttc': False, 'ttc-c4c': False
         }
 
-        #setup a dict with all keyword objects
+        # setup a dict with all keyword objects
         keyword_objects = {}
         for key in mergers.keys():
             keyword_objects[key], _ = Keyword.objects.get_or_create(label=key)
@@ -47,5 +48,3 @@ class Command(BaseCommand):
         for key in mergers.keys():
             self.stdout.write(u"Deleting keyword {}".format(key))
             Keyword.objects.get(label=key).delete()
-
-

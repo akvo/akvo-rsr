@@ -36,6 +36,6 @@ def piwik_tracking_code(context):
         return {
             'id': context['request'].rsr_page.piwik_id,
             'url': piwik_url
-            }
+        }
 
     return {'id': piwik_id, 'url': piwik_url}

@@ -7,9 +7,6 @@
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
-from django.core.paginator import InvalidPage
-from django.http import Http404
-from django.utils.translation import ugettext_lazy as _
 
 from akvo.rest.models import TastyTokenAuthentication
 
@@ -17,8 +14,6 @@ from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
 from .pagination import TastypieOffsetPagination
-
-import warnings
 
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
