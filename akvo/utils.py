@@ -297,11 +297,6 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     if not value:
         return ''
 
-    ### DEBUG ###
-    import pdb
-    pdb.set_trace()
-    ### DEBUG ###
-
     key = u'{}-{}-{}'.format(version, model.__name__, value,)
     # Memcached keys can't have whitespace and has a max length of 250
     # https://github.com/memcached/memcached/blob/master/doc/protocol.txt#L41
