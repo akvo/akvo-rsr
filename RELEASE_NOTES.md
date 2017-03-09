@@ -1,9 +1,27 @@
-# Currently in develop
+# Akvo RSR version 3.22 Chisinau
+
+## General improvements
+
+[#2540](https://github.com/akvo/akvo-rsr/issues/2540) Improve the performance of RSR in several
+places and make the limit on projects shown in the project directory configurable.
 
 ## Bug fixes
 
-[#1853](https://github.com/akvo/akvo-rsr/issues/1853) Don't show projects not
-related to an organisation when searching for projects in their Akvo page.
+[#2559](https://github.com/akvo/akvo-rsr/issues/2559) Logos of Project partners not displayed on
+project page
+
+[#1853](https://github.com/akvo/akvo-rsr/issues/1853) Don't show projects not related to an
+organisation when searching for projects in their Akvo page.
+
+[#2554](https://github.com/akvo/akvo-rsr/issues/2554) Increase the max_length of Keyword.label to
+100 characters
+
+[#2486](https://github.com/akvo/akvo-rsr/issues/2486) Akvoapp pages missing Piwik web analytic ids.
+Partial fix, we've made the PiWik Id mandatory.
+
+## Code quality
+
+[#2477](https://github.com/akvo/akvo-rsr/issues/2477) Replace Landscape code quality tests with flake8
 
 # Akvo RSR version 3.21 Wellington
 
