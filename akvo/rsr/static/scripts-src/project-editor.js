@@ -30,7 +30,7 @@ var csrftoken = getCookie('csrftoken');
 
 // TYPEAHEADS
 var MAX_RETRIES = 2;
-var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
+var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json&project=' + defaultValues.project_id;
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var responses = {};
 responses[projectsAPIUrl] = null;
@@ -1041,17 +1041,17 @@ function updateAllSectionState(){
     });
 }
 
-function loadAsync(url, retryCount, retryLimit, callback, forceReloadOrg) {
+function loadAsync(url, retryCount, retryLimit, callback, forceReload) {
     var xmlHttp;
 
     // If we already have the response cached, don't fetch it again
-    if (responses[url] !== null && !forceReloadOrg) {
+    if (responses[url] !== null && !forceReload) {
         callback(responses[url]);
         return;
     }
 
     // If the response is in localStorage, don't fetch it again
-    if (localStorageResponses !== null && localStorageResponses !== '' && !forceReloadOrg) {
+    if (localStorageResponses !== null && localStorageResponses !== '' && !forceReload) {
         if (localStorageResponses[url] !== undefined) {
             var response = localStorageResponses[url];
 
@@ -1317,9 +1317,12 @@ function toggleOtherLabel(selectNode) {
 }
 
 function checkPartnerships() {
-    /* - Hides the trash can if there's only one partnership.
-    *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
-    *  - Remove the 'Reporting organisation' option when it is already selected. */
+    // - Force reload the project typeaheads
+    // - Hides the trash can if there's only one partnership.
+    // - Hides the trash can if removing the partnership will not allow the user to edit anymore.
+    // - Remove the 'Reporting organisation' option when it is already selected.
+
+    updateProjectTypeaheads(true);
 
     if (!defaultValues.is_admin) {
         var partnerContainer = document.getElementById('partner-container');
@@ -1691,10 +1694,10 @@ function addPartial(partialName, partialContainer) {
     };
 }
 
-function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg) {
-    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg) {
+function updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload) {
+    function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReload) {
         return function() {
-            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReloadOrg);
+            loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption, inputType), forceReload);
         };
     }
 
@@ -1703,7 +1706,7 @@ function updateTypeahead(els, filterOption, labelText, helpText, API, inputType,
 
         // Check if we've already rendered this typeahead
         if (elHasClass(el, 'has-typeahead')) {
-            if (forceReloadOrg) {
+            if (forceReload) {
                 // Remove the existing typeahead, then build a new one with the reloaded API response
                 var child = el.querySelector('div');
                 el.removeChild(child);
@@ -1734,12 +1737,12 @@ function updateTypeahead(els, filterOption, labelText, helpText, API, inputType,
             valueId = el.getAttribute('data-value');
         }
 
-        var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReloadOrg);
+        var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption, inputType, forceReload);
         cb();
     }
 }
 
-function updateProjectTypeaheads() {
+function updateProjectTypeaheads(forceReload) {
     var els, filterOption, labelText, helpText, API, inputType;
 
     els = document.querySelectorAll('.rsr_relatedproject-related_project');
@@ -1749,10 +1752,10 @@ function updateProjectTypeaheads() {
     API = projectsAPIUrl;
     inputType = 'project';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 }
 
-function updateOrganisationTypeaheads(forceReloadOrg) {
+function updateOrganisationTypeaheads(forceReload) {
     var els, filterOption, labelText, helpText, API, inputType;
 
     els = document.querySelectorAll('.rsr_partnership-organisation');
@@ -1761,7 +1764,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 
     els = document.querySelectorAll('.rsr_transaction-provider_organisation');
     labelText = defaultValues.provider_org_label;
@@ -1769,7 +1772,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 
     els = document.querySelectorAll('.rsr_transaction-receiver_organisation');
     labelText = defaultValues.recipient_org_label;
@@ -1777,7 +1780,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 
     els = document.querySelectorAll('.rsr_planneddisbursement-provider_organisation');
     labelText = defaultValues.provider_org_label;
@@ -1785,7 +1788,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 
     els = document.querySelectorAll('.rsr_planneddisbursement-receiver_organisation');
     labelText = defaultValues.recipient_org_label;
@@ -1793,7 +1796,7 @@ function updateOrganisationTypeaheads(forceReloadOrg) {
     filterOption = 'name';
     API = orgsAPIUrl;
     inputType = 'org';
-    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReloadOrg);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType, forceReload);
 }
 
 function updateTypeaheads(forceReloadOrg) {
