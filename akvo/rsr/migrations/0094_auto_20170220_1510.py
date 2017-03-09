@@ -10,6 +10,7 @@ MISSING_DATA = {
     'simavidemo': 0,  # Dummy number for demo site
     'unicefpacific': 147,
     'watershed': 148,
+    'nlembassyindonesia': 149,
 }
 
 
