@@ -30,7 +30,7 @@ var csrftoken = getCookie('csrftoken');
 
 // TYPEAHEADS
 var MAX_RETRIES = 2;
-var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
+var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json&project=' + defaultValues.project_id;
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
 var responses = {};
 responses[projectsAPIUrl] = null;
