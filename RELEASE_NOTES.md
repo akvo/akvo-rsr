@@ -19,6 +19,9 @@ organisation when searching for projects in their Akvo page.
 [#2486](https://github.com/akvo/akvo-rsr/issues/2486) Akvoapp pages missing Piwik web analytic ids.
 Partial fix, we've made the PiWik Id mandatory.
 
+[#2472](https://github.com/akvo/akvo-rsr/issues/2472) Fix "Recently modified projects" table in
+Organisation Summary report
+
 ## Code quality
 
 [#2477](https://github.com/akvo/akvo-rsr/issues/2477) Replace Landscape code quality tests with flake8
