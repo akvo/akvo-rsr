@@ -66,31 +66,21 @@ def typeahead_project(request):
     the current context -- changes depending on whether we are on a partner
     site, or the RSR site.
 
-    If a project query parameter with a project id is passed, the info for all
-    projects associated with partners for the specified project is returned.
+    If a published query parameter is passed, only projects that have been
+    published are returned.
 
     NOTE: The unauthenticated user gets information about all the projects when
     using this API endpoint.  More permission checking will need to be added,
     if the amount of data being returned is changed.
 
     """
-    project_id = request.GET.get('project', None)
-    if project_id is None:
-        project = None
-
+    if request.GET.get('published', '0') == '0':
+        # Project editor - organization projects, all
+        page = request.rsr_page
+        projects = page.organisation.all_projects() if page else Project.objects.all()
     else:
-        try:
-            project = Project.objects.get(id=project_id)
-        except Project.DoesNotExist:
-            project = None
-
-    if project is None:
         # Search bar - organization projects, published
         projects = _project_directory_coll(request)
-
-    else:
-        # Project editor - all projects of partners for this project
-        projects = Project.objects.of_partners(project.partners.distinct()).distinct()
 
     projects = projects.exclude(title='')
     return Response(
