@@ -40,18 +40,15 @@ class ProjectTypeaheadTest(TestCase):
                     iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
                 )
 
-            if i == 1:
-                self.project = project
-
     def _create_client(self, host=None):
         """ Create and return a client with the given host."""
         if not host:
             host = settings.RSR_DOMAIN
         return Client(HTTP_HOST=host)
 
-    def test_searchable_projects_on_rsr_host(self):
+    def test_published_projects_on_rsr_host(self):
         # Given
-        url = '/rest/v1/typeaheads/projects?format=json'
+        url = '/rest/v1/typeaheads/projects?format=json&published=1'
         client = self._create_client()
 
         # When
@@ -61,9 +58,9 @@ class ProjectTypeaheadTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 3)
 
-    def test_project_editor_typeaheads_on_rsr_host(self):
+    def test_all_projects_on_rsr_host(self):
         # Given
-        url = '/rest/v1/typeaheads/projects?format=json&project={}'.format(self.project.id)
+        url = '/rest/v1/typeaheads/projects?format=json'
         client = self._create_client()
 
         # When
@@ -71,11 +68,11 @@ class ProjectTypeaheadTest(TestCase):
 
         # Then
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(len(response.data['results']), 5)
 
-    def test_searchable_projects_on_partner_site(self):
+    def test_published_projects_on_partner_site(self):
         # Given
-        url = '/rest/v1/typeaheads/projects?format=json'
+        url = '/rest/v1/typeaheads/projects?format=json&published=1'
         host = 'akvo.{}'.format(settings.AKVOAPP_DOMAIN)
         client = self._create_client(host)
 
@@ -88,7 +85,7 @@ class ProjectTypeaheadTest(TestCase):
 
     def test_all_projects_on_partner_site(self):
         # Given
-        url = '/rest/v1/typeaheads/projects?format=json&project={}'.format(self.project.id)
+        url = '/rest/v1/typeaheads/projects?format=json'
         host = 'akvo.{}'.format(settings.AKVOAPP_DOMAIN)
         client = self._create_client(host)
 
