@@ -13,7 +13,7 @@ var csrftoken,
     isPublic,
     months,
     projectIds,
-    user;
+    user = {};
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -317,14 +317,29 @@ function initReact() {
             }, false, false);
         },
 
+        deleteFile: function(type) {
+            var updateId = this.props.update.id;
+            var url = endpoints.file_upload.replace('{update}', updateId);
+            var thisApp = this;
+            var success = function(periodId) {
+                thisApp.props.reloadPeriod(periodId);
+                thisApp.setState({loading: false});
+            };
+            this.setState({loading: true});
+            apiCall(
+                'DELETE', url,
+                JSON.stringify({type: type}),
+                success.bind(null, this.props.update.period)
+            );
+        },
+
+
         removePhoto: function() {
-            // Remove the photo, but keep editing the indicator update.
-            this.baseSave({'photo': ''}, true, false);
+            this.deleteFile('photo');
         },
 
         removeFile: function() {
-            // Remove the file, but keep editing the indicator update.
-            this.baseSave({'file': ''}, true, false);
+            this.deleteFile('file');
         },
 
         baseUpload: function(file, type) {

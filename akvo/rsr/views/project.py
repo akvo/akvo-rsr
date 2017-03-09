@@ -7,7 +7,6 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import collections
 import django_filters
 import json
 from datetime import datetime
@@ -96,7 +95,8 @@ def directory(request):
 
     # Build page
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, sorted_projects, 10)
+    limit = request.GET.get('limit', settings.PROJECT_DIRECTORY_DEFAULT_SIZE)
+    page, paginator, page_range = pagination(page, sorted_projects, limit)
 
     # Get the current org filter for typeahead
     org_filter = request.GET.get('organisation', '')
@@ -112,7 +112,8 @@ def directory(request):
     page.object_list = page.object_list.prefetch_related(
         'publishingstatus',
         'recipient_countries',
-        'sectors'
+        'sectors',
+        'budget_items',
     ).select_related(
         'primary_organisation',
         'last_update'
@@ -342,24 +343,21 @@ def hierarchy(request, project_id):
 def report(request, project_id):
     """Show the full data report tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#report'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#report'
     )
 
 
 def partners(request, project_id):
     """Show the partners tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#partners'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#partners'
     )
 
 
 def finance(request, project_id):
     """Show finance tab on the project main page."""
     return HttpResponseRedirect(
-        reverse('project-main', kwargs={'project_id': project_id})
-        + '#finance'
+        reverse('project-main', kwargs={'project_id': project_id}) + '#finance'
     )
 
 ###############################################################################

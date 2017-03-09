@@ -20,7 +20,7 @@ def logo_path(instance, file_name):
 
 class Keyword(models.Model):
     label = ValidXMLCharField(
-        _(u'label'), max_length=30, unique=True, db_index=True,
+        _(u'label'), max_length=100, unique=True, db_index=True,
         help_text=_(u'Select keywords in case you are using an Akvo Page. Keywords linked to a '
                     u'project will determine if a project appears on the Akvo Page or not.')
     )

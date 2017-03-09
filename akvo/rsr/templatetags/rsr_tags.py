@@ -45,6 +45,7 @@ def more_link(context, project, project_page=False):
         'partners_dict': partners_dict
     }
 
+
 @register.inclusion_tag('inclusion_tags/counter_badge.html', takes_context=True)
 def counter_badge(context, object):
     '''show the counter_badge'''
@@ -101,7 +102,7 @@ def partner_sites_funding_box(context, project):
         'request': context['request'],
         'domain_url': context['domain_url'],
         'akvoapp_root_url': context['akvoapp_root_url']
-        }
+    }
 
 
 @register.inclusion_tag('inclusion_tags/institutions_sponsor.html',
@@ -129,6 +130,7 @@ def project_thumb(context, project, width, height, style='',):
         'wxh': '%sx%s' % (width, height,),
         'style': style,
     }
+
 
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
 def org_logo(context, org, width, height, style=''):
@@ -213,14 +215,14 @@ class EncryptEmail(template.Node):
         for a in email_address:
             cipher_text += key[character_set.find(a)]
 
-        script = 'var a="'+key+'";var b=a.split("").sort().join("");var c="'+cipher_text+'";var d="";'
+        script = 'var a="' + key + '";var b=a.split("").sort().join("");var c="' + cipher_text + '";var d="";'
         script += 'for(var e=0;e<c.length;e++)d+=b.charAt(a.indexOf(c.charAt(e)));'
-        script += 'document.getElementById("'+id+'").innerHTML="<a href=\\"mailto:"+d+"\\">"+d+"</a>"'
+        script += 'document.getElementById("' + id + '").innerHTML="<a href=\\"mailto:"+d+"\\">"+d+"</a>"'
 
-        script = "eval(\""+ script.replace("\\","\\\\").replace('"','\\"') + "\")"
-        script = '<script type="text/javascript">/*<![CDATA[*/'+script+'/*]]>*/</script>'
+        script = "eval(\"" + script.replace("\\", "\\\\").replace('"', '\\"') + "\")"
+        script = '<script type="text/javascript">/*<![CDATA[*/' + script + '/*]]>*/</script>'
 
-        return '<span id="'+ id + '">[javascript protected email address]</span>'+ script
+        return '<span id="' + id + '">[javascript protected email address]</span>' + script
 
 
 def encrypt_email(parser, token):
@@ -300,7 +302,7 @@ def hidden_inputs_from_qs(parser, token):
     django-sorting. They can then be put into the form used by django-filter.
     """
     try:
-        tag_name, identifiers = token.split_contents()[0], token.split_contents()[1:]
+        identifiers = token.split_contents()[1:]
     except:
         raise template.TemplateSyntaxError("The %r tag requires at least one argument" % token.contents.split()[0])
 
@@ -312,16 +314,17 @@ def hidden_inputs_from_qs(parser, token):
 # On top of that is added translation of the anchor label
 ########################################################################################################################
 
-DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP' , '&uarr;')
-DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN' , '&darr;')
+DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP', '&uarr;')
+DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN', '&darr;')
 INVALID_FIELD_RAISES_404 = getattr(settings,
-                                   'SORTING_INVALID_FIELD_RAISES_404' , False)
+                                   'SORTING_INVALID_FIELD_RAISES_404', False)
 
 sort_directions = {
-    'asc': {'icon':DEFAULT_SORT_UP, 'inverse': 'desc'},
-    'desc': {'icon':DEFAULT_SORT_DOWN, 'inverse': 'asc'},
-    '': {'icon':DEFAULT_SORT_DOWN, 'inverse': 'asc'},
-    }
+    'asc': {'icon': DEFAULT_SORT_UP, 'inverse': 'desc'},
+    'desc': {'icon': DEFAULT_SORT_DOWN, 'inverse': 'asc'},
+    '': {'icon': DEFAULT_SORT_DOWN, 'inverse': 'asc'},
+}
+
 
 class SortAnchorNode(template.Node):
     """
@@ -335,6 +338,7 @@ class SortAnchorNode(template.Node):
         <a href="/the/current/path/?sort=name&dir=asc" title="Name">Name</a>
 
     """
+
     def __init__(self, field, title, sortdir):
         self.field = field
         self.title = title
@@ -378,6 +382,7 @@ class SortAnchorNode(template.Node):
         url = '%s?sort=%s%s' % (request.path, self.field, urlappend)
         return '<a href="%s" title="%s">%s</a>' % (url, self.title, title)
 
+
 @register.tag
 def translated_anchor(parser, token):
     """
@@ -387,7 +392,7 @@ def translated_anchor(parser, token):
     bits = [b.strip('"\'') for b in token.split_contents()]
 
     if len(bits) < 2:
-        raise TemplateSyntaxError, "anchor tag takes at least 1 argument"
+        raise TemplateSyntaxError("anchor tag takes at least 1 argument")
 
     field = bits[1].strip()
     title = field.capitalize()

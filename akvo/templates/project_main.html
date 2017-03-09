@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load compressed i18n rsr_utils rsr_tags rules %}
+{% load pipeline i18n rsr_utils rsr_tags rules %}
 {% load rsr_filters humanize markup_tags %}
 {% block title %}{{ project.title }}{% endblock title %}
 {% block maincontent %}
@@ -300,11 +300,11 @@
     <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
-    {% compressed_js 'more_partners' %}
-    {% compressed_js 'donate_popup' %}
-    {% compressed_js 'project_main' %}
-    {% compressed_js 'project_main_partners' %}
-    {% if project.results.all %}{% compressed_js 'my_results' %}{% endif %}
-    {% compressed_js 'project_main_report' %}
+    {% javascript 'more_partners' %}
+    {% javascript 'donate_popup' %}
+    {% javascript 'project_main' %}
+    {% javascript 'project_main_partners' %}
+    {% if project.results.all %}{% javascript 'my_results' %}{% endif %}
+    {% javascript 'project_main_report' %}
 
 {% endblock js %}

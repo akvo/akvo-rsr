@@ -64,7 +64,7 @@ $(document).ready(function() {
                                                          'title'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/typeaheads/projects?format=json',
+      url: '/rest/v1/typeaheads/projects?format=json&published=1',
       thumbprint: AKVO_RSR.typeahead.thumbs.numberOfProjects,
 
       filter: function(response) {

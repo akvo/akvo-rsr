@@ -8,12 +8,14 @@ import re
 
 from datetime import datetime
 
+
 def dates_for_path(path, path_n_date):
     bits = []
     for item in path_n_date:
         if item['path'] == path:
             bits += [item['date']]
     return bits
+
 
 def analyze_log(filename):
     path_n_date = []

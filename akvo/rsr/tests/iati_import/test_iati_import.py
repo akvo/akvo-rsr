@@ -253,7 +253,7 @@ class IatiImportTestCase(TestCase):
         legacy-data, location, participating-org, planned-disbursement, policy-marker,
         recipient-country, recipient-region, related-activity, result, sector and transaction
         """
-        #import a project
+        # import a project
         iati_v2_import = IatiImport.objects.create(label="Test IATI v2 import", user=self.user)
         iati_v2_xml_file = NamedTemporaryFile(delete=True)
         iati_v2_xml_file.write(IATI_V2_STRING)
@@ -283,7 +283,7 @@ class IatiImportTestCase(TestCase):
         partial_import_xml_file.write(IATI_PARTIAL_IMPORT)
         partial_import_xml_file.flush()
         partial_import_job = IatiImportJob.objects.create(
-                iati_import=partial_import, iati_xml_file=File(partial_import_xml_file))
+            iati_import=partial_import, iati_xml_file=File(partial_import_xml_file))
         partial_import_job.run()
 
         project_partial_import = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
@@ -310,7 +310,7 @@ class IatiImportTestCase(TestCase):
         humanitarian_scope_1 = project_v2.humanitarian_scopes.get(vocabulary="1-2")
         humanitarian_scope_2 = project_v2.humanitarian_scopes.get(vocabulary="99")
         self.assertEqual(humanitarian_scope_1.code, "2015-000050")
-        self.assertEqual(humanitarian_scope_2.vocabulary_uri,"http://example.com/vocab.html")
+        self.assertEqual(humanitarian_scope_2.vocabulary_uri, "http://example.com/vocab.html")
 
         # three participating orgs, and one reporting org
         self.assertEqual(project_v2.partners.count(), 4)
@@ -320,7 +320,7 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.recipient_regions.count(), 3)
 
         related_project_1 = project_v2.related_projects.get(
-                related_iati_id="AA-AAA-123456789-6789")
+            related_iati_id="AA-AAA-123456789-6789")
         self.assertIsInstance(related_project_1, RelatedProject)
         self.assertEqual(project_v2.sectors.count(), 3)
         self.assertEqual(project_v2.transactions.count(), 1)

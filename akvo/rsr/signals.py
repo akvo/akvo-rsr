@@ -6,9 +6,6 @@
 
 
 import logging
-
-logger = logging.getLogger('akvo.rsr')
-
 import os
 from datetime import datetime
 
@@ -23,6 +20,8 @@ from django.db.models import get_model, Q
 from sorl.thumbnail import ImageField
 
 from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
+
+logger = logging.getLogger('akvo.rsr')
 
 
 def create_publishing_status(sender, **kwargs):
@@ -50,10 +49,10 @@ def create_organisation_account(sender, **kwargs):
         new_org = kwargs['instance']
         OrganisationAccount = get_model('rsr', 'OrganisationAccount')
         try:
-            #this should never work
-            acc = OrganisationAccount.objects.get(organisation=new_org)
+            # this should never work
+            OrganisationAccount.objects.get(organisation=new_org)
         except:
-            #and when it doesn't we do this
+            # and when it doesn't we do this
             new_acc = OrganisationAccount(organisation=new_org,
                                           account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
@@ -99,7 +98,7 @@ def change_name_of_file_on_change(sender, **kwargs):
             # extend this list of fields if needed to catch other uploads
             if isinstance(f, (ImageField, )):
                 img = getattr(instance, f.name)
-                #if a new image is uploaded it resides in a InMemoryUploadedFile
+                # if a new image is uploaded it resides in a InMemoryUploadedFile
                 if img:
                     try:
                         if isinstance(img.file, InMemoryUploadedFile):
@@ -138,7 +137,6 @@ def create_benchmark_objects(project):
     #     for benchmarkname in category.benchmarknames.all():
     #         benchmark, created = Benchmark.objects.get_or_create(project=project,
     # category=category, name=benchmarkname, defaults={'value': 0})
-    pass
 
 
 def act_on_log_entry(sender, **kwargs):
@@ -150,18 +148,17 @@ def act_on_log_entry(sender, **kwargs):
     """
     CRITERIA = [
         {'app': 'rsr', 'model': 'project', 'action': ADDITION, 'call': create_benchmark_objects},
-        {'app': 'rsr', 'model': 'project', 'action': CHANGE,   'call': create_benchmark_objects},
+        {'app': 'rsr', 'model': 'project', 'action': CHANGE, 'call': create_benchmark_objects},
     ]
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         log_entry = kwargs['instance']
         content_type = ContentType.objects.get(pk=log_entry.content_type_id)
         for criterion in CRITERIA:
             if (
-                content_type.app_label == criterion['app']
-                and content_type.model == criterion['model']
-                and log_entry.action_flag == criterion['action']
+                content_type.app_label == criterion['app'] and
+                content_type.model == criterion['model'] and
+                log_entry.action_flag == criterion['action']
             ):
-                #user = User.objects.get(pk=log_entry.user_id)
                 object = content_type.get_object_for_this_type(pk=log_entry.object_id)
                 criterion['call'](object)
 

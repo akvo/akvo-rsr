@@ -27,7 +27,7 @@ class PingTest(TestCase):
         self.assertEqual(self.en_resp.status_code, 200)
         self.assertEqual(self.es_resp.status_code, 200)
 
-    def test_ping(self):
+    def test_redirect(self):
         """Test /updates/ redirect."""
         self.assertEqual(self.resp.status_code, 302)
 

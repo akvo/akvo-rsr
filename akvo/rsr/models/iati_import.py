@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import glob
+from inspect import currentframe, getframeinfo
+import logging
 import os
 
 from datetime import timedelta, datetime
@@ -19,13 +21,18 @@ from .iati_import_job import IatiImportJob
 from .iati_import_log import LOG_ENTRY_TYPE
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_subpackages(module):
     dir = os.path.dirname(module.__file__)
+
     def is_package(d):
         d = os.path.join(dir, d)
         return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
 
     return filter(is_package, os.listdir(dir))
+
 
 def custom_mappers():
     "Create a list of available custom mapper, for use in the admin"
@@ -33,18 +40,16 @@ def custom_mappers():
     subs = sorted(get_subpackages(mappers))
     return [(sub, sub) for sub in subs]
 
-import logging
-from inspect import currentframe, getframeinfo
-
-logger = logging.getLogger(__name__)
 
 def debug_enter(func_or_meth, parent, line_no):
     "Use at start of function/method to log that it is called and from where"
     logger.debug("L{} Calling {}() from {}()".format(line_no, func_or_meth, parent))
 
+
 def debug_exit(func_or_meth, line_no):
     "Use at end of function/method"
     logger.debug("L{} Exiting {}()".format(line_no, func_or_meth))
+
 
 def debug_message(msg, *args):
     "Use to log info"
@@ -91,7 +96,7 @@ class IatiImport(models.Model):
     WEEKLY = 5
     BI_WEEKLY = 6
     EVERY_FOUR_WEEKS = 7
-    EVERY_TWO_MINUTES = 8 # used for testing
+    EVERY_TWO_MINUTES = 8  # used for testing
     FREQUENCIES = (
         (HOURLY, _('hourly'),),
         (EVERY_SIX_HOURS, _('every six hours'),),
@@ -100,28 +105,27 @@ class IatiImport(models.Model):
         (WEEKLY, _('weekly'),),
         (BI_WEEKLY, _('bi-weekly'),),
         (EVERY_FOUR_WEEKS, _('every four weeks'),),
-        (EVERY_TWO_MINUTES, _('every two minutes'),), # used for testing
+        (EVERY_TWO_MINUTES, _('every two minutes'),),  # used for testing
     )
 
     label = models.CharField(max_length=50, verbose_name=_(u'label'), unique=True)
     next_execution = models.DateTimeField(
-            verbose_name=_(u'next time the import is run'), null=True, blank=True)
+        verbose_name=_(u'next time the import is run'), null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCIES, null=True, blank=True,
                                             help_text='Set the frequency interval of the import')
     user = models.ForeignKey(
-            settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
+        settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports',)
     url = models.URLField(_(u'url'), blank=True)
     mapper_prefix = models.CharField(
-            max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
-            help_text='Choose a custom mapper to invoke custom behaviour for this import')
+        max_length=30, verbose_name=_(u'Custom mappers'), blank=True, choices=custom_mappers(),
+        help_text='Choose a custom mapper to invoke custom behaviour for this import')
     enabled = models.BooleanField(verbose_name=_(u'importing enabled'), default=False,
                                   help_text='Set to enable running of this import.')
     run_immediately = models.BooleanField(verbose_name=_(u'run immediately'), default=False,
-                                  help_text='Run the job immediately.')
+                                          help_text='Run the job immediately.')
     running = models.BooleanField(verbose_name=_(u'import currently running'), default=False,
-            help_text='Running is set while the import executes. This is to guarantee that the same '
-                      'import never runs twice (or more) in parallel.')
-
+                                  help_text='Running is set while the import executes. This is to guarantee that the same '
+                                  'import never runs twice (or more) in parallel.')
 
     def __unicode__(self):
         return unicode(_(u'IATI import (ID {}): {}'.format(self.pk, self.label)))
@@ -131,7 +135,7 @@ class IatiImport(models.Model):
         verbose_name = _(u'IATI import')
         verbose_name_plural = _(u'IATI imports')
 
-    def  model_mappers(self):
+    def model_mappers(self):
         """
         Import the ImportMapper subclasses for this IatiImport instance.
         See ImportMapper docstring for more info.
@@ -158,7 +162,7 @@ class IatiImport(models.Model):
             # with classes we find in the submodule
             if self.mapper_prefix:
                 module = import_module(
-                        'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
+                    'akvo.iati.imports.mappers.{}'.format(self.mapper_prefix))
                 if getattr(module, class_name, None):
                     klass = getattr(module, class_name)
             klasses.append(klass)
@@ -180,7 +184,7 @@ class IatiImport(models.Model):
         """
         debug_enter(who_am_i(), who_is_parent(), getframeinfo(currentframe()).lineno)
         time_adds = {
-            self.EVERY_TWO_MINUTES: timedelta(seconds=120), # used for testing
+            self.EVERY_TWO_MINUTES: timedelta(seconds=120),  # used for testing
             self.HOURLY: timedelta(hours=1),
             self.EVERY_SIX_HOURS: timedelta(hours=6),
             self.DAILY: timedelta(days=1),

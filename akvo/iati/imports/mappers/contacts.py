@@ -14,7 +14,7 @@ class Contacts(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(Contacts, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = ProjectContact
 
     def do_import(self):
@@ -42,7 +42,7 @@ class Contacts(ImportMapper):
             email = contact.findtext('email', default='').strip()
             website = contact.findtext('website', default='').strip()
             mailing_address = self.get_child_element_text(
-                    contact, 'mailing-address', 'mailing_address')
+                contact, 'mailing-address', 'mailing_address')
 
             project_contact, created = ProjectContact.objects.get_or_create(
                 project=self.project,
@@ -58,7 +58,7 @@ class Contacts(ImportMapper):
             )
             if created:
                 changes.append(
-                        u'added contact (id: {}): {}'.format(project_contact.pk, project_contact))
+                    u'added contact (id: {}): {}'.format(project_contact.pk, project_contact))
             imported_contacts.append(project_contact)
 
         changes += self.delete_objects(self.project.contacts, imported_contacts, 'contact')

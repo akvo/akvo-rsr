@@ -55,17 +55,17 @@ class Transactions(ImportMapper):
             humanitarian = self.get_attrib(transaction, 'humanitarian', 'humanitarian', None)
 
             transaction_type = self.get_child_elem_attrib(
-                    transaction, 'transaction-type', 'code', 'transaction_type')
+                transaction, 'transaction-type', 'code', 'transaction_type')
             if transaction_type in TYPE_TO_CODE.keys():
                     transaction_type = TYPE_TO_CODE[transaction_type]
 
             transaction_date = self.get_child_as_date(
-                    transaction, 'transaction-date', 'iso-date', 'transaction_date')
+                transaction, 'transaction-date', 'iso-date', 'transaction_date')
 
             value = self.get_child_element_text_as_decimal(transaction, 'value', 'value', None)
             if value:
                 value_date = self.get_child_as_date(
-                        transaction, 'value', 'value-date', 'value_date')
+                    transaction, 'value', 'value-date', 'value_date')
                 currency = self.get_child_elem_attrib(transaction, 'value', 'currency', 'currency')
             else:
                 value_date = None
@@ -76,10 +76,10 @@ class Transactions(ImportMapper):
             prov_org_element = transaction.find('provider-org')
             if prov_org_element is not None:
                 transaction_provider_org = self.get_or_create_organisation(
-                        prov_org_element.get('ref', ''), self.get_text(prov_org_element))
+                    prov_org_element.get('ref', ''), self.get_text(prov_org_element))
                 provider_organisation_activity = self.get_child_elem_attrib(
-                        transaction, 'provider-org', 'provider-activity-id',
-                        'provider_organisation_activity')
+                    transaction, 'provider-org', 'provider-activity-id',
+                    'provider_organisation_activity')
             else:
                 transaction_provider_org = None
                 provider_organisation_activity = ''
@@ -87,25 +87,25 @@ class Transactions(ImportMapper):
             rec_org_element = transaction.find('receiver-org')
             if rec_org_element is not None:
                 transaction_receiver_org = self.get_or_create_organisation(
-                        rec_org_element.get('ref'), self.get_text(rec_org_element))
+                    rec_org_element.get('ref'), self.get_text(rec_org_element))
                 receiver_organisation_activity = self.get_child_elem_attrib(
-                        transaction, 'receiver-org', 'receiver-activity-id',
-                        'receiver_organisation_activity')
+                    transaction, 'receiver-org', 'receiver-activity-id',
+                    'receiver_organisation_activity')
             else:
                 transaction_receiver_org = None
                 receiver_organisation_activity = ''
 
             disbursement_channel = self.get_child_elem_attrib(
-                    transaction, 'disbursement-channel', 'code', 'disbursement_channel')
+                transaction, 'disbursement-channel', 'code', 'disbursement_channel')
 
             flow_type = self.get_child_elem_attrib(transaction, 'flow-type', 'code', 'flow_type')
             finance_type = self.get_child_elem_attrib(
-                    transaction, 'finance-type', 'code', 'finance_type')
+                transaction, 'finance-type', 'code', 'finance_type')
             aid_type = self.get_child_elem_attrib(transaction, 'aid-type', 'code', 'aid_type')
             tied_status = self.get_child_elem_attrib(
-                    transaction, 'tied-status', 'code', 'tied_status')
+                transaction, 'tied-status', 'code', 'tied_status')
             recipient_country = self.get_child_elem_attrib(
-                    transaction, 'recipient-country', 'code', 'recipient_country')
+                transaction, 'recipient-country', 'code', 'recipient_country')
 
             region_element = transaction.find('recipient-region')
             if region_element is not None:
@@ -145,22 +145,22 @@ class Transactions(ImportMapper):
             )
 
             # Disregard double transactions
-            if not transaction_obj in imported_transactions:
+            if transaction_obj not in imported_transactions:
                 if created:
                     changes.append(u'added transaction (id: {}): {}'.format(
-                            transaction_obj.pk, transaction_obj))
+                        transaction_obj.pk, transaction_obj))
 
                 imported_transactions.append(transaction_obj)
 
                 # Process transaction sectors
                 transaction_sectors = TransactionsSectors(
-                        self.iati_import_job, transaction, self.project,
-                        self.globals, related_obj=transaction_obj)
+                    self.iati_import_job, transaction, self.project,
+                    self.globals, related_obj=transaction_obj)
                 for sector_change in transaction_sectors.do_import():
                     changes.append(sector_change)
 
         changes += self.delete_objects(
-                self.project.transactions, imported_transactions, 'transaction')
+            self.project.transactions, imported_transactions, 'transaction')
         return changes
 
 
@@ -198,11 +198,11 @@ class TransactionsSectors(ImportMapper):
             )
             if created:
                 changes.append(u'added transaction sector (id: {}): {}'.format(
-                        sector_obj.pk, sector_obj))
+                    sector_obj.pk, sector_obj))
             imported_sectors.append(sector_obj)
 
         changes += self.delete_objects(
-                self.related_obj.sectors, imported_sectors, 'transaction sector')
+            self.related_obj.sectors, imported_sectors, 'transaction sector')
         return changes
 
 
@@ -261,12 +261,12 @@ class BudgetItems(ImportMapper):
                 other_extra = akvo_budget_label
                 if len(other_extra) > 30:
                     self.add_log('budget[@label]', 'budget_item_label',
-                            'label too long (30 characters allowed)',
-                             LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
+                                 'label too long (30 characters allowed)',
+                                 LOG_ENTRY_TYPE.VALUE_PARTLY_SAVED)
                     other_extra = other_extra[:30]
 
             period_start = self.get_child_as_date(
-                    budget, 'period-start', 'iso-date', 'period_start')
+                budget, 'period-start', 'iso-date', 'period_start')
             if period_start and other_extra == 'Other':
                 other_extra = str(period_start.year)
 
@@ -275,7 +275,7 @@ class BudgetItems(ImportMapper):
             amount = self.get_child_element_text_as_decimal(budget, 'value', 'amount', None)
             if amount:
                 value_date = self.get_child_as_date(
-                        budget, 'value', 'value-date', 'value_date')
+                    budget, 'value', 'value-date', 'value_date')
                 currency = self.get_child_elem_attrib(budget, 'value', 'currency', 'currency')
                 if not currency:
                     currency = self.get_attrib(activity, 'default-currency', 'currency')
@@ -297,7 +297,7 @@ class BudgetItems(ImportMapper):
             )
             if created:
                 changes.append(u'added budget item (id: {}): {}'.format(
-                        budget_obj.pk, budget_obj))
+                    budget_obj.pk, budget_obj))
             imported_budgets.append(budget_obj)
 
         changes += self.delete_objects(self.project.budget_items, imported_budgets, 'budget item')
@@ -309,11 +309,10 @@ class CountryBudgetItems(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(CountryBudgetItems, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = CountryBudgetItem
 
     def do_import(self):
-
         """
         Retrieve and store the country budget items.
         The country budget items will be extracted from the 'country-budget-items' element.
@@ -345,7 +344,7 @@ class CountryBudgetItems(ImportMapper):
                 )
                 if created:
                     changes.append(
-                            u'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
+                        u'added country budget item (id: {}): {}'.format(cbi_obj.pk, cbi_obj))
                 imported_cbis.append(cbi_obj)
 
             changes += self.delete_objects(self.project.country_budget_items, imported_cbis,
@@ -365,10 +364,10 @@ class CapitalSpend(ImportMapper):
         :return: List; contains fields that have changed
         """
         capital_spend_percentage = self.get_child_elem_attrib(
-                self.parent_elem, 'capital-spend', 'percentage', 'capital_spend_percentage', None)
+            self.parent_elem, 'capital-spend', 'percentage', 'capital_spend_percentage', None)
         if capital_spend_percentage:
             capital_spend_percentage = self.cast_to_decimal(
-                    capital_spend_percentage, 'capital-spend', 'capital_spend_percentage')
+                capital_spend_percentage, 'capital-spend', 'capital_spend_percentage')
 
         return self.update_project_field('capital_spend_percentage', capital_spend_percentage)
 
@@ -378,7 +377,7 @@ class PlannedDisbursements(ImportMapper):
     def __init__(self, iati_import_job, parent_elem, project, globals,
                  related_obj=None):
         super(PlannedDisbursements, self).__init__(
-                iati_import_job, parent_elem, project, globals)
+            iati_import_job, parent_elem, project, globals)
         self.model = PlannedDisbursement
 
     def do_import(self):
@@ -399,17 +398,17 @@ class PlannedDisbursements(ImportMapper):
 
             disbursement_type = self.get_attrib(planned_disbursement, 'type', 'type')
             updated = self.get_date(planned_disbursement, 'updated', 'updated')
-            period_start  = self.get_child_as_date(
-                    planned_disbursement, 'period-start', 'iso-date', 'period_start')
+            period_start = self.get_child_as_date(
+                planned_disbursement, 'period-start', 'iso-date', 'period_start')
             period_end = self.get_child_as_date(
-                    planned_disbursement, 'period-end', 'iso-date', 'period_end')
+                planned_disbursement, 'period-end', 'iso-date', 'period_end')
 
             value = self.get_child_element_text_as_decimal(planned_disbursement, 'value', 'value')
             if value:
                 value_date = self.get_child_as_date(
-                        planned_disbursement, 'value', 'value-date', 'value_date')
+                    planned_disbursement, 'value', 'value-date', 'value_date')
                 currency = self.get_child_elem_attrib(
-                        planned_disbursement, 'value', 'currency', 'currency')
+                    planned_disbursement, 'value', 'currency', 'currency')
             else:
                 value_date = None
                 currency = ''
@@ -417,10 +416,10 @@ class PlannedDisbursements(ImportMapper):
             prov_org_element = planned_disbursement.find('provider-org')
             if prov_org_element is not None:
                 provider_org = self.get_or_create_organisation(
-                        prov_org_element.get('ref', ''), self.get_text(prov_org_element))
+                    prov_org_element.get('ref', ''), self.get_text(prov_org_element))
                 provider_org_activity = self.get_child_elem_attrib(
-                        planned_disbursement, 'provider-org', 'provider-activity-id',
-                        'provider_organisation_activity')
+                    planned_disbursement, 'provider-org', 'provider-activity-id',
+                    'provider_organisation_activity')
             else:
                 provider_org = None
                 provider_org_activity = ''
@@ -428,10 +427,10 @@ class PlannedDisbursements(ImportMapper):
             rec_org_element = planned_disbursement.find('receiver-org')
             if rec_org_element is not None:
                 receiver_org = self.get_or_create_organisation(
-                        rec_org_element.get('ref'), self.get_text(rec_org_element))
+                    rec_org_element.get('ref'), self.get_text(rec_org_element))
                 receiver_org_activity = self.get_child_elem_attrib(
-                        planned_disbursement, 'receiver-org', 'receiver-activity-id',
-                        'receiver_organisation_activity')
+                    planned_disbursement, 'receiver-org', 'receiver-activity-id',
+                    'receiver_organisation_activity')
             else:
                 receiver_org = None
                 receiver_org_activity = ''
@@ -452,9 +451,9 @@ class PlannedDisbursements(ImportMapper):
             )
             if created:
                 changes.append(u'added planned disbursement (id: {}): {}'.format(
-                        disbursement_obj.pk, disbursement_obj))
+                    disbursement_obj.pk, disbursement_obj))
             imported_pds.append(disbursement_obj)
 
         changes += self.delete_objects(
-                self.project.planned_disbursements, imported_pds, 'planned disbursement')
+            self.project.planned_disbursements, imported_pds, 'planned disbursement')
         return changes

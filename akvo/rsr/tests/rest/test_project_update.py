@@ -74,7 +74,7 @@ class RestProjectUpdateTestCase(TestCase):
         self.assertEqual(content['count'], 1)
 
         response = self.c.get('/rest/v1/project_update/',
-                                  {'format': 'json', 'project__title__exact': 'REST test project'})
+                              {'format': 'json', 'project__title__exact': 'REST test project'})
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)

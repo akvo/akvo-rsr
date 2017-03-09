@@ -158,7 +158,7 @@ class OrganisationCountryBudget(OrganisationBudget):
         'Organisation', verbose_name=_(u'organisation'), related_name='recipient_country_budgets'
     )
     country = ValidXMLCharField(
-        _(u'recipient country'), blank=True, max_length=2,choices=codelist_choices(COUNTRY, show_code=False),
+        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False),
         help_text=_(u'This identifies the country which concerns the organisation budget.')
     )
     text = ValidXMLCharField(

@@ -50,7 +50,7 @@ class ProjectEditorValidation(Model):
     MANDATORY_ACTION = 1
     HIDDEN_ACTION = 2
 
-    ACTIONS_LIST = [MANDATORY_ACTION, HIDDEN_ACTION,]
+    ACTIONS_LIST = [MANDATORY_ACTION, HIDDEN_ACTION, ]
 
     ACTIONS_LABELS = [
         _(u'Mandatory'),

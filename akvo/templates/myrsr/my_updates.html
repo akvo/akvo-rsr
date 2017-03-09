@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 rsr_utils compressed %}
+{% load i18n bootstrap3 rsr_utils pipeline %}
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
@@ -99,5 +99,5 @@
         }
     </script>
 
-    {% compressed_js 'my_updates' %}
+    {% javascript 'my_updates' %}
 {% endblock %}

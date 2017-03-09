@@ -6,7 +6,6 @@
 
 from .....rsr.models.organisation import Organisation
 from .....rsr.models.partnership import Partnership
-from ... import akvo_ns
 from ..partnerships import Partnerships
 from .financials import BudgetItems
 
@@ -22,7 +21,7 @@ class Partnerships(Partnerships):
 
     def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
         super(Partnerships, self).__init__(
-                iati_import_job, parent_elem, project, globals, related_obj)
+            iati_import_job, parent_elem, project, globals, related_obj)
         self._imported_partnerships = []
         self._changes = []
 
@@ -50,7 +49,7 @@ class Partnerships(Partnerships):
         from . import CORDAID_ORG_ID, OTHERS_ORG_ID, CORDAID
 
         assert budget_from == "Cordaid" or budget_from == "Others", (
-                "akvo:budget-from value incorrect: {}".format(budget_from))
+            "akvo:budget-from value incorrect: {}".format(budget_from))
 
         budget_items = BudgetItems(self.iati_import_job, self.parent_elem, self.project,
                                    self.globals)
@@ -99,8 +98,8 @@ class Partnerships(Partnerships):
         self.add_funding_partner(OTHERS)
 
         self._changes += self.delete_objects(
-                self.project.partnerships.filter(
-                        iati_organisation_role__lt=Partnership.AKVO_SPONSOR_PARTNER),
-                self._imported_partnerships, 'partnership')
+            self.project.partnerships.filter(
+                iati_organisation_role__lt=Partnership.AKVO_SPONSOR_PARTNER),
+            self._imported_partnerships, 'partnership')
 
         return self._changes

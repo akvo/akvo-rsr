@@ -6,7 +6,6 @@
 
 from django.contrib import admin
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 
 class TimestampsMixin(models.Model):
@@ -19,9 +18,11 @@ class TimestampsMixin(models.Model):
     class Meta:
         abstract = True
 
+
 class TimestampsAdminDisplayMixin(admin.ModelAdmin):
     """ Mixin class that displays the create_at and last_modified_at timestamp fields in the admin
     """
+
     def get_fieldsets(self, request, obj=None):
         """ Add and/or remove 'created_at' and 'last_modified_at' fields from first fieldset
         Since the modeladmin object is cached, and thus the fieldsets tuple,
