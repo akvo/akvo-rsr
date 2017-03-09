@@ -128,7 +128,7 @@ class FileUpload extends React.Component {
             filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
         }
         if (filename) {
-            removeFile = <a name="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
+            removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
                              {_('remove_file')}
                          </a>
         }
@@ -305,9 +305,6 @@ export default class UpdateForm extends React.Component {
     }
 
     attachmentsChange(e, results) {
-        /*
-                {_file: {file: file, name: name}, _photo: {file: file, img: img}}
-         */
         let changedUpdate;
         const file = results[0][1];
         const event = results[0][0];
@@ -345,7 +342,7 @@ export default class UpdateForm extends React.Component {
         // When  any part of the update form changes, modify the object in store['updates']
 
         let changedUpdate;
-        const field = e.target.name;
+        const field = e.target.id;
         const file = e.target.files && e.target.files[0];
 
         e.preventDefault();

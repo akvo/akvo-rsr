@@ -25,6 +25,12 @@ const dataFromElement = (elementName) => {
     return JSON.parse(document.getElementById(elementName).innerHTML);
 };
 
+const modifyUser = (data) => {
+    // maintain compatibility with existing updates JSON
+    data.approved_organisations = [data.organisation];
+    // transform to common JSON data shape so normalize works in modelsReducer
+    return {results: data};
+};
 
 @connect((store) => {
     return {
@@ -41,6 +47,13 @@ export default class App extends React.Component {
         this.showUnlocked = this.showUnlocked.bind(this);
     }
 
+    fetchUser(userId) {
+        fetchModel('user', userId, activateToggleAll);
+        this.props.dispatch(
+            {type: UPDATE_MODEL_FULFILLED, payload: {model, object}});
+
+    }
+
     componentDidMount() {
         const project = dataFromElement('project-ids');
         const settings = dataFromElement('settings');
@@ -48,7 +61,7 @@ export default class App extends React.Component {
         this.props.dispatch(setPageData({project, settings, strings}));
 
         const userId = dataFromElement('endpoint-data').userID;
-        fetchUser(userId);
+        fetchModel('user', userId, activateToggleAll, modifyUser);
 
         const projectId = project.project_id;
         fetchModel('results', projectId, activateToggleAll);
