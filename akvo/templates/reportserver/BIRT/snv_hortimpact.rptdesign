@@ -10604,6 +10604,1326 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                 </row>
             </footer>
         </table>
+        <table name="results_table" id="13">
+            <property name="marginTop">8pt</property>
+            <property name="marginLeft">8pt</property>
+            <property name="width">7.833333333333333in</property>
+            <property name="dataSet">Results_indicators_periods</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">projid</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">params["ID"].value</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">period_start</property>
+                    <text-property name="displayName">period_start</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">actual_value</property>
+                    <text-property name="displayName">actual_value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["actual_value"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">target_value</property>
+                    <text-property name="displayName">target_value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["target_value"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">baseline_value</property>
+                    <text-property name="displayName">baseline_value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">title</property>
+                    <text-property name="displayName">title</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">period_end</property>
+                    <text-property name="displayName">period_end</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["period_end"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">actual_comment</property>
+                    <text-property name="displayName">actual_comment</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["actual_comment"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">indicator_title</property>
+                    <text-property name="displayName">indicator_title</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">baseline_year</property>
+                    <text-property name="displayName">baseline_value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">baseline_comment</property>
+                    <text-property name="displayName">baseline_comment</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">actual_value_number</property>
+                    <expression name="expression" type="javascript">dataSetRow["actual_value"] &amp;&amp; !isNaN(dataSetRow["actual_value"]) ? dataSetRow["actual_value"] : -1</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">target_value_number</property>
+                    <text-property name="displayName">target_value_number</text-property>
+                    <expression name="expression" type="javascript">(dataSetRow["target_value"] &amp;&amp; !isNaN(dataSetRow["target_value"])) ? dataSetRow["target_value"] : -1</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">progress_pct</property>
+                    <text-property name="displayName">progress_pct</text-property>
+                    <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "available" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "operational" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not yet available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
+?&#13;
+(row["baseline_value"] ?&#13;
+Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
+: Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
+)&#13;
+:&#13;
+null</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">result_sort</property>
+                    <text-property name="displayName">result_sort</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["result_order"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">indicator_sort</property>
+                    <text-property name="displayName">indicator_sort</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["indicator_order"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">result_pk</property>
+                    <text-property name="displayName">result_pk</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">indicator_pk</property>
+                    <text-property name="displayName">indicator_pk</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <method name="onCreate"><![CDATA[var allan = 7;
+]]></method>
+            <property name="repeatHeader">false</property>
+            <property name="pageBreakInterval">50</property>
+            <column id="275">
+                <property name="width">1.2708333333333333in</property>
+            </column>
+            <column id="35">
+                <property name="width">3.0729166666666665in</property>
+            </column>
+            <column id="167">
+                <property name="width">1.8958333333333333in</property>
+            </column>
+            <column id="37">
+                <property name="width">1.5625in</property>
+            </column>
+            <header>
+                <row id="14">
+                    <cell id="267">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <label id="151">
+                            <property name="style">Sectionheader</property>
+                            <property name="fontSize">18pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">0pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">8pt</property>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(Total.count() &lt; 1)</expression>
+                                </structure>
+                            </list-property>
+                            <text-property name="text">Results</text-property>
+                        </label>
+                    </cell>
+                    <cell id="160">
+                        <text-data id="217">
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">true</expression>
+                                </structure>
+                            </list-property>
+                            <expression name="valueExpr">var a=1,b=1;&#13;
+reportContext.getGlobalVariable('debug')</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                    </cell>
+                    <cell id="17"/>
+                </row>
+            </header>
+            <group id="18">
+                <property name="groupName">ResultTableGroup</property>
+                <expression name="keyExpr" type="javascript">row["result_pk"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["title"]</expression>
+                </structure>
+                <list-property name="sort">
+                    <structure>
+                        <expression name="key" type="javascript">row["result_sort"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                    <structure>
+                        <expression name="key" type="javascript">row["result_pk"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                </list-property>
+                <header>
+                    <row id="19">
+                        <cell id="268">
+                            <property name="colSpan">4</property>
+                            <property name="rowSpan">1</property>
+                            <text-data id="159">
+                                <property name="fontFamily">"Tahoma"</property>
+                                <property name="fontSize">14pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="color">#6D8FAF</property>
+                                <property name="paddingTop">0pt</property>
+                                <property name="paddingLeft">0pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">8pt</property>
+                                <expression name="valueExpr">b=1, "Result " + a++;</expression>
+                                <property name="contentType">html</property>
+                            </text-data>
+                            <data id="145">
+                                <property name="fontSize">14pt</property>
+                                <property name="paddingLeft">0pt</property>
+                                <property name="paddingBottom">8pt</property>
+                                <property name="paddingRight">8pt</property>
+                                <property name="resultSetColumn">title</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="23">
+                        <cell id="273"/>
+                        <cell id="24"/>
+                        <cell id="165"/>
+                        <cell id="26"/>
+                    </row>
+                </footer>
+            </group>
+            <group id="74">
+                <property name="groupName">IndicatorTableGroup</property>
+                <expression name="keyExpr" type="javascript">row["indicator_pk"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["indicator_title"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <list-property name="sort">
+                    <structure>
+                        <expression name="key" type="javascript">row["indicator_sort"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                    <structure>
+                        <expression name="key" type="javascript">row["indicator_pk"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                </list-property>
+                <header>
+                    <row id="75">
+                        <property name="backgroundColor">#F0F0F0</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
+                            </structure>
+                        </list-property>
+                        <cell id="269">
+                            <property name="colSpan">4</property>
+                            <property name="rowSpan">1</property>
+                            <property name="backgroundColor">white</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">0pt</property>
+                            <property name="paddingBottom">4pt</property>
+                            <property name="paddingRight">0pt</property>
+                            <grid id="192">
+                                <property name="backgroundColor">white</property>
+                                <property name="width">7.875in</property>
+                                <column id="277">
+                                    <property name="width">1.4479166666666667in</property>
+                                </column>
+                                <column id="193">
+                                    <property name="width">2.90625in</property>
+                                </column>
+                                <column id="194">
+                                    <property name="width">1.875in</property>
+                                </column>
+                                <column id="195">
+                                    <property name="width">1.6458333333333333in</property>
+                                </column>
+                                <row id="279">
+                                    <property name="backgroundColor">#F3F6F9</property>
+                                    <cell id="280">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">4pt</property>
+                                        <property name="paddingRight">0pt</property>
+                                        <text-data id="213">
+                                            <property name="backgroundColor">#D0DEE7</property>
+                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="fontSize">12pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="color">white</property>
+                                            <property name="paddingTop">5pt</property>
+                                            <property name="paddingLeft">8pt</property>
+                                            <property name="paddingBottom">5pt</property>
+                                            <property name="paddingRight">0pt</property>
+                                            <property name="display">block</property>
+                                            <expression name="valueExpr">"INDICATOR " + b++</expression>
+                                            <property name="contentType">html</property>
+                                        </text-data>
+                                    </cell>
+                                    <cell id="281">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="paddingBottom">20pt</property>
+                                        <text-data id="278">
+                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="fontSize">12pt</property>
+                                            <property name="color">#000000</property>
+                                            <property name="paddingTop">5pt</property>
+                                            <property name="paddingLeft">8pt</property>
+                                            <property name="paddingBottom">3pt</property>
+                                            <property name="paddingRight">8pt</property>
+                                            <property name="display">block</property>
+                                            <expression name="valueExpr">row["indicator_title"]</expression>
+                                            <property name="contentType">html</property>
+                                        </text-data>
+                                    </cell>
+                                </row>
+                                <row id="284">
+                                    <cell id="285">
+                                        <property name="colSpan">4</property>
+                                        <property name="rowSpan">1</property>
+                                        <text-data id="263">
+                                            <property name="color">#000000</property>
+                                            <property name="paddingLeft">8pt</property>
+                                            <property name="paddingBottom">8pt</property>
+                                            <property name="display">none</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!(row["baseline_value"] &amp;&amp; row["baseline_year"])</expression>
+                                                </structure>
+                                            </list-property>
+                                            <expression name="valueExpr">"Baseline: " + row["baseline_value"] + " " + (row["baseline_year"] ? "(" + row["baseline_year"] + ")" : "")&#13;
++ "  " + row["baseline_comment"]</expression>
+                                            <property name="contentType">html</property>
+                                        </text-data>
+                                    </cell>
+                                </row>
+                                <row id="202">
+                                    <cell id="276"/>
+                                    <cell id="203">
+                                        <label id="169">
+                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="fontSize">12pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="fontStyle">italic</property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="paddingLeft">10pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">ACTUAL</text-property>
+                                        </label>
+                                    </cell>
+                                    <cell id="204">
+                                        <property name="color">#F0F0F0</property>
+                                        <label id="188">
+                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="fontSize">12pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="fontStyle">italic</property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">TARGET</text-property>
+                                        </label>
+                                    </cell>
+                                    <cell id="205">
+                                        <label id="186">
+                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="fontSize">12pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="fontStyle">italic</property>
+                                            <property name="color">gray</property>
+                                            <property name="paddingTop">8pt</property>
+                                            <property name="textAlign">left</property>
+                                            <text-property name="text">BASELINE</text-property>
+                                        </label>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="79">
+                        <property name="pageBreakBefore">avoid</property>
+                        <cell id="272">
+                            <property name="colSpan">4</property>
+                            <property name="rowSpan">1</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">0pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <property name="paddingRight">0pt</property>
+                            <label id="211">
+                                <property name="paddingTop">0pt</property>
+                                <property name="paddingLeft">8pt</property>
+                                <property name="pageBreakBefore">avoid</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
+                                    </structure>
+                                </list-property>
+                                <text-property name="text"> </text-property>
+                            </label>
+                        </cell>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="27">
+                    <property name="backgroundColor">white</property>
+                    <property name="verticalAlign">top</property>
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
+                        </structure>
+                    </list-property>
+                    <cell id="270">
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">8pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">8pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="verticalAlign">middle</property>
+                        <text-data name="percentage" id="215">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#34B573</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">-47pt</property>
+                            <property name="paddingTop">20pt</property>
+                            <property name="paddingBottom">12pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="display">block</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">50</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">84</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">-1</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">49</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">85</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
+                            <expression name="valueExpr" type="javascript">(row["progress_pct"] != null)&#13;
+?&#13;
+ row["progress_pct"] + "%"&#13;
+ :&#13;
+ ""</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                        <extended-item extensionName="Chart" name="clock" id="266">
+                            <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithoutAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
+  <Version>2.6.1</Version>
+  <Type>Pie Chart</Type>
+  <SubType>Standard</SubType>
+  <Block>
+    <Children xsi:type="layout:TitleBlock">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>24.0</Top>
+        <Left>3.0</Left>
+        <Bottom>3.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>false</Visible>
+      <Label>
+        <Caption>
+          <Value>77%</Value>
+          <Font>
+            <Size>16.0</Size>
+            <Bold>true</Bold>
+            <Alignment>
+              <horizontalAlignment>Center</horizontalAlignment>
+              <verticalAlignment>Center</verticalAlignment>
+            </Alignment>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>true</Visible>
+      </Label>
+    </Children>
+    <Children xsi:type="layout:Plot">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>1.0</Top>
+        <Left>1.0</Left>
+        <Bottom>1.0</Bottom>
+        <Right>1.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>true</Visible>
+      <HorizontalSpacing>0</HorizontalSpacing>
+      <VerticalSpacing>0</VerticalSpacing>
+      <ClientArea>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>0</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>0.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>0.0</Right>
+        </Insets>
+      </ClientArea>
+    </Children>
+    <Children xsi:type="layout:Legend">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>3.0</Top>
+        <Left>3.0</Left>
+        <Bottom>3.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>false</Visible>
+      <ClientArea>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>0</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>2.0</Top>
+          <Left>2.0</Left>
+          <Bottom>2.0</Bottom>
+          <Right>2.0</Right>
+        </Insets>
+      </ClientArea>
+      <Text>
+        <Value></Value>
+        <Font>
+          <Alignment/>
+        </Font>
+      </Text>
+      <Orientation>Vertical</Orientation>
+      <Direction>Top_Bottom</Direction>
+      <Separator>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>true</Visible>
+      </Separator>
+      <Position>Right</Position>
+      <ItemType>Categories</ItemType>
+      <Title>
+        <Caption>
+          <Value></Value>
+          <Font>
+            <Alignment/>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>false</Visible>
+      </Title>
+      <TitlePosition>Above</TitlePosition>
+    </Children>
+    <Bounds>
+      <Left>0.0</Left>
+      <Top>0.0</Top>
+      <Width>212.0</Width>
+      <Height>130.0</Height>
+    </Bounds>
+    <Insets>
+      <Top>3.0</Top>
+      <Left>3.0</Left>
+      <Bottom>3.0</Bottom>
+      <Right>3.0</Right>
+    </Insets>
+    <Row>-1</Row>
+    <Column>-1</Column>
+    <Rowspan>-1</Rowspan>
+    <Columnspan>-1</Columnspan>
+    <Outline>
+      <Style>Solid</Style>
+      <Thickness>1</Thickness>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>0</Red>
+        <Green>0</Green>
+        <Blue>0</Blue>
+      </Color>
+      <Visible>false</Visible>
+    </Outline>
+    <Background xsi:type="attribute:ColorDefinition">
+      <Transparency>0</Transparency>
+      <Red>255</Red>
+      <Green>255</Green>
+      <Blue>255</Blue>
+    </Background>
+    <Visible>true</Visible>
+  </Block>
+  <Dimension>Two_Dimensional</Dimension>
+  <Units>Points</Units>
+  <SeriesThickness>10.0</SeriesThickness>
+  <GridColumnCount>0</GridColumnCount>
+  <ExtendedProperties>
+    <Name>enable.area.alt</Name>
+    <Value>false</Value>
+  </ExtendedProperties>
+  <SampleData>
+    <BaseSampleData>
+      <DataSetRepresentation>'A','B','C','D','E'</DataSetRepresentation>
+    </BaseSampleData>
+    <OrthogonalSampleData>
+      <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
+      <SeriesDefinitionIndex>0</SeriesDefinitionIndex>
+    </OrthogonalSampleData>
+  </SampleData>
+  <Interactivity>
+    <Enable>false</Enable>
+  </Interactivity>
+  <EmptyMessage>
+    <Caption>
+      <Value>This chart contains no data.</Value>
+      <Font>
+        <Alignment>
+          <horizontalAlignment>Center</horizontalAlignment>
+          <verticalAlignment>Center</verticalAlignment>
+        </Alignment>
+      </Font>
+    </Caption>
+    <Background xsi:type="attribute:ColorDefinition">
+      <Transparency>64</Transparency>
+      <Red>127</Red>
+      <Green>127</Green>
+      <Blue>127</Blue>
+    </Background>
+    <Outline>
+      <Color>
+        <Transparency>128</Transparency>
+        <Red>127</Red>
+        <Green>127</Green>
+        <Blue>127</Blue>
+      </Color>
+      <Visible>true</Visible>
+    </Outline>
+    <Insets>
+      <Top>10.0</Top>
+      <Left>10.0</Left>
+      <Bottom>10.0</Bottom>
+      <Right>10.0</Right>
+    </Insets>
+    <Visible>false</Visible>
+  </EmptyMessage>
+  <SeriesDefinitions>
+    <Query>
+      <Definition></Definition>
+    </Query>
+    <SeriesPalette>
+      <Entries xsi:type="attribute:ColorDefinition">
+        <Transparency>255</Transparency>
+        <Red>217</Red>
+        <Green>94</Green>
+        <Blue>117</Blue>
+      </Entries>
+      <Entries xsi:type="attribute:ColorDefinition">
+        <Transparency>255</Transparency>
+        <Red>225</Red>
+        <Green>122</Green>
+        <Blue>12</Blue>
+      </Entries>
+      <Entries xsi:type="attribute:ColorDefinition">
+        <Transparency>255</Transparency>
+        <Red>52</Red>
+        <Green>181</Green>
+        <Blue>115</Blue>
+      </Entries>
+      <Entries xsi:type="attribute:ColorDefinition">
+        <Transparency>255</Transparency>
+        <Red>192</Red>
+        <Green>192</Green>
+        <Blue>192</Blue>
+      </Entries>
+    </SeriesPalette>
+    <SeriesDefinitions>
+      <Query>
+        <Definition></Definition>
+      </Query>
+      <SeriesPalette>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>217</Red>
+          <Green>94</Green>
+          <Blue>117</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>225</Red>
+          <Green>122</Green>
+          <Blue>12</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>52</Red>
+          <Green>181</Green>
+          <Blue>115</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
+        </Entries>
+      </SeriesPalette>
+      <Series xsi:type="type:PieSeries">
+        <Visible>true</Visible>
+        <Label>
+          <Caption>
+            <Value></Value>
+            <Font>
+              <Alignment/>
+            </Font>
+          </Caption>
+          <Background xsi:type="attribute:ColorDefinition">
+            <Transparency>0</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Background>
+          <Outline>
+            <Style>Solid</Style>
+            <Thickness>1</Thickness>
+            <Color>
+              <Transparency>255</Transparency>
+              <Red>0</Red>
+              <Green>0</Green>
+              <Blue>0</Blue>
+            </Color>
+            <Visible>false</Visible>
+          </Outline>
+          <Insets>
+            <Top>0.0</Top>
+            <Left>2.0</Left>
+            <Bottom>0.0</Bottom>
+            <Right>3.0</Right>
+          </Insets>
+          <Visible>false</Visible>
+        </Label>
+        <DataDefinition>
+          <Definition>row[&quot;number&quot;]</Definition>
+          <Grouping>
+            <GroupType>Text</GroupType>
+            <AggregateExpression>Sum</AggregateExpression>
+          </Grouping>
+        </DataDefinition>
+        <DataPoint>
+          <Components>
+            <Type>Orthogonal_Value</Type>
+          </Components>
+          <Separator>, </Separator>
+        </DataPoint>
+        <LabelPosition>Outside</LabelPosition>
+        <Stacked>false</Stacked>
+        <Triggers>
+          <Condition>onmouseover</Condition>
+          <Action>
+            <Type>Show_Tooltip</Type>
+            <Value xsi:type="attribute:TooltipValue">
+              <Text></Text>
+              <Delay>200</Delay>
+            </Value>
+          </Action>
+        </Triggers>
+        <Translucent>true</Translucent>
+        <Explosion>0</Explosion>
+        <Title>
+          <Caption>
+            <Value></Value>
+            <Font>
+              <Size>16.0</Size>
+              <Bold>true</Bold>
+              <Alignment/>
+            </Font>
+          </Caption>
+          <Background xsi:type="attribute:ColorDefinition">
+            <Transparency>0</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Background>
+          <Outline>
+            <Style>Solid</Style>
+            <Thickness>1</Thickness>
+            <Color>
+              <Transparency>255</Transparency>
+              <Red>0</Red>
+              <Green>0</Green>
+              <Blue>0</Blue>
+            </Color>
+            <Visible>false</Visible>
+          </Outline>
+          <Insets>
+            <Top>0.0</Top>
+            <Left>2.0</Left>
+            <Bottom>0.0</Bottom>
+            <Right>3.0</Right>
+          </Insets>
+          <Visible>false</Visible>
+        </Title>
+        <TitlePosition>Right</TitlePosition>
+        <LeaderLineAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Visible>true</Visible>
+        </LeaderLineAttributes>
+        <LeaderLineLength>10.0</LeaderLineLength>
+        <SliceOutline>
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </SliceOutline>
+        <Ratio>1.0</Ratio>
+        <Rotation>90.0</Rotation>
+        <InnerRadius>66.0</InnerRadius>
+      </Series>
+      <Grouping>
+        <GroupType>Text</GroupType>
+        <AggregateExpression>Sum</AggregateExpression>
+      </Grouping>
+    </SeriesDefinitions>
+    <Series>
+      <Visible>true</Visible>
+      <Label>
+        <Caption>
+          <Value></Value>
+          <Font>
+            <Alignment/>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>false</Visible>
+      </Label>
+      <DataDefinition>
+        <Definition>row[&quot;name&quot;]</Definition>
+      </DataDefinition>
+      <DataPoint>
+        <Components>
+          <Type>Orthogonal_Value</Type>
+        </Components>
+        <Separator>, </Separator>
+      </DataPoint>
+      <LabelPosition>Outside</LabelPosition>
+      <Stacked>false</Stacked>
+    </Series>
+    <Grouping>
+      <Enabled>true</Enabled>
+      <GroupType>Text</GroupType>
+      <AggregateExpression>Sum</AggregateExpression>
+    </Grouping>
+    <SortKey/>
+  </SeriesDefinitions>
+  <Coverage>1.0</Coverage>
+</model:ChartWithoutAxes>
+]]></xml-property>
+                            <property name="outputFormat">SVG</property>
+                            <property name="inheritColumns">false</property>
+                            <property name="display">block</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginBottom">8pt</property>
+                            <property name="height">60pt</property>
+                            <property name="width">60pt</property>
+                            <property name="dataSet">Four_rows</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">null == row._outer["progress_pct"]</expression>
+                                </structure>
+                            </list-property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">(row["progress_pct"] &lt; 49)&#13;
+?&#13;
+Math.max(row["progress_pct"],0)&#13;
+:&#13;
+0</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="paramName">param_2</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">(row["progress_pct"] >= 49 &amp;&amp; row["progress_pct"] &lt; 84)&#13;
+?&#13;
+row["progress_pct"]&#13;
+:&#13;
+0</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="paramName">param_3</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">(row["progress_pct"] >= 84)&#13;
+?&#13;
+Math.min(row["progress_pct"],100)&#13;
+:&#13;
+0</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="paramName">param_4</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">100-Math.max(Math.min(row["progress_pct"],100),0)</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">number</property>
+                                    <expression name="expression" type="javascript">dataSetRow["number"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">name</property>
+                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="style">progress_low</property>
+                        </extended-item>
+                    </cell>
+                    <cell id="28">
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">8pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">8pt</property>
+                        <property name="verticalAlign">middle</property>
+                        <data id="106">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">4pt</property>
+                            <property name="marginBottom">4pt</property>
+                            <property name="paddingLeft">16pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Unformatted</property>
+                            </structure>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(row["actual_value"] != null) &amp;&amp; (!isNaN(row["actual_value"]))</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">actual_value</property>
+                        </data>
+                        <data id="292">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">4pt</property>
+                            <property name="marginBottom">4pt</property>
+                            <property name="paddingLeft">16pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">left</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">0.0</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">33.0</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">50</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">84</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">85</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["actual_value_number"] == -1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">actual_value_number</property>
+                        </data>
+                    </cell>
+                    <cell id="163">
+                        <property name="verticalAlign">middle</property>
+                        <data id="108">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">4pt</property>
+                            <property name="marginBottom">4pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">(row["target_value"] != null) &amp;&amp; (!isNaN(row["target_value"]))</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">target_value</property>
+                        </data>
+                        <data id="296">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">4pt</property>
+                            <property name="marginBottom">4pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["target_value_number"] == -1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">target_value_number</property>
+                        </data>
+                    </cell>
+                    <cell id="30">
+                        <property name="verticalAlign">middle</property>
+                        <data id="322">
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
+                            <property name="resultSetColumn">baseline_year</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="218">
+                    <property name="backgroundColor">#F0F0F0</property>
+                    <property name="pageBreakBefore">avoid</property>
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">!row["actual_comment"]</expression>
+                        </structure>
+                    </list-property>
+                    <cell id="271">
+                        <property name="colSpan">4</property>
+                        <property name="rowSpan">1</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">16pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">8pt</property>
+                        <text-data id="223">
+                            <property name="style">progress_high</property>
+                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">black</property>
+                            <property name="marginBottom">8pt</property>
+                            <property name="paddingTop">8pt</property>
+                            <property name="paddingLeft">14pt</property>
+                            <property name="paddingBottom">8pt</property>
+                            <list-property name="highlightRules">
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">-1</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">49</expression>
+                                    <property name="style">progress_low</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">between</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">50</value>
+                                    </simple-property-list>
+                                    <expression name="value2" type="javascript">84</expression>
+                                    <property name="style">progress_middle</property>
+                                </structure>
+                                <structure>
+                                    <property name="operator">ge</property>
+                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <simple-property-list name="value1">
+                                        <value type="javascript">85</value>
+                                    </simple-property-list>
+                                    <property name="style">progress_high</property>
+                                </structure>
+                            </list-property>
+                            <expression name="valueExpr">row["actual_comment"]</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="31">
+                    <cell id="274"/>
+                    <cell id="32"/>
+                    <cell id="166"/>
+                    <cell id="34"/>
+                </row>
+            </footer>
+        </table>
     </body>
     <list-property name="images">
         <structure>
