@@ -1,3 +1,13 @@
+# Akvo RSR version 3.22.1 Chisinau hotfix
+
+## Bug fixes
+
+[#2569](https://github.com/akvo/akvo-rsr/issues/2569) Django pipeline not configured correctly after
+upgrade
+
+[#29](https://github.com/akvo/akvo-rsr/issues/29) Generation of cache keys fails if the key value
+ contains whitespace. This is part of the ongoing work on SSL for RSR.
+
 # Akvo RSR version 3.22 Chisinau
 
 ## General improvements

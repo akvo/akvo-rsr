@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import get_model
 from django.http import HttpResponse
 from django.template import loader
+from django.utils.text import slugify
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
@@ -296,7 +297,10 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     if not value:
         return ''
 
-    key = u'{}-{}-{}'.format(model.__name__, value, version)
+    key = u'{}-{}-{}'.format(version, model.__name__, value,)
+    # Memcached keys can't have whitespace and has a max length of 250
+    # https://github.com/memcached/memcached/blob/master/doc/protocol.txt#L41
+    key = slugify(key).encode('utf-8')[:250]
     result = cache.get(key)
     if result is not None:
         return result
