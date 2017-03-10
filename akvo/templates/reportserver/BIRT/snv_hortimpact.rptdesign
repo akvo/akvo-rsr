@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -10696,7 +10696,11 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                 <structure>
                     <property name="name">progress_pct</property>
                     <text-property name="displayName">progress_pct</text-property>
-                    <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "available" )&#13;
+                    <expression name="expression" type="javascript">function finiteRounded(a){&#13;
+    return isFinite(a) ? Math.round(a) : 0;&#13;
+}&#13;
+&#13;
+(row["actual_value"].toLowerCase() == "available" )&#13;
 ?&#13;
 100&#13;
 :&#13;
@@ -10714,9 +10718,10 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
 :&#13;
 (row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
 ?&#13;
-(row["baseline_value"] ?&#13;
-Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
-: Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
+(row["baseline_value"]  ?&#13;
+finiteRounded((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
+: &#13;
+finiteRounded(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
 )&#13;
 :&#13;
 null</expression>
