@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -455,6 +455,7 @@ from rsr_result
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 where rsr_result.project_id = ?
+and rsr_indicatorperiod.period_end::date < '2017-01-01'
 order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -9451,7 +9452,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="paddingRight">8pt</property>
         </style>
         <style name="H1" id="937">
-            <property name="fontFamily">"VAG Rounded Std"</property>
+            <property name="fontFamily">"VAGRoundedStd-Bold"</property>
             <property name="fontSize">18pt</property>
             <property name="fontWeight">bold</property>
             <property name="color">#00A54F</property>
@@ -9471,9 +9472,14 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="fontFamily">"Brandon Grotesque"</property>
         </style>
         <style name="P" id="1736">
-            <property name="fontFamily">"VAG Rounded Std"</property>
+            <property name="fontFamily">"VAGRoundedStd-Light"</property>
             <property name="fontSize">11pt</property>
             <property name="fontWeight">lighter</property>
+        </style>
+        <style name="p_bold" id="1946">
+            <property name="fontFamily">"VAGRoundedStd-Bold"</property>
+            <property name="fontSize">11pt</property>
+            <property name="fontWeight">bold</property>
         </style>
     </styles>
     <page-setup>
@@ -9481,7 +9487,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="topMargin">50px</property>
             <property name="leftMargin">50px</property>
             <property name="bottomMargin">50px</property>
-            <property name="rightMargin">11.994444444444445mm</property>
+            <property name="rightMargin">3.880555555555556mm</property>
             <page-footer>
                 <text id="1945">
                     <property name="fontFamily">"VAG Rounded Std"</property>
@@ -9525,12 +9531,12 @@ pageNumber
                         <property name="paddingRight">8pt</property>
                         <property name="masterPage">Cover</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[HortIMPACT combines private sector expertise with social impact solutions to build sustainable, inclusive domestic and export horticulture markets in Kenya.
+                        <text-property name="content"><![CDATA[<p>HortIMPACT combines private sector expertise with social impact solutions to build sustainable, inclusive domestic and export horticulture markets in Kenya.</p>
 
-</br></br>
-<B style="colour: #00A54F">Our focus</B></br>
+</br>
+<B style="colour: #00A54F">Our focus</B></br><p>
 Poor food safety, high food losses and the exclusion of small &amp; medium size farmers from value chains are limiting the economic growth and social bene ts of fruit and vegetable markets in Kenya. HortIMPACT is working across horticulture value chains to change this.
-Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dutch Agri-businesses, HortIMPACT promotes innovative solutions and technologies from the private sector that improve production and help build inclusive market growth]]></text-property>
+Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dutch Agri-businesses, HortIMPACT promotes innovative solutions.</p>]]></text-property>
                     </text>
                 </cell>
                 <cell id="1867">
@@ -9738,7 +9744,6 @@ Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dut
                 <cell id="1733">
                     <label name="basic_label" id="941">
                         <property name="style">H1</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -9747,6 +9752,7 @@ Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dut
                         <property name="paddingBottom">1px</property>
                         <property name="paddingRight">1px</property>
                         <property name="textAlign">center</property>
+                        <property name="whiteSpace">pre</property>
                         <property name="display">block</property>
                         <property name="pageBreakAfter">avoid</property>
                         <property name="pageBreakBefore">auto</property>
@@ -9757,7 +9763,6 @@ Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dut
                     </label>
                     <text-data id="1734">
                         <property name="style">P</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="marginTop">4pt</property>
                         <property name="marginBottom">4pt</property>
                         <property name="dataSet">Custom field - ex summary</property>
@@ -9823,7 +9828,6 @@ markdown_html(row["value"])</expression>
                 <cell id="1727">
                     <label name="basic_label1" id="1722">
                         <property name="style">H1</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -9851,7 +9855,6 @@ markdown_html(row["value"])</expression>
                 <cell id="1738">
                     <label name="basic_label11" id="1747">
                         <property name="style">H1</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -9879,7 +9882,6 @@ markdown_html(row["value"])</expression>
                 <cell id="1746">
                     <label name="basic_label111" id="1749">
                         <property name="style">H1</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -9932,7 +9934,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label" id="1064">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -9973,7 +9974,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label1" id="1766">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10014,7 +10014,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label11" id="1774">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10055,7 +10054,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label111" id="1780">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10096,7 +10094,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label1111" id="1787">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10152,7 +10149,7 @@ markdown_html(row["value"])</expression>
                             <row id="1823">
                                 <cell id="1824">
                                     <label id="1826">
-                                        <property name="fontFamily">"VAG Rounded Std"</property>
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10168,7 +10165,7 @@ markdown_html(row["value"])</expression>
                             <row id="1798">
                                 <cell id="1799">
                                     <label id="1819">
-                                        <property name="fontFamily">"VAG Rounded Std"</property>
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10181,6 +10178,7 @@ markdown_html(row["value"])</expression>
                                 </cell>
                                 <cell id="1800">
                                     <label id="1821">
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10376,7 +10374,7 @@ markdown_html(row["value"])</expression>
                             <row id="1828">
                                 <cell id="1829">
                                     <label id="1830">
-                                        <property name="fontFamily">"VAG Rounded Std"</property>
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10392,7 +10390,7 @@ markdown_html(row["value"])</expression>
                             <row id="1832">
                                 <cell id="1833">
                                     <label id="1834">
-                                        <property name="fontFamily">"VAG Rounded Std"</property>
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10405,6 +10403,7 @@ markdown_html(row["value"])</expression>
                                 </cell>
                                 <cell id="1835">
                                     <label id="1836">
+                                        <property name="style">p_bold</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#00A54F</property>
                                         <property name="paddingTop">8pt</property>
@@ -10464,7 +10463,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label11111" id="1793">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10498,7 +10496,6 @@ markdown_html(row["value"])</expression>
                     <label name="core_ind_label111111" id="1935">
                         <property name="style">H1</property>
                         <property name="backgroundColor">white</property>
-                        <property name="fontFamily">"VAG Rounded Std"</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#00A54F</property>
                         <property name="marginTop">8pt</property>
@@ -10551,10 +10548,12 @@ markdown_html(row["value"])</expression>
                 <row id="1928">
                     <cell id="1929">
                         <data id="1927">
-                            <property name="fontFamily">"VAG Rounded Std"</property>
+                            <property name="style">H1</property>
                             <property name="fontSize">14pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="fontStyle">normal</property>
+                            <property name="color">black</property>
+                            <property name="paddingLeft">1pt</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
@@ -10562,8 +10561,11 @@ markdown_html(row["value"])</expression>
                 <row id="1921">
                     <cell id="1922">
                         <text-data id="1938">
+                            <property name="style">p_bold</property>
                             <property name="fontSize">11pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="color">black</property>
+                            <property name="paddingLeft">1pt</property>
                             <expression name="valueExpr">var now = new Date(row["created_at"]);
 Formatter.format(now, "dd-MM-yyyy");</expression>
                             <property name="contentType">html</property>
@@ -10607,6 +10609,7 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
         <table name="results_table" id="13">
             <property name="marginTop">8pt</property>
             <property name="marginLeft">8pt</property>
+            <property name="pageBreakBefore">always</property>
             <property name="width">7.833333333333333in</property>
             <property name="dataSet">Results_indicators_periods</property>
             <list-property name="paramBindings">
@@ -10779,9 +10782,10 @@ null</expression>
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
                         <label id="151">
-                            <property name="style">Sectionheader</property>
+                            <property name="style">H1</property>
                             <property name="fontSize">18pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="color">#00A54F</property>
                             <property name="paddingTop">8pt</property>
                             <property name="paddingLeft">0pt</property>
                             <property name="paddingBottom">8pt</property>
@@ -10837,7 +10841,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <text-data id="159">
-                                <property name="fontFamily">"Tahoma"</property>
+                                <property name="style">p_bold</property>
                                 <property name="fontSize">14pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#6D8FAF</property>
@@ -10849,6 +10853,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="contentType">html</property>
                             </text-data>
                             <data id="145">
+                                <property name="style">P</property>
                                 <property name="fontSize">14pt</property>
                                 <property name="paddingLeft">0pt</property>
                                 <property name="paddingBottom">8pt</property>
@@ -10905,7 +10910,6 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="paddingRight">0pt</property>
                             <grid id="192">
                                 <property name="backgroundColor">white</property>
-                                <property name="width">7.875in</property>
                                 <column id="277">
                                     <property name="width">1.4479166666666667in</property>
                                 </column>
@@ -10926,8 +10930,8 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="paddingBottom">4pt</property>
                                         <property name="paddingRight">0pt</property>
                                         <text-data id="213">
+                                            <property name="style">P</property>
                                             <property name="backgroundColor">#D0DEE7</property>
-                                            <property name="fontFamily">"Tahoma"</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="color">white</property>
@@ -10945,7 +10949,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="rowSpan">1</property>
                                         <property name="paddingBottom">20pt</property>
                                         <text-data id="278">
-                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="style">P</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="color">#000000</property>
                                             <property name="paddingTop">5pt</property>
@@ -10963,6 +10967,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="colSpan">4</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="263">
+                                            <property name="fontFamily">"VAG Rounded Std"</property>
                                             <property name="color">#000000</property>
                                             <property name="paddingLeft">8pt</property>
                                             <property name="paddingBottom">8pt</property>
@@ -10983,7 +10988,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <cell id="276"/>
                                     <cell id="203">
                                         <label id="169">
-                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="style">P</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
@@ -10997,7 +11002,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <cell id="204">
                                         <property name="color">#F0F0F0</property>
                                         <label id="188">
-                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="style">P</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
@@ -11009,7 +11014,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     </cell>
                                     <cell id="205">
                                         <label id="186">
-                                            <property name="fontFamily">"Tahoma"</property>
+                                            <property name="style">P</property>
                                             <property name="fontSize">12pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="fontStyle">italic</property>
@@ -11068,7 +11073,7 @@ reportContext.getGlobalVariable('debug')</expression>
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
                         <text-data name="percentage" id="215">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">10pt</property>
                             <property name="fontWeight">normal</property>
                             <property name="color">#34B573</property>
@@ -11743,7 +11748,7 @@ Math.min(row["progress_pct"],100)&#13;
                         <property name="paddingRight">8pt</property>
                         <property name="verticalAlign">middle</property>
                         <data id="106">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
@@ -11762,7 +11767,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="resultSetColumn">actual_value</property>
                         </data>
                         <data id="292">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
@@ -11813,7 +11818,7 @@ Math.min(row["progress_pct"],100)&#13;
                     <cell id="163">
                         <property name="verticalAlign">middle</property>
                         <data id="108">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
@@ -11829,7 +11834,7 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="resultSetColumn">target_value</property>
                         </data>
                         <data id="296">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">4pt</property>
@@ -11852,7 +11857,7 @@ Math.min(row["progress_pct"],100)&#13;
                     <cell id="30">
                         <property name="verticalAlign">middle</property>
                         <data id="322">
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
@@ -11877,8 +11882,7 @@ Math.min(row["progress_pct"],100)&#13;
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">8pt</property>
                         <text-data id="223">
-                            <property name="style">progress_high</property>
-                            <property name="fontFamily">"Tahoma"</property>
+                            <property name="style">P</property>
                             <property name="fontSize">12pt</property>
                             <property name="fontWeight">normal</property>
                             <property name="color">black</property>
