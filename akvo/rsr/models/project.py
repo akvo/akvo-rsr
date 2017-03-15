@@ -979,13 +979,13 @@ class Project(TimestampsMixin, models.Model):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
     def has_multiple_budget_currencies(self):
-        budget_items = BudgetItem.objects.filter(project__id=self.pk)
-        num_currencies = len(set([self.currency] + [c.currency if c.currency else self.currency for c in budget_items]))
-
-        if num_currencies > 1:
-            return True
-        else:
-            return False
+        # Using a python loop for iteration, because it's faster when
+        # budget_items have been pre-fetched
+        budget_items = self.budget_items.all()
+        num_currencies = len(
+            set([self.currency] + [c.currency for c in budget_items if c.currency])
+        )
+        return num_currencies > 1
 
     def budget_currency_totals(self):
         budget_items = BudgetItem.objects.filter(project__id=self.pk)

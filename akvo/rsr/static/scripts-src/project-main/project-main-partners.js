@@ -73,7 +73,7 @@ function renderPartnersTab() {
 
             if (logoUrl !== '') {
                 return (
-                    React.DOM.img( {src:'/media/' + logoUrl, style:logoStyle} )
+                    React.DOM.img( {src:logoUrl, style:logoStyle} )
                 );
             } else {
                 return (

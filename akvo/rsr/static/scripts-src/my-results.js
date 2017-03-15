@@ -13,7 +13,7 @@ var csrftoken,
     isPublic,
     months,
     projectIds,
-    user;
+    user = {};
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -318,41 +318,32 @@ function initReact() {
         },
 
         deleteFile: function(type) {
-            // Delete an indicator update and reload the period
-            // var update = this.findUpdate(updateId);
-            // var periodId = update.period;
-            // var url = endpoints.base_url + endpoints.update_and_comments.replace('{update}', updateId);
-
             var updateId = this.props.update.id;
             var url = endpoints.file_upload.replace('{update}', updateId);
-            // Reload the period
             var thisApp = this;
             var success = function(periodId) {
                 thisApp.props.reloadPeriod(periodId);
                 thisApp.setState({loading: false});
             };
             this.setState({loading: true});
-            apiCall('DELETE', url, JSON.stringify({type: type}), success.bind(null, this.props.update.period));
+            apiCall(
+                'DELETE', url,
+                JSON.stringify({type: type}),
+                success.bind(null, this.props.update.period)
+            );
         },
 
 
         removePhoto: function() {
-            // Remove the photo, but keep editing the indicator update.
             this.deleteFile('photo');
         },
 
         removeFile: function() {
-            // Remove the file, but keep editing the indicator update.
             this.deleteFile('file');
         },
 
         baseUpload: function(file, type) {
             // Base function for uploading a photo or file to the indicator update.
-            if (file) {
-
-            } else {
-
-            }
             var thisApp = this;
             var updateId = this.props.update.id;
             var url = endpoints.file_upload.replace('{update}', updateId);
