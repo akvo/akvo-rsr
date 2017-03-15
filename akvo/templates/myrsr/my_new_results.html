@@ -39,7 +39,8 @@
         {
             "host": "{{ request.META.HTTP_HOST }}",
             "projectId": {{ project.pk }},
-            "userID": {{ user.pk }}
+            "userID": {{ user.pk }},
+            "isMEManager": {{ user_is_me_manager }}
         }
     </script>
 
