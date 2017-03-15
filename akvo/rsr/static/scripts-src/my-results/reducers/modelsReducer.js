@@ -108,7 +108,7 @@ export default function modelsReducer(state=initialModels, action) {
                 ids: {$push: [object.id]}
             });
             // remove duplicate ids
-            merged.ids = set(merged.ids);
+            merged.ids = [...new Set(merged.ids)];
             state = {...state, [model]: merged};
             break;
         }

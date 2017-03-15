@@ -19,7 +19,7 @@ import {
     displayDate, _, currentUser, findChildren, createToggleKey, collapseId, createToggleKeys
 } from '../../utils.js';
 
-import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED } from '../../const.js';
+import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, UPDATE_FORMS } from '../../const.js';
 
 import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
@@ -75,7 +75,7 @@ class Update extends React.Component {
                     onClick={this.formToggle}
                     className={'btn btn-sm btn-default'}
                     label={_('edit_update')}/>
-                {this.props.ui[`updateForm-${this.props.update.id}`] ?
+                {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
                         update={this.props.update}
                         formToggle={this.formToggle}

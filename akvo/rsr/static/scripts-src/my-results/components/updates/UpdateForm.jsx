@@ -496,7 +496,6 @@ export class NewUpdateButton extends React.Component {
     newUpdate() {
         const id = `new-${newUpdateID}`;
         let { user, period } = this.props;
-        user = user.objects[user.ids[0]];
         const update = {
             id: id,
             period: period.id,

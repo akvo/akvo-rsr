@@ -9,13 +9,14 @@
 import React from 'react';
 import { connect } from "react-redux"
 
-import { fetchModel, fetchUser, testFetchModel } from "../actions/model-actions"
+import {
+    fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
+} from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
 import { activateToggleAll, updateFormOpen } from "../actions/ui-actions"
 
 import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_DRAFT, PARENT_FIELD } from "../const"
 import { openNodes } from "../utils"
-
 
 import Results from "./Results"
 import { ToggleButton } from "./common"
@@ -25,11 +26,14 @@ const dataFromElement = (elementName) => {
     return JSON.parse(document.getElementById(elementName).innerHTML);
 };
 
-const modifyUser = (data) => {
-    // maintain compatibility with existing updates JSON
-    data.approved_organisations = [data.organisation];
-    // transform to common JSON data shape so normalize works in modelsReducer
-    return {results: data};
+const modifyUser = (isMEManager) => {
+    return (data) => {
+        // maintain compatibility with existing updates JSON
+        data.approved_organisations = [data.organisation];
+        data.isMEManager = isMEManager;
+        // transform to common JSON data shape so normalize works in modelsReducer
+        return {results: data};
+    };
 };
 
 @connect((store) => {
@@ -45,6 +49,8 @@ export default class App extends React.Component {
         this.showDraft = this.showDraft.bind(this);
         this.showLocked = this.showLocked.bind(this);
         this.showUnlocked = this.showUnlocked.bind(this);
+        this.unlockSelected = this.unlockSelected.bind(this);
+        this.lockSelected = this.lockSelected.bind(this);
     }
 
     fetchUser(userId) {
@@ -61,7 +67,8 @@ export default class App extends React.Component {
         this.props.dispatch(setPageData({project, settings, strings}));
 
         const userId = dataFromElement('endpoint-data').userID;
-        fetchModel('user', userId, activateToggleAll, modifyUser);
+        const isMEManager = dataFromElement('endpoint-data').isMEManager;
+        fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
 
         const projectId = project.project_id;
         fetchModel('results', projectId, activateToggleAll);
@@ -90,17 +97,29 @@ export default class App extends React.Component {
         openNodes(OBJECTS_PERIODS, locked, true);
     }
 
+    unlockSelected() {
+        unlockSelectedPeriods();
+    }
+
     showUnlocked() {
         const periods = this.props.models[OBJECTS_PERIODS];
         const locked = periods.ids.filter((id) => !periods.objects[id].locked);
         openNodes(OBJECTS_PERIODS, locked, true);
     }
 
+    lockSelected() {
+            lockSelectedPeriods();
+    }
+
     render() {
         const style = {float: 'right'};
         return (
             <div>
+                <ToggleButton onClick={this.lockSelected} label="Lock selected" style={style}
+                              disabled={!this.props.ui.allFetched}/>
                 <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style}
+                              disabled={!this.props.ui.allFetched}/>
+                <ToggleButton onClick={this.unlockSelected} label="Unlock selected" style={style}
                               disabled={!this.props.ui.allFetched}/>
                 <ToggleButton onClick={this.showLocked} label="Show locked" style={style}
                               disabled={!this.props.ui.allFetched}/>

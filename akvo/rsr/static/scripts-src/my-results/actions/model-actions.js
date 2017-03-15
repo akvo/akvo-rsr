@@ -12,7 +12,7 @@ import {
     UPDATE_MODEL_DELETE_FULFILLED, UPDATE_MODEL_START, UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED
 } from "../reducers/modelsReducer"
 import { getCookie, endpoints } from "../utils"
-import { API_LIMIT } from "../const"
+import { API_LIMIT, SELECTED_PERIODS, OBJECTS_PERIODS } from "../const"
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -21,16 +21,26 @@ const range = (start, end) => (
 );
 
 
-function wrappedFetch(url) {
+function wrappedFetch(url, method='GET', data) {
     // Wrap fetch with standard options and return parsed JSON
     const options = {
         credentials: 'same-origin',
-        method: 'GET',
+        method: method,
         headers: {'Content-Type': 'application/json'},
     };
+    if (method != 'GET' && method != 'DELETE') {
+        options.headers['X-CSRFToken'] = getCookie('csrftoken');
+        options.body = JSON.stringify(data)
+    }
     const req = new Request(url, options);
     return fetch(req)
-        .then((response) => response.json())
+        .then((response) => {
+            if (response.status != 204) {
+                return response.json();
+            } else {
+                return response;
+            }
+        });
 }
 
 
@@ -46,8 +56,9 @@ function fetchFromAPI(baseUrl) {
                 // calculate how many pages we need to get and consturct URLs
                 const pageNumbers = range(2, Math.ceil(data.count / API_LIMIT));
                 const urls = pageNumbers.map((n) => `${baseUrl}&page=${n}`);
-                // return promises for all requests
-                return Promise.all(urls.map(wrappedFetch));
+                // NOTE: we need to bind url to wrappedFetch or the array index will leak as a
+                // second param into the call. Nasty!
+                return Promise.all(urls.map((url) => {return wrappedFetch.bind(null, url)()}));
             }
         })
         .then((pages) => {
@@ -174,7 +185,7 @@ const setupAttachmentRequests = (url, data) => {
 };
 
 const assignAttachmentURLs = (responses, update, newUpdate) => {
-    // Set or delete the relevant attachment field on  the update
+    // Set or delete the relevant attachment field on the update
     if (responses && responses.length == 2) {
         if (update._file == 'delete') {
             newUpdate.file_url = newUpdate.file = '';
@@ -287,6 +298,62 @@ export function deleteUpdateFromBackend(url, data, collapseId, callback) {
                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
             })
     });
+}
+
+
+function patchMultiple(model, params) {
+    /*
+        Perform a series of PATCHes, used for bulk updating of e.g. Period.locked field
+        params should be an array of objects, each object having the following members:
+            url: the URL to use for this PATCH request
+            data: object that will be the request's body
+     */
+    return store.dispatch((dispatch) => {
+
+        // Bind the params to wrappedFetch calls
+        const fetches = params.map(
+            (param) => {return wrappedFetch.bind(null, param.url, 'PATCH', param.data)()}
+        );
+        // Execute all fetches
+        Promise.all(fetches)
+            .then((responses) => {
+                // Update each object with backend data
+                responses.map((object) => {
+                    dispatch({
+                        type: UPDATE_MODEL_FULFILLED,
+                        payload: {model, object}
+                    })
+                })
+            })
+            // TODO: better error handling
+            .catch((error) => {
+                dispatch({
+                    type: FETCH_MODEL_REJECTED,
+                    payload: {model: model, error: error}
+                })
+            })
+
+    })
+}
+
+
+function periodLockingParams(locked) {
+    const selectedPeriods = store.getState().ui[SELECTED_PERIODS];
+    const data = selectedPeriods.map((id) => {
+        return {url: endpoints.period(id), data: {locked: locked}}
+    });
+    patchMultiple(OBJECTS_PERIODS, data);
+
+}
+
+
+export function lockSelectedPeriods() {
+    periodLockingParams(true)
+}
+
+
+export function unlockSelectedPeriods() {
+    periodLockingParams(false)
 }
 
 
