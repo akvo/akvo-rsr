@@ -24,6 +24,11 @@ const CommentHeader = ({comment}) => {
     )
 };
 
+CommentHeader.propTypes = {
+    comment: PropTypes.object.isRequired,
+};
+
+
 @connect((store) => {
     return {
         comments: store.models['comments'],
@@ -31,6 +36,11 @@ const CommentHeader = ({comment}) => {
     }
 })
 export default class Comments extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
+
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
@@ -78,9 +88,3 @@ export default class Comments extends React.Component {
         }
     }
 }
-
-// Comments.propTypes = {
-//     items: PropTypes.array
-// };
-
-// export default level(CommentHeader, Comment);

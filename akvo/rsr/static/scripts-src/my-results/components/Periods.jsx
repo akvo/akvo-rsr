@@ -11,15 +11,19 @@ import update  from 'immutability-helper';
 
 import { onChange } from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
+import { periodSelectToggle } from "../actions/ui-actions"
 
 import {
     displayDate, APICall, endpoints, findChildren, createToggleKey, collapseId, createToggleKeys
 } from "../utils.js";
-import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_APPROVED } from '../const.js';
+import {
+    OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, SELECTED_PERIODS
+} from '../const.js';
 
 import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
 import { ToggleButton } from "./common"
+
 
 class PeriodLockToggle extends React.Component {
     constructor (props) {
@@ -53,7 +57,7 @@ class PeriodLockToggle extends React.Component {
         let icon, label;
         if (this.state.locking) {
             icon = <i className="fa fa-spin fa-spinner" />;
-            label = "Loading";
+            label = "Updating lock status";
         } else if (this.props.period.locked) {
             icon = <i className={'fa fa-lock'}/>;
             label = "Unlock period";
@@ -62,11 +66,10 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <ToggleButton
-                onClick={this.lockToggle}
-                style={{float: 'right'}}
-                label={label}
-                icon={icon}/>
+            <ToggleButton onClick={this.lockToggle}
+                          style={{float: 'right'}}
+                          label={label}
+                          icon={icon}/>
         )
     }
 }
@@ -76,6 +79,13 @@ PeriodLockToggle.propTypes = {
     callbacks: PropTypes.object
 };
 
+const PeriodLockStatus = ({lockStatus}) => {
+    return <div style={{float: 'right'}}>{lockStatus}</div>
+};
+
+const PeriodSelect = ({id, toggleCheckbox}) => {
+    return <input id={id} type="checkbox" style={{float: 'right'}} onClick={toggleCheckbox}/>
+};
 
 const periodActualValue = (period) => {
     return period.updates && period.updates.length > 0 ?
@@ -84,10 +94,16 @@ const periodActualValue = (period) => {
         "";
 };
 
-const PeriodHeader = ({period, actualValue}) => {
+const PeriodHeader = ({period, user, actualValue, toggleCheckbox}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
+    let lockStatus;
+    if (user.isMEManager) {
+        lockStatus = <PeriodLockToggle period={period} />
+    } else {
+        lockStatus = <PeriodLockStatus lockStatus={period.locked ? 'Locked' : 'Unlocked'}/>
+    }
     return (
         <span>
             <span>
@@ -95,13 +111,15 @@ const PeriodHeader = ({period, actualValue}) => {
                 Target value: {period.target_value} |
                 Actual value: {actualValue}
             </span>
-            <PeriodLockToggle period={period} />
+            <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}/>
+            {lockStatus}
         </span>
     )
 };
 
 PeriodHeader.propTypes = {
-    item: PropTypes.object,
+    period: PropTypes.object.isRequired,
+    actualValue: PropTypes.number,
 };
 
 
@@ -111,21 +129,27 @@ const objectsArrayToLookup = (arr, index) => {
         {})
 };
 
+
 @connect((store) => {
     return {
         periods: store.models['periods'],
         keys: store.keys,
-        user: store.models['user'],
+        user: store.models.user.objects[store.models.user.ids[0]],
         ui: store.ui
     }
 })
 export default class Periods extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
 
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.openNewForm = this.openNewForm.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.toggleCheckbox = this.toggleCheckbox.bind(this);
         // concatenate this model's name with parent's ID
         this.state = {collapseId: collapseId(OBJECTS_PERIODS, this.props.parentId)};
     }
@@ -154,6 +178,12 @@ export default class Periods extends React.Component {
         })
     }
 
+    toggleCheckbox(e) {
+        e.stopPropagation();
+        const periodId = e.target.id;
+        periodSelectToggle(periodId);
+    }
+
     renderPanels(periods) {
         const callbacks = {openNewForm: this.openNewForm};
         return (periods.map(
@@ -161,25 +191,31 @@ export default class Periods extends React.Component {
                 const { ids, updates } = findChildren(period.id, 'updates', 'period');
                 // Calculate actual value for the period
                 const lookupUpdates = objectsArrayToLookup(updates, 'id');
+                const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(period.id);
                 const actualValue = ids && ids.filter(
                     (id) => lookupUpdates[id].status == UPDATE_STATUS_APPROVED
                 ).reduce(
                     // Actual value is calculated by adding all approved updates with numerical data
                     (sum, id) => {
                         const data = parseInt(lookupUpdates[id].data);
-                        if (data !== NaN) {
+                        // If data is NaN then data !== data returns true!
+                        if (!(data !== data)) {
                             return sum + data;
                         }
                         return sum;
                     }, 0
                 );
                 return (
-                    <Panel
-                        header={<PeriodHeader period={period} actualValue={actualValue}/>}
-                        key={period.id}>
+                    <Panel header={<PeriodHeader period={period}
+                                              user={this.props.user}
+                                              toggleCheckbox={this.toggleCheckbox}
+                                              actualValue={actualValue}
+                                              isChecked={isChecked}/>}
+                           key={period.id}>
                         <Updates parentId={period.id}/>
-                        <NewUpdateButton
-                            period={period} user={this.props.user} dispatch={this.props.dispatch}/>
+                        <NewUpdateButton period={period}
+                                         user={this.props.user}
+                                         dispatch={this.props.dispatch}/>
                     </Panel>
                 )
             }
@@ -197,7 +233,8 @@ export default class Periods extends React.Component {
             return (
                 <div className={OBJECTS_PERIODS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll} label="++"
+                    <ToggleButton onClick={this.toggleAll}
+                                  label="++"
                                   disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periods)}
@@ -211,8 +248,3 @@ export default class Periods extends React.Component {
         }
     }
 }
-
-Periods.propTypes = {
-    items: PropTypes.array,
-    callbacks: PropTypes.object,
-};

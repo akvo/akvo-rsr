@@ -22,7 +22,7 @@ export const
     OBJECTS_PERIODS = 'periods',
     OBJECTS_UPDATES = 'updates',
     OBJECTS_COMMENTS = 'comments',
-    OBJECTS_USERS = 'users',
+    OBJECTS_USER = 'user',
 
     // List of the models used in the accordion, in hierarchy order
     MODELS_LIST = [
@@ -36,6 +36,10 @@ export const
         [OBJECTS_PERIODS]: 'indicator',
         [OBJECTS_UPDATES]: 'period',
         [OBJECTS_COMMENTS]: 'data'
-    }
+    },
+
+    // UI state
+    SELECTED_PERIODS = 'selectedPeriods',
+    UPDATE_FORMS = 'updateForms'
 ;
 
