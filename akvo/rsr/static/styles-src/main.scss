@@ -4896,3 +4896,11 @@ div.iatiFilters {
 .fa-paperclip, .fa-camera {
     margin-right: 0.3em;
 }
+
+// Registration honeypot field
+
+#id_title {
+    display: none;
+    position: absolute;
+    top: -9999px;
+}
