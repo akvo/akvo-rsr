@@ -19,7 +19,7 @@ class IndicatorPeriodViewSet(PublicProjectViewSet):
     project_relation = 'indicator__result__project__'
 
 
-class   IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
+class IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
     """
     """
     queryset = IndicatorPeriod.objects.all()
