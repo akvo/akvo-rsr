@@ -39,6 +39,9 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(data=request.POST, files=request.FILES)
         if form.is_valid():
+            #  Honeypot field filled in? If so don't register and redirect to home page
+            if request.POST.get('hp_title'):
+                return redirect('index')
             user = form.save(request)
             return render_to_response('registration/register_complete.html',
                                       {'new_user': user},

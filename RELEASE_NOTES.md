@@ -1,3 +1,8 @@
+## In development
+
+[#2454](https://github.com/akvo/akvo-rsr/issues/2454) Add hidden field to registration form as
+honeypot for bots
+
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
 ## Bug fixes

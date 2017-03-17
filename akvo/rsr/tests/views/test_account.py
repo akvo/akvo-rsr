@@ -14,6 +14,7 @@ import json
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
+from urlparse import urlparse
 
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
@@ -28,6 +29,9 @@ class AccountTestCase(TestCase):
         self.user_group = Group.objects.get(name='Users')
         self.username = 'user@example.com'
         self.password = 'password'
+        self.title = 'Admiral'
+        self.first_name = 'John'
+        self.last_name = 'Doe'
         self.org1 = Organisation.objects.create(name='akvo', long_name='akvo foundation')
         self.org2 = Organisation.objects.create(name='icco', long_name='icco foundation')
         for org in (self.org1, self.org2):
@@ -126,6 +130,40 @@ class AccountTestCase(TestCase):
             set(Project.objects.filter(publishingstatus__status='published').values_list('id', flat=True)),
             set(edit_projects)
         )
+
+    def test_registration_without_honeypot_filled_in(self):
+        # Given
+        data = dict(
+            first_name=self.first_name,
+            last_name=self.last_name,
+            email=self.username,
+            password1=self.password,
+            password2=self.password,
+        )
+
+        # When
+        response = self.c.post('/en/register/', data=data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+
+    def test_registration_with_honeypot_filled_in(self):
+        # Given
+        data = dict(
+            hp_title=self.title,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            email=self.username,
+            password1=self.password,
+            password2=self.password,
+        )
+
+        # When
+        response = self.c.post('/en/register/', data=data)
+
+        # Then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response._headers['location'][1]).path, '/en/')
 
     def _create_user(self, email, password, is_active=True, is_admin=False):
         """Create a user with the given email and password."""

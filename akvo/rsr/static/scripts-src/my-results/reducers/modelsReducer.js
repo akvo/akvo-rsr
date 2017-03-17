@@ -58,7 +58,7 @@ export default function modelsReducer(state=initialModels, action) {
             const model = action.payload.model;
             state = {
                 ...state,
-                [model]: {fetched: false, changing: true, changed: false, objects: null, ids: null}
+                [model]: {fetched: false, changing: true, changed: false, objects: {}, ids: null}
             };
             break;
         }
@@ -70,7 +70,7 @@ export default function modelsReducer(state=initialModels, action) {
                 fetched: true,
                 changing: false,
                 changed: true,
-                objects: normalized.entities.items,
+                objects: normalized.entities.items || {},
                 ids: normalized.result
             }};
             break;
@@ -108,7 +108,7 @@ export default function modelsReducer(state=initialModels, action) {
                 ids: {$push: [object.id]}
             });
             // remove duplicate ids
-            merged.ids = set(merged.ids);
+            merged.ids = [...new Set(merged.ids)];
             state = {...state, [model]: merged};
             break;
         }
