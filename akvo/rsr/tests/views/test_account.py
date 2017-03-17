@@ -150,7 +150,7 @@ class AccountTestCase(TestCase):
     def test_registration_with_honeypot_filled_in(self):
         # Given
         data = dict(
-            title=self.title,
+            hp_title=self.title,
             first_name=self.first_name,
             last_name=self.last_name,
             email=self.username,

@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 {% bootstrap_form_errors form type='non_fields' %}
                 {# Experimental honeypot field for registration bots #}
-                <input maxlength="30" name="title" id="id_title" type="text"/>
+                <input maxlength="30" name="hp_title" id="id_hp_title" type="text"/>
                 {% for field in form %}
                     {% bootstrap_field field %}
                 {% endfor %}
