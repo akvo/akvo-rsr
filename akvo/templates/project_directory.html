@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load addparam bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -78,6 +78,11 @@
       {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
           Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
       {% endblocktrans %}
+          | View
+          <a class="btn pageSize" href="{% addparam 'limit' '20' %}">20</a>
+          <a class="btn pageSize" href="{% addparam 'limit' '100' %}">100</a>
+          <a class="btn pageSize" href="{% addparam 'limit' '200' %}">200</a>
+          projects
       </p>
     </div>
       {% include 'navigation/pagination-sort.html' %}
