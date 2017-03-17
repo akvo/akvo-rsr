@@ -1,7 +1,13 @@
-## In development
+# In development
+
+## General improvements
 
 [#2454](https://github.com/akvo/akvo-rsr/issues/2454) Add hidden field to registration form as
 honeypot for bots
+
+## Bug fixes
+
+[#2573](https://github.com/akvo/akvo-rsr/issues/2573) Fix typeahead organisations in Pages
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
