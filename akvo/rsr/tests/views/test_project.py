@@ -41,8 +41,8 @@ class ProjectViewsTestCase(TestCase):
         # Given
         url = '/en/projects/'
         page_limit_1 = 'href="?limit=20"'
-        page_limit_2 = 'href="?limit=100"'
-        page_limit_3 = 'href="?limit=200"'
+        page_limit_2 = 'href="?limit=50"'
+        page_limit_3 = 'href="?limit=100"'
 
         # When
         response = self.c.get(url, follow=True)
@@ -58,8 +58,8 @@ class ProjectViewsTestCase(TestCase):
         url = '/en/projects/'
         data = {'organisation': org.id}
         page_limit_1 = 'href="?limit=20&amp;organisation={}"'.format(org.id)
-        page_limit_2 = 'href="?limit=100&amp;organisation={}"'.format(org.id)
-        page_limit_3 = 'href="?limit=200&amp;organisation={}"'.format(org.id)
+        page_limit_2 = 'href="?limit=50&amp;organisation={}"'.format(org.id)
+        page_limit_3 = 'href="?limit=100&amp;organisation={}"'.format(org.id)
 
         # When
         response = self.c.get(url, data=data, follow=True)
@@ -74,8 +74,8 @@ class ProjectViewsTestCase(TestCase):
         url = '/en/projects/'
         data = {'limit': 10}
         page_limit_1 = 'href="?limit=20"'
-        page_limit_2 = 'href="?limit=100"'
-        page_limit_3 = 'href="?limit=200"'
+        page_limit_2 = 'href="?limit=50"'
+        page_limit_3 = 'href="?limit=100"'
 
         # When
         response = self.c.get(url, data=data, follow=True)
