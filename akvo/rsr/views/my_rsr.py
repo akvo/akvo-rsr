@@ -36,11 +36,11 @@ import json
 @login_required
 def my_rsr(request):
     """
-    Redirect to the 'My Details' page in MyRSR, if the user is logged in.
+    Redirect to the 'My Projects' page in MyRSR, if the user is logged in.
 
     :param request; A Django request.
     """
-    return HttpResponseRedirect(reverse('my_details', args=[]))
+    return HttpResponseRedirect(reverse('my_projects', args=[]))
 
 
 @login_required
