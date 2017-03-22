@@ -115,6 +115,7 @@ def directory(request):
         'recipient_countries',
         'sectors',
         'budget_items',
+        'partnerships__organisation',
     ).select_related(
         'primary_organisation',
         'last_update'
