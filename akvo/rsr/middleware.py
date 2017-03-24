@@ -56,6 +56,8 @@ class HostDispatchMiddleware(object):
     def process_request(self, request):
         """Route on request."""
         request.rsr_page = None
+        DEFAULT_REDIRECT_URL = "{}://{}".format(request.scheme, settings.RSR_DOMAIN)
+
         try:
             # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
             # Do nothing if called on "normal" RSR host.
@@ -64,21 +66,21 @@ class HostDispatchMiddleware(object):
                 return None
         except DisallowedHost:
             request.META['HTTP_HOST'] = settings.RSR_DOMAIN
-            return redirect("http://{}".format(settings.RSR_DOMAIN))
+            return redirect(DEFAULT_REDIRECT_URL)
 
         # Check if called on naked app domain - if so redirect
         if _is_naked_app_host(host):
-            return redirect("http://{}".format(settings.RSR_DOMAIN))
+            return redirect(DEFAULT_REDIRECT_URL)
 
         # Check if site exists
         try:
             site = _partner_site(host)
         except PartnerSite.DoesNotExist:
-            return redirect("http://{}".format(settings.RSR_DOMAIN))
+            return redirect(DEFAULT_REDIRECT_URL)
 
         # Check if site is enabled
         if not site.enabled:
-            return redirect("http://{}".format(settings.RSR_DOMAIN))
+            return redirect(DEFAULT_REDIRECT_URL)
 
         # Set site to request object
         request.rsr_page = site
