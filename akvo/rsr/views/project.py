@@ -66,7 +66,9 @@ def directory(request):
 
     # Set show_filters to "in" if any filter is selected
     show_filters = "in"  # To simplify template use bootstrap class
-    available_filters = ['location', 'status', 'iati_status', 'organisation', 'sector', 'sort_by']
+    available_filters = [
+        'location', 'status', 'iati_status', 'organisation', 'sector', 'keyword', 'sort_by'
+    ]
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 

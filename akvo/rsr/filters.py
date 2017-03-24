@@ -13,11 +13,16 @@ from copy import deepcopy
 from django.utils.translation import ugettext_lazy as _
 from akvo.codelists.store.codelists_v201 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
-from .models import (Category, Organisation, OrganisationLocation, Project,
-                     ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
+from .models import (Category, Keyword, Organisation, OrganisationLocation,
+                     Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
 from .m49 import M49_CODES, M49_HIERARCHY
 
 ANY_CHOICE = (('', _('All')), )
+
+
+def keywords():
+    keywords = list(Keyword.objects.values_list('id', 'label'))
+    return [('', _('All'))] + keywords
 
 
 def sectors():
@@ -133,6 +138,12 @@ class ProjectFilter(django_filters.FilterSet):
                                                          flat=False))),
         label=_(u'category'),
         name='categories__id')
+
+    keyword = django_filters.ChoiceFilter(
+        initial=_('All'),
+        choices=keywords(),
+        label=_(u'keyword'),
+        name='keywords')
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
