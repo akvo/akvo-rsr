@@ -52,7 +52,7 @@ def create_missing_countries(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0093_auto_20170216_1409'),
+        ('rsr', '0095_auto_20170309_0901'),
     ]
 
     operations = [
