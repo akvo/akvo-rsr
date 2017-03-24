@@ -273,22 +273,7 @@
 
     {# More partners data #}
     {% for project in page %}
-    <script type="application/json" id="more-partners-{{project.id}}">
-    [
-    {% for partnership in project.partnerships.distinct %}
-        {% if partnership.organisation.id %}
-        {
-            "organisation": {
-                "id": {{partnership.organisation.id}},
-                "long_name": "{{partnership.organisation.long_name | escapejs}}"
-            },
-            "iati_organisation_role_label": "{{partnership.iati_organisation_role_label | escapejs}}"
-        }
-        {% if not forloop.last %},{% endif %}
-        {% endif %}
-    {% endfor %}
-    ]
-    </script>
+        {% include 'project_partner_data.html' %}
     {% endfor %}
 
   {% javascript 'project_directory' %}
