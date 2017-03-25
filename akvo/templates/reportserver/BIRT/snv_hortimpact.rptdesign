@@ -1699,7 +1699,8 @@ order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorpe
             </list-property>
             <xml-property name="queryText"><![CDATA[select rsr_projectupdate.*
 from rsr_projectupdate
-where rsr_projectupdate.id IN (14606, 14813, 15970, 16247)]]></xml-property>
+where rsr_projectupdate.id IN (14606, 14813, 15970, 16247)
+ORDER BY rsr_projectupdate.created_at DESC]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -9489,7 +9490,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="rightMargin">3.880555555555556mm</property>
             <page-footer>
                 <text id="1945">
-                    <property name="fontFamily">"VAG Rounded Std"</property>
+                    <property name="style">P</property>
                     <property name="fontWeight">bold</property>
                     <property name="color">#00A54F</property>
                     <property name="textAlign">right</property>
@@ -9516,6 +9517,7 @@ pageNumber
         </image>
         <grid id="1862">
             <property name="marginTop">4pt</property>
+            <property name="masterPage">Cover</property>
             <property name="width">184.5027777777778mm</property>
             <column id="1863">
                 <property name="width">147.8138888888889mm</property>
@@ -9529,13 +9531,16 @@ pageNumber
                         <property name="marginLeft">12pt</property>
                         <property name="paddingRight">8pt</property>
                         <property name="masterPage">Cover</property>
+                        <property name="pageBreakBefore">avoid</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<p>HortIMPACT combines private sector expertise with social impact solutions to build sustainable, inclusive domestic and export horticulture markets in Kenya.</p>
+                        <text-property name="content"><![CDATA[<p>(KMHP - EKN Activity No. 27179)</br>
+<p>1st January 2016 – 31st December 2016</p>
+<p>Nairobi, 19th May 2016</br>
+SNV Kenya/Netherlands Development Organisation</br>
+P.O. Box 30776 – 00100</br>
+Nairobi, Kenya</br>
 
-</br>
-<B style="colour: #00A54F">Our focus</B></br><p>
-Poor food safety, high food losses and the exclusion of small &amp; medium size farmers from value chains are limiting the economic growth and social bene ts of fruit and vegetable markets in Kenya. HortIMPACT is working across horticulture value chains to change this.
-Together with entreprenurial small &amp; medium size farmers, and Kenyan and Dutch Agri-businesses, HortIMPACT promotes innovative solutions.</p>]]></text-property>
+]]></text-property>
                     </text>
                 </cell>
                 <cell id="1867">
@@ -9851,31 +9856,7 @@ markdown_html(row["value"])</expression>
                 </cell>
             </row>
             <row id="1737">
-                <cell id="1738">
-                    <label name="basic_label11" id="1747">
-                        <property name="style">H1</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="color">#00A54F</property>
-                        <property name="marginTop">8pt</property>
-                        <property name="paddingTop">1px</property>
-                        <property name="paddingLeft">1px</property>
-                        <property name="paddingBottom">1px</property>
-                        <property name="paddingRight">1px</property>
-                        <property name="textAlign">center</property>
-                        <property name="display">block</property>
-                        <property name="pageBreakAfter">avoid</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <structure name="toc">
-                            <expression name="expressionValue" type="javascript">"Basic information"</expression>
-                        </structure>
-                        <text-property name="text">Main focus and used approach</text-property>
-                    </label>
-                    <text-data id="1748">
-                        <property name="style">P</property>
-                        <expression name="valueExpr">markdown_html(row["goals_overview"])</expression>
-                        <property name="contentType">html</property>
-                    </text-data>
-                </cell>
+                <cell id="1738"/>
             </row>
             <row id="1745">
                 <cell id="1746">
@@ -9923,163 +9904,7 @@ markdown_html(row["value"])</expression>
                     <text id="1951">
                         <property name="style">P</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<STRONG>Overview of key activities for Objective 1 &amp; 2</STRONG></br>
-</br>
-The Kenya Market-led Horticulture Programme (HortIMPACT), 2015-2019, contributes to increased food security, increased incomes and a dynamic and sustainable horticulture sector in Kenya. Three themes, crucial for further development of the horticulture sector, are being addressed by the programme:</br></br>
- 
-1) Inclusion of small and medium sized, entrepreneurial (SME) farmers in supply chains; </br>
-2) Improving food safety and integrated crop protection and </br>
-3) Reducing food losses and improving efficiency in supply chains.</br></br>
-
-HortIMPACT complies with and supports the objectives of the Multi Annual Strategic Plan of the Embassy of the Kingdom of the Netherlands in Kenya (MASP 2014-2017), in particular the food security and aid to trade agenda.</br></br>
-
-<STRONG>Objective 1: Entrepreneurial capacities and performance of SME farmers and companies improved for increased market access to domestic and international markets</STRONG></br>
-Under Objective 1 HortIMPACT solicits, develops and implements Business Cases with Dutch &amp; Kenyan companies that address one or more of the above themes and also co-finances projects under the Innovation Fund. All Business Cases undergo a baseline (using AKVO FLOW smartphone questionnaires) and endline/impact assessment.
-There are 7 approved Business Cases and 5 projects under the Innovation Fund as per the end of 2016. This is ahead of schedule as the original plan was for 3 new invested BCs as per the end of 2016.</br></br>
-
-<STRONG>i.	Business Case 1</STRONG></br>
-Business Case 1: “Promoting innovative technologies in Horticulture “</br>
-Number of SME farmers reached: </br>
-4309 (male: 2810, female: 1499)</br>
-Partners: Rijkzwaan/KHS, SoilCares, Koppert, Bayer, Syngenta, Omnivent</br>
-KMHP contribution 2016: 110,000 EURO</br></br>
-
-This Business Case was highly successful for farmers &amp; partners. Its immediate lessons learned and momentum amongst the partner companies and farmers, has led to ongoing discussions to design a follow up Business Case, now approved as BC 7 “Improving food safety for indigenous vegetables through better technology”.
-Furthermore, KMHP will finalize its upscaling strategy in Q1 2017 and the knowledge package from BC1 will be one of the first applications of this strategy. </br></br>
-Impact:</br> 
-•	Farmers that attended the training were very appreciative of the trainings. 92% of them said they were willing to pay for those trainings. The opinions that farmers expressed during the farmer field days were nearly all positive. When 778 of the farmers that attended the farmer field days were asked to rate the quality of the field day based on the relevance of the training content, 661 of answered “good”. Words and phrases that appeared many times when asked about their general opinion on the farmer field days included “A very good day”, “educative”, and “impressive”. 60% of these farmers said they had never attended a similar event where technologies were demonstrated. This means that BC1 succeeded in exposing a significant number new farmers to products and services of the participating companies.</br>
-•	Partner companies also reacted positive when asked about their opinion about BC1. All companies indicated that they benefitted from BC1 through increased awareness for products and services. In addition, most of these companies indicated that they were able to reach new farmers and that they built networks with complimentary companies, organisations and government institutions. Those companies that were able to see the BC1 impact on their sales (9 out of 12 companies) saw an increase in sales ranging from 5% to 20%. </br>  
-•	For HortIMPACT, BC1 contributed significantly to achieving the program’s objectives. Nearly 4,300 farmers were reached. Many of these farmers were never exposed to farming technologies in a similar way, as 60.4% of the farmers that joined the farmer field days never attended a similar event before. Furthermore, a business case concept that directly benefits small and medium sized commercial farmers as well as Kenyan and Dutch companies was developed. That way, BC1 contributes to horticulture sector development and through increased availability of vegetables also to food &amp; nutrition security.</br></br>
- 
-There were 5 further Business Cases in implementation as per end 2016:</br>
-Business Case 2:  “Improving Ware Potato Supply to Processors by SME Farmer Groups”</br>
-Estimated number of SME farmers: </br>
-1300</br>
-Partners: GAEA Foods, Farmer Groups, Dutch potato seed companies, LCBs</br>
-KMHP contribution 2016: 31,000 EURO</br></br>
-
-<STRONG>LINKING SMALL HOLDER ENTREPRENEURAL FARMERS TO PROCESSORS.</STRONG></br>
-As demand for processed potatoes in Kenya’s urban centers rises, partnering with small and medium scale entrepreneurial (SME) farmers offers farmers an opportunity to plug into profitable value chains as agribusiness companies grow their businesses. </br>
-Through the GAEA business case, the processor needs and quality requirements with regard to ware potatoes have been established and GAEA is working with potato producers in five counties (Laikipia, Meru, Bomet, Narok and Nyandarua), together with  other stakeholders to deliver quality potatoes to the factory.</br>
-Following the signing of the agreement in August 2016, a field production plan based on the processing requirements was developed, field extension officers were hired and deployed to the various production zones 
-A team of trainers attached to the business case, have since October 2016 been training selected potato producers in Laikipia, Meru and Bomet counties respectively, based on a standardized potato production curriculum developed by the Horticultural Practical Training Centre at Thika. </br>                                                                                                           The training of potato farmers takes a practical approach, with farmers being trained from nine demonstration sites in each zone. </br>
-As at December 2016, 886 farmers have been trained in three counties, with Narok and Nyandarua counties to follow suite in season 2, in March 2017. This is against a targeted total of 1300 farmers to be trained in the five counties. </br>
-Harvesting of produce from season 1 in Laikipia, Meru and Bomet will begin in the second week of February 2017.                                                                                                                         With the procurement and installation of processing equipment from Marcelissen (Netherlands) in October 2016, GAEA’s production capacity increased from 3.5 Tons per day to 8 Tons per day. This reinforced the need to increase the supply volumes and improve the quality of ware potatoes produced and supplied to the factory.</br>
-The programme administered a baseline survey of the contracted potato producers using the Akvo tool, to establish the prevailing situation in potato production and marketing. An endline survey is planned to be carried out at the end of the business case.</br>
-The contracting of farmers by GAEA in the first season of the business case was however hampered by seed potato unavailability. As at December 2016, KES 1,195,500 (Euro 11,039.80) had been disbursed to GAEA Foods Limited to support the business case.</br></br>
-
-<STRONG>Business Case 3:  “Improvement of food safety through adoption of IPM and training of professional spray service providers (SSP)”</STRONG></br>
-Estimated number of SME farmers: 7200</br>
-Partners: CropLife, Agrochemical Association of Kenya (AAK), IPM companies, LCBs</br>
-KMHP contributions 2016: 36,000 EURO</br></br>
-
-While agro-chemicals can boost production, misuse of pesticides pose the biggest threat towards improving food safety. HortIMPACT has identified Integrated Pest Management (IPM) as one of the key approaches to achieve food safety in fruits and vegetables. In partnership with CropLife Kenya (AAK – Agrochemical Association of Kenya), Pest Control Products Board, IPM and ISFM consultants, KMHP prepared an inclusive IPM curriculum to train potential entrepreneurs who want to start businesses as IPM experts/Spray Service Providers (SSPs). This is set to be achieved through Business Case 3 titled “Improvement of food safety through adoption of IPM and professional spray service providers.” </br>
-Following the approval of the Business Case in mid-2016, recruitment and training of SSP ‘agripreneurs’ (TOTs) started in earnest.  At the end of 2016, 75 SSP entrepreneurs (TOTs) had been trained using the expanded SSP-IPM curriculum in Makueni, Kajiado, Nyeri and Nyandarua counties.  The trainees started providing service to farmers immediately after training and by December 2016 they had reached out to an estimated 2,100 farmers  with their services. The exact number of farmers and feedback from farmers about the SSP service will be established during monitoring and follow-up field visits planned for March/April 2017. </br>
-The SSP program and trainees received acceptance/certificates from the respective county governments of Makueni and Nyeri. In Makueni the county government is supporting the SSPs with access to motorized spray pumps and using the SSPs as agents for marketing and distribution of subsidized fruit fly traps to mango farmers. 
-This Business Case has been designed to reach approximately 7,200 farmers through 480 trained SSPs in six counties over 18 months.</br></br>
-
-<STRONG>Business Case 4:  “Promoting the use of conservation agriculture for canola production through SME outgrower scheme"</STRONG></br>
-Estimated number of SME farmers: 500</br>
-Partners: Unilever, Agventure, LCBs</br>
-KMHP contribution 2016: 35,000 EURO</br></br>
-
-
-This BC is being financed by the three parties Agventure, Unilever and SNV/KMHP in equal parts.
-Agventure has started this project in October 2016 and hired a full-time project manager and (as per end 2016) three additional agronomists in the field. This team is equipped to approach interested farmers with information and skills required to help farmers improve their crop yields through crop rotation. The ultimate goal of this BC is to help farmers improve sustainability of agricultural activities, land productivity, farmer’s income while minimizing agricultural risks.</br>
-The team has updated their curriculum and has reached out to 170 farmers in the first three months, focussing on high-potential canola areas like: </br>
-•	Narok-----------Mau, Olchoro, 
-•	Nakuru - -- -----Rongai, Njoro, Molo, Bahati
-•	Eldoret --------Moiben
-
-</br>There has also been initial engagements with related partners (seed suppliers, agrochemical suppliers, contractors, and other relevant parties) and harvesting contractors.</br>
-
-</br><STRONG>Business Case 5: “Strengthening the capacity of Latia Resource Centre to provide Farm Operator Training and business support services to the rapidly growing greenhouse farming sector in Kenya and the East Africa Region (“Centre of Excellence”)”</STRONG></br>
-Estimated number of SME farmers: 600 </br>
-Partners: LATIA, Delphy, SoilCares, Koppert, Rijkzwaan/KHS, Bosman van Zaal, Hoogendoorn </br>
-KMHP contribution 2016: 24,000 EURO</br></br>
-
-Latia, Delphy and KMHP have reviewed and refined the curriculum to scale-up a Farm Operator Training (FOT) for greenhouse operators. To do this Latia will train its staff, develop training materials as well as test and refine some greenhouse technologies suitable for small and medium sized farmers. Latia has a working relationship with Delphy who have the expertise required to develop the FOT. Delphy will be the key provider of the expertise Latia is seeking. Other companies with valuable input and who will join the project include Koppert, Hoogendoorn, Bosman van Zaal, Kenya Highland Seeds, Svensson and Soil cares. (Note: most of these companies were members of the previous Greenfarming/Growing Solutions Kenya consortium).</br>
-The project will leverage the previous private and public investments at LATIA (e.g. GSK) and also serve as a demonstration “Center of Excellence” for Dutch horticulture expertise, knowledge and products/services.</br>
-Hence, LATIA Resource Centre will become an important institution to further advance the “aid-to-trade” agenda.</br>
-
-</br><STRONG>Business Case 6: “Reduction of post-harvest losses through value addition for Mango value chain in local and export markets” </STRONG></br>
-
-Estimated number of SME farmers: 600</br>
-Partners: Burton &amp; Bamber, Cofounders, Supermarkets, LCBs </br>
-KMHP contribution 2016: 20,000 EURO</br></br>
-
-Fruit snacks are increasingly being positioned as a healthy alternative to conventional snacks and dried tropical fruits, such as mangoes, pineapples and bananas, are becoming very popular with consumers in Europe, Asia, and some African countries, where they are sold as tasty snacks. </br>       
-Fruit drying in Kenya is therefore a timely intervention that will reduce the percentage of fruit losses especially in the mango value chain where this business case targets. </br>                                                                                         The business case aims to deliver long lasting economic opportunities to a large number of resource poor farmers by adding value to excess mango production. </br>
-Burton and Bamber (B &amp; B) focuses on small scale mango producers and is working with both organised groups and individual farmers located in Ithanga, Makueni and Machakos. B &amp; B is developing small holder farmers into commercial farmers, while providing them with a market for their mangoes in order for the farmers to realise increased incomes. It is anticipated that 600 farmers will participate, 184 women will be employed in fruit processing and 56 youths by end of 2017.</br>
-With the signing of the agreement in November 2016, (B &amp; B) in December 2016 received KES 1,682,000.00 (Euro 15,532.37) towards Global GAP certification of their farmers and local and international market development.  
-Thirty three (33) mango farmers from Ithanga are being prepared for Global GAP certification. As at December 2016, Agrostep Limited has taken the Ithanga farmers through seven(7) of the total thirteen (13) GGAP modules. The use of Integrated Pest Management solutions by these farmers has contributed to reduced losses due to rotten infested fruit, bringing up the yields from 6% to 12%. It is planned that the Ithanga farmers will be certified by May 2017.
-Towards marketing, B &amp; B is developing a communications strategy, which will inform the new digital design packages, web site development and social media advertising. They have contracted Dudu Squad Limited, an in-house team of graphic designers with a strong network of communications specialists to provide unique marketing support and inform new packaging and web design for their SWEETUNDA brand.</br>
-With HortIMPACT’s support, intensive in-store promotions were carried out in various outlets in Nairobi resulting in an increase in sales value from KES 1,1M in September 2016, to KES 1,5M in December 2016. B &amp; B is planning entry into Chandarana Supermarket in Nanyuki and Naivas supermarket in Naivasha.</br>
-Continuous promotion and merchandising coupled with GGAP certification of its mango producers will definitely open up market opportunities for both mango producers and B &amp; B.The business proposition promotes commercialization of SME farmers and the reduction of currently wasted agricultural produce.  B&amp;B has invested in large scale advanced air drying technologies to preserve and prolong the shelf life of otherwise highly perishable fruits.</br></br>
-
-<STRONG>Potential new business cases currently under review:</STRONG></br>
-1.	Reduction of post-harvest losses in the french bean export supply chain through cold transport and storage and better use of visual rejects</br>
-2.	Promotion of Standards to Manage Quality of Produce among Public Fresh Produce Market Facilities for Sustainability </br>
-3.	Introducing/promoting mechanization of potato production</br>
-4.	Piloting a national traceability system for fruits &amp; vegetables </br></br>
-
-
-Furthermore, HortIMPACT had 5 projects under the Innovation Fund in 2016, four of which have the potential to be up scaled to bigger Business Cases:</br></br>
-<STRONG>1.	Research on biological control products against bacterial wilt (Koppert)</STRONG></br></br>
-
-Bacterial wilt is a serious disease ravaging crops belonging to the Solanaceous family including potato and tomato.  The disease has spread to most potato and tomato growing areas in Kenya causing yield losses of 50 to 100%. No single management strategy i.e. cultural practices, chemical control, biological control and host resistance has been found to be significantly effective. </br>
-HortIMPACT in partnership with Koppert Biologicals set up an experiment to test the efficacy of different treatments against bacterial wilt in tomato. This involved the use of a safe disinfectant/biocide (VeniShine) in combination with a bio-stimulant (NoPath) and soil bio-fertilizers (NatuGro system). The experiment is still ongoing, however initial data shows mixed results with applied treatments showing no significant effect on bacterial wilt incidence of tomato as was expected. However, preliminary results show that the treatment that exhibited some level of suppression of bacterial wilt was enriched BM and NatuGro.</br></br>
-
-<STRONG>2.	Pilot of a new handheld soil scanner (SoilCares)</STRONG></br></br>
-
-HortIMPACT partnered with SoilCares to pilot innovative handheld soil scanner to enable farmers to enlarge their yield by providing them with nutrient management solutions. </br>
-SoilCares has developed a handheld scanner that can be operated with a smartphone. The scanner measures the amount of Nitrogen (N), Phosphorus (P) and Potassium (K) in the soil and determines the pH and organic matter level. In addition to the soil analysis results, the users are sent appropriate and personal fertiliser and lime recommendations on a smartphone within one minute and the advice can be printed from a portable printer.</br></br>
-
-This project tested whether there is a business case for the use of the handheld soil scanner in Kenya. There are several problems that need to be tackled in order to make operating the soil testing handheld scanner an attractive business opportunity. Therefore, the two organisations approached agricultural actors to test the device in different scenarios in order to see differences in performance and acceptance from farmers.</br></br>
-
-For the first pilot phase (may to October 2016) the two organisations attracted 2 representatives each of farmer groups, outgrower schemes, AgroVets and private extension officers from Laikipia, Nyeri and Murang’a.</br></br>
-
-Initial trainings and project coordination took place utilizing the SNV Nanyuki office.</br></br>
-
-Ass there were technical problems with battery life and one of the measured parameters, the project had to be put on hold in October 2016 but is expected to resume in February 2017.</br></br>
-
-
-<STRONG>3.	Establishment of the Kenya Biological Manufacturer Association (IPM companies)</STRONG></br></br>
-
-This Innovation Fund project was approved by the Steering Committee in December 2016. The innovation is aimed at providing a start-up fund for the formation of KBMA. If the biological control industry is to continue to develop and compete effectively with the conventional chemical pesticide industry it needs a representative body to address issues that are specific to the biological control technology. </br>
-Planned activities include:</br>
-•	Set up of a secretariat to coordinate other activities including:</br>
-•	Prepare an association constitution;</br>
-•	Obtain recognition as a legally constituted Kenyan association;</br>
-•	Prepare and develop training material;</br>
-•	Develop an association web site;</br>
-•	Raise stakeholder awareness of the association after formation through events.</br></br>
-
-<STRONG>4.	Promotion of innovative slow-release fertilizer (Livatty/Mivena)</STRONG></br>
-
-The objectives of this IF project were to introduce an innovative crop nutrition technology to medium scale farmers so as to improve productivity per unit area in an environmentally friendly manner, improve income and food security and to increase the number of commercially oriented medium scale farmers accessing the technology.</br></br>
-
-The KMHP helped with the selection of 20 medium scale demo farmers based on criteria developed together with Livatty. The team then carried out crop mapping; soil testing and analysis, and worked with the farmers to set up on-farm demonstration plots for training purposes. The crops in focus were potato, carrots and cabbage. 
-The project also identified and recruited strategic stockists in the targeted areas and the demo farms provided training for 200 farmers, extension officers and agro-dealers on the benefits and use of coated fertilizers. 
-The farmers compared own/previous practice with the proposed new practice from Livatty and will examine yield &amp; quality of the crops.</br></br>
-
-Harvesting and final assessment will be done in Q1 2017.</br></br>
-
-<STRONG>5.	Makueni Fruit Processors Cooperative Innovation: Fruit marketing </STRONG></br>
-
-This innovation project was approved to address unfinished business in the old business case 5 under HFSP: actualize developed marketing plan and address food safety by use of IPM technologies and professional spray service providers. One thousand four hundred sixty five farmers had been trained by the end of 2016, from Makueni (412), Isei and Mulot (752) and Kabngetuny (301). Farmers had been trained on IPM and fruit tree management.
-Through the Business Cases and IF projects, KMHP leveraged nearly 1.1M EUR in private-sector investment.</br></br>
-
-<STRONG>Objective 2: Systemic challenges related to inclusion of SMEs in market oriented supply chains, food safety and reducing food losses in the horticulture sector effectively addressed by farmer-, industry- and government-level organisations.</STRONG></br></br>
-Under this objective, HortIMPACT is addressing the sector in several ways:</br>
-•	During 2016, we have been working closely with the Kenya Horticulture Council (KHC) to update the Kenyan Standard KS;1758 regarding food safety and hygiene standards. Subsequently, we were appointed by the Government to serve on the technical horticulture committee of the Kenya Bureau of Standards (KEBS) to finalize the roll-ot and training on KS:1758</br>
-•	KMHP has established a close working relationship with government bodies like KEPHIS (Kenya Plant Health Inspection Service), HCD (Horticulture Crop Directorate), MoAFL (Ministry for Agriculture, Fisheries &amp; Livestock) and NFSCC (National Food Safety Coordination Committee) to continuously discuss and review improvements for policies, regulations and enforcements surrounding food losses and food safety</br>
-•	We trained Government extension officers in 9 key counties for fruit &amp; vegetable production
-•	KMHP is a member of the National Potato Council of Kenya (NPCK)</br>
-•	In May 2016, KMHP organized a food safety stakeholder forum with all government partners above plus the private sector and we formed a working group subsequently</br>
-•	We shared and discussed the findings of two baseline studies (on food safety and post-harvest losses) with 9 Counties’ agricultural officers and agreed next steps</br>
-•	We established close links with research and teaching institutions (e.g. Egerton University, University of Nairobi and Baraka College) to review and strengthen their horticulture curricula and to find ways to pilot their research findings
-KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Organisation) and FPEAK (Fresh Produce Exporters Association of Kenya)]]></text-property>
+                        <text-property name="content"><![CDATA[See Annex 3 for key activities.]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -10091,6 +9916,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
             </row>
         </grid>
         <grid name="Risks" id="1753">
+            <property name="masterPage">General</property>
             <property name="dataSet">Custom field - Risks</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10136,47 +9962,8 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
                 </cell>
             </row>
         </grid>
-        <grid name="Croscutting aspects" id="1762">
-            <property name="dataSet">Custom field - Croscutting aspects</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">value</property>
-                    <text-property name="displayName">value</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["value"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
-            <column id="1763"/>
-            <row id="1764">
-                <cell id="1765">
-                    <label name="core_ind_label1" id="1766">
-                        <property name="style">H1</property>
-                        <property name="backgroundColor">white</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="color">#00A54F</property>
-                        <property name="marginTop">8pt</property>
-                        <property name="paddingTop">1px</property>
-                        <property name="paddingLeft">1px</property>
-                        <property name="paddingBottom">1px</property>
-                        <property name="paddingRight">1px</property>
-                        <property name="textAlign">center</property>
-                        <property name="display">block</property>
-                        <property name="pageBreakAfter">avoid</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <structure name="toc">
-                            <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
-                        </structure>
-                        <text-property name="text">Croscutting aspects</text-property>
-                    </label>
-                    <text-data id="1767">
-                        <property name="style">P</property>
-                        <expression name="valueExpr">markdown_html(row["value"])</expression>
-                        <property name="contentType">html</property>
-                    </text-data>
-                </cell>
-            </row>
-        </grid>
-        <grid name="Project organisation" id="1770">
+        <grid name="Background" id="1770">
+            <property name="masterPage">General</property>
             <property name="dataSet">Custom field - Project organisation</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10206,9 +9993,121 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
                         <structure name="toc">
                             <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
                         </structure>
-                        <text-property name="text">Project organisation </text-property>
+                        <text-property name="text">Background</text-property>
                     </label>
                     <text-data id="1775">
+                        <property name="style">P</property>
+                        <property name="dataSet">Project</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">project_plan</property>
+                                <text-property name="displayName">project_plan</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["project_plan"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">background</property>
+                                <text-property name="displayName">background</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["background"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <expression name="valueExpr">markdown_html(row["background"])</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+            </row>
+        </grid>
+        <grid name="Project paln" id="1952">
+            <property name="masterPage">General</property>
+            <property name="dataSet">Custom field - Project organisation</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">value</property>
+                    <text-property name="displayName">value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="1953"/>
+            <row id="1954">
+                <cell id="1955">
+                    <label name="core_ind_label112" id="1956">
+                        <property name="style">H1</property>
+                        <property name="backgroundColor">white</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="color">#00A54F</property>
+                        <property name="marginTop">8pt</property>
+                        <property name="paddingTop">1px</property>
+                        <property name="paddingLeft">1px</property>
+                        <property name="paddingBottom">1px</property>
+                        <property name="paddingRight">1px</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">avoid</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <structure name="toc">
+                            <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
+                        </structure>
+                        <text-property name="text">Project plan</text-property>
+                    </label>
+                    <text-data id="1957">
+                        <property name="style">P</property>
+                        <property name="dataSet">Project</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">project_plan</property>
+                                <text-property name="displayName">project_plan</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["project_plan"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">background</property>
+                                <text-property name="displayName">background</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["background"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <expression name="valueExpr">markdown_html(row["project_plan"])</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+            </row>
+        </grid>
+        <grid name="Croscutting aspects" id="1762">
+            <property name="masterPage">General</property>
+            <property name="dataSet">Custom field - Croscutting aspects</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">value</property>
+                    <text-property name="displayName">value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["value"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="1763"/>
+            <row id="1764">
+                <cell id="1765">
+                    <label name="core_ind_label1" id="1766">
+                        <property name="style">H1</property>
+                        <property name="backgroundColor">white</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="color">#00A54F</property>
+                        <property name="marginTop">8pt</property>
+                        <property name="paddingTop">1px</property>
+                        <property name="paddingLeft">1px</property>
+                        <property name="paddingBottom">1px</property>
+                        <property name="paddingRight">1px</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">avoid</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <structure name="toc">
+                            <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
+                        </structure>
+                        <text-property name="text">Crosscutting aspects</text-property>
+                    </label>
+                    <text-data id="1767">
                         <property name="style">P</property>
                         <expression name="valueExpr">markdown_html(row["value"])</expression>
                         <property name="contentType">html</property>
@@ -10217,6 +10116,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
             </row>
         </grid>
         <grid name="Resources" id="1776">
+            <property name="masterPage">General</property>
             <property name="dataSet">Custom field - Resources</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10246,7 +10146,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
                         <structure name="toc">
                             <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
                         </structure>
-                        <text-property name="text">Resources</text-property>
+                        <text-property name="text">Material and Human Resources and timeframe</text-property>
                     </label>
                     <text-data id="1781">
                         <property name="style">P</property>
@@ -10257,6 +10157,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
             </row>
         </grid>
         <grid name="Budget" id="1783">
+            <property name="masterPage">General</property>
             <property name="dataSet">Custom field - Resources</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10304,8 +10205,8 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
                     </text-data>
                     <table name="Budget table" id="1797">
                         <property name="style">P</property>
-                        <property name="backgroundColor">#E4F1E7</property>
                         <property name="marginTop">8pt</property>
+                        <property name="display">none</property>
                         <property name="dataSet">Budget</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -10397,8 +10298,8 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
                     </table>
                     <table name="Expenditures" id="1827">
                         <property name="style">P</property>
-                        <property name="backgroundColor">#E4F1E7</property>
                         <property name="marginTop">0pt</property>
+                        <property name="display">none</property>
                         <property name="dataSet">Expenditures</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -10626,6 +10527,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
             </row>
         </grid>
         <grid name="Conclusions and recommendations" id="1789">
+            <property name="masterPage">General</property>
             <property name="dataSet">Custom field - Resources</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10694,6 +10596,7 @@ KMHP is working closely with KALRO (Kenya Agriculture and Livestock Research Org
             </row>
         </grid>
         <table name="Updates" id="1918">
+            <property name="masterPage">General</property>
             <property name="dataSet">Project_updates</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -10781,6 +10684,7 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
         <table name="results_table" id="13">
             <property name="marginTop">8pt</property>
             <property name="marginLeft">8pt</property>
+            <property name="masterPage">General</property>
             <property name="pageBreakBefore">always</property>
             <property name="width">7.833333333333333in</property>
             <property name="dataSet">Results_indicators_periods</property>
