@@ -79,11 +79,9 @@
           Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
       {% endblocktrans %}
           | View
-          {% with "20 50 100" as page_sizes %}
-              {% for page_size in page_sizes.split %}
-                  <a class="btn pageSize" href="{% addparam 'limit' page_size %}">{{page_size}}</a>
-              {% endfor %}
-          {% endwith %}
+          {% for page_number, page_size in page_info|slice:"1:" %}
+              <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
+          {% endfor %}
           projects
       </p>
     </div>
