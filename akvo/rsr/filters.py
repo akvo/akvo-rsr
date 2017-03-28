@@ -20,8 +20,12 @@ from .m49 import M49_CODES, M49_HIERARCHY
 ANY_CHOICE = (('', _('All')), )
 
 
-def keywords():
-    keywords = list(Keyword.objects.values_list('id', 'label'))
+def keywords(organisation):
+    keywords = (
+        Keyword.objects.all() if organisation is None
+        else organisation.organisation_keywords()
+    )
+    keywords = list(keywords.values_list('id', 'label'))
     return [('', _('All'))] + keywords
 
 
@@ -130,7 +134,7 @@ def build_choices(qs):
     return [('', _('All'))] + list(qs.values_list('id', 'name', flat=False))
 
 
-class ProjectFilter(django_filters.FilterSet):
+class BaseProjectFilter(django_filters.FilterSet):
 
     category = django_filters.ChoiceFilter(
         choices=([('', _('All'))] +
@@ -138,12 +142,6 @@ class ProjectFilter(django_filters.FilterSet):
                                                          flat=False))),
         label=_(u'category'),
         name='categories__id')
-
-    keyword = django_filters.ChoiceFilter(
-        initial=_('All'),
-        choices=keywords(),
-        label=_(u'keyword'),
-        name='keywords')
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
@@ -180,6 +178,23 @@ class ProjectFilter(django_filters.FilterSet):
         model = Project
         fields = ['status', 'iati_status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
+
+
+def create_project_filter_class(request):
+    """Create ProjectFilter class based on request attributes."""
+
+    organisation = (
+        request.rsr_page.organisation if request.rsr_page is not None else None
+    )
+
+    class ProjectFilter(BaseProjectFilter):
+        keyword = django_filters.ChoiceFilter(
+            initial=_('All'),
+            choices=keywords(organisation),
+            label=_(u'keyword'),
+            name='keywords')
+
+    return ProjectFilter
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):

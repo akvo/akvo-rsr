@@ -22,7 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import (build_choices, location_choices, ProjectFilter,
+from ..filters import (build_choices, location_choices, create_project_filter_class,
                        remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
@@ -80,7 +80,7 @@ def directory(request):
 
     # Yank project collection
     all_projects = _project_directory_coll(request)
-    f = ProjectFilter(qs, queryset=all_projects)
+    f = create_project_filter_class(request)(qs, queryset=all_projects)
 
     # Change filter options further when on an Akvo Page
     if request.rsr_page:
