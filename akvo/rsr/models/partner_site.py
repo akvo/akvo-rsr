@@ -163,9 +163,40 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     def save(self, *args, **kwargs):
         if self.hostname:
-            self.hostname = self.hostname.lower()
+            self.hostname = self.hostname.lower().strip()
 
         super(PartnerSite, self).save(*args, **kwargs)
+
+    def updates(self):
+        "All updates of all projects of the Page"
+        return self.projects().all_updates()
+
+    def partners(self):
+        "All partner organisations of all projects of the Page"
+        return self.projects().all_partners()
+
+    def projects(self):
+        from .project import Project
+        "All projects of the Page"
+        # Get all projects associated via the Page's organisation
+        if self.partner_projects:
+            fk_projects = self.organisation.published_projects().public()
+        else:
+            fk_projects = Project.objects.public().published()
+        # Add (or remove) projects via keywords
+        return self.apply_keywords(fk_projects)
+
+
+    def apply_keywords(self, projects):
+        "Apply keywords to the Page's projects"
+        keywords = self.keywords.all()
+        if not keywords:
+            return projects
+        # Either exclude or include projects via keyword association
+        if self.exclude_keywords:
+            return projects.exclude(keywords__in=keywords)
+        else:
+            return projects.filter(keywords__in=keywords)
 
     @property
     def logo(self):

@@ -37,27 +37,27 @@ from akvo.codelists.models import SectorCategory, Sector, Version
 ###############################################################################
 
 
-def _published_projects():
-    """Return all active projects."""
-    return Project.objects.public().published()
-
-
-def _page_projects(page):
-    """Dig out the list of projects to use.
-
-    First get a list based on page settings (orgs or all projects). Then apply
-    keywords filtering / exclusion.
-    """
-    projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
-    return apply_keywords(page, projects)
+# def _published_projects():
+#     """Return all active projects."""
+#     return Project.objects.public().published()
+#
+#
+# def _page_projects(page):
+#     """Dig out the list of projects to use.
+#
+#     First get a list based on page settings (orgs or all projects). Then apply
+#     keywords filtering / exclusion.
+#     """
+#     projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
+#     return apply_keywords(page, projects)
 
 
 def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
     if not page:
-        return _published_projects()
-    return _page_projects(page)
+        return Project.objects.public().published()
+    return page.published_projects()
 
 
 def directory(request):
@@ -101,7 +101,7 @@ def directory(request):
     page, paginator, page_range = pagination(page, sorted_projects, limit)
 
     # Get the current org filter for typeahead
-    org_filter = request.GET.get('organisation', '')
+    org_filter = request.GET.get('organisation', '0')
 
     # Get projects to be displayed on the map
     if request.rsr_page and request.rsr_page.all_maps:
