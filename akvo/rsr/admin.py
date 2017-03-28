@@ -1266,7 +1266,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             ),
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'redirect_cname', 'custom_return_url',
+        (u'HTTP', dict(fields=('hostname', ('cname', 'redirect_cname'), 'custom_return_url',
                                'custom_return_url_text','piwik_id',))),
         (u'Style and content',
             dict(fields=('all_maps', 'custom_css', 'custom_logo',

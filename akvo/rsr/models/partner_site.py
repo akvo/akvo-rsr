@@ -65,7 +65,7 @@ class PartnerSite(TimestampsMixin, models.Model):
         )
     )
     redirect_cname = models.BooleanField(default=False,
-            help_text=_(u"Indicate if we should redirect to the akvoapp domain when the request is "
+            help_text=_(u"Indicate if we should redirect to the Hostname when the request is "
                         "made to the CNAME. This is for sites that don't yet have a valid TLS "
                         "certificate for the CNAME."))
     custom_return_url = models.URLField(
