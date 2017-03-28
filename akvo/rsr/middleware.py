@@ -82,6 +82,10 @@ class HostDispatchMiddleware(object):
         if not site.enabled:
             return redirect(DEFAULT_REDIRECT_URL)
 
+        # Check if the request if for a partner's CNAME
+        if site.redirect_cname and site.is_cname_request(host):
+            return redirect("{}://{}.{}".format(request.scheme, site.hostname,
+                                                settings.AKVOAPP_DOMAIN))
         # Set site to request object
         request.rsr_page = site
         return None

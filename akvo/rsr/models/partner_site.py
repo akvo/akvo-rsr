@@ -64,6 +64,10 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
         )
     )
+    redirect_cname = models.BooleanField(default=False,
+            help_text=_(u"Indicate if we should redirect to the akvoapp domain when the request is "
+                        "made to the CNAME. This is for sites that don't yet have a valid TLS "
+                        "certificate for the CNAME."))
     custom_return_url = models.URLField(
         _(u'Return URL'), blank=True, help_text=_(
             u'<p>Enter the full URL (including http://) for the page to which users '
@@ -205,6 +209,9 @@ class PartnerSite(TimestampsMixin, models.Model):
 
         url = '%s://%s/' % (protocol, self.full_domain)
         return url
+
+    def is_cname_request(self, netloc):
+        return netloc == self.cname
 
     @classmethod
     def yank_hostname(cls, netloc):
