@@ -62,7 +62,7 @@
         {% else %}
         <li>
           <a class="{% if 'myrsr' in request.path %}active{% endif %}"
-             href="{% url 'my_details' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
+             href="{% url 'my_rsr' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
