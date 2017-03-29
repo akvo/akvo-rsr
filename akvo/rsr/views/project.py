@@ -94,9 +94,15 @@ def directory(request):
     sorted_projects = f.qs.distinct().order_by(sorting)
 
     # Build page
-    page = request.GET.get('page')
-    limit = request.GET.get('limit', settings.PROJECT_DIRECTORY_DEFAULT_SIZE)
-    page, paginator, page_range = pagination(page, sorted_projects, limit)
+    page_number = request.GET.get('page')
+    limit = request.GET.get('limit', settings.PROJECT_DIRECTORY_PAGE_SIZES[0])
+    limit = min(int(limit), settings.PROJECT_DIRECTORY_PAGE_SIZES[-1])
+    page, paginator, page_range = pagination(page_number, sorted_projects, limit)
+    start_index = page.start_index()
+    page_info = [
+        (start_index // size + 1, size)
+        for size in settings.PROJECT_DIRECTORY_PAGE_SIZES
+    ]
 
     # Get the current org filter for typeahead
     org_filter = request.GET.get('organisation', '')
@@ -114,6 +120,7 @@ def directory(request):
         'recipient_countries',
         'sectors',
         'budget_items',
+        'partnerships__organisation',
     ).select_related(
         'primary_organisation',
         'last_update'
@@ -137,6 +144,7 @@ def directory(request):
     context = {
         'project_count': sorted_projects.count(),
         'filter': f,
+        'page_info': page_info,
         'page': page,
         'page_range': page_range,
         'paginator': paginator,

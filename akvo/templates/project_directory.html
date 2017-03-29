@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load addparam bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -78,6 +78,11 @@
       {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
           Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
       {% endblocktrans %}
+          | View
+          {% for page_number, page_size in page_info|slice:"1:" %}
+              <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
+          {% endfor %}
+          projects
       </p>
     </div>
       {% include 'navigation/pagination-sort.html' %}
@@ -263,6 +268,11 @@
             "partners": "{% trans 'partners'|escapejs %}"
         }
     </script>
+
+    {# More partners data #}
+    {% for project in page %}
+        {% include 'project_partner_data.html' %}
+    {% endfor %}
 
   {% javascript 'project_directory' %}
   {% javascript 'project_directory_typeahead' %}
