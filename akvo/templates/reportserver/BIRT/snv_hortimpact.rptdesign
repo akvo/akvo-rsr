@@ -9778,41 +9778,54 @@ Nairobi, Kenya</br>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
-                        <expression name="valueExpr">row["value"]</expression>
+                        <expression name="valueExpr">function markdown_html(src)
+{
+	var h='';
+
+	function escape(t)
+	{
+		return t;
+	}
+	function inlineEscape(s)
+	{
+		return escape(s)
+			.replace(/!\[([^\]]*)]\(([^(]+)\)/g, '&lt;img alt="$1" src="$2">')
+			.replace(/\[([^\]]+)]\(([^(]+)\)/g, '$1'.link('$2'))
+			.replace(/`([^`]+)`/g, '&lt;code>$1&lt;/code>')
+			.replace(/\*\*([^*]+)\*\*/g, '&lt;strong>$1&lt;/strong>')
+			.replace(/\*([^*]+)\*/g, '&lt;em>$1&lt;/em>');
+	}
+
+	src
+	.replace(/^\s+|\r|\s+$/g, '')
+	.replace(/\t/g, '    ')
+	.split(/\n\n+/)
+	.forEach(function(b, f, R)
+	{
+		f=b[0];
+		R=
+		{
+			'*':[/\n\* /,'&lt;ul>&lt;li>','&lt;/li>&lt;/ul>'],
+			'1':[/\n[1-9]\d*\.? /,'&lt;ol>&lt;li>','&lt;/li>&lt;/ol>'],
+			' ':[/\n    /,'&lt;pre>&lt;code>','&lt;/pre>&lt;/code>','\n'],
+			'>':[/\n> /,'&lt;blockquote>','&lt;/blockquote>','\n']
+		}[f];
+		h+=
+			R?R[1]+('\n'+b)
+				.split(R[0])
+				.slice(1)
+				.map(R[3]?escape:inlineEscape)
+				.join(R[3]||'&lt;/li>\n&lt;li>')+R[2]:
+			f=='#'?'&lt;h'+(f=b.indexOf(' '))+'>'+inlineEscape(b.slice(f+1))+'&lt;/h'+f+'>':
+			f=='&lt;'?b:
+			'&lt;p>'+inlineEscape(b)+'&lt;/p>';
+	});
+	return h;
+};
+
+markdown_html(row["value"])</expression>
                         <property name="contentType">html</property>
                     </text-data>
-                    <label name="basic_label2" id="1959">
-                        <property name="style">H1</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="color">#00A54F</property>
-                        <property name="marginTop">8pt</property>
-                        <property name="paddingTop">1px</property>
-                        <property name="paddingLeft">1px</property>
-                        <property name="paddingBottom">1px</property>
-                        <property name="paddingRight">1px</property>
-                        <property name="textAlign">center</property>
-                        <property name="whiteSpace">pre</property>
-                        <property name="display">block</property>
-                        <property name="pageBreakAfter">avoid</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <structure name="toc">
-                            <expression name="expressionValue" type="javascript">"Basic information"</expression>
-                        </structure>
-                        <text-property name="text">Executive summary</text-property>
-                    </label>
-                    <text id="1960">
-                        <property name="dataSet">Custom field - ex summary</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">value</property>
-                                <text-property name="displayName">value</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["value"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">((row["value"].replace(new RegExp(chaine1, 'g'),replace1)).replace(new RegExp(chaine2, 'g'),replace2)).replace(new RegExp(chaine3,'g'),replace3);</VALUE-OF>]]></text-property>
-                    </text>
                 </cell>
             </row>
             <row id="1726">
@@ -10793,7 +10806,7 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
 ?&#13;
 0&#13;
 :&#13;
-(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
+(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > 0 )&#13;
 ?&#13;
 (row["baseline_value"]  ?&#13;
 finiteRounded((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
@@ -11150,7 +11163,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <property name="style">P</property>
                             <property name="fontSize">10pt</property>
                             <property name="fontWeight">normal</property>
-                            <property name="color">#34B573</property>
+                            <property name="color">black</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
@@ -11165,7 +11178,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <list-property name="highlightRules">
                                 <structure>
                                     <property name="operator">between</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
                                         <value type="javascript">50</value>
                                     </simple-property-list>
@@ -11173,17 +11186,16 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="style">progress_middle</property>
                                 </structure>
                                 <structure>
-                                    <property name="operator">between</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <property name="operator">le</property>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
-                                        <value type="javascript">-1</value>
+                                        <value type="javascript">49</value>
                                     </simple-property-list>
-                                    <expression name="value2" type="javascript">49</expression>
                                     <property name="style">progress_low</property>
                                 </structure>
                                 <structure>
                                     <property name="operator">ge</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
                                         <value type="javascript">85</value>
                                     </simple-property-list>
@@ -11966,17 +11978,16 @@ Math.min(row["progress_pct"],100)&#13;
                             <property name="paddingBottom">8pt</property>
                             <list-property name="highlightRules">
                                 <structure>
-                                    <property name="operator">between</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <property name="operator">le</property>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
-                                        <value type="javascript">-1</value>
+                                        <value type="javascript">49</value>
                                     </simple-property-list>
-                                    <expression name="value2" type="javascript">49</expression>
                                     <property name="style">progress_low</property>
                                 </structure>
                                 <structure>
                                     <property name="operator">between</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
                                         <value type="javascript">50</value>
                                     </simple-property-list>
@@ -11985,7 +11996,7 @@ Math.min(row["progress_pct"],100)&#13;
                                 </structure>
                                 <structure>
                                     <property name="operator">ge</property>
-                                    <expression name="testExpr" type="javascript">Finance.percent(row["target_value_number"],row["actual_value_number"],-1)</expression>
+                                    <expression name="testExpr" type="javascript">row["progress_pct"]</expression>
                                     <simple-property-list name="value1">
                                         <value type="javascript">85</value>
                                     </simple-property-list>
