@@ -397,7 +397,7 @@ def widgets(request, project_id):
 
     if selected_widget in ['narrow', 'cobranded', 'small', 'map', 'list']:
         context['widget'] = selected_widget
-        context['domain_url'] = 'http://' + request.META['HTTP_HOST']
+        context['domain_url'] = '{}://{}'.format(request.scheme, request.META['HTTP_HOST'])
         return render(request, 'project_widgets2.html', context)
 
     else:

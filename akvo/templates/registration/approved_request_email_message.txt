@@ -6,7 +6,7 @@ Dear {{user_name}},
 Your request to join {{org_name}} on Akvo RSR has been approved.
 
 Please visit the MyRSR section to view your projects and add updates to the projects here:
-http://{{ site }}/myrsr/
+{{request.scheme}}://{{ site }}/myrsr/
 
 Thank you,
 Akvo.org
