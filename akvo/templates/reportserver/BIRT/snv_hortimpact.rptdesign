@@ -10618,6 +10618,12 @@ markdown_html(row["value"])</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">photo</property>
+                    <expression name="expression" type="javascript">dataSetRow["photo"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="1925"/>
             <header>
@@ -10669,6 +10675,11 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                             <expression name="valueExpr">markdown_html(row._outer["text"])</expression>
                             <property name="contentType">html</property>
                         </text-data>
+                        <image id="1958">
+                            <property name="width">550px</property>
+                            <property name="source">url</property>
+                            <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["photo"]</expression>
+                        </image>
                     </cell>
                 </row>
                 <row id="1932">
@@ -10873,7 +10884,7 @@ null</expression>
                                     <expression name="valueExpr" type="javascript">(Total.count() &lt; 1)</expression>
                                 </structure>
                             </list-property>
-                            <text-property name="text">Results</text-property>
+                            <text-property name="text">Results </text-property>
                         </label>
                     </cell>
                     <cell id="160">
@@ -11994,7 +12005,7 @@ Math.min(row["progress_pct"],100)&#13;
                                     <property name="style">progress_high</property>
                                 </structure>
                             </list-property>
-                            <expression name="valueExpr">row["actual_comment"]</expression>
+                            <expression name="valueExpr">row["actual_comment"].substring(11)</expression>
                             <property name="contentType">html</property>
                         </text-data>
                     </cell>
