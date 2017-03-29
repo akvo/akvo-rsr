@@ -200,6 +200,9 @@ urlpatterns += patterns(
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
+    url(r'typeaheads/keywords$',
+        views.typeahead_keyword,
+        name='keyword_typeahead'),
 )
 
 # My reports

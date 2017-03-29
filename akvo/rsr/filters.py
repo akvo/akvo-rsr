@@ -20,15 +20,6 @@ from .m49 import M49_CODES, M49_HIERARCHY
 ANY_CHOICE = (('', _('All')), )
 
 
-def keywords(organisation):
-    keywords = (
-        Keyword.objects.all() if organisation is None
-        else organisation.organisation_keywords()
-    )
-    keywords = list(keywords.values_list('id', 'label'))
-    return [('', _('All'))] + keywords
-
-
 def sectors():
     sectors_list = []
     for sector in codelist_choices(SECTOR_CATEGORY):
@@ -183,14 +174,18 @@ class BaseProjectFilter(django_filters.FilterSet):
 def create_project_filter_class(request):
     """Create ProjectFilter class based on request attributes."""
 
-    organisation = (
-        request.rsr_page.organisation if request.rsr_page is not None else None
-    )
+    def keywords():
+        if request.rsr_page is not None:
+            keywords = request.rsr_page.keywords.all()
+        else:
+            keywords = Keyword.objects.all()
+        keywords = list(keywords.values_list('id', 'label'))
+        return [('', _('All'))] + keywords
 
     class ProjectFilter(BaseProjectFilter):
         keyword = django_filters.ChoiceFilter(
             initial=_('All'),
-            choices=keywords(organisation),
+            choices=keywords(),
             label=_(u'keyword'),
             name='keywords')
 
