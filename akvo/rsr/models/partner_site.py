@@ -168,16 +168,16 @@ class PartnerSite(TimestampsMixin, models.Model):
         super(PartnerSite, self).save(*args, **kwargs)
 
     def updates(self):
-        "All updates of all projects of the Page"
+        """All updates of all projects of the Page"""
         return self.projects().all_updates()
 
     def partners(self):
-        "All partner organisations of all projects of the Page"
+        """All partner organisations of all projects of the Page"""
         return self.projects().all_partners()
 
     def projects(self):
+        """All projects of the Page"""
         from .project import Project
-        "All projects of the Page"
         # Get all projects associated via the Page's organisation
         if self.partner_projects:
             fk_projects = self.organisation.published_projects().public()
@@ -186,9 +186,8 @@ class PartnerSite(TimestampsMixin, models.Model):
         # Add (or remove) projects via keywords
         return self.apply_keywords(fk_projects)
 
-
     def apply_keywords(self, projects):
-        "Apply keywords to the Page's projects"
+        """Apply keywords to the Page's projects."""
         keywords = self.keywords.all()
         if not keywords:
             return projects

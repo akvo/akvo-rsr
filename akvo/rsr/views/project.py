@@ -27,7 +27,6 @@ from ..filters import (build_choices, location_choices, create_project_filter_cl
 from ..models import Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
-from .utils import apply_keywords, org_projects
 from .organisation import _page_organisations
 from akvo.codelists.models import SectorCategory, Sector, Version
 
@@ -37,27 +36,13 @@ from akvo.codelists.models import SectorCategory, Sector, Version
 ###############################################################################
 
 
-# def _published_projects():
-#     """Return all active projects."""
-#     return Project.objects.public().published()
-#
-#
-# def _page_projects(page):
-#     """Dig out the list of projects to use.
-#
-#     First get a list based on page settings (orgs or all projects). Then apply
-#     keywords filtering / exclusion.
-#     """
-#     projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
-#     return apply_keywords(page, projects)
-
-
 def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
-    if not page:
-        return Project.objects.public().published()
-    return page.published_projects()
+    return (
+        page.organisation.published_projects() if page is not None
+        else Project.objects.public().published()
+    )
 
 
 def directory(request):
