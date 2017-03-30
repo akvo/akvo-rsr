@@ -459,6 +459,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         editor_group = Group.objects.get(name='M&E Managers')
         return self.has_role_in_org(org, editor_group)
 
+    def me_manager_for_project(self, project):
+        """
+        Checks if the user is an M&E Manager for this project
+
+        :param project; a Project instance
+        """
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name='M&E Managers'
+        )
+        orgs = employments.organisations()
+        return project in Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+
     def project_editor_of(self, org):
         """
         Checks if the user is a Project editor of this organisation.

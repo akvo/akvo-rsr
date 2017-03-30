@@ -11,10 +11,10 @@ import django_filters
 
 from copy import deepcopy
 from django.utils.translation import ugettext_lazy as _
-from akvo.codelists.store.codelists_v201 import ACTIVITY_STATUS, SECTOR_CATEGORY
+from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
-from .models import (Category, Organisation, OrganisationLocation, Project,
-                     ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
+from .models import (Category, Keyword, Organisation, OrganisationLocation,
+                     Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
 from .m49 import M49_CODES, M49_HIERARCHY
 
 ANY_CHOICE = (('', _('All')), )
@@ -125,7 +125,7 @@ def build_choices(qs):
     return [('', _('All'))] + list(qs.values_list('id', 'name', flat=False))
 
 
-class ProjectFilter(django_filters.FilterSet):
+class BaseProjectFilter(django_filters.FilterSet):
 
     category = django_filters.ChoiceFilter(
         choices=([('', _('All'))] +
@@ -169,6 +169,27 @@ class ProjectFilter(django_filters.FilterSet):
         model = Project
         fields = ['status', 'iati_status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
+
+
+def create_project_filter_class(request):
+    """Create ProjectFilter class based on request attributes."""
+
+    def keywords():
+        if request.rsr_page is not None:
+            keywords = request.rsr_page.keywords.all()
+        else:
+            keywords = Keyword.objects.all()
+        keywords = list(keywords.values_list('id', 'label'))
+        return [('', _('All'))] + keywords
+
+    class ProjectFilter(BaseProjectFilter):
+        keyword = django_filters.ChoiceFilter(
+            initial=_('All'),
+            choices=keywords(),
+            label=_(u'keyword'),
+            name='keywords')
+
+    return ProjectFilter
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):

@@ -20,7 +20,7 @@ Comments
 {% endif %}
 
 {% trans 'Click the following link to view the update' %}:
-http://{{ site }}/{{ LANGUAGE_CODE }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#results,{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}
+https://{{ site }}/{{ LANGUAGE_CODE }}/myrsr/results/{{ update.period.indicator.result.project.pk }}/#results,{{ update.period.indicator.result.pk }},{{ update.period.indicator.pk }},{{ update.period.pk }}
 
 {% trans 'Thank you' %},
 Akvo.org

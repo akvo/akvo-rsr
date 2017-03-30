@@ -31,10 +31,6 @@ ORGANISATION_MARKER_ICON = getattr(settings,
 MEDIA_URL = getattr(settings, 'MEDIA_URL', '/media/')
 
 
-# TODO: this should be fixed so partner sites use their own domain
-HOST = 'http://%s' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
-
-
 def avatar(item, geometry='60x60', quality=99):
     """Build user avatar.
 

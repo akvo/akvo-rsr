@@ -19,7 +19,9 @@ def document_link(organisation, request):
 
     if organisation.logo:
         logo_element = etree.Element("document-link")
-        logo_element.attrib['url'] = 'http://' + request.get_host() + organisation.logo.url
+        logo_element.attrib['url'] = '{}://{}{}'.format(
+            request.scheme, request.get_host(), organisation.logo.url
+        )
         logo_element.attrib['format'] = "image/jpeg"
 
         title_element = etree.SubElement(logo_element, "title")
@@ -39,8 +41,9 @@ def document_link(organisation, request):
             if document.url:
                 document_element.attrib['url'] = document.url
             elif document.document:
-                document_element.attrib['url'] = 'http://' + request.get_host() + \
-                                                 document.document.url
+                document_element.attrib['url'] = '{}://{}{}'.format(
+                    request.scheme, request.get_host(), document.document.url
+                )
 
             if document.format:
                 document_element.attrib['format'] = document.format

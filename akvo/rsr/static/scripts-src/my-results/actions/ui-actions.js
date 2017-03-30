@@ -9,35 +9,49 @@
 import store from "../store"
 
 import {
-    UPDATE_FORM_TOGGLE, UPDATE_FORM_OPEN, UPDATE_FORM_CLOSE, ALL_MODELS_FETCHED
+    UI_ID_TOGGLE, UI_ID_TRUE, UI_ID_FALSE, ALL_MODELS_FETCHED
 } from "../reducers/uiReducer"
 
-import { MODELS_LIST } from "../const"
+import { MODELS_LIST, OBJECTS_USER, SELECTED_PERIODS, UPDATE_FORMS } from "../const"
 
-export function updateFormToggle(id) {
+
+export function periodSelectToggle(id) {
     store.dispatch({
-        type: UPDATE_FORM_TOGGLE,
-        payload: {id: `updateForm-${id}`}
+        type: UI_ID_TOGGLE,
+        payload: {element: SELECTED_PERIODS, id: id}
     })
 }
 
+
+export function updateFormToggle(id) {
+    store.dispatch({
+        type: UI_ID_TOGGLE,
+        payload: {element: UPDATE_FORMS, id: id}
+    })
+}
+
+
 export function updateFormOpen(id) {
     store.dispatch({
-        type: UPDATE_FORM_OPEN,
-        payload: {id: `updateForm-${id}`}
-    });
+        type: UI_ID_TRUE,
+        payload: {element: UPDATE_FORMS, id: id}
+    })
 }
+
 
 export function updateFormClose(id) {
     store.dispatch({
-        type: UPDATE_FORM_CLOSE,
-        payload: {id: `updateForm-${id}`}
+        type: UI_ID_FALSE,
+        payload: {element: UPDATE_FORMS, id: id}
     });
 }
 
+
 export function activateToggleAll() {
-    // Have we fetched all models?
-    const allFetched = MODELS_LIST.every((model) => store.getState().models[model].fetched);
+    // Have we fetched all models? Include current user info too.
+    const allFetched = MODELS_LIST.concat([OBJECTS_USER]).every(
+        (model) => store.getState().models[model].fetched
+    );
     if (allFetched) {
         store.dispatch({
             type: ALL_MODELS_FETCHED,

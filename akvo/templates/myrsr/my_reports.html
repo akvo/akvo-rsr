@@ -14,7 +14,7 @@
     {# Initial data endpoints #}
     <script type="application/json" id="data-endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "formats": "{% url 'report_formats_api' %}",
             "user": "{% url 'user-detail' request.user.pk %}",
             "user_organisations": "{% url 'user_organisations_typeahead' %}",

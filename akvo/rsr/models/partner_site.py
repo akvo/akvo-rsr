@@ -64,6 +64,12 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
         )
     )
+    redirect_cname = models.BooleanField(
+        default=False,
+        help_text=_(u"Indicate if we should redirect to the Hostname when the request is "
+                    "made to the CNAME. This is for sites that don't yet have a valid TLS "
+                    "certificate for the CNAME.")
+    )
     custom_return_url = models.URLField(
         _(u'Return URL'), blank=True, help_text=_(
             u'<p>Enter the full URL (including http://) for the page to which users '
@@ -163,9 +169,39 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     def save(self, *args, **kwargs):
         if self.hostname:
-            self.hostname = self.hostname.lower()
+            self.hostname = self.hostname.lower().strip()
 
         super(PartnerSite, self).save(*args, **kwargs)
+
+    def updates(self):
+        """All updates of all projects of the Page"""
+        return self.projects().all_updates()
+
+    def partners(self):
+        """All partner organisations of all projects of the Page"""
+        return self.projects().all_partners()
+
+    def projects(self):
+        """All projects of the Page"""
+        from .project import Project
+        # Get all projects associated via the Page's organisation
+        if self.partner_projects:
+            fk_projects = self.organisation.published_projects().public()
+        else:
+            fk_projects = Project.objects.public().published()
+        # Add (or remove) projects via keywords
+        return self.apply_keywords(fk_projects)
+
+    def apply_keywords(self, projects):
+        """Apply keywords to the Page's projects."""
+        keywords = self.keywords.all()
+        if not keywords:
+            return projects
+        # Either exclude or include projects via keyword association
+        if self.exclude_keywords:
+            return projects.exclude(keywords__in=keywords)
+        else:
+            return projects.filter(keywords__in=keywords)
 
     @property
     def logo(self):
@@ -205,6 +241,9 @@ class PartnerSite(TimestampsMixin, models.Model):
 
         url = '%s://%s/' % (protocol, self.full_domain)
         return url
+
+    def is_cname_request(self, netloc):
+        return netloc == self.cname
 
     @classmethod
     def yank_hostname(cls, netloc):

@@ -1,0 +1,16 @@
+<script type="application/json" id="more-partners-{{project.id}}">
+[
+{% for partnership in project.partnerships.all %}
+    {% if partnership.organisation.id %}
+    {
+        "organisation": {
+            "id": {{partnership.organisation.id}},
+            "long_name": "{{partnership.organisation.long_name | escapejs}}"
+        },
+        "iati_organisation_role_label": "{{partnership.iati_organisation_role_label | escapejs}}"
+    }
+    {% if not forloop.last %},{% endif %}
+    {% endif %}
+{% endfor %}
+]
+</script>

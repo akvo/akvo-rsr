@@ -7,19 +7,19 @@
 
 
 import React, { PropTypes } from "react";
-import Collapse, { Panel } from "rc-collapse";
+import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
+import { FileReaderInput } from '../common';
 
 import { onChange, addKey } from "../../actions/collapse-actions"
 import {
-    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend, deleteUpdateFromBackend
+    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend,
+    deleteUpdateFromBackend
 } from "../../actions/model-actions"
 import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
 
-import {
-    endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId
-} from '../../utils.js';
+import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
 
 import {
     UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
@@ -34,6 +34,10 @@ const Header = ({update}) => {
             </div>
         </div>
     )
+};
+
+Header.propTypes = {
+    update: PropTypes.object.isRequired,
 };
 
 
@@ -65,9 +69,9 @@ const ActualValueInput = ({update, updatedActualValue, onChange}) => {
 };
 
 ActualValueInput.propTypes = {
-    update: PropTypes.object,
+    update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
 };
 
 
@@ -90,40 +94,143 @@ const ActualValueDescription = ({update, onChange}) => {
 };
 
 ActualValueDescription.propTypes = {
-    update: PropTypes.object,
-    onChange: PropTypes.func.isRequired
+    update: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 
-const Attachments = () => {
+class FileUpload extends React.Component {
+    static propTypes = {
+        update: React.PropTypes.object.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        removeAttachment: React.PropTypes.func.isRequired,
+    };
+
+    constructor(props) {
+        super(props);
+        this.clearInput = this.clearInput.bind(this);
+    }
+
+    clearInput(e) {
+        this.input._reactFileReaderInput.value = '';
+        this.props.removeAttachment('file');
+        e.preventDefault();
+    }
+
+    render() {
+        let filename, removeFile;
+        const update = this.props.update;
+        // Update with new file
+        if (update._file && update._file != 'delete') {
+            filename = <div>{update._file.name}</div>
+        // Existing, unmodified update
+        } else if (update.file_url) {
+            filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
+        }
+        if (filename) {
+            removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
+                             {_('remove_file')}
+                         </a>
+        }
+        return (
+            <span>
+                <FileReaderInput as="url" id="updateFile" onChange={this.props.onChange}
+                                 ref={input => this.input = input}>
+                    <label className="imageUpload">
+                        <a>
+                            <i className="fa fa-paperclip"/>
+                            {_('attach_file')}
+                        </a>
+                    </label>
+                </FileReaderInput>
+                {removeFile}
+                {filename}
+            </span>
+        );
+    }
+}
+
+
+class ImageUpload extends React.Component {
+    static propTypes = {
+        update: React.PropTypes.object.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        removeAttachment: React.PropTypes.func.isRequired,
+    };
+
+    constructor(props) {
+        super(props);
+        this.clearInput = this.clearInput.bind(this);
+    }
+
+    clearInput(e) {
+        this.input._reactFileReaderInput.value = '';
+        this.props.removeAttachment('photo');
+        e.preventDefault();
+    }
+
+    render() {
+        let imageName, removeImage;
+        const update = this.props.update;
+        // Update with new photo
+        if (update._photo && update._photo != 'delete') {
+            imageName = <div>{update._photo.file.name}</div>
+        // Existing, unmodified update
+        } else if (update.photo_url) {
+            imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
+        }
+        if (imageName) {
+            removeImage =
+                <div className="col-xs-3 update-photo">
+                    <div className="image-container">
+                        <a onClick={this.clearInput}>
+                            <img src={update._photo ? update._photo.img: update.photo_url}/>
+                            <div id="removeImage" className="image-overlay text-center">
+                                {_('remove_image')}
+                            </div>
+                        </a>
+                    </div>
+                </div>
+        }
+
+        return (
+            <div>
+                {removeImage}
+                <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
+                                 ref={input => this.input = input}>
+                    <label className="imageUpload">
+                        <a>
+                            <i className="fa fa-camera"/>
+                            {removeImage ? _('change_image') : _('add_image')}
+                        </a>
+                    </label>
+                </FileReaderInput>
+                {imageName}
+            </div>
+        );
+    }
+}
+
+
+const Attachments = ({update, onChange, removeAttachment}) => {
     return (
         <div className="row">
             <div className="col-xs-6">
-                <div>
-                    <label className="imageUpload">
-                        <input type="file" accept="image/*"/>
-                        <a>
-                            <i className="fa fa-camera"/>
-                            <span></span>
-                            <span>Add image</span>
-                        </a>
-                    </label>
-                </div>
+                <ImageUpload update={update} onChange={onChange}
+                             removeAttachment={removeAttachment}/>
             </div>
             <div className="col-xs-6">
-                <div>
-                    <label className="fileUpload">
-                        <input type="file"/>
-                        <a>
-                            <i className="fa fa-paperclip"/>
-                            <span></span>
-                            <span>Attach file</span>
-                        </a>
-                    </label>
-                </div>
+                <FileUpload update={update} onChange={onChange}
+                            removeAttachment={removeAttachment}/>
             </div>
         </div>
     )
+};
+
+Attachments.propTypes = {
+    update: React.PropTypes.object.isRequired,
+    onChange: React.PropTypes.func.isRequired,
+    removeAttachment: React.PropTypes.func.isRequired,
 };
 
 
@@ -156,14 +263,15 @@ const UpdateFormButtons = ({update, callbacks}) => {
 };
 
 UpdateFormButtons.propTypes = {
-    callbacks: PropTypes.object.isRequired
+    update: PropTypes.object.isRequired,
+    callbacks: PropTypes.object.isRequired,
 };
 
 
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'text', 'relative_data', 'status'];
+    const fields = ['data', 'text', 'relative_data', 'status', '_file', '_photo',];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -171,27 +279,123 @@ const pruneForPOST = (update) => {
     // Delete the listed fields when POSTing an update
     let updateForPOST = Object.assign({}, update);
     delete updateForPOST['user_details'];
-    delete updateForPOST['meta'];
     return updateForPOST;
 };
 
 export default class UpdateForm extends React.Component {
 
+    static propTypes = {
+        formToggle: PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        collapseId: PropTypes.string.isRequired,
+    };
+
     constructor(props) {
         super(props);
-        // Save original update
-        this.state = {originalUpdate: Object.assign({}, this.props.update)};
+        // Save original update, used when editing is cancelled
+        this.state = {
+            originalUpdate: Object.assign({}, this.props.update),
+        };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.attachmentsChange = this.attachmentsChange.bind(this);
+        this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
     }
 
-    onChange(e) {
-        // When the form field widgets change, modify the object in store['updates']
-        const field = e.target.id;
-        const changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+    attachmentsChange(e, results) {
+        let changedUpdate;
+        const file = results[0][1];
+        const event = results[0][0];
+        if (file.type.startsWith('image/')) {
+            changedUpdate = update(this.props.update, {$merge: {_photo :{file, img: event.target.result}}});
+        } else {
+            changedUpdate = update(this.props.update, {$merge: {_file: file}});
+        }
         updateModel('updates', changedUpdate);
+    }
+
+    removeAttachment(type) {
+        let changedUpdate;
+        if (type == 'file') {
+            // only set to delete a file if there was one in the first place
+            if (this.state.originalUpdate.file_url)
+                changedUpdate = update(this.props.update,
+                                       {$merge: {file: '', file_url: '', _file: 'delete'}});
+            else
+                changedUpdate = update(this.props.update,
+                                       {$merge: {file: '', file_url: '', _file: undefined}});
+        } else if (type == 'photo') {
+            // only set to delete an image if there was one in the first place
+            if (this.state.originalUpdate.photo_url)
+                changedUpdate = update(this.props.update,
+                                       {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+            else
+                changedUpdate = update(this.props.update,
+                                       {$merge: {photo: '', photo_url: '', _photo: undefined}});
+        }
+        updateModel('updates', changedUpdate);
+    }
+
+    onChange(e) {
+        // When  any part of the update form changes, modify the object in store['updates']
+
+        let changedUpdate;
+        const field = e.target.id;
+        const file = e.target.files && e.target.files[0];
+
+        e.preventDefault();
+
+        // New images have to be handled separately since we need to call updateModel inside the
+        // onloadend callback
+        if (field == "_photo") {
+            let reader = new FileReader();
+            reader.onloadend = (evt) => {
+                const newImage = update(
+                    this.props.update, {$merge:
+                        {_photo: {file, img: evt.target.result}}
+                    }
+                );
+                updateModel('updates', newImage);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            switch(field) {
+
+                case "_file": {
+                    this.setState({fileInput: e.target});
+                    changedUpdate = update(this.props.update, {$merge: {_file: file}});
+                    break;
+                }
+
+                case "removeFile": {
+                    this.state.fileInput.value = "";
+                    // only set to delete a file if there was one in the first place
+                    if (this.state.originalUpdate.file_url) {
+                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: 'delete'}});
+                    } else {
+                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: undefined}});
+                    }
+                    break;
+                }
+
+                case "removeImage": {
+                    // only set to delete an image if there was one in the first place
+                    if (this.state.originalUpdate.photo_url) {
+                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+                    } else {
+                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: undefined}});
+                    }
+                    break;
+                }
+
+                default: {
+                    changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+                }
+            }
+            updateModel('updates', changedUpdate);
+        }
     }
 
     onCancel() {
@@ -202,7 +406,7 @@ export default class UpdateForm extends React.Component {
         } else {
             updateModel(OBJECTS_UPDATES, originalUpdate);
         }
-        updateFromClose(originalUpdate.id);
+        updateFormClose(originalUpdate.id);
     }
 
     saveUpdate(e) {
@@ -243,18 +447,21 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const updateValue = parseFloat(this.props.update.data ? this.props.update.data : 0);
+        const update = this.props.update;
+        const updateValue = parseFloat(update.data ? update.data : 0);
         const updatedActualValue = displayNumber(this.previousActualValue() + updateValue);
+
         return (
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
-                    <Header update={this.props.update}/>
-                    <ActualValueInput onChange={this.onChange} update={this.props.update}
+                    <Header update={update}/>
+                    <ActualValueInput update={update} onChange={this.onChange}
                                       updatedActualValue={updatedActualValue}/>
-                    <ActualValueDescription onChange={this.onChange} update={this.props.update}/>
-                    <Attachments/>
+                    <ActualValueDescription update={update}  onChange={this.onChange}/>
+                    <Attachments update={update} onChange={this.attachmentsChange}
+                                 removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
-                        update={this.props.update}
+                        update={update}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
                             deleteUpdate: this.deleteUpdate,
@@ -265,16 +472,17 @@ export default class UpdateForm extends React.Component {
     }
 }
 
-UpdateForm.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    formToggle: PropTypes.func.isRequired,
-    update: PropTypes.object.isRequired,
-    period: PropTypes.object
-};
 
 let newUpdateID = 1;
 
 export class NewUpdateButton extends React.Component {
+
+    static propTypes = {
+        period: PropTypes.object.isRequired,
+        user: PropTypes.object.isRequired,
+        dispatch: PropTypes.func.isRequired,
+    };
+
     constructor (props) {
         super(props);
         this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
@@ -288,7 +496,6 @@ export class NewUpdateButton extends React.Component {
     newUpdate() {
         const id = `new-${newUpdateID}`;
         let { user, period } = this.props;
-        user = user.objects[user.ids[0]];
         const update = {
             id: id,
             period: period.id,
@@ -321,8 +528,3 @@ export class NewUpdateButton extends React.Component {
         )
     }
 }
-
-NewUpdateButton.propTypes = {
-    callbacks: PropTypes.object,
-    period: PropTypes.object
-};

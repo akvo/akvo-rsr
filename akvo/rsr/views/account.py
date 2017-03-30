@@ -39,6 +39,9 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(data=request.POST, files=request.FILES)
         if form.is_valid():
+            #  Honeypot field filled in? If so don't register and redirect to home page
+            if request.POST.get('hp_title'):
+                return redirect('index')
             user = form.save(request)
             return render_to_response('registration/register_complete.html',
                                       {'new_user': user},
@@ -130,14 +133,14 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
 
     def login_and_redirect(req, invited):
         """
-        Log the invited user in and redirect to the My details page in MyRSR.
+        Log the invited user in and redirect to the My projects page in MyRSR.
 
         :param req: the request
         :param invited: the invited user's instance
         """
         invited = authenticate(username=invited.username, no_password=True)
         login(request, invited)
-        return redirect('my_details')
+        return redirect('my_projects')
 
     bad_link, user, inviting_user, employment = False, None, None, None
 
@@ -195,7 +198,7 @@ def sign_in(request):
         if form.is_valid():
             login(request, form.get_user())
             next_page = request.GET.get('next')
-            return HttpResponseRedirect(next_page) if next_page else redirect('my_details')
+            return HttpResponseRedirect(next_page) if next_page else redirect('my_projects')
     # Password reset on sign in page
     elif request.method == "POST" and 'email' in request.POST:
         reset_form = PasswordResetForm(data=request.POST)

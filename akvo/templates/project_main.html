@@ -90,7 +90,7 @@
     {#  Initial data endpoints #}
     <script type="application/json" id="data-endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "result": "/rest/v1/result/{result}/?format=json",
             "results_of_project": "/rest/v1/result/?format=json&project={project}",
             "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={project}",

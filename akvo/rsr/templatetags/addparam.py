@@ -26,20 +26,11 @@ class AddParameters(Node):
                 value = self.vars[i + 1]
             params[key] = value
 
-        # return '%s?%s' % (req.path, params.urlencode())
         if params:
-            # return ('?%s' % params.urlencode()).replace('&', '&amp;')
-
-            params = '?%s' % params.urlencode()
-            return params.replace('&', '&amp;')
+            params = '&amp;'.join(sorted(params.urlencode().split('&')))
+            return '?%s' % params
         else:
             return ''
-        '''
-        if params:
-            return '?%s' % params.urlencode()
-        else:
-            return ''
-        '''
 
 
 def addparam(parser, token):
