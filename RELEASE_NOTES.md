@@ -2,12 +2,20 @@
 
 ## General improvements
 
+[#2583](https://github.com/akvo/akvo-rsr/pull/2583) Change landing page for My RSR
+
+[#2577](https://github.com/akvo/akvo-rsr/issues/2577) Add links to be able to view more projects in the project direct
+
 [#2454](https://github.com/akvo/akvo-rsr/issues/2454) Add hidden field to registration form as
 honeypot for bots
 
 ## Bug fixes
 
+[#2584](https://github.com/akvo/akvo-rsr/pull/2584) Deleting indicator update should change actual value comment
+
 [#2573](https://github.com/akvo/akvo-rsr/issues/2573) Fix typeahead organisations in Pages
+
+[#2563](https://github.com/akvo/akvo-rsr/issues/2563) Remove comment when indicator update is deleted
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
