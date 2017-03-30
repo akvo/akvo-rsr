@@ -1,25 +1,37 @@
-# In development
+# Akvo RSR version 3.23 New Delhi
 
 ## General improvements
 
-[#2583](https://github.com/akvo/akvo-rsr/pull/2583) Change landing page for My RSR
+[#2581](https://github.com/akvo/akvo-rsr/issue/2581) Change landing page for My
+RSR to the My Projects page
 
-[#2577](https://github.com/akvo/akvo-rsr/issues/2577) Add links to be able to view more projects in the project direct
+[#2577](https://github.com/akvo/akvo-rsr/issues/2577) Add links to be able to
+view more projects in the project directory
 
 [#2454](https://github.com/akvo/akvo-rsr/issues/2454) Add hidden field to registration form as
-honeypot for bots
+honeypot for bots and add a management command to delete spam users
+
+[#2466](https://github.com/akvo/akvo-rsr/issues/2466) Country associated with a
+location is automatically computed from the latitude and longitude.
+This
+[fixes missing country information](https://github.com/akvo/akvo-rsr/issues/2466) for
+some locations and
+broken [location advanced filter](https://github.com/akvo/akvo-rsr/issues/2527)
+
+[#29](https://github.com/akvo/akvo-rsr/issues/29) Enable SSL for the site
+
+[#2548](https://github.com/akvo/akvo-rsr/issues/2548) Allow filtering projects
+in the directory using Keyword advanced filter.  Also, removed organisation and
+location from the search bar typeahead.
+
+[#2593](https://github.com/akvo/akvo-rsr/issues/2593) More French translations
 
 ## Bug fixes
 
-[#2584](https://github.com/akvo/akvo-rsr/pull/2584) Deleting indicator update should change actual value comment
-
 [#2573](https://github.com/akvo/akvo-rsr/issues/2573) Fix typeahead organisations in Pages
 
-[#2563](https://github.com/akvo/akvo-rsr/issues/2563) Remove comment when indicator update is deleted
-
-[#2592](https://github.com/akvo/akvo-rsr/pull/2592) Add management command to delete spam users
-
-## Maintenance
+[#2563](https://github.com/akvo/akvo-rsr/issues/2563) Deleting indicator update
+removes associated comment from the actual value comment
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
