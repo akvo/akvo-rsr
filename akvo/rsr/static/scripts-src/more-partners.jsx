@@ -89,17 +89,11 @@ function loadMorePartners() {
 
         componentDidMount: function() {
             var xmlHttp = new XMLHttpRequest();
-            var url = endpointsMorePartners.base_url + endpointsMorePartners.partnerships_of_project.replace('{project}', this.props.projectId);
             var thisApp = this;
-            xmlHttp.onreadystatechange = function() {
-                if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
-                    thisApp.setState({
-                        partnerships: thisApp.processPartners(JSON.parse(xmlHttp.responseText).results)
-                    });
-                }
-            };
-            xmlHttp.open("GET", url, true);
-            xmlHttp.send();
+            var element_id = 'more-partners-' + this.props.projectId;
+            thisApp.setState({
+                partnerships: thisApp.processPartners(JSON.parse(document.getElementById(element_id).innerHTML))
+            });
         },
 
         processPartners: function(partnerships) {

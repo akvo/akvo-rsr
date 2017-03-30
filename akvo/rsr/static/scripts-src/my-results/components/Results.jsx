@@ -40,6 +40,10 @@ ResultHeader.propTypes = {
 })
 export default class Results extends React.Component {
 
+    static propTypes = {
+        parentId: PropTypes.string.isRequired,
+    };
+
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
@@ -100,7 +104,3 @@ export default class Results extends React.Component {
         }
     }
 }
-
-Results.propTypes = {
-    results: PropTypes.array
-};

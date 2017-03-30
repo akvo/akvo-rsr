@@ -27,7 +27,7 @@ const IndicatorHeader = ({indicator}) => {
 };
 
 IndicatorHeader.propTypes = {
-    item: PropTypes.object
+    indicator: PropTypes.object
 };
 
 
@@ -52,6 +52,7 @@ IndicatorContent.propTypes = {
     indicator: PropTypes.object
 };
 
+
 @connect((store) => {
     return {
         indicators: store.models['indicators'],
@@ -60,6 +61,10 @@ IndicatorContent.propTypes = {
     }
 })
 export default class Indicators extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -120,8 +125,3 @@ export default class Indicators extends React.Component {
         }
     }
 }
-
-Indicators.propTypes = {
-    items: PropTypes.array,
-    callbacks: PropTypes.object.isRequired,
-};

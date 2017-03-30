@@ -36,11 +36,11 @@ import json
 @login_required
 def my_rsr(request):
     """
-    Redirect to the 'My Details' page in MyRSR, if the user is logged in.
+    Redirect to the 'My Projects' page in MyRSR, if the user is logged in.
 
     :param request; A Django request.
     """
-    return HttpResponseRedirect(reverse('my_details', args=[]))
+    return HttpResponseRedirect(reverse('my_projects', args=[]))
 
 
 @login_required
@@ -567,12 +567,16 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
     admins_group = Group.objects.get(name='Admins')
     me_managers = project.publishing_orgs.employments().approved().\
         filter(group__in=[admins_group, me_managers_group])
+    # Can we unlock and approve?
+    user_is_me_manager = user.is_superuser or user.is_admin or user.me_manager_for_project(project)
 
     context = {
         'project': project,
         'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
         'child_projects_ids': [child_project.id for child_project in project.children()],
         'user': user,
+        # turn it into JSON boolean
+        'user_is_me_manager': 'true' if user_is_me_manager else 'false',
         'me_managers': me_managers.exists(),
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
     }

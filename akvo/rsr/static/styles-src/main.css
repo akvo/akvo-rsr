@@ -4387,3 +4387,11 @@ div.iatiFilters {
   border-right: 3px solid transparent;
   border-top: 4px solid #222;
   margin-right: 6px; }
+
+.fa-paperclip, .fa-camera {
+  margin-right: 0.3em; }
+
+#id_hp_title {
+  display: none;
+  position: absolute;
+  top: -9999px; }

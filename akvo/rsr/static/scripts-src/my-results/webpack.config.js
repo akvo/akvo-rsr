@@ -15,7 +15,9 @@ var path = require(node + "path");
 module.exports = {
     entry: {
         app: "./app.js",
-        vendors: ["isomorphic-fetch", "react", "redux", "redux-logger", "redux-thunk"]
+        vendors: [
+            "isomorphic-fetch", "react", "redux", "redux-logger", "redux-thunk"
+        ]
     },
     output: {
         filename: "../bundle.js"
@@ -42,6 +44,10 @@ module.exports = {
                         require.resolve(node + 'babel-plugin-transform-decorators-legacy')
                     ]
                 },
+            },
+            {
+                test: /\.css$/,
+                loader: "style-loader!css-loader"
             }
         ]
     },

@@ -19,7 +19,7 @@ import {
     displayDate, _, currentUser, findChildren, createToggleKey, collapseId, createToggleKeys
 } from '../../utils.js';
 
-import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED } from '../../const.js';
+import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, UPDATE_FORMS } from '../../const.js';
 
 import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
@@ -53,6 +53,12 @@ UpdateDisplay.propTypes = {
     }
 })
 class Update extends React.Component {
+
+    static propTypes = {
+        update: PropTypes.object.isRequired,
+        collapseId: PropTypes.string.isRequired,
+    };
+
     constructor (props) {
         super(props);
         this.formToggle = this.formToggle.bind(this);
@@ -69,9 +75,8 @@ class Update extends React.Component {
                     onClick={this.formToggle}
                     className={'btn btn-sm btn-default'}
                     label={_('edit_update')}/>
-                {this.props.ui[`updateForm-${this.props.update.id}`] ?
+                {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
-                        callbacks={this.props.callbacks}
                         update={this.props.update}
                         formToggle={this.formToggle}
                         collapseId={this.props.collapseId}/>
@@ -81,11 +86,6 @@ class Update extends React.Component {
         )
     }
 }
-
-Update.propTypes = {
-    callbacks: PropTypes.object.isRequired,
-    update: PropTypes.object.isRequired
-};
 
 
 const UpdateHeader = ({update}) => {
@@ -100,7 +100,7 @@ const UpdateHeader = ({update}) => {
 };
 
 UpdateHeader.propTypes = {
-    item: PropTypes.object
+    update: PropTypes.object.isRequired,
 };
 
 
@@ -112,6 +112,10 @@ UpdateHeader.propTypes = {
     }
 })
 export default class Updates extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
 
     constructor(props) {
         super(props);
@@ -141,7 +145,7 @@ export default class Updates extends React.Component {
             (update) => {
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
-                if (update.status == UPDATE_STATUS_APPROVED && data !== NaN) {
+                if (data && update.status == UPDATE_STATUS_APPROVED) {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
@@ -180,8 +184,3 @@ export default class Updates extends React.Component {
         }
     }
 }
-
-Updates.propTypes = {
-    callbacks: PropTypes.object,
-    items: PropTypes.array,
-};

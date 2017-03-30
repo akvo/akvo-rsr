@@ -9,7 +9,6 @@ from __future__ import absolute_import
 
 from django import template
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.template.defaulttags import WidthRatioNode
 from django.template.base import TemplateSyntaxError
 from django.utils.translation import ugettext as _
@@ -169,29 +168,6 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
         'wxh': '%sx%s' % (width, height,),
         'caption': caption,
         'style': style,
-    }
-
-
-@register.inclusion_tag('inclusion_tags/focus_area.html', takes_context=True)
-def focus_area(context, focusarea, projects_link=True):
-    '''
-    '''
-    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV, MORE_URL = 0, 1, 2, 3, 4
-    FOCUS_AREA_DATA = {
-        'clean': (u'Clean water', '%spvw/img/base/focus_area/clean_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '', 'http://%s/web/areas/cleanwater' % Site.objects.get_current()),
-        'safety': (u'Safety', '%spvw/img/base/focus_area/sharing_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px; width:350px', '', 'http://%s/web/areas/safety' % Site.objects.get_current()),
-        'sharing': (u'Sharing water', '%spvw/img/base/focus_area/governance_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', 'text-align:right; padding-left:200px;', 'http://%s/web/areas/sharingwater' % Site.objects.get_current()),
-        'governance': (u'Governance', '%spvw/img/base/focus_area/safety_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '', 'http://%s/web/areas/governance' % Site.objects.get_current()),
-    }
-    return {
-        'MEDIA_URL': context['MEDIA_URL'],
-        'focusarea': focusarea,
-        'title': FOCUS_AREA_DATA[focusarea][TITLE],
-        'bgrd': FOCUS_AREA_DATA[focusarea][BG_COLOR],
-        'outer_div': FOCUS_AREA_DATA[focusarea][OUTER_DIV],
-        'inner_div': FOCUS_AREA_DATA[focusarea][INNER_DIV],
-        'more_link': FOCUS_AREA_DATA[focusarea][MORE_URL],
-        'projects_link': projects_link,
     }
 
 

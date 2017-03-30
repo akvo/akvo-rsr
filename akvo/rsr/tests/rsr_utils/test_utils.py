@@ -12,7 +12,7 @@ from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
-                        pagination, filter_query_string, codelist_name, )
+                        pagination, filter_query_string, codelist_name, get_country)
 
 from django.core import mail
 from django.http.request import QueryDict
@@ -143,3 +143,22 @@ class GeneralUtilsTestCase(TestCase):
         sector = Sector.objects.create(project=self.project, sector_code='140')
         name = codelist_name(CodelistSector, sector, 'sector_code', version='16')
         self.assertEqual(name, '140')
+
+    def test_countries(self):
+        """Test retrieving country name from (lat, long)."""
+
+        LOCATIONS = [
+            ((0.313611, 32.581111), 'Uganda'),
+            ((15.184898, 75.060385), 'India'),
+            ((10.54, 14.36), 'Cameroon'),
+            ((6.167031, 8.660059), 'Nigeria'),
+            ((7.116944, -9.400053), 'Liberia'),
+            ((-1.292066, 36.821946), 'Kenya'),
+            ((27.305846, 85.404534), 'Nepal'),
+            ((10.314919, 1.680908), 'Benin'),
+            ((-1.292066, 36.821946), 'Kenya'),
+            ((7.346927, 2.06652), 'Benin'),
+        ]
+
+        for (lat, lon), country in LOCATIONS:
+            self.assertEqual(country, get_country(lat, lon)[0])

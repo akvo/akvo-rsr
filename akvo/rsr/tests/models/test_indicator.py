@@ -106,3 +106,20 @@ class IndicatorPeriodModelTestCase(TestCase):
         self.assertIn(data_1.text, period.actual_comment)
         # newer update's text appears before older one's
         self.assertLess(period.actual_comment.index(data_2.text), period.actual_comment.index(data_1.text))
+
+    def test_period_data_deletion_updates_actual_comment(self):
+
+        # Given
+        period = self.period
+        user = self.user
+        data = IndicatorPeriodData.objects.create(text='period data comment',
+                                                  period=period,
+                                                  user=user,
+                                                  status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+
+        # When
+        data.delete()
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=period.id)
+        self.assertNotIn(data.text, period.actual_comment)

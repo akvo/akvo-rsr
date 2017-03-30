@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load addparam bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
   <section id="map" class="touch-navbar">
@@ -60,6 +60,11 @@
               </div>
             </div>
             <div>
+              <div class="btn-group">
+                {% bootstrap_field filter.form.keyword %}
+              </div>
+            </div>
+            <div>
               <nav>
                 <ul class="nav nav-pills nav-stacked">
                   <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
@@ -78,6 +83,11 @@
       {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
           Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
       {% endblocktrans %}
+          | View
+          {% for page_number, page_size in page_info|slice:"1:" %}
+              <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
+          {% endfor %}
+          projects
       </p>
     </div>
       {% include 'navigation/pagination-sort.html' %}
@@ -213,7 +223,7 @@
     <script id="typeahead" src="{{ STATIC_URL }}lib/scripts/typeahead.js"></script>
 
     {# Google Maps API #}
-    <script src="http://maps.google.com/maps/api/js"></script>
+    <script src="//maps.google.com/maps/api/js"></script>
 
     <script type="application/json" id="akvo-rsr-typeahead-thumbs">
         {
@@ -251,7 +261,7 @@
     {#  Initial data endpoints #}
     <script type="application/json" id="data-endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "partnerships_of_project": "/rest/v1/partnership_more_link/?format=json&project={project}"
         }
     </script>
@@ -263,6 +273,11 @@
             "partners": "{% trans 'partners'|escapejs %}"
         }
     </script>
+
+    {# More partners data #}
+    {% for project in page %}
+        {% include 'project_partner_data.html' %}
+    {% endfor %}
 
   {% javascript 'project_directory' %}
   {% javascript 'project_directory_typeahead' %}
