@@ -9,7 +9,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
-                                   TypeaheadProjectUpdateSerializer)
+                                   TypeaheadProjectUpdateSerializer,
+                                   TypeaheadKeywordSerializer,)
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
@@ -41,7 +42,7 @@ def typeahead_country(request):
 @api_view(['GET'])
 def typeahead_organisation(request):
     page = request.rsr_page
-    organisations = page.organisation.partners().distinct() if page else Organisation.objects.all()
+    organisations = page.organisation.partners() if page else Organisation.objects.all()
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
@@ -57,6 +58,18 @@ def typeahead_user_organisations(request):
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
     )
+
+
+@api_view(['GET'])
+def typeahead_keyword(request):
+    page = request.rsr_page
+    keywords = page.keywords.all() if page else None
+    if keywords:
+        return Response(
+            rejig(keywords, TypeaheadKeywordSerializer(keywords, many=True))
+        )
+    # No keywords on rsr.akvo.org
+    return Response({})
 
 
 @api_view(['GET'])

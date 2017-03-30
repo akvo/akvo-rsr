@@ -22,12 +22,11 @@ from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import (build_choices, location_choices, ProjectFilter,
+from ..filters import (build_choices, location_choices, create_project_filter_class,
                        remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
-from .utils import apply_keywords, org_projects
 from .organisation import _page_organisations
 from akvo.codelists.models import SectorCategory, Sector, Version
 
@@ -37,27 +36,13 @@ from akvo.codelists.models import SectorCategory, Sector, Version
 ###############################################################################
 
 
-def _published_projects():
-    """Return all active projects."""
-    return Project.objects.public().published()
-
-
-def _page_projects(page):
-    """Dig out the list of projects to use.
-
-    First get a list based on page settings (orgs or all projects). Then apply
-    keywords filtering / exclusion.
-    """
-    projects = org_projects(page.organisation) if page.partner_projects else _published_projects()
-    return apply_keywords(page, projects)
-
-
 def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
-    if not page:
-        return _published_projects()
-    return _page_projects(page)
+    return (
+        page.organisation.published_projects() if page is not None
+        else Project.objects.public().published()
+    )
 
 
 def directory(request):
@@ -66,7 +51,9 @@ def directory(request):
 
     # Set show_filters to "in" if any filter is selected
     show_filters = "in"  # To simplify template use bootstrap class
-    available_filters = ['location', 'status', 'iati_status', 'organisation', 'sector', 'sort_by']
+    available_filters = [
+        'location', 'status', 'iati_status', 'organisation', 'sector', 'keyword', 'sort_by'
+    ]
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 
@@ -78,7 +65,7 @@ def directory(request):
 
     # Yank project collection
     all_projects = _project_directory_coll(request)
-    f = ProjectFilter(qs, queryset=all_projects)
+    f = create_project_filter_class(request)(qs, queryset=all_projects)
 
     # Change filter options further when on an Akvo Page
     if request.rsr_page:
@@ -105,7 +92,7 @@ def directory(request):
     ]
 
     # Get the current org filter for typeahead
-    org_filter = request.GET.get('organisation', '')
+    org_filter = request.GET.get('organisation', '0')
 
     # Get projects to be displayed on the map
     if request.rsr_page and request.rsr_page.all_maps:
