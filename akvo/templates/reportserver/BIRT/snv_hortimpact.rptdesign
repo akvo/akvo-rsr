@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -9489,16 +9489,14 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="bottomMargin">50px</property>
             <property name="rightMargin">3.880555555555556mm</property>
             <page-footer>
-                <text id="1945">
-                    <property name="style">P</property>
+                <auto-text id="1959">
+                    <property name="fontFamily">"VAGRoundedStd-Light"</property>
+                    <property name="fontSize">11pt</property>
                     <property name="fontWeight">bold</property>
                     <property name="color">#00A54F</property>
                     <property name="textAlign">right</property>
-                    <property name="contentType">html</property>
-                    <text-property name="content"><![CDATA[<viewtime-value-of>
-pageNumber
-</viewtime-value-of>]]></text-property>
-                </text>
+                    <property name="type">page-number</property>
+                </auto-text>
             </page-footer>
         </simple-master-page>
         <simple-master-page name="Cover" id="1869">
