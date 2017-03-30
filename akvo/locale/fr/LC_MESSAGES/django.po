@@ -3,9 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Abdoulaye Semde <abdoulaye@akvo.org>, 2017
 # Anke van Lenteren <anke@vanlenteren.com>, 2012
 # Frédéric MILLOGO <frederic@akvo.org>, 2016
 # IzziOli <isabelle.olivetti@virgin.net>, 2012
+# IzziOli <isabelle.olivetti@virgin.net>, 2012
+# Kasper Brandt, 2015
 # Kasper Brandt, 2015
 # Roverts <laura@akvo.org>, 2015
 # Wendemi ILBOUDO <wendemi@akvo.org>, 2016
@@ -14,8 +17,8 @@ msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-06 12:12+0200\n"
-"PO-Revision-Date: 2016-07-04 16:18+0000\n"
-"Last-Translator: Wendemi ILBOUDO <wendemi@akvo.org>\n"
+"PO-Revision-Date: 2017-03-27 17:34+0000\n"
+"Last-Translator: Abdoulaye Semde <abdoulaye@akvo.org>\n"
 "Language-Team: French (http://www.transifex.com/akvo-foundation/akvo-rsr/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -708,31 +711,31 @@ msgstr ""
 
 #: rest/views/project_editor.py:180
 msgid "It is not allowed to use a comma, use a period to denote decimals."
-msgstr ""
+msgstr "Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."
 
 #: rest/views/project_editor.py:386
 msgid "There can be only one reporting organisation"
-msgstr ""
+msgstr "Il ne peut y avoir qu'une seule organisation déclarante"
 
 #: rest/views/project_editor.py:661
 msgid "Project editor, added: validation set"
-msgstr ""
+msgstr "Éditeur de projet, ajouté: ensemble de validation"
 
 #: rest/views/project_editor.py:689
 msgid "Project editor, deleted: validation set"
-msgstr ""
+msgstr "Éditeur de projet, supprimé: ensemble de validation"
 
 #: rest/views/project_editor.py:717
 msgid "Project editor, deleted: keyword"
-msgstr ""
+msgstr "Editeur de projet, supprimé: mot-clé"
 
 #: rest/views/project_editor.py:762
 msgid "Project editor, added project"
-msgstr ""
+msgstr "Éditeur de projet, projet ajouté"
 
 #: rest/views/user.py:49 rest/views/user.py:72 rest/views/user.py:98
 msgid "User does not exist"
-msgstr ""
+msgstr "L'utilisateur n'existe pas"
 
 #: rest/views/user.py:121
 msgid "User already linked to this organisation"
@@ -749,7 +752,7 @@ msgstr "Informations de contact"
 
 #: rsr/admin.py:253
 msgid "Organisation settings"
-msgstr ""
+msgstr "Paramètres de l'organisation"
 
 #: rsr/admin.py:255
 msgid "Notes"
@@ -867,7 +870,7 @@ msgid ""
 "target=\"_blank\">http://www.latlong.net/</a> to obtain the coordinates for "
 "your locations, as these are the items that ensure the pin is in the correct"
 " place."
-msgstr ""
+msgstr "La portée du projet se réfère à la zone géographique dans laquelle le projet est actif<br><br>Ajoutez également les emplacements physiques où le projet est réalisé. Celles-ci apparaîtront sur la carte de votre page de projet. Utilisez le lien <a href=\"http://www.latlong.net/\" target=\"_blank\">http://www.latlong.net/</a> pour obtenir les coordonnées de vos lieux, car ce sont les éléments qui assurent le point est au bon endroit."
 
 #: rsr/admin.py:886
 msgid "Project Focus"
@@ -1027,7 +1030,7 @@ msgstr "Projet %(project_id)d - %(project_title)s : %(update_title)s"
 
 #: rsr/feeds.py:244
 msgid "Last 25 RSR project updates"
-msgstr ""
+msgstr "25 dernières mises à jour du projet RSR"
 
 #: rsr/feeds.py:249
 msgid "Project updates for all Akvo RSR projects"
@@ -1064,7 +1067,7 @@ msgstr "état"
 
 #: rsr/filters.py:155
 msgid "iati status"
-msgstr ""
+msgstr "Status de IITA"
 
 #: rsr/filters.py:160 rsr/filters.py:189 rsr/filters.py:206
 #: templates/organisation_directory.html:22
@@ -3577,44 +3580,44 @@ msgstr "%sWallis-et-Futuna"
 
 #: rsr/reports.py:20
 msgid "Results and indicators overview"
-msgstr ""
+msgstr "Aperçu des résultats et des indicateurs"
 
 #: rsr/reports.py:21
 msgid ""
 "This report gives an overview of the status of your project's results and "
 "indicators."
-msgstr ""
+msgstr "Ce rapport donne un aperçu de l'état des résultats et des indicateurs de votre projet."
 
 #: rsr/reports.py:29
 msgid "Results and indicators table"
-msgstr ""
+msgstr "Tableau des résultats et indicateurs"
 
 #: rsr/reports.py:30
 msgid ""
 "This report provides a view of your project's results and indicators data in"
 " a table."
-msgstr ""
+msgstr "Ce rapport donne un aperçu des résultats et des indicateurs d'un projet dans un tableau."
 
 #: rsr/reports.py:38
 msgid "Projects overview"
-msgstr ""
+msgstr "Aperçu des projets"
 
 #: rsr/reports.py:39
 msgid ""
 "This report provides information about your organisation's projects: amount "
 "of updates, country, total budgets, project statuses, start- and end dates."
-msgstr ""
+msgstr "Ce rapport fournit des informations sur les projets de votre organisation: nombre de mises à jour, pays, budgets totaux, statuts des projets, dates de début et de fin."
 
 #: rsr/reports.py:48
 msgid "Data quality overview"
-msgstr ""
+msgstr "Aperçu de la qualité des données"
 
 #: rsr/reports.py:49
 msgid ""
 "This report gives an overview of your organisation's projects that have "
 "passed the planned end date, need funding or that haven't been edited or "
 "updated for 3 months."
-msgstr ""
+msgstr "Ce rapport donne un aperçu des projets de votre organisation dont les dates de fin prévues sont dépassées, qui ont besoin de financement ou qui n'ont pas été modifiés ou mise à jour pendant 3 mois."
 
 #: rsr/reports.py:58
 msgid "Plan Finland report"
@@ -3709,7 +3712,7 @@ msgstr "élément de budget"
 msgid ""
 "Select the budget item(s) to indicate how the project budget is divided. Use"
 " the ‘Other’ fields to add custom budget items."
-msgstr ""
+msgstr "Sélectionnez le (s) poste (s) budgétaire (s) pour indiquer la répartition du budget du projet. Utilisez les champs 'Autres' pour ajouter des éléments budgétaires personnalisés."
 
 #: rsr/models/budget_item.py:46
 msgid "other label extra info"
@@ -3717,17 +3720,17 @@ msgstr ""
 
 #: rsr/models/budget_item.py:47
 msgid "Enter a description for an \"other\" budget item."
-msgstr ""
+msgstr "Entrez une description pour un poste budgétaire \"autre\"."
 
 #: rsr/models/budget_item.py:51
 msgid "budget item value"
-msgstr ""
+msgstr "Valeur de la ligne budgétaire"
 
 #: rsr/models/budget_item.py:52
 msgid ""
 "Enter the amount of budget that is set aside for this specific budget item. "
 "Use a period to denote decimals."
-msgstr ""
+msgstr "Inscrivez le montant du budget qui est mis de côté pour ce poste budgétaire spécifique. Utilisez un point pour indiquer les décimaux."
 
 #: rsr/models/budget_item.py:58
 msgid "budget type"
@@ -3735,59 +3738,59 @@ msgstr "type de budget"
 
 #: rsr/models/budget_item.py:59
 msgid "Select whether this is an original or revised budget of the project."
-msgstr ""
+msgstr "Indiquez s'il s'agit d'un budget original ou révisé du projet."
 
 #: rsr/models/budget_item.py:62
 msgid "budget item period start"
-msgstr ""
+msgstr "Début de la période de la ligne budgétaire"
 
 #: rsr/models/budget_item.py:63 rsr/models/organisation_budget.py:34
 msgid "Enter the start date (DD/MM/YYYY) for the budget period."
-msgstr ""
+msgstr "Entrez la date de début (JJ/MM/AAAA) pour la période budgétaire."
 
 #: rsr/models/budget_item.py:66
 msgid "budget item period end"
-msgstr ""
+msgstr "Fin de la période de la ligne budgétaire"
 
 #: rsr/models/budget_item.py:67 rsr/models/organisation_budget.py:38
 msgid "Enter the end date (DD/MM/YYYY) for the budget period."
-msgstr ""
+msgstr "Entrez la date de fin (JJ/MM/AAAA) pour la période budgétaire."
 
 #: rsr/models/budget_item.py:70
 msgid "budget item value date"
-msgstr ""
+msgstr "Date de valeur de la ligne budgétaire"
 
 #: rsr/models/budget_item.py:71 rsr/models/organisation_budget.py:29
 #: rsr/models/organisation_budget.py:187
 msgid ""
 "Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for"
 " currency conversions."
-msgstr ""
+msgstr "Entrez la date (JJ/MM/AAAA) à utiliser pour déterminer le taux de change pour les conversions de devises."
 
 #: rsr/models/budget_item.py:78 rsr/models/organisation_budget.py:70
 msgid ""
 "The status explains whether the budget being reported is indicative or has "
 "been formally committed."
-msgstr ""
+msgstr "Le statut explique si le budget déclaré est indicatif ou a été officiellement engagé."
 
 #: rsr/models/budget_item.py:88
 msgid "No budget item specified"
-msgstr ""
+msgstr "Aucune ligne budgétaire spécifiée"
 
 #: rsr/models/budget_item.py:97
 msgid "No amount specified"
-msgstr ""
+msgstr "Aucun montant spécifié"
 
 #: rsr/models/budget_item.py:100
 msgid "(Revised)"
-msgstr ""
+msgstr "(Revisé)"
 
 #: rsr/models/budget_item.py:108 rsr/models/budget_item.py:110
 #: rsr/models/indicator.py:352 rsr/models/indicator.py:354
 #: rsr/models/organisation_budget.py:56 rsr/models/organisation_budget.py:58
 #: rsr/models/planned_disbursement.py:95 rsr/models/planned_disbursement.py:97
 msgid "Period start cannot be at a later time than period end."
-msgstr ""
+msgstr "La période de démarrage ne peut être postérieure à la période de fin."
 
 #: rsr/models/budget_item.py:147
 msgid "budget items"
@@ -5159,7 +5162,7 @@ msgid ""
 "shown on the project page, but not on Akvo Pages.<br/>The logo should be "
 "about 1 MB in size, and should preferably be 75x75 pixels and in PNG or JPG "
 "format."
-msgstr ""
+msgstr "Ajoutez votre logo de mot-clé ici. Vous ne pouvez ajouter qu'un seul logo. Le logo sera affiché sur la page du projet, mais pas sur les pages de Akvo.<br/>Le logo devrait être environ une taille de 1 MB, et devrait de préférence être de 75x75 pixels et en format PNG ou JPG."
 
 #: rsr/models/keyword.py:41 rsr/models/project.py:249
 msgid "keyword"
@@ -6405,7 +6408,7 @@ msgid ""
 "open pending financial sign off or M&E<br/>5) Cancelled: the project has "
 "been cancelled<br/>6) Suspended: the project has been temporarily suspended "
 "or the reporting partner no longer uses RSR."
-msgstr ""
+msgstr "Il existe six statuts de projet différents:<br/>1) Pipeline / identification: le projet est portée ou planifié<br/>2) Mise en œuvre: le projet est en cours de mise en œuvre<br/>3) Achèvement: le projet est terminé ou le décaissement final a été effectué<br/>4) Après l'achèvement: le projet est terminé ou le décaissement final a été effectué, mais le projet reste ouvert en attendant l'approbation financière ou le S & E<br/>5) Annulé: le projet a été annulé<br/>6) Suspendu: le projet a été suspendu temporairement ou le partenaire déclarant n'utilise plus de RSR."
 
 #: rsr/models/project.py:150 templates/project_directory.html:257
 #: templates/project_main.html:224 templates/project_main.html.py:291
@@ -6616,7 +6619,7 @@ msgid ""
 "code]-[Chamber of Commerce number]-[organisation’s internal project code]. "
 "For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more "
 "information see"
-msgstr ""
+msgstr "Il s'agit d'un identifiant globalement unique pour cette activité. Il est obligatoire de se conformer au standard IITA. Ce code se compose de : [code pays] - [Numero de la chambre de commerce] - [code interne du projet de l'organisation]. Pour des organismes néerlandais, ceci est, par exemple, NL-KVK-31156201-TZ1234. Pour plus d'informations, voir "
 
 #: rsr/models/project.py:301
 msgid "hierarchy"
@@ -7163,7 +7166,7 @@ msgid ""
 "funded: a project that receives funding from more than one "
 "organisation.<br/>5 - Third party: a report by another organisation on the "
 "same project that you are reporting on."
-msgstr ""
+msgstr "La relation entre un projet et un projet connexe. Il existe cinq types de relations:<br/>1 - Parent: le projet que vous êtes en train de créer est une sous-composante du projet associé sélectionné.<br/>2 - Enfant: le projet connexe sélectionné est une sous-composante du projet que vous créez maintenant.<br/>3 - Sibling: le projet associé sélectionné et le projet que vous créez sont les deux sous-composantes d'un projet parent.<br/>4 - cofinancé: projet financé par plus d'une organisation.<br/>5 - Tiers: un rapport d'un autre organisme sur le même projet sur lequel vous faites rapport."
 
 #: rsr/models/related_project.py:55
 msgid "related project"
@@ -7661,7 +7664,7 @@ msgstr "Organisation"
 
 #: templates/organisation_directory.html:10
 msgid "This map only shows the organisations listed on this page."
-msgstr "cette carte ne montre que les projets énumérés sur cette page"
+msgstr "cette carte ne montre que les organisations énumérées sur la page"
 
 #: templates/organisation_directory.html:16
 msgid ""
@@ -7900,7 +7903,7 @@ msgstr "Partenaires de projet"
 
 #: templates/project_main.html:18
 msgid "Finances"
-msgstr "Finances"
+msgstr "Les financements"
 
 #: templates/project_main.html:20 templates/update_directory.html:3
 #: templates/update_directory.html.py:135
@@ -7970,22 +7973,22 @@ msgstr "Annuler"
 #: templates/project_main.html:129 templates/myrsr/my_iati.html:165
 #: templates/myrsr/my_results.html:69
 msgid "Jan"
-msgstr "Jan"
+msgstr "Janv."
 
 #: templates/project_main.html:130 templates/myrsr/my_iati.html:166
 #: templates/myrsr/my_results.html:70
 msgid "Feb"
-msgstr "Fev"
+msgstr "Fev."
 
 #: templates/project_main.html:131 templates/myrsr/my_iati.html:167
 #: templates/myrsr/my_results.html:71
 msgid "Mar"
-msgstr "Mar"
+msgstr "Mars"
 
 #: templates/project_main.html:132 templates/myrsr/my_iati.html:168
 #: templates/myrsr/my_results.html:72
 msgid "Apr"
-msgstr "Avr"
+msgstr "Avr."
 
 #: templates/project_main.html:133 templates/myrsr/my_iati.html:169
 #: templates/myrsr/my_results.html:73
@@ -7995,37 +7998,37 @@ msgstr "Mai"
 #: templates/project_main.html:134 templates/myrsr/my_iati.html:170
 #: templates/myrsr/my_results.html:74
 msgid "Jun"
-msgstr "Jui"
+msgstr "Juin"
 
 #: templates/project_main.html:135 templates/myrsr/my_iati.html:171
 #: templates/myrsr/my_results.html:75
 msgid "Jul"
-msgstr "Juil"
+msgstr "Juil."
 
 #: templates/project_main.html:136 templates/myrsr/my_iati.html:172
 #: templates/myrsr/my_results.html:76
 msgid "Aug"
-msgstr "Aoû"
+msgstr "Août"
 
 #: templates/project_main.html:137 templates/myrsr/my_iati.html:173
 #: templates/myrsr/my_results.html:77
 msgid "Sep"
-msgstr "Sep"
+msgstr "Sept."
 
 #: templates/project_main.html:138 templates/myrsr/my_iati.html:174
 #: templates/myrsr/my_results.html:78
 msgid "Oct"
-msgstr "Oct"
+msgstr "Oct."
 
 #: templates/project_main.html:139 templates/myrsr/my_iati.html:175
 #: templates/myrsr/my_results.html:79
 msgid "Nov"
-msgstr "Nov"
+msgstr "Nov."
 
 #: templates/project_main.html:140 templates/myrsr/my_iati.html:176
 #: templates/myrsr/my_results.html:80
 msgid "Dec"
-msgstr "Déc"
+msgstr "Déc."
 
 #: templates/project_main.html:148 templates/myrsr/my_results.html:88
 #: templates/results_framework/approve_update_message.html:27
@@ -8121,11 +8124,11 @@ msgstr "Nombre de mises à jour en attente"
 
 #: templates/project_main.html:167 templates/myrsr/my_results.html:107
 msgid "Lock period"
-msgstr "Période de verrouillage"
+msgstr "durée de verrouillage"
 
 #: templates/project_main.html:168 templates/myrsr/my_results.html:108
 msgid "Unlock period"
-msgstr "Période de déverouillage"
+msgstr "durée de déverouillage"
 
 #: templates/project_main.html:169 templates/myrsr/my_results.html:109
 msgid "Unlocking period"
@@ -8157,7 +8160,7 @@ msgstr "Valeur réelle"
 
 #: templates/project_main.html:176 templates/myrsr/my_results.html:116
 msgid "This is the total of all indicator updates for this period"
-msgstr "Ceci est le total de toutes les mises à jour de l'indicateur pour cette période"
+msgstr "Ceci est le total de toutes les mises à jour de l'indicateur pour cette session"
 
 #: templates/project_main.html:177 templates/myrsr/my_results.html:117
 msgid "Target value"
@@ -8165,7 +8168,7 @@ msgstr "Valeur cible"
 
 #: templates/project_main.html:178 templates/myrsr/my_results.html:118
 msgid "Target comment"
-msgstr "Commentaire ciblé"
+msgstr "Commentaire cible"
 
 #: templates/project_main.html:179 templates/myrsr/my_results.html:119
 msgid "Actual comment"
@@ -8181,7 +8184,7 @@ msgstr "Ajouter à la valeur réelle"
 
 #: templates/project_main.html:182 templates/myrsr/my_results.html:122
 msgid "Fill in a value to add to the actual value"
-msgstr "Remplir pour ajouter une valeur à la valeur réelle"
+msgstr "Remplissez pour ajouter une valeur à la valeur réelle"
 
 #: templates/project_main.html:183 templates/project_main.html.py:207
 #: templates/myrsr/my_results.html:147
@@ -8191,15 +8194,15 @@ msgstr "Commentaire"
 #: templates/project_main.html:184 templates/myrsr/my_results.html:124
 msgid ""
 "Add a comment to provide additional background information for this update"
-msgstr "Ajouter un commentaire pour fournir des informations complémentaires pour cette mise à jour."
+msgstr "Ajoutez un commentaire pour fournir des informations complémentaires pour cette mise à jour."
 
 #: templates/project_main.html:185 templates/myrsr/my_results.html:125
 msgid "New total for this period"
-msgstr "Total actualisé pour cette période"
+msgstr "Total actualisé pour cette session"
 
 #: templates/project_main.html:186 templates/myrsr/my_results.html:126
 msgid "Actual total for this period (after this update)"
-msgstr "Total réel pour cette période (après cette mise à jour)"
+msgstr "Total réel pour cette session (après cette mise à jour)"
 
 #: templates/project_main.html:187 templates/myrsr/my_results.html:127
 msgid "Indicator Update"
@@ -8211,7 +8214,7 @@ msgstr "Les mises à jour de l'indicateur"
 
 #: templates/project_main.html:189 templates/myrsr/my_results.html:129
 msgid "This period has no updates yet"
-msgstr "Cette période n'a pas encore de mises à jour"
+msgstr "Cette session n'a pas encore de mises à jour"
 
 #: templates/project_main.html:190 templates/myrsr/my_results.html:130
 msgid "New indicator update"
@@ -8339,7 +8342,7 @@ msgstr "Dates et statuts de l'activité"
 
 #: templates/project_main.html:236
 msgid "Planned"
-msgstr "Planifié"
+msgstr "Prévu"
 
 #: templates/project_main.html:237
 msgid "Actual"
@@ -8431,7 +8434,7 @@ msgstr "Les références de l'indicateur"
 #: templates/project_main.html:267
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:68
 msgid "Indicator period actual dimensions"
-msgstr "Mésure réelle de la durée de l'indicateur"
+msgstr "Les dimensions réelles de la durée de l'indicateur"
 
 #: templates/project_main.html:268
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:49
@@ -9694,7 +9697,7 @@ msgstr "Modifier"
 
 #: templates/myrsr/my_projects.html:76
 msgid "Can't edit a completed or cancelled project"
-msgstr "Vous ne pouvez pas éditer un projet achevé ou abandonné"
+msgstr "Vous ne pouvez pas modifier un projet achevé ou abandonné"
 
 #: templates/myrsr/my_projects.html:79 templates/myrsr/my_projects.html:81
 msgid "Results data"
@@ -9760,7 +9763,7 @@ msgstr "champs personnalisés"
 
 #: templates/myrsr/my_projects.html:143
 msgid "Please contact Akvo staff by using the Help button on the right."
-msgstr "veuillez contacter l'équipe Akvo en utilisant le bouton Aide à droite"
+msgstr "SVP, contactez l'équipe de Akvo en utilisant le bouton Aide à droite"
 
 #: templates/myrsr/my_reports.html:5
 msgid "MyRSR - My Reports"
@@ -9772,7 +9775,7 @@ msgstr "Mes rapports"
 
 #: templates/myrsr/my_reports.html:35
 msgid "Download report"
-msgstr "Télécharger rapport"
+msgstr "Chargement du rapport"
 
 #: templates/myrsr/my_reports.html:36
 msgid "Report type"
@@ -9797,7 +9800,7 @@ msgstr "Sélectionner un format"
 
 #: templates/myrsr/my_reports.html:44
 msgid "Generating report..."
-msgstr "Rapport de production"
+msgstr "Générer un rapport "
 
 #: templates/myrsr/my_reports.html:45
 msgid "Your report will be downloaded shortly"
@@ -9813,7 +9816,7 @@ msgstr "Aucun rapport sélectionné"
 
 #: templates/myrsr/my_reports.html:48
 msgid "No organisation or project is selected."
-msgstr "Aucun (e) organisation ou projet sélectionné (e)"
+msgstr "Pas d'organisation ou projet sélectionné (e)"
 
 #: templates/myrsr/my_reports.html:49
 msgid "No format is selected."
@@ -9872,7 +9875,7 @@ msgid ""
 "You are not able to fill in results data for any projects yet, only for a "
 "small selection of projects this new feature has been enabled. Soon, this "
 "will be available for all projects."
-msgstr "Vous n'êtes pas encore en mesure de remplir remplir les données des résultats pour tous les projets, seulement une petite sélection des projets de cette nouvelle fonctionnalité a été activée. Bientôt, cela sera diponible pour tous les projets."
+msgstr "Vous n'êtes pas encore en mesure de remplir les données des résultats pour tous les projets, seulement une petite sélection des projets de cette nouvelle fonctionnalité a été activée. Ça sera bientôt disponible pour tous les projets."
 
 #: templates/myrsr/my_results_select.html:34
 msgid "Select a project by typing the project name or ID"
@@ -9918,7 +9921,7 @@ msgstr "Êtes-vous sûre?"
 
 #: templates/myrsr/my_updates.html:90
 msgid "Deleting update"
-msgstr "Suppression de mise à jour"
+msgstr "Suppression de la mise à jour"
 
 #: templates/myrsr/my_updates.html:91
 msgid "Update not found, try reloading the page."
@@ -9930,7 +9933,7 @@ msgstr "Erreur de connexion, verifiez votre connexion internet"
 
 #: templates/myrsr/my_updates.html:93
 msgid " error, please contact support using the help button to the right."
-msgstr "Erreur, contactez l'équipe support en utilisant le boutton à droite s'il vous plait"
+msgstr "Erreur, contactez l'équipe d'appui en utilisant le boutton à droite SVP"
 
 #: templates/myrsr/myrsr_base.html:24 templates/myrsr/user_management.html:9
 msgid "User management"
@@ -9938,7 +9941,7 @@ msgstr "Gestion des utilisateurs"
 
 #: templates/myrsr/user_management.html:5
 msgid "MyRSR - User management"
-msgstr "MyRSR - Gestion utilisateur"
+msgstr "MyRSR - Gestion d'utilisateur"
 
 #: templates/myrsr/user_management.html:13
 msgid "You don't have the rights to manage users."
@@ -10010,7 +10013,7 @@ msgid ""
 "on the green +. Each user will receive an email with an activation link that"
 " is valid for 7 days, and you will be notified when a user has activated his"
 " or her account."
-msgstr "Invitez un utilisateur de votre/vos organisation (s) en remplissant les champs d'une adresse mail, du nom de son organisation et de son rôle.\nIl est possible d'inviter plusieurs utilisateurs en cliquant sur le vert+. Chaque utilisateur reçevra un email avec un lien d'activation valide pour 7 jours, et vous serez informé dès qu'un utilisateur a activé son compte."
+msgstr "Invitez un utilisateur de votre/vos organisation (s) en remplissant les champs d'une adresse mail, du nom de son organisation et de son rôle.\nIl est possible d'inviter plusieurs utilisateurs en cliquant sur le vert+. Chaque utilisateur reçevra un email avec un lien d'activation valide pendant 7 jours, et vous serez informé dès qu'un utilisateur a activé son compte."
 
 #: templates/myrsr/user_management.html:87
 msgid "Role"
@@ -10144,7 +10147,7 @@ msgstr "Partenaire du projet"
 msgid ""
 "Select an organisation that is playing a role in the project.  If an "
 "organisation is not currently featured in RSR, please contact"
-msgstr "Sélectionnez une organisation qui joue  un rôle dans le projet. Si une organisation n'est pas actuellement présentée dans RSR, contactez-nous SVP"
+msgstr "Sélectionnez une organisation qui joue  un rôle dans le projet. Si une organisation n'est pas actuellement présentée dans RSR, SVP contactez "
 
 #: templates/myrsr/project_editor/project_editor.html:156
 msgid "to request to add it to the database."
@@ -10158,7 +10161,7 @@ msgstr "Organisation fournisseur"
 msgid ""
 "For incoming funds, this is the organisation from which the funds "
 "originated. It will default to the reporting organisation."
-msgstr "Pour les fonfs entrants, Ceci est l'organisation de laquelle proviennent les fonds. Ça sera par défaut l'organisation rapportrice."
+msgstr "Pour les fonds entrants, Celle-ci est l'organisation de laquelle proviennent les fonds. Ça sera par défaut l'organisation rapporteure."
 
 #: templates/myrsr/project_editor/project_editor.html:159
 msgid "Recipient organisation"
@@ -10271,7 +10274,7 @@ msgstr "Utiliser le lien pour"
 msgid ""
 "to obtain the coordinates for your locations to ensure the pins are "
 "correctly placed."
-msgstr "pour obtenir les coordonnées de vos localisations afin de vous assurer que les pins sont correctements placés."
+msgstr "pour obtenir les coordonnées de vos emplacements afin de vous assurer que les pins sont correctement placés."
 
 #: templates/myrsr/project_editor/project_editor.html:191
 msgid "Organisation logo"
@@ -10352,7 +10355,7 @@ msgstr "Légende"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:16
 msgid "No mandatory fields completed"
-msgstr "Aucun champs obligatoires remplis"
+msgstr "Aucun champs obligatoire rempli"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:21
 msgid "Some mandatory fields completed"
@@ -10360,7 +10363,7 @@ msgstr "Certains champs obligatoires remplis"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:26
 msgid "All mandatory fields completed"
-msgstr "Tous les champs obligatoires remplis"
+msgstr "Tous les champs obligatoires complétés"
 
 #: templates/myrsr/project_editor/project_editor_progress.html:38
 msgid ""
@@ -10450,7 +10453,7 @@ msgid ""
 "Select an organisation that is playing a role in the project. If an "
 "organisation is not currently featured in RSR, please use the \"Add a new "
 "organisation\" button to add a new organisation to the database."
-msgstr "Sélectionnez une organisation qui joue un rôle dans le projet. Si une organisation n'est pas actuellement présentée dans RSR, SVP utilisez le bouton \"Ajouter une nouvelle organisation\" pour ajouter une nouvelle à la base de données."
+msgstr "Sélectionnez une organisation qui joue un rôle dans le projet. Si une organisation n'est pas actuellement présentée dans RSR, SVP utilisez le bouton \"Ajouter une nouvelle organisation\" pour ajouter une nouvelle organisation à la base de données."
 
 #: templates/myrsr/project_editor/section_3.html:30
 msgid "Add another participating organisation"
@@ -10458,7 +10461,7 @@ msgstr "Ajouter une autre organisation participante"
 
 #: templates/myrsr/project_editor/section_4.html:6
 msgid "Project descriptions"
-msgstr "Descriptions des projets"
+msgstr "Descriptions du projet"
 
 #: templates/myrsr/project_editor/section_4.html:15
 msgid ""
@@ -10539,7 +10542,7 @@ msgstr "La valeur totale de tous les postes budgétaires est:"
 
 #: templates/myrsr/project_editor/section_6.html:42
 msgid "Add another budget item"
-msgstr "Ajouter un autre poste budgétaire"
+msgstr "Ajouter une autre ligne budgétaire"
 
 #: templates/myrsr/project_editor/section_6.html:59
 msgid "Add another country budget item"
@@ -10551,7 +10554,7 @@ msgstr "Ajouter une autre transaction"
 
 #: templates/myrsr/project_editor/section_6.html:91
 msgid "Add another planned disbursement"
-msgstr "Ajouter un autre décaissemant planifié"
+msgstr "Ajouter un autre décaissemant prévu"
 
 #: templates/myrsr/project_editor/section_7.html:6
 #: templates/myrsr/project_editor/section_7.html:23
@@ -10627,14 +10630,14 @@ msgstr "Liens et documents"
 msgid ""
 "You can add any additional supporting documents to your project or links to "
 "external websites here."
-msgstr "Vous pouvez ajouter des documents justificatifs supplémentaires à vos projets ou des liens vers des site web externes ici"
+msgstr "Vous pouvez ajouter des documents d'appuis supplémentaires à vos projets ou des liens vers des sites web externes ici"
 
 #: templates/myrsr/project_editor/section_9.html:17
 msgid ""
 "This could be in the form of annual reports, baseline surveys, contextual "
 "information or any other report that can help users understand more about "
 "the project’s activities."
-msgstr "Ceci pourrait être sous la forme de rapports annuels, les enquêtes de référence, les informations contextuelles ou tout autre rapport qui peut aider les utilisateurs à mieux comprendre les activités du projet."
+msgstr "Ceci pourrait être sous forme de rapports annuels, d'enquêtes de référence, d'informations contextuelles ou tout autre rapport qui peut aider les utilisateurs à mieux comprendre les activités du projet."
 
 #: templates/myrsr/project_editor/section_9.html:18
 msgid "Note that the size of documents should be smaller than 5 MB."
@@ -10668,7 +10671,7 @@ msgid ""
 " further insight into your project activities. Only use this function when "
 "your document is not already available online. To upload multiple documents,"
 " click \"Add another document\"."
-msgstr "Vous pouvez télécharger un document dans votre projet. Nous vous demamdons de bien vouloir ne pas télécharger les fichiers supérieurs à 5 MB. Ces documents seront stockés sur le serveur RSR et seront accessibles au public afin que les utilisateurs puissent les télécharger et les voir pour mieux comprendre les activités de votre projet. Usez uniquement cette fonction lorsque votre document n'est pas encore disponible en ligne. Pour télécharger plusieurs documents, clicquez sur \"Ajouter un autre document\"."
+msgstr "Vous pouvez télécharger un document dans votre projet. Nous vous prions de ne pas télécharger des fichiers supérieurs à 5 MB. Ces documents seront stockés sur le serveur RSR et seront accessibles au public afin que les utilisateurs puissent les télécharger et les regarder pour mieux comprendre les activités de votre projet. Usez uniquement cette fonction si votre document n'est pas encore disponible en ligne. Pour télécharger plusieurs documents, cliquez sur \"Ajouter un autre document\"."
 
 #: templates/myrsr/project_editor/related_objects/document_input.html:44
 msgid "Project document categories"
@@ -10688,7 +10691,7 @@ msgstr "Ajouter un indicateur de référence"
 
 #: templates/myrsr/project_editor/related_objects/indicator_input.html:67
 msgid "Add another indicator period"
-msgstr "Ajouter un autre indicateur de période"
+msgstr "Ajouter un autre durée de l'indicateur"
 
 #: templates/myrsr/project_editor/related_objects/indicator_period_input.html:32
 msgid ""
@@ -11182,7 +11185,7 @@ msgstr "Votre lien d'activation est incorrect"
 
 #: templates/registration/invite_activate.html:29
 msgid "Unfortunately, your activation link is incorrect. Please contact"
-msgstr "Malheureusement, votre lien d'activation a expiré. SVP contactez"
+msgstr "Malheureusement, votre lien d'activation est incorrect. SVP contactez"
 
 #: templates/registration/invite_activate.html:33
 msgid "if you would like to activate your account."
@@ -11196,7 +11199,7 @@ msgstr "Activez votre compte"
 msgid ""
 "Please fill in your first and last name, and set a password for your "
 "account."
-msgstr "SVP, remplissez votre prénom et nom de famille, et définissez un mot de passe pour votre compte."
+msgstr "SVP, complétez votre prénom et nom de famille, et définissez un mot de passe pour votre compte."
 
 #: templates/registration/invite_activate.html:50
 msgid "Activate"
@@ -11465,11 +11468,11 @@ msgstr "Votre mise à jour des données avec les détails suivants a été renvo
 #: templates/results_framework/revise_update_message.html:40
 #: templates/results_framework/revise_update_message.txt:22
 msgid "Please click the following link to edit the update"
-msgstr "SVP, clicquez le lien suivant  pour modifier la mise à jour"
+msgstr "SVP, clicquez sur le lien suivant  pour modifier la mise à jour"
 
 #: templates/results_framework/revise_update_message.html:43
 msgid "Edit the update"
-msgstr "Modifeir la mise à jour"
+msgstr "Modifier la mise à jour"
 
 #: templates/results_framework/revise_update_subject.txt:1
 msgid "Your data update has been returned for revision"
