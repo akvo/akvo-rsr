@@ -17,6 +17,10 @@ honeypot for bots
 
 [#2563](https://github.com/akvo/akvo-rsr/issues/2563) Remove comment when indicator update is deleted
 
+[#2592](https://github.com/akvo/akvo-rsr/pull/2592) Add management command to delete spam users
+
+## Maintenance
+
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
 ## Bug fixes
