@@ -5,9 +5,8 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rsr', '0095_auto_20170309_0901'),
+        ('rsr', '0096_auto_20170307_1019.py'),
     ]
 
     operations = [
