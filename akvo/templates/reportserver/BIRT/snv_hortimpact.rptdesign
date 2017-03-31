@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -10932,6 +10932,7 @@ reportContext.getGlobalVariable('debug')</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["title"]</expression>
                 </structure>
+                <property name="repeatHeader">false</property>
                 <list-property name="sort">
                     <structure>
                         <expression name="key" type="javascript">row["result_sort"]</expression>
