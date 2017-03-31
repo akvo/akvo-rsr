@@ -10693,6 +10693,7 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                             <property name="contentType">html</property>
                         </text-data>
                         <image name="my_update" id="1960">
+                            <property name="marginBottom">8pt</property>
                             <property name="display">inline</property>
                             <property name="pageBreakBefore">avoid</property>
                             <property name="width">330px</property>
