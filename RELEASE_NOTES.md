@@ -67,6 +67,8 @@ Partial fix, we've made the PiWik Id mandatory.
 [#2472](https://github.com/akvo/akvo-rsr/issues/2472) Fix "Recently modified projects" table in
 Organisation Summary report
 
+[#2543](https://github.com/akvo/akvo-rsr/issues/2543) Fix faulty username validation restriction to max length of 30 characters in admin interface. It was restored to the max length of 254 characters
+
 ## Code quality
 
 [#2477](https://github.com/akvo/akvo-rsr/issues/2477) Replace Landscape code quality tests with flake8

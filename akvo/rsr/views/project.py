@@ -92,7 +92,7 @@ def directory(request):
     ]
 
     # Get the current org filter for typeahead
-    org_filter = request.GET.get('organisation', '0')
+    org_filter = request.GET.get('organisation', '')
 
     # Get projects to be displayed on the map
     if request.rsr_page and request.rsr_page.all_maps:
