@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -9530,18 +9530,23 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
                 <cell id="1866">
                     <text id="1868">
                         <property name="style">P</property>
-                        <property name="marginTop">8pt</property>
+                        <property name="marginTop">12pt</property>
                         <property name="marginLeft">12pt</property>
+                        <property name="paddingTop">16pt</property>
                         <property name="paddingRight">8pt</property>
                         <property name="masterPage">Cover</property>
                         <property name="pageBreakBefore">avoid</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<p>(KMHP - EKN Activity No. 27179)</br>
-<p>1st January 2016 – 31st December 2016</p>
-<p>Nairobi, 19th May 2016</br>
-SNV Kenya/Netherlands Development Organisation</br>
-P.O. Box 30776 – 00100</br>
-Nairobi, Kenya</br>
+                        <property name="contentType">auto</property>
+                        <text-property name="content"><![CDATA[
+(KMHP - EKN Activity No. 27179)
+1st January 2016 – 31st December 2016
+Nairobi, 19th May 2016
+
+
+
+SNV Kenya/Netherlands Development Organisation
+P.O. Box 30776 – 00100
+Nairobi, Kenya
 
 ]]></text-property>
                     </text>
@@ -10676,6 +10681,14 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                     <property name="pageBreakBefore">avoid</property>
                     <property name="pageBreakInside">auto</property>
                     <cell id="1940">
+                        <image name="my_update" id="1960">
+                            <property name="marginBottom">8pt</property>
+                            <property name="display">inline</property>
+                            <property name="pageBreakBefore">avoid</property>
+                            <property name="width">330px</property>
+                            <property name="source">url</property>
+                            <expression name="uri" type="javascript">"https://rsr.akvo.org/media/"+row["photo"]</expression>
+                        </image>
                         <text-data id="1944">
                             <property name="style">P</property>
                             <property name="whiteSpace">normal</property>
@@ -10692,14 +10705,6 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                             <expression name="valueExpr">markdown_html(row._outer["text"])</expression>
                             <property name="contentType">html</property>
                         </text-data>
-                        <image name="my_update" id="1960">
-                            <property name="marginBottom">8pt</property>
-                            <property name="display">inline</property>
-                            <property name="pageBreakBefore">avoid</property>
-                            <property name="width">330px</property>
-                            <property name="source">url</property>
-                            <expression name="uri" type="javascript">"https://rsr.akvo.org/media/"+row["photo"]</expression>
-                        </image>
                     </cell>
                 </row>
                 <row id="1932">
