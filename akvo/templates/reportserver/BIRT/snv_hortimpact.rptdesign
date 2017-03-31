@@ -9540,7 +9540,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
                         <text-property name="content"><![CDATA[
 (KMHP - EKN Activity No. 27179)
 1st January 2016 – 31st December 2016
-Nairobi, 19th May 2016
+Nairobi, 31st March 2017
 
 
 
@@ -9826,7 +9826,7 @@ Nairobi, Kenya
 				.join(R[3]||'&lt;/li>\n&lt;li>')+R[2]:
 			f=='#'?'&lt;h'+(f=b.indexOf(' '))+'>'+inlineEscape(b.slice(f+1))+'&lt;/h'+f+'>':
 			f=='&lt;'?b:
-			'&lt;p>'+inlineEscape(b)+'&lt;/p>';
+			'&lt;p>'+inlineEscape(b)+'&lt;br/>&lt;br/>';
 	});
 	return h;
 };
