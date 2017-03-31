@@ -9484,6 +9484,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
     </styles>
     <page-setup>
         <simple-master-page name="General" id="888">
+            <property name="type">a4</property>
             <property name="topMargin">50px</property>
             <property name="leftMargin">50px</property>
             <property name="bottomMargin">50px</property>
@@ -9500,7 +9501,11 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             </page-footer>
         </simple-master-page>
         <simple-master-page name="Cover" id="1869">
-            <property name="bottomMargin">0in</property>
+            <property name="type">a4</property>
+            <property name="topMargin">0.25mm</property>
+            <property name="leftMargin">50px</property>
+            <property name="bottomMargin">0px</property>
+            <property name="rightMargin">50px</property>
         </simple-master-page>
     </page-setup>
     <body>
@@ -10623,14 +10628,20 @@ markdown_html(row["value"])</expression>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="repeatHeader">false</property>
+            <property name="pageBreakInterval">0</property>
             <column id="1925"/>
             <header>
                 <row id="1919">
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">auto</property>
                     <cell id="1920"/>
                 </row>
             </header>
             <detail>
                 <row id="1928">
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">auto</property>
                     <cell id="1929">
                         <data id="1927">
                             <property name="style">H1</property>
@@ -10639,11 +10650,14 @@ markdown_html(row["value"])</expression>
                             <property name="fontStyle">normal</property>
                             <property name="color">black</property>
                             <property name="paddingLeft">1pt</property>
+                            <property name="pageBreakBefore">avoid</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
                 </row>
                 <row id="1921">
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">auto</property>
                     <cell id="1922">
                         <text-data id="1938">
                             <property name="style">p_bold</property>
@@ -10651,6 +10665,7 @@ markdown_html(row["value"])</expression>
                             <property name="fontWeight">bold</property>
                             <property name="color">black</property>
                             <property name="paddingLeft">1pt</property>
+                            <property name="pageBreakBefore">avoid</property>
                             <expression name="valueExpr">var now = new Date(row["created_at"]);
 Formatter.format(now, "dd-MM-yyyy");</expression>
                             <property name="contentType">html</property>
@@ -10658,9 +10673,13 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                     </cell>
                 </row>
                 <row id="1939">
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">auto</property>
                     <cell id="1940">
                         <text-data id="1944">
                             <property name="style">P</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="pageBreakBefore">avoid</property>
                             <property name="dataSet">Custom field - Recommendations</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -10673,14 +10692,18 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                             <expression name="valueExpr">markdown_html(row._outer["text"])</expression>
                             <property name="contentType">html</property>
                         </text-data>
-                        <image id="1958">
-                            <property name="width">550px</property>
+                        <image name="my_update" id="1960">
+                            <property name="display">inline</property>
+                            <property name="pageBreakBefore">avoid</property>
+                            <property name="width">330px</property>
                             <property name="source">url</property>
-                            <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["photo"]</expression>
+                            <expression name="uri" type="javascript">"https://rsr.akvo.org/media/"+row["photo"]</expression>
                         </image>
                     </cell>
                 </row>
                 <row id="1932">
+                    <property name="pageBreakBefore">avoid</property>
+                    <property name="pageBreakInside">auto</property>
                     <cell id="1933"/>
                 </row>
             </detail>
