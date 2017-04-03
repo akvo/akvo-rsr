@@ -117,7 +117,7 @@ class ProjectViewsTestCase(TestCase):
         hostname = 'akvo'
         partner_projects = True
         org = Organisation.objects.create(name=hostname)
-        partner_site = PartnerSite.objects.create(
+        PartnerSite.objects.create(
             hostname=hostname,
             partner_projects=partner_projects,
             organisation=org,
@@ -176,4 +176,3 @@ class ProjectViewsTestCase(TestCase):
         # Then
         self.assertIn(project_title1, response.content)
         self.assertNotIn(project_title2, response.content)
-
