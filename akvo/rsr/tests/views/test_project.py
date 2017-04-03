@@ -15,7 +15,7 @@ import django_perf_rec
 from django.conf import settings
 from django.test import Client, TestCase
 
-from akvo.rsr.models import Organisation
+from akvo.rsr.models import Keyword, Organisation, PartnerSite, Partnership, Project
 
 
 @skip('Needs Django >= 1.8')
@@ -84,3 +84,58 @@ class ProjectViewsTestCase(TestCase):
         self.assertIn(page_limit_1, response.content)
         self.assertIn(page_limit_2, response.content)
         self.assertIn(page_limit_3, response.content)
+
+    def test_should_show_keyword_projects_in_partner_site(self):
+        # Given
+        hostname = 'akvo'
+        partner_projects = False
+        org = Organisation.objects.create(name=hostname)
+        keyword = Keyword.objects.create(label=hostname)
+        partner_site = PartnerSite.objects.create(
+            hostname=hostname,
+            partner_projects=partner_projects,
+            organisation=org,
+            piwik_id=10,
+        )
+        partner_site.keywords.add(keyword)
+        project_title = '{} awesome project'.format(hostname)
+        project = Project.objects.create(title=project_title)
+        project.keywords.add(keyword)
+        project.publishingstatus.status = 'published'
+        project.publishingstatus.save()
+        url = '/en/projects/'
+        self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertIn(project_title, response.content)
+
+    def test_should_show_partner_projects(self):
+        # Given
+        hostname = 'akvo'
+        partner_projects = True
+        org = Organisation.objects.create(name=hostname)
+        keyword = Keyword.objects.create(label=hostname)
+        partner_site = PartnerSite.objects.create(
+            hostname=hostname,
+            partner_projects=partner_projects,
+            organisation=org,
+            piwik_id=10,
+        )
+        partner_site.keywords.add(keyword)
+        project_title = '{} awesome project'.format(hostname)
+        project = Project.objects.create(title=project_title)
+        project.publishingstatus.status = 'published'
+        project.publishingstatus.save()
+        project.keywords.add(keyword)
+        Partnership.objects.create(organisation=org, project=project)
+        url = '/en/projects/'
+        self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertIn(project_title, response.content)
