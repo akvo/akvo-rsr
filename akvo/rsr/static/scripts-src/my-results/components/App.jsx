@@ -6,14 +6,16 @@
  */
 
 
-import React from 'react';
+import React from 'react'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css';
 import { connect } from "react-redux"
 
 import {
     fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
 } from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
-import { activateToggleAll, updateFormOpen } from "../actions/ui-actions"
+import { activateToggleAll, updateFormOpen, selectablePeriods } from "../actions/ui-actions"
 
 import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_DRAFT, PARENT_FIELD } from "../const"
 import { openNodes } from "../utils"
@@ -36,6 +38,7 @@ const modifyUser = (isMEManager) => {
     };
 };
 
+
 @connect((store) => {
     return {
         page: store.page,
@@ -47,10 +50,10 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.showDraft = this.showDraft.bind(this);
-        this.showLocked = this.showLocked.bind(this);
-        this.showUnlocked = this.showUnlocked.bind(this);
         this.unlockSelected = this.unlockSelected.bind(this);
         this.lockSelected = this.lockSelected.bind(this);
+        this.selectChange = this.selectChange.bind(this);
+        this.state = {selectedOption: undefined}
     }
 
     fetchUser(userId) {
@@ -73,7 +76,7 @@ export default class App extends React.Component {
         const projectId = project.project_id;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
-        fetchModel('periods', projectId, activateToggleAll);
+        fetchModel('periods', projectId, [activateToggleAll, selectablePeriods]);
         fetchModel('updates', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
     }
@@ -91,40 +94,36 @@ export default class App extends React.Component {
         openNodes(OBJECTS_UPDATES, draftUpdates, true);
     }
 
-    showLocked() {
-        const periods = this.props.models[OBJECTS_PERIODS];
-        const locked = periods.ids.filter((id) => periods.objects[id].locked);
-        openNodes(OBJECTS_PERIODS, locked, true);
-    }
-
     unlockSelected() {
         unlockSelectedPeriods();
     }
 
-    showUnlocked() {
-        const periods = this.props.models[OBJECTS_PERIODS];
-        const locked = periods.ids.filter((id) => !periods.objects[id].locked);
-        openNodes(OBJECTS_PERIODS, locked, true);
+    lockSelected() {
+        lockSelectedPeriods();
     }
 
-    lockSelected() {
-            lockSelectedPeriods();
+    selectChange(e) {
+        this.setState({selectedOptions: e});
+        e.value();
     }
 
     render() {
-        const style = {float: 'right'};
+        const right = {float: 'right'};
+        const clearfix = {clear: 'both'};
+        const selectOptions = this.props.ui.periodDates;
         return (
             <div>
-                <ToggleButton onClick={this.lockSelected} label="Lock selected" style={style}
-                              disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.showUnlocked} label="Show unlocked" style={style}
-                              disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.unlockSelected} label="Unlock selected" style={style}
-                              disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.showLocked} label="Show locked" style={style}
-                              disabled={!this.props.ui.allFetched}/>
-                <ToggleButton onClick={this.showDraft} label="Show draft updates" style={style}
-                              disabled={!this.props.ui.allFetched}/>
+                <div style={right}>
+                    <Select options={selectOptions} value={this.state.selectedOptions} multi={false} placeholder="Select period(s)"
+                            searchable={false} clearable={false} onChange={this.selectChange}/>
+                    <ToggleButton onClick={this.lockSelected} label="Lock selected" style={right}
+                                  disabled={!this.props.ui.allFetched}/>
+                    <ToggleButton onClick={this.unlockSelected} label="Unlock selected" style={right}
+                                  disabled={!this.props.ui.allFetched}/>
+                    <ToggleButton onClick={this.showDraft} label="Show draft updates" style={right}
+                                  disabled={!this.props.ui.allFetched}/>
+                </div>
+                <div style={clearfix}></div>
                 <Results parentId="results"/>
             </div>
         );

@@ -11,13 +11,22 @@ import update  from 'immutability-helper';
 
 import { onChange } from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
-import { periodSelectToggle } from "../actions/ui-actions"
+import { periodSelectToggle, selectablePeriods } from "../actions/ui-actions"
 
 import {
-    displayDate, APICall, endpoints, findChildren, createToggleKey, collapseId, createToggleKeys
+    displayDate,
+    endpoints,
+    findChildren,
+    createToggleKey,
+    collapseId,
+    createToggleKeys
 } from "../utils.js";
+
 import {
-    OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, SELECTED_PERIODS
+    OBJECTS_PERIODS,
+    OBJECTS_UPDATES,
+    UPDATE_STATUS_APPROVED,
+    SELECTED_PERIODS
 } from '../const.js';
 
 import Updates from "./updates/Updates";
@@ -26,6 +35,12 @@ import { ToggleButton } from "./common"
 
 
 class PeriodLockToggle extends React.Component {
+
+    static propTypes = {
+        period: PropTypes.object,
+        callbacks: PropTypes.object,
+    };
+
     constructor (props) {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
@@ -44,10 +59,14 @@ class PeriodLockToggle extends React.Component {
 
     lockToggle(e) {
         const period = this.props.period;
+        const toggleCallback = () => {
+            this.lockingToggle(false);
+            selectablePeriods();
+        }
         if (!this.state.locking) {
             this.lockingToggle(true);
             this.updatePeriodLock(
-                period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false)
+                period.id, {locked: !period.locked}, toggleCallback
             );
         }
         e.stopPropagation();
@@ -74,17 +93,25 @@ class PeriodLockToggle extends React.Component {
     }
 }
 
-PeriodLockToggle.propTypes = {
-    period: PropTypes.object,
-    callbacks: PropTypes.object
-};
 
 const PeriodLockStatus = ({lockStatus}) => {
     return <div style={{float: 'right'}}>{lockStatus}</div>
 };
+PeriodLockStatus.propTypes = {
+    lockStatus: PropTypes.object,
+};
 
-const PeriodSelect = ({id, toggleCheckbox}) => {
-    return <input id={id} type="checkbox" style={{float: 'right'}} onClick={toggleCheckbox}/>
+const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
+    // NOTE: the onChange event handler can't be used here because it fires too late and the event
+    // for opening/closing the collapse panel will be triggered. However when using the onClick
+    // handler React complais that the component isn't managed correctly, thus the noop onChange.
+    return <input id={id} type="checkbox" checked={isChecked ? "checked" : ""}
+                  style={{float: 'right'}} onClick={toggleCheckbox} onChange={()=>{}}/>
+};
+PeriodSelect.propTypes = {
+    id: PropTypes.number.isRequired,
+    toggleCheckbox: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool.isRequired,
 };
 
 const periodActualValue = (period) => {
@@ -94,7 +121,7 @@ const periodActualValue = (period) => {
         "";
 };
 
-const PeriodHeader = ({period, user, actualValue, toggleCheckbox}) => {
+const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
@@ -111,15 +138,17 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox}) => {
                 Target value: {period.target_value} |
                 Actual value: {actualValue}
             </span>
-            <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}/>
+            <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/>
             {lockStatus}
         </span>
     )
 };
-
 PeriodHeader.propTypes = {
     period: PropTypes.object.isRequired,
-    actualValue: PropTypes.number,
+    user: PropTypes.object.isRequired,
+    actualValue: PropTypes.number.isRequired,
+    toggleCheckbox: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool.isRequired,
 };
 
 
@@ -180,7 +209,7 @@ export default class Periods extends React.Component {
 
     toggleCheckbox(e) {
         e.stopPropagation();
-        const periodId = e.target.id;
+        const periodId = parseInt(e.target.id);
         periodSelectToggle(periodId);
     }
 
