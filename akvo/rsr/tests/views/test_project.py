@@ -112,7 +112,38 @@ class ProjectViewsTestCase(TestCase):
         # Then
         self.assertIn(project_title, response.content)
 
-    def test_should_show_partner_projects(self):
+    def test_should_show_all_partner_projects(self):
+        # Given
+        hostname = 'akvo'
+        partner_projects = True
+        org = Organisation.objects.create(name=hostname)
+        partner_site = PartnerSite.objects.create(
+            hostname=hostname,
+            partner_projects=partner_projects,
+            organisation=org,
+            piwik_id=10,
+        )
+        project_title1 = '{} awesome project {}'.format(hostname, 1)
+        project1 = Project.objects.create(title=project_title1)
+        project1.publishingstatus.status = 'published'
+        project1.publishingstatus.save()
+        Partnership.objects.create(organisation=org, project=project1)
+        project_title2 = '{} awesome project {}'.format(hostname, 2)
+        project2 = Project.objects.create(title=project_title2)
+        project2.publishingstatus.status = 'published'
+        project2.publishingstatus.save()
+        Partnership.objects.create(organisation=org, project=project2)
+        url = '/en/projects/'
+        self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertIn(project_title1, response.content)
+        self.assertIn(project_title2, response.content)
+
+    def test_should_show_partner_projects_with_keyword(self):
         # Given
         hostname = 'akvo'
         partner_projects = True
@@ -125,12 +156,17 @@ class ProjectViewsTestCase(TestCase):
             piwik_id=10,
         )
         partner_site.keywords.add(keyword)
-        project_title = '{} awesome project'.format(hostname)
-        project = Project.objects.create(title=project_title)
-        project.publishingstatus.status = 'published'
-        project.publishingstatus.save()
-        project.keywords.add(keyword)
-        Partnership.objects.create(organisation=org, project=project)
+        project_title1 = '{} awesome project {}'.format(hostname, 1)
+        project1 = Project.objects.create(title=project_title1)
+        project1.keywords.add(keyword)
+        project1.publishingstatus.status = 'published'
+        project1.publishingstatus.save()
+        Partnership.objects.create(organisation=org, project=project1)
+        project_title2 = '{} awesome project {}'.format(hostname, 2)
+        project2 = Project.objects.create(title=project_title2)
+        project2.publishingstatus.status = 'published'
+        project2.publishingstatus.save()
+        Partnership.objects.create(organisation=org, project=project2)
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
 
@@ -138,4 +174,6 @@ class ProjectViewsTestCase(TestCase):
         response = self.c.get(url, follow=True)
 
         # Then
-        self.assertIn(project_title, response.content)
+        self.assertIn(project_title1, response.content)
+        self.assertNotIn(project_title2, response.content)
+
