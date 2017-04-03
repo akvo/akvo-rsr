@@ -40,7 +40,7 @@ def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
     return (
-        page.organisation.published_projects() if page is not None
+        page.projects() if page is not None
         else Project.objects.public().published()
     )
 
