@@ -9460,6 +9460,7 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="paddingLeft">8pt</property>
             <property name="paddingBottom">8pt</property>
             <property name="paddingRight">8pt</property>
+            <property name="pageBreakAfter">auto</property>
         </style>
         <style name="text1" id="1063">
             <property name="fontFamily">"Arial"</property>
@@ -9475,6 +9476,9 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
             <property name="fontFamily">"VAGRoundedStd-Light"</property>
             <property name="fontSize">11pt</property>
             <property name="fontWeight">lighter</property>
+            <property name="lineHeight">7pt</property>
+            <property name="orphans">1</property>
+            <property name="widows">1</property>
         </style>
         <style name="p_bold" id="1946">
             <property name="fontFamily">"VAGRoundedStd-Bold"</property>
@@ -9485,9 +9489,9 @@ where project_id=? and name='Conclusions and Recommendations' ]]></xml-property>
     <page-setup>
         <simple-master-page name="General" id="888">
             <property name="type">a4</property>
-            <property name="topMargin">50px</property>
+            <property name="topMargin">30px</property>
             <property name="leftMargin">50px</property>
-            <property name="bottomMargin">50px</property>
+            <property name="bottomMargin">0px</property>
             <property name="rightMargin">50px</property>
             <page-footer>
                 <auto-text id="1959">
@@ -9965,62 +9969,6 @@ markdown_html(row["value"])</expression>
                     <text-data id="1761">
                         <property name="style">P</property>
                         <expression name="valueExpr">markdown_html(row["Column Binding"])</expression>
-                        <property name="contentType">html</property>
-                    </text-data>
-                </cell>
-            </row>
-        </grid>
-        <grid name="Background" id="1770">
-            <property name="masterPage">General</property>
-            <property name="dataSet">Custom field - Project organisation</property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">value</property>
-                    <text-property name="displayName">value</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["value"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
-            <column id="1771"/>
-            <row id="1772">
-                <cell id="1773">
-                    <label name="core_ind_label11" id="1774">
-                        <property name="style">H1</property>
-                        <property name="backgroundColor">white</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="color">#00A54F</property>
-                        <property name="marginTop">8pt</property>
-                        <property name="paddingTop">1px</property>
-                        <property name="paddingLeft">1px</property>
-                        <property name="paddingBottom">1px</property>
-                        <property name="paddingRight">1px</property>
-                        <property name="textAlign">center</property>
-                        <property name="display">block</property>
-                        <property name="pageBreakAfter">avoid</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <structure name="toc">
-                            <expression name="expressionValue" type="javascript">"Core indicators initiative"</expression>
-                        </structure>
-                        <text-property name="text">Background</text-property>
-                    </label>
-                    <text-data id="1775">
-                        <property name="style">P</property>
-                        <property name="dataSet">Project</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">project_plan</property>
-                                <text-property name="displayName">project_plan</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["project_plan"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">background</property>
-                                <text-property name="displayName">background</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["background"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <expression name="valueExpr">markdown_html(row["background"])</expression>
                         <property name="contentType">html</property>
                     </text-data>
                 </cell>
@@ -10655,7 +10603,8 @@ markdown_html(row["value"])</expression>
                             <property name="fontStyle">normal</property>
                             <property name="color">black</property>
                             <property name="paddingLeft">1pt</property>
-                            <property name="pageBreakBefore">avoid</property>
+                            <property name="pageBreakAfter">avoid</property>
+                            <property name="pageBreakBefore">auto</property>
                             <property name="resultSetColumn">title</property>
                         </data>
                     </cell>
@@ -10670,6 +10619,7 @@ markdown_html(row["value"])</expression>
                             <property name="fontWeight">bold</property>
                             <property name="color">black</property>
                             <property name="paddingLeft">1pt</property>
+                            <property name="pageBreakAfter">avoid</property>
                             <property name="pageBreakBefore">avoid</property>
                             <expression name="valueExpr">var now = new Date(row["created_at"]);
 Formatter.format(now, "dd-MM-yyyy");</expression>
@@ -10684,6 +10634,7 @@ Formatter.format(now, "dd-MM-yyyy");</expression>
                         <image name="my_update" id="1960">
                             <property name="marginBottom">8pt</property>
                             <property name="display">inline</property>
+                            <property name="pageBreakAfter">avoid</property>
                             <property name="pageBreakBefore">avoid</property>
                             <property name="width">330px</property>
                             <property name="source">url</property>
@@ -10905,6 +10856,7 @@ null</expression>
                             <property name="paddingBottom">8pt</property>
                             <property name="paddingRight">8pt</property>
                             <property name="textAlign">left</property>
+                            <property name="pageBreakAfter">auto</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -10938,6 +10890,8 @@ reportContext.getGlobalVariable('debug')</expression>
                     <expression name="expressionValue" type="javascript">row["title"]</expression>
                 </structure>
                 <property name="repeatHeader">false</property>
+                <property name="pageBreakBefore">always-excluding-first</property>
+                <property name="pageBreakInside">auto</property>
                 <list-property name="sort">
                     <structure>
                         <expression name="key" type="javascript">row["result_sort"]</expression>
@@ -10964,6 +10918,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="paddingLeft">0pt</property>
                                 <property name="paddingBottom">1pt</property>
                                 <property name="paddingRight">8pt</property>
+                                <property name="pageBreakInside">auto</property>
                                 <expression name="valueExpr">b=1, "Result " + a++;</expression>
                                 <property name="contentType">html</property>
                             </text-data>
