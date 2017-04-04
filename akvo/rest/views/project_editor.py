@@ -64,7 +64,7 @@ def add_error(errors, message, field_name):
     """Appends a new error to the errors list."""
     errors.append(
         {'name': field_name,
-         'error': str(message).capitalize()}
+         'error': message.encode('utf8').capitalize()}
     )
     return errors
 

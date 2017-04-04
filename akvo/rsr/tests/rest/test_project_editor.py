@@ -14,6 +14,8 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
+from akvo.rest.views.project_editor import add_error
+
 
 class BaseReorderTestCase(object):
 
@@ -284,3 +286,31 @@ class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, TestCase):
 
     def get_items(self):
         return Indicator.objects.filter(result_id=self.result.id).order_by('id')
+
+
+class ErrorHandlerTestCase(TestCase):
+    """Tests for the error handler used by project editor."""
+
+    def test_should_handle_unicode_errors(self):
+        # Given
+        message = u"""Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."""
+        errors = []
+        field_name = u'rsr_budgetitem.amount.5966_new-0'
+
+        # When
+        add_error(errors, message, field_name)
+
+        # Then
+        self.assertEquals(1, len(errors))
+
+    def test_should_handle_str_errors(self):
+        # Given
+        message = "It is not allowed to use a comma, use a period to denote decimals."
+        errors = []
+        field_name = u'rsr_budgetitem.amount.5966_new-0'
+
+        # When
+        add_error(errors, message, field_name)
+
+        # Then
+        self.assertEquals(1, len(errors))

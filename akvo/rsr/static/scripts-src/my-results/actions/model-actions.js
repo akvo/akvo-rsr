@@ -14,6 +14,8 @@ import {
 import { getCookie, endpoints } from "../utils"
 import { API_LIMIT, SELECTED_PERIODS, OBJECTS_PERIODS } from "../const"
 
+import { selectablePeriods } from "./ui-actions"
+
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
 const range = (start, end) => (
@@ -72,7 +74,7 @@ function fetchFromAPI(baseUrl) {
 }
 
 
-export function fetchModel(model, id, callback, dataPrepCallback) {
+export function fetchModel(model, id, callbacks, dataPrepCallback) {
     return store.dispatch((dispatch) => {
         dispatch({type: FETCH_MODEL_START, payload: {model: model}});
         const url = endpoints[model](id);
@@ -84,8 +86,13 @@ export function fetchModel(model, id, callback, dataPrepCallback) {
                 dispatch({type: FETCH_MODEL_FULFILLED, payload: {model: model, data: results}});
             })
             .then(() => {
-                if (callback) {
-                    callback();
+                if (callbacks) {
+                    // More than one callback?
+                    if (callbacks instanceof Array) {
+                        callbacks.map((callback) => callback());
+                    } else {
+                        callbacks();
+                    }
                 }
             })
             .catch((error) => {
@@ -301,7 +308,7 @@ export function deleteUpdateFromBackend(url, data, collapseId, callback) {
 }
 
 
-function patchMultiple(model, params) {
+function patchMultiple(model, params, callback) {
     /*
         Perform a series of PATCHes, used for bulk updating of e.g. Period.locked field
         params should be an array of objects, each object having the following members:
@@ -325,6 +332,11 @@ function patchMultiple(model, params) {
                     })
                 })
             })
+            .then(() => {
+                if (callback) {
+                    callback();
+                }
+            })
             // TODO: better error handling
             .catch((error) => {
                 dispatch({
@@ -342,7 +354,9 @@ function periodLockingParams(locked) {
     const data = selectedPeriods.map((id) => {
         return {url: endpoints.period(id), data: {locked: locked}}
     });
-    patchMultiple(OBJECTS_PERIODS, data);
+    // Update selected periods locked field, then call selectablePeriods to rebuild the period
+    // select component
+    patchMultiple(OBJECTS_PERIODS, data, selectablePeriods);
 
 }
 

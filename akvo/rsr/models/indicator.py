@@ -760,6 +760,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         # In case the status was approved, recalculate the period
         if old_status == self.STATUS_APPROVED_CODE:
             self.period.recalculate_period()
+            self.period.update_actual_comment()
 
     def clean(self):
         """

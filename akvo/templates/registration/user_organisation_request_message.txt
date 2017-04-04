@@ -16,7 +16,7 @@ Linked support partners of {{ organisation_name }}:
 
 {% blocktrans %}
 Please check the credentials of this user and then activate here:
-http://{{ site }}/myrsr/user_management/
+https://{{ site }}/myrsr/user_management/
 
 Thank you,
 Akvo.org

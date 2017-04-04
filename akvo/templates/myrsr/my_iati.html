@@ -41,8 +41,8 @@
         <div class="IatiDescription topMargin">
             {% trans 'It is possible to generate both an IATI activity file for project information, and an IATI organisation file for organisation information:' %}
             <ul class="topMargin">
-                <li>{% trans 'The latest activity file of' %} {{ selected_org.long_name|default:selected_org.name }}: <a href="http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati/" target="_blank">http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati/</a>.</li>
-                <li>{% trans 'The organisation file of' %} {{ selected_org.long_name|default:selected_org.name }}: <a href="http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati-org/" target="_blank">http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati-org/</a>.</li>
+                <li>{% trans 'The latest activity file of' %} {{ selected_org.long_name|default:selected_org.name }}: <a href="{{request.scheme}}://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati/" target="_blank">{{request.scheme}}://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati/</a>.</li>
+                <li>{% trans 'The organisation file of' %} {{ selected_org.long_name|default:selected_org.name }}: <a href="{{request.scheme}}://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati-org/" target="_blank">{{request.scheme}}://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.pk }}/iati-org/</a>.</li>
             </ul>
             <input type="checkbox" id="fileOnOrganisationPage" {% if selected_org.public_iati_file %}checked{% endif %} /> {% trans 'Show latest activity file on the organisation page of' %} {{ selected_org.long_name|default:selected_org.name }}.
         </div>
@@ -68,7 +68,7 @@
             "iati_exports": "{% trans 'IATI exports'|escapejs %}",
             "project": "{% trans 'project'|escapejs %}",
             "projects": "{% trans 'projects'|escapejs %}",
-            "last_exports_url": "http://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.id }}/iati/",
+            "last_exports_url": "{{request.scheme}}://{{ request.META.HTTP_HOST }}/organisation/{{ selected_org.id }}/iati/",
             "loading": "{% trans 'loading'|escapejs %}",
             "refreshing": "{% trans 'refreshing'|escapejs %}",
             "pending_or_progress": "{% trans 'there is at least one export pending or in progress'|escapejs %}",
@@ -137,7 +137,7 @@
     {# Initial data endpoints #}
     <script type="application/json" id="endpoints">
         {
-            "base_url": "http://{{ request.META.HTTP_HOST }}",
+            "base_url": "//{{ request.META.HTTP_HOST }}",
             "organisation": "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
             "iati_exports": "/rest/v1/iati_export/?format=json&reporting_organisation={{ selected_org.id }}",
             "iati_export": "/rest/v1/iati_export/{iati_export}/?format=json",

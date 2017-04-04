@@ -90,7 +90,8 @@ from .transaction import (TransactionSerializer, TransactionSectorSerializer,
 from .typeahead import (TypeaheadCountrySerializer,
                         TypeaheadOrganisationSerializer,
                         TypeaheadProjectSerializer,
-                        TypeaheadProjectUpdateSerializer)
+                        TypeaheadProjectUpdateSerializer,
+                        TypeaheadKeywordSerializer)
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer, UserRawSerializer
 
 __all__ = [
@@ -201,6 +202,7 @@ __all__ = [
     'TransactionSectorSerializer',
     'TransactionRawDeepSerializer',
     'TypeaheadCountrySerializer',
+    'TypeaheadKeywordSerializer',
     'TypeaheadOrganisationSerializer',
     'TypeaheadProjectSerializer',
     'TypeaheadProjectUpdateSerializer',

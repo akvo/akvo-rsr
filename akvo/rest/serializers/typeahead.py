@@ -6,7 +6,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Organisation, Project, ProjectUpdate
+from akvo.rsr.models import Keyword, Organisation, Project, ProjectUpdate
 from akvo.codelists.models import Country
 
 from rest_framework import serializers
@@ -38,3 +38,10 @@ class TypeaheadProjectUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectUpdate
         fields = ('id', 'project', 'title')
+
+
+class TypeaheadKeywordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Keyword
+        fields = ('id', 'label')

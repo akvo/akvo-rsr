@@ -17,10 +17,12 @@ import { SELECTED_PERIODS, UPDATE_FORMS } from "../const"
  */
 
 export const
+    UI_ID_RESET = "UI_ID_RESET",
     UI_ID_TOGGLE = "UI_ID_TOGGLE",
     UI_ID_TRUE = "UI_ID_TRUE",
     UI_ID_FALSE = "UI_ID_FALSE",
-    ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED"
+    ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
+    SET_PERIOD_DATES = "SET_PERIOD_DATES"
 ;
 
 /*
@@ -31,19 +33,28 @@ export const
         selectedPeriods: array of Period IDs that are currently selected via checkbox
         updateForms: array of Update IDs that have open forms
  */
-const uiState = {allFetched: false, [SELECTED_PERIODS]: [], [UPDATE_FORMS]: []};
+const uiState = {
+    allFetched: false, selectedOption: undefined, [SELECTED_PERIODS]: [], [UPDATE_FORMS]: [],
+};
 
 export default function uiReducer(state=uiState, action) {
     switch(action.type) {
+
+
+        case UI_ID_RESET: {
+            const {element} = action.payload;
+            state = {...state, [element]: []};
+            break;
+        }
 
         case UI_ID_TOGGLE: {
             const {element, id} = action.payload;
             // Make a set of the state[element] array
             let newState = new Set(state[element]);
             if (newState.has(id)) {
-                newState = newState.delete(id)
+                newState.delete(id)
             } else {
-                newState = newState.add(id)
+                newState.add(id)
             }
             // Put back the values as an array.
             state = {...state, [element]: [...newState]};
@@ -64,6 +75,11 @@ export default function uiReducer(state=uiState, action) {
 
         case ALL_MODELS_FETCHED: {
             state = {...state, allFetched: true};
+            break;
+        }
+
+        case SET_PERIOD_DATES: {
+            state = {...state, periodDates: action.payload};
             break;
         }
     }

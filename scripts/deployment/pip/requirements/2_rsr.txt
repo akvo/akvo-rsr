@@ -50,7 +50,7 @@ django-embed-video==0.11
 
 # Database requirements
 South==0.8.4
-psycopg2
+psycopg2==2.6.2
 
 # App container
 gunicorn==18.0
@@ -82,3 +82,6 @@ django-crontab==0.6.0
 # Testing and code coverage libraries
 coveralls
 xmlunittest==0.3.2
+
+# Country detection
+Shapely==1.5.7

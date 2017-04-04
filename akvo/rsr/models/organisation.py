@@ -21,6 +21,7 @@ from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
 
 from .country import Country
+from .keyword import Keyword
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -446,6 +447,20 @@ class Organisation(TimestampsMixin, models.Model):
             if location.iati_country:
                 countries.append(location.iati_country_value().name)
         return countries
+
+    def organisation_keywords(self, public=True, unpublished=False):
+        """Return all the keywords used by projects related to the organisation.
+
+        NOTE: By default only the keywords on the *published* and *public*
+        projects are returned.
+
+        """
+
+        projects = self.all_projects() if unpublished else self.published_projects()
+        if public:
+            projects = projects.public()
+
+        return Keyword.objects.filter(projects__in=projects).distinct()
 
     def iati_file(self):
         """

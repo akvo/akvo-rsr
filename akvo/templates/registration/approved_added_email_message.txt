@@ -6,7 +6,7 @@ Dear {{user_name}},
 You have been added to the following organisation on Akvo RSR: {{org_name}}.
 
 Please visit the MyRSR section to view your projects and add updates to the projects here:
-http://{{ site }}/myrsr/
+https://{{ site }}/myrsr/
 
 Thank you,
 Akvo.org
