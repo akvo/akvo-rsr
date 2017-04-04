@@ -1,3 +1,11 @@
+# Akvo RSR version 3.23.1 New Delhi hotfix
+
+## Bug fixes
+
+[#2605](https://github.com/akvo/akvo-rsr/issues/2605) UnicodeError when handling errors in project editor
+
+[#2603](https://github.com/akvo/akvo-rsr/issues/2603) Fix bug in listing non partner projects on partner site
+
 # Akvo RSR version 3.23 New Delhi
 
 ## General improvements
