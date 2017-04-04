@@ -40,7 +40,7 @@ def _project_directory_coll(request):
     """Dig out and pass correct projects to the view."""
     page = request.rsr_page
     return (
-        page.organisation.published_projects() if page is not None
+        page.projects() if page is not None
         else Project.objects.public().published()
     )
 
@@ -92,7 +92,7 @@ def directory(request):
     ]
 
     # Get the current org filter for typeahead
-    org_filter = request.GET.get('organisation', '0')
+    org_filter = request.GET.get('organisation', '')
 
     # Get projects to be displayed on the map
     if request.rsr_page and request.rsr_page.all_maps:
