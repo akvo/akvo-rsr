@@ -38,6 +38,14 @@
 /*
   rc-collapse
  */
+/* $models-colors: (
+  // classname, color, bg-color, content-bg-color, border-color
+  (results, #9F9EC5, #2B2A74, #6867A8, #16155A),
+  (indicators, #4D0015, #962644, #DA7791, #740B27),
+  (periods, #1F4B00, #539325, #9CD474, #35710B),
+  (updates, #554000, #A6882A, #F0D583, #80640D),
+  (comments, #222, #b0b0b0, #999999, #a55)
+); */
 html {
   width: 100%;
   overflow-y: scroll; }
@@ -2015,7 +2023,7 @@ dd.currencyAmount {
     border: 0.5px solid rgba(3, 3, 3, 0.2); }
   .projectReport td.edit-buttons, .projectReport td.empty {
     /*flex: 1 0 90%;
-        text-align: center;*/ } }
+            text-align: center;*/ } }
 
 @media only screen and (max-width: 768px) {
   .projectReport {
@@ -4087,306 +4095,148 @@ div.iatiFilters {
   color: #ee3124;
   font-size: 85%; }
 
-/* rc-collapse TODO: import this via browserify and parcelify somehow... */
-.results .rc-collapse {
-  background-color: #2B2A74;
-  border-radius: 3px;
-  border: 1px solid #16155A; }
-
-.rc-collapse-anim-active {
-  -webkit-transition: height 0.2s ease-out;
-  transition: height 0.2s ease-out; }
-
-.results .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #16155A; }
-
-.rc-collapse > .rc-collapse-item:first-child {
-  border-top: none; }
-
-.results .rc-collapse > .rc-collapse-item > .rc-collapse-header {
-  height: 38px;
-  line-height: 38px;
-  text-indent: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #9F9EC5;
-  cursor: pointer; }
-
-.results .rc-collapse > .rc-collapse-item > .rc-collapse-header .arrow {
-  display: inline-block;
-  content: '\20';
-  width: 0;
-  height: 0;
-  font-size: 0;
-  line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid #9F9EC5;
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.results .rc-collapse-content {
-  overflow: hidden;
-  color: #9F9EC5;
-  padding: 0 16px;
-  background-color: #6867A8; }
-
-.results .rc-collapse-content > .rc-collapse-content-box {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.results .rc-collapse-content-inactive {
-  display: none; }
-
-.results .rc-collapse-item:last-child > .rc-collapse-content {
-  border-radius: 0 0 3px 3px; }
-
-.results .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid #9F9EC5;
-  margin-right: 6px; }
-
-.indicators .rc-collapse {
-  background-color: #962644;
-  border-radius: 3px;
-  border: 1px solid #740B27; }
-
-.rc-collapse-anim-active {
-  -webkit-transition: height 0.2s ease-out;
-  transition: height 0.2s ease-out; }
-
-.indicators .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #740B27; }
-
-.rc-collapse > .rc-collapse-item:first-child {
-  border-top: none; }
-
-.indicators .rc-collapse > .rc-collapse-item > .rc-collapse-header {
-  height: 38px;
-  line-height: 38px;
-  text-indent: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #4D0015;
-  cursor: pointer; }
-
-.indicators .rc-collapse > .rc-collapse-item > .rc-collapse-header .arrow {
-  display: inline-block;
-  content: '\20';
-  width: 0;
-  height: 0;
-  font-size: 0;
-  line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid #4D0015;
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.indicators .rc-collapse-content {
-  overflow: hidden;
-  color: #4D0015;
-  padding: 0 16px;
-  background-color: #DA7791; }
-
-.indicators .rc-collapse-content > .rc-collapse-content-box {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.indicators .rc-collapse-content-inactive {
-  display: none; }
-
-.indicators .rc-collapse-item:last-child > .rc-collapse-content {
-  border-radius: 0 0 3px 3px; }
-
-.indicators .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid #4D0015;
-  margin-right: 6px; }
-
-.periods .rc-collapse {
-  background-color: #539325;
-  border-radius: 3px;
-  border: 1px solid #35710B; }
-
-.rc-collapse-anim-active {
-  -webkit-transition: height 0.2s ease-out;
-  transition: height 0.2s ease-out; }
-
-.periods .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #35710B; }
-
-.rc-collapse > .rc-collapse-item:first-child {
-  border-top: none; }
-
-.periods .rc-collapse > .rc-collapse-item > .rc-collapse-header {
-  height: 38px;
-  line-height: 38px;
-  text-indent: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #1F4B00;
-  cursor: pointer; }
-
-.periods .rc-collapse > .rc-collapse-item > .rc-collapse-header .arrow {
-  display: inline-block;
-  content: '\20';
-  width: 0;
-  height: 0;
-  font-size: 0;
-  line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid #1F4B00;
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.periods .rc-collapse-content {
-  overflow: hidden;
-  color: #1F4B00;
-  padding: 0 16px;
-  background-color: #9CD474; }
-
-.periods .rc-collapse-content > .rc-collapse-content-box {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.periods .rc-collapse-content-inactive {
-  display: none; }
-
-.periods .rc-collapse-item:last-child > .rc-collapse-content {
-  border-radius: 0 0 3px 3px; }
-
-.periods .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid #1F4B00;
-  margin-right: 6px; }
-
-.updates .rc-collapse {
-  background-color: #A6882A;
-  border-radius: 3px;
-  border: 1px solid #80640D; }
-
-.rc-collapse-anim-active {
-  -webkit-transition: height 0.2s ease-out;
-  transition: height 0.2s ease-out; }
-
-.updates .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #80640D; }
-
-.rc-collapse > .rc-collapse-item:first-child {
-  border-top: none; }
-
-.updates .rc-collapse > .rc-collapse-item > .rc-collapse-header {
-  height: 38px;
-  line-height: 38px;
-  text-indent: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #554000;
-  cursor: pointer; }
-
-.updates .rc-collapse > .rc-collapse-item > .rc-collapse-header .arrow {
-  display: inline-block;
-  content: '\20';
-  width: 0;
-  height: 0;
-  font-size: 0;
-  line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid #554000;
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.updates .rc-collapse-content {
-  overflow: hidden;
-  color: #554000;
-  padding: 0 16px;
-  background-color: #F0D583; }
-
-.updates .rc-collapse-content > .rc-collapse-content-box {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.updates .rc-collapse-content-inactive {
-  display: none; }
-
-.updates .rc-collapse-item:last-child > .rc-collapse-content {
-  border-radius: 0 0 3px 3px; }
-
-.updates .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid #554000;
-  margin-right: 6px; }
-
-.comments .rc-collapse {
-  background-color: #b0b0b0;
-  border-radius: 3px;
-  border: 1px solid #a55; }
-
-.rc-collapse-anim-active {
-  -webkit-transition: height 0.2s ease-out;
-  transition: height 0.2s ease-out; }
-
-.comments .rc-collapse > .rc-collapse-item {
-  border-top: 1px solid #a55; }
-
-.rc-collapse > .rc-collapse-item:first-child {
-  border-top: none; }
-
-.comments .rc-collapse > .rc-collapse-item > .rc-collapse-header {
-  height: 38px;
-  line-height: 38px;
-  text-indent: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #222;
-  cursor: pointer; }
-
-.comments .rc-collapse > .rc-collapse-item > .rc-collapse-header .arrow {
-  display: inline-block;
-  content: '\20';
-  width: 0;
-  height: 0;
-  font-size: 0;
-  line-height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-left: 4px solid #222;
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.comments .rc-collapse-content {
-  overflow: hidden;
-  color: #222;
-  padding: 0 16px;
-  background-color: #999999; }
-
-.comments .rc-collapse-content > .rc-collapse-content-box {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.comments .rc-collapse-content-inactive {
-  display: none; }
-
-.comments .rc-collapse-item:last-child > .rc-collapse-content {
-  border-radius: 0 0 3px 3px; }
-
-.comments .rc-collapse > .rc-collapse-item-active > .rc-collapse-header .arrow {
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid #222;
-  margin-right: 6px; }
-
 .fa-paperclip, .fa-camera {
   margin-right: 0.3em; }
+
+/* Results Framework */
+.results {
+  background: white;
+  padding: 5px;
+  box-sizing: border-box; }
+  .results * {
+    box-sizing: border-box; }
+  .results .rc-collapse {
+    border-radius: 3px; }
+    .results .rc-collapse .rc-collapse-anim-active {
+      -webkit-transition: height 0.2s ease-out;
+      transition: height 0.2s ease-out; }
+    .results .rc-collapse .rc-collapse-item {
+      padding: 5px;
+      background: white;
+      border: 1px solid #f2f0e6;
+      margin-top: 5px;
+      margin-bottom: 5px; }
+      .results .rc-collapse .rc-collapse-item .rc-collapse-header {
+        padding: 5px; }
+        .results .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+          margin-right: 8px;
+          color: black;
+          background: url(../images/arrowUpDown.png) no-repeat top center; }
+      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active {
+        background: rgba(242, 240, 230, 0.9);
+        border: 1px solid #f2f0e6; }
+        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+          padding: 5px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          cursor: pointer;
+          color: #2c2a74; }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span {
+            color: #2c2a74; }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+            background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+          vertical-align: top;
+          background-color: rgba(242, 240, 230, 0.3);
+          border: 1px solid rgba(242, 240, 230, 0.8);
+          -webkit-box-flex: 1;
+          -moz-box-flex: 1;
+          -webkit-flex: 1;
+          -ms-flex: 1;
+          flex: 1;
+          position: relative;
+          border: none; }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box {
+            /*Indicators block*/ }
+            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators > button {
+              display: none; }
+            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item {
+              padding: 5px;
+              background: rgba(255, 255, 255, 0.5);
+              margin-top: 5px;
+              margin-bottom: 5px; }
+              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header {
+                background: rgba(255, 0, 0, 0); }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
+                  display: inline-block;
+                  width: 20px;
+                  height: 20px;
+                  vertical-align: middle;
+                  margin-right: 8px;
+                  color: black;
+                  background: url(../images/arrowUpDown.png) no-repeat top center; }
+              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active {
+                background: white;
+                border: 1px solid #f2f0e6; }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                  background: rgba(255, 0, 0, 0); }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                    background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+                  vertical-align: top;
+                  -webkit-box-flex: 1;
+                  -moz-box-flex: 1;
+                  -webkit-flex: 1;
+                  -ms-flex: 1;
+                  flex: 1;
+                  position: relative;
+                  /*Periods block*/ }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline {
+                    color: #202024; }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods > button {
+                    display: none; }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header {
+                    background: rgba(255, 255, 255, 0.3); }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .arrow {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                    color: black;
+                    background: url(../images/arrowUpDown.png) no-repeat top center; }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                    background: rgba(255, 255, 255, 0.3); }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                      background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+                    padding: 5px;
+                    vertical-align: top;
+                    background-color: rgba(0, 0, 0, 0.05);
+                    -webkit-box-flex: 1;
+                    -moz-box-flex: 1;
+                    -webkit-flex: 1;
+                    -ms-flex: 1;
+                    flex: 1;
+                    position: relative; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > button {
+                      display: none; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
+                      background: rgba(255, 255, 255, 0.3); }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .arrow {
+                      display: inline-block;
+                      width: 20px;
+                      height: 20px;
+                      vertical-align: middle;
+                      margin-right: 8px;
+                      color: black;
+                      background: url(../images/arrowUpDown.png) no-repeat top center; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                      background: rgba(255, 255, 255, 0.3); }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                        background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+                      padding: 5px;
+                      vertical-align: top;
+                      background-color: rgba(0, 0, 0, 0.05);
+                      -webkit-box-flex: 1;
+                      -moz-box-flex: 1;
+                      -webkit-flex: 1;
+                      -ms-flex: 1;
+                      flex: 1;
+                      position: relative; }
