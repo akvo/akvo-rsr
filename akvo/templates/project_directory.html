@@ -34,6 +34,11 @@
       <aside  id="sidebar-wrapper" class="{{ show_filters }}">
         <div id="filter" class="">
             <div>
+              <div class="btn-group">
+                {% bootstrap_field filter.form.keyword %}
+              </div>
+            </div>
+            <div>
                   <div class="btn-group">
                     {% bootstrap_field filter.form.location %}
                   </div>
@@ -57,11 +62,6 @@
             <div>
               <div class="btn-group">
                 {% bootstrap_field filter.form.sector %}
-              </div>
-            </div>
-            <div>
-              <div class="btn-group">
-                {% bootstrap_field filter.form.keyword %}
               </div>
             </div>
             <div>
