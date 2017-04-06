@@ -101,8 +101,7 @@ class ProjectViewsTestCase(TestCase):
         project_title = '{} awesome project'.format(hostname)
         project = Project.objects.create(title=project_title)
         project.keywords.add(keyword)
-        project.publishingstatus.status = 'published'
-        project.publishingstatus.save()
+        project.publish()
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
 
@@ -125,13 +124,11 @@ class ProjectViewsTestCase(TestCase):
         )
         project_title1 = '{} awesome project {}'.format(hostname, 1)
         project1 = Project.objects.create(title=project_title1)
-        project1.publishingstatus.status = 'published'
-        project1.publishingstatus.save()
+        project1.publish()
         Partnership.objects.create(organisation=org, project=project1)
         project_title2 = '{} awesome project {}'.format(hostname, 2)
         project2 = Project.objects.create(title=project_title2)
-        project2.publishingstatus.status = 'published'
-        project2.publishingstatus.save()
+        project2.publish()
         Partnership.objects.create(organisation=org, project=project2)
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
@@ -159,13 +156,11 @@ class ProjectViewsTestCase(TestCase):
         project_title1 = '{} awesome project {}'.format(hostname, 1)
         project1 = Project.objects.create(title=project_title1)
         project1.keywords.add(keyword)
-        project1.publishingstatus.status = 'published'
-        project1.publishingstatus.save()
+        project1.publish()
         Partnership.objects.create(organisation=org, project=project1)
         project_title2 = '{} awesome project {}'.format(hostname, 2)
         project2 = Project.objects.create(title=project_title2)
-        project2.publishingstatus.status = 'published'
-        project2.publishingstatus.save()
+        project2.publish()
         Partnership.objects.create(organisation=org, project=project2)
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))

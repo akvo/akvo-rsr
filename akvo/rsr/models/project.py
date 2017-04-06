@@ -953,6 +953,18 @@ class Project(TimestampsMixin, models.Model):
         return False
     is_published.boolean = True
 
+    def publish(self):
+        """Set the publishing status to published."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+        self.publishingstatus.save()
+
+    def unpublish(self):
+        """Set the publishing status to unpublished."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_UNPUBLISHED
+        self.publishingstatus.save()
+
     def is_empty(self):
         exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
                           'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',

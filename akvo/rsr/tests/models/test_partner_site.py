@@ -23,11 +23,9 @@ class PartnerSiteModelTestCase(TestCase):
 
         # Setup a project with results framework and a user
         self.project_1 = Project.objects.create(title="Test project 1")
-        self.project_1.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
-        self.project_1.publishingstatus.save()
+        self.project_1.publish()
         self.project_2 = Project.objects.create(title="Test project 2")
-        self.project_2.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
-        self.project_2.publishingstatus.save()
+        self.project_2.publish()
         self.org_1 = Organisation.objects.create(name='Org 1', long_name='Organisation 1')
         self.org_2 = Organisation.objects.create(name='Org 2', long_name='Organisation 2')
         self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
