@@ -240,7 +240,8 @@ export default class Periods extends React.Component {
                                               toggleCheckbox={this.toggleCheckbox}
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
-                           key={period.id}>
+                           key={period.id}
+                           className={isChecked ? 'periodSelected' : ''}>
                         <Updates parentId={period.id} periodLocked={period.locked}/>
                         {
                             !period.locked &&

@@ -33,6 +33,11 @@ const ResultHeaderIndicatorCount = ({count}) => {
     )
 };
 
+ResultHeaderIndicatorCount.propTypes = {
+    count: PropTypes.number
+};
+
+
 const ResultHeader = ({result}) => {
     const renderResultType = (result) => {
         // Show the result type, if available

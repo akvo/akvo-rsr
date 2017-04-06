@@ -4245,3 +4245,6 @@ div.iatiFilters {
   margin: 0px 3px;
   font-weight: 400;
   color: #ff5500; }
+
+div.periodSelected.rc-collapse-item {
+  background: #cde7f0 !important; }
