@@ -241,10 +241,13 @@ export default class Periods extends React.Component {
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
                            key={period.id}>
-                        <Updates parentId={period.id}/>
-                        <NewUpdateButton period={period}
-                                         user={this.props.user}
-                                         dispatch={this.props.dispatch}/>
+                        <Updates parentId={period.id} periodLocked={period.locked}/>
+                        {
+                            !period.locked &&
+                            <NewUpdateButton period={period}
+                                             user={this.props.user}
+                                             dispatch={this.props.dispatch}/>
+                        }
                     </Panel>
                 )
             }

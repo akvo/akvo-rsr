@@ -57,6 +57,7 @@ class Update extends React.Component {
     static propTypes = {
         update: PropTypes.object.isRequired,
         collapseId: PropTypes.string.isRequired,
+        periodLocked: PropTypes.bool.isRequired,
     };
 
     constructor (props) {
@@ -69,12 +70,15 @@ class Update extends React.Component {
     }
 
     render() {
+        let editUpdateButton;
+        if (!this.props.periodLocked) {
+            editUpdateButton = <ToggleButton onClick={this.formToggle}
+                                                  className={'btn btn-sm btn-default'}
+                                                  label={_('edit_update')}/>
+        }
         return(
             <div>
-                <ToggleButton
-                    onClick={this.formToggle}
-                    className={'btn btn-sm btn-default'}
-                    label={_('edit_update')}/>
+                {editUpdateButton}
                 {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
                         update={this.props.update}
@@ -115,6 +119,7 @@ export default class Updates extends React.Component {
 
     static propTypes = {
         parentId: PropTypes.number.isRequired,
+        periodLocked: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -151,7 +156,9 @@ export default class Updates extends React.Component {
                 update.actual_value = actualValue;
                 return (
                     <Panel header={<UpdateHeader update={update}/>} key={update.id}>
-                        <Update update={update} collapseId={this.state.collapseId}/>
+                        <Update update={update}
+                                collapseId={this.state.collapseId}
+                                periodLocked={this.props.periodLocked}/>
                         <Comments parentId={update.id}/>
                     </Panel>
                 )
