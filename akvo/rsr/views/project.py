@@ -7,7 +7,6 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import django_filters
 import json
 from datetime import datetime
 from sorl.thumbnail import get_thumbnail

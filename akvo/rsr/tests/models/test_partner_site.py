@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from akvo.rsr.models import (
-    Organisation, Partnership, PartnerSite, Project, ProjectUpdate, PublishingStatus
+    Organisation, Partnership, PartnerSite, Project, ProjectUpdate
 )
 
 User = get_user_model()

@@ -15,7 +15,10 @@ import django_perf_rec
 from django.conf import settings
 from django.test import Client, TestCase
 
-from akvo.rsr.models import Keyword, Organisation, PartnerSite, Partnership, Project
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
+from akvo.rsr.models import (
+    Country, Keyword, Organisation, PartnerSite, Partnership, Project, ProjectLocation, RecipientCountry
+)
 
 
 @skip('Needs Django >= 1.8')
@@ -171,3 +174,39 @@ class ProjectViewsTestCase(TestCase):
         # Then
         self.assertIn(project_title1, response.content)
         self.assertNotIn(project_title2, response.content)
+
+    def test_should_show_only_recipient_country_projects(self):
+        # Given
+        project_title1 = 'Project 1'
+        project_title2 = 'Project 2'
+        project_title3 = 'Project 3'
+        url = '/en/projects/?location=262'
+        latitude, longitude = ('11.8948112', '42.5807153')
+        country_code = 'DJ'
+        # No recipient country
+        project1 = Project.objects.create(title=project_title1)
+        project1.publish()
+        # Recipient Country - DJ
+        project2 = Project.objects.create(title=project_title2)
+        project2.publish()
+        RecipientCountry.objects.create(project=project2, country=country_code)
+        # ProjectLocation in DJ
+        self.setup_country_objects()
+        project3 = Project.objects.create(title=project_title3)
+        project3.publish()
+        project_location = ProjectLocation.objects.create(location_target=project3,
+                                                          latitude=latitude,
+                                                          longitude=longitude)
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertNotIn(project_title1, response.content)
+        self.assertIn(project_title2, response.content)
+        self.assertEqual(project_location.country.iso_code, country_code.lower())
+        self.assertNotIn(project_title3, response.content)
+
+    def setup_country_objects(self):
+        for iso_code, name in ISO_3166_COUNTRIES:
+            Country.objects.create(name=name, iso_code=iso_code)
