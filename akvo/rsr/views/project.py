@@ -18,16 +18,13 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import ugettext_lazy as _
 from lxml import etree
 
 from ..forms import ProjectUpdateForm
-from ..filters import (build_choices, location_choices, create_project_filter_class,
-                       remove_empty_querydict_items)
+from ..filters import (create_project_filter_class, remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
 from ...iati.exports.iati_export import IatiXML
-from .organisation import _page_organisations
 from akvo.codelists.models import SectorCategory, Sector, Version
 
 
@@ -65,19 +62,8 @@ def directory(request):
 
     # Yank project collection
     all_projects = _project_directory_coll(request)
-    f = create_project_filter_class(request)(qs, queryset=all_projects)
-
-    # Change filter options further when on an Akvo Page
-    if request.rsr_page:
-        # Filter location filter list to only populated locations
-        f.filters['location'].extra['choices'] = location_choices(all_projects)
-
-        # Swap to choice filter for RSR pages
-        f.filters['organisation'] = django_filters.ChoiceFilter(
-            choices=build_choices(_page_organisations(request.rsr_page)),
-            label=_(u'organisation'),
-            name='partners__id')
-
+    project_filter = create_project_filter_class(request, all_projects)
+    f = project_filter(qs, queryset=all_projects)
     sorted_projects = f.qs.distinct().order_by(sorting)
 
     # Build page

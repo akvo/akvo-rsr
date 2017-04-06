@@ -134,11 +134,6 @@ class BaseProjectFilter(django_filters.FilterSet):
         label=_(u'category'),
         name='categories__id')
 
-    location = django_filters.ChoiceFilter(
-        choices=M49_CODES,
-        label=_(u'location'),
-        action=filter_m49)
-
     sector = django_filters.ChoiceFilter(
         initial=_('All'),
         choices=([('', _('All'))] + sectors()),
@@ -160,18 +155,8 @@ class BaseProjectFilter(django_filters.FilterSet):
         label=_(u'Search'),
         name='title')
 
-    organisation = django_filters.ChoiceFilter(
-        choices=get_orgs(),
-        label=_(u'organisation'),
-        name='partners__id')
 
-    class Meta:
-        model = Project
-        fields = ['status', 'iati_status', 'location', 'organisation', 'category',
-                  'sector', 'title', ]
-
-
-def create_project_filter_class(request):
+def create_project_filter_class(request, projects):
     """Create ProjectFilter class based on request attributes."""
 
     def keywords():
@@ -182,12 +167,51 @@ def create_project_filter_class(request):
         keywords = list(keywords.values_list('id', 'label'))
         return [('', _('All'))] + keywords
 
+    def locations():
+        if request.rsr_page is not None:
+            return location_choices(projects)
+        else:
+            return M49_CODES
+
+    def organisations():
+        if request.rsr_page is not None:
+            return build_choices(request.rsr_page.partners())
+        else:
+            return get_orgs()
+
     class ProjectFilter(BaseProjectFilter):
+
         keyword = django_filters.ChoiceFilter(
             initial=_('All'),
             choices=keywords(),
             label=_(u'keyword'),
-            name='keywords')
+            name='keywords',
+        )
+
+        location = django_filters.ChoiceFilter(
+            choices=locations(),
+            label=_(u'location'),
+            action=filter_m49,
+        )
+
+        organisation = django_filters.ChoiceFilter(
+            choices=organisations(),
+            label=_(u'organisation'),
+            name='partners__id',
+        )
+
+        class Meta:
+            model = Project
+            fields = [
+                'title',
+                'keyword',
+                'location',
+                'status',
+                'iati_status',
+                'organisation',
+                'category',
+                'sector',
+            ]
 
     return ProjectFilter
 
