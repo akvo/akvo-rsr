@@ -167,7 +167,7 @@ export default class Updates extends React.Component {
     }
 
     render() {
-        const { ids, updates } = findChildren(this.props.parentId, 'updates', 'period');
+        const { ids, updates } = findChildren(this.props.parentId, OBJECTS_UPDATES);
         const toggleKey = createToggleKey(ids, this.activeKey());
         if (!updates) {
             return (

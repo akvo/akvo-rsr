@@ -217,7 +217,7 @@ export default class Periods extends React.Component {
         const callbacks = {openNewForm: this.openNewForm};
         return (periods.map(
             (period) => {
-                const { ids, updates } = findChildren(period.id, 'updates', 'period');
+                const { ids, updates } = findChildren(period.id, OBJECTS_UPDATES);
                 // Calculate actual value for the period
                 const lookupUpdates = objectsArrayToLookup(updates, 'id');
                 const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(period.id);
@@ -255,7 +255,7 @@ export default class Periods extends React.Component {
     }
 
     render() {
-        const { ids, periods } = findChildren(this.props.parentId, 'periods', 'indicator');
+        const { ids, periods } = findChildren(this.props.parentId, OBJECTS_PERIODS);
         const toggleKey = createToggleKey(ids, this.activeKey());
         if (!periods) {
             return (

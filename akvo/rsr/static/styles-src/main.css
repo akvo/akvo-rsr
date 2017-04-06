@@ -4240,3 +4240,8 @@ div.iatiFilters {
                       -ms-flex: 1;
                       flex: 1;
                       position: relative; }
+
+.rc-collapse-header .indicatorType {
+  margin: 0px 3px;
+  font-weight: 400;
+  color: #ff5500; }

@@ -100,7 +100,7 @@ export default class Indicators extends React.Component {
     }
 
     render() {
-        const { ids, indicators } = findChildren(this.props.parentId, 'indicators', 'result');
+        const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
         const toggleKey = createToggleKey(ids, this.activeKey());
 
         if (!indicators) {

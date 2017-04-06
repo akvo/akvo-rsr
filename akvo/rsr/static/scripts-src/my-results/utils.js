@@ -171,9 +171,10 @@ export function _(s) {
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
 
 
-export const findChildren = (parentId, childModel, parentField) => {
+export const findChildren = (parentId, childModel) => {
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
+    const parentField = PARENT_FIELD[childModel];
     const model = store.getState().models[childModel];
     if (model && model.ids) {
         const { ids, objects } = model;
@@ -229,7 +230,7 @@ function parentModelName(model) {
 
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root
-    const ids = findChildren(parentId, model, PARENT_FIELD[model]).ids;
+    const ids = findChildren(parentId, model).ids;
     const childModel = childModelName(model);
     const children = ids.map((cId) => {
         return tree(childModel, cId)
@@ -278,8 +279,7 @@ export function toggleTree(model, id, close) {
 
 export function createToggleKeys(parentId, model, activeKey) {
     // get all child nodes
-    const childIds = findChildren(
-        parentId, model, PARENT_FIELD[model]).ids;
+    const childIds = findChildren(parentId, model).ids;
     // determine if we should open or close
     const fullyOpenKey = idsToActiveKey(childIds);
     const close = identicalArrays(fullyOpenKey, activeKey);

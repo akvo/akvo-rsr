@@ -66,7 +66,7 @@ export default class Comments extends React.Component {
     }
 
     render() {
-        const { ids, comments } = findChildren(this.props.parentId, 'comments', 'data');
+        const { ids, comments } = findChildren(this.props.parentId, OBJECTS_COMMENTS);
         const toggleKey = createToggleKey(ids, this.activeKey());
         if (!comments) {
             return (

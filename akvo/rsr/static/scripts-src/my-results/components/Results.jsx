@@ -12,22 +12,64 @@ import Collapse, {  Panel } from 'rc-collapse';
 import { onChange } from "../actions/collapse-actions"
 
 import { _, findChildren, createToggleKey, collapseId, cascadeIds, createToggleKeys } from '../utils';
-import { OBJECTS_RESULTS } from '../const.js';
+import { OBJECTS_RESULTS, OBJECTS_INDICATORS } from '../const.js';
 
 import Indicators from './Indicators';
 import { ToggleButton } from "./common"
 
 
+const ResultHeaderIndicatorCount = ({count}) => {
+    let indicatorText;
+    if (count == 1) {
+        indicatorText = _('indicator');
+    } else {
+        indicatorText = _('indicators');
+    }
+    return (
+        <span className="result-indicator-count">
+            <i className="fa fa-tachometer" />
+            <span className="indicator-count inlined"> {count} {indicatorText}</span>
+        </span>
+    )
+};
+
 const ResultHeader = ({result}) => {
+    const renderResultType = (result) => {
+        // Show the result type, if available
+        switch (result.type) {
+            case '1':
+                return <span className="indicatorType">{_('output')}</span>;
+            case '2': 
+                return <span className="indicatorType">{_('outcome')}</span>;
+            case '3': 
+                return <span className="indicatorType">{_('impact')}</span>;
+            case '9': 
+                return <span className="indicatorType">{_('other')}</span>;
+            default: 
+                return <span />;
+        }
+    };
+
+    const indicatorCount = (resultId) => {
+        if (resultId) {
+            const kids = findChildren(resultId, OBJECTS_INDICATORS).ids.length;
+            return kids;
+        } else {
+            return 0
+        }
+    };
+
     return (
         <span>
             {"Result: " + result.title}
+            {renderResultType(result)}
+            <ResultHeaderIndicatorCount count={indicatorCount(result.id)} />
         </span>
     )
 };
 
 ResultHeader.propTypes = {
-    item: PropTypes.object
+    result: PropTypes.object
 };
 
 
@@ -79,7 +121,7 @@ export default class Results extends React.Component {
     }
 
     render() {
-        const { ids, results } = findChildren(this.props.parentId, 'results');
+        const { ids, results } = findChildren(this.props.parentId, OBJECTS_RESULTS);
         const toggleKey = createToggleKey(ids, this.activeKey());
 
         if (!results) {
