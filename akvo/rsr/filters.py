@@ -6,15 +6,15 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from copy import deepcopy
 
 import django_filters
-
-from copy import deepcopy
 from django.utils.translation import ugettext_lazy as _
+
 from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 from .models import (Category, Keyword, Organisation, OrganisationLocation,
-                     Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation)
+                     Project, ProjectUpdate, ProjectUpdateLocation, RecipientCountry)
 from .m49 import M49_CODES, M49_HIERARCHY
 
 ANY_CHOICE = (('', _('All')), )
@@ -98,26 +98,45 @@ def get_locations(location, locations):
 def location_choices(qs):
     """From a queryset get possible location filter choices"""
 
-    if qs.model is Project:
-        location_model = ProjectLocation
-    elif qs.model is ProjectUpdate:
+    country_ids = (
+        get_recipient_country_ids(qs) if qs.model is Project else
+        get_location_country_ids(qs)
+    )
+
+    locations = [
+        location
+        for country_id in country_ids
+        for location in get_locations(country_id, []) + [country_id]
+    ]
+
+    choices = [tup for tup in M49_CODES if any(
+        unicode(i) in tup for i in locations)]
+
+    return [M49_CODES[0]] + choices  # Add the world to the choices
+
+
+def get_recipient_country_ids(projects):
+    """Return countries based on recipient country of projects."""
+    countries = RecipientCountry.objects.filter(project__in=projects)
+    return [get_id_for_iso(country.country.upper()) for country in countries]
+
+
+def get_location_country_ids(qs):
+    """Return countries for locations associated with objects in the queryset."""
+
+    if qs.model is ProjectUpdate:
         location_model = ProjectUpdateLocation
+
     elif qs.model is Organisation:
         location_model = OrganisationLocation
 
     locations_qs = location_model.objects.filter(
         location_target__in=qs).order_by('country__id').distinct('country__id')
 
-    locations = []
-    for location in locations_qs:
-        if location.country:
-            country = get_id_for_iso(location.country.iso_code.upper())
-            locations.append(country)
-            locations.extend(get_locations(country, []))
-
-    choices = [tup for tup in M49_CODES if any(
-        unicode(i) in tup for i in locations)]
-    return [M49_CODES[0]] + choices  # Add the world to the choices
+    return [
+        get_id_for_iso(location.country.iso_code.upper())
+        for location in locations_qs if location.country
+    ]
 
 
 def build_choices(qs):
