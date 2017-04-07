@@ -5780,6 +5780,10 @@ div.iatiFilters {
                 }
             }
 
+            .rc-collapse-content.rc-collapse-content-inactive {
+                display: none;
+            }
+
             &.rc-collapse-item-active {
                 background: rgba(242, 240, 230, 0.9);
                 border: 1px solid rgba(242, 240, 230, 1);
