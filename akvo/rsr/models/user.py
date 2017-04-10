@@ -378,9 +378,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def can_create_project(self):
         """Check to see if the user can create a project."""
 
-        if self.is_superuser:
-            return True
-
         for employment in self.approved_employments():
             org = employment.organisation
             if org.can_create_projects and self.has_perm('rsr.add_project', org):
