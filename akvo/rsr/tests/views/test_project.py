@@ -175,7 +175,7 @@ class ProjectViewsTestCase(TestCase):
         self.assertIn(project_title1, response.content)
         self.assertNotIn(project_title2, response.content)
 
-    def test_should_show_only_recipient_country_projects(self):
+    def test_should_show_all_country_projects(self):
         # Given
         project_title1 = 'Project 1'
         project_title2 = 'Project 2'
@@ -205,7 +205,7 @@ class ProjectViewsTestCase(TestCase):
         self.assertNotIn(project_title1, response.content)
         self.assertIn(project_title2, response.content)
         self.assertEqual(project_location.country.iso_code, country_code.lower())
-        self.assertNotIn(project_title3, response.content)
+        self.assertIn(project_title3, response.content)
 
     def setup_country_objects(self):
         for iso_code, name in ISO_3166_COUNTRIES:

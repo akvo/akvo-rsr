@@ -9,12 +9,14 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from copy import deepcopy
 
 import django_filters
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 from .models import (Category, Keyword, Organisation, OrganisationLocation,
-                     Project, ProjectUpdate, ProjectUpdateLocation, RecipientCountry)
+                     Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation,
+                     RecipientCountry)
 from .m49 import M49_CODES, M49_HIERARCHY
 
 ANY_CHOICE = (('', _('All')), )
@@ -61,7 +63,12 @@ def filter_m49(queryset, value):
     if not value:
         return queryset
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
-    return queryset.filter(recipient_countries__country__in=countries)
+    countries_lower = [c.lower() for c in countries]
+    filter_ = (
+        Q(recipient_countries__country__in=countries) |
+        Q(locations__country__iso_code__in=countries_lower)
+    )
+    return queryset.filter(filter_)
 
 
 def filter_m49_orgs(queryset, value):
@@ -98,10 +105,9 @@ def get_locations(location, locations):
 def location_choices(qs):
     """From a queryset get possible location filter choices"""
 
-    country_ids = (
-        get_recipient_country_ids(qs) if qs.model is Project else
-        get_location_country_ids(qs)
-    )
+    country_ids = get_location_country_ids(qs)
+    if qs.model is Project:
+        country_ids += get_recipient_country_ids(qs)
 
     locations = [
         location
@@ -124,7 +130,10 @@ def get_recipient_country_ids(projects):
 def get_location_country_ids(qs):
     """Return countries for locations associated with objects in the queryset."""
 
-    if qs.model is ProjectUpdate:
+    if qs.model is Project:
+        location_model = ProjectLocation
+
+    elif qs.model is ProjectUpdate:
         location_model = ProjectUpdateLocation
 
     elif qs.model is Organisation:
