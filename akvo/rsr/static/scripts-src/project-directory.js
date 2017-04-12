@@ -46,35 +46,9 @@ $(document).ready(function () {
         }
     });
 
-    // TODO: determine the best typeahead data to use
-    // var locations = new Bloodhound({
-    //     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    //     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    //     prefetch: {
-    //         //  TODO: get a filtered set of locations for Pages
-    //         thumbprint: "locations",
-    //         url: '/static/data/m49.json'
-    //     }
-    // });
-    //
-    // var keywords = new Bloodhound({
-    //     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
-    //     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    //     prefetch: {
-    //         url: '/rest/v1/typeaheads/keywords?format=json',
-    //         thumbprint: "keywords",
-    //
-    //         filter: function (response) {
-    //             return response.results;
-    //         }
-    //     }
-    // });
-
     projects.initialize();
-    // locations.initialize();
-    // keywords.initialize();
 
-    $('#id_title').typeahead(
+    $('#id_title_or_subtitle').typeahead(
         {
             highlight: true
         },
@@ -89,37 +63,14 @@ $(document).ready(function () {
                 )
             }
         }
-        // ,
-        // {
-        //     name: 'locations',
-        //     displayKey: 'name',
-        //     source: locations.ttAdapter(),
-        //     templates: {
-        //         header: '<h3 class="dd-category">' + locations_text + '</h3>',
-        //         suggestion: _.template(
-        //             '<a href="/projects/?location=<%= code %>"><p><%= name %></p></a>'
-        //         )
-        //     }
-        // },
-        // {
-        //     name: 'keywords',
-        //     displayKey: 'label',
-        //     source: keywords.ttAdapter(),
-        //     templates: {
-        //         header: '<h3 class="dd-category">Keywords</h3>',
-        //         suggestion: _.template(
-        //             '<a href="/projects/?keyword=<%= id %>"><p><%= label %></p></a>'
-        //         )
-        //     }
-        // }
     );
 
     $('#filterForm').on('click', '.filter_focus_area', function (event) {
-        var tmp = $('#id_title').val();
+        var tmp = $('#id_title_or_subtitle').val();
         $('select#id_focus_area option').filter(function () {
             return $(this).text() == tmp;
         }).prop('selected', true);
-        $('#id_title').val('');
+        $('#id_title_or_subtitle').val('');
         $('#filterForm').submit();
     });
 
