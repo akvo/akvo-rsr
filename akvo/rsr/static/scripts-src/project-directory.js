@@ -34,9 +34,10 @@ $(document).ready(function () {
     var locations_text = templateJSON.locations_text;
 
     var projects = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        datumTokenizer: Bloodhound.tokenizers.obj.nonword('title', 'subtitle'),
+        queryTokenizer: Bloodhound.tokenizers.nonword,
         prefetch: {
+            cacheKey: 'typeaheads_projects_with_subtitle',
             url: '/rest/v1/typeaheads/projects?format=json&published=1',
             thumbprint: "projects",
 
@@ -59,7 +60,7 @@ $(document).ready(function () {
             templates: {
                 header: '<h3 class="dd-category">' + projects_text + '</h3>',
                 suggestion: _.template(
-                    '<a href="/project/<%= id %>"><p>(ID: <%= id %>) <%= title %></p></a>'
+                    '<a href="/project/<%= id %>"><p>(ID: <%= id %>) <%= title %> | <%= subtitle %></p></a>'
                 )
             }
         }
