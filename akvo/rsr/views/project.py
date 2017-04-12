@@ -90,6 +90,8 @@ def directory(request):
     page.object_list = page.object_list.prefetch_related(
         'publishingstatus',
         'recipient_countries',
+        'locations',
+        'locations__country',
         'sectors',
         'budget_items',
         'partnerships__organisation',
