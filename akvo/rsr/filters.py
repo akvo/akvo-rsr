@@ -52,10 +52,7 @@ def walk(node):
     elif isinstance(node, int):
         return walk(deepcopy(M49_HIERARCHY)[node])
     else:
-        if node:
-            return (walk(node.pop()) + walk(node))
-        else:
-            return []
+        return (walk(node.pop()) + walk(node)) if node else []
 
 
 def filter_m49(queryset, value):
@@ -80,45 +77,53 @@ def filter_m49_orgs(queryset, value):
 
 
 def get_id_for_iso(i):
-    """From an iso_code e.g. 'SE' get the identifier."""
+    """From an iso_code e.g. 'SE' get the identifier.
+
+    NOTE: If i is already an id, the parent id of the given id is returned!
+
+    """
     i = [k for k, v in M49_HIERARCHY.iteritems() if i in v]
-    if not i:
-        return None
-    else:
-        return i.pop()
+    return None if not i else i.pop()
 
 
-def get_locations(location, locations):
-    """Based on one location (country or group as Europe) get all the"""
+def get_location_hierarchy(location, locations=None):
+    """Return the location > parent > ... > continent hierarchy for a location."""
+    if locations is None:
+        locations = [location]
+    # FIXME: Actually returns parent id, when location is already an id!
     l = get_id_for_iso(location)
-    if isinstance(l, basestring):
-        return locations
-    elif l is 1:
-        return locations
-    elif l is None:
+    if isinstance(l, basestring) or l is 1 or l is None:
         return locations
     else:
         locations.append(l)
-        return get_locations(l, locations)
+        return get_location_hierarchy(l, locations)
 
 
 def location_choices(qs):
-    """From a queryset get possible location filter choices"""
+    """Return a filterd list of locations from M49_CODES based on queryset."""
+
+    country_ids = get_country_ids(qs)
+
+    location_ids = {
+        unicode(location)
+        for country_id in country_ids
+        for location in get_location_hierarchy(country_id)
+    }
+
+    # Add World to locations
+    location_ids.add("")
+
+    return filter(lambda (id_, name): id_ in location_ids, M49_CODES)
+
+
+def get_country_ids(qs):
+    """Return country ids for locations associated with the queryset items."""
 
     country_ids = get_location_country_ids(qs)
     if qs.model is Project:
-        country_ids += get_recipient_country_ids(qs)
+        country_ids = get_recipient_country_ids(qs) + country_ids
 
-    locations = [
-        location
-        for country_id in country_ids
-        for location in get_locations(country_id, []) + [country_id]
-    ]
-
-    choices = [tup for tup in M49_CODES if any(
-        unicode(i) in tup for i in locations)]
-
-    return [M49_CODES[0]] + choices  # Add the world to the choices
+    return set(country_ids)
 
 
 def get_recipient_country_ids(projects):

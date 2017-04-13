@@ -652,7 +652,7 @@ class Project(TimestampsMixin, models.Model):
             [country for country in self.recipient_countries.all()] +
             [
                 location.country for location in self.locations.all()
-                if location.country.iso_code not in country_codes
+                if location.country and location.country.iso_code not in country_codes
             ]
         )
 

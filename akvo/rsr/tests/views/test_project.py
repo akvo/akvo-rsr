@@ -197,6 +197,10 @@ class ProjectViewsTestCase(TestCase):
         project_location = ProjectLocation.objects.create(location_target=project3,
                                                           latitude=latitude,
                                                           longitude=longitude)
+        # ProjectLocation with no country
+        ProjectLocation.objects.create(location_target=project3,
+                                       latitude=None,
+                                       longitude=None)
 
         # When
         response = self.c.get(url, follow=True)
