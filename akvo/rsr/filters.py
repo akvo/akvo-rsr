@@ -76,6 +76,13 @@ def filter_m49_orgs(queryset, value):
     return queryset.filter(locations__iati_country__in=countries)
 
 
+def filter_title_or_subtitle(queryset, value):
+    """Filters projects based on whether title or subtitle contains value."""
+    if not value:
+        return queryset
+    return queryset.filter(Q(title__icontains=value) | Q(subtitle__icontains=value))
+
+
 def get_id_for_iso(i):
     """From an iso_code e.g. 'SE' get the identifier.
 
@@ -183,10 +190,9 @@ class BaseProjectFilter(django_filters.FilterSet):
         label=_(u'status'),
         choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)))
 
-    title = django_filters.CharFilter(
-        lookup_type='icontains',
+    title_or_subtitle = django_filters.CharFilter(
         label=_(u'Search'),
-        name='title')
+        action=filter_title_or_subtitle)
 
 
 def create_project_filter_class(request, projects):
@@ -236,7 +242,7 @@ def create_project_filter_class(request, projects):
         class Meta:
             model = Project
             fields = [
-                'title',
+                'title_or_subtitle',
                 'keyword',
                 'location',
                 'status',
