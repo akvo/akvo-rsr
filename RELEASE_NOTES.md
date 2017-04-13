@@ -1,3 +1,19 @@
+# Akvo RSR version 3.24 Stockholm
+
+## General improvements
+
+[#2609](https://github.com/akvo/akvo-rsr/issues/2609) Add a link to the project editor on the project page
+
+[#2616](https://github.com/akvo/akvo-rsr/issues/2616) Reordering of Advanced Filter window, move Keywords to the top
+
+[#2618](https://github.com/akvo/akvo-rsr/issues/2618) Project subtitle part of the search query
+
+## Bug fixes
+
+[#2623] (https://github.com/akvo/akvo-rsr/pull/2623) Fix problems with Location advanced filter in project directory
+
+[#2619](https://github.com/akvo/akvo-rsr/issues/2619) Advanced filter for Location doesn't work correctly
+
 # Akvo RSR version 3.23.1 New Delhi hotfix
 
 ## Bug fixes
