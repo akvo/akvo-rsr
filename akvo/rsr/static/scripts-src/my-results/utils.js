@@ -172,6 +172,7 @@ export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4)
 
 
 export const findChildren = (parentId, childModel) => {
+    //TODO: remove when _meta.children is fully used
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
     const parentField = PARENT_FIELD[childModel];
@@ -189,6 +190,29 @@ export const findChildren = (parentId, childModel) => {
 };
 
 
+export const findChildrenFromCurrentState = (modelsState, parentId, childModel) => {
+    // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
+    // Return object with array of filtered ids and array of corresponding filtered objects
+    const parentField = PARENT_FIELD[childModel];
+    const model = modelsState[childModel];
+    if (model && model.ids) {
+        const { ids, objects } = model;
+        const filteredIds = ids.filter(
+            // if parentField is undefined return all ids (This applies to Result)
+            id => parentField ? objects[id][parentField] === parentId : true
+        );
+        const filteredObjects = filteredIds.reduce(
+            (acc, id) => {
+                acc[id] = objects[id];
+                return acc;
+            }, {}
+        );
+        return {ids: filteredIds, objects: filteredObjects}
+    }
+    return {ids: [], objects: undefined};
+};
+
+
 export function idsToActiveKey(ids) {
     // Return the IDs as an array of strings, used as activeKey
     const unique = new Set(ids);
@@ -199,7 +223,7 @@ export function idsToActiveKey(ids) {
 export function createToggleKey(ids, activeKey) {
     // Create an activeKey array for a Collapse element with either all panels open or none
     // uses the IDs of the panels derived from the relevant model IDs
-    const allOpen = (ids.length > 0) && idsToActiveKey(ids);
+    const allOpen = (ids && ids.length > 0) && idsToActiveKey(ids);
     // If allOpen is identical to activeKey, all panels are already open and we close them
     return identicalArrays(activeKey, allOpen) ? [] : allOpen;
 }
@@ -219,7 +243,7 @@ function childModelName(model) {
     }
 }
 
-function parentModelName(model) {
+export function parentModelName(model) {
     try {
         return MODELS_LIST[MODELS_LIST.indexOf(model) - 1];
     } catch(e) {
@@ -230,6 +254,7 @@ function parentModelName(model) {
 
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root
+    //TODO: refactor, we shouldn't need findChildren here
     const ids = findChildren(parentId, model).ids;
     const childModel = childModelName(model);
     const children = ids.map((cId) => {
@@ -279,6 +304,7 @@ export function toggleTree(model, id, close) {
 
 export function createToggleKeys(parentId, model, activeKey) {
     // get all child nodes
+    //TODO: refactor, we shouldn't need findChildren here
     const childIds = findChildren(parentId, model).ids;
     // determine if we should open or close
     const fullyOpenKey = idsToActiveKey(childIds);

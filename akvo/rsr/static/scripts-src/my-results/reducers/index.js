@@ -19,7 +19,7 @@ import uiReducer from "./uiReducer"
     models: holds the data of the RSR models one key for each model under "models":
         comments, indicators, periods, results updates and user
     The first five are the data populating the accordion representation of the projects results, the
-    user holds indormation on the logged in user
+    user holds information on the logged in user
 
     keys: holds data representing the state of the accordions. Each Collapse component with the
     activeKey attribute != undefined is kept here under the key <modelname>-<parentId> where

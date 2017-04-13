@@ -29,6 +29,15 @@ export const
         OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
     ],
 
+    // Lookup of slicing index for models when slicing MODELS_LIST
+    MODEL_INDEX = {
+        [OBJECTS_RESULTS]: 0,
+        [OBJECTS_INDICATORS]: 1,
+        [OBJECTS_PERIODS]: 2,
+        [OBJECTS_UPDATES]: 3,
+        [OBJECTS_COMMENTS]: 4,
+    },
+
     // Lookup of the parent FK field name on a model
     PARENT_FIELD = {
         [OBJECTS_RESULTS]: null,
@@ -36,6 +45,15 @@ export const
         [OBJECTS_PERIODS]: 'indicator',
         [OBJECTS_UPDATES]: 'period',
         [OBJECTS_COMMENTS]: 'data'
+    },
+
+    // Lookup of the child model for a model
+    CHILD_OBJECTS = {
+        [OBJECTS_RESULTS]: OBJECTS_INDICATORS,
+        [OBJECTS_INDICATORS]: OBJECTS_PERIODS,
+        [OBJECTS_PERIODS]: OBJECTS_UPDATES,
+        [OBJECTS_UPDATES]: OBJECTS_COMMENTS,
+        [OBJECTS_COMMENTS]: null
     },
 
     // UI state

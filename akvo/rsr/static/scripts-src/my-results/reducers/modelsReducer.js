@@ -7,6 +7,9 @@
 
 import { normalize, schema } from 'normalizr';
 import update  from 'immutability-helper';
+import { CHILD_OBJECTS, MODELS_LIST, MODEL_INDEX, OBJECTS_RESULTS} from "../const";
+import { ALL_MODELS_FETCHED } from "./uiReducer";
+import { findChildren, parentModelName, findChildrenFromCurrentState} from "../utils";
 
 export const
     FETCH_MODEL_START = "FETCH_MODEL_START",
@@ -50,43 +53,66 @@ const initialModels = {
     user: {fetched: false}
 };
 
+const assignChildren = (state, model) => {
+     // For model and it's children...
+    return MODELS_LIST.slice(MODEL_INDEX[model]).reduce(
+        (acc, model) => {
+            return {...acc,
+                // ...update all objects in models[model].objects...
+                [model]: {...state[model],
+                    objects: state[model].ids.reduce(
+                        (acc, id) => {
+                            // ...with the result from findChildren, added as _meta.children
+                            const children = findChildrenFromCurrentState(
+                                state, id, CHILD_OBJECTS[model]
+                            );
+                            return {...acc,
+                                [id]: {...state[model].objects[id],
+                                    _meta: {children: children}
+                                }
+                            };
+                        }, {...state[model].objects}
+                    )
+                }
+            }
+        }, {...state}
+    );
+};
+
 export default function modelsReducer(state=initialModels, action) {
     switch(action.type) {
 
         // FETCH_ actions fetch data from the backend and do the initial population of the data
         case FETCH_MODEL_START: {
             const model = action.payload.model;
-            state = {
+            return {
                 ...state,
-                [model]: {fetched: false, changing: true, changed: false, objects: {}, ids: null}
+                [model]: {fetched: false, changing: true, changed: false, objects: undefined, ids: undefined}
             };
-            break;
         }
 
         case FETCH_MODEL_FULFILLED: {
             const model = action.payload.model;
             const normalized = normalizedObjects(action.payload.data);
-            state = {...state, [model]: {
+            return {...state, [model]: {
                 fetched: true,
                 changing: false,
                 changed: true,
                 objects: normalized.entities.items || {},
                 ids: normalized.result
             }};
-            break;
         }
 
         case FETCH_MODEL_REJECTED: {
             const model = action.payload.model;
-            state = {...state, [model]: {
+            return {...state, [model]: {
                 fetched: false,
                 changing: false,
                 changed: false,
-                objects: null,
-                ids: null,
+                objects: {},
+                ids: [],
                 error: action.payload.error
             }};
-            break;
         }
 
         // UPDATE_ actions both modify existing and add new objects to the models, while keeping the
@@ -95,8 +121,7 @@ export default function modelsReducer(state=initialModels, action) {
             const model = action.payload.model;
             const modelState = state[model];
             const updatedState = update(modelState, {changing: {$set: true}, changed: {$set: true}});
-            state = {...state, [model]: updatedState};
-            break;
+            return {...state, [model]: updatedState};
         }
 
         case UPDATE_MODEL_FULFILLED: {
@@ -109,14 +134,12 @@ export default function modelsReducer(state=initialModels, action) {
             });
             // remove duplicate ids
             merged.ids = [...new Set(merged.ids)];
-            state = {...state, [model]: merged};
-            break;
+            return {...state, [model]: merged};
         }
 
         case UPDATE_MODEL_REJECTED: {
             const model = action.payload.model;
-            state = {...state, [model]: {changing: false, changed: false, data: null, error: action.payload.error}};
-            break;
+            return {...state, [model]: {changing: false, changed: false, data: null, error: action.payload.error}};
         }
 
         case DELETE_FROM_MODEL: {
@@ -124,8 +147,8 @@ export default function modelsReducer(state=initialModels, action) {
             const newModel = Object.assign({}, state[model]);
             delete newModel.objects[object.id];
             newModel.ids = newModel.ids.filter(id => id !== object.id);
-            state = {...state, [model]: newModel};
-            break;
+            const deletedState = {...state, [model]: newModel};
+            return assignChildren(deletedState, parentModelName(model));
         }
 
         case UPDATE_MODEL_DELETE_FULFILLED: {
@@ -136,10 +159,36 @@ export default function modelsReducer(state=initialModels, action) {
                 ids: {$set: state[model].ids.filter(i => i !== id)}
             });
             delete newModel.objects[id];
-            state = {...state, [model]: newModel};
-            break;
+            const deletedState = {...state, [model]: newModel};
+            return assignChildren(deletedState, parentModelName(model));
         }
 
+        // "Link" all models to their children by adding the result of findChildren to
+        // _meta.children of each object
+        case ALL_MODELS_FETCHED: {
+            // For each model...
+            return assignChildren(state, OBJECTS_RESULTS);
+            // return MODELS_LIST.reduce(
+            //     (acc, model) => {
+            //         return {...acc,
+            //             // ...update all objects in models[model].objects...
+            //             [model]: {...state[model],
+            //                 objects: state[model].ids.reduce(
+            //                     (acc, id) => {
+            //                         // ...with the result from findChildren, added as _meta.children
+            //                         const children = findChildren(id, CHILD_OBJECTS[model]);
+            //                         return {...acc,
+            //                             [id]: {...state[model].objects[id],
+            //                                 _meta: {children: children[CHILD_OBJECTS[model]]}
+            //                             }
+            //                         };
+            //                     }, {...state[model].objects}
+            //                 )
+            //             }
+            //         }
+            //     }, {...state}
+            // );
+        }
     }
     return state;
 };

@@ -32,6 +32,7 @@ import {
 import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
 import { ToggleButton } from "./common"
+import { getPeriodsActualValue, getPeriodsChildrenIds} from "../selectors";
 
 
 class PeriodLockToggle extends React.Component {
@@ -101,6 +102,7 @@ PeriodLockStatus.propTypes = {
     lockStatus: PropTypes.object,
 };
 
+
 const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
     // NOTE: the onChange event handler can't be used here because it fires too late and the event
     // for opening/closing the collapse panel will be triggered. However when using the onClick
@@ -114,12 +116,6 @@ PeriodSelect.propTypes = {
     isChecked: PropTypes.bool.isRequired,
 };
 
-const periodActualValue = (period) => {
-    return period.updates && period.updates.length > 0 ?
-        period.updates[period.updates.length-1].actual_value
-    :
-        "";
-};
 
 const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) => {
     const periodStart = displayDate(period.period_start);
@@ -164,13 +160,15 @@ const objectsArrayToLookup = (arr, index) => {
         periods: store.models['periods'],
         keys: store.keys,
         user: store.models.user.objects[store.models.user.ids[0]],
-        ui: store.ui
+        ui: store.ui,
+        periodChildrenIds: getPeriodsChildrenIds(store),
+        actualValue: getPeriodsActualValue(store),
     }
 })
 export default class Periods extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        ids: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -213,36 +211,24 @@ export default class Periods extends React.Component {
         periodSelectToggle(periodId);
     }
 
-    renderPanels(periods) {
+    renderPanels(ids) {
         const callbacks = {openNewForm: this.openNewForm};
-        return (periods.map(
-            (period) => {
-                const { ids, updates } = findChildren(period.id, OBJECTS_UPDATES);
-                // Calculate actual value for the period
-                const lookupUpdates = objectsArrayToLookup(updates, 'id');
-                const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(period.id);
-                const actualValue = ids && ids.filter(
-                    (id) => lookupUpdates[id].status == UPDATE_STATUS_APPROVED
-                ).reduce(
-                    // Actual value is calculated by adding all approved updates with numerical data
-                    (sum, id) => {
-                        const data = parseInt(lookupUpdates[id].data);
-                        // If data is NaN then data !== data returns true!
-                        if (!(data !== data)) {
-                            return sum + data;
-                        }
-                        return sum;
-                    }, 0
-                );
+        return (ids.map(
+            (id) => {
+                const period = this.props.periods.objects[id];
+                const ids = this.props.periodChildrenIds[id] || [];
+                const actualValue = this.props.actualValue[id];
+                const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(id);
+
                 return (
                     <Panel header={<PeriodHeader period={period}
                                               user={this.props.user}
                                               toggleCheckbox={this.toggleCheckbox}
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
-                           key={period.id}
+                           key={id}
                            className={isChecked ? 'periodSelected' : ''}>
-                        <Updates parentId={period.id} periodLocked={period.locked}/>
+                        <Updates ids={ids} periodLocked={period.locked}/>
                         {
                             !period.locked &&
                             <NewUpdateButton period={period}
@@ -256,13 +242,15 @@ export default class Periods extends React.Component {
     }
 
     render() {
-        const { ids, periods } = findChildren(this.props.parentId, OBJECTS_PERIODS);
-        const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!periods) {
+        // const { ids, periods } = findChildren(this.props.parentId, OBJECTS_PERIODS);
+        const { ids } = this.props;
+
+        // const toggleKey = createToggleKey(ids, this.activeKey());
+        if (!ids) {
             return (
                 <p>Loading...</p>
             );
-        } else if (periods.length > 0) {
+        } else if (ids.length > 0) {
             return (
                 <div className={OBJECTS_PERIODS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
@@ -270,7 +258,7 @@ export default class Periods extends React.Component {
                                   {/*label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(periods)}
+                        {this.renderPanels(ids)}
                     </Collapse>
                 </div>
             );

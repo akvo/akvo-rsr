@@ -10,24 +10,32 @@ import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
 import { onChange } from "../actions/collapse-actions"
-import { _, findChildren, createToggleKey, collapseId, createToggleKeys } from '../utils';
+import { _, createToggleKey, collapseId, createToggleKeys } from '../utils';
 import Periods from './Periods';
 import { ToggleButton } from "./common"
 
-import { OBJECTS_INDICATORS } from '../const.js';
+import { OBJECTS_INDICATORS, OBJECTS_PERIODS } from '../const.js';
+import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue} from "../selectors";
 
 
-const IndicatorHeader = ({indicator}) => {
+const IndicatorHeader = ({indicator, aggregateActualValue}) => {
+    // const periods = indicator._meta && indicator._meta.children || {ids: [], objects: {}};
+    // const aggregateActualValue = childPeriods.reduce((acc, period) => {
+    //     return acc = period.actual_value
+    // }, 0);
     const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
     return (
         <span>
-            {"Indicator: " + title}
+            {
+                "Indicator: " + title + " | Aggregate actual value: " + aggregateActualValue
+            }
         </span>
     )
 };
 
 IndicatorHeader.propTypes = {
-    indicator: PropTypes.object
+    indicator: PropTypes.object,
+    childPeriods: PropTypes.array,
 };
 
 
@@ -52,24 +60,33 @@ IndicatorContent.propTypes = {
     indicator: PropTypes.object
 };
 
+const childrenArray = (objects, ids) => {
+    // Turn {17: {modelObj1}, {42: {modelObj2}, ...} and [42, 17, ...] into
+    // [{modelObj2}, {modelObj1}, ...]
+    return ids.map(id => objects[id]);
+};
 
 @connect((store) => {
     return {
-        indicators: store.models['indicators'],
+        indicators: store.models.indicators,
+        periods: store.models.periods,
         keys: store.keys,
-        ui: store.ui
+        ui: store.ui,
+        indicatorChildrenIds: getIndicatorsChildrenIds(store),
+        aggregateActualValue: getIndicatorsAggregateActualValue(store),
     }
 })
 export default class Indicators extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        ids: PropTypes.array.isRequired,
     };
 
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.childPeriods = this.childPeriods.bind(this);
         // concatenate this model's name with parent's ID
         this.state = {collapseId: collapseId(OBJECTS_INDICATORS, this.props.parentId)};
     }
@@ -89,32 +106,50 @@ export default class Indicators extends React.Component {
         })
     }
 
-    renderPanels(indicators) {
-        return (indicators.map(
-            (indicator) =>
-                <Panel header={<IndicatorHeader indicator={indicator}/>} key={indicator.id}>
-                    <IndicatorContent indicator={indicator}/>
-                    <Periods parentId={indicator.id}/>
-                </Panel>
+    childPeriods(id) {
+        const periods = this.props.periods.objects;
+        const periodIds = this.props.indicatorChildrenIds[id] || [];
+        return childrenArray(periods, periodIds);
+    }
+
+    renderPanels(ids) {
+        return (ids.map(
+            (id) => {
+                const indicator = this.props.indicators.objects[id];
+                const ids = this.props.indicatorChildrenIds[id] || [];
+                return (
+                    <Panel header={<IndicatorHeader
+                                        indicator={indicator}
+                                        aggregateActualValue={
+                                            this.props.aggregateActualValue[id]
+                                        }/>}
+                           key={id}>
+                        <IndicatorContent indicator={indicator}/>
+                        <Periods ids={ids}/>
+                    </Panel>
+                )
+            }
         ))
     }
 
     render() {
-        const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
-        const toggleKey = createToggleKey(ids, this.activeKey());
+        // const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
+        const {ids=undefined} = this.props.indicators;
 
-        if (!indicators) {
+        // const toggleKey = createToggleKey(ids, this.activeKey());
+
+        if (!ids) {
             return (
                 <p>Loading...</p>
             );
-        } else if (indicators.length > 0) {
+        } else if (ids.length > 0) {
             return (
                 <div className={OBJECTS_INDICATORS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(indicators)}
+                        {this.renderPanels(ids)}
                     </Collapse>
                 </div>
             );

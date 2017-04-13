@@ -32,13 +32,13 @@ CommentHeader.propTypes = {
 @connect((store) => {
     return {
         comments: store.models['comments'],
-        keys: store.keys
+        keys: store.keys,
     }
 })
 export default class Comments extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        ids: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -56,28 +56,32 @@ export default class Comments extends React.Component {
         this.props.dispatch(onChange(this.state.collapseId, activeKey));
     }
 
-    renderPanels(comments) {
-        return (comments.map(
-            (comment) =>
-                <Panel header={<CommentHeader comment={comment}/>} key={comment.id}>
-                    <div>By: {comment.user_details.first_name}</div>
-                </Panel>
+    renderPanels(ids) {
+        return (ids.map(
+            (id) => {
+                const comment = this.props.comments.objects[id];
+                return (
+                    <Panel header={<CommentHeader comment={comment}/>} key={id}>
+                        <div>By: {comment.user_details.first_name}</div>
+                    </Panel>
+                )
+            }
         ))
     }
 
     render() {
-        const { ids, comments } = findChildren(this.props.parentId, OBJECTS_COMMENTS);
-        const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!comments) {
+        const { ids } = this.props;
+        // const toggleKey = createToggleKey(ids, this.activeKey());
+        if (!ids) {
             return (
                 <p>Loading...</p>
             );
-        } else if (comments.length > 0) {
+        } else if (ids.length > 0) {
             return (
                 <div className={OBJECTS_COMMENTS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(comments)}
+                        {this.renderPanels(ids)}
                     </Collapse>
                 </div>
             );
