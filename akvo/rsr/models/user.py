@@ -376,16 +376,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.employers.all().exclude(is_approved=False)
 
     def can_create_project(self):
-        """
-        Check to see if the user can create a project, or is a superuser.
-
-        :return: Boolean to indicate whether the user has a reportable organisation
-        """
-        if self.is_superuser or self.is_admin:
-            return True
+        """Check to see if the user can create a project."""
 
         for employment in self.approved_employments():
-            if employment.organisation.can_create_projects:
+            org = employment.organisation
+            if org.can_create_projects and self.has_perm('rsr.add_project', org):
                 return True
 
         return False

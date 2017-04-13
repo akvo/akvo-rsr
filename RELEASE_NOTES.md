@@ -1,3 +1,21 @@
+# Akvo RSR version 3.24 Stockholm
+
+## General improvements
+
+[#2609](https://github.com/akvo/akvo-rsr/issues/2609) Add a link to the project editor on the project page
+
+[#2616](https://github.com/akvo/akvo-rsr/issues/2616) Reordering of Advanced Filter window, move Keywords to the top
+
+[#2618](https://github.com/akvo/akvo-rsr/issues/2618) Project subtitle part of the search query
+
+## Bug fixes
+
+[#2619](https://github.com/akvo/akvo-rsr/issues/2619) Advanced filter for Location doesn't work correctly
+
+[#2356](https://github.com/akvo/akvo-rsr/issues/2356) Disable Publish button in project editor for users without publishing permission.
+
+[#2362](https://github.com/akvo/akvo-rsr/issues/2362) Add new project buttons in MyRsr only shown if user has permissions to add projects.
+
 # Akvo RSR version 3.23.1 New Delhi hotfix
 
 ## Bug fixes

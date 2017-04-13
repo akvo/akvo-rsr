@@ -42,7 +42,12 @@ def typeahead_country(request):
 @api_view(['GET'])
 def typeahead_organisation(request):
     page = request.rsr_page
-    organisations = page.organisation.partners() if page else Organisation.objects.all()
+    if request.GET.get('partners', '0') == '1' and page:
+        organisations = page.partners()
+    else:
+        # Project editor - all organizations
+        organisations = Organisation.objects.all()
+
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))
