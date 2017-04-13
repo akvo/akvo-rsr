@@ -10,9 +10,11 @@
 
 ## Bug fixes
 
-[#2623] (https://github.com/akvo/akvo-rsr/pull/2623) Fix problems with Location advanced filter in project directory
-
 [#2619](https://github.com/akvo/akvo-rsr/issues/2619) Advanced filter for Location doesn't work correctly
+
+[#2356](https://github.com/akvo/akvo-rsr/issues/2356) Disable Publish button in project editor for users without publishing permission.
+
+[#2362](https://github.com/akvo/akvo-rsr/issues/2362) Add new project buttons in MyRsr only shown if user has permissions to add projects.
 
 # Akvo RSR version 3.23.1 New Delhi hotfix
 
