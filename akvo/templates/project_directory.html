@@ -107,10 +107,10 @@
             <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
             <p class="projectSubT">{{project.subtitle}}</p>
             <p class="projectLocation"><i class="fa fa-map-marker"></i>
-                {% for recipient_country in project.recipient_countries.all %}
-                    {{ recipient_country }}{% if not forloop.last %}, {% endif %}
+                {% for country in project.countries %}
+                    {{ country }}{% if not forloop.last %}, {% endif %}
                 {% empty %}
-                    {% trans 'No recipient countries specified' %}
+                    {% trans 'No project locations or recipient countries specified' %}
                 {% endfor %}
             </p>
             {% if project.primary_organisation %}

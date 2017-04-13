@@ -644,6 +644,18 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
+    def countries(self):
+        """Return a list of countries for the project."""
+
+        country_codes = set([c.country.lower() for c in self.recipient_countries.all()])
+        return (
+            [country for country in self.recipient_countries.all()] +
+            [
+                location.country for location in self.locations.all()
+                if location.country and location.country.iso_code not in country_codes
+            ]
+        )
+
     class QuerySet(DjangoQuerySet):
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
@@ -952,6 +964,18 @@ class Project(TimestampsMixin, models.Model):
             return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
         return False
     is_published.boolean = True
+
+    def publish(self):
+        """Set the publishing status to published."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+        self.publishingstatus.save()
+
+    def unpublish(self):
+        """Set the publishing status to unpublished."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_UNPUBLISHED
+        self.publishingstatus.save()
 
     def is_empty(self):
         exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',

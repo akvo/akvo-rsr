@@ -36,8 +36,7 @@ class AccountTestCase(TestCase):
         self.org2 = Organisation.objects.create(name='icco', long_name='icco foundation')
         for org in (self.org1, self.org2):
             project = Project.objects.create()
-            project.publishingstatus.status = 'published'
-            project.publishingstatus.save()
+            project.publish()
             Partnership.objects.create(project=project, organisation=org)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
